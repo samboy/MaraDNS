@@ -1,0 +1,21 @@
+* Test csv1tocsv2.pl script 
+
+  1. Make a complicated csv1 zone file (DONE)
+
+  2. Make a complicated csv2 zone file (DONE)
+
+  3. Load the csv1 zone file in to MaraDNS (DONE)
+
+  4. Run fetchzone to make it a csv2 zone file (DONE)
+
+  5. Use csv1tocsv2.pl to convert the csv1 zone file in to a csv2 zone file
+     (DONE)
+
+  6. Load the csv2 zone file in to MaraDNS (DONE)
+
+  7. Run fetchzone to make it a normalized csv2 zone file (DONE)
+
+  8. Make sure the zone files in 4 and 7 are identical. (DONE; they are)
+
+  9. Run getzone on the file generated in step 2 to make a csv1 zone file
+ 

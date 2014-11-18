@@ -1,0 +1,14 @@
+--- maradns-1.4.02/doc/en/webpage/license.embed	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.4.03/doc/en/webpage/license.embed	2010-01-17 12:20:51.000000000 -0600
+@@ -1,9 +1,9 @@
+-<h2>MaraDNS 1.2 license</h2>
++<h2>MaraDNS license</h2>
+ 
+ MaraDNS' license is as follows:
+ 
+ <blockquote>
+-Copyright (c) 2002-2009 Sam Trenholme and others
++Copyright (c) 2002-2010 Sam Trenholme and others
+ <p>
+ TERMS
+ <p>

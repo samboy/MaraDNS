@@ -1,0 +1,45 @@
+--- maradns-2.0.02/parse/Csv2_rr_txt.c	2011-02-05 20:21:32.000000000 -0600
++++ maradns-2.0.03/parse/Csv2_rr_txt.c	2011-06-10 13:34:02.677253353 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004-2007 Sam Trenholme
++/* Copyright (c) 2004-2007,2011 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -425,26 +425,31 @@
+                                 if(look == '#') {
+                                         csv2_error(stream,
+                            "The # character is not allowed in TXT records\n"
+-                           "Please use the '\\x23' escape sequence instead.");
++                           "Please use the '\\x23' escape sequence instead.\n"
++			   "man csv2_txt for more information");
+                                         return 0;
+                                 } else if(look == '|') {
+                                         csv2_error(stream,
+                            "The | character is not allowed in TXT records\n"
+-                           "Please use the '\\x7c' escape sequence instead.");
++                           "Please use the '\\x7c' escape sequence instead.\n"
++			   "man csv2_txt for more information");
+                                         return 0;
+                                 } else if(look == '~') {
+                                         csv2_error(stream,
+                            "The ~ character is not allowed in TXT records\n"
+-                           "Please use the '\\x7e' escape sequence instead.");
++                           "Please use the '\\x7e' escape sequence instead.\n"
++			   "man csv2_txt for more information");
+                                         return 0;
+                                 } else if(look == 127) {
+                                         csv2_error(stream,
+                            "The DEL character is not allowed in TXT records\n"
+-                           "Please use the '\\x7f' escape sequence instead.");
++                           "Please use the '\\x7f' escape sequence instead.\n"
++			   "man csv2_txt for more information");
+                                 } else if(look < ' ') {
+                                         csv2_error(stream,
+    "Control characters (including newlines) are not allowed in TXT records\n"
+-                        "Please use the appropriate escape sequence instead.");
++                        "Please use the appropriate escape sequence instead.\n"
++			   "man csv2_txt for more information");
+                                         return 0;
+                                 } else if(csv2_txt_append(out, look, &txt_len)
+                                        != 1) {

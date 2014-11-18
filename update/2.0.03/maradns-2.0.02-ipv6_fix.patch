@@ -1,0 +1,10 @@
+--- maradns-2.0.02/configure	2010-08-29 09:55:09.000000000 -0500
++++ maradns-2.0.03/configure	2011-07-08 14:53:27.580545559 -0500
+@@ -10,6 +10,7 @@
+ 
+ # MaraDNS 2.0 is AUTHONLY
+ AUTHONLY="yes"
++export AUTHONLY
+ 
+ # Options: '--ipv6'
+ if [ "$1" = '--ipv6' ] ; then

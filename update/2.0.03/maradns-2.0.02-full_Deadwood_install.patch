@@ -1,0 +1,194 @@
+--- maradns-2.0.02/build/install.sh	2010-08-30 20:58:12.000000000 -0600
++++ maradns-2.0.03/build/install.sh	2011-02-17 13:45:29.000000000 -0700
+@@ -9,7 +9,7 @@
+ 
+ # Set the directory which is the top-level MaraDNS directory
+ if [ -z "$TOPLEVEL" ] ; then
+-	TOPLEVEL=`pwd`
++	TOPLEVEL=$( pwd )
+ fi
+ 
+ cd $TOPLEVEL
+@@ -48,9 +48,9 @@
+ 
+ # Make sure we have a place to put documents
+ # Thanks to Paul Howard for the following six lines
+-if [ ! -d "`dirname $DOCS`" ] ; then
+-	if ! mkdir "`dirname $DOCS`" ; then
+-		echo unable to make the `dirname $DOCS` directory. 
++if [ ! -d "$( dirname $DOCS )" ] ; then
++	if ! mkdir "$( dirname $DOCS )" ; then
++		echo unable to make the $( dirname $DOCS ) directory. 
+ 		exit 6
+ 	fi
+ fi
+@@ -137,6 +137,18 @@
+ cd $TOPLEVEL
+ cp maradns.gpg.key $DOCS
+ 
++# Add Deadwood man page
++cp deadwood-*/doc/Deadwood.1 $MAN1
++# Add default dwood3rc file for Deadwood
++if [ ! -f $RPM_BUILD_ROOT/etc/dwood3rc ] ; then
++	cat deadwood-*/doc/dwood3rc | \
++		sed 's/127.0.0.1\"/127.0.0.2\"/' | \
++		sed 's/\/etc\/deadwood/\/etc\/maradns/' \
++		> $RPM_BUILD_ROOT/etc/dwood3rc
++else
++	echo /etc/dwood3rc already there, not replacing
++fi
++
+ # If the system in question does not already have configuration files,
+ # place example configuration files in /etc
+ if [ -d doc/$LANGUAGE/examples ] ; then
+@@ -175,20 +187,27 @@
+ 	      cp $BUILDDIR/mara.startup $RPM_BUILD_ROOT/etc/rc.d/init.d/maradns
+ 	      cp $BUILDDIR/zoneserver.startup \
+ 	          $RPM_BUILD_ROOT/etc/rc.d/init.d/maradns.zoneserver
++	      cp $BUILDDIR/deadwood.startup \
++	          $RPM_BUILD_ROOT/etc/rc.d/init.d/maradns.deadwood
++	      chmod 755 $RPM_BUILD_ROOT/etc/rc.d/init.d/maradns.deadwood
+ 	fi
+ 	if cd $RPM_BUILD_ROOT/etc/rc.d/rc3.d/ ; then
+ 		echo Starting up MaraDNS at runlevel 3
+ 		rm S60maradns 2> /dev/null
+ 		rm K60maradns.zoneserver 2> /dev/null
++		rm S60maradns.deadwood 2> /dev/null
+ 		ln -s ../init.d/maradns S60maradns
+ 		ln -s ../init.d/maradns.zoneserver K60maradns.zoneserver
++		ln -s ../init.d/maradns.deadwood S60maradns.deadwood
+ 	fi
+ 	if cd $RPM_BUILD_ROOT/etc/rc.d/rc5.d/ ; then
+ 		echo starting up MaraDNS at runlevel 5
+ 		rm S60maradns 2> /dev/null
+ 		rm K60maradns.zoneserver 2> /dev/null
++		rm S60maradns.deadwood 2> /dev/null
+ 		ln -s ../init.d/maradns S60maradns
+ 		ln -s ../init.d/maradns.zoneserver K60maradns.zoneserver
++		ln -s ../init.d/maradns.deadwood S60maradns.deadwood
+ 	fi
+ fi
+ 
+--- maradns-2.0.02/build/deadwood.startup	2011-02-17 13:44:49.000000000 -0700
++++ maradns-2.0.03/build/deadwood.startup	2011-02-17 13:43:54.000000000 -0700
+@@ -0,0 +1,82 @@
++#!/bin/bash
++# Copyright 2005-2006,2011 Sam Trenholme
++
++# TERMS
++
++# Redistribution and use in source and binary forms, with or without
++# modification, are permitted provided that the following conditions
++# are met:
++
++# 1. Redistributions of source code must retain the above copyright
++#    notice, this list of conditions and the following disclaimer.
++# 2. Redistributions in binary form must reproduce the above copyright
++#    notice, this list of conditions and the following disclaimer in the
++#    documentation and/or other materials provided with the distribution.
++
++# This software is provided 'as is' with no guarantees of correctness or
++# fitness for purpose.
++
++# This is a script which stops and starts the MaraDNS process
++# The first line points to bash because I don't have a true Solaris /bin/sh
++# to test this against.
++
++# The following is a pointer to the MaraDNS program
++if [ -x "/usr/sbin/Deadwood" ] ; then
++	DEADWOOD="/usr/sbin/Deadwood"
++elif [ -x "/usr/local/sbin/Deadwood" ] ; then
++	DEADWOOD="/usr/local/sbin/Deadwood"
++elif [ -x "/usr/local/bin/Deadwood" ] ; then
++	DEADWOOD="/usr/local/bin/Deadwood"
++elif [ -x "/usr/bin/Deadwood" ] ; then
++	DEADWOOD="/usr/bin/Deadwood"
++else
++	echo unable to find Deadwood
++	exit 1
++fi
++
++# The following is a pointer to the duende daemonizer
++if [ -x "/usr/sbin/duende" ] ; then
++	DUENDE="/usr/sbin/duende"
++elif [ -x "/usr/local/sbin/duende" ] ; then
++	DUENDE="/usr/local/sbin/duende"
++elif [ -x "/usr/local/bin/duende" ] ; then
++	DUENDE="/usr/local/bin/duende"
++elif [ -x "/usr/bin/duende" ] ; then
++	DUENDE="/usr/bin/duende"
++else
++	echo unable to find duende
++	exit 1
++fi
++
++# The following is the directory we place MaraDNS log entries in
++LOGDIR="/var/log"
++
++# Show usage information if this script is invoked with no arguments
++if [ $# -lt 1 ] ; then
++    echo Usage: $0 \(start\|stop\|restart\)
++    exit 1
++fi
++
++# If invoked as stop or restart, kill *all* MaraDNS processes
++if [ $1 = "stop" -o $1 = "restart" ] ; then
++    echo Sending all Deadwood processes the TERM signal
++    ps -e | awk '{print $1":"$NF}' | grep Deadwood | grep -v $$ | \
++      cut -f1 -d: | xargs kill > /dev/null 2>&1
++    echo waiting 5 seconds
++    sleep 5
++    echo Sending all Deadwood processes the KILL signal
++    ps -e | awk '{print $1":"$NF}' | grep Deadwood | grep -v $$ | \
++      cut -f1 -d: | xargs kill -9 > /dev/null 2>&1
++    echo MaraDNS should have been stopped
++    if [ $1 = "stop" ] ; then
++    	exit 0
++    fi
++fi
++
++# If invoked as start or restart, start the Deadwood processes
++if [ $1 = "start" -o $1 = "restart" ] ; then
++    echo Starting Deadwood process
++    $DUENDE $DEADWOOD 
++    exit 0
++fi
++
+--- maradns-2.0.02/build/uninstall.sh	2010-08-30 20:58:27.000000000 -0600
++++ maradns-2.0.03/build/uninstall.sh	2011-02-17 13:49:25.000000000 -0700
+@@ -1,5 +1,6 @@
+ #!/bin/sh
+ 
++
+ # Shell script which uninstalls the MaraDNS files 
+ 
+ # We call install.locations to set BIN, SBIN, MAN1, and MAN8
+@@ -17,7 +18,7 @@
+ cd $BIN
+ rm askmara getzone
+ cd $MAN1
+-rm askmara.1 getzone.1
++rm askmara.1 getzone.1 Deadwood.1
+ cd $MAN8
+ rm maradns.8 zoneserver.8
+ rm -fr $DOCS
+@@ -26,11 +27,17 @@
+ 	rm /etc/rc.d/rc3.d/S60maradns
+ 	rm /etc/rc.d/rc5.d/S60maradns
+ 	rm /etc/rc.d/init.d/maradns
++	rm /etc/rc.d/rc3.d/K60maradns.zoneserver
++	rm /etc/rc.d/rc5.d/K60maradns.zoneserver
++	rm /etc/rc.d/init.d/maradns.zoneserver
++	rm /etc/rc.d/rc3.d/S60maradns.deadwood
++	rm /etc/rc.d/rc5.d/S60maradns.deadwood
++	rm /etc/rc.d/init.d/maradns.deadwood
+ fi
+ 
+ echo Note that cahced copies of man pages may still be lurking around
+ echo
+ echo Not removing configuration files.  If you wish to completely purge 
+-echo MaraDNS from your system, rm /etc/mararc and the /etc/maradns/
+-echo directory, and remove any cached copies of MaraDNS man pages
++echo MaraDNS from your system, rm /etc/mararc, /etc/dwood3rc and the 
++echo /etc/maradns/ directory, as well as any cached copies of MaraDNS man pages
+ 

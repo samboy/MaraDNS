@@ -1,0 +1,22 @@
+Releases of MaraDNS no longer include RPM files.  
+
+Instead, I have a script update the .spec file with every release of 
+MaraDNS, and rpm users can build their own .rpm files thusly:
+
+    * Copy the file build/maradns-{version}.spec to the directory 
+      /usr/src/redhat/SPECS.
+
+    * Copy the maradns-{version}.tar.bz2 file to /usr/src/redhat/SOURCES
+
+    * Become root and enter the /usr/src/redhat/SPECS
+
+    * As root, do this command: rpmbuild -ba maradns-{version}.spec
+
+    * You should now have .rpm files in /usr/src/redhat/SRPMS/ and 
+      /usr/src/redhat/RPMS/i386 (or whatever)
+
+I will leave the building of .rpm files to people who are experts at 
+making rpm packages, and concentrate my efforts on making the best 
+possible recursive DNS server; my current project is a complete rewrite 
+of the recursive code.
+

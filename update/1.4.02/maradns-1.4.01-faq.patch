@@ -1,0 +1,342 @@
+--- maradns-1.4.01/doc/en/webpage/faq.embed	2009-12-21 09:28:41.000000000 -0600
++++ maradns-1.4.02/doc/en/webpage/faq.embed	2009-12-28 11:45:56.000000000 -0600
+@@ -2,7 +2,7 @@
+ 
+ <h2>INDEX</h2>
+ <BLOCKQUOTE>
+-1. <A href="#version1">I'm still using version 1.0 of MaraDNS</A> <P>
++1. <A href="#version1">I'm using an older version of MaraDNS</A> <P>
+ 
+ 2. <A href="#tryout">How do I try out MaraDNS?</A> <P>
+ 
+@@ -125,40 +125,20 @@
+ 
+ <A NAME=version1>
+ </A>
+-<H2>1. I'm still using version 1.0 of MaraDNS</H2>
++<H2>1. I'm using an older version of MaraDNS</H2>
+ 
+-MaraDNS 1.0 will continue to be supported until December 21, 2007; this
+-means that MaraDNS 1.0 bug fixes will
+-still be applied.  After 2007/12/21, MaraDNS 1.0 will no longer be fully 
+-supported; the only updates, at that point, would be bugtraq-worthy critical
+-security fixes.  Not even these security updates will be applied after
+-December 21, 2010.  
++Upgrade to MaraDNS 1.4.  MaraDNS 1.4 is compatible with older versions
++of MaraDNS, with the relatively few changes need to upgrade 
++<A href=http://maradns.org/tutorial/update.html>documented</A>.
+ 
+ <p>
+ 
+-People who wish to run MaraDNS 1.0 unsupported after 2010/12/21 need to keep 
+-in mind that MaraDNS 1.0 is <i>not</i> Y2038 compliant, and will have 
+-problems starting in 2036 or so.  MaraDNS 1.2, on the other hand, is fully
+-Y2038 compliant.
+-
+-<p>
+-
+-There is still a FAQ for version 1.0 of MaraDNS available
+-<A href="http://www.maradns.org/faq-1.0.html">here</A>.
+-
+-<p>
+-
+-Updating from 1.0 to 1.2 requires a minimum number of changes; with most 
+-configurations, MaraDNS 1.2 is fully compatible with MaraDNS 1.0 data
+-files.  Details are in the <A 
+-href="http://www.maradns.org/tutorial/1.2/update.html">updating</A> document
+-in the tutorial.
+-
+-<p>
+-
+-While csv1 zone files are fully supported in MaraDNS 1.2, there is a Perl
+-script for updating from CSV1 to CSV2 zone files in the <tt>tools/</tt>
+-directory of MaraDNS 1.2.
++MaraDNS 1.0 and 1.2 are only supported for critical security updates, and
++will no longer be supported on December 21, 2010.  MaraDNS 1.3 is also only
++supported for critical security updates, and support will stop on December
++21, 2012.  MaraDNS 1.4 will be fully supported (security and other important
++bug fixes) for the foreseeable future, alongside MaraDNS 2.0 when and if
++it comes out.
+ 
+ <A NAME=tryout>
+ </A>
+@@ -177,7 +157,7 @@
+ MaraDNS 1.2 is released with the following two-clause 
+ BSD-type license:
+ <BLOCKQUOTE>
+-Copyright (c) 2002-2007 Sam Trenholme
++Copyright (c) 2002-2009 Sam Trenholme and others
+ <p>
+ TERMS
+ <p>
+@@ -200,33 +180,14 @@
+ </A>
+ <H2>4. How do I report bugs in MaraDNS?</H2>
+ 
+-Please contact me; my email address is at
+-<A 
+-href="http://www.maradns.org/contact.html">http://www.maradns.org/contact.html</A>.  
+-Please be sure to include all information requested there, including
+-the operating system you are using, the version of MaraDNS you are using,
+-your <tt>mararc</tt> configuration file, and all relevant zone files.
++Send an email to the MaraDNS mailing list.  Details on how to do
++this are at <A href=http://www.maradns.org/>http://www.maradns.org/</A>
+ 
+ <A NAME=chatter>
+ </A>
+ <H2>5. Some of the postings to the mailing list do not talk about MaraDNS!</H2>
+-In cases where I post something to the mailing list which does not directly
+-talk about MaraDNS, the subject line will not have [MARA] in it, but will
+-have some form of the word CHATTER in it.  
+-<P>
+-This way, people who do not like this can set up mail filters to filter out
+-anything that comes from this list and doesn't have [MARA] in the subject
+-line, or simply unsubscribe from the list and read the list from the
+-archives; if one needs to report a bug, they can subscribe to the list
+-again, post their bug, then unsubscribe after a week.  
+-<P>
+-Another option is to set up one's Freshmeat preferences to be notified
+-in email every time I update MaraDNS at Freshmeat.  This will give one
+-email notice of any critical bug fixes without needing to be
+-subscribed to the mailing list.
+-<P>
+-The web page <A href="http://www.maradns.org">http://www.maradns.org/</A>
+-has a link to the mailing list archives.
++
++Topic drift sometimes happens.  It's a part of life.
+ 
+ <A NAME=unsub>
+ </A>
+@@ -249,9 +210,8 @@
+ </blockquote>
+ <p>
+ 
+-It is also possible, with MaraDNS 1.2.05 and more recent releases, to
+-use a special "FQDN4" which automatically sets up the reverse
+-mapping of a given record:
++It is also possible to use a special "FQDN4" which automatically sets up 
++the reverse mapping of a given record:
+ 
+ <blockquote>
+ <tt>
+@@ -312,8 +272,8 @@
+ <p>
+ 
+ If MaraDNS does return a cryptic error message without letting you know
+-what is wrong, <A href="http://www.maradns.org/contact.html">let me know</A> 
+-so that I can fix the bug.  MaraDNS is designed
++what is wrong, let us know on the mailing list
++so that we can fix the bug.  MaraDNS is designed
+ to be easy to use; cryptic error messages go against this spirit.
+ 
+ <A NAME=netstat>
+@@ -351,8 +311,7 @@
+ a functioning recursive DNS server.  There is a reason why MaraDNS, pdnsd, and
+ BIND 9 all use the multi-threaded model.
+ 
+-<p>I am planning on improving MaraDNS' threaded model to not spawn a thread 
+-for each and every uncached request.
++<p>MaraDNS 2.0, when and if it is released, will not use threads.
+ 
+ <A NAME=wishlist>
+ </A>
+@@ -360,8 +319,7 @@
+ <p>
+ The only thing that will convince me to implement a given feature for
+ MaraDNS is cold, hard cash.  If you want me to keep a given feature
+-proprietary, you better have lots of cold hard cash.  If you're willing
+-to opensource your feature, less cash should be sufficient.
++proprietary, you better have lots of cold hard cash.  
+ <p>
+ Keep in mind that both the BIND and NSD name servers were 
+ developed by having the programmers paid to work on the programs.  
+@@ -372,20 +330,6 @@
+ are no longer being actively worked on by the primary developer.
+ <p>
+ 
+-My current plans for MaraDNS are visible on the 
+-<A href=roadmap.html>roadmap page</A> for MaraDNS.
+-
+-<p>
+-If I see a large
+-MaraDNS community and a strong demand for new features from that community,
+-I will consider their wishes.  Especially if some of the members of 
+-the community
+-have large bank accounts.  Should ipv6 start to become dominant, I will update
+-MaraDNS to have full ipv6 support.  Should some other technology come along
+-that will require an update to MaraDNS for MaraDNS to continue to function
+-as a DNS server, I may very well update MaraDNS to use that technology.
+-
+-
+ <A NAME=docbook>
+ </A>
+ <H2>14. I feel that MaraDNS should use another documentation format</H2>
+@@ -420,7 +364,7 @@
+ 
+ <ul>
+ <li>Enter the directory that the file is in, for example
+-    <tt>maradns-1.2.00/server</tt>
++    <tt>maradns-1.4.01/server</tt>
+ 
+ <li>Copy over the file that you wish to modify to another file
+     name.  For example: <tt>cp MaraDNS.c MaraDNS.c.orig</tt>
+@@ -434,7 +378,7 @@
+ 
+ </ul>
+ 
+-Send a patch to me in email, along with a statement that you place
++Send a patch to the MaraDNS mailing list, along with a statement that you place
+ the contents of the patch under MaraDNS' BSD license.  If I find that the patch
+ works well, I will integrate it in to MaraDNS.
+ 
+@@ -505,11 +449,8 @@
+ </A>
+ <H2>20. Is MaraDNS portable?</H2>
+ 
+-<p>MaraDNS is developed on a CentOS 3 and Windows XP dual boot laptop.
+-MaraDNS may compile or run on other systems--there are official MaraDNS
+-ports for Debian/Ubuntu, Slackware, FreeBSD, and NetBSD.  Note that MaraDNS
+-needs a system with a robust threading library, which some systems do not
+-have.
++<p>MaraDNS is developed on a CentOS 5 and Windows XP dual boot laptop.
++MaraDNS may or may not compile and run on other systems.
+ 
+ <A NAME=cygwin>
+ </A>
+@@ -518,14 +459,14 @@
+ <p>
+ Yes.  There is both a partial mingw32 (native win32 binary) port and a full
+ Cygwin port of MaraDNS; both of these ports are part of the native build
+-of MaraDNS.
++of MaraDNS.  Deadwood has full Windows support, including the ability to
++run as a service.
+ 
+ <A NAME=upstream>
+ </A>
+ <H2>22. MaraDNS freezes up after being used for a while</H2>
+ 
+-If you are using MaraDNS 1.2.03.1 (or any 1.1 release, for that matter) on 
+-Linux, upgrade to version 1.2.03.2.  There is a bug with the Linux kernel
++There is a bug with the Linux kernel
+ which causes UDP clients to freeze unless code is written to work around
+ the kernel bug.  This workaround was first introduced in MaraDNS 1.0.28
+ and 1.1.35 and accidently disabled in 1.2.03.1.  
+@@ -963,29 +904,7 @@
+ me enough money.
+ <p>
+ 
+-There are MaraDNS packages for a number of different distributions of
+-Linux and other operating systems.   On the MaraDNS site, there is 
+-a MaraDNS package for CentOS/Red Hat Enterprise Linux available.  There
+-is also usually an up-to-date Slackware package available.  In addition,
+-there is a Debian package in the Debian packages collection, a FreeBSD
+-port of MaraDNS, a Ubuntu package which is derived from the Debian package,
+-and undoubtably other MaraDNS packages floating around the internet.
+-<p>
+-
+-If you wish to have a package for your particular version of Linux (or 
+-MacOS X or BSD or...), you can use one of the above packages as a starting
+-point for making your package.  For example, other RPM-based distributions
+-can use the CentOS RPM package as a baseline (the .spec file is in the
+-<tt>build/</tt> directory).  I can not help you with any problems you
+-may encounter making this package since I do not have your particular
+-version of Linux installed on my computer.
+-<p>
+-
+-As an aside, some of the MaraDNS packages floating around on the internet
+-are out of date.  Please make sure, that if you get a third-party package 
+-from the internet, the package is for either MaraDNS 1.0.41, MaraDNS 
+-1.2.12.08, or MaraDNS 1.3.07.06.  Older versions of MaraDNS are not
+-supported.
++There is, however, a CentOS 5-compatible RPM spec file in the build directory.
+ 
+ <A name=wincrippled> </A>
+ <h2>37. I am using the native Windows port of MaraDNS,
+@@ -1029,16 +948,8 @@
+ 
+ <p>
+ 
+-There were only three updates to the 1.0 legacy branch in 2006.  The 1.2 branch
+-was updated frequently in the first half of 2006, since I felt MaraDNS 1.2
+-needed some features that didn't make it in to 1.2.00.  During this update
+-cycle, there was always a stable bugfix-only branch of MaraDNS.
+-
+-<p>
+-
+-In August of 2006, I stabilized the 1.2 branch and only six updates 
+-have been done since then.  Unless there is a critical bug, I only update
+-the 1.2 branch approximately once every three months or so.
++MaraDNS 1.2 and 1.3.07, the older stable branches of MaraDNS, were last 
++updated in August of 2008.
+ 
+ <p>
+ 
+@@ -1046,7 +957,7 @@
+ painless to update as possible.  I ensure configuration file format
+ compatibility, even between major versions of MaraDNS.  With the exception
+ of configuration file parser bugfixes, MaraDNS 1.0 configuration files
+-are compatible with MaraDNS 1.2 and 1.3.  
++are compatible with MaraDNS 1.4.  
+ 
+ <p>
+ 
+@@ -1069,18 +980,7 @@
+ <h2>40. I have star records in my zones, and am having problems with 
+ NXDOMAINs/IPV6 resolution</h2>
+ 
+-MaraDNS 1.2 needs to be told to strictly follow the RFCs concerning 
+-NXDOMAINs and star records.  Make sure to update to the latest
+-version of MaraDNS 1.2, then add this line to your <tt>mararc</tt>
+-file:
+-
+-<blockquote><tt>
+-	bind_star_handling = 2
+-</tt></blockquote>
+-
+-This will make MaraDNS strictly follow the RFCs when resolving star
+-records.  This problem has also been fixed in MaraDNS 1.3 without
+-needing the above line in your mararc file.
++This was a bug in MaraDNS 1.2 which has long since been fixed.
+ 
+ <A name=blankzone> </A>
+ 
+@@ -1104,9 +1004,9 @@
+ foo.% TXT 'MaraDNS 1.2 needs this record.'
+ </pre>
+ 
+-This bug has been fixed in MaraDNS 1.3; since this is not a critical bug
+-(there is a perfectly good workaround), this bug will not be fixed in
+-MaraDNS 1.2.
++This bug has been fixed in MaraDNS 1.3 and 1.4; since this is not a 
++security bug (there is a perfectly good workaround), this bug will not 
++be fixed in MaraDNS 1.2 unless you pay me to fix it.
+ 
+ <A name=afnic> </A>
+ 
+@@ -1119,7 +1019,7 @@
+ 
+ <ul>
+ 
+-<li> MaraDNS version 1.3.14 or higher needs to be used; if you're using an
++<li> MaraDNS version 1.4 needs to be used; if you're using an
+ older version of MaraDNS, upgrade.
+ 
+ <li> It is necessary to have recursion disabled.  This can be done either by
+@@ -1158,7 +1058,7 @@
+ 
+ <h2>44. MaraDNS 1 has a problem resolving a domain</h2>
+ 
+-This issue should be fixed when I release MaraDNS 2.0.  
++This issue should be fixed when and if I release MaraDNS 2.0.  
+ 
+ <p>
+ 
+@@ -1197,7 +1097,7 @@
+ <p>
+ 
+ If this is an issue for your organization, please upgrade to a newer
+-version of MaraDNS; neither MaraDNS 1.3.07.09 nor MaraDNS 1.3.14 have 
++version of MaraDNS; MaraDNS 1.4 does not have
+ this bug.  If you want to see this bug fixed in MaraDNS 1.2, please
+ help sponsor MaraDNS.
+ 

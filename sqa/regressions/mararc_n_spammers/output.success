@@ -1,0 +1,12 @@
+# Querying the server with the IP 127.0.0.2
+# Remote server said: SERVER FAILURE
+# Question: Awww.example.net.
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.2
+# Question: Awww.example.net.
+www.example.net. +86400 a 127.10.1.2
+# NS replies:
+# AR replies:
+

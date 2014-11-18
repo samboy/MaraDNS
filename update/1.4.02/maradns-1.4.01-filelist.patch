@@ -1,0 +1,89 @@
+--- maradns-1.4.01/doc/en/source/files.ej	2008-03-24 09:52:27.000000000 -0600
++++ maradns-1.4.02/doc/en/source/files.ej	2009-12-28 10:10:16.000000000 -0600
+@@ -8,7 +8,7 @@
+ source top-level directory.
+ <DL>
+ <DT>00README.FIRST
+-<DD>Legal disclaimer
++<DD>Legal disclaimer and license
+ 
+ <DT>0QuickStart
+ <DD>Quick start guide; geared for experienced UNIX admins
+@@ -20,6 +20,9 @@
+ <DT>CHANGELOG
+ <DD>Link to an ASCII version of the changelog document
+ 
++<DT>COPYING
++<DD>License describing permission to copy MaraDNS (BSD license)
++
+ <DT>configure
+ <DD>Script which sets up the Makefile; uses uname to detect the system
+     being used.  Non-autoconf because an autoconf-enabled system requires
+@@ -28,6 +31,10 @@
+ <DT>CREDITS
+ <DD>List of people who have helped with MaraDNS' development
+ 
++<DT>deadwood-2.4.##
++<DD>Deadwood is the code that will become MaraDNS 2.0's recursive resolver;
++    the 2.4 branch of Deadwood is a non-recursive cache.
++
+ <DT>dns/
+ <DD>Source code files with functions which manipulate the raw DNS data 
+ 
+@@ -37,6 +44,9 @@
+ <DT>FAQ
+ <DD>Link to an ASCII version of the MaraDNS FAQ (Frequently Asked Questions)
+ 
++<DD>FILES
++<DD>This document listing the files here.
++
+ <DT>libs/
+ <DD>The libraries for the overflow-resistant string functions, and to the
+     hashing core used by MaraDNS.
+@@ -56,6 +66,10 @@
+     from English to Spanish.  This needs to be run <i>before</i> compiling
+     MaraDNS.
+ 
++<DT>locale.pt_br
++<DD>Shell script to set the language for various messages to 
++    Brasil Portuguese
++
+ <DT>Makefile
+ <DD>Starts off as a wrapper which runs configure to generate the makefile,
+     then runs 'make' on that Makefile.
+@@ -73,6 +87,16 @@
+ <DT>qual/
+ <DD>Y2038 compliant timestamp routines
+ 
++<DT>README.Debian
++<DD>Note for Debian users telling them to upgrade to the most recent
++    1.4 release of MaraDNS
++
++<DT>README.RedHat
++<DD>Note for RedHat users telling them how to make a .rpm build of MaraDNS
++
++<DT>README.mingw32
++<DD>Note for people wishing to compile MaraDNS in Windows
++
+ <DT>rng/
+ <DD>Routines used by the secure random number generator
+ 
+@@ -86,15 +110,14 @@
+ <DT>tcp/
+ <DD>The TCP domain zone and TCP server and the getzone domain zone client 
+ 
+-<DT>test/
+-<DD>Routines used for testing some library routines in MaraDNS; not compiled
+-    by default
+-
+ <DT>tools/
+ <DD>askmara; the "ej" tools used for processing MaraDNS documentation; and 
+     some other scripts I wrote for various MaraDNS-development related
+     purposes
+ 
++<DT>update/
++<DD>Scripts for updating from one version of MaraDNS to the next version.
++
+ <DT>utf8/
+ <DD>Some routines for 8859-1 to utf-8 conversion; currently unused by 
+     MaraDNS

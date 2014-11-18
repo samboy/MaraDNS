@@ -1,0 +1,66 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_create 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_create \- create a new js_string object
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "js_string *js_create(int max_count, int unit_size);"
+.fi
+.SH DESCRIPTION
+.B js_create
+creates a new
+.B js_string
+object, allocating the necessary memory for the object in question.  The
+function also sets some default values for the 
+.B js_string
+object.
+.SH ARGUMENTS
+.B max_count
+is the maximum number of 
+.I units
+that this 
+.B js_string
+object is allowed to have.  A single 
+.I unit 
+takes up one or more octets of memory space.  The amount of space a single 
+.I unit
+takes up is determined by the 
+.B unit_size
+argument.
+
+.B unit_size
+determines the number of bytes a single
+.I unit
+of a
+.B js_string
+object has in it.  This will be set to 1 for normal ASCII or ISO-8859-1
+character sets, but may be 2 (or higher) for UNICODE or other special
+character sets that require multiple octets to represent a single character.
+.SH "RETURN VALUE"
+.B js_create
+returns a pointer to the 
+.B js_string 
+object in question.  If it is unable to create a
+.B js_string
+object, this function will return the value 0 (the null pointer, as defined by
+the C standard).
+.SH EXAMPLE
+The following example creates a 
+.B js_string
+object that can have as many as 256 single-octet characters.
+
+.nf
+	js_string *foo;
+	foo = js_create(256,1);
+.fi
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

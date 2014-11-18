@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Convert an ej document to a htmlpage document; which we then make a utf-8
+# text document
+
+TMP=$HOME/tmp
+
+if which ej2html > /dev/null 2>&1 ; then
+	CMD=ej2html
+elif [ -e ../../tools/ej/ej2html ] ; then
+	CMD=../../tools/ej/ej2html
+elif [ -e ../../../tools/ej/ej2html ] ; then
+	CMD=../../../tools/ej/ej2html
+elif [ -e ../../../../tools/ej/ej2html ] ; then
+	CMD=../../../../tools/ej/ej2html
+else
+	echo Sorry\, can not find ej2html
+	exit 1
+fi
+
+$CMD $1 > $TMP/$$.html
+lynx -dump -width=70 -nolist $TMP/$$.html | awk '
+	{gsub(/\[[0-9]+\]/,"");print}' 
+rm $TMP/$$.html
+

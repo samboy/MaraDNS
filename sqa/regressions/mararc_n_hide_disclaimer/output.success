@@ -1,0 +1,6 @@
+ Log: Root directory changed
+ Log: Binding to address 127.0.0.1
+ Log: Socket opened on UDP port 53
+ Log: Root privileges dropped
+MaraDNS maximum memory allocation set to 123456789 bytes
+ Log: All RRs have been loaded

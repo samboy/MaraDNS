@@ -1,0 +1,11 @@
+percent parse bug
+
+Description: DNS records ending in a % immediately followed by an ip did
+             not correctly parse 
+
+Expected output of test: A query for www.example.com resolves 
+
+Presence of bug output: A query for www.example.com does not resolve
+
+When fixed: Does not appear to ever have been a bug; maybe more records in a
+            zone file will trigger it.

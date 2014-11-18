@@ -1,0 +1,25 @@
+#!/bin/sh
+
+NUM="$1"
+
+if [ -z "$NUM" ] ; then
+	NUM=10
+fi
+
+echo This will run until the following number has the value $NUM
+# Use make.many.records to create the records that this stress test uses
+awk '
+BEGIN{
+    for(a=1;a<='$NUM';a++)
+        {
+        for(b=0;b<1000;b++) {
+	    print "askmara A"a".example.com. 127.0.3.3 > /dev/null &"
+	    print "askmara Ac"a".example.com. 127.0.3.3 > /dev/null &"
+	    print "askmara Ad"a".example.com. 127.0.3.3 > /dev/null &"
+	    print "echo "a" "b" \"    \"  | tr '\''\\012'\'' '\''\\015'\''"
+	    }
+	}
+    }' | sh
+echo
+echo Done.
+

@@ -1,0 +1,33 @@
+#!/bin/sh
+
+cat > dwood2rc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.2"
+upstream_servers = {}
+upstream_servers["."]="127.0.0.1"
+recursive_acl="127.0.0.1/16"
+tcp_listen=1
+filter_rfc1918 = 0
+EOF
+
+export CC="cc"
+export FLAGS=""
+
+make > /dev/null
+../../src/Deadwood -f dwood2rc | grep -v version | sed 's/[(].*[)]//' &
+./truncated 127.0.0.1 &
+./show_packet_stdout 127.0.0.1 < dns.reply.txt.example.com > /dev/null &
+
+sleep 3
+
+dig +tcp @127.0.0.2 txt.example.com TXT | \
+	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
+	grep -v 'global options'
+
+killall Deadwood
+killall show_packet_stdout
+killall truncated
+rm dwood2rc
+make clean > /dev/null
+sleep 60
+

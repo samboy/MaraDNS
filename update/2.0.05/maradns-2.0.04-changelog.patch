@@ -1,0 +1,67 @@
+--- maradns-2.0.04/doc/en/source/changelog.embed	2011-11-12 02:25:44.000000000 -0600
++++ maradns-2.0.05/doc/en/source/changelog.embed	2012-02-11 16:06:00.000000000 -0600
+@@ -1,5 +1,64 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-2.0.05:</p>
++This is a stable release of MaraDNS.
++<blockquote>
++<ul>
++<li>Security bugfix for <A 
++href="http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2011-5056"
++>CVE-2011-5056</A>
++<li>Deadwood updated to Deadwood 3.2.01
++<li>Nicholas Bamber's Makefile.freebsd file added.
++</ul>
++(2012.02.12)
++</blockquote>
++
++<p>maradns-1.4.10:</p>
++<blockquote>
++The hash compression function has better collision resistance.
++<A href=http://bam2.vk.tj>More details at http://bam2.vk.tj</A><p> (2012.01.13)
++</blockquote>
++
++<p>maradns-1.3.07.14:</p>
++<blockquote>
++The hash compression function has better collision resistance.
++<A href=http://bam2.vk.tj>More details at http://bam2.vk.tj</A><p> (2012.01.13)
++</blockquote>
++
++<p>maradns-1.4.09:</p>
++<blockquote>
++Hotfix: The hash randomization now has
++31 bits of entropy, and the hash does a fairly good job of choosing a
++random hash bucket again. <A href=http://al72.vk.tj>More details
++at http://al72.vk.tj</A><p>
++(2011.12.30)
++</blockquote>
++
++<p>maradns-1.3.07.13:</p>
++<blockquote>
++Hotfix: The hash randomization now has
++31 bits of entropy, and the hash does a fairly good job of choosing a
++random hash bucket again. <A href=http://al72.vk.tj>More detailsi
++at http://al72.vk.tj</A><p>
++(2011.12.30)
++</blockquote>
++
++<p>maradns-1.4.08:</p>
++<blockquote>
++Security hotfix: Hash randomization added to MaraDNS 1's recursive resolver.
++MaraDNS 2 is not impacted (it's been using a randomized hash since 2007).
++<A href=http://al62.vk.tj>More details at http://al62.vk.tj</A><P>
++(2011.12.29)
++</blockquote>
++
++<p>maradns-1.3.07.12:</p>
++<blockquote>
++Security hotfix: Hash randomization added to MaraDNS 1's recursive resolver.
++MaraDNS 2 is not impacted (it's been using a randomized hash since 2007).
++<A href=http://al62.vk.tj>More details at http://al62.vk.tj</A><P>
++(2011.12.29)
++</blockquote>
++
+ <p>maradns-2.0.04:</p>
+ This is a stable release of MaraDNS.
+ <blockquote>

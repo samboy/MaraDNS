@@ -1,0 +1,75 @@
+--- maradns-2.0.06/tools/misc/mqhash.c	2012-02-12 00:04:12.000000000 -0600
++++ maradns-2.0.07/tools/misc/mqhash.c	2012-08-27 10:58:01.627879443 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2009 Sam Trenholme
++/* Copyright (c) 2002-2012 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -332,8 +332,8 @@
+             }
+     else if(argc == 5) {
+             n = atoi(argv[2]);
+-            if(n < 2 || n > 9) {
+-                printf("n must be between 2 and 9\n");
++            if(n < 1 || n > 900) {
++                printf("n must be between 1 and 900\n");
+                 exit(4);
+                 }
+             }
+@@ -386,12 +386,6 @@
+          printf("Hash input is too long!\n");
+          }
+ 
+-    if(n >= 1 && n <= 9) {
+-        copy[counter] = '0' + n;
+-        counter++;
+-        copy[counter] = ':';
+-        counter++;
+-        }
+     readed = counter;
+     for(;counter < HASH_BYTES * 42; counter++)
+         copy[counter] = 0;
+@@ -476,27 +470,28 @@
+     hash_compress(input,state);
+     hash_compress(state,state);
+ 
+-    printf("marahash: ");
++    if(n == 0) {
++        printf("marahash: ");
+ 
+-    for(counter = 0; counter < HASH_BYTES; counter++) {
+-        printf("%02x",state[counter] & 0xff);
+-        if(counter % 4 == 3) {printf(" ");}
++        for(counter = 0; counter < HASH_BYTES; counter++) {
++            printf("%02x",state[counter] & 0xff);
++            if(counter % 4 == 3) {printf(" ");}
++            }
++        printf("\n");
+         }
+-    printf("\n");
+ 
+     /* OK, now give them the rg32 hash of the same input */
+     dwr_rg *rg32;
+     rg32=dwr_init_rg(copy);
+-    printf("rg32hash: ");
+-    for(counter = 0; counter < 7; counter++) {
+-        printf("%08x ",dwr_rng(rg32));
+-    }
+-    printf("\n");
+-    printf("          ");
+-    for(counter = 0; counter < 7; counter++) {
++    if(n != 0) {
++        printf("rg32hash: ");
++	for(counter = 1; counter < n; counter++) {
++	    dwr_rng(rg32);
++        }
+         printf("%08x ",dwr_rng(rg32));
+-    }
+-    printf("\n");
++	printf("%d",n);
++        printf("\n");
++        }
+ 
+     }
+ 

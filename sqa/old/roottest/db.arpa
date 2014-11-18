@@ -1,0 +1,8 @@
+# CNAME that points to working PTR record
+a.arpa. CNAME b.arpa.
+b.arpa. PTR b.a.maradns.
+# CNAME that points to machine that doesn't respond to DNS queries
+c.arpa. CNAME d.b.maradns.
+# CNAME that points to name that doesn't exist
+d.arpa. CNAME e.arpa.
+

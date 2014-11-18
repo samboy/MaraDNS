@@ -1,0 +1,40 @@
+--- maradns-1.3.14/parse/Csv2_main.c	2009-08-04 11:52:43.000000000 -0500
++++ maradns-1.4.01/parse/Csv2_main.c	2009-12-02 10:18:31.000000000 -0600
+@@ -556,6 +556,23 @@
+ int csv2_parse_zone_bighash(js_string *zone, js_string *filename,
+                 mhash *bighash, int32 starwhitis) {
+         csv2_add_state *state; /* State of adding record to database */
++
++	/* No stars in zone names; yes some people who do not RTFM try
++	 * this then whine when things don't work */
++	int nostar;
++	for(nostar = 0; nostar < (zone->unit_size * zone->unit_count); 
++			nostar++) {
++		if(*(zone->string + nostar) == '*') {	
++			printf("Illegal zone name: ");
++			for(nostar = 0; nostar < 
++			    (zone->unit_size * zone->unit_count); nostar++) {
++				printf("%c",*(zone->string + nostar));
++			}
++			printf("\nThis is a fatal error.\n");
++			exit(1);
++		}
++	}
++
+         if((state = csv2_init_add_state(zone)) == 0) {
+                 return 0;
+         }
+--- maradns-1.3.14/doc/en/source/mararc.ej	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.4.01/doc/en/source/mararc.ej	2009-12-11 12:35:25.000000000 -0600
+@@ -96,6 +96,11 @@
+ <b>csv2(5)</b> 
+ for a description of this file's format.
+ 
++<p>
++
++The dictionary index (zone name) can not have a * in it.  If it does, 
++MaraDNS will terminate with an "Illegal zone name" error.
++
+ <h2>csv1</h2>
+ 
+ csv1: Used to indicate the filename to use for a given zone stored in 

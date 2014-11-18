@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# This lists all of the files that a patch has changed
+
+if [ -z "$1" ] ; then
+	echo usage $0 patch-filename
+	exit 1
+fi
+
+cat $1 | gawk '/^---/ {printf "diff -u "$2" "} /^\+\+\+/ {print $2}'

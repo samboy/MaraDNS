@@ -1,0 +1,10 @@
+--- maradns-2.0.01/doc/en/source/dangling.ej	2010-09-27 14:43:45.000000000 -0700
++++ maradns-2.0.02/doc/en/source/dangling.ej	2010-09-28 11:46:32.000000000 -0700
+@@ -104,6 +104,7 @@
+ ipv4_bind_addresses = "192.168.1.1"
+ chroot_dir = "/etc/maradns"
+ recursive_acl = "192.168.1.0/24"
++upstream_servers = {}
+ upstream_servers["example.com."] = "192.168.1.2"
+ </pre>
+ 

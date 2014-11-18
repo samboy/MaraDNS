@@ -1,0 +1,75 @@
+#!/bin/sh
+
+# This makes sure Deadwood can follow a multi-link CNAME entry
+
+# Compile and run two micro servers; one always returns a server fail and
+# the other one always runs the same IP
+gcc -O3 -o microdns_server_fail microdns_server_fail.c
+gcc -O3 -o microdns microdns.c
+
+./microdns 10.11.5.11 127.0.0.2 > /dev/null 2>&1 &
+./microdns_server_fail 10.11.5.11 127.0.0.3 > /dev/null 2>&1 &
+
+# Run Deadwood and the example query
+cat > dwood3rc << EOF
+bind_address="127.0.0.1"
+recursive_acl="127.0.0.1/8"
+chroot_dir="/etc/deadwood"
+upstream_servers = {}
+upstream_servers["."] = "127.0.0.2, 127.0.0.3"
+filter_rfc1918 = 0
+#verbose_level = 1000
+EOF
+
+for a in 1 2 3 4 5 6 7 ; do
+
+	../../src/Deadwood -f dwood3rc > /dev/null 2>&1 &
+	#../../src/Deadwood -f dwood3rc & 
+	sleep 1
+
+	askmara Acname1.example.com.
+	sleep 1
+
+	kill $( ps auxw | grep Deadwood | grep -v grep | awk '{print $2}' )
+	sleep 1
+	killall Deadwood > /dev/null 2>&1
+
+done
+
+# Run Deadwood and the example query
+cat > dwood3rc << EOF
+bind_address="127.0.0.1"
+recursive_acl="127.0.0.1/8"
+chroot_dir="/etc/deadwood"
+upstream_servers = {}
+upstream_servers["."] = "127.0.0.3, 127.0.0.2"
+filter_rfc1918 = 0
+EOF
+
+for a in 1 2 3 4 5 6 7 ; do
+
+	../../src/Deadwood -f dwood3rc > /dev/null 2>&1 &
+	sleep 1
+
+	askmara Acname1.example.com.
+	sleep 1
+
+	kill $( ps auxw | grep Deadwood | grep -v grep | awk '{print $2}' )
+	sleep 1
+	killall Deadwood > /dev/null 2>&1
+
+done
+
+# Clean up
+kill $( ps auxw | grep microdns | grep -v grep | awk '{print $2}' )
+sleep 1
+# Linux specific; this does bad things on Solaris
+killall microdns > /dev/null 2>&1
+killall microdns_server_fail > /dev/null 2>&1
+
+# Cleanup
+if true ; then
+	rm microdns
+	rm microdns_server_fail
+	rm dwood3rc
+fi

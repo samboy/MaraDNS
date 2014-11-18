@@ -1,0 +1,41 @@
+# Example simplified dwood3rc file.  
+# This only shows a subset of Deadwood's features needed to be an
+# recursive name server.  
+
+# Note that any line starting with a '#' character is a comment, which 
+# means the line is ignored by the MaraDNS parser.  Comments are used to
+# put human-readable notes in the file.
+
+# The address this DNS server runs on.  If you want to bind 
+# to multiple addresses, separate them with a comma like this:
+# "10.1.2.3, 10.1.2.4, 127.0.0.1"
+ipv4_bind_addresses = "127.0.0.1"
+# The directory with all of the zone files
+chroot_dir = "/etc/maradns"
+
+# Recursive ACL: Who is allowed to perform recursive queries.  
+
+# With the following line, anyone with an IP starting with the number
+# "10" can perform recursive queries 
+recursive_acl = "10.0.0.0/8"
+
+# Some other examples, which we have commented out (placed a '#' in front
+# of to disable)
+
+# With the following line, anyone with an IP starting with the numbers
+# "172.16" can perform recursive queries
+#recursive_acl = "172.16.0.0/16"
+
+# With the following line, anyone with an IP starting with the numbers
+# "192.168.1" can perform recursive queries
+#recursive_acl = "192.168.1.0/24"
+
+# With the following line, anyone on the internet can perform recursive
+# queries
+#recursive_acl = "0.0.0.0/0"
+
+# With the following line, both anyone with an IP starting with the number
+# "10", and an ip starting with the numbers "172.16" can perform recursive
+# queries
+#recursive_acl = "172.16.0.0/0"
+

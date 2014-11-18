@@ -1,0 +1,40 @@
+Test authoritative resolving:
+
+* NS delegation. (DONE)
+
+* Star records and ANY queries.
+
+* Make sure we get syntax error when there is a non-unicode hi-bit character
+  in a zone file. (DONE)
+
+* Make sure truncation works as planned. (DONE; it was buggy but now fixed,
+  albeit in a somewhat hackey way)
+
+Test recursive resolving:
+
+* Add PTR queries to the recursive stress test. (DONE)
+
+* CNAME that points to working PTR record
+  (askmara Pa.arpa. 127.0.9.1) (DONE)
+
+* CNAME-to-PTR that refers one to a machine that doesn't respond to 
+  DNS queries
+  (askmara Pc.arpa. 127.0.9.1) (DONE)
+
+* CNAME-to-PTR that refers to a "doesn't exist" answer
+  (askmara Pd.arpa. 127.0.9.1) (DONE)
+
+* CNAME that points to working A record
+  (askmara Aa.a.maradns. 127.0.9.1) (DONE)
+
+* CNAME-to-A that refers one to a machine that doesn't respond to 
+  DNS queries
+  (askmara Ac.a.maradns. 127.0.9.1) (DONE)
+
+* CNAME-to-A that refers to a "doesn't exist" answer
+  (askmara Ad.a.maradns. 127.0.9.1) (DONE)
+
+* Out-of-bailiwick referrals; make sure cache doesn't get poisoned
+
+* Following out-of-bailiwick NS referrals.
+

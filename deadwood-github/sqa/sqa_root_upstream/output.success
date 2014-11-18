@@ -1,0 +1,45 @@
+The following four queries *should* fail
+
+# Querying the server with the IP 127.0.0.1
+# Remote server said: SERVER FAILURE
+# Question: Aupstream.example.com.
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Remote server said: SERVER FAILURE
+# Question: Aroot.example.net.
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Remote server said: SERVER FAILURE
+# Question: Aupstream.example.com.
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Remote server said: SERVER FAILURE
+# Question: Aroot.example.net.
+# NS replies:
+# AR replies:
+
+The following four queries *should* succeed
+
+# Querying the server with the IP 127.0.0.1
+# Question: Aupstream.example.com.
+upstream.example.com. +60 a 192.168.255.255
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Aroot.example.net.
+root.example.net. +60 a 192.168.1.0
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Aupstream.example.com.
+upstream.example.com. +60 a 192.168.255.255
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Aroot.example.net.
+root.example.net. +60 a 192.168.1.0
+# NS replies:
+# AR replies:

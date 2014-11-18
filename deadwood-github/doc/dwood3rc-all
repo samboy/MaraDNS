@@ -1,0 +1,142 @@
+# This is an example deadwood rc file showing all parameters in the Deadwood
+# man page
+# Note that comments are started by the hash symbol
+
+# IP Deadwood runs as
+bind_address="127.0.0.1" 
+
+# If you want to read and write the cache from disk, make sure chroot_dir
+# is "/etc/deadwood", and that there is a "/etc/deadwood/cache" directory
+# owned by the owner of maradns_uid below.  Next, uncomment the following 
+# line
+#cache_file = "cache/dw_cache"
+
+# Directory we run program from (not used in Win32)
+chroot_dir = "/etc/deadwood" 
+
+# The following parameter actually doesn't do anything in Deadwood 3
+# This line is disabled by being commented out
+#deliver_all = 1
+
+# What port number to listen on
+dns_port = 53
+
+# By default, for security reasons, Deadwood does not allow IPs in the
+# 192.168.x.x, 172.[16-31].x.x, 10.x.x.x, 127.x.x.x, 169.254.x.x,
+# 224.x.x.x, or 0.0.x.x range.  If using Deadwood to resolve names
+# on an internal network, set this to 0
+filter_rfc1918 = 1
+
+# Send a SERVER FAIL when no upstream reply
+handle_noreply = 1
+
+# Send a SERVER FAIL should Deadwood be overloaded
+handle_overload = 1
+
+# This parameter doesn't actually do anything in Deadwood 3
+#hash_magic_number = 1629222941
+
+# Disable certain IPs in upstream replies
+#ip_blacklist = "10.1.2.3, 10.1.2.4"
+
+# User-id Deadwood runs as
+maradns_uid = 99
+
+# Group-id Deadwood runs as
+maradns_gid = 99
+
+# If this is 1, enable RR rotation.  Otherwise, it is disabled
+max_ar_chain = 1
+
+# Maximum number of queries to merge together
+max_inflights = 8
+
+# Maximum number of cached elements
+# Increase this for an enterprise
+maximum_cache_elements = 1024
+
+# Maximum number of pending connections.  
+# Increase this for an enterprise
+maxprocs = 32
+
+# Maximum number of TCP connections.  tcp_listen also must be set.
+max_tcp_procs = 8
+
+# Maximum time an entry will stay in the cache, in seconds (86400 = one day)
+max_ttl = 86400
+
+# The number of times we retry to send a query upstream before giving up.
+num_retries = 2
+
+# The RR type we send to resolve glueless records.  Should be 1 (If we
+# don't get a NS IP, use an IPv4 A request to solve it)
+ns_glueless_type = 1
+
+# This should never be set.  Use secret.txt on Windows and /dev/urandom
+# on UNIX and UNIX clones
+random_seed_file = "/dev/urandom"
+
+# Lowest port number we randomly bind to for upstream queries
+recurse_min_bind_port = 15000
+
+# Number of ports to bind to.  Must be a power of 2
+recurse_number_ports = 4096
+
+# Who is allowed to use the cache
+recursive_acl =  "127.0.0.1/16"
+recursive_acl += ", 10.1.0.0/16" 
+recursive_acl += ", 192.168.1.0/24" 
+
+# Whether to not resolve AAAA (IPv6) queries.  This should be 1 on IPv4-only
+# networks; default is 0
+reject_aaaa = 0
+
+# Whether to not resolve PTR (Reverse DNS lookup) queries.  Some things will
+# speed up if this has a value of 1
+reject_ptr = 0
+
+# Should Deadwood send an expired record in the cache to the user 
+# before giving up? The following line tells Deadwood to fetch an 
+# expired record if it's impossible to connect to any nameservers
+resurrections = 1
+
+# ICANN DNS root servers (Deadwood default if both root_servers and
+# upstream_servers are not defined)
+# Please note that each root_servers entry takes up space in Deadwood's
+# cache and that maximum_cache_elements will need to be increased to store
+# a large number of these entries.
+#root_servers = {}
+#root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
+#root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, 128.63.2.53, "
+#root_servers["."]+="192.36.148.17, 192.58.128.30, 193.0.14.129, 199.7.83.42, "
+#root_servers["."]+="202.12.27.33"
+#root_servers["phish.example.com."]="10.254.254.254"
+
+# Should we have DNS-over-TCP?  Usually, no.
+tcp_listen = 0
+
+# How long Deadwood will wait before giving up and discarding a 
+# pending UDP DNS reply.
+timeout_seconds = 1
+
+# How long to wait on an idle TCP connection before dropping it.  Does nothing
+# unless tcp_listen is 1
+timeout_seconds_tcp = 4
+
+# Should we age TTLs of entries fetched from the cache?
+ttl_age = 1
+
+# This is the port Deadwood uses to connect or send packets to the
+# upstream servers.
+upstream_port = 53
+
+# Servers we connect to that themselves recursively solve DNS records
+# Please note that each upstream_servers entry takes up space in Deadwood's
+# cache and that maximum_cache_elements will need to be increased to store
+# a large number of these entries.
+#upstream_servers = {}
+#upstream_servers["."]="8.8.8.8, 8.8.4.4" 
+
+# How many messages to log.  Higher means more messages.
+verbose_level = 3
+

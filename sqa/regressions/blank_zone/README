@@ -1,0 +1,3 @@
+This test makes sure that a zone with only a SOA and NS record works (bug
+found by Jan Hrdonka)
+

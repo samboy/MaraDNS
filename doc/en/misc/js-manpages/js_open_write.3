@@ -1,0 +1,48 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_open_write 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_open_write \- Open up a file for writing
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_open_write(js_string *filename,js_file *desc)"
+.fi
+.SH DESCRIPTION
+.B js_open_write
+is a function that opens up a file for writing, using the
+contents in the
+.I js_string
+object
+.B filename
+to determine the file name.
+
+.B desc 
+is where we store the opened file descriptor.
+.SH "RETURN VALUE"
+.B js_open_write
+returns JS_ERROR if an error happened opening the file, JS_SUCCESS otherwise.
+The member 
+.I filetype
+of the structure
+.I desc
+will have an invalid value if an error occured opening the file.
+.SH EXAMPLE
+The following opens up the file "filename" for writing:
+
+.nf
+	js_string *foo;
+	js_file *bar;
+	foo = js_create(256,1);		
+	js_str2js(foo,"filename",8,1);
+	js_open_write(foo,bar); 
+.fi
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

@@ -1,0 +1,13 @@
+--- deadwood-3.0.04/doc/CHANGELOG	2011-11-01 10:25:23.000000000 -0600
++++ deadwood-3.0.05/doc/CHANGELOG	2011-11-09 13:38:23.406601641 -0600
+@@ -1,3 +1,10 @@
++3.0.05 (20111110):
++
++* Bugfix: reject_ptr now works
++
++* Bugfix: Replies from reject_aaaa and reject_ptr now have RA set, so
++  that they work with Linux's stub DNS resolver.
++
+ 3.0.04 (20111101):
+ 
+ * Bugfix: RD should now be correctly set (or cleared) when sending a query

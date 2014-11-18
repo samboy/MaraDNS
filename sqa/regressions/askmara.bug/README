@@ -1,0 +1,9 @@
+askmara.bug
+
+Description: In certain cases, askmara would be in an infinite loop
+
+Expected output of test: askmara exits, noting an invalid packet
+
+Presence of bug output: askmara gets put in in infinite loop
+
+When fixed: 1.3.07.02

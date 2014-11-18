@@ -1,0 +1,7 @@
+Askmara has problems with SOA and RAW records:
+
+-example.com. +86400 soa Sexample.com. @hostmaster.example.com. 19771108 7200 3600 604800 1800
++example.com. +86400 soa example.com. hostmaster@example.com. 19771108 7200 3600 604800 1800
+
+-example.com. 40 +3600 raw 40 \x08\x01\x02'Kitchen sink data' 
++example.com. +3600 raw 40 \x08\x01\x02'Kitchen sink data'

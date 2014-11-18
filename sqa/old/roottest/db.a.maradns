@@ -1,0 +1,8 @@
+# Working CNAME record
+a.a.maradns. CNAME b.a.maradns.
+b.a.maradns. 10.1.2.3
+# CNAME that points to machine that doesn't respond to DNS queries
+c.a.maradns. CNAME c.b.maradns.
+# CNAME that points to "doesn't exist" answer
+d.a.maradns. CNAME e.a.maradns.
+

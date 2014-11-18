@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Make the rg32 binary
+cd ../../src
+gcc -g -DSTANDALONE -c -o DwStr.o DwStr.c
+gcc -g -o rg32 -DHAVE_MAIN DwRadioGatun.c DwStr.o
+
+# Copy the rg32 binary here
+cp rg32 ~-
+
+# Clean up
+rm rg32 DwStr.o
+make -f Makefile.centos5 clean > /dev/null 2>&1
+
+# OK, come back here to run the test
+cd ~-
+
+# The test
+cat Input | awk '
+	{print "./rg32 '\''" $0 "'\'' | \\"; 
+	 print "awk '\''{$17=$18=$19=$20=\"\" ; print $0}'\'' | tr -d \" \" "}
+' | sh
+
+# Clean up here
+rm rg32 

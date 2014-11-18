@@ -1,0 +1,25 @@
+# Querying the server with the IP 127.0.0.2
+# Question: Awww.sub.example.com.
+www.sub.example.com. +86400 a 127.10.1.2
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.5
+# Question: Awww.sub.example.com.
+# NS replies:
+#sub.example.com. +86400 ns ns.sub.example.com.
+# AR replies:
+#ns.sub.example.com. +86400 a 127.0.0.4
+
+# Querying the server with the IP 127.0.0.6
+# Question: Awww.sub.example.com.
+www.sub.example.com. +86400 a 127.10.1.2
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.6
+# Question: Awww.sub.example.com.
+# NS replies:
+#sub.example.com. +86400 ns ns.sub.example.com.
+# AR replies:
+#ns.sub.example.com. +86400 a 127.0.0.4

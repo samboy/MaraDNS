@@ -1,0 +1,310 @@
+#!/bin/sh
+
+# I finally got sick and tired of having to edit the entire download.embed
+# file (the file that is convered in to http://www.maradns.org/download.html)
+# by hand whenever I make a new release of MaraDNS.  Hence, this 
+# script where I only have to edit a few things at the top.  I don't
+# know why I didn't do this before.
+
+# Usage:
+
+# 1) Edit all of the thingys at the top before the 'cat' command
+
+# 2) ./make.download.embed > download.embed
+
+# Stable release
+SV=1.3
+STABLE=1.3.07.09
+SZIP="1-3-07-09"
+SDATE="August 4, 2008"
+
+# Deadwood release
+DW=2.3.02
+DWZ="2-3-02"
+
+# Previous Stable release
+PV=1.2
+PREV=1.2.12.10
+PZIP="1-2-12-10"
+PDATE="August 4, 2008"
+SLAKWARE="maradns-1.2.12.08-i486-2.tgz"
+
+# Development release
+DV=1.3
+DEV=1.3.13
+DDATE="February 13, 2009"
+
+# Name of windows pthreads library source (needs to be included with
+# win32 releases)
+PTHREADS="pthreads-w32-2-8-0-release.tar.gz"
+
+cat << EOF
+<A NAME=stable> </A>
+<!-- &iexcl; instead of ¡ because of *@#$ Dillo -->
+<h1>&iexcl;Download MaraDNS!</h1>
+
+<h2>Stable release</h2>
+<p>This is the current stable release of MaraDNS, MaraDNS ${STABLE},
+released ${SDATE}.
+<p>This release is available both at <A 
+href="http://sourceforge.net/project/showfiles.php?group_id=24033">sourceforge.net</A>
+and on this page.
+
+<p>
+
+<table><tr><td>
+<A 
+href="download/${SV}/${STABLE}/maradns-${STABLE}.tar.bz2"><!--
+                          -->maradns-${STABLE}.tar.bz2</A>
+</td><td>
+<A 
+href="download/${SV}/${STABLE}/maradns-${STABLE}.tar.bz2.sha.asc">sig</A><p>
+</td><td>
+<A href="#bz2">info</A> 
+</td></tr><tr><td>
+<A 
+href="download/${SV}/${STABLE}/maradns-${STABLE}.tar.lzma"><!--
+                          -->maradns-${STABLE}.tar.lzma</A>
+</td><td>
+<A 
+href="download/${SV}/${STABLE}/maradns-${STABLE}.tar.lzma.sha.asc">sig</A>
+</td><td>
+<A href="#lzma">info</A> 
+</td></tr><tr><td>
+<A 
+href="download/${SV}/${STABLE}/maradns-${STABLE}.tar.gz"><!--
+                          -->maradns-${STABLE}.tar.gz</A>
+</td><td>
+<A 
+href="download/${SV}/${STABLE}/maradns-${STABLE}.tar.gz.sha.asc">sig</A>
+</td><td>
+<A href="#gz">info</A>
+</td></tr><tr><td>
+<A 
+href="download/${SV}/${STABLE}/maradns-${SZIP}-win32.zip"><!--
+                          -->maradns-${SZIP}-win32.zip</A>
+</td><td>
+<A 
+href="download/${SV}/${STABLE}/maradns-${SZIP}-win32.zip.sha.asc">sig</A>
+</td><td>
+<A href="#zip">info</A>
+</td></tr></table>
+
+<hr>
+
+<h2>Deadwood</h2>
+
+Deadwood is the code that will eventually become MaraDNS' next recursive
+resolver; right now it is a stable and functioning non-recursive cache.
+Deadwood, unlike MaraDNS, does not need threads to resolve queries, and
+has features MaraDNS' recursive cache doesn't have, such as "resurrections"
+and the ability to read and write the cache to disk.
+
+<table><tr><td>
+<A 
+href="deadwood/deadwood-${DW}.tar.bz2"><!--
+                          -->deadwood-${DW}.tar.bz2</A>
+</td><td>
+<A 
+href="deadwood/deadwood-${DW}.tar.bz2.asc">sig</A><p>
+</td><td>
+<A href="#bz2">info</A> 
+</td></tr><tr><td>
+<A 
+href="deadwood/Deadwood-${DWZ}-win32.zip"><!--
+                          -->Deadwood-${DWZ}-win32.zip</A>
+</td><td>
+<A 
+href="deadwood/Deadwood-${DWZ}-win32.zip.asc">sig</A>
+</td><td>
+<A href="#zip">info</A>
+</td></tr></table>
+
+<hr>
+
+<h2>Development release</h2>
+
+This is a development release.  This is where new features get added
+to MaraDNS; new features have often not been fully tested so <b>use 
+this release at your own risk</b>.
+
+<p>This is the current development release of MaraDNS, MaraDNS ${DEV},
+released ${DDATE}.  One can also download the <A 
+href=download/${DV}/snap>snapshot release</A>.
+
+<p>
+<table><tr><td>
+<A 
+href="download/${DV}/${DEV}/maradns-${DEV}.tar.bz2"><!--
+                          -->maradns-${DEV}.tar.bz2</A>
+</td><td>
+<A 
+href="download/${DV}/${DEV}/maradns-${DEV}.tar.bz2.sha.asc">sig</A><p>
+</td><td>
+<A href="#bz2">info</A> 
+</td></tr><tr><td>
+<A 
+href="download/${DV}/${DEV}/maradns-${DEV}.tar.gz"><!--
+                          -->maradns-${DEV}.tar.gz</A>
+</td><td>
+<A 
+href="download/${DV}/${DEV}/maradns-${DEV}.tar.gz.sha.asc">sig</A>
+</td><td>
+<A href="#gz">info</A>
+</td></tr></table>
+
+<h3>Pthreads soruce code</h3>
+
+The Windows port of MaraDNS 1.3 uses the LGPL phtreads library. Source 
+code for this library is available <A 
+href="download/${PTHREADS}">here</A>
+
+<hr>
+
+
+<h2>Previous stable release</h2>
+
+This is the previous stable branch of MaraDNS; this release will be 
+supported with critical and maintenance updates until December 31, 2010.
+Doesn't have BIND zone file support, nor a couple of other features,
+but otherwise similar to the stable release of MaraDNS. <p>
+
+<p>This is the previous stable release of MaraDNS, MaraDNS ${PREV},
+released ${PDATE}.
+
+<p>
+<table><tr><td>
+<A 
+href="download/${PV}/${PREV}/maradns-${PREV}.tar.bz2"><!--
+                          -->maradns-${PREV}.tar.bz2</A>
+</td><td>
+<A 
+href="download/${PV}/${PREV}/maradns-${PREV}.tar.bz2.sha.asc">sig</A><p>
+</td><td>
+<A href="#bz2">info</A> 
+</td></tr><tr><td>
+<A 
+href="download/${PV}/${PREV}/maradns-${PREV}.tar.lzma"><!--
+                          -->maradns-${PREV}.tar.lzma</A>
+</td><td>
+<A 
+href="download/${PV}/${PREV}/maradns-${PREV}.tar.lzma.sha.asc">sig</A>
+</td><td>
+<A href="#lzma">info</A> 
+</td></tr><tr><td>
+<A 
+href="download/${PV}/${PREV}/maradns-${PREV}.tar.gz"><!--
+                          -->maradns-${PREV}.tar.gz</A>
+</td><td>
+<A 
+href="download/${PV}/${PREV}/maradns-${PREV}.tar.gz.sha.asc">sig</A>
+</td><td>
+<A href="#gz">info</A>
+</td></tr><tr><td>
+<A 
+href="download/${PV}/${PREV}/maradns-${PZIP}-win32.zip"><!--
+                          -->maradns-${PZIP}-win32.zip</A>
+</td><td>
+<A 
+href="download/${PV}/${PREV}/maradns-${PZIP}-win32.zip.sha.asc">sig</A>
+</td><td>
+<A href="#zip">info</A>
+
+</td></tr></table>
+EOF
+
+if [ ! -z "$SLAKWARE" ] ; then
+	cat << EOF
+<h3>Contributed packages</h3>
+
+<A
+href="download/1.2/3rd_party/${SLAKWARE}"><!--
+                          -->${SLAKWARE}</A> 
+<A href="#tgz">info</A>
+EOF
+
+fi
+
+cat << EOF
+<h2>Other</h2>
+<p><A href=changelog.html>View the changelog</A></p>
+
+<H2>Tools to help verify the sums of MaraDNS (or any other file)</H2>
+<p>This is a mismash of various cryptographic summing algorithms.  <b>By and
+large, the programs in this tarball are not public domain</b>
+<p><A href=download/non-maradns/sums-20070214.tar.bz2>sums-20070214.tar.bz2</A>  This is the
+actual code which performs various cryptographic hashes against the file.
+(<A href=download/non-maradns/sums-20070214.tar.bz2.sha.asc>PGP signature</A>)
+<p>
+<A href=download/sums-papers-20010818.tar.bz2>sums-papers-20010818.tar.bz2</A>  
+This is a collection of papers describing some of the various 
+cryptographic hashes.
+
+<h2>Obsolete 1.0 MaraDNS branch</h1>
+
+The <A href=download/1.0>obsolete 1.0 branch of MaraDNS</A>.  The only 
+updates I would do on this branch are critical security fixes.  You're
+better off using 1.2 or 1.3.  If you want something small for embedded
+systems, the "Deadwood" code in the 1.3 development snapshots is your
+best bet.  Unless you've found a critical security hole, I don't
+support this version.
+
+<H2>Disclaimer</H2>
+THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
+OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE 
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+<hr>
+
+<h2>Information on file types</h2>
+
+<A name="bz2"><b>.bz2</b> A .bz2 file is compressed with the bzip2 program.  The
+maradns tar.bz2 file contains the source code for MaraDNS.</A>
+<p>
+<A name="lzma"><b>.lzma</b> A .lzma file
+is compressed with LZMA compression, which both compresses
+better and decompresses faster than bzip2 compressed files.  Information
+on decompressing LZMA files can be found </A><A 
+href="download/1.2/00Uncompress.txt">here</A>.  The maradns tar.lzma
+file contains the source code for MaraDNS.
+<p>
+<A name="gz"><b>.gz</b> A .gz file is compressed with the gzip program.  
+The maradns .tar.gz file contains the source code for MaraDNS.</A>
+<p>
+<A name="srcrpm"><b>.src.rpm</b> A .src.rpm file is a package with 
+source for rpm-based
+Linux distributions.  This file was created on CentOS 3, and contains
+the source code for MaraDNS.</A>
+<p>
+<A name="rpm"><b>.i386.rpm</b> A .i386.rpm file is a binary RPM package.  
+The RPM file
+was built on CentOS 3, and should run on other RPM-based systems.</A>
+<p>
+<A name="zip"><b>.zip</b> A .zip file is a compressed file that 
+Windows XP can open.
+The MaraDNS .zip file contains a Windows native binary of MaraDNS.
+This is a partial port of MaraDNS to Windows.  While this port
+does not have all of the security nor features of the Linux/UNIX version of
+MaraDNS, this port allows Windows to have a basic, 
+reasonably secure DNS client and recursive resolver.  People who want a full 
+Windows port of MaraDNS can compile MaraDNS on</A>
+<A href="http://www.cygwin.com">Cygwin</A>.
+EOF
+
+if [ ! -z "$SLAKWARE" ] ; then
+	cat << EOF
+<p>
+<A name="tgz"><b>.tgz</b> A .tgz file is a tar.gz file.  The MaraDNS 
+.tgz file contains
+the Slackware package for MaraDNS.</A>
+EOF
+
+fi

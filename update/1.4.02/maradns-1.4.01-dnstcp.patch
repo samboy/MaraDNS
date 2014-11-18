@@ -1,0 +1,20 @@
+--- maradns-1.4.01/doc/en/source/dnstcp.ej	2005-12-02 19:57:36.000000000 -0600
++++ maradns-1.4.02/doc/en/source/dnstcp.ej	2009-12-29 10:11:00.000000000 -0600
+@@ -4,7 +4,7 @@
+ </HEAD>
+ <BODY>
+ 
+-<!-- Copyright 2005 Sam Trenholme
++<!-- Copyright 2005,2009 Sam Trenholme
+ 
+     TERMS
+ 
+@@ -21,7 +21,7 @@
+ 
+ <h1>DNS over TCP</h1>
+ 
+-MaraDNS 1.2 has full support for DNS over TCP.  However, this setup is
++MaraDNS has full support for DNS over TCP.  However, this setup is
+ not automatically done; a little configuration needs to be set up and the
+ "zoneserver" daemon has to be running in addition to the MaraDNS daemon
+ in order for DNS records to be served over TCP.

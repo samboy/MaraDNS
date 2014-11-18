@@ -1,0 +1,61 @@
+--- maradns-2.0.07/doc/en/source/changelog.embed	2013-01-19 21:25:03.000000000 -0800
++++ maradns-2.0.08/doc/en/source/changelog.embed	2014-01-07 02:44:01.000000000 -0800
+@@ -1,5 +1,58 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-2.0.08:</p>
++This is the stable release of MaraDNS.
++<blockquote>
++<ul>
++<li>Deadwood updated to <A href=/deadwood/doc/CHANGELOG>3.2.04</A>
++<li>Updates to mqhash (a simple password generator)
++<li>Make DNS packet compression case-insensitive
++<li>Attach IPv6 glue to NS and MX records when MaraDNS is compiled for IPv6
++<li>Remove warning when MaraDNS is compiled for IPv6
++<li>Remove warning when compiling getzone.c
++</ul>
++(2014.??.??)
++</blockquote>
++
++<p>maradns-2.0.07d:</p>
++This is the stable release of MaraDNS.
++<blockquote>
++<ul>
++<li>Deadwood updated to 3.2.03d to patch security hole discussed at
++<A href=http://samiam.org/blog/20131202.html>samiam.org/blog/20131202.html</A>
++</ul>
++(2013.12.02)
++</blockquote>
++
++<p>maradns-1.4.13:</p>
++This is the legacy branch of MaraDNS.  Please upgrade to MaraDNS 2.
++<blockquote>
++<ul>
++<li>Deadwood updated to 3.2.03d to patch security hole discussed at
++<A href=http://samiam.org/blog/20131202.html>samiam.org/blog/20131202.html</A>
++</ul>
++(2013.12.02)
++</blockquote>
++
++<p>maradns-2.0.07c:</p>
++This is the stable release of MaraDNS.
++<blockquote>
++<ul>
++<li>Seven-line fix to Deadwood to fix resolution problem;
++<A href=http://samiam.org/blog/20130713.html>more details in blog</A>
++</ul>
++(2013.07.20; declared stable 2013.09.20)
++</blockquote>
++
++<p>maradns-2.0.07b:</p>
++This is the stable release of MaraDNS.
++<blockquote>
++<ul>
++<li>One-line fix to Deadwood to fix resolution problem
++</ul>
++(2013.04.23; declared stable 2013.06.22)
++</blockquote>
++
+ <p>maradns-2.0.07:</p>
+ This is the stable release of MaraDNS.
+ <blockquote>

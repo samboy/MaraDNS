@@ -1,0 +1,17 @@
+--- maradns-1.4.01/parse/Csv2_main.c	2009-12-21 09:28:44.000000000 -0600
++++ maradns-1.4.02/parse/Csv2_main.c	2010-01-07 18:54:52.000000000 -0600
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004-2006 Sam Trenholme
++/* Copyright (c) 2004-2010 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -562,7 +562,7 @@
+         int nostar;
+         for(nostar = 0; nostar < (zone->unit_size * zone->unit_count);
+                         nostar++) {
+-                if(*(zone->string + nostar) == '*') {
++                if(*(zone->string + nostar) == '*' && zone->unit_count > 1) {
+                         printf("Illegal zone name: ");
+                         for(nostar = 0; nostar <
+                             (zone->unit_size * zone->unit_count); nostar++) {

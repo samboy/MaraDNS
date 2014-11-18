@@ -1,0 +1,22 @@
+This is how we handle the DNS header in the recursive client.
+
+ID: Stored and given back to client; not cached
+QR: Must be 0 for packet to be accepted; all replies give this a 1 value
+OPCODE: Must be 0; 0 in replies
+AA: Value in query ignored; 0 in replies
+TC: Truncation.  Ignore value in query; send empty "truncated" reply when
+    this is 1 (they can enable TCP)
+RD: Must be 1 in query; is 1 in reply
+RA: Ignored in query; is 1 in reply (because of brain-dead DNS clients)
+Z: Must be all 0 in query; set to all 0 in reply
+RCODE: Must be 0 in query; usually 0 (OK) in reply but can be 2 (server
+       failure) should we be unable to connect to any nameservers
+QDCOUNT: Must be 1 in query; is 1 in reply (we echo the question)
+ANCOUNT: As per the reply we get from the remote server (this number
+         will be stored in the cache)
+NSCOUNT, ARCOUNT: Same as ANCOUNT
+
+Note that in the case of ARCOUNT being one in a query, we ignore the
+AR record (which may be an EDNS OPT query) and act as if the packet
+is a simple RFC1035 DNS packet without ENDS data.
+

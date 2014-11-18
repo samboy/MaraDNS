@@ -1,0 +1,60 @@
+--- deadwood-3.2.04/src/DwUdpSocket.c.orig	2013-11-13 03:03:03.000000000 -0500
++++ deadwood-3.2.04/src/DwUdpSocket.c	2013-11-13 03:03:44.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2012 Sam Trenholme and others
++/* Copyright (c) 2007-2013 Sam Trenholme and others
+  *
+  * TERMS
+  *
+@@ -101,7 +101,7 @@
+         if(dns_udp == 0) {
+                 return;
+         }
+-        memset(dns_udp,0,sizeof(dns_udp));
++        memset(dns_udp,0,sizeof(*dns_udp));
+         if(len == 4) {
+                 dns_udp->V4.sin_family = AF_INET;
+                 dns_udp->V4.sin_addr.s_addr = htonl(INADDR_ANY);
+@@ -155,7 +155,7 @@
+                 return INVALID_SOCKET;
+         }
+ 
+-        memset(server,0,sizeof(server));
++        memset(server,0,sizeof(*server));
+         if ( addr->len == 4 ) {
+                 server->V4.sin_family = AF_INET;
+                 server->V4.sin_port = htons(upstream_port);
+--- deadwood-3.2.04/src/DwStr.c.orig	2013-11-13 03:05:51.000000000 -0500
++++ deadwood-3.2.04/src/DwStr.c	2013-11-13 03:07:26.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2010 Sam Trenholme
++/* Copyright (c) 2007-2013 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -662,7 +662,7 @@
+         }
+         out = dw_substr(in,index,len,1);
+         in->len -= len + 1;
+-        if(in->len < 0 || in->len >= in->max) {
++        if(in->len >= in->max) {
+                 in->len = 0;
+                 goto catch_dw_qspop;
+         }
+--- deadwood-3.2.03/src/RandomPrime.c	2012-12-20 13:30:37.000000000 -0500
++++ deadwood-3.2.04/src/RandomPrime.c	2013-11-13 03:07:58.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007 Sam Trenholme
++/* Copyright (c) 2007-2013 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -97,7 +97,7 @@
+                 candidate |= 0x40000001;
+         }
+ 
+-        printf(HEADER,candidate,candidate);
++        printf(HEADER,candidate);
+         printf("/* %d has %d bits set to 1 */\n",candidate,
+                 num_1bits(candidate));
+ 

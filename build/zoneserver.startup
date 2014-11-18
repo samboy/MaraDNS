@@ -1,0 +1,89 @@
+#!/bin/bash
+# chkconfig: 2345 56 46
+# description: Give MaraDNS DNS-over-TCP
+
+# Copyright 2005-2006,2014 Sam Trenholme
+
+# TERMS
+
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+
+# This software is provided 'as is' with no guarantees of correctness or
+# fitness for purpose.
+
+# This is a script which stops and starts the MaraDNS zoneserver process
+# The first line points to bash because I don't have a true Solaris /bin/sh
+# to test this against.
+
+# The following is a pointer to the MaraDNS program
+if [ -x "/usr/sbin/zoneserver" ] ; then
+	ZONESERVER="/usr/sbin/zoneserver"
+elif [ -x "/usr/local/sbin/zoneserver" ] ; then
+	ZONESERVER="/usr/local/sbin/zoneserver"
+else
+	echo unable to find zoneserver
+	exit 1
+fi
+
+# The following is a pointer to the duende daemonizer
+if [ -x "/usr/sbin/duende" ] ; then
+	DUENDE="/usr/sbin/duende"
+elif [ -x "/usr/local/sbin/duende" ] ; then
+	DUENDE="/usr/local/sbin/duende"
+elif [ -x "/usr/bin/duende" ] ; then
+	DUENDE="/usr/bin/duende"
+elif [ -x "/usr/local/bin/duende" ] ; then
+	DUENDE="/usr/local/bin/duende"
+else
+	echo unable to find duende
+	exit 1
+fi
+
+# The following is the directory we place MaraDNS log entries in
+LOGDIR="/var/log"
+
+# The following is a list of all mararc files which we will load or
+# unload;
+# Simple case: Only one MaraDNS zoneserver process, using the /etc/mararc file
+MARARCS="/etc/mararc"
+# Case two: Three MaraDNS processes, one using /etc/mararc.1, the second one
+# using /etc/mararc.2, and the third one using /etc/mararc.3
+#MARARCS="/etc/mararc.1 /etc/mararc.2 /etc/mararc.3"
+
+# Show usage information if this script is invoked with no arguments
+if [ $# -lt 1 ] ; then
+    echo Usage: $0 \(start\|stop\|restart\)
+    exit 1
+fi
+
+# If invoked as stop or restart, kill *all* MaraDNS processes
+if [ $1 = "stop" -o $1 = "restart" ] ; then
+    echo Sending all MaraDNS processes the TERM signal
+    ps -ef | awk '{print $2":"$8}' | grep zoneserver | grep -v $$ | \
+      cut -f1 -d: | xargs kill > /dev/null 2>&1
+    echo waiting 1 second
+    sleep 1
+    echo Sending all MaraDNS processes the KILL signal
+    ps -e | awk '{print $1":"$NF}' | grep zoneserver | grep -v $$ | \
+      cut -f1 -d: | xargs kill -9 > /dev/null 2>&1
+    echo MaraDNS should have been stopped
+fi
+
+# If invoked as start or restart, start the MaraDNS processes
+if [ $1 = "start" -o $1 = "restart" ] ; then
+    echo Starting all zoneserver processes
+    for a in $MARARCS ; do
+        echo Starting zoneserver process which uses Mararc file $a
+	# Duende syslogs MaraDNS' output messages and daemonizes MaraDNS
+        $DUENDE $ZONESERVER -f $a
+    done
+fi
+

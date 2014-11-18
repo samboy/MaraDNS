@@ -1,0 +1,70 @@
+This fixes a bug introduced in MaraDNS 1.3.03 (January 2007) when
+I allowed '.' to be in a hostname: Hostnames that incorrectily not
+end with a dot result in a string being deallocated then used.  
+
+MaraDNS 1.2 does not have this issue.
+
+This issue can not be exploited from zones loaded using DNS's zone
+transfer mechanism; fetchzone filters data obtained this way.  This issue
+can only be exploited in the unusual case of an attacker having control
+of the contents of a csv2 zone file to be parsed by MaraDNS.  
+
+This issue, on Linux systems, results in a null pointer dereference that 
+does not appear to be exploitable.
+
+This patch cleanly patches MaraDNS 1.4.02 and against 1.3.07.09.
+
+--- maradns-1.4.02/parse/Csv2_parse.c	2010-01-08 10:07:44.000000000 -0600
++++ maradns-1.4.03/parse/Csv2_parse.c	2010-01-20 14:41:40.000000000 -0600
+@@ -728,6 +728,9 @@
+         }
+ 
+         ret = js_append_dname(o, stream, starwhitis);
++	if(ret == 0) {
++		return 0;
++	}
+ 
+         if(o->unit_count > 1 && *(o->string + 1) == '.' && o->unit_count != 2){
+                 csv2_error(stream,"Dot can only be at beginning of hostname"
+@@ -1474,15 +1477,15 @@
+                                         return -1;
+                                 }
+                                 n = js_append_dname(n, stream, 3);
+-                                if(csv2_convert_percent(n,state->origin)
+-                                    == 0) {
++                                if(n == 0) {
+                                         csv2_error(stream,
+-                                        "Problem running convert_percent");
++                                        "Invalid argument for /origin");
+                                         return -1;
+                                 }
+-                                if(n == 0) {
++                                if(csv2_convert_percent(n,state->origin)
++                                    == 0) {
+                                         csv2_error(stream,
+-                                        "Invalid argument for /origin");
++                                        "Problem running convert_percent");
+                                         return -1;
+                                 }
+                                 js_destroy(state->origin);
+@@ -1516,15 +1519,15 @@
+                                         return -1;
+                                 }
+                                 n = js_append_dname(n, stream, 3);
+-                                if(csv2_convert_percent(n,state->origin)
+-                                    == 0) {
++                                if(n == 0) {
+                                         csv2_error(stream,
+-                                        "Problem running convert_percent");
++                                        "Invalid argument for /opush");
+                                         return -1;
+                                 }
+-                                if(n == 0) {
++                                if(csv2_convert_percent(n,state->origin)
++                                    == 0) {
+                                         csv2_error(stream,
+-                                        "Invalid argument for /opush");
++                                        "Problem running convert_percent");
+                                         return -1;
+                                 }
+                                 /* Now, see if there is room on the stack */

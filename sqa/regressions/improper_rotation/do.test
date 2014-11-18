@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# This tests for ANY and case-insensitivity
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+verbose_level = 0
+EOF
+
+cat > db.example.com << EOF
+% SOA ns1.%  postmaster@%  1165249946 86400  7200 1814400 3600
+% NS ns1.%
+% NS ns2.%
+ns1.% 10.1.2.4
+ns2.% 10.1.2.5
+www.% A 10.1.2.3
+cname.% CNAME www.%
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+sleep 1
+../../../tools/askmara Ncname.example.com. > /dev/null
+../../../tools/askmara Acname.example.com.
+sleep 1
+killall maradns
+rm mararc
+rm db.example.com

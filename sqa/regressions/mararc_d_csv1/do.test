@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# This test to make sure the csv1 dictionary variable works
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+csv1 = {}
+csv1["example.com."] = "db.example.com"
+EOF
+
+cat > db.example.com << EOF
+S%|86400|%|hostmaster@%|19771108|7200|3600|604800|1800
+N%|86400|ns.%
+Ans.%|86400|10.0.0.1
+Awww.%|86400|10.0.0.2
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+sleep 1
+../../../tools/askmara Awww.example.com.
+sleep 1
+killall maradns
+rm mararc
+rm db.example.com

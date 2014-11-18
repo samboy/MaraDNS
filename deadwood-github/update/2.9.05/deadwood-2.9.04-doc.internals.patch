@@ -1,0 +1,185 @@
+diff -ur deadwood-2.9.04/doc/internals/CACHE.DESIGN deadwood-2.9.05/doc/internals/CACHE.DESIGN
+--- deadwood-2.9.04/doc/internals/CACHE.DESIGN	2010-07-03 20:28:35.000000000 -0700
++++ deadwood-2.9.05/doc/internals/CACHE.DESIGN	2010-08-14 23:02:30.000000000 -0700
+@@ -1,3 +1,16 @@
++[Note: This data is terribly out of date, based on the peliminary design for
++ Deadwood 2 back in 2007.  In 2010, in order to implement full recursion,
++ I added a whole bunch of types, such as CNAME referrals, NS referrals,
++ and a couple of types for truncated replies.  I also have two different
++ types for "not found" packets; one for NXDOMAIN, and another for 
++ non-NXDOMAIN "not found" replies.  See DwRecurse.h and DwRecurse.c for
++ an overview; there are extensive comments that explain the datatypes
++ stored here.
++
++ I should also point out the simple answers have offsets to RRs in the
++ answers, and are no longer stored in compressed form.  The following data
++ types are only used in the "tiny" 2.3 branch of Deadwood]
++
+ Cache data: Cached data will use the hash (see HASH.DESIGN) 
+             and be stored like this:
+ 
+diff -ur deadwood-2.9.04/doc/internals/CACHE.FILE deadwood-2.9.05/doc/internals/CACHE.FILE
+--- deadwood-2.9.04/doc/internals/CACHE.FILE	2009-11-11 10:14:04.000000000 -0800
++++ deadwood-2.9.05/doc/internals/CACHE.FILE	2010-08-14 23:03:39.000000000 -0700
+@@ -1,4 +1,4 @@
+-It is now possible to write the contents of Deadwood-2's cache to a 
++It is now possible to write the contents of Deadwood-3's cache to a 
+ file, and to read the contents of said file to update the cache.  This 
+ is useful for people with intermittent online connections, who may wish 
+ to connect to sites even if their upstream DNS server is dodgy.
+@@ -27,7 +27,7 @@
+ determined by the maradns_uid and maradns_gid parameters (the reason for 
+ these names is for maximum MaraDNS mararc compatibility).  For example, 
+ in some systems, the user-id and group-id '99' indicate the "nobody" 
+-user; this would be set up as follows in the dwood2rc file:
++user; this would be set up as follows in the dwood3rc file:
+ 
+ 	maradns_uid = 99
+ 	maradns_gid = 99
+@@ -45,3 +45,6 @@
+ permissions; the cache does list what web sites users go to, which has 
+ privacy implications).
+ 
++Please delete the cache file if making changes to the dwood3rc file; 
++otherwise changes in this file may not "stick".
++
+diff -ur deadwood-2.9.04/doc/internals/CODING.STYLE deadwood-2.9.05/doc/internals/CODING.STYLE
+--- deadwood-2.9.04/doc/internals/CODING.STYLE	2009-01-22 18:05:34.000000000 -0800
++++ deadwood-2.9.05/doc/internals/CODING.STYLE	2010-08-14 23:06:25.000000000 -0700
+@@ -16,14 +16,15 @@
+   destructor for the string is, and make sure the string is destroyed.
+ 
+   I understand that goto is considered bad style in some circles.  It is
+-  necessary here to make up for C's lack of error catching.
++  necessary here to make up for C's lack of error catching (if only C had
++  try/catch/throw).
+ 
+ * Whenever a string is to be destroyed, make sure the string has a non-0
+   value.  Once a string is destoryed, set the string to have a 0 value.  
+   This stops double-free()s and freeing of null pointers.
+ 
+ * Any indexed writes, such as a[b] = c or *(a + b) = c need to have
+-  some kind of bound checking.  This protects us from buffer overflows.
++  some kind of bounds checking.  This protects us from buffer overflows.
+ 
+ * Arrays and strings should always be at least one character longer than
+   you think you will need for the array.  This protects us from off-by-one
+@@ -42,6 +43,9 @@
+   before the function.  The size of a function does not include any comments
+   before the function describing the function.
+ 
++  (When finishing up the recursion, I started ignoring this particular 
++  rule.  Functions are still fairly short and should be easy to follow.)
++
+ * All functions should be documented with at least a brief comment.  If you
+   are not a native English speaker, please let me know, and I will correct
+   any grammatical errors in your comments.
+diff -ur deadwood-2.9.04/doc/internals/DNS.HEADER deadwood-2.9.05/doc/internals/DNS.HEADER
+--- deadwood-2.9.04/doc/internals/DNS.HEADER	2007-12-13 21:52:51.000000000 -0800
++++ deadwood-2.9.05/doc/internals/DNS.HEADER	2010-08-14 23:08:25.000000000 -0700
+@@ -4,8 +4,8 @@
+ QR: Must be 0 for packet to be accepted; all replies give this a 1 value
+ OPCODE: Must be 0; 0 in replies
+ AA: Value in query ignored; 0 in replies
+-TC: Truncation.  Ignore value in query; ignore replies where this is 1
+-    (for now; we may do tcp stuff later)
++TC: Truncation.  Ignore value in query; send empty "truncated" reply when
++    this is 1 (they can enable TCP)
+ RD: Must be 1 in query; is 1 in reply
+ RA: Ignored in query; is 1 in reply (because of brain-dead DNS clients)
+ Z: Must be all 0 in query; set to all 0 in reply
+@@ -15,3 +15,8 @@
+ ANCOUNT: As per the reply we get from the remote server (this number
+          will be stored in the cache)
+ NSCOUNT, ARCOUNT: Same as ANCOUNT
++
++Note that in the case of ARCOUNT being one in a query, we ignore the
++AR record (which may be an EDNS OPT query) and act as if the packet
++is a simple RFC1035 DNS packet without ENDS data.
++
+diff -ur deadwood-2.9.04/doc/internals/Glueless.NS deadwood-2.9.05/doc/internals/Glueless.NS
+--- deadwood-2.9.04/doc/internals/Glueless.NS	2010-07-03 09:18:20.000000000 -0700
++++ deadwood-2.9.05/doc/internals/Glueless.NS	2010-08-14 23:08:58.000000000 -0700
+@@ -1,3 +1,5 @@
++Some overview of how Deadwood handles glueless NS queries
++
+ Functions which allocate memory for addr.glueless:
+ 
+ dwx_ns_getip_glueless(), which is called by dwx_ns_getip(), which is called
+@@ -51,3 +53,4 @@
+ such as allowing the parent to try again with another NS record; however,
+ for the time being, I have this critter ignore local connections
+ which are referrals to NS glueless resolution.
++
+diff -ur deadwood-2.9.04/doc/internals/HASH.DESIGN deadwood-2.9.05/doc/internals/HASH.DESIGN
+--- deadwood-2.9.04/doc/internals/HASH.DESIGN	2009-11-11 10:20:18.000000000 -0800
++++ deadwood-2.9.05/doc/internals/HASH.DESIGN	2010-08-14 23:10:55.000000000 -0700
+@@ -128,10 +128,9 @@
+ 
+ A hash, when stored to disk, has the following format:
+ 
+-* The 32-bit number 0x00445732 ('\0'DW2)
++* The 32-bit number 0x00445733 ('\0'DW3)
+ 
+-* A 32-bit number with the number of maximum possible elements in the 
+-  hash.
++* A 32-bit number set to the value of zero.  This number is ignored.
+ 
+ * Each hash entry is now read; more important hash entries (entries less
+   likely to be deleted when the hash fills up) are placed after less
+diff -ur deadwood-2.9.04/doc/internals/ROADMAP deadwood-2.9.05/doc/internals/ROADMAP
+--- deadwood-2.9.04/doc/internals/ROADMAP	2009-11-11 10:20:38.000000000 -0800
++++ deadwood-2.9.05/doc/internals/ROADMAP	2010-08-14 23:11:51.000000000 -0700
+@@ -1,4 +1,5 @@
+-Deadwood-3: A full DNS recursive resolver. Target date: None
++Deadwood-3: A full DNS recursive resolver. Target date: Done; undergoing
++beta-testing.
+ 
+ Plan for recursive design:
+ 
+@@ -72,3 +73,4 @@
+      "ns1.example.com A 192.168.78.32", we make the packet "example.com NS
+      192.168.78.32" and store it in the cache.
+ 
++(All of this has now been implemented)
+diff -ur deadwood-2.9.04/doc/internals/TODO deadwood-2.9.05/doc/internals/TODO
+--- deadwood-2.9.04/doc/internals/TODO	2009-11-11 10:11:51.000000000 -0800
++++ deadwood-2.9.05/doc/internals/TODO	2010-08-14 23:14:32.000000000 -0700
+@@ -3,7 +3,8 @@
+ 
+ * If the server sends us "truncated", just give the user this reply
+   without caching it. (DONE; caching disabled for tuncated replies)
+-  Make sure we fully validate a truncated packet.
++  Make sure we fully validate a truncated packet.  (No, we just tell them
++  it's truncated and they can use DNS-over-TCP if enabled)
+ 
+ * Bugfix: The Google problem.  Google.com's DNS reply is in the form
+   "Cache for one day: Google.com is a CNAME for www.l.google.com;
+@@ -15,14 +16,15 @@
+   when it really should only cache it for one hour) (DONE)
+ 
+ * RFC compliance: Records with a TTL of 0 should not be cached. (DONE
+-  by Neeo)
++  by Neeo; undone by myself because recursive Deadwood needs to put
++  items in the cache before giving them to the user)
+ 
+ * Safe cache writing: Write to a temporary file and rename the file to 
+-  the name of the cache file when the write is done.
++  the name of the cache file when the write is done. (Never done)
+ 
+ * Timed cache writing: Allow Deadwood to write to the cache every N minutes;
+   this will allow Windows users to have cachefiles. (The Windows port just
+-  writes the cache when the service is stopped)
++  writes the cache when the service is stopped, so Never done)
+ 
+ * Windows support: (Windows is important because MaraDNS is the only 
+   open source DNS server I know of, besides BIND, to run on Windows)
+@@ -54,5 +56,7 @@
+   contact that server the next time we try to make a connection.  Maybe even
+   have an array of the number of times we have failed to connect to a given
+   upstream server, and have the code use a heuristic to try less connections
+-  with an unreliable server.
++  with an unreliable server. (DONE; we round-robin rotate if we can't connect
++  to an upstream NS server)
++
+ 

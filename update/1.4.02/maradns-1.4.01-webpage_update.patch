@@ -1,0 +1,67 @@
+--- maradns-1.4.01/doc/en/webpage/download.embed	2009-12-21 09:28:41.000000000 -0600
++++ maradns-1.4.02/doc/en/webpage/download.embed	2009-12-23 13:21:20.000000000 -0600
+@@ -5,6 +5,9 @@
+ <h2>Stable release</h2>
+ <p>This is the current stable release of MaraDNS, MaraDNS 1.4.01,
+ released December 21, 2009.
++<p>This release is available both at <A 
++href="http://sourceforge.net/project/showfiles.php?group_id=24033">sourceforge.net</A>
++and on this page.
+ <p>
+ 
+ <table><tr><td>
+@@ -13,7 +16,7 @@
+                        -->maradns-1.4.01.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.4/1.4.01/maradns-1.4.01.tar.bz2.sha.asc">sig</A>
++href="download/1.4/1.4.01/maradns-1.4.01.tar.bz2.asc">sig</A>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+@@ -22,7 +25,7 @@
+                        -->maradns-1.4.01.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/1.4/1.4.01/maradns-1.4.01.tar.gz.sha.asc">sig</A>
++href="download/1.4/1.4.01/maradns-1.4.01.tar.gz.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+@@ -31,9 +34,18 @@
+                        -->maradns-1-4-01-win32.zip</A>
+ </td><td>
+ <A 
+-href="download/1.4/1.4.01/maradns-1-4-01-win32.zip.sha.asc">sig</A>
++href="download/1.4/1.4.01/maradns-1-4-01-win32.zip.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
++</td></tr><tr><td>
++<A 
++href="download/1.4/1.4.01/maradns-1-4-01-win32.7z"><!--
++                       -->maradns-1-4-01-win32.7z</A>
++</td><td>
++<A 
++href="download/1.4/1.4.01/maradns-1-4-01-win32.7z.asc">sig</A>
++</td><td>
++<A href="#7z">info</A>
+ </td></tr></table>
+ 
+ <hr>
+@@ -83,9 +95,6 @@
+ fixes 1.4 has (Afnic fix, etc.).  This release will be supported
+ with security bug fixes until December 21, 2012.
+ 
+-<p>This release is available both at <A 
+-href="http://sourceforge.net/project/showfiles.php?group_id=24033">sourceforge.net</A>
+-and on this page.
+ 
+ <p>
+ 
+@@ -258,3 +267,6 @@
+ <A name="tgz"><b>.tgz</b> A .tgz file is a tar.gz file.  The MaraDNS 
+ .tgz file contains
+ the Slackware package for MaraDNS.</A>
++<p><A name="7z"><b>.7z</b> A .7z file is a file compressed by <A 
++href=http://www.7-zip.org>7-zip</A>.  The MaraDNS .7z file contains
++the Windows port of MaraDNS.</A>

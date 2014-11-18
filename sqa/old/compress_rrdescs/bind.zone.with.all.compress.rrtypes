@@ -1,0 +1,44 @@
+example.com. 86400 soa example.com. hostmaster.example.com.  ( 19771108 7200 3600 604800 1800 )
+
+example.com. 86400 ns ns1.example.com.
+example.com. 86400 ns ns2.example.com.
+example.com. 86400 a 10.1.2.3
+
+ns1.example.com. 86400 a 10.0.0.1
+ns2.example.com. 86400 a 192.168.0.1
+
+cname.example.com. cname a.example.com.
+; We're using a BIND zone file to test MaraDNS' decompressor's compatibility
+; with exotic record types
+
+a.example.com. a 10.0.0.1
+a.example.com. mx 10 mail.example.com.
+a.example.com. ptr ptr.example.com.
+a.example.com. txt "this is some text" "this is some more text"
+
+; OK, now the exotic (and, quite frankly, obsolete) RFC 1035 RRs
+
+; The ones marked "obsolete" here are ones that BIND will not load
+; md: obsolete
+;a.example.com. md md.example.com.
+; mf: obsolete
+;a.example.com. mf mf.example.com.
+; mb: Good
+a.example.com. mb mb.example.com.
+; mg: Good
+a.example.com. mg mg.example.com.
+; mr: Good
+a.example.com. mr mr.example.com.
+; minfo: Fixed in 1.1.55
+a.example.com. minfo minfo.example.com. minfo2.example.com.
+; rp: Good
+a.example.com. rp rp.example.com. rp-txt.example.com.
+; afsdb:Good
+a.example.com. afsdb 32 afsdb.example.com.
+; rt: Good
+a.example.com. rt 1 rt.example.com.
+; srv: Good
+srv.example.com. srv 0 0 25 www.example.com.
+; srv: Good
+_http._tcp.example.com. srv 0 0 25 www.example.com.
+

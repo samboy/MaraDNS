@@ -1,0 +1,23 @@
+--- deadwood-3.1.03/doc/Makefile	2010-07-22 11:17:38.000000000 -0500
++++ deadwood-3.1.04/doc/Makefile	2012-01-07 13:29:36.817870163 -0600
+@@ -1,4 +1,5 @@
+-all: Duende.1 Duende.txt Deadwood.1 Deadwood.txt FAQ.txt
++all: Duende.1 Duende.txt Deadwood.1 Deadwood.txt FAQ.txt FAQ.html \
++	Deadwood.html
+ 
+ clean:
+ 	rm -f Duende.1 Duende.txt Deadwood.1 Deadwood.txt FAQ.txt
+@@ -19,8 +20,13 @@
+ 	echo >> Deadwood.txt;\
+ 	unix2dos Deadwood.txt
+ 
++Deadwood.html: Deadwood.ej
++	../tools/ej/ej2html Deadwood.ej > Deadwood.html
++
+ FAQ.txt: FAQ.ej
+ 	../tools/ej/ej2txt FAQ.ej > FAQ.txt ;\
+ 	echo >> FAQ.txt ;\
+ 	unix2dos FAQ.txt
+ 
++FAQ.html: FAQ.ej
++	../tools/ej/ej2html FAQ.ej > FAQ.html

@@ -1,0 +1,11 @@
+<HEAD>
+<TITLE>MaraDNS FAQ</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+</HEAD>
+<BODY>
+
+<pre>
+<INCLUDE "../source/example_mararc">
+</pre>
+
+</BODY>

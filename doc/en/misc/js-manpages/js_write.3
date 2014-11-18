@@ -1,0 +1,50 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_write 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_write \- Read data from an open file
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_write(js_file *desc, js_string *js)"
+.fi
+.SH DESCRIPTION
+.B js_write
+is a function that writes data from the string in
+.B js
+in to the open file
+.B desc.
+.SH ARGUMENTS
+.B desc
+is a pointer to a file object opened for writing.
+
+.B js
+is a pointer to a 
+.I js_string
+object that we will place in the file pointed to by
+.B desc.
+.SH "RETURN VALUE"
+.B js_write
+returns JS_SUCCESS on sucessful writing of the data,
+.I JS_ERROR
+otherwise.
+.SH EXAMPLE
+The following puts the string "filename" in the file "filename":
+
+.nf
+	js_string *foo;
+	js_file *bar;
+	foo = js_create(256,1);		
+	js_str2js(foo,"filename",8,1);
+	js_open_write(foo,bar);
+	js_write(bar,foo); 
+.fi
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

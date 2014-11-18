@@ -1,0 +1,90 @@
+From http://www.iana.org/assignments/dns-parameters
+
+
+(last updated 11 July 2005)
+
+A               1 a host address                          [RFC1035]
+NS              2 an authoritative name server            [RFC1035]
+MD              3 a mail destination (Obsolete - use MX)  [RFC1035]
+MF              4 a mail forwarder (Obsolete - use MX)	  [RFC1035]
+CNAME           5 the canonical name for an alias	  [RFC1035]
+SOA             6 marks the start of a zone of authority  [RFC1035]
+MB              7 a mailbox domain name (EXPERIMENTAL)	  [RFC1035]
+MG              8 a mail group member (EXPERIMENTAL)	  [RFC1035]
+MR              9 a mail rename domain name (EXPERIMENTAL)[RFC1035]
+NULL            10 a null RR (EXPERIMENTAL)               [RFC1035]
+WKS             11 a well known service description       [RFC1035]
+PTR             12 a domain name pointer                  [RFC1035]
+HINFO           13 host information                       [RFC1035]
+MINFO           14 mailbox or mail list information       [RFC1035]
+MX              15 mail exchange                          [RFC1035]
+TXT             16 text strings                           [RFC1035]
+
+RP              17 for Responsible Person                 [RFC1183]
+AFSDB           18 for AFS Data Base location             [RFC1183]
+X25             19 for X.25 PSDN address                  [RFC1183]
+ISDN            20 for ISDN address                       [RFC1183]
+RT              21 for Route Through                      [RFC1183]
+
+NSAP            22 for NSAP address, NSAP style A record  [RFC1706]
+NSAP-PTR        23 
+
+SIG             24 for security signature                 [RFC2535], [RFC3755], [RFC4034]
+KEY             25 for security key                       [RFC2535], [RFC3755], [RFC4034]
+
+PX              26 X.400 mail mapping information         [RFC2163]
+
+GPOS            27 Geographical Position                  [RFC1712]
+
+AAAA            28 IP6 Address                            [Thomson]
+
+LOC             29 Location Information                   [Vixie]
+
+NXT             30 Next Domain - OBSOLETE                 [RFC2535, RFC3755]
+
+EID             31 Endpoint Identifier                    [Patton]
+
+NIMLOC          32 Nimrod Locator                         [Patton]
+
+SRV             33 Server Selection                       [RFC2782]
+
+ATMA            34 ATM Address                            [Dobrowski]
+
+NAPTR           35 Naming Authority Pointer               [RFC2168, RFC2915]
+
+KX              36 Key Exchanger                          [RFC2230]
+
+CERT            37 CERT                                   [RFC2538]
+
+A6              38 A6                                     [RFC2874]
+
+DNAME           39 DNAME                                  [RFC2672]
+
+SINK            40 SINK                                   [Eastlake]
+
+OPT             41 OPT                                    [RFC2671]
+
+APL             42 APL                                    [RFC3123]
+
+DS              43 Delegation Signer                      [RFC3658]
+
+SSHFP           44 SSH Key Fingerprint                    [RFC-ietf-secsh-dns-05.txt]
+IPSECKEY        45 IPSECKEY                               [RFC4025]
+RRSIG           46 RRSIG                                  [RFC3755]
+NSEC            47 NSEC                                   [RFC3755]
+DNSKEY          48 DNSKEY                                 [RFC3755]
+
+SPF             99                                        [RFC-schlitt-spf-classic-02.txt]
+UINFO           100                                       [IANA-Reserved]
+UID             101                                       [IANA-Reserved]
+GID             102                                       [IANA-Reserved]
+UNSPEC          103                                       [IANA-Reserved]
+
+TKEY            249 Transaction Key                       [RFC2930]
+TSIG            250 Transaction Signature                 [RFC2845]
+IXFR            251 incremental transfer                  [RFC1995]
+AXFR            252 transfer of an entire zone            [RFC1035]
+MAILB           253 mailbox-related RRs (MB, MG or MR)	  [RFC1035]
+MAILA           254 mail agent RRs (Obsolete - see MX)	  [RFC1035]
+*               255 A request for all records		  [RFC1035]
+

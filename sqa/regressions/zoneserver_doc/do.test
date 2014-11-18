@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# This makes sure the example configuration in the zoneserver man page
+# works
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+cat > mararc << EOF
+ipv4_bind_addresses = "127.0.0.1" # Our IP
+tcp_convert_server = "127.0.0.1" # IP of UDP DNS server
+tcp_convert_acl = "0.0.0.0/0" # Anyone may do DNS-over-TCP
+chroot_dir = "$( pwd )" # Where zone files are
+csv2 = {} # Initialize list of zone files
+csv2["example.com."] = "db.example.com" # example.com zone file
+# The next line is a list of who can transfer zones from us
+zone_transfer_acl = "10.1.2.3, 10.1.14.7, 192,168.116.0/24"
+EOF
+
+cat > db.example.com << EOF
+www.% A 10.1.2.3
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+sleep 1
+../../../tcp/zoneserver -f mararc > /dev/null 2>&1 &
+sleep 1
+../../../tools/askmara-tcp Awww.example.com.
+dig +tcp @127.0.0.1 www.example.com. | grep www | grep -v DiG
+killall maradns
+killall zoneserver
+rm mararc
+rm db.example.com

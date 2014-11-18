@@ -1,0 +1,20 @@
+Sebastian Müller points out that real-world computers, even on home networks,
+need at least eight masks for recursive_acl.  That in mind, I am greatly
+increasing the maximum number of possible BIND addresses or entries in
+one's recursive_acl (from 7 up to 128).
+
+Bug report is here:
+
+http://woodlane.webconquest.com/pipermail/list/2010-July/000615.html
+
+--- deadwood-2.9.01/src/DwSocket.h	2010-07-18 16:42:55.000000000 -0700
++++ deadwood-2.9.02/src/DwSocket.h	2010-07-25 22:15:56.000000000 -0700
+@@ -85,7 +85,7 @@
+ #endif /* MINGW */
+ 
+ /* Parameter that is currently hardcoded in the source code */
+-#define DW_MAXIPS 7    /* Maximum number of bind addresses or upstream IPs */
++#define DW_MAXIPS 128 /* Maximum number of bind addresses or upstream IPs */
+ 
+ /* Structures for storing IP addresses */
+ typedef struct {

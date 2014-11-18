@@ -1,0 +1,119 @@
+   This document is for people who are getting a "dangling CNAME"
+   warning, or who wish to have CNAME records that point to records
+   served by other DNS servers.
+
+   There are two cases that can cause the "dangling CNAME" message
+   to appear:
+
+     * When a CNAME points to an external host name.
+     * When a CNAME is misspelled or the host the CNAME points
+       to is misspelled
+
+  CNAMEs pointing to external host names
+
+   Sometimes, people may wish to have local names point to external
+   entries with CNAME records. For example, it may be desirable to
+   have the shortcut "google" for "www.google.com". One way one may
+   wish to do this is as follows:
+
+         google.example.com. +86400 CNAME www.google.com.
+
+   MaraDNS' default configuration will not complete the record. In
+   other words, some people may expect Mara to output the following
+   for "google.example.com":
+
+         google.example.com. +86400 CNAME www.google.com.
+         www.google.com. +900 A 66.102.7.104
+
+   Instead, Mara simply outputs:
+
+         google.example.com. +86400 CNAME www.google.com.
+
+   I call this a "dangling CNAME record", since the CNAME record is
+   not resolvable by some stub resolvers. In order to resolve
+   dangling CNAME records, MaraDNS can be configured thusly:
+
+     * We run MaraDNS server on one IP and a Deadwood server on
+       another IP.
+     * For the sake of this example, we will suppose that the
+       server people send queries to for resolving hostnames has
+       the IP 192.168.1.1, which will be running Deadwood. We will
+       further suppose that there is a MaraDNS server which has the
+       dangling CNAME issue with the IP 192.168.1.2
+     * Set up 192.168.1.1 to use 192.168.1.2 to resolve all
+       hostnames that end in, say, "example.com.", via the
+       upstream_servers dwood3rc variable.
+     * Set up 192.168.1.2 to have dangling CNAME records in the
+       authoritative half.
+
+   This will cause dangling CNAME records to be fully resolved;
+   here is what the two MaraDNS servers do to resolve such a
+   record:
+
+    1. A stub resolver asks 192.168.1.1 the IP address for, say
+       "google.example.com"
+    2. 192.168.1.1 asks 192.168.1.2 the IP address for
+       "google.example.com" (since the name ends in "example.com")
+    3. 192.168.1.2 tells 192.168.1.1 "google.example.com is a CNAME
+       for www.google.com, and I don't have an IP for it"
+    4. 192.168.1.1, seeing that it has a CNAME without an IP, asks
+       nameservers on the internet for the IP for "www.google.com"
+    5. When 192.168.1.1 has a complete record, it will send this
+       record to the stub resolver. In other words, 192.168.1.1
+       will tell the stub resolver that google.example.com is a
+       CNAME for www.google.com, and then give out the IP for
+       www.google.com.
+
+   Here is an example dwood3rc file for 192.168.1.1:
+
+ ipv4_bind_addresses = "192.168.1.1"
+ chroot_dir = "/etc/maradns"
+ recursive_acl = "192.168.1.0/24"
+ upstream_servers = {}
+ upstream_servers["example.com."] = "192.168.1.2"
+
+   Here is an example mararc file for 192.168.1.2:
+
+ ipv4_bind_addresses = "192.168.1.2"
+ chroot_dir = "/etc/maradns"
+ csv2 = {}
+ csv2["example.com."] = "db.example.com"
+
+   If dangling CNAMEs are not an issue for a given setup, or if
+   they are resolved by the above setup using both MaraDNS and
+   Deadwood, the warnings about dangling CNAMEs can be turned off
+   by adding this to a mararc file:
+
+ no_cname_warnings = 1
+
+  A typo can cause a dangling CNAME record
+
+   A typo can also cause a dangling CNAME record. E.g:
+
+ www.example.com. CNAME hoost1.example.com.
+ host1.example.com. A 10.1.2.3
+
+   Here, we mispelled the CNAME record; we meant to type
+   "host1.example.com" but typed in "hoost1.example.com". We can
+   also get a dangling CNAME thusly:
+
+ www.example.com. CNAME host1.example.com.
+ hoost1.example.com. A 10.1.2.3
+
+   Or by a typo in the mararc file:
+
+ csv2["exammple.com."] = "db.example.com"
+
+   (We typed in exammple.com when we should have typed in
+   "example.com")
+
+   Followed by a zone file that looks like this:
+
+ www.example.com. CNAME host1.example.com.
+ host1.% A 10.1.2.3
+
+   Since the % will expand to "exammple.com" instead of
+   "example.com".
+
+   In all of these cases, the dangling CNAME warning will go away
+   when the typo is found and corrected.

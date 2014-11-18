@@ -1,0 +1,10 @@
+ipv4_bind_addresses = "127.0.9.1"
+
+chroot_dir = "/etc/maradns"
+
+# The following line enables recursion on just the loopback interface
+recursive_acl = "127.0.0.1/8"
+
+root_servers = {}
+root_servers["."] = "127.0.10.1"
+

@@ -1,0 +1,56 @@
+Some overview of how Deadwood handles glueless NS queries
+
+Functions which allocate memory for addr.glueless:
+
+dwx_ns_getip_glueless(), which is called by dwx_ns_getip(), which is called
+by get_upstream_ip(), which is called by make_remote_connection() and 
+setup_tcp_server().
+
+It is zapped in dwx_do_ns_glueless(), called from make_remote_connection(),
+as well as setup_tcp_server().
+
+---
+
+Glueless NS referral procedure:
+
+-> Increase the timeout so the query waiting for the glueless is less likely
+   to expire.
+
+-> Look for already existing query solving this name.
+
+--> If there already is query...
+
+---> See if its recurse_depth is under 32
+
+----> If it is, set recurse_depth for both the parent and child queries to the
+     the highest value in either + 1
+
+---> -or-
+
+----> If recurse_depth in the already existing query is too high, give up the
+      resolution of this name. 
+
+---> Connect to the query in question; add a local_T with glueless_type set to
+     1 and glueless_conn set to the connection number that needs the glueless
+     name solved.
+
+--> OK, there isn't already a query. 
+
+---> Create a new query with a recurse_depth which is the parent's 
+     recurse_depth + 1   
+
+find_inflight_query() looks for an already existing query; I need to
+write a dwx_find_inflight() version of this for when we already have
+the query as a dw_str object.
+
+In addition to adding the query for solving the glueless NS referral,
+we also have get_remote_udp_packet() call something to let
+the parent know we now have an answer for their glueless NS referral,
+as well as having the parent use said answer to connect to the correct NS 
+server.
+
+We may want to have it so server_fail_noreply() does the right thing,
+such as allowing the parent to try again with another NS record; however,
+for the time being, I have this critter ignore local connections
+which are referrals to NS glueless resolution.
+

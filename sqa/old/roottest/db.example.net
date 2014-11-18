@@ -1,0 +1,155 @@
+# This is an example csv2 zone file
+
+# First of all, csv2 zone files do not need an SOA record; however, if
+# one is provided, we will make it the SOA record for our zone
+# The SOA record needs to be the first record in the zone if provided
+
+#% 	SOA	% email@% 1 7200 3600 604800 1800
+
+# Second of all, csv2 zone files do not need authoritative NS records.
+# If they aren't there, MaraDNS will synthesize them, based on the IP
+# addresses MaraDNS is bound to.  (She's pretty smart about this; if
+# Mara is bound to both public and private IPs, only the public IPs will
+# be synthesized as NS records)
+
+#% 	NS 	a.%
+#%	NS	b.%
+
+# Here are some A (ipv4 address) records; since this is the most
+# common field, the zone file format allows a compact representation
+# of it.
+a.example.net. 	10.10.10.10
+b.example.net.  10.10.10.11
+b.example.net.  10.10.10.12
+
+# We can have the label in either case; it makes no difference
+Z.EXAMPLE.NET. 	10.2.3.4
+Y.EXAMPLE.net.  10.3.4.5
+
+# We can use the percent shortcut.  When the percent shortcut is present,
+# it indicates that the name in question should terminate with the name
+# of the zone we are processing.
+percent.%	a 		10.9.8.7
+
+# And we can have star records
+#*.example.net.  A		10.11.12.13
+
+# We can have a ttl in a record; however the ttl needs a '+' before it:
+# Note that the ttl has to be in seconds, and is before the RTYPE
+d.example.net. +86400 A 10.11.12.13
+
+f.example.net. # As you can see, records can span multiple lines
+        	A 	10.2.19.83
+
+# This allows well-commented records, like this:
+c.example.net. 		# Our C class machine
+        +86400  	# This record is stored for one day
+        A       	# A record
+        10.1.1.1 	# Where we are
+
+# We can even have something similiar to csv1 if we want...
+e.example.net.|+86400|a|10.2.3.4
+h.example.net.|a|10.9.8.7
+# Here, we see we can specify the ttl but not the rtype if desired
+g.example.net.|+86400|10.11.9.8
+
+# Here is a MX record
+% mx 10 mail.%
+mail.% +86400 IN A 10.22.23.24
+
+# We even have a bit of ipv6 support
+a.example.net. 		aaaa 	3ffe:ffff:1:2:3::4:f
+
+# Not to mention support for SRV records
+_http._tcp.% srv 0 0 80 a.%
+
+# And, of course, TXT records
+example.net.    txt 'This is some text'
+
+# Obscure RRs follow
+example.net. HINFO 'Intel Pentium III';'CentOS Linux 3.7'
+
+# WKS
+example.net. WKS 10.1.2.3 6 1,22,23,79,80,119 
+
+# Obscure non-MX mail RRs from RFC1035
+example.net. MB mail.example.net.
+# MD: Rejected by BIND, becomes MX 0 in MaraDNS
+example.net. MD a.example.net.
+# MF: Rejected by BIND, becomes MX 10 in MaraDNS
+example.net. MF b.example.net.
+# Other obscure mail-related RRs
+example.net. MG mg@example.net.
+example.net. MINFO rm@example.net. re@example.net.
+example.net. MR mr@example.net.
+
+# Obsolete RFC1183 RRs
+example.net. AFSDB 1 afsdb.example.net.
+example.net. RP rp@example.net. rp.example.net.
+example.net. RP rp2@example.net. .
+example.net. X25 311061700956
+example.net. ISDN 150862028003217
+example.net. ISDN 150862028003217;004
+example.net. RT 10 relay.example.net.
+
+# Obscure NSAP RR (RFC1706)
+example.net. NSAP 0x47.0005.80.005a00.0000.0001.e133.ffffff000162.00
+example.net. NSAP-PTR nsap.example.net.
+
+# Obscure PX RR (RFC2163)
+example.net. PX 15 px1.example.net. px2.example.net.
+
+# Obscure GPOS RR (RFC1712)
+example.net. GPOS '19.283';'-98.6502';'7034'
+
+# Obscure LOC RR (RFC1876)
+example.net. LOC 19 31 2.123 N 98 3 4 W 2000m 2m 4m 567m
+
+# Truncation test; this packet is just barely long enough to fit in
+# 512 bytes unless we get rid of the AR record
+truncate1.example.net. TXT 
+1234567890123456789012345678901234567890123456789012345678901234567890\
+1234567890123456789012345678901234567890123456789012345678901234567890\
+1234567890123456789012345678901234567890123456789012345678901234567890;\
+1234567890123456789012345678901234567890123456789012345678901234567890\
+1234567890123456789012345678901234567890123456789012345678901234567890\
+1234567890123456789012345678901234567890123456789012345678901
+
+# Truncation test; this packet is just barely long enough to not fit in
+# 512 bytes unless we get rid of the AR record
+truncate2.example.net. TXT 
+1234567890123456789012345678901234567890123456789012345678901234567890\
+1234567890123456789012345678901234567890123456789012345678901234567890\
+1234567890123456789012345678901234567890123456789012345678901234567890;\
+1234567890123456789012345678901234567890123456789012345678901234567890\
+1234567890123456789012345678901234567890123456789012345678901234567890\
+12345678901234567890123456789012345678901234567890123456789012
+
+# This one is just barely long enough to require lopping off both the
+# NS and AR records from the answer
+truncate3.example.net. TXT 
+1234567890123456789012345678901234567890123456789012345678901234567890\
+1234567890123456789012345678901234567890123456789012345678901234567890\
+1234567890123456789012345678901234567890123456789012345678901234567890;\
+1234567890123456789012345678901234567890123456789012345678901234567890\
+1234567890123456789012345678901234567890123456789012345678901234567890\
+1234567890123456789012345678901234567890123456789012345678901234567890;\
+1234567
+
+# This one is just barely too long to fit even if we gt rid of the
+# NS and AR records completely
+truncate4.example.net. TXT 
+1234567890123456789012345678901234567890123456789012345678901234567890\
+1234567890123456789012345678901234567890123456789012345678901234567890\
+1234567890123456789012345678901234567890123456789012345678901234567890;\
+1234567890123456789012345678901234567890123456789012345678901234567890\
+1234567890123456789012345678901234567890123456789012345678901234567890\
+1234567890123456789012345678901234567890123456789012345678901234567890;\
+1234567890123456789012345678901234567890123456789012345678901234567890\
+1234567890
+
+
+# NS delegation testing
+delegate.example.net. NS ns1.delegate.example.net.
+ns1.delegate.example.net. 10.1.2.3
+

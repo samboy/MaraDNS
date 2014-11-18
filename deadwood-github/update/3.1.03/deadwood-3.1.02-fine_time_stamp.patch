@@ -1,0 +1,199 @@
+--- deadwood-3.1.02/src/DwSys.c	2011-11-27 20:30:51.000000000 -0600
++++ deadwood-3.1.03/src/DwSys.c	2011-12-11 19:17:09.361385545 -0600
+@@ -359,8 +359,9 @@
+ 
+ /* Set the 64-bit timestamp starting at 290805600 unix() time (When
+  * the Blake's 7 episode Gambit was originally broadcast); this should
+- * be called once a second or so */
++ * be called several times a second.  Each second has 256 "ticks". */
+ void set_time() {
++#ifdef FALLBACK_TIME
+         time_t sys_time;
+         sys_time = time(0);
+         if(sizeof(sys_time) > 4) {
+@@ -375,6 +376,45 @@
+                 }
+         }
+         the_time <<= 8; /* Each second has 256 "ticks" */
++#else /* FALLBACK_TIME */
++#ifndef MINGW
++	struct timespec posix_time;
++	time_t coarse;
++	long fine;
++	long result;
++	result = clock_gettime(CLOCK_REALTIME, &posix_time);
++	if(result == 0) { /* Successful getting time */
++		coarse = posix_time.tv_sec;
++		fine = posix_time.tv_nsec;
++		if(sizeof(coarse) > 4) {
++			if(coarse != -1) {
++				the_time = coarse - 290805600;
++			}
++		} else {
++			if(coarse < DW_MINTIME) {
++				the_time = coarse + 4004161696U;
++			} else {
++				the_time = coarse - 290805600;
++			}
++		}
++		the_time <<= 8;
++		fine /= 3906250; /* 256 "ticks" per second */
++		if(fine > 0 && fine <= 256) {
++			the_time += fine;
++		}
++		//printf("time: %llx control %lx\n",the_time,time(0)-290805600);//DEBUG
++	}
++#else /* MINGW */
++	FILETIME win_time = { 0, 0 };
++	GetSystemTimeAsFileTime(&win_time);
++	the_time = win_time.dwHighDateTime & 0xffffffff;
++	the_time <<= 32;
++	the_time |= (win_time.dwLowDateTime & 0xffffffff);
++	the_time *= 2;
++	the_time /= 78125;
++	the_time -= 3055431475200LL;
++#endif /* MINGW */
++#endif /* FALLBACK_TIME */
+ }
+ 
+ /* Set up some signal handlers, so MaraDNS can write the cache to a file
+--- deadwood-3.1.02/src/Makefile.sl6	2010-08-06 11:41:58.000000000 -0500
++++ deadwood-3.1.03/src/Makefile.sl6	2011-12-11 19:17:09.376409807 -0600
+@@ -86,5 +86,5 @@
+ 	$(CC) $(FLAGS) -Wall -o Test Test.c $(OBJS)
+ 
+ Deadwood:	DwMain.c $(OBJS) DwStr_functions.h version.h
+-	$(CC) $(FLAGS) -Wall -o Deadwood DwMain.c $(OBJS) 
++	$(CC) $(FLAGS) -Wall -o Deadwood DwMain.c $(OBJS) -lrt
+ 
+--- deadwood-3.1.02/src/Makefile	2010-08-06 11:41:58.000000000 -0500
++++ deadwood-3.1.03/src/Makefile	2011-12-11 19:17:09.406294015 -0600
+@@ -86,5 +86,5 @@
+ 	$(CC) $(FLAGS) -Wall -o Test Test.c $(OBJS)
+ 
+ Deadwood:	DwMain.c $(OBJS) DwStr_functions.h version.h
+-	$(CC) $(FLAGS) -Wall -o Deadwood DwMain.c $(OBJS) 
++	$(CC) $(FLAGS) -Wall -o Deadwood DwMain.c $(OBJS) -lrt
+ 
+--- deadwood-3.1.02/src/DwMararc.c	2011-11-27 20:30:56.000000000 -0600
++++ deadwood-3.1.03/src/DwMararc.c	2011-12-11 19:17:09.421185813 -0600
+@@ -368,7 +368,11 @@
+         dwm_dict_init();
+         /* Numeric mararc variables have default values.  */
+         key_n[DWM_N_maxprocs] = 32;
++#ifndef FALLBACK_TIME
++        key_n[DWM_N_timeout_seconds] = 1;
++#else /* FALLBACK_TIME */
+         key_n[DWM_N_timeout_seconds] = 2;
++#endif /* FALLBACK_TIME */
+         key_n[DWM_N_dns_port] = 53;
+         key_n[DWM_N_upstream_port] = 53;
+         key_n[DWM_N_handle_overload] = 1;
+--- deadwood-3.1.02/src/DwSocket.c	2011-11-27 20:30:54.000000000 -0600
++++ deadwood-3.1.03/src/DwSocket.c	2011-12-11 19:17:09.466207180 -0600
+@@ -55,8 +55,13 @@
+ /* Some dwood3rc parameters */
+ int maxprocs = 32;
+ int max_tcp_procs = 8;
+-int timeout_seconds = 3;
+-int timeout_seconds_tcp = 5;
++#ifndef FALLBACK_TIME
++int timeout_seconds = 1;
++int timeout_seconds_tcp = 4;
++#else /* FALLBACK_TIME */
++int timeout_seconds = 2;
++int timeout_seconds_tcp = 4;
++#endif /* FALLBACK_TIME */
+ int dns_port = 53;
+ int upstream_port = 53;
+ int handle_overload = 1;
+@@ -478,8 +483,13 @@
+ 
+         maxprocs =        get_key_n(DWM_N_maxprocs,       8,16384,-1);
+         max_tcp_procs =   get_key_n(DWM_N_max_tcp_procs,  4,1024,-1);
++#ifndef FALLBACK_TIME
+         timeout_seconds = get_key_n(DWM_N_timeout_seconds,1,300,-1);
+         timeout_seconds_tcp = get_key_n(DWM_N_timeout_seconds_tcp,1,300,-1);
++#else /* FALLBACK_TIME */
++        timeout_seconds = get_key_n(DWM_N_timeout_seconds,2,300,-1);
++        timeout_seconds_tcp = get_key_n(DWM_N_timeout_seconds_tcp,2,300,-1);
++#endif /* FALLBACK_TIME */
+         dns_port =        get_key_n(DWM_N_dns_port,       1,65535,53);
+         upstream_port =   get_key_n(DWM_N_upstream_port,  1,65535,53);
+         handle_overload = get_key_n(DWM_N_handle_overload,0,1,1);
+--- deadwood-3.1.02/doc/Deadwood.ej	2011-11-01 10:25:23.000000000 -0600
++++ deadwood-3.1.03/doc/Deadwood.ej	2011-12-11 19:17:09.466207180 -0600
+@@ -382,7 +382,8 @@
+ <h2>timeout_seconds</h2>
+ This is how long Deadwood will wait before giving
+ up and discarding a pending UDP DNS reply.  
+-The default value for this is 2, as in 2 seconds.
++The default value for this is 1, as in 1 second, unless Deadwood was 
++compiled with FALLBACK_TIME enabled.
+ 
+ <h2>timeout_seconds_tcp</h2>
+ How long to wait on an idle TCP connection before 
+--- deadwood-3.1.02/INSTALL.txt	2011-07-22 15:41:19.000000000 -0500
++++ deadwood-3.1.03/INSTALL.txt	2011-12-11 19:34:33.269121339 -0600
+@@ -18,7 +18,7 @@
+ with gcc, you probably want to make the compile-time flags "-O3" unless
+ you are making this as small as possible for an embedded system.
+ 
+-To set tha flags to be "-O3" using a POSIX-compliant shell (Bash, ash, etc.):
++To set the flags to be "-O3" using a POSIX-compliant shell (Bash, ash, etc.):
+ 
+ 	export FLAGS='-O3'
+ 
+@@ -112,15 +112,7 @@
+ 
+ The simplest way to run this program in Windows XP is to use the prebuilt
+ binary (.exe file) which should be in the same place as the place where 
+-you obtained this source code, with a name like 
+-"Deadwood-3-0-XX-win32.zip" (or "Deadwood-3-0-XX-win32.7z").
+-
+-The simplest way to compile this program in Windows XP is to use the
+-version of Deadwood bundled with the Tiny C Compiler and a batch file
+-called "tcc-compile.bat" which compiles Deadwood; this has a filename
+-like "deadwood-tcc-3.0.XX.7z", but needs the 7-zip program 
+-(http://7.zip.org) or another program that can understand .7z files such
+-as WinRAR in order to decompress.
++you obtained this source code, with a name like "Deadwood-3-1-XX-win32.zip".
+ 
+ The way I compile this program in Windows XP is with MinGW-3.4.2 and
+ MSYS-1.0.10.  These programs are available at the following locations:
+@@ -143,9 +135,9 @@
+ 
+ 	Deadwood --install
+ 
+-Before you can run the service, you will need a file named "dwood2rc.txt"
++Before you can run the service, you will need a file named "dwood3rc.txt"
+ for Deadwood to read its parameters from in the same directory Deadwood.exe
+-was placed.  An example file is in doc\Windows\dwood2rc.txt
++was placed.  An example file is in doc\Windows\dwood3rc.txt
+ 
+ You need to make a file with random text in it called secret.txt.
+ 
+@@ -175,6 +167,8 @@
+ 
+ Deadwood service provides DNS-over-UDP and DNS-over-TCP support; note
+ that DNS packets too long to fit in a 512-byte UDP packet are not cached.
++Deadwood goes to some effort to shorten packets longer than 512 bytes long 
++before giving up and telling the user the remote packet has been truncated.
+ 
+ It should be possible to remove the Deadwood service:
+ 
+@@ -201,6 +195,14 @@
+ stdint.h for your compiler; I know there is a pstdint.h out there that 
+ works with most Microsoft and Borland compilers.
+ 
++Note also that some UNIX systems, such as Mac OS X, do not have the
++POSIX-compliant clock_gettime() call, which is used so Deadwood can retry
++more quickly when a DNS server upstream does not reply to our query.
++To compile Deadwood on a UNIX system without clock_gettime(), use the
++"Makefile.fallback" file.  From the src/ directory:
++
++	make -f Makefile.fallback
++
+ The Scientific Linux 6 Makefile should work on other Linux variants,
+ as well as other *NIX clones, but no guarantees.  For example,
+ there is a Cygwin Makefile included in the "src/" directory; I

@@ -1,0 +1,42 @@
+This is a list of functions that check to see if a given character is on
+a given list, and the characters they look for in the various parse/csv2* 
+files:
+
+In csv2_parse.c:
+
+csv2_is_number:          [0-9]
+csv2_is_upper:           [A-Z]
+csv2_is_lower:           [a-z]
+csv2_is_hibit:           [\x80-\xfd]
+csv2_is_delimiter:       [\r\n\t\ \|]
+csv2_isnt_delimiter:     [^\r\n\t\ \|]
+csv2_is_alpha:           [A-Za-z]
+csv2_is_alphanum:        [A-Za-z0-9\-\_]
+csv2_is_alphanum_orplus: [A-Za-z0-9\-\_\+]
+csv2_is_text:            [A-Za-z0-9\-\_\x80-\xff]
+csv2_is_dchar:           [A-Za-z0-9\-\_\%\x80-\xff]
+csv2_is_starwhitis:      [A-Za-z0-9\-\_\%\*\x80-\xff]
+
+In csv2_rr_aaaa.c:
+
+csv2_is_hex:             [0-9A-Fa-f]
+csv2_is_hex_or_colon:    [0-9A-Fa-f\:]
+
+In csv2_rr_a.c:
+
+csv2_is_number_or_dot:   [0-9\.]
+
+In csv2_rr_txt.c:
+
+csv2_is_txtchar:         [0-9a-zA-Z\-\_\+\%\!\^\=\;\\\']
+csv2_is_txt_bchar:       [0-9a-zA-Z\-\_\+\%\!\^\=]
+csv2_isnt_quote:         [^\']
+csv2_is_quote:           [\']
+csv2_is_pipe:            [\|]
+csv2_is_0123:		 [0-3]
+csv2_is_x:               [x]
+csv2_is_hash:		 [\#]
+csv2_is_octal:		 [0-7]
+csv2_is_bslash:		 [\\]
+csv2_is_semicolon:	 [\;]
+

@@ -1,0 +1,6 @@
+# Querying the server with the IP 127.0.0.1
+# Remote server said: NAME ERROR
+# Question: ZWwW.eXaMpLe.CoM.
+# NS replies:
+#example.com. +86400 soa example.com. hostmaster@example.com. 149219830 7200 3600 604800 3600
+# AR replies:

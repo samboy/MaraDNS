@@ -1,0 +1,238 @@
+                             Deadwood FAQ
+
+INDEX
+
+     1. What is Deadwood?
+
+     2. How do I use Deadwood?
+
+     3. How do I convert a MaraDNS mararc file in to a Deadwood
+     dwood3rc file?
+
+     4. I changed a configuration parameter but it has not affected
+     Deadwood
+
+     5. Deadwood sends out a lot of queries
+
+     6. Steve Gibson's DNS benchmark reports that Deadwood is
+     dropping a lot of DNS packets
+
+     7. Can Deadwood blacklist by domain?
+
+     8. Does Deadwood have DNSSEC support?
+
+     9. Records added to the cache when the timestamp is set to
+     1970 do not expire
+
+     10. I get the error message "Unknown dwood3rc string
+     parameter"
+
+     11. Internal IPs (198.168.x.x, 10.x.x.x, 172.16.x.x,
+     127.x.x.x) do not resolve in Deadwood
+
+     12. I get the error message "Uninitialized dictionary
+     variable"
+
+What is Deadwood?
+
+   Deadwood is the recursive DNS daemon (service) for MaraDNS 2.0.
+   MaraDNS 2.0 uses separate programs for authoritative records
+   (maradns) and recursive records (Deadwood). Deadwood is a
+   standalone recursive server that can either be used in
+   conjunction with MaraDNS's authoritative server, or by itself.
+   The program can run either in Scientific Linux 6 (and hopefully
+   other Linux and *NIX flavors) or in Windows XP (as well as newer
+   Windows releases).
+
+   The reason for this rewrite is because I have never been
+   satisfied with the recursive resolver in MaraDNS 1.0. When I
+   designed MaraDNS 1.0's recursive resolver, there were a number
+   of things needed to get full recursion to work that I did not
+   anticipate. By the time I shoehorned in all of the features
+   needed in a fully recursive DNS server, the code was rather
+   messy and difficult to maintain.
+
+   Ever since 2002, my plan has been to rewrite MaraDNS' recursive
+   code. In the fall of 2007, I finally started making the code;
+   the code became MaraDNS' recursive resolver in the fall of 2010.
+
+How do I use Deadwood?
+
+   Create a configuration file, /etc/dwood3rc, that looks like
+   this:
+
+ bind_address="127.0.0.1"
+ recursive_acl="127.0.0.1/8"
+ chroot_dir="/etc/deadwood"
+
+   Now, create an empty directory owned by root called
+   /etc/deadwood. Once this is done, compile Deadwood (as per
+   INSTALL.txt), and see if it runs. The above configuration file
+   will only allow connections using the loopback interface on the
+   same machine to resolve domains with Deadwood.
+
+How do I convert a MaraDNS mararc file in to a Deadwood dwood3rc file?
+
+   While some effort has been made to have Deadwood use the same
+   syntax and variables as MaraDNS, there are some differences to
+   keep in mind:
+
+     * Deadwood does not have a "ipv4_alias" parameter.
+     * Deadwood handles "verbose_level" differently; to get fully
+       verbose messages, "verbose_level" has to be 100 (as opposed
+       to MaraDNS' 10)
+
+I changed a configuration parameter but it has not affected Deadwood
+
+   Be sure to delete the cache file when making any changes to
+   Deadwood's configuration. In Windows, the cache file is called
+   dw_cache_bin (unless the dwood3rc.txt file is edited); in
+   CentOS, with the default dwood3rc file, the file is called
+   dw_cache.
+
+Deadwood sends out a lot of queries
+
+   Deadwood will do this on a slow network, since the default
+   parameters are tuned to get a fast reply on a broadband internet
+   connection. On a slow (dialup, saturated broadband, etc)
+   connection, timeout_seconds should have a value of 7 and
+   num_retries should have a value of 1. This is done by adding the
+   following lines to the dwood3rc file:
+
+ timeout_seconds = 7
+ num_retries = 1
+
+Steve Gibson's DNS benchmark reports that Deadwood is dropping a lot
+of DNS packets
+
+   After running this tool and carefully looking at Deadwood's
+   replies to Gibson's DNS benchmark tool, I can safely conclude
+   that Gibson's tool is buggy and that Deadwood is not dropping
+   the packets being sent to it.
+
+   A much better tool to use is Namebench, which correctly shows
+   that Deadwood drops very few (if any) DNS packets sent to it.
+   Namebench is available at available at
+   http://code.google.com/p/namebench/
+
+Can Deadwood blacklist by domain?
+
+   Yes; Deadwood can blacklist up to about 20,000 domains.
+
+   To blacklist a domain, add a line like this to the dwood3rc
+   file:
+
+ upstream_servers["example.com."] = "192.168.255.255"
+
+   Replace "example.com." with the domain to be blacklisted, and
+   replace "192.168.255.255" with an IP that is either:
+
+     * Guaranteed to be unreachable from the server running
+       Deadwood. In this case, any attempt to reach a blacklisted
+       domain will result in Deadwood timing out and eventually
+       returning a "SERVER FAIL" error message.
+     * Running a DNS server that always returns the same IP to a
+       given DNS query. This can be set up by using
+       "csv2_default_zonefile" in MaraDNS, running "microdns"
+       (included in MaraDNS' source tree), or even by running
+       "nanodns".
+
+   Deadwood uses a hash to store these blacklisted domains, and
+   should be able to store thousands of such domains without
+   significant slowdown. Please note that each root_servers and
+   upstream_servers entry takes up space in Deadwood's cache and
+   that maximum_cache_elements will need to be increased to store a
+   large number of blacklisted domains.
+
+   If it is more convenient to store the domains in separate files,
+   this can be done using Deadwood's "execfile" mechanism.
+
+Does Deadwood have DNSSEC support?
+
+   No. I have nothing against DNSSEC per se, but I plain simply am
+   not in a position to take the time and effort to implement
+   DNSSEC without being compensated for my work.
+
+Records added to the cache when the timestamp is set to 1970 do not
+expire
+
+   This bug was fixed in Deadwood 3.2.02; Deadwood now rejects
+   entries in the hash that expire in the far future (the issue was
+   that 1970 to Deadwood looks like the far future to make the
+   program Y2038-compliant).
+
+I get the error message "Unknown dwood3rc string parameter"
+
+   This error message indicates either one of two things:
+
+     * The relevant parameter is misspelled. For example, if one
+       has a line like this in their dwood3rc file:
+
+ bind_adress = "127.0.0.1"
+
+       This error message will appear. To fix it, correct the
+       spelling of the variable name:
+
+ bind_address = "127.0.0.1"
+
+
+     * The relevant parameter is a numeric parameter, but has quotes
+ around it. For example, the following line will trigger this error
+ message:
+
+filter_rfc1918 = "0"
+
+ To correct this, remove the quotes around the number:
+
+filter_rfc1918 = 0
+
+   For the record, all dwood3rc parameters except the following are
+   numeric parameters:
+
+     * bind_address
+     * cache_file
+     * chroot_dir
+     * ip_blacklist
+     * ipv4_bind_addresses
+     * random_seed_file
+     * recursive_acl
+     * root_servers
+     * upstream_servers
+
+Internal IPs (198.168.x.x, 10.x.x.x, 172.16.x.x, 127.x.x.x) do not
+resolve in Deadwood
+
+   Deadwood, by default, filters out RFC1918 and other non-routable
+   IPs from DNS replies, namely IPs in the form: 192.168.x.x,
+   172.[16-31].x.x, 10.x.x.x, 127.x.x.x, 169.254.x.x, 224.x.x.x,
+   and 0.0.x.x.
+
+   To disable this behavior, so that Deadwood can resolve internal
+   and other non-routable IPs, add this line to the Dwood3rc file:
+
+ filter_rfc1918 = 0
+
+   Note that some routers filter DNS packets with non-routable IPs.
+   Dave Owens, for example, had this problem.
+
+I get the error message "Uninitialized dictionary variable"
+
+   When setting either upstream_servers or root_servers, be sure to
+   precede it with a line like this:
+
+ upstream_servers = {}
+
+   or
+
+ root_servers = {}
+
+   For example, if a line like this causes the uninitialized
+   dictionary variable error:
+
+ upstream_servers["."]="8.8.8.8, 8.8.4.4"
+
+   Add a line so it looks like this:
+
+ upstream_servers = {}
+ upstream_servers["."]="8.8.8.8, 8.8.4.4"
+

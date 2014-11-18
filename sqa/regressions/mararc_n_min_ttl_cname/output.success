@@ -1,0 +1,26 @@
+# Querying the server with the IP 127.0.0.2
+# Question: Awww.example.com.
+www.example.com. +181 a 127.10.1.1
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.2
+# Question: Acname.example.com.
+cname.example.com. +182 cname ns.example.com.
+#ns.example.com. +182 a 127.0.0.3
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.2
+# Question: Awww.example.com.
+www.example.com. +500 a 127.10.1.1
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.2
+# Question: Acname.example.com.
+cname.example.com. +500 cname ns.example.com.
+#ns.example.com. +500 a 127.0.0.3
+# NS replies:
+# AR replies:
+

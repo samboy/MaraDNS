@@ -1,0 +1,8 @@
+These files need to annp.tmac file to compile.  The supplied tmac.an.patch
+file is the diff between the file an-old.tmac which comes with Groff 1.18.1 
+and the annp.tmac macro set which the ej2ps script uses.
+
+The generated PDF files are optimized to print on to Letter paper.  This is
+set in doc/en/man/make.pdf if you wish to make this A4 or what not (look 
+for -P -pletter).
+

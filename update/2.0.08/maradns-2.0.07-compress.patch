@@ -1,0 +1,67 @@
+--- maradns-2.0.07/dns/Compress.c	2013-01-19 21:25:03.000000000 -0800
++++ maradns-2.0.08/dns/Compress.c	2013-07-13 18:19:07.365055247 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2006 Sam Trenholme
++/* Copyright (c) 2002-2013 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -111,6 +111,49 @@
+     return decomp_get_label(packet,offset);
+     }
+ 
++/* compress_issame: Determine if two js_string objects are identical
++   Case insensitive search ('A' is the same as 'a')
++   input: Pointers to the two string objects
++   output: 1 if they are the same, 0 otherwise, -1 on error */
++int compress_issame(js_string *js1, js_string *js2) {
++    int counter = 0;
++    int max;
++    int lc1, lc2;
++
++    /* Sanity checks */
++    if(js_has_sanity(js1) == -1)
++        return -1;
++    if(js_has_sanity(js2) == -1)
++        return -1;
++
++    /* They are not the same if they have different sizes for a character */
++    if(js1->unit_size != js2->unit_size)
++        return 0;
++    /* Nor are they the same if they have different lengths */
++    if(js1->unit_count != js2->unit_count)
++        return 0;
++    /* They both have to use the same encoding */
++    /*if(js1->encoding != js2->encoding)
++        return 0; */ /* This requirement disabled because this just
++                        causes annoyances */
++
++    max = js1->unit_count;
++
++    /* If any characters in the actual string differer, they are different */
++    while(counter < (max * js1->unit_size)) {
++        lc1 = *(js1->string + counter);
++	lc2 = *(js2->string + counter);
++	if(lc1 >= 'A' && lc1 <= 'Z') { lc1 += 32; }
++	if(lc2 >= 'A' && lc2 <= 'Z') { lc2 += 32; }
++        if(lc1 != lc2)
++            return 0;
++        counter++;
++        }
++
++    /* Otherwise, they are identical */
++    return 1;
++    }
++
+ /* compress_compare_dlabels
+ 
+    This compares two dlabels inside two (or the same) js_string objects.
+@@ -132,7 +175,7 @@
+         js_destroy(a);
+         return JS_ERROR;
+         }
+-    ret = js_issame(a,b);
++    ret = compress_issame(a,b);
+     js_destroy(a);
+     js_destroy(b);
+     return ret;

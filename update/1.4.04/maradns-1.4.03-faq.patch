@@ -1,0 +1,128 @@
+--- maradns-1.4.03/doc/en/webpage/faq.embed	2010-02-02 09:12:44.000000000 -0800
++++ maradns-1.4.04/doc/en/webpage/faq.embed	2010-07-30 23:16:26.000000000 -0700
+@@ -123,6 +123,12 @@
+ <p>48. <A href="#reject">I'm having problems using MaraDNS with some *NIX
+    command line applications like telnet</A>
+ 
++<p>49. <A href="#virus">My virus scanner reports that MaraDNS or Deadwood
++   has a virus</A>
++
++<p>50. <A href="#subscribe">I can not subscribe to the MaraDNS mailing 
++	list</A>
++
+ </BLOCKQUOTE>
+ <H2>ANSWERS</H2>
+ 
+@@ -324,6 +330,13 @@
+ MaraDNS is cold, hard cash.  If you want me to keep a given feature
+ proprietary, you better have lots of cold hard cash.  
+ <p>
++The only feature I will implement for free is to finish up full
++recursion in Deadwood, including IPv6 support.  I have <A 
++href=http://maradns.blogspot.com/2009/06/why-i-will-not-implement-dns-curve.html>no
++plans to implement DNS curve</A>, nor <A 
++href=http://maradns.blogspot.com/2009/11/maradns-wish-list-status.html>DNSsec,
++Geo IP, or whatever feature you want me to implement for fun and for free</A>.
++<p>
+ Keep in mind that both the BIND and NSD name servers were 
+ developed by having the programmers paid to work on the programs.  
+ PowerDNS was originally commercial software with the author only 
+@@ -1061,18 +1074,18 @@
+ 
+ <h2>44. MaraDNS 1 has a problem resolving a domain</h2>
+ 
+-This issue should be fixed when and if I release MaraDNS 2.0.  
++This issue should be fixed when I release MaraDNS 2.0.  
+ 
+ <p>
+ 
+-Here's what happening: I'm rewriting the recursive resolver for MaraDNS.
++Here's what happening: I have rewritten the recursive resolver for MaraDNS.
+ The old code was always designed to be a placeholder until I wrote a new
+ recursive resolver.
+ 
+ <p>
+ 
+-The new recursive resolver is called "Deadwood"; right now it's a fully
+-functional non-recursive DNS cache.  More information is here:
++The new recursive resolver is called "Deadwood"; right now it's fully
++functional and undergoing beta-testing.  More information is here:
+ <p>
+ <A href=http://maradns.blogspot.com/search/label/Deadwood>http://maradns.blogspot.com/search/label/Deadwood</A>
+ <p>
+@@ -1080,11 +1093,11 @@
+ <p>
+ Since the old recursive code is a bit difficult to maintain, and since I
+ in the process of rewriting the recursive code, my rule is that I will only
+-resolve issues where an Alexa top 500 site can not resolve with MaraDNS'
+-current recursive resolver at all.  
++resolve security issues with MaraDNS 1.0's recursive resolver without
++getting paid.
+ <p>
+ If resolving a given domain with MaraDNS' code is an urgent issue
+-for you, please consider sponsoring MaraDNS:
++for you, please consider helping beta-test Deadwood, or sponsoring MaraDNS:
+ <p>
+ <A href=http://www.maradns.org/products.html>http://www.maradns.org/products.html</A>
+ 
+@@ -1174,4 +1187,60 @@
+ <p>
+ <tt>reject_ptr = 1</tt>
+ 
++<a name=virus> </a>
++<h2>49. My virus scanner reports that MaraDNS or Deadwood
++   has a virus</h2>
++
++This can be caused either by a poorly written anti-virus program reporting
++a false positive, or because a virus on your system has infected your copy
++of MaraDNS/Deadwood.  
++
++<p>
++
++Please use <A href=http://www.gpg4win.org/>GPG</A> to verify that the 
++file which your scanner reports having a virus in has not been altered.
++In addition, please scan the file with AVG (free for non-commercial use)
++to verify your virus scanner has not reported a false positive.
++
++<p>
++
++If you have verified the GPG signature of the program and AVG reports a 
++virus, please let us know on the MaraDNS mailing list.  Otherwise, please
++use a better virus scanner and make sure there are no viruses on your 
++computer.
++
++<a name=subscribe> </a>
++<h2>50. I can not subscribe to the MaraDNS mailing list</h2>
++
++The procedure for subscribing to the mailing list is as follows:
++
++<ul>
++
++<li>Send an email to list-request@maradns.org with "Subscribe" as the subject
++
++<li>You will get an email from list-request@maradns.org asking you to
++	confirm your subscription.  This can be done by replying to the
++	message, or, more simply, by clicking on the link in the message.
++
++<li>Once you click on that link, click on the button marked 
++	"subscribe to list list"
++
++<li>You will now get a message stating 'Welcome to the "list" mailing list'.
++
++<li>This email will tell you how to post to the mailing list.  I suggest
++	reading it.
++
++</ul>
++
++If you get an email from list-request@maradns.org with the subject
++"The results of your email commands", you did not correctly send an
++email to list-request@maradns.org with the subject "Subscribe".
++
++<p>
++
++If you do not get the email from list-request@maradns.org asking you for
++a confirmation, ensure that this email is not in your "spam" or "junk
++mail" folder.  If you are unable to get these emails at your email address,
++please get a gmail email account, which can successfully subscribe to the
++MaraDNS mailing list.
+ 

@@ -1,0 +1,40 @@
+#!/bin/sh
+
+# This makes sure Deadwood can follow a multi-link CNAME entry
+
+# We put this in a separate script so it's easier to run just MaraDNS
+./setup.maradns
+
+../../../server/maradns -f mararc2 > /dev/null 2>&1 &
+sleep 1
+../../../server/maradns -f mararc3 > /dev/null 2>&1 &
+sleep 1
+../../../server/maradns -f mararc4 > /dev/null 2>&1 &
+sleep 1
+../../../server/maradns -f mararc5 > /dev/null 2>&1 &
+sleep 1
+
+# Run Deadwood and the example query
+cat > dwood3rc << EOF
+bind_address="127.0.0.1"
+recursive_acl="127.0.0.1/8"
+chroot_dir="/etc/deadwood"
+root_servers = {}
+root_servers["."] = "127.0.0.2"
+filter_rfc1918 = 0
+EOF
+
+../../src/Deadwood -f dwood3rc > /dev/null 2>&1 &
+sleep 1
+
+askmara Acname1.example.com. | perl -pe 's/\+[0-9]+//'
+
+# Clean up
+kill $( ps auxw | grep maradns | grep -v grep | awk '{print $2}' )
+kill $( ps auxw | grep Deadwood | grep -v grep | awk '{print $2}' )
+sleep 1
+# Linux specific; this does bad things on Solaris
+killall maradns > /dev/null 2>&1
+killall Deadwood > /dev/null 2>&1
+./clean.up.files
+

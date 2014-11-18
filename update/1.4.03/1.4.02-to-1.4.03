@@ -1,0 +1,217 @@
+#!/bin/sh -e
+
+# This script updates MaraDNS 1.4
+
+# To run this script, make sure that this script is in the directory
+# containing the tarball for the version of MaraDNS you wish to update, and
+# all of the patches are in a directory entitled 'patches'.
+
+# For example, to update MaraDNS 1.4.02 to 1.4.03, make sure 
+# maradns-1.3.02.tar.lzma is in the same directory as this script, and
+# that the directory containing this script has a directory called
+# "patches/" which has all of the maradns-1.2.02*.patch files.
+
+CURRENT=${0%%-*}
+CURRENT=${CURRENT##*/}
+NEXT=${0##*-}
+
+# The revision number; in the case of having multiple snapshots a day,
+# the revision number can be incremented so as to minimize confusion
+# This is only done when more than one snapshop is uploaded to the
+# maradns.org server in a given day.
+REVISION=.1
+
+# Make a clean CURRENT install, which we rename NEXT
+rm -fr maradns-$CURRENT 2> /dev/null
+rm -fr maradns-$NEXT 2> /dev/null
+echo extracting tarball
+tar xjf maradns-$CURRENT.tar.bz2
+if [ $? != 0 ] ; then
+	echo run this from the correct directory
+	exit 1
+fi
+rm -fr maradns-$NEXT*
+mv maradns-$CURRENT maradns-$NEXT
+cd maradns-$NEXT
+
+# The patches
+
+mkdir update/$NEXT
+if [ "$1" != "new" ] ; then
+	cp ../patches/maradns-$CURRENT* update/$NEXT
+	#cp ../patches/maradns* update/$NEXT
+	#echo
+fi
+
+# This is one of the few places where we will need to change anything
+# in this script from version to version
+
+echo applying patches
+
+if [ "$1" != "new" ] ; then
+
+	# Update download link (this is always done)
+	patch -p1 < update/$NEXT/maradns-$CURRENT-download.patch
+
+	# Patch: Update changelog
+	patch -p1 < update/$NEXT/maradns-$CURRENT-changelog.patch
+
+fi
+
+# Update RPM spec file (We now have a script make the .spec file)
+rm build/maradns-$CURRENT.spec
+tools/misc/make.maradns.spec $NEXT > build/maradns-$NEXT.spec
+
+# Copy over the Deadwood project, which will eventually be an extensive
+# rewrite of MaraDNS (starting with the recursive core)
+tar xjf ../files/deadwood-2.4.10.tar.bz2
+# Regenerate the random prime number
+echo Making new random prime
+cd deadwood-2.4.10/src
+cc -o foo RandomPrime.c
+./foo > DwRandPrime.h
+rm foo
+cd ../..
+
+# Release-specific fixes and changes go here
+
+#Patch #1: Update the advocacy document.
+patch -p1 < update/$NEXT/maradns-1.4.02-advocacy.patch
+
+#Patch #2: Update the license document.
+patch -p1 < update/$NEXT/maradns-1.4.02-license.patch
+
+#Patch #3: Fix a segfault caused by referencing a null pointer 
+patch -p1 < update/$NEXT/maradns-1.4.02-parse_segfault.patch
+
+#Patch #4: Document reject_aaaa and reject_ptr
+patch -p1 < update/$NEXT/maradns-1.4.02-reject_doc.patch
+
+# Patch #5: Report parsing crash "security" bug
+patch -p1 < update/$NEXT/maradns-1.4.02-security.patch
+
+# Anything below this line normally is not changed between MaraDNS versions
+
+# Make sure text changelog and FAQ are up-to-date
+cp doc/en/webpage/faq.embed doc/en/source/faq.embed
+cp doc/en/webpage/changelog.embed doc/en/source/changelog.embed
+
+# Convert tabs in code to spaces, since this is inconsistant in different
+# programs
+echo removing tabs from source files
+if true ; then
+	for a in $( find . -type f -name \*.[ch] ) ; do 
+		col -x < $a > foo
+		mv foo $a
+	done
+fi
+
+echo updating documentation
+# Update the documentation
+cd doc/en
+make
+cd man
+make
+cd ../examples
+make
+cd ../tutorial
+make
+cd ../text
+make
+cd ../webpage
+#../../../tools/misc/make.download.embed > download.embed
+make
+# Go back to the maradns dir
+cd ../../..
+
+rm CHANGELOG
+ln -s doc/en/changelog.txt CHANGELOG
+
+# Go one level higher than the toplevel directory to copy this script
+# over
+cd ..
+
+# Put this script in the "build" directory
+cp $0 maradns-$NEXT/update/$NEXT
+
+if [ "$1" = "new" ] ; then
+	tar xjf maradns-$CURRENT.tar.bz2
+	echo OK, both maradns-$CURRENT and maradns-$NEXT made\; you
+	echo now can start making patches.
+	exit 0
+fi
+
+if [ "$1" != "go" ] && [ "$1" != "snap" ] && [ "$1" != "work" ] ; then
+	echo OK, maradns-$NEXT built.  Confirm this compiles and	
+	echo perform basic regression before re-running this to make
+	echo the tarballs.  Once you have tested this, rerun this 
+	echo script as: \"$0 go\" or as \"$0 snap\" 
+        echo to make a daily snapshot
+	exit 0
+fi
+
+if [ "$1" = "work" ] ; then
+	tar xjf maradns-$CURRENT.tar.bz2
+	echo OK, both maradns-$CURRENT and maradns-$NEXT made\; you
+	echo now can make more patches as needed.  
+	exit 0
+fi
+
+# Build the tarballs
+echo making new tarballs
+
+if [ "$1" = "snap" ] ; then
+	SNAP=Q.$( date +%Y%m%d )$REVISION
+	rm -fr maradns-$SNAP
+	mv maradns-$NEXT maradns-$SNAP
+	tar cjf maradns-$SNAP.tar.bz2 maradns-$SNAP
+	exit 0
+else
+	SNAP=$NEXT
+	tar cjf maradns-$SNAP.tar.bz2 maradns-$SNAP
+	tar czf maradns-$SNAP.tar.gz maradns-$SNAP
+
+	# All of the compression we actually use was originally written by 
+	# Igor Pavlov for the 7-zip compression suite
+	echo shrinking .gz tarball
+	advdef -z -4 maradns-$SNAP.tar.gz
+fi
+
+exit 0 # No exotic compression any more
+
+echo using exotic compression
+tar cf maradns-$SNAP.tar maradns-$SNAP
+
+echo lzma compression \(this will take about 5 minutes\)
+date
+# To decompress: cat file.tar.lzma | lzma d -si -so | tar xvf -
+# -d20 makes the file almost as small as -d22, but uses 1/4 of the memory
+# (only a little over one meg needed for decompression)
+lzma e maradns-$SNAP.tar maradns-$SNAP.tar.lzma -a2 -d20 -fb255
+date
+echo
+
+# Clean up the uncompressed tarball
+rm maradns-$SNAP.tar
+
+exit 0
+
+# The other exotic compressors can't be run in a pipeline
+
+echo 7zip compression
+date
+7za a maradns-$SNAP.tar.7z maradns-$SNAP.tar
+date
+echo
+
+echo paq6 compression \(This will take 2\-3 minutes\)
+date
+paq6v2 -2 maradns-$SNAP.tar.pq6 maradns-$SNAP.tar
+date
+echo
+
+echo rzip compression
+date
+rzip maradns-$SNAP.tar
+date
+echo

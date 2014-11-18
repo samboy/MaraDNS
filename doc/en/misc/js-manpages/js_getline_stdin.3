@@ -1,0 +1,56 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_getline_stdin 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_getline_stdin \- grab a line of text from the standard input
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_getline_stdin(js_string *js)"
+.fi
+.SH DESCRIPTION
+.B js_getline_stdin
+reads a single line from the standard input,
+and places the read contents in the 
+.I js_string
+object 
+.B js.
+.SH ARGUMENTS
+.B js
+is the 
+.I js_string
+object we place the read contents in.
+.SH WARNING
+The
+.I js_string
+object needs to be set to
+.I JS_US_ASCII,
+or another non-binary encoding,
+before using this function.  This is because there are no newline characters
+(nor any other special characters) in binary data.
+.SH "RETURN VALUE"
+.B js_getline_stdin
+returns 
+.I JS_SUCCESS 
+on successful reading of a line,
+.I JS_ERROR
+otherwise.
+.SH EXAMPLE
+The following reads a single line from the standard input and places
+the contents in foo:
+
+.nf
+	js_string *foo;
+	foo = js_create(256,1);		
+	js_set_encode(foo,JS_US_ASCII);
+	js_getline_stdin(foo);
+.fi
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

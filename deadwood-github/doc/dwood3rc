@@ -1,0 +1,66 @@
+# This is an example deadwood rc file 
+# Note that comments are started by the hash symbol
+
+bind_address="127.0.0.1" # IP we bind to
+
+# The following line is disabled by being commented out
+#bind_address="::1" # We have optional IPv6 support
+
+chroot_dir = "/etc/deadwood" # Directory we run program from (not used in Win32)
+
+# The following upstream DNS servers are Google's newly-announced (as of
+# December, 2009) public DNS servers.  For more information, see
+# the page at http://code.google.com/speed/public-dns/
+#
+# These IPs can be changed to the IPs of any recursive DNS servers that
+# can be reached from the computer running Deadwood.
+#
+# These are commented out; if upstream_servers is not set, Deadwood will
+# act as a recursive DNS server
+#
+# Please note that each upstream_servers entry takes up space in Deadwood's
+# cache and that maximum_cache_elements will need to be increased to store
+# a large number of these entries.
+#upstream_servers = {}
+#upstream_servers["."]="8.8.8.8, 8.8.4.4" # Servers we connect to
+
+# It is also possible to use other root servers or to blacklist
+# a phising website.  However, to do this, root_servers needs to be
+# defined.  For example, to blacklist the domain "phish.example.com":
+#root_servers = {}
+# ICANN DNS root servers (Deadwood default if both root_servers and
+# upstream_servers are not defined)
+#root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
+#root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, 128.63.2.53, "
+#root_servers["."]+="192.36.148.17, 192.58.128.30, 193.0.14.129, 199.7.83.42, "
+#root_servers["."]+="202.12.27.33"
+#root_servers["phish.example.com."]="10.254.254.254"
+# Please note that each root_servers entry takes up space in Deadwood's
+# cache and that maximum_cache_elements will need to be increased to store
+# a large number of these entries.
+
+recursive_acl = "127.0.0.1/16" # Who is allowed to use the cache
+
+maxprocs = 8 # Maximum number of pending requests
+handle_overload = 1 # Send SERVER FAIL when overloaded
+
+maradns_uid = 99 # UID Deadwood runs as
+maradns_gid = 99 # GID Deadwood runs as
+
+maximum_cache_elements = 60000
+
+# If you want to read and write the cache from disk, make sure chroot_dir 
+# above is readable and writable by the maradns_uid/gid above, and 
+# uncomment the following line
+cache_file = "dw_cache"
+
+# The following line tells deadwood to fetch an expired record if it's 
+# impossible to connect to any nameservers
+resurrections = 1
+
+# By default, for security reasons, Deadwood does not allow IPs in the
+# 192.168.x.x, 172.[16-31].x.x, 10.x.x.x, 127.x.x.x, 169.254.x.x,
+# 224.x.x.x, or 0.0.x.x range.  If using Deadwood to resolve names
+# on an internal network, uncomment the following line:
+#filter_rfc1918 = 0
+

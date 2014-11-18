@@ -1,0 +1,44 @@
+--- maradns-2.0.07/tcp/fetchzone.c	2013-01-19 21:25:03.000000000 -0800
++++ maradns-2.0.08/tcp/fetchzone.c	2014-01-08 12:24:00.000000000 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2007 Sam Trenholme
++/* Copyright (c) 2002-2014 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -75,7 +75,7 @@
+ 
+     unsigned char len[2];
+ 
+-    if((argc < 3 && argc > 4) || argv[1] == 0 || argv[2] == 0) {
++    if(argv[1] == 0 || argv[2] == 0) {
+         harderror(L_USAGE_FETCH); /* "Usage: getzone zone_name zone_server_IP" */
+         }
+     if(argc == 4 && argv[3] == 0) {
+--- maradns-2.0.08/server/MaraBigHash.c.orig	2014-01-08 12:27:06.000000000 -0800
++++ maradns-2.0.08/server/MaraBigHash.c	2014-01-08 12:28:20.000000000 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2013 Sam Trenholme
++/* Copyright (c) 2002-2014 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -1142,7 +1142,8 @@
+                    the answers */
+                 record = qdata.value;
+                 do {
+-                    if(answer_ip_query(qtype,record->data,a_query) == JS_ERROR)
++                    if(record != 0 &&
++		       answer_ip_query(qtype,record->data,a_query) == JS_ERROR)
+                         continue;
+                     if(change_rtype(a_query,RR_A) == JS_ERROR)
+                         continue;
+@@ -1171,7 +1172,7 @@
+                         if(record != 0 && adata.value != 0) {
+                             record->ip6 = adata.value;
+                             }
+-			else { record->ip6 = 0; }
++			else { if(record != 0) {record->ip6 = 0;} }
+                         }
+ #endif
+                     } while ((record = record->next) != 0);

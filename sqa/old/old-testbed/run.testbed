@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ ! -e /var/maradns ] ; then
+	./make.testbed
+fi
+../../server/maradns -f $(pwd)/mararc.1 &
+../../server/maradns -f $(pwd)/mararc.2 &
+# .3 is reserved for the recursive server
+../../server/maradns -f $(pwd)/mararc.4 &
+../../server/maradns -f $(pwd)/mararc.5 &
+../../server/maradns -f $(pwd)/mararc.6 &
+../../server/maradns -f $(pwd)/mararc.7 &
+../../server/maradns -f $(pwd)/mararc.8 &
+# Dead host simulated
+#../dead_host_simulate 127.240.240.241 &
+#../dead_host_simulate 127.240.240.242 &
+#../dead_host_simulate 127.240.240.243 &
+#../dead_host_simulate 127.240.240.244 &
+#../dead_host_simulate 127.240.240.245 &
+#../dead_host_simulate 127.240.240.246 &
+#../dead_host_simulate 127.240.240.247 &
+#../dead_host_simulate 127.240.240.248 &
+#../dead_host_simulate 127.240.240.249 &

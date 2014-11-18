@@ -1,0 +1,214 @@
+#!/bin/sh -e
+
+# The revision number; in the case of having multiple snapshots a day,
+# the revision number can be incremented so as to minimize confusion
+# This is only done when more than one snapshop is uploaded to the
+# maradns.org server in a given day.  Here at the top to be easy to change.
+REVISION=1
+
+# This script updates Deadwood 3.0
+
+# To run this script, make sure that this script is in the directory
+# containing the tarball for the version of Deadwood you wish to update, and
+# all of the patches are in a directory entitled 'patches'.
+
+CURRENT=${0%%-*}
+CURRENT=${CURRENT##*/}
+NEXT=${0##*-}
+
+# Make a clean CURRENT install, which we rename NEXT
+rm -fr deadwood-$CURRENT 2> /dev/null
+rm -fr deadwood-$NEXT 2> /dev/null
+echo extracting tarball
+tar xjf deadwood-$CURRENT.tar.bz2
+if [ $? != 0 ] ; then
+	echo run this from the correct directory
+	exit 1
+fi
+rm -fr deadwood-$NEXT*
+mv deadwood-$CURRENT deadwood-$NEXT
+cd deadwood-$NEXT
+
+# The patches
+
+mkdir update/$NEXT
+if [ "$1" != "new" ] ; then
+	cp ../patches/deadwood-$CURRENT* update/$NEXT
+	#cp ../patches/maradns* update/$NEXT
+	#echo
+fi
+
+# Regenerate Deadwood's random prime number (always done)
+echo Making new random prime
+cd src
+rm -f *orig # While we're here, remove any pesky .orig files
+cc -o foo RandomPrime.c
+./foo > DwRandPrime.h
+rm foo
+cd ..
+
+# This is one of the few places where we will need to change anything
+# in this script from version to version
+
+echo applying patches
+
+# BEGIN Release-specific fixes and changes go here
+
+# Patch: Update the CHANGELOG
+patch -p1 < update/$NEXT/deadwood-3.1.03-changelog.patch
+
+# Patch: Fix ttl_expire issue reported by Srinivas Hebbar 
+patch -p1 < update/$NEXT/deadwood-3.1.03-ttl_expire.patch
+
+# Patch: Add doc about running Deadwood on a system which sometimes
+# has a timestamp in 1970
+#cp src/DwHash.c src/DwHash.c.orig
+patch -p1 < update/$NEXT/deadwood-3.1.03-bad_timestamp.patch
+
+# Patch: Add HTML documentation 
+patch -p1 < update/$NEXT/deadwood-3.1.03-html_doc.patch
+
+# Patch: Add Q & A about "Unknown dwood3rc string parameter" error message
+#cp doc/FAQ.ej doc/FAQ.ej.orig
+patch -p1 < update/$NEXT/deadwood-3.1.03-unknown_string_parameter_FAQ.patch
+
+# Patch: Update the top of the FAQ to reflect the fact MaraDNS 2.0 came out 
+# well over a year ago
+#cp doc/FAQ.ej doc/FAQ.ej.orig
+patch -p1 < update/$NEXT/deadwood-3.1.03-faq_maradns_2_out.patch
+
+# Patch: Add a TOC to the FAQ
+#cp doc/FAQ.ej doc/FAQ.ej.orig
+patch -p1 < update/$NEXT/deadwood-3.1.03-faq_toc.patch
+
+# Patch: Tweak record expire
+#cp src/DwHash.c src/DwHash.c.orig
+patch -p1 < update/$NEXT/deadwood-3.1.03-expire_tweak.patch
+
+# Patch: Update Deadwood BUGS section to point out we now usually get
+# usable information from truncated packets, and that Deadwood
+# (IMO, correctly) ignores RFC2181 doing so.
+patch -p1 < update/$NEXT/deadwood-3.1.03-truncation_doc.patch
+
+# Patch: Make sure that we don't load from the file cache elements 
+# that never expire
+#cp src/DwHash.c src/DwHash.c.orig
+patch -p1 < update/$NEXT/deadwood-3.1.03-cache_store_tweak.patch
+
+# Patch: Fix resolution problem with tebowseyeblack.com
+#cp src/DwHash.c src/DwHash.c.orig
+patch -p1 < update/$NEXT/deadwood-3.1.03-tebowseyeblack.com.patch
+
+# Patch: Make default num_retries 5, not 2 (makes Deadwood more reliable;
+# confirmed with "alexa" SQA test)
+patch -p1 < update/$NEXT/deadwood-3.1.03-num_retries.patch
+
+# Patch: Give the DNS-over-TCP more time to get a reply from a remote
+# server (this is not an issue in the real world, but the new timeouts
+# broke one of the DNS-over-TCP regressions; since DNS-over-TCP is
+# so rarely used, may as well change it like this)
+patch -p1 < update/$NEXT/deadwood-3.1.03-more_tcp_time.patch
+
+# Add regression test for ttl_expire bug reported by Srinivas Hebbar 
+cd sqa
+tar xvjf ../../sqa_ttl_expire.tar.bz2
+cd ..
+
+# Add example dwood3rc file with all documented parameters shown
+cp ../dwood3rc-all doc/
+
+# Add "top Alexa domains" test to sqa tree (not a regression, but a useful
+# test)
+cp ../alexa.awk sqa/
+
+# END Release-specific fixes/changes
+
+# This script with the "orig" argument can used if making a release 
+# that is making changes to an already-patched version of Deadwood
+# Change "orig" to "work" if implementing new features
+if [ "$1" = "orig" ] ; then 
+	cd src
+	for a in *.c *.h ; do
+		cp $a $a.orig
+	done
+	cd ..
+	cp doc/Deadwood.ej doc/Deadwood.ej.orig
+fi
+
+# Convert tabs in code to spaces, since this is inconsistant in different
+# programs; disable when in "work" mode since it messes up patches
+if [ "$1" != "work" ] ; then 
+	echo removing tabs from source files
+	for a in $( find . -type f -name \*.[ch] ) ; do 
+		col -x < $a > foo
+		mv foo $a
+	done
+fi
+chmod 755 src/make.version.h
+
+echo updating documentation
+# Update the documentation
+cd doc
+make
+# Go back to the deadwood dir
+cd ..
+
+# Go one level higher than the toplevel directory to copy this script
+# over
+cd ..
+
+# Put this script in the "build" directory
+cp $0 deadwood-$NEXT/update/$NEXT
+
+# Version number always current
+cd deadwood-$NEXT/src
+./make.version.h > version.h
+cd ../..
+
+if [ "$1" = "new" ] ; then
+	tar xjf deadwood-$CURRENT.tar.bz2
+	echo OK, both deadwood-$CURRENT and deadwood-$NEXT made\; you
+	echo now can start making patches.
+	exit 0
+fi
+
+if [ "$1" != "go" ] && [ "$1" != "snap" ] && [ "$1" != "work" ] ; then
+	echo OK, deadwood-$NEXT built.  Confirm this compiles and	
+	echo perform basic regression before re-running this to make
+	echo the tarballs.  Once you have tested this, rerun this 
+	echo script as: \"$0 go\" or as \"$0 snap\" 
+        echo to make a daily snapshot
+	exit 0
+fi
+
+if [ "$1" = "work" ] ; then
+	tar xjf deadwood-$CURRENT.tar.bz2
+	echo OK, both deadwood-$CURRENT and deadwood-$NEXT made\; you
+	echo now can make more patches as needed.  
+	cd deadwood-$NEXT/src
+	echo '#define VERSION "'$NEXT'-pre"' > version.h
+	cd ../..
+	exit 0
+fi
+
+# Build the tarballs
+echo making new tarballs
+
+if [ "$1" = "snap" ] ; then
+	SNAP=S-$( date +%Y%m%d )-$REVISION
+	rm -fr deadwood-$SNAP
+	mv deadwood-$NEXT deadwood-$SNAP
+	cd deadwood-$SNAP/src
+	./make.version.h > version.h
+	cd ../..
+	tar cjf deadwood-$SNAP.tar.bz2 deadwood-$SNAP
+	exit 0
+else
+	SNAP=$NEXT
+	cd deadwood-$SNAP/src
+	./make.version.h > version.h
+	cd ../..
+	tar cjf deadwood-$SNAP.tar.bz2 deadwood-$SNAP
+fi
+
+exit 0 # Done

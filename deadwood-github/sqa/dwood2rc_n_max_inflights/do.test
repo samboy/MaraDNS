@@ -1,0 +1,84 @@
+#!/bin/sh
+
+# Make sure Deadwood's inflight merging works (and can be disabled with
+# max_inflights)
+
+cc -o microdns_delay microdns_delay.c 
+
+killall maradns > /dev/null 2>&1
+
+./microdns_delay 10.1.2.3 127.0.0.2 &
+
+for VALUE in 1 20 ; do
+
+cat > dwood2rc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+upstream_servers = {}
+upstream_servers["."]="127.0.0.2"
+recursive_acl="127.0.0.1/16"
+maxprocs=8
+num_retries=1
+timeout_seconds=10
+max_inflights=${VALUE}
+filter_rfc1918 = 0
+EOF
+
+../../src/Deadwood -f dwood2rc | grep -v version &
+sleep 1
+echo max_inflights is ${VALUE}
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+sleep 10
+killall Deadwood > /dev/null 2>&1
+sleep 1
+
+done
+
+# Valgrind tests
+valgrind ../../src/Deadwood -f dwood2rc 2>&1 |  egrep '(ERROR|lost:)' | \
+	perl -pe 's/\(.*\)//' | awk '{$1="";print}' &
+
+#valgrind --leak-check=full ../../src/Deadwood -f dwood2rc &
+
+sleep 1
+echo
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+sleep 10
+askmara -t 1 Awww3.example.com. > /dev/null &
+askmara -t 1 Awww2.example.com. > /dev/null &
+askmara -t 1 Awww3.example.com. > /dev/null &
+askmara -t 1 Awww2.example.com. > /dev/null &
+askmara -t 1 Awww3.example.com. > /dev/null &
+askmara -t 1 Awww2.example.com. > /dev/null &
+askmara -t 1 Awww3.example.com. > /dev/null &
+askmara -t 1 Awww2.example.com. > /dev/null &
+askmara -t 1 Awww3.example.com. > /dev/null &
+askmara -t 1 Awww2.example.com. > /dev/null &
+sleep 10
+ps auxw | grep Deadwood | grep -v grep | awk '{print $2}' | xargs kill \
+	> /dev/null 2>&1
+sleep 2
+
+rm dwood2rc
+killall microdns_delay > /dev/null 2>&1
+ps auxw | grep microdns | grep -v grep | awk '{print $2}' | xargs kill \
+	> /dev/null 2>&1
+rm microdns_delay

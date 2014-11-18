@@ -1,0 +1,13 @@
+star_handling_leak
+
+Description: If the mararc variable bind_star_handling had a value of 2,
+             MaraDNS would leak memory when resolving a star record whose
+             resolution is blocked by the presence of another record.
+
+Expected output of test: MaraDNS does not leak memory
+
+Presence of bug output: MaraDNS leaks memory
+
+When fixed: 1.3.06
+
+Note: Valgrind needed to run this test

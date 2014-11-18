@@ -1,0 +1,60 @@
+If you are cross compiling for an embedded system, the file 
+make_32bit_tables.c needs to be compiled and run on the compiling system,
+since this program generates a header file that other programs use.  The
+easiest way to do this is to make the following change to the Makefile:
+
+Change:
+
+	$(CC) -o make_32bit_tables make_32bit_tables.c
+
+To something like:
+
+	cc -o make_32bit_tables make_32bit_tables.c
+
+Where 'cc' is a command that builds a binary for the compiling system.
+
+--
+
+I have changed the API from the "standard" API--instead of accetping an
+ASCII key, the API for makeKey now accepts a binary key.  The reason for
+this change is that /dev/urandom generates binary data.
+
+Due to the size of this code, I have also removed referneces to routines
+which MaraDNS does not use.  The code which generates test vectors, the 
+decryption code, the code which handles any mode besides ECB, code which
+handles any key size besides 128 bits, and the code which generates 
+intermediate test values is now all removed.
+
+In addition, I have slightly changed the algorithm in a manner that
+does not affect security nor performance, but which makes it so this
+RNG is hash-only, since standard Rijndael implementations can not 
+decrypt the secure random numbers MaraDNS generates.
+
+This is so that I can more easily make the point that I am not using this
+cryptographic primitive to encrypt data, but merely to generate secure
+psudo-random numbers so that spoofing attacks are more difficult.
+
+Like all of the SHA hashes, Tiger, and any other secure hash, it is 
+possible, of course, to "decrypt" the data this hashing primitive 
+generates, since the compression function needs to be invertable. [1]  
+There is, in fact, a NESSIE submission called "SHACAL" which is simply 
+a version of SHA-1 which runs the SHA-1 compression function in both 
+the "encrypt" and the "decrypt" directions.
+
+I have also replaced the "hard-wired" table used to calculate the RNG 
+with a small program which generates the tables in question, since the
+program to generate the tables is much smaller than the actual tables.
+
+I use this as a secure psudo-random number generator for the query id, 
+and the lower 12 bits of the query source port number.
+
+[1] A secure hash funciton is one in which it is computationably 
+    infeasible to find two inputs which generate the same output.  
+    If the compression function isn't invertable, then there exists 
+    two inputs, a and a-prime, which generate the same output with the 
+    compression function.  All we have to do is set up two strings 
+    which the hash will digest, one which inputs a to the compression 
+    function, and one which inputs a-prime to the compression function.  
+    These strings will result in the same digest being generated.  Hence, 
+    the hash is not secure.
+

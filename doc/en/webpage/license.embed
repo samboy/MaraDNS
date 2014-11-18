@@ -1,0 +1,28 @@
+<h2>MaraDNS license</h2>
+
+MaraDNS' license is as follows:
+
+<blockquote>
+Copyright (c) 2002-2011 Sam Trenholme and others
+<p>
+TERMS
+<p>
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+<ol>
+<li> Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+<li> Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+</ol>
+
+This software is provided 'as is' with no guarantees of correctness or
+fitness for purpose.
+</blockquote>
+
+This is a standard two-clause BSD license, and is almost identical to
+the <A href="http://www.freebsd.org/copyright/freebsd-license.html">FreeBSD
+license</A>.
+

@@ -1,0 +1,228 @@
+<HEAD>
+<TH>CSV1 5 "January 2002" MARADNS "MaraDNS reference"</TH>
+<DTWIDTH>3</DTWIDTH>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+</HEAD>
+<BODY>
+<h1>NAME</h1>
+csv1 - Format of the csv1 zone file that MaraDNS uses
+
+<h1>SPECIAL NOTE</h1>
+
+The csv1 zone file format is supported primarily for MaraDNS users who 
+already have zone files in the csv1 format.  MaraDNS now supports a 
+csv2 zone file format.  Note that the csv1 zone file format will continue 
+to function as long as I am MaraDNS' maintainer.  
+
+<h1>SPECIAL CHARACTERS</h1>
+
+<dl>
+<dt>
+| 
+<dd>
+This delimits fields 
+<dt>
+# 
+<dd>
+This signifies a comment.  Lines starting with this are 
+ignored, otherwise it has no significance
+<dt>
+% 
+<dd>
+This, in domain names, signifies that the rest of the domain 
+name should be the name of this zone
+<dt>
+* 
+<dd>
+This is translated to mean "any host name that otherwise 
+does not resolve".  It must be at the beginning of a 
+domain name. 
+<dt>
+\ 
+<dd>
+This is used as an escape character, either to escape 
+octal values such as '\045' for %, or to escape the '%' 
+character so it has no special meaning, or to escape the 
+backslash character.
+</dl>
+
+<h1>NOTES ON PROCESSING</h1>
+
+All domain-name labels are converted to their lower-case equivalents before
+processing is done.  This is because domain-name literals in the database
+with one or more upper-case letters in them are case-sensitive.  This is
+my way to resolve RFC1035 schizophrenic desire to both allow binary domain
+labels, and its desire to be case-insensitive.
+<p>
+
+The file must first have a SOA record, followed by one or more NS records,
+followed by other records.  The initial NS and SOA records must be RR for
+this zone.  NS records after any non-NS record must be part of 
+another zone.  The resolution algorithm will not break if non-CNAME records 
+share records with a CNAME record, but this is not a good idea to do.
+<p>
+
+<h1>RR FORMAT</h1>
+
+A domain name is a one-letter designation of its type, followed by the
+domain name separated by dots, ending with either a % or a trailing dot.
+If the domain name does not end with a % or trailing dot, an error is 
+returned.
+
+<h1>SUPPORTED RR TYPES</h1>
+
+MaraDNS only supports the following types of resource records (RRs) in
+csv1 files.  More resource records types are supported in csv2 zone files;
+see <b>csv2(5)</b> for details.
+
+<br>
+<table> 
+<td>Letter<td>Type<td>RFC1035 <hibit alt="section ">§</hibit>3.2.2 value<tr>
+<td>A<td>A<td>1<tr>
+<td>N<td>NS<td>2<tr>
+<td>C<td>CNAME<td>5<tr>
+<td>S<td>SOA<td>6<tr>
+<td>P<td>PTR<td>12<tr>
+<td>@<td>MX<td>15<tr>
+<td>T<td>TXT<td>16<tr>
+<td>U<td>any<td>determined in third field of line<tr>
+</table>
+
+<h1>FORMAT OF SUPPORTED RR TYPES</h1>
+
+Here are the formats, shown by letter name:
+
+<pre>
+A: Has three fields
+field one: the domain name
+field two: the ttl for the name in seconds
+field three: the ip address, in dotted decimal notation
+Example:
+Ahost.example.com.|7200|10.1.2.3
+</pre>
+
+A records are described with grueling detail in RFC1035.  In short, an
+A record is an IP address for a given host name.
+
+<pre>
+N: Has three fields
+field one: the domain name of the record
+field two: the ttl for the name in seconds
+field three: the domain name this NS points to.  
+Example:
+Nexample.com.|86400|ns.example.com.
+</pre>
+
+NS (N here) records are described in RFC1035
+
+<pre>
+C: Has three fields
+field one: the domain name of the record
+field two: the ttl for the name in seconds
+field three: the domain this CNAME record points to
+Example:
+Calias.example.org.|3200|realname.example.org.
+</pre>
+
+CNAME (which C is short for) records are described in RFC1035
+
+<pre>
+S: Has nine fields
+field one: the domain name of the record
+field two: the TTL of the record
+field three: the origin of the domain.  In other words, the name of the
+             primary name server for the domain.
+field four: the email address for this domain (in the RFC822, not 
+            BIND format)
+field five: the serial for the domain
+field six: the refresh (how often to see updates) for the domain
+field seven: the retry (how often to try when down) for the domain
+field eight: the expire (how long before the slave gives up) for the 
+             domain
+field nine: the minimum (and default) TTL for the domain
+Example:
+Sexample.net.|86400|%|hostmaster@%|19771108|7200|3600|604800|1800
+</pre>
+
+SOA (S here) records are described in RFC1035
+
+<pre>
+P: has three fields
+field one: the IP we wish to point to (in in-addr.arpa form)
+field two: the ttl for the name in seconds
+field three: the FQDN for the IP in question  
+Example:
+P3.2.1.10.in-addr.arpa.|86400|ns.example.com.
+</pre>
+
+PTR (P here) records, which are used for reverse
+DNS lookups, are described in RFC1035.  Note that
+one needs control of the appropriate in-addr.arpa
+subdomain to make PTR records visible on the
+internet at large.
+
+<pre>
+@: has four fields
+field one: The host that people send email to
+field two: the ttl for this record
+field three: The preference for this MX host
+field four: The name of this MX host
+Example:
+@example.com.|86400|10|mail.example.com.
+</pre>
+
+MX (@ here) records are described in RFC1035
+
+<pre>
+T: has three fields
+field one: The host someone wants to get additional information about
+field two: the ttl for this record
+field three: The desired text.  Any data becomes the record up until a 
+             new line is reached.  The new line is not part of the TXT 
+             record
+Example:
+Texample.com.|86400|Example.com: Buy example products online
+</pre>
+
+TXT (T here) records are described in RFC1035
+
+<pre>
+U: has four fields
+field one: The host someone wants a data type normally unsupported by 
+           MaraDNS for
+field two: the ttl for this record
+field three: The numeric code for this data type (33 for SRV, etc.)
+field four: The raw binary data for this data type
+Example:
+Uexample.com.|3600|40|\010\001\002Kitchen sink data
+</pre>
+
+The above example is a "Kitchen Sink" RR (see 
+draft-ietf-dnsind-kitchen-sink-02.txt) with a "meaning" of 8, a "coding"
+of 1, a "subcoding" of 2, and a data string of "Kitchen sink data".
+Since this particular data type is not formalized in a RFC at this time,
+the most appropriate method of storing this data is by using the catch-all 
+"unsupported" syntax.
+
+<h1>EXAMPLE CSV1 ZONE FILE</h1>
+<pre>
+<include "../examples/example_csv1">
+</pre>
+<h1>LEGAL DISCLAIMER</h1>
+THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
+OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE 
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+<h1>AUTHOR</h1>
+Sam Trenholme 
+<A href=http://www.samiam.org/>http://www.samiam.org/</a>
+</body>
+

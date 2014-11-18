@@ -1,0 +1,20 @@
+
+; (1 server found)
+;; Got answer:
+
+;; QUESTION SECTION:
+;www.example.com.		IN	A
+
+;; ANSWER SECTION:
+www.example.com.	86400	IN	A	10.1.2.3
+
+;; AUTHORITY SECTION:
+example.com.		86400	IN	NS	synth-ip-7f000001.example.com.
+
+;; ADDITIONAL SECTION:
+synth-ip-7f000001.example.com. 86400 IN	A	127.0.0.1
+
+;; SERVER: fd4d:6172:6144:4e53::1#53(fd4d:6172:6144:4e53::1)
+;; MSG SIZE  rcvd: 97
+
+done

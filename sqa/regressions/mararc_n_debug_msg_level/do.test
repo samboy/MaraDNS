@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# This test to make sure the csv2 dictionary variable works
+
+for LEVEL in 0 1 3 ; do
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+admin_acl="127.0.0.1/24"
+debug_msg_level = ${LEVEL}
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+#../../../server/maradns -f mararc &
+sleep 1
+echo $LEVEL
+../../../tools/askmara Tversion.maradns. | sed 's/2\.0[0-9\.]*//' | \
+	sed 's/Q[0-9\.]*//'
+../../../tools/askmara Ttimestamp.maradns. | sed 's/: [0-9][0-9]*//'
+echo
+sleep 1
+killall maradns
+rm mararc
+
+done
+

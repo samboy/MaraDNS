@@ -1,0 +1,102 @@
+--- maradns-1.4.04/doc/en/webpage/faq.embed	2010-07-31 00:17:06.000000000 -0700
++++ maradns-1.4.05/doc/en/webpage/faq.embed	2010-08-13 03:58:08.000000000 -0700
+@@ -129,6 +129,11 @@
+ <p>50. <A href="#subscribe">I can not subscribe to the MaraDNS mailing 
+ 	list</A>
+ 
++<p>51. <A href="#edns">How does MaraDNS respond to EDNS (RFC2671) packets?</A>
++
++<p>52. <A href="#oneip">How to I get MaraDNS to always give the same IP to 
++all DNS queries?</A>
++
+ </BLOCKQUOTE>
+ <H2>ANSWERS</H2>
+ 
+@@ -1244,3 +1249,87 @@
+ please get a gmail email account, which can successfully subscribe to the
+ MaraDNS mailing list.
+ 
++<a name=edns> </a>
++<h2>51. How does MaraDNS respond to EDNS (RFC2671) packets?</h2>
++
++MaraDNS 1.4 responds to EDNS packets by ignoring the OPT record and acting
++as if it the packet did not have an OPT record.
++
++<p>
++
++<A href=http://maradns.org/deadwood>Deadwood</A> (the recursive resolver 
++for Deadwood 2.0, available in the deadwood-#.#.## directory of any 1.4
++MaraDNS release), up through Deadwood
++2.9.02 responds to EDNS packets by discarding the packet and not
++responding.  This was changed in Deadwood 2.9.03: Deadwood, as
++per RFC2671 section 5.3, now responds to EDNS queries by replying with 
++the NOTIMPL ("not implemented") error code instead of answering the query.  
++This was changed again in Deadwood 2.9.04: Deadwood now, like MaraDNS 1
++(as well as DJBdns), handles a EDNS packet as if the OPT record did not
++exist.
++
++<p>
++
++<A href=http://samiam.org/software/microdns.html>MicroDNS</A> (available
++in the <tt>tools/misc</tt> directory of any 1.4 MaraDNS release), as of
++MaraDNS 1.4.05, responds to EDNS queries the same way Deadwood 2.9.03 did:
++By giving back "NOTIMPL" instead of answering the query with the
++default IP.  <A 
++href=http://maradns.blogspot.com/search/label/NanoDNS>NanoDNS</A>, in the 
++interest of minimizing code side, responds to EDNS requests by returning
++NOTIMPL in the header, giving the OPT query in the AN section of the
++response, and giving the default IP in the AR section of the DNS
++reply packet.
++
++<a name=oneip> </a>
++<h2>52. How to I get MaraDNS to always give the same IP to all DNS
++queries?</h2>
++
++There are three ways to have MaraDNS always give the same IP in reply
++to any DNS query given to it:
++
++<ul>
++
++<li>The best way to do this is to set up a <A 
++href=http://maradns.org/tutorial/default_zonefile.html>default zonefile</A>
++that causes any and all A queries to always give the IP (and also allows
++all AAAA queries to always give out the same IP6, all SPF or TXT queries
++to give out the same SPF record, etc.).  
++
++<li>Another possibility, if someone just wants a simple DNS server that
++always gives out the same IP address to any and all DNS queries, is 
++to use the MicroDNS program, available in <tt>tools/misc</tt>, as well
++as having <A href=http://samiam.org/software/microdns.html>its own
++web page</A>.
++
++<li>If MicroDNS is too bloated, there is also <A 
++href=http://maradns.blogspot.com/search/label/NanoDNS>NanoDNS</A>, which
++I will include the source code of below:
++
++</ul>
++
++<pre>
++/*Placed in the public domain by Sam Trenholme*/
++#include &lt;arpa/inet.h&gt;
++#include &lt;string.h&gt;
++#include &lt;stdint.h&gt;
++#define Z struct sockaddr
++#define Y sizeof(d)
++int main(int a,char **b){uint32_t i;char q[512]
++,p[17]="\xc0\f\0\x01\0\x01\0\0\0\0\0\x04";if(a&gt;
++1){struct sockaddr_in d;socklen_t f=511;bzero(&amp;
++d,Y);a=socket(AF_INET,SOCK_DGRAM,0);*((uint32_t
++*)(p+12))=inet_addr(b[1]);d.sin_family=AF_INET;
++d.sin_port=htons(53);bind(a,(Z*)&amp;d,Y);for(;;){i
++=recvfrom(a,q,255,0,(Z*)&amp;d,&amp;f);if(i&gt;9&amp;&amp;q[2]&gt;=0)
++{q[2]|=128;q[11]?q[3]|=4:1;q[7]++;memcpy(q+i,p,
++16);sendto(a,q,i+16,0,(Z*)&amp;d,Y);}}}return 0;}
++</pre>
++
++NanoDNS takes one argument: The IP we return. This program binds to all 
++IP addresses a given machine has on the UDP DNS port (port 53).  For example,
++to make a DNS server that binds to all IPs your system has and return the
++IP 10.11.12.13 to any UDP DNS queries sent to it, compile the above C program,
++call it <tt>NanoDNS</tt>, and invoke it with <tt>NanoDNS 10.11.12.13</tt>
++Note that NanoDNS does not daemonize, nor log anything, nor have any other
++space-wasting features.

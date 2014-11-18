@@ -1,0 +1,64 @@
+level 0
+# Querying the server with the IP 127.0.0.1
+# Question: Aexample.com.
+example.com. +86400 a 10.1.2.3
+# NS replies:
+example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+# Querying the server with the IP 127.0.0.1
+# Question: Texample.com.
+example.com. +86400 txt \x7e\x7e\x23\x23\x7c\x7c
+# NS replies:
+example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+level 1
+# Querying the server with the IP 127.0.0.1
+# Question: Aexample.com.
+example.com. +86400 a 10.1.2.3
+# NS replies:
+example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+# Querying the server with the IP 127.0.0.1
+# Question: Texample.com.
+example.com. +86400 txt 'Life is life'
+# NS replies:
+example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+level 2
+# Querying the server with the IP 127.0.0.1
+# Question: Aexample.com.
+example.com. +86400 a 10.1.2.3
+# NS replies:
+example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+# Querying the server with the IP 127.0.0.1
+# Question: Texample.com.
+example.com. +86400 txt 'Life is life'
+# NS replies:
+example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+level 3
+# Querying the server with the IP 127.0.0.1
+# Question: Aexample.com.
+example.com. +86400 a 10.1.2.3
+# NS replies:
+example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+# Querying the server with the IP 127.0.0.1
+# Question: Texample.com.
+example.com. +86400 txt 'Life is life'
+# NS replies:
+example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+

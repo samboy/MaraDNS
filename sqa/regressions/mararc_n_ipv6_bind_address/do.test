@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# This test to make sure the variable ipv6_bind_address works
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv6_bind_address="fd4d:6172:6144:4e53::1"
+ipv4_bind_addresses="127.0.0.1"
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+EOF
+
+cat > db.example.com << EOF
+www.% A 10.1.2.3
+EOF
+
+# Give localhost the fd4d:6172:6144:4e53::1 address
+ip ad add fd4d:6172:6144:4e53::1/128 dev lo
+#route add fd4d:6172:6144:4e53::1 lo
+
+# OK, test the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+#../../../server/maradns -f mararc 
+sleep 1
+#../../../tools/askmara Awww.example.com.
+dig @fd4d:6172:6144:4e53::1 www.example.com | grep -v DiG | grep -v WHEN | \
+	grep -v time | grep -v HEADER | grep -v flags | grep -v cmd | \
+	grep -v 'WARNING: recursion requested'
+echo done
+sleep 1
+killall maradns
+rm mararc
+rm db.example.com
+
+ip ad del fd4d:6172:6144:4e53::1/128 dev lo
+

@@ -1,0 +1,454 @@
+             Using MaraDNS as an authoritative DNS server
+
+Table of contents
+
+     * Requirements
+     * What is a domain zone?
+     * Setting up a domain with MaraDNS
+     * Setting up a domain zone file
+     * The format of a Domain Zone file
+     * A single name can have multiple records
+     * The % character shortcut
+     * Getting connected to the root name servers
+     * Getting two IPs
+     * Names internal to a network
+
+Requirements
+
+   In order to set up an authoritative DNS server, one needs one or
+   more static IP addresses. With most registries, two or more
+   static IP addresses are needed.
+
+   In addition, the machine(s) with the static IP addresses need to
+   be running an authoritative DNS server, such as MaraDNS.
+
+What is a domain zone?
+
+   A name like www.example.com is part of the domain zone
+   example.com. The name www.yahoo.com, as another example, is part
+   of the domain zone yahoo.com. www.maradns.org is part of the
+   domain zone maradns.org.
+
+Setting up a domain with MaraDNS
+
+   Compile and install MaraDNS on the system which will act as
+   an authoritative DNS server.
+
+   After doing this, the mararc file needs to be changed before
+   MaraDNS will function as an authoritative DNS server.
+
+   A mararc file which can be used to serve the domain
+   zones that one wishes to have control over needs to only be four
+   lines long:
+
+ ipv4_bind_addresses = "10.3.28.79"
+ chroot_dir = "/etc/maradns"
+ csv2 = {}
+ csv2["example.com."] = "db.example.com"
+
+   Lets look at these four lines. The first line,
+   ipv4_bind_addresses, is the IP address (or addresses) this DNS
+   server will have. Since we're running an authoritative DNS
+   server, it is important that this IP address be a routable IP
+   address--an IP address that can be accessed by anyone on the
+   internet. It is also important that any firewall between this
+   machine and the internet at large is able to connect to UDP port
+   53 of this machine.
+
+   The chroot_dir value is the directory that contains all of the
+   files with information for the domain zones (these files are
+   normally called "zone files" by DNS administrators). Here, we
+   place the zone files in the directory /etc/maradns.
+
+   The third line, csv2 = {}, tells MaraDNS that we will be acting
+   as an authoritative DNS server. This line must be placed before
+   telling MaraDNS where any zone files are located.
+
+   The fourth line, csv2["example.com."] = "db.example.com" tells
+   MaraDNS that, for the domain zone "example.com.", the zone file
+   is called "db.example.com".
+
+   In other words, example.com. is the name of the domain zone that
+   the file db.example.com has data for. Change example.com. to the
+   name of the domain zone you wish to serve, and db.example.com to
+   the filename to be used to serve that domain zone. Important:
+   the domain zone name (e.g. example.com.) requires a trailing
+   dot.
+
+   It is possible to server multiple domain zones, of course. For
+   example:
+
+ csv2["example.com."] = "db.example.com"
+ csv2["example.org."] = "db.example.org"
+ csv2["heaven.af.mil."] = "db.heaven.af.mil"
+
+   It is also possible to bind MaraDNS to multiple IP addresses,
+   e.g:
+
+ ipv4_bind_addresses = "10.3.28.79, 10.9.87.23"
+
+Setting up a domain zone file
+
+   Let us suppose that we are setting up a domain for example.com,
+   where we have the following services:
+
+     * We are running a web server for example.com and
+       www.example.com on the IP 10.10.10.12. In other words,
+       people can view web pages on this machine.
+     * We have a mail server, or mail transport agent for
+       example.com with the IP 10.10.10.15. In other words, the
+       machine with the IP 10.10.10.15 is set up to handle mail
+       addressed to name@example.com, where "name" is any string
+       preceding the '@' sign.
+     * Both 10.10.10.11 and 10.10.10.17 are running MaraDNS in
+       authoritative mode to serve DNS requests for example.com.
+
+   The zone file for this setup would be as follows. Note that
+   lines which start with the # symbol are comments (lines ignored
+   by MaraDNS), allowing one to add human-readable notes in the
+   file in question.
+
+ # This is an example zone file for the imaginary domain example.com.
+
+ # We have two records which handle the serving of web pages.  These
+ # are simple name-to-ip translations.  In other words, we have one
+ # record which states "The IP for example.com. is 10.10.10.12" and
+ # another that states "The IP for www.example.com. is 10.10.10.12"
+ example.com. 10.10.10.12 ~
+ www.example.com. 10.10.10.12 ~
+
+ # We also need to set up an IP for the machine that serves email for
+ # example.com.  Because of how DNS is designed, we both need
+ # a record which states "The machine which handles mail for
+ # example.com is called mail1.example.com" and a record which states
+ # "The IP address for mail1.example.com is 10.10.10.15":
+ example.com. MX 10 mail1.example.com. ~
+ mail1.example.com. 10.10.10.15 ~
+
+   Now, to adapt this file to another zone, we need to simply make
+   the following changes:
+
+     * Substitute the name example.com with the name of the domain
+       one wishes to administer.
+     * Substitute the IP 10.10.10.12 with the IP of the machine
+       running the web server for the domain.
+     * Substitute the IP 10.10.10.15 with the IP of the machine
+       running the mail server for the domain.
+
+   Note that the chroot_dir mararc variable tells MaraDNS which
+   directory contains domain zone files.
+
+The format of a Domain Zone file
+
+   Here are some example lines in a domain zone file, which is an
+   example of someone using the same IP multiple times. For
+   example, if one is using 10.10.10.19 as one of the DNS servers,
+   the mail server, and the web server, one would have records like
+   this:
+
+ example.com.      NS    ns1.example.com. ~
+ ns1.example.com.        10.10.10.19 ~
+ example.com.            10.10.10.19 ~
+ www.example.com.        10.10.10.19 ~
+ example.com.      MX 10 mail1.example.com. ~
+ mail1.example.com.      10.10.10.19 ~
+
+   Translated into English, the above lines say:
+
+     * One name server for example.com is called ns1.example.com.
+     * The IP for ns1.example.com is 10.10.10.19
+     * The IP for example.com (in other words, the machine a web
+       browser should hit if one selects http://example.com/) is
+       10.10.10.19
+     * The IP for www.example.com is 10.10.10.19
+     * The name of the machine which processes incoming mail, which
+       has a priority of ten (lower priority numbers are more
+       important), is called mail1.example.com.
+     * The IP for mail1.example.com is 10.10.10.19
+
+   A line in a domain zone file contains a single DNS record. The
+   data has multiple fields separated by a whitespace or the |
+   character, and is in this format:
+
+     * The first portion of the DNS record, is the DNS node that
+       this record is attached to.
+     * The next portion of a DNS record, which is optional, tells
+       MaraDNS what kind of DNS record this is. A list of DNS
+       records which MaraDNS supports is described here. If
+       this field is absent, MaraDNS assumes that the record is an
+       "A" (32-bit IP address) record, and that the second portion
+       is the IP address in question.
+     * If the record is not an "A" record, the subsequent fields
+       describe the DNS record in question. The format for this
+       data depends on the DNS record type being used, and is
+       described here.
+
+   The reason to use different names for different functions is to
+   minimize the number of problems one will encounter, should one
+   need to change their IPs at a later time.
+
+A single name can have multiple records
+
+   A single name can have multiple records. This is useful when one
+   wishes to have, for example, multiple machines processing
+   requests for www.example.com.
+
+   For example:
+
+ www.example.com.        10.10.10.10 ~
+ www.example.com.        10.10.10.11 ~
+ www.example.com.        10.10.10.12 ~
+
+   In this example, a query to www.example.com will return a list
+   of three IPs. MaraDNS rotates the records so that the first IP
+   given to a client changes each time a query for www.example.com
+   is made. This can be used as a primitive kind of load balancing.
+
+The % character shortcut
+
+   If one is setting up multiple domain zones, all of which have
+   more or less the same data, it is convenient to have a template
+   domain file which different zones can use without needing to
+   modify the file in question.
+
+   MaraDNS has support for this by using the % symbol. Whenever
+   MaraDNS sees a % in a csv2 zone file, MaraDNS knows to replace
+   the percent symbol with the name of the zone in question. For
+   example, if the file in question is the zone file for
+   example.com, the % is expanded out to "example.com.". If the
+   zone file in question is for maradns.org, the % is expanded out
+   to "maradns.org.". Hence, we could, provided that the zone file
+   is for example.com, have a zone file like this:
+
+ # We have two records which handle the serving of web pages.  These
+ # are simple name-to-ip translations.
+ %     10.10.10.12 ~
+ www.% 10.10.10.12 ~
+
+ # We also need to set up an IP for the machine that serves email for
+ # our zone.  Because of how DNS is designed, we both need
+ # a record which states "The machine which handles mail for
+ # out zone is called mail1." and a record which states
+ # "The IP address for mail1. is 10.10.10.15":
+ % MX  10 mail1.example.com. ~
+ mail1.%  10.10.10.15 ~
+
+   This zone file would function identically to the first example
+   zone file above.
+
+Getting connected to the root name servers
+
+   An authoritative DNS server will not effectively serve a domain
+   unless the root name servers are aware that a given DNS server
+   serves a given domain name.
+
+   When a recursive DNS server attempts to find the IP for, say,
+   www.example.com, it firsts asks the root nameservers for this
+   IP. The root name servers send out a reply which says "We do not
+   know that answer to this question, but you may contact the DNS
+   server at 10.1.2.3 for the answer". At this point, the recursive
+   DNS server contacts 10.1.2.3, asking it for the IP for
+   www.example.com. (Actually, the root nameservers give out the
+   .com nameservers, which in turn give out the example.com
+   nameservers, but the principle is the same)
+
+   In order that the entire internet community may be aware of a
+   domain, the domain must be registered with the root name
+   servers, so that the root name servers know that IPs of the
+   machines which are authoritative DNS servers for the domain in
+   question. (Again, you're really registering with, say, the .com
+   servers)
+
+   The exact policies which one needs to confirm to to register
+   their domain depend on the register in question. To register a
+   domain under the generic domain names (presently .com, .net,
+   .org, and .info) one simply needs to register their name with a
+   register, and follow some guidelines when designing the zone
+   files for their domain.
+
+   There are a number of competing registrars which server domain
+   names. One which I have extremely happy with is Net Wizards;
+   domains can be registered at http://domains.netwiz.net/. In
+   order to register a domain, you will need to know the zone
+   servers for your domain. You can either set these up yourself
+   (see below for an example), or use the askmara tutorial to
+   find out the name servers for your domain.
+
+   To use the askmara tool, make an askmara query like this:
+
+     askmara Nexample.com. 127.0.0.1
+
+   Replace example.com with the name of the domain to be
+   registered, and 127.0.0.1 with the IP of the DNS server. The
+   output of the query will look something like this:
+
+ # Querying the server with the IP 127.0.0.1
+ # Question: Nexample.com.
+ example.com. +86400 ns synth-ip-0a010203.example.com. ~
+ example.com. +86400 ns synth-ip-0a040506.example.com. ~
+ # NS replies:
+ # AR replies:
+ #synth-ip-0a010203.example.com. +86400 a 10.1.2.3 ~
+ #synth-ip-0a040506.example.com. +86400 a 10.4.5.6 ~
+
+   The names for the name servers we wish to submit to the
+   registrar are the synth-ip-0a010203.example.com and
+   synth-ip-0a040506.example.com names above. These somewhat long
+   names are the names for the nameservers for the (in the above
+   example) example.com. domain. At the end of the askmara output,
+   you can see the IPs for these name servers; place these IPs in
+   the field where they ask for the IP of the name servers for your
+   domain.
+
+   For example, if the registrar's form looks like this:
+
+ Domain name: _________________
+
+ Nameserver 1 name: ____________________________________
+ Nameserver 1 IP:   ____________________________________
+ Nameserver 2 name: ____________________________________
+ Nameserver 2 IP:   ____________________________________
+ Nameserver 3 name: ____________________________________
+ Nameserver 3 IP:   ____________________________________
+ Nameserver 4 name: ____________________________________
+ Nameserver 4 IP:   ____________________________________
+
+   Based on the above askmara output, we would fill out the above
+   form thusly:
+
+ Domain name: example.com
+
+ Nameserver 1 name: synth-ip-0a010203.example.com.
+ Nameserver 1 IP:   10.1.2.3
+ Nameserver 2 name: synth-ip-0a040506.example.com.
+ Nameserver 2 IP:   10.4.5.6
+ Nameserver 3 name: ____________________________________
+ Nameserver 3 IP:   ____________________________________
+ Nameserver 4 name: ____________________________________
+ Nameserver 4 IP:   ____________________________________
+
+   If you only have one NS server, you may need to get a second one
+   to register a domain. The procedure for doing this is described
+   in the following section.
+
+Getting two IPs
+
+   As stated near the beginning of this document, many registries
+   require that one has two IPs to register a domain. If one has a
+   computer with two or more routable IPs assigned to it, it is
+   simple enough to have MaraDNS bind to these IPs. Change the
+   variable ipv4_bind_addresses to include all of the IPs one
+   wishes MaraDNS to have, like the following example:
+
+     ipv4_bind_addresses = "10.1.2.3, 10.5.6.7"
+
+   Naturally, replace "10.1.2.3" and "10.5.6.7" with the IPs your
+   machine has.
+
+   If you have but a single IP, it is necessary to find someone who
+   will provide secondary DNS service for your domain, and set up
+   MaraDNS to be a zoneserver. Information on how to do this is
+   provided in the DNS master document.
+
+Names internal to a network
+
+   Sometimes one will have a number of computers in an office, or
+   other small network, with a number of different names. It is
+   desirable to use DNS to give these office machines IP addresses.
+   Let us suppose that we have a company with computers named
+   "Mascota", "Paloma", and "Vela". If we want to have computers in
+   the office be accessible with just the name (such as just
+   "Vela"), we set up what is known as a default domain suffix. Let
+   us suppose that the company in question is a company that sells
+   examples of hard work. Hence, the company is called
+   "example.com". We then give our computers the names
+   "mascota.example.com", "paloma.example.com", and
+   "vela.example.com". We then tell computers in the office that,
+   when given a name without a suffix, to append the "example.com"
+   suffix when looking for host names.
+
+   It is possible to do this in MaraDNS 1.3 in two different ways.
+
+   One way is to set up MaraDNS' recursive resolver to use a custom
+   nameserver for a subset of the DNS space. For example, the
+   recursor can be told to go to "192.168.0.7" to look up all names
+   that end in ".office". More information about this is in the
+   recursive DNS document.
+
+   The other method takes advantage of the fact that MaraDNS first
+   looks up authoritative names before performing recursion. For
+   example, if www.google.com is defined in a MaraDNS zone file,
+   MaraDNS will use the value in the zone file instead of
+   contacting nameservers on the internet to get the IP for
+   www.google.com.
+
+   On UNIX, BSD, and Linux machines in an office, this is done by
+   adding a line like this to the file /etc/resolv.conf:
+
+     search example.com
+
+   In Windows XP, go to Control Panel -> Network Connections ->
+   Local Area Connection (or whatever connection the computer uses
+   to get on the LAN) -> Properties -> Internet Protocol (TCP/IP)
+   (this is under "The connection uses the following items" and you
+   may have to scroll down to see it) -> Advanced -> DNS -> "Append
+   these DNS suffixes (in order)" -> Add and type in "example.com"
+   (or whatever) as the Domain suffix.
+
+   Once this is done, create a zone for example.com. Since we're
+   just giving three computers IPs, the zone file for example.com
+   is added to the mararc file with this line:
+
+     csv2["example.com."] = "db.example.com"
+
+   We then place, in the directory pointed to by chroot_dir in the
+   mararc file, the file db.example.com, which looks like this:
+
+ mascota.%       10.1.2.3 ~
+ paloma.%        10.5.6.7 ~
+ vela.%          10.9.8.4 ~
+
+   See above for an explanation of what the % symbol does.
+
+   The above three lines, which is a complete csv2 zone file, is a
+   shorthand for the following:
+
+ # The SOA record.  If a zone doesn't have a SOA record, MaraDNS will
+ # synthesize an appropriate one for a given zone.  This is information
+ # about who is in charge of the example.com zone; basically the zone
+ # name "example.com.", SOA "It's a Start of Authority record",
+ # "example.com." (this is the name of the machine in charge of
+ # example.com), "hostmaster@example.com." (the email address of the
+ # person in charge of example.com.)
+ example.com.    SOA     example.com. hostmaster@example.com. ~
+ # The following numbers, part of the SOA record, give some technical
+ # information about transferring information about this zone to other
+ # DNS servers.  If you use rsync to share zone files, these numbers
+ # do not need to be worried about.
+                         1 7200 3600 604800 1800 ~
+
+ # NS records.  If a zone doesn't have NS record, MaraDNS will, again
+ # synthesize appropriate NS records for a given zone.  This is a list
+ # of all of the DNS servers that have the example.com zone file.
+ example.com. NS ns1.example.com. ~
+ example.com. NS ns2.example.com. ~
+
+ # The NS records above need IPs.  Note that "A" (this is an IP) is
+ # optional
+ ns1.example.com.  A 10.1.2.3 ~
+ ns2.example.com.  A 10.4.5.6 ~
+
+ # Now that we have the SOA and NS records taken care of (again, MaraDNS
+ # will automatically take care of these records if they are not in a
+ # zone), we can add the records for the zone in question
+
+ # mascota.example.com. has the IP address 10.1.2.3
+ mascota.example.com.    A       10.1.2.3 ~
+ # mascota.example.com. has the IP address 10.5.6.7
+ paloma.example.com.     A       10.5.6.7 ~
+ # mascota.example.com. has the IP address 10.9.8.4
+ vela.example.com.       A       10.9.8.4 ~
+
+   Information on setting up a recursive server so that these names
+   are private network-specific hostnames is available in the
+   private hostname section of the recursive server document.

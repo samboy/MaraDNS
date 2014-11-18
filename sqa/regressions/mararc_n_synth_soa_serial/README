@@ -1,0 +1,5 @@
+This test makes sure the mararc variable synth_soa_serial works.
+
+Note that this test is assumed to be run after September 1, 2007 and
+before the year 2300.
+

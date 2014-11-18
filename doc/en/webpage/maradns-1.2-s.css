@@ -1,0 +1,157 @@
+html {
+        overflow-y: scroll;
+	overflow: -moz-scrollbars-vertical;
+        /*min-height: 100.1%;*/
+}
+
+body {
+	background: white;
+	color: #000000;
+}
+
+.moyet { display: none; }
+
+#paypal { float: right; }
+
+/*/*/a{}
+
+body {
+        color: #000000;
+        background: #ded1be url(mara-tile.jpg);
+        font-family: Verdana, "Bitstream Vera Sans", sans-serif;
+}
+
+#maradns-t {
+	font-weight: bold;
+        font-size: medium;
+	background-color: inherit;
+	color: #000000;
+}
+
+#logo {
+	font-size: 300%;
+}
+
+@media all {
+	#topright {
+		\width: 345px;
+	}
+}
+
+#trabalengua {
+        font-weight: bold;
+        font-size: medium;
+	background-color: inherit;
+        color: #000000;
+}
+
+@media all {
+	#lefthand {
+		float: left;
+		\width: 8.5em;
+	}
+}
+
+@media all {
+	#maradns-l {
+		border-bottom: 1px solid #000000;
+		border-top: 2px solid #000000;
+        	\margin-top: 3px;
+	}
+}
+
+#maradns-l a {
+	color: #000000;
+	background-color: white;
+}
+
+@media all {
+	#maradns-l a {
+		border-left: 2px solid #000000;
+		border-right: 2px solid #000000;
+		color: #ffffff;
+		background-color: #5a4529; 
+		display: block;
+		width: auto !important;
+		width: 100%;
+		text-decoration: none;
+		border-bottom: 1px solid #000000;
+		padding-top: 4px;
+		padding-bottom: 4px;
+		padding-left: .1em;
+		padding-right: .1em;
+	}
+}
+
+@media all {
+	.makelarge {
+		border: 2px solid #000000;
+		background-color: white; 
+		color: #000000;
+        	margin-top: 3px;
+	}
+}
+
+@media all {
+	.iebug {
+		margin-top: 4px;
+		margin-bottom: 4px;
+		margin-left: .1em;
+		margin-right: .1em;
+	}
+}
+
+#maradns-l a:hover {
+	background-color: #ded1be;
+	text-decoration: none;
+	border-bottom: 1px solid #000000;
+	color: #000000;
+}
+
+#maradns-r {
+        margin-top: 0px;
+        margin-left: 4px !important;
+        margin-left: 0px;
+	margin-right: 4px;
+        margin-bottom: 4px;
+	padding: 7px;
+}
+
+/* */
+
+#maradns-l a {
+/*/*//*/ display: inline; /* */
+}
+#maradns-l a {
+/*/*//*/ border: 1px solid #000000; /* */
+}
+#maradns-l a:hover {
+/*/*//*/	border: 1px solid #000000; /* */
+}
+#maradns-r {
+/*/*//*/	margin-top: 6px; /* */
+}
+.makelarge {
+/*/*//*/	display: none; /* */
+}
+/* */
+/*/*/
+a {
+}
+
+.nocss {
+	display: none;
+}
+
+.makenormal {
+	display: none;
+}
+
+/* */a{}
+
+#maradns-r {
+	border: 2px solid #000000;
+	background-color: #ffffff; 
+	color: #000000;
+}
+

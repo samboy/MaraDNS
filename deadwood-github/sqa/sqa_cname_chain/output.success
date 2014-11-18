@@ -1,0 +1,26 @@
+# Querying the server with the IP 127.0.0.1
+# Question: Awww1.example.com.
+www1.example.com. +60 cname foo.example.com.
+#foo.example.com. +60 a 10.1.2.3
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Question: Awww1.example.com.
+www1.example.com. +60 cname foo.example.com.
+#foo.example.com. +60 a 10.1.2.3
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Question: Awww2.example.com.
+www2.example.com. +60 cname foo.example.com.
+#foo.example.com. +60 a 10.1.2.3
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Remote server said: SERVER FAILURE
+# Question: Awww1.example.com.
+# NS replies:
+# AR replies:

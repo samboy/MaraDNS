@@ -1,0 +1,30 @@
+#!/bin/sh
+
+for VALUE in 4352 32512 ; do
+
+# Now, make sure Deadwood works
+
+cat > dwood2rc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+upstream_servers = {}
+upstream_servers["."]="127.0.0.2"
+recursive_acl="127.0.0.1/16"
+recurse_min_bind_port=${VALUE}
+recurse_number_ports=256
+timeout_seconds=10
+filter_rfc1918 = 0
+EOF
+
+../../src/Deadwood -f dwood2rc > /dev/null &
+sleep 1
+askmara -t 1 Awww.google.com. > /dev/null
+sleep 1
+netstat -nap | grep Dea | grep ESTABLISHED | awk '{print $4}
+	' | awk -F: '{print $2 - ($2 % 256)}'
+sleep 11
+killall Deadwood
+rm dwood2rc
+
+done
+

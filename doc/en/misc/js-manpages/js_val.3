@@ -1,0 +1,52 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_val 3 "October 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_val \- Return the big-endian numeric value of a given character in a 
+js_string object
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_val(js_string *js, int offset);"
+.fi
+.SH DESCRIPTION
+.B js_val
+determines the big-endian numeric value of a given character in a
+.B js_string 
+object.  
+.SH ARGUMENTS
+.B js
+is a pointer to the
+.B js_string
+object that you wish to view the numeric value of a character in.
+.B offset
+is the character number of the character we want to look at.  0 is the
+first character in the string, 1 is the second character, and so on.
+.SH EXAMPLE
+The following example code creates a 
+.B js_string
+object, then determines the numeric value of the first character.
+.nf
+
+	js_string *foo;
+	int val;
+	foo = js_create(256,1);         
+	js_set_encode(foo,JS_US_ASCII); 
+        js_qstr2js(foo," ");
+	val = js_val(foo,0); /* Should be 32 (ASCII space) */
+.fi
+.SH "RETURN VALUE"
+.B js_val
+returns the value of the character in question.
+This function will return
+.I JS_ERROR
+if it is not able to get the value for the character in question.
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

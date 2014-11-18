@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# This test to make sure the csv2 dictionary variable works
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+hide_disclaimer="YES"
+max_mem = 123456789
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc &
+sleep 5
+killall maradns
+rm mararc

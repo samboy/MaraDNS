@@ -1,0 +1,39 @@
+a.example.org. TXT 'This is some text'
+b.example.org. TXT 'This is some text
+       with a linefeed in it, and an example UTF-8 character: I  MaraDNS'
+c.example.org. TXT This_is_100%_unquoted_text_+symbols!
+d.example.org. TXT This' is a mix 'of_unquoted' and quoted 'text!
+e.example.org. TXT \x80\x81\x82\x83
+f.example.org. TXT \200\201\202\203
+g.example.org. TXT \200\x81\202\x83
+h.example.org. TXT 'perl -e '\''print "A Perl of a TXT record!\n"'\'
+h1.example.org. TXT 'for(a=0;a<10;a++)'\x7b'printf("%d\n",a);sleep(1)}'
+i.example.org. TXT 'Not only did the quick brown fox jump over the lazy dog, but the lazy dog jumped over the cat.'
+j.example.org. TXT 'Not only did the quick brown fox jump '\
+                   'over the lazy dog, but the lazy dog'\
+                   ' jumped over the cat.'
+k.example.org. TXT 'Not only did the quick brown fox jump '\ # The fox
+                   'over the lazy dog, but the lazy dog'\    # The dog
+                   ' jumped over the cat.'                   # The cat
+k2.example.org. TXT 'This is some data '\
+       # Here we have some orgments followed by a blank line
+
+       # Now we have some more orgments,
+       # followed by the rest of the data
+           'and this is the rest of the data'
+o.example.org. TXT 'TXT record with only one chunk'
+p.example.org. TXT 'This is chunk one';'This is chunk two'
+q.example.org. TXT 'This is chunk one';\ # Our first chunk
+                           This_is_chunk_two;\  # Our second chunk
+                          'This is chunk three' # Our final chunk
+r.example.org. TXT 'chunk one';;'chunk three' # Chunk two zero-length
+s.example.org. TXT ;'chunk two'; # Chunks one and three zero-length
+t1.example.org. RAW 40 \x10\x01\x02'Kitchen sink'\x2b' data'
+t.example.org. RAW 40 \020\001\002Kitchen' sink+ data'
+u.example.org. RAW 40 \x10\x01\x02Kitchen\x20sink+\x20data
+v.example.org. RAW 40 \x10\001\x02\
+                             'Kitchen sink+ data'
+w.example.org. RAW 40 \x10\ # Meaning: 16
+                             \x01\ # Coding: 1
+                             \x02\ # Sub-coding: 2
+                             'Kitchen sink+ data' # Data: 'Kitchen sink+ data'

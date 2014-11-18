@@ -1,0 +1,20 @@
+These tests need MaraDNS to be run.  To run these tests, download both
+MaraDNS and Deadwood, and expand the Deadwood tarball in MaraDNS' 
+top-level directory.
+
+Use MaraDNS 1.3.14 to run these tests; this will not work with earlier
+versions of MaraDNS because the handling of the RA bit was revised in
+that MaraDNS release.
+
+Once that is done, as root run the shell script "do.tests" to run all of
+the tests; this script will compile MaraDNS and Deadwood with various 
+options as needed for the tests.
+
+These tests are designed to be run on a CentOS 5 system (Gnome workstation)
+with the basic gcc development environment (kernel-headers, glibc-headers,
+glibc-devel, libgomp, gcc) installed.  In addition, not only do the
+"gcc43" and "valgrind" packages need to be installed, but also "askmara"
+from MaraDNS needs to be in one's path.
+
+The do.tests script needs to be run from this directory.
+

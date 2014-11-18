@@ -1,0 +1,293 @@
+--- maradns-2.0.02/server/MaraDNS.c	2011-02-05 19:21:40.000000000 -0700
++++ maradns-2.0.03/server/MaraDNS.c	2011-02-18 15:19:12.000000000 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2010 Sam Trenholme
++/* Copyright (c) 2002-2011 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -863,7 +863,6 @@
+     int len_inet = sizeof(struct sockaddr);
+     int found = 0;
+     int authoritative = 1;
+-    rr *where = 0;
+     rr_list *answer = 0;
+     mhash_e spot_data;
+     int counter;
+@@ -910,10 +909,6 @@
+     header.nscount = 0;
+     header.arcount = 0;
+ 
+-    if(called_from_recursive == 1) {
+-        goto use_old_udpany_code;
+-    }
+-
+     /* Start synthesizing the reply */
+     /* Look for the list of all of the answers */
+     spot_data = mhash_get(bighash,query);
+@@ -1020,228 +1015,6 @@
+     js_destroy(starwhitis);
+     goto old_udpany_code_disabled;
+ 
+-use_old_udpany_code:
+-
+-    /* The old udpany code is still used by the recursive half of
+-     * MaraDNS, so we have to keep it for the time being */
+-
+-    /* Look for an A record with the same name as the query */
+-    if(change_rtype(query,RR_A) == JS_ERROR)
+-        goto giveerror;
+-    spot_data = mhash_get(bighash,query);
+-    /* If found, add the data to our records */
+-    if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+-        found = 1;
+-        where = spot_data.value;
+-        authoritative = where->authoritative;
+-        if(add_answer(spot_data.value,most,ns,ar,&(header.ancount),
+-                   &(header.nscount),&(header.arcount),1,
+-                   spot_data.point,0,0) == JS_ERROR)
+-            goto giveerror;
+-        }
+-    /* Look for MX record with the same name as the query */
+-    if(change_rtype(query,RR_MX) == JS_ERROR)
+-        goto giveerror;
+-    spot_data = mhash_get(bighash,query);
+-    if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+-        if(found == 1) {
+-            if(add_answer(spot_data.value,most,ns,ar,&(header.ancount),
+-               &(header.nscount),&(header.arcount),0,
+-               spot_data.point,0,0) == JS_ERROR)
+-                goto giveerror;
+-            }
+-        else {
+-            where = spot_data.value;
+-            authoritative = where->authoritative;
+-            if(add_answer(spot_data.value,most,ns,ar,&(header.ancount),
+-               &(header.nscount),&(header.arcount),1,
+-               spot_data.point,0,0) == JS_ERROR)
+-                goto giveerror;
+-            }
+-        found = 1;
+-        }
+-
+-    /* We optionally look for NS and SOA on an RR_ANY query */
+-    if(rr_set == 15) {
+-      /* Look for NS record with the same name as the query */
+-      if(change_rtype(query,RR_NS) == JS_ERROR)
+-        goto giveerror;
+-      spot_data = mhash_get(bighash,query);
+-      if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+-        if(found == 1) {
+-            if(add_answer(spot_data.value,most,ns,ar,&(header.ancount),
+-               &(header.nscount),&(header.arcount),0,
+-               spot_data.point,0,0) == JS_ERROR)
+-                goto giveerror;
+-            }
+-        else {
+-            where = spot_data.value;
+-            authoritative = where->authoritative;
+-            if(add_answer(spot_data.value,most,ns,ar,&(header.ancount),
+-               &(header.nscount),&(header.arcount),1,
+-               spot_data.point,0,0) == JS_ERROR)
+-                goto giveerror;
+-            }
+-        found = 1;
+-        }
+-      /* Look for SOA record with the same name as the query */
+-      if(change_rtype(query,RR_SOA) == JS_ERROR)
+-        goto giveerror;
+-      spot_data = mhash_get(bighash,query);
+-      if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+-        if(found == 1) {
+-            if(add_answer(spot_data.value,most,ns,ar,&(header.ancount),
+-               &(header.nscount),&(header.arcount),0,
+-               spot_data.point,0,0) == JS_ERROR)
+-                goto giveerror;
+-            }
+-        else {
+-            where = spot_data.value;
+-            authoritative = where->authoritative;
+-            if(add_answer(spot_data.value,most,ns,ar,&(header.ancount),
+-               &(header.nscount),&(header.arcount),1,
+-               spot_data.point,0,0) == JS_ERROR)
+-                goto giveerror;
+-            }
+-        found = 1;
+-        }
+-      }
+-
+-    /* If not found, look for lower-case version of the same query */
+-    if(found != 1) {
+-        found = fold_case(query);
+-        if(found == JS_ERROR)
+-            goto giveerror;
+-        if(found == 1) /* Case folded */ {
+-            found = 0;
+-            /* Look for lower case version of A record */
+-            if(change_rtype(query,RR_A) == JS_ERROR)
+-                goto giveerror;
+-            spot_data = mhash_get(bighash,query);
+-            /* If A record of lower-case found... */
+-            if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+-                found = 1;
+-                where = spot_data.value;
+-                authoritative = where->authoritative;
+-                if(add_answer(spot_data.value,most,ns,ar,&(header.ancount),
+-                   &(header.nscount),&(header.arcount),1,
+-                   spot_data.point,0,0) == JS_ERROR)
+-                    goto giveerror;
+-                }
+-            if(change_rtype(query,RR_MX) == JS_ERROR)
+-                goto giveerror;
+-            spot_data = mhash_get(bighash,query);
+-            /* If MX record of lower-case found... */
+-            if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+-                if(found == 1) {
+-                    if(add_answer(spot_data.value,most,ns,ar,&(header.ancount),
+-                       &(header.nscount),&(header.arcount),0,
+-                       spot_data.point,0,0) == JS_ERROR)
+-                        goto giveerror;
+-                    }
+-                else {
+-                    where = spot_data.value;
+-                    authoritative = where->authoritative;
+-                    if(add_answer(spot_data.value,most,ns,ar,&(header.ancount),
+-                       &(header.nscount),&(header.arcount),1,
+-                       spot_data.point,0,0) == JS_ERROR)
+-                        goto giveerror;
+-                    }
+-                }
+-            /* Optionally look for SOA and NS records */
+-            if(rr_set == 15) {
+-              if(change_rtype(query,RR_NS) == JS_ERROR)
+-                goto giveerror;
+-              spot_data = mhash_get(bighash,query);
+-              /* If NS record of lower-case found... */
+-              if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+-                if(found == 1) {
+-                    if(add_answer(spot_data.value,most,ns,ar,&(header.ancount),
+-                       &(header.nscount),&(header.arcount),0,
+-                       spot_data.point,0,0) == JS_ERROR)
+-                        goto giveerror;
+-                    }
+-                else {
+-                    where = spot_data.value;
+-                    authoritative = where->authoritative;
+-                    if(add_answer(spot_data.value,most,ns,ar,&(header.ancount),
+-                       &(header.nscount),&(header.arcount),1,
+-                       spot_data.point,0,0) == JS_ERROR)
+-                        goto giveerror;
+-                    }
+-                }
+-              if(change_rtype(query,RR_SOA) == JS_ERROR)
+-                goto giveerror;
+-              spot_data = mhash_get(bighash,query);
+-              /* If SOA record of lower-case found... */
+-              if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+-                if(found == 1) {
+-                    if(add_answer(spot_data.value,most,ns,ar,&(header.ancount),
+-                       &(header.nscount),&(header.arcount),0,
+-                       spot_data.point,0,0) == JS_ERROR)
+-                        goto giveerror;
+-                    }
+-                else {
+-                    where = spot_data.value;
+-                    authoritative = where->authoritative;
+-                    if(add_answer(spot_data.value,most,ns,ar,&(header.ancount),
+-                       &(header.nscount),&(header.arcount),1,
+-                       spot_data.point,0,0) == JS_ERROR)
+-                        goto giveerror;
+-                    }
+-                }
+-              }
+-            }
+-        if(found == 0) { /* If not found, do star record search */
+-                found = starwhitis_seek_any(query,RR_A,0,&header,&where,
+-                                &authoritative,most,ns,ar);
+-                found = starwhitis_seek_any(query,RR_MX,found,&header,
+-                                &where,&authoritative,most,ns,ar);
+-                if(rr_set == 15) {
+-                        found = starwhitis_seek_any(query,RR_NS,found,
+-                                        &header,&where,&authoritative,most,
+-                                        ns,ar);
+-                        found = starwhitis_seek_any(query,RR_SOA,found,
+-                                        &header,&where,&authoritative,most,
+-                                        ns,ar);
+-                }
+-                if(found == JS_ERROR) {
+-                        goto giveerror;
+-                }
+-        }
+-       }
+-
+-    /* If nothing found, look for a CNAME record with the same name as
+-       the query */
+-    if(found == 0) {
+-        if(change_rtype(query,RR_CNAME) == JS_ERROR)
+-            goto giveerror;
+-        spot_data = mhash_get(bighash,query);
+-        /* If found, add the data to our records */
+-        if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+-            found = 1;
+-            if(add_answer(spot_data.value,most,ns,ar,&(header.ancount),
+-                         &(header.nscount),&(header.arcount),1,
+-                         spot_data.point,0,0) == JS_ERROR)
+-                goto giveerror;
+-            }
+-        }
+-
+-    /* If nothing found, look for DDIP notation */
+-    if(found == 0) {
+-        if(change_rtype(query,RR_ANY) == JS_ERROR)
+-            goto giveerror;
+-        found = ddip_check(id,sock,ect,query);
+-        if(found == JS_ERROR)
+-            goto giveerror;
+-        if(found == JS_SUCCESS) {
+-            js_destroy(ar);
+-            js_destroy(ns);
+-            js_destroy(most);
+-            return JS_SUCCESS;
+-            }
+-        }
+-
+ old_udpany_code_disabled:
+ 
+     /* Return with exit code of 0 if no answer was found */
+@@ -1290,12 +1063,36 @@
+ 
+     /* Check to make sure the data fits in under 512 bytes */
+     if(ar->unit_count > 512) {
++
++        /* If this is an ipv4 connection and we didn't get a compress error */
++        if(ect->type == 4) {
++            struct sockaddr_in *dq;
++            uint32 ip_test;
++            dq = (struct sockaddr_in *)(ect->d);
++            ip_test = ntohl(dq->sin_addr.s_addr);
++            /* See if we are allowed to send a long packet up to
++             * 4096 bytes to this ip address */
++            if(check_ipv4_acl(ip_test,long_packet) == 1) {
++                if(ar->unit_count < 4096) {
++                    goto long_packet_ok;
++                    }
++                }
++            }
++
+         /* We handle truncation by truncating everything except the
+            12-byte header */
+         header.tc = 1;
++        header.ancount = 0;
+         make_hdr(&header,ar);
++        /* Append the question, if there is one */
++        if(query != 0) {
++           js_append(query,ar);
++           js_adduint16(ar,1);
++           }
+         }
+ 
++long_packet_ok:
++
+     /* Success! Put out the good data */
+     if(ect == 0) {
+         sendto(sock,ar->string,ar->unit_count,0,

@@ -1,0 +1,43 @@
+--- maradns-1.4.01/doc/en/source/csv2.ej	2008-03-24 09:52:27.000000000 -0600
++++ maradns-1.4.02/doc/en/source/csv2.ej	2009-12-29 10:18:23.000000000 -0600
+@@ -7,27 +7,27 @@
+ <h1>NAME</h1>
+ csv2 - Description of the csv2 zone file that MaraDNS uses
+ <h1>DESCRIPTION</h1>
+-The csv2 zone file format is the zone file format introduced in MaraDNS 1.2.
++The csv2 zone file format is MaraDNS' standard zone file format.
+ This zone file format uses any kind of whitespace (space, tab, and carriage
+ return), or the '|' character, to delimit fields.  
+ 
+ <h2>Tilde delimitation</h2>
+ 
+-In MaraDNS 1.3, the tilde ('~') character is used to delimit records
+-in csv2 zone files; in order to maintain maximum compatibility with
+-MaraDNS 1.2 zone files, this feature is only enabled if a tilde is
+-placed between the first and second record.  Otherwise, tildes are
+-not allowed in zone files (except in comments).
++In newer MaraDNS releases, the tilde ('~') character is used to delimit
++records in csv2 zone files; in order to maintain maximum compatibility
++with older MaraDNS zone files, this feature is only enabled if a tilde is
++placed between the first and second record.  Otherwise, tildes are not
++allowed in zone files (except in comments).
+ 
+ <p>
+ 
+-Most MaraDNS 1.2 csv2 zone files without the tilde character are
+-compatible with the 1.3 csv2 parser, unless csv2_tilde_handling
+-is set to 3.  All MaraDNS 1.2 csv2 zone files will parse in MaraDNS 1.3
+-if csv2_tilde_handling has a value of 0.  MaraDNS 1.2, starting with
+-1.2.12.04, also supports the csv2_tilde_handling variable (as long as it
+-has a value of 0); this allows the same configuration and zone files to
+-be used in both MaraDNS 1.2 and MaraDNS 1.3.
++Most older MaraDNS csv2 zone files without the tilde character are
++compatible with the updated csv2 parser, unless csv2_tilde_handling
++is set to 3.  All older MaraDNS csv2 zone files will parse in MaraDNS 
++if csv2_tilde_handling has a value of 0.  Older MaraDNS releases
++also supported the csv2_tilde_handling variable (as long as it
++had a value of 0); this allowed the same configuration and zone files to
++be used in older and newer MaraDNS releases.
+ 
+ <h2>Resource record format</h2>
+ 

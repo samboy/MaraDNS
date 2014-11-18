@@ -1,0 +1,57 @@
+--- maradns-2.0.02/doc/en/webpage/changelog.embed	2010-09-26 10:53:32.000000000 -0600
++++ maradns-2.0.03/doc/en/webpage/changelog.embed	2011-02-15 14:21:14.000000000 -0700
+@@ -1,5 +1,54 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-2.0.03:</p>
++This is a stable branch of MaraDNS
++<blockquote>
++<ul>
++<li>ANY queries that do not fit in 512 bytes are not properly truncated
++<li>RFC2317 hostnames with slash characters ('/') are now supported
++</ul>
++(2011.??.??)
++</blockquote>
++
++<p>maradns-2.0.02:</p>
++This is a stable branch of MaraDNS.
++<blockquote>
++<ul>
++<li>Documentation updates 
++<li>Applied Corey's patch that fixes a typo in fetchzone.c 
++<li>Applied Yarin's patch that makes the "install.locations" script more 
++    flexible.
++<li>I have adapted Yarin's patch that makes email addresses like 
++    'john\.doe@example.com' possible in SOA records. 
++<li>Updated an error message that stated we were running MaraDNS 1.2 
++    (now says 2.0) 
++<li>Updated the copyright statement to have the year 2011 
++<li>Deadwood updated to 3.0.02
++<li>Fix for CVE-2011-0520
++</ul>
++(2011.02.05)
++</blockquote>
++
++<p>maradns-1.4.06:</p>
++This is a stable branch of MaraDNS.
++<blockquote>
++<ul>
++<li>Fix for CVE-2011-0520
++<li>Deadwood updated to 3.0.02
++</ul>
++(2011.01.28)
++</blockquote>
++
++<p>maradns-2.0.01:</p>
++This is a stable branch of MaraDNS.
++<blockquote>
++<ul>
++<li>MaraDNS build process modified to compile without any recursion; recursion
++    is now supplied by Deadwood.
++</ul>
++(2010.09.28)
++</blockquote>
++
+ <p>maradns-1.4.05:</p>
+ This is a stable branch of MaraDNS.
+ <blockquote>

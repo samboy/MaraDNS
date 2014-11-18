@@ -1,0 +1,11 @@
+The scripts in this directory are not POSIX compliant.  In particular, 
+they use '&' to place a program in the background, so we can run the 
+maradns daemon while making some queries.
+
+This is not an issue in the real world: ksh, dash, Busybox's ash, pdksh, and
+bash all have backgrounding compatible with the syntax used in these 
+scripts.
+
+POSIX is outdated in a lot of ways.  For example, the POSIX spec includes
+commands for UUCP networking; this is the only networking supported in the
+spec.  UUCP has been dead for years.

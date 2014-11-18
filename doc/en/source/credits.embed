@@ -1,0 +1,57 @@
+Here is a partial list of people who have provided assistance:
+<p>
+Floh has generously set up a FreeBSD 4, FreeBSD 6, and Mac OS X system so
+that I can port MaraDNS to more platforms.
+<p>
+Albert Lee has provided countless bug reports, and, nicely enough, patches
+to fix said bugs.  He has also made improvements to the code in the tcp
+"zoneserver".
+<p>
+Franky Van Liedekerke has provided much invaluable assistance.  As just one
+example, he provided invaluable assistance in getting MaraDNS to compile on
+Solaris.  In addition, he has provided much valuable SQA help.
+<p>
+Christian Kurz, who has provided invaluable bug reports, especially 
+when I had to re-implement the core hashing algorithm.
+<p>
+Remmy, who is providing both the web space and a mailing list 
+for maradns.org.
+<p>
+Phil Homewood, who provided invaluable assistance with finding and fixing
+bugs in the authoritative portion of the MaraDNS server.  He helped me
+plug memory leaks, find uninitialized variables being used, and found a
+number of bugs I was unable to find.
+<p>
+Albert Prats kindly provided Spanish translations for various text files.
+<p>
+Shin Zukeran provided a patch to recursive.c which properly makes a normal
+null-terminated string from a js_string object, to send as an argument to
+open() so we can get the rijndael key for the PRNG.
+<p>
+D Richard Felker III has provided invaluable bug reports.  By looking at his
+bug reports, I have been able to hunt down and fix many problems that the
+recursive nameserver had, in addition to at least one problem with the
+authoritative nameserver.
+<p>
+Ole Tange has also given me many valuable MaraDNS bug reports.  
+<p>
+Florin Iucha provided a tip in the FAQ for how to compile MaraDNS on
+OpenBSD.
+<p>
+Roy Arends (one of the BIND developers, as it turns out) found a serious 
+security problem with MaraDNS, where MaraDNS would answer answers, and 
+pointed it out to me.  
+<p>
+Code used as the basis for the psudo-random-number generator was written
+by Vincent Rijmen, Antoon Bosselaers, and Paulo Barreto.  I appreciate 
+these programmers making the code public domain, which is the only license 
+under which I can add code to MaraDNS under.  
+<p>
+Ross Johnson and others have made a Win32 port of the Pthreads library;
+this has made a native win32 port of MaraDNS possible.  
+<p>
+I also appreciate the work of Dr. Brian Gladman and Fritz Schneider,
+who have both written independent implementations of AES from which I 
+obtained test vectors.  With the help of their hard work, I was able to
+discover a subtle security problem that previous releases of MaraDNS
+had.

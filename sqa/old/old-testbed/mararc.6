@@ -1,0 +1,77 @@
+# Example mararc file
+
+# The various zones we support
+csv1 = {}
+csv1["example.org."] = "db.example.org"
+#csv1["example.com."] = "db.example.com"
+
+# The address this DNS server runs on
+# bind_address = "127.0.0.3"
+bind_address = "127.0.3.6"
+# The directory with all of the zone files
+chroot_dir = "/var/maradns"
+# chroot_dir = "/home/set/maradns/zone"
+# The numeric UID MaraDNS will run as
+maradns_uid = 99
+# The maximum number of processes MaraDNS is allowed to use
+maxprocs = 64
+
+# simulate network lag
+#debug_response_delay = 1
+
+# These constants limit the number of records we will display, in order
+# to help keep packets 512 bytes or smaller.  This, combined with round_robin
+# record rotation, help to use DNS as a crude load-balancer.
+ 
+# The maximum number of records to display in a chain of records (list
+# of records) for a given host name
+max_chain = 8
+# The maximum number of records to display in a list of records in the
+# additional section of a query.  If this is any value besides one,
+# round robin rotation is disabled (due to limitations in the current
+# data structure MaraDNS uses)
+max_ar_chain = 2
+# The maximum number of records to show total for a given question
+max_total = 20
+
+# The number of messages we log to stdout
+# 0: No messages, ever (default)
+# 1: Only startup messages logged
+# 2: Error queries logged
+# 3: All queries logged (but not very verbosely right now)
+verbose_level = 1
+
+# Here is a ACL which restricts who is allowed to perform zone transfer from 
+# the zoneserver program
+
+# Simplest form: 10.1.1.1/24 (IP: 10.1.1.1, 24 left bits in IP need to match)
+# and 10.100.100.100/255.255.255.224 (IP: 10.100.100.100, netmask
+# 255.255.255.224) are allowed to connect to the zone server 
+# zone_transfer_acl = "10.1.1.1/24,10.100.100.100/255.255.255.224"
+
+# More complex: We create two aliases: One called "office" and another
+# called "home".  We allow anyone in the office or at home to perform zone
+# transfers
+# ipv4_alias = {}
+# ipv4_alias["office"] = "10.1.1.1/24"
+# ipv4_alias["home"] = "10.100.100.100/255.255.255.224"
+# zone_transfer_acl = "office,home"
+
+# More complex then the last example.  We have three employees,
+# Susan, Becca, and Mia, whose computers we give zone transfer rights to.
+# Susan and Becca are system administrators, and Mia is a developer.
+# They are all part of the company.  We give the entire company zone
+# transfer access
+# ipv4_alias = {}
+# ipv4_alias["susan"]     = "10.6.7.8/32"  # Single IP allowed
+# ipv4_alias["becca"]     = "10.7.8.9"     # also a single IP
+# ipv4_alias["mia"]       = "10.8.9.10/255.255.255.255" # Also a single IP
+# ipv4_alias["sysadmins"] = "susan,becca"
+# ipv4_alias["devel"]     = "mia"
+# ipv4_alias["company"]   = "sysadmins,devel"
+# This is equivalent to the above line
+# ipv4_alias["company"]   = "susan,becca,mia"
+# zone_transfer_acl       = "company"
+
+zone_transfer_acl = "192.168.42.0/24"
+

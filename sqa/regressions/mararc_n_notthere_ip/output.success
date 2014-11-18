@@ -1,0 +1,93 @@
+
+PARAM: handle_noreply=0
+
+PARAM: Asking for non-existent hostname
+# Querying the server with the IP 127.0.0.2
+# Question: Afooz.example.com.
+fooz.example.com. +0 a 10.11.12.13
+# NS replies:
+# AR replies:
+
+PARAM: Asking for existing hostname
+# Querying the server with the IP 127.0.0.2
+# Question: Awww.example.com.
+www.example.com. +86400 a 127.10.1.1
+# NS replies:
+# AR replies:
+
+PARAM: Asking for hostname from non-responsive server
+# Querying the server with the IP 127.0.0.2
+# Hard Error: Timeout
+
+PARAM: Asking for authoritative non-existent hostname
+# Querying the server with the IP 127.0.0.3
+# Remote server said: NAME ERROR
+# Question: Afooz.example.com.
+# NS replies:
+#example.com. +86400 soa example.com. hostmaster@example. 7200 3600 604800 3600
+# AR replies:
+
+
+PARAM: handle_noreply=1
+
+PARAM: Asking for non-existent hostname
+# Querying the server with the IP 127.0.0.2
+# Question: Afooz.example.com.
+fooz.example.com. +0 a 10.11.12.13
+# NS replies:
+# AR replies:
+
+PARAM: Asking for existing hostname
+# Querying the server with the IP 127.0.0.2
+# Question: Awww.example.com.
+www.example.com. +86400 a 127.10.1.1
+# NS replies:
+# AR replies:
+
+PARAM: Asking for hostname from non-responsive server
+# Querying the server with the IP 127.0.0.2
+# Remote server said: SERVER FAILURE
+# Question: Awww.example.net.
+# NS replies:
+# AR replies:
+
+PARAM: Asking for authoritative non-existent hostname
+# Querying the server with the IP 127.0.0.3
+# Remote server said: NAME ERROR
+# Question: Afooz.example.com.
+# NS replies:
+#example.com. +86400 soa example.com. hostmaster@example. 7200 3600 604800 3600
+# AR replies:
+
+
+PARAM: handle_noreply=2
+
+PARAM: Asking for non-existent hostname
+# Querying the server with the IP 127.0.0.2
+# Question: Afooz.example.com.
+fooz.example.com. +0 a 10.11.12.13
+# NS replies:
+# AR replies:
+
+PARAM: Asking for existing hostname
+# Querying the server with the IP 127.0.0.2
+# Question: Awww.example.com.
+www.example.com. +86400 a 127.10.1.1
+# NS replies:
+# AR replies:
+
+PARAM: Asking for hostname from non-responsive server
+# Querying the server with the IP 127.0.0.2
+# Question: Awww.example.net.
+www.example.net. +0 a 10.11.12.13
+# NS replies:
+# AR replies:
+
+PARAM: Asking for authoritative non-existent hostname
+# Querying the server with the IP 127.0.0.3
+# Remote server said: NAME ERROR
+# Question: Afooz.example.com.
+# NS replies:
+#example.com. +86400 soa example.com. hostmaster@example. 7200 3600 604800 3600
+# AR replies:
+

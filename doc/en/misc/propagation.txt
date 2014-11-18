@@ -1,0 +1,106 @@
+From: e8mhpsznamq001@sneakemail.com 
+To: list@maradns.org
+Subject: Common misconceptions about DNS
+
+There is a common misconception about DNS floating around
+that it is up to the DNS servers serving a given domain,
+such as example.com, to tell all the other DNS servers
+in the world when a change happenes to one of the
+host names in the domain.
+
+The idea is that such a change is somehow propagated through
+the internet is very common.  It is also incorrect.
+
+DNS was designed in the bad old days of the internet.  The
+days when the backone of the internet was a 56k link.  The
+days when 5 minute timeouts for telnets were needed; a
+timeout any shorter would prematurely disconnt someone.
+
+As a result, it uses caching to store data.  However, an
+ISP's DNS servers do not cache the information about,
+say, www.maradns.org, until someone asks the ISP's DNS
+server about maradns.org.  At which point, the ISP server 
+will find the DNS server for maradns.org, find out
+the IP for maradns.org, and also be told how long
+to cache that data.
+
+Clear as mud?
+
+Let me word that differently.  
+
+Some enlightened person on the internet wants to find 
+out more about MaraDNS.  So, they whip out Mozilla and
+decide to go to maradns.org to find out more about this
+wonderful (newly nearly bug-free [TM]) piece of software.
+
+Now, before they can go to maradns.org, they need to find 
+out where maradns.org is on the net.  Which requires a 
+rather ugly process called DNS.  A process so ugly that 
+most people's home computers don't even bother with 
+this process.   Instead, they ask their friendly local 
+ISP's DNS servers where they could find maradns.org on
+this here internet thingy.
+
+So, the home computer asks the ISP's DNS server "Hey,
+where the heck is MaraDNS org".
+
+At this point, the first thing the ISP's DNS server
+does is look in their cache.  "Hmmm, did someone
+recently ask about maradns.org?" asks the ISP's
+DNS server.  Well, how about that, no one recently
+asked about MaraDNS.  "Oh dear; I have to find where
+it is on the internet now.  Oh, God, please not let
+this be a host name with out-of-bailiwick name 
+servers."
+
+So, to make a long sorid story short, eventually the 
+ISP's DNS server hooks up with the authoritative DNS
+servers for maradns.org.  You know, getting the
+answer straight form the horses mouth and all that.
+
+So, the ISP's DNS server saunters down to the maradns.org
+name server and asks where it could find maradns.org.
+The process goes like this:
+
+ISP DNS server: Hey, where can I find maradns.org?
+maradns.org DNS server: It's at 66.33.48.187; remember
+                        that for one day.
+
+This means now that, for the next 24 hours the ISP's
+DNS server will reemember that maradns.org can be
+found at 66.33.48.187.  This way, the ISP's DNS
+server doesn't need to bug the maradns.org DNS
+server about where maradns.org can be found.
+
+So, what happens if maradns.org has a sudden change of 
+address.  Well, while maradns.org's DNS server will
+give everyone the correct new address, there will be
+a lot of DNS servers out there which will remember
+the old address for maradns.org for 24 hours.  
+Because of this, people will be knocking on the wrong
+door until the ISP's DNS server realizes its postit
+note about where maradns.org can be found (so that
+Mr. ISP DNS server doesn't have to go through the 
+sordid process of bugging Ms. maradns.org DNS server
+again) is out of date; forcing Mr. ISP DNS server to
+get his lazy butt up out of his desk, find 
+Ms. MaraDNS, and ask her about the whereabouts
+of maradns.org again.
+
+Now, notice something about this entire process.
+Ms. MaraDNS did not have to do anything but answer
+Mr. ISP DNS server.  Ms. MaraDNS did not have
+to play the gossip game, where she had to tell
+all her friends where maradns.org can be found,
+so that those friends can tell their friends, and
+so on.  Why waste her time being a gossip when all
+she has to do is sit around and answer questions
+that various ISP's and other recursive DNS servers
+ask her?
+
+There.  Now hopefully I have purged the idea about
+DNS records somehow propagated from everyone's
+head.  That just ain't how it works.
+
+- Sam
+

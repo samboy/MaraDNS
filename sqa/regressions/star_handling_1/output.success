@@ -1,0 +1,84 @@
+# Querying the server with the IP 127.0.0.1
+# Question: Aa.example.net.
+a.example.net. +86400 a 127.0.0.2
+# NS replies:
+#example.net. +86400 ns ns.example.net.
+# AR replies:
+#ns.example.net. +86400 a 127.0.0.1
+# Querying the server with the IP 127.0.0.1
+# Question: Ab.example.net.
+b.example.net. +86400 a 127.0.0.3
+# NS replies:
+#example.net. +86400 ns ns.example.net.
+# AR replies:
+#ns.example.net. +86400 a 127.0.0.1
+# Querying the server with the IP 127.0.0.1
+# Question: Ac.example.net.
+c.example.net. +86400 a 127.0.0.3
+# NS replies:
+#example.net. +86400 ns ns.example.net.
+# AR replies:
+#ns.example.net. +86400 a 127.0.0.1
+# Querying the server with the IP 127.0.0.1
+# Remote server said: NAME ERROR
+# Question: Aa.a.example.net.
+# NS replies:
+#example.net. +86400 soa example.net. hostmaster@example.net. 1 7200 3600 604800 3600
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Aa.b.example.net.
+a.b.example.net. +86400 a 127.0.0.3
+# NS replies:
+#example.net. +86400 ns ns.example.net.
+# AR replies:
+#ns.example.net. +86400 a 127.0.0.1
+# Querying the server with the IP 127.0.0.1
+# Remote server said: NAME ERROR
+# Question: Aa.a.a.example.net.
+# NS replies:
+#example.net. +86400 soa example.net. hostmaster@example.net. 1 7200 3600 604800 3600
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Aa.a.b.example.net.
+a.a.b.example.net. +86400 a 127.0.0.3
+# NS replies:
+#example.net. +86400 ns ns.example.net.
+# AR replies:
+#ns.example.net. +86400 a 127.0.0.1
+# Querying the server with the IP 127.0.0.1
+# Question: @a.example.net.
+# NS replies:
+#example.net. +86400 soa example.net. hostmaster@example.net. 1 7200 3600 604800 3600
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: @b.example.net.
+# NS replies:
+#example.net. +86400 soa example.net. hostmaster@example.net. 1 7200 3600 604800 3600
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: @c.example.net.
+# NS replies:
+#example.net. +86400 soa example.net. hostmaster@example.net. 1 7200 3600 604800 3600
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Remote server said: NAME ERROR
+# Question: @a.a.example.net.
+# NS replies:
+#example.net. +86400 soa example.net. hostmaster@example.net. 1 7200 3600 604800 3600
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: @a.b.example.net.
+# NS replies:
+#example.net. +86400 soa example.net. hostmaster@example.net. 1 7200 3600 604800 3600
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Remote server said: NAME ERROR
+# Question: @a.a.a.example.net.
+# NS replies:
+#example.net. +86400 soa example.net. hostmaster@example.net. 1 7200 3600 604800 3600
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: @a.a.b.example.net.
+# NS replies:
+#example.net. +86400 soa example.net. hostmaster@example.net. 1 7200 3600 604800 3600
+# AR replies:

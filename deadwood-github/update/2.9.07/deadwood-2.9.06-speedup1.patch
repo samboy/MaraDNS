@@ -1,0 +1,27 @@
+--- deadwood-H-20100906-1/src/DwUdpSocket.c.orig	2010-09-06 20:01:26.000000000 -0700
++++ deadwood-H-20100906-1/src/DwUdpSocket.c	2010-09-06 20:03:49.000000000 -0700
+@@ -179,8 +179,9 @@
+      dw_str *query, SOCKET x_socket_num) {
+         sockaddr_all_T server;
+         SOCKET s = 0;
+-        int32_t rnum = -1;
++        int_fast32_t rnum = -1;
+         ip_addr_T addr = {0,{0,0},0,0};
++	int counter = 0;
+         socklen_t inet_len = sizeof(struct sockaddr_in);
+ 
+         if(rem[n].socket != x_socket_num || /* Already used (sanity check) */
+@@ -195,7 +196,12 @@
+         }
+ 
+         /* Get IP of remote server and open a socket to them */
+-        addr = get_upstream_ip(query,n);
++	for(counter = 0; counter < 7; counter++) { /* Don't stop on bad IP */
++        	addr = get_upstream_ip(query,n);
++		if(addr.len > 0) {
++			break;
++		}
++	}
+         dw_log_ip("Making connection to IP",&addr,128);
+         if(addr.len == 0) { /* Failed to get upstream IP */
+                 return;

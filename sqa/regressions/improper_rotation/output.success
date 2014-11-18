@@ -1,0 +1,10 @@
+# Querying the server with the IP 127.0.0.1
+# Question: Acname.example.com.
+cname.example.com. +86400 cname www.example.com.
+#www.example.com. +86400 a 10.1.2.3
+# NS replies:
+#example.com. +86400 ns ns1.example.com.
+#example.com. +86400 ns ns2.example.com.
+# AR replies:
+#ns1.example.com. +86400 a 10.1.2.4
+#ns2.example.com. +86400 a 10.1.2.5

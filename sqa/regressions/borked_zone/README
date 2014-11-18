@@ -1,0 +1,4 @@
+This test makes sure MaraDNS can handle poorly designed zones where
+the NS servers for a sub-zone list some of the servers for a super zone
+(yes, some DNS administrators are this dumb).
+

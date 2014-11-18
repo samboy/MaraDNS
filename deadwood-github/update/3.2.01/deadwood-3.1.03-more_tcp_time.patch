@@ -1,0 +1,17 @@
+--- deadwood-3.1.02/src/DwUdpSocket.c	2011-11-27 20:30:54.000000000 -0600
++++ deadwood-3.2.01/src/DwUdpSocket.c	2012-02-11 02:02:20.000000000 -0600
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2011 Sam Trenholme and others
++/* Copyright (c) 2007-2012 Sam Trenholme and others
+  *
+  * TERMS
+  *
+@@ -1158,7 +1158,7 @@
+                         rem[b].local[l]->local_id,b,rem[b].is_upstream);
+                 /* Give the UDP connection more time before timeout, so
+                  * we can fully process the TCP connection */
+-                rem[b].die = get_time() + ((int64_t)timeout_seconds << 10);
++                rem[b].die = get_time() + ((int64_t)timeout_seconds << 11);
+                 return 2; /* Don't kill pending UDP connection */
+         } else { /* Truncated over UDP; just given them a blank "truncated"
+                   * reply */

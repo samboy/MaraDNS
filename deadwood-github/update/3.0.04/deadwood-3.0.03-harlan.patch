@@ -1,0 +1,34 @@
+--- deadwood-3.0.04/src/DwSocket.c.orig	2011-07-22 15:41:25.000000000 -0500
++++ deadwood-3.0.04/src/DwSocket.c	2011-10-09 16:53:09.639594255 -0500
+@@ -524,6 +533,7 @@
+  * parameters */
+ void process_mararc_params() {
+         dw_str *bind = 0, *r_acl = 0;
++	int a;
+ 
+         bind = get_bind_addrs();
+         if(bind == 0) {
+@@ -537,6 +547,23 @@
+         }
+         set_ipmask_list(recursive_acl,r_acl);
+ 
++	/* Harlan's issue: Make sure all bind addresses are in the recursive
++	 * ACL */
++	for(a = 0; a < DW_MAXIPS; a++) {
++		if(bind_address[a].len == 0) {
++			break;
++		}
++		if(check_ip_acl(&(bind_address[a])) != 1) {
++			dw_log_ip("This IP is not in recursive_acl: ",
++				  &(bind_address[a]),0);
++			dw_fatal("All bind_address values must be in"
++				 " recursive_acl");
++		}
++	}	
++	if(DW_MAXIPS == a) {
++		dw_fatal("Too many bind_address IPs");
++	}
++
+         process_numeric_mararc_params();
+ 
+         /* These two items are allocated once and never freed;

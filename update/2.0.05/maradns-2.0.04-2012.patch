@@ -1,0 +1,8 @@
+--- maradns-2.0.04/COPYING	2010-01-08 10:07:40.000000000 -0600
++++ maradns-2.0.05/COPYING	2012-02-11 16:07:41.000000000 -0600
+@@ -1,4 +1,4 @@
+-Copyright (c) 2002-2010 Sam Trenholme and others
++Copyright (c) 2002-2012 Sam Trenholme and others
+ 
+ TERMS
+ 

@@ -1,0 +1,74 @@
+--- maradns-1.4.01/doc/en/source/win_service.ej	2008-03-24 09:52:27.000000000 -0600
++++ maradns-1.4.02/doc/en/source/win_service.ej	2009-12-29 11:18:11.000000000 -0600
+@@ -4,7 +4,7 @@
+ 
+ </HEAD><BODY>
+ 
+-<!-- Copyright 2006 Sam Trenholme
++<!-- Copyright 2006,2009 Sam Trenholme
+ 
+     TERMS
+ 
+@@ -33,6 +33,10 @@
+ 
+ <p>
+ 
++Deadwood, it should be noted, can natively run as a Windows service.
++
++<p>
++
+ The rest of this document will simply call Windows XP "Windows".  These
+ directions will <i>not</i> work with Windows 95, 98, or ME.
+ 
+@@ -42,12 +46,14 @@
+ 
+ <ul>
+ <li>The native Windows32 port of MaraDNS, with a name like
+-    <tt>maradns-1-2-12-win32.zip</tt>
++    <tt>maradns-1-4-01-win32.zip</tt>
+ <li>A zip file, originally issued by Microsoft and freely available several
+     places on the Internet called "srvany.zip".  This file can be easily found
+     via an Internet search engine.  The file in question is 24,287 bytes
+-    long, has an md5 sum of <tt>7e827466629dea02d8f16648d9c43400</tt>, and a
+-    sha1 sum of <tt>e2e2ea3701046eb782bd58ae05fb9face1e03543</tt>.
++    long, has an md5 sum of <tt>7e827466629dea02d8f16648d9c43400</tt>,  a
++    sha1 sum of <tt>e2e2ea3701046eb782bd58ae05fb9face1e03543</tt>, and a
++    RadioGatun-32 sum of 
++<tt>804d8c46904e2e42b9164ecf4e44119db0b22b80c385776240f692d2d43c18b6</tt>.
+ </ul>
+ 
+ Once these files are obtained, unpack both <tt>.zip</tt> files by 
+@@ -58,7 +64,7 @@
+ 
+ <p>
+ 
+-Here are all 12 files that will be in <b>c:\maradns</b> if the files
++Here are all the files that will be in <b>c:\maradns</b> if the files
+ were correctly obtained and extracted:
+ 
+ <ul>
+@@ -69,9 +75,9 @@
+ <li><tt>askmara.exe</tt>
+ <li><tt>Askmara.html</tt>
+ <li><tt>pthreadGC2.dll</tt>
+-<li><tt>pthreads-w32-2-6-0-release.tar.bz2</tt>
+-<li><tt>Service.html</tt> <b>Note:</b> This file will <i>not</i> be present
+-    if using MaraDNS 1.2.11 or lower
++<li><tt>pthreads.txt</tt>
++<li><tt>Service.html</tt> 
++<li><tt>secret.txt</tt>
+ <li><tt>srvany.exe</tt>
+ <li><tt>instsrv.exe</tt>
+ <li><tt>srvany.wri</tt>
+@@ -168,5 +174,11 @@
+ tabs in the task manager, simply double click in the blank area on the side of 
+ the task manager.
+ 
++<p>
++
++If the MaraDNS service can not start up, you can try starting it from a 
++cmd prompt.  Run the run_maradns.bat file and see if MaraDNS starts up. 
++If it does, make sure you correctly set the relevant register values.
++
+ </BODY>
+ 

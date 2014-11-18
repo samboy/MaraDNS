@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# This tests for RFC2181 compliant truncation
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+verbose_level = 0
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+sleep 1
+../../../tools/askmara Tt1.example.com.
+echo
+../../../tools/askmara Tt2.example.com.
+echo
+../../../tools/askmara Tt3.example.com.
+echo
+../../../tools/askmara Tt4.example.com.
+echo
+../../../tools/askmara Tt5.example.com.
+echo
+../../../tools/askmara Tt6.example.com.
+sleep 1
+killall maradns > /dev/null 2>&1
+rm mararc

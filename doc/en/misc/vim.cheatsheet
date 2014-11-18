@@ -1,0 +1,11 @@
+In order to disable all of the "smart" indenting, you need to do
+the following incantations
+
+:set noai
+:set noautoindent
+:set nosmartindent
+:set nocindent
+:set comments=""
+:set indentexpr=""
+
+Ugh.  Can you say feature bloat?

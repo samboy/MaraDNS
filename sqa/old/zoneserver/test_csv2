@@ -1,0 +1,74 @@
+a.example.net.              10.11.12.13
+b.example.net.        A     10.11.12.14
+c.example.net. +64000 A     10.11.12.15
+13.12.11.10.in-addr.arpa.        PTR    a.example.net.
+14.12.11.10.in-addr.arpa.        PTR    b.example.net.
+15.12.11.10.in-addr.arpa. +64000 PTR    c.example.net.
+example.net.      MX   10 mail.example.net.
+mail.example.net.      10.11.12.16
+a.example.net.   AAAA    3ffe:ffff:ffe:501:ffff::b:c:d
+_http._tcp.% srv 0 0 80 a.%
+example.net. TXT 'This is an example text field'
+example.net. RAW 40 \x10\x01\x02'Kitchen sink'\x40' data'
+a.example.net.      10.10.10.10
+b.example.net.  10.10.10.11
+b.example.net.  10.10.10.12
+Z.EXAMPLE.NET.      10.2.3.4
+Y.EXAMPLE.net.  10.3.4.5
+percent.% a         10.9.8.7
+*.example.net.  A       10.11.12.13
+d.example.net. +86400 A 10.11.12.13
+f.example.net. # As you can see, records can span multiple lines
+                 A    10.2.19.83
+c.example.net.           # Our C class machine
+               +86400      # This record is stored for one day
+               A           # A record
+               10.1.1.1    # Where we are
+e.example.net.|+86400|a|10.2.3.4
+h.example.net.|a|10.9.8.7
+g.example.net.|+86400|10.11.9.8
+% mx 10 mail.%
+mail.% +86400 IN A 10.22.23.24
+a.example.net.           aaaa      3ffe:ffff:1:2:3::4:f
+_http._tcp.% srv 0 0 80 a.%
+z.example.net.    txt 'This is some text'
+za.example.net. TXT 'This is some text'
+zb.example.net. TXT 'This is some text
+       with a linefeed in it, and an example UTF-8 character: I  MaraDNS'
+zc.example.net. TXT This_is_100%_unquoted_text_+symbols!
+zd.example.net. TXT This' is a mix 'of_unquoted' and quoted 'text!
+ze.example.net. TXT \x80\x81\x82\x83
+zf.example.net. TXT \200\201\202\203
+zg.example.net. TXT \200\x81\202\x83
+zh.example.net. TXT 'perl -e '\''print "A Perl of a TXT record!\n"'\'
+zh1.example.net. TXT 'for(a=0;a<10;a++)'\x7b'printf("%d\n",a);sleep(1)}'
+zi.example.net. TXT 'Not only did the quick brown fox jump over the lazy dog, but the lazy dog jumped over the cat.'
+zj.example.net. TXT 'Not only did the quick brown fox jump '\
+                   'over the lazy dog, but the lazy dog'\
+                   ' jumped over the cat.'
+zk.example.net. TXT 'Not only did the quick brown fox jump '\ # The fox
+                   'over the lazy dog, but the lazy dog'\    # The dog
+                   ' jumped over the cat.'                   # The cat
+zk2.example.net. TXT 'This is some data '\
+       # Here we have some netments followed by a blank line
+
+       # Now we have some more netments,
+       # followed by the rest of the data
+           'and this is the rest of the data'
+zo.example.net. TXT 'TXT record with only one chunk'
+zp.example.net. TXT 'This is chunk one';'This is chunk two'
+zq.example.net. TXT 'This is chunk one';\ # Our first chunk
+                           This_is_chunk_two;\  # Our second chunk
+                          'This is chunk three' # Our final chunk
+zr.example.net. TXT 'chunk one';;'chunk three' # Chunk two zero-length
+zs.example.net. TXT ;'chunk two'; # Chunks one and three zero-length
+zt1.example.net. RAW 40 \x10\x01\x02'Kitchen sink'\x2b' data'
+zt.example.net. RAW 40 \020\001\002Kitchen' sink+ data'
+zu.example.net. RAW 40 \x10\x01\x02Kitchen\x20sink+\x20data
+zv.example.net. RAW 40 \x10\001\x02\
+                             'Kitchen sink+ data'
+zw.example.net. RAW 40 \x10\ # Meaning: 16
+                             \x01\ # Coding: 1
+                             \x02\ # Sub-coding: 2
+                             'Kitchen sink+ data' # Data: 'Kitchen sink+ data'
+

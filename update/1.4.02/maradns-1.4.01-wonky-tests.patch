@@ -1,0 +1,99 @@
+--- maradns-1.4.01/sqa/regressions/do.tests	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.4.02/sqa/regressions/do.tests	2010-01-07 22:20:16.000000000 -0600
+@@ -21,15 +21,28 @@
+ fi
+ 
+ # Tests to make sure most Mararc parameters work
+-TESTS="mararc_n_admin_acl "
+-TESTS=$TESTS"mararc_n_bind_address "
++
++# These tests are a little wonky are are done first
++# Try again if any of these tests fail
++WONKY="mararc_n_admin_acl "
++WONKY=$WONKY"mararc_n_default_rrany_set "
++WONKY=$WONKY"mararc_n_max_glueless_level "
++WONKY=$WONKY"mararc_n_max_queries_total "
++WONKY=$WONKY"mararc_n_min_ttl "
++WONKY=$WONKY"mararc_n_min_ttl_cname "
++WONKY=$WONKY"mararc_n_min_visible_ttl "
++WONKY=$WONKY"mararc_n_recursive_acl "
++WONKY=$WONKY"mararc_n_spammers "
++WONKY=$WONKY"mararc_n_synth_soa_serial "
++
++# Normal tests
++TESTS="mararc_n_bind_address "
+ TESTS=$TESTS"mararc_n_bind_star_handling "
+ TESTS=$TESTS"mararc_n_chroot_dir "
+ TESTS=$TESTS"mararc_n_csv2_default_zonefile "
+ TESTS=$TESTS"mararc_n_csv2_synthip_list "
+ TESTS=$TESTS"mararc_n_csv2_tilde_handling "
+ TESTS=$TESTS"mararc_n_debug_msg_level "
+-TESTS=$TESTS"mararc_n_default_rrany_set "
+ TESTS=$TESTS"mararc_n_dns_port "
+ TESTS=$TESTS"mararc_n_dos_protection_level "
+ TESTS=$TESTS"mararc_n_handle_noreply "
+@@ -39,19 +52,11 @@
+ TESTS=$TESTS"mararc_n_maradns_uid "
+ TESTS=$TESTS"mararc_n_max_ar_chain "
+ TESTS=$TESTS"mararc_n_max_chain "
+-TESTS=$TESTS"mararc_n_max_glueless_level "
+-TESTS=$TESTS"mararc_n_max_queries_total "
+ TESTS=$TESTS"mararc_n_max_total "
+-TESTS=$TESTS"mararc_n_min_ttl "
+-TESTS=$TESTS"mararc_n_min_ttl_cname "
+-TESTS=$TESTS"mararc_n_min_visible_ttl "
+ TESTS=$TESTS"mararc_n_notthere_ip "
+ TESTS=$TESTS"mararc_n_recurse_delegation "
+-TESTS=$TESTS"mararc_n_recursive_acl "
+ TESTS=$TESTS"mararc_n_remote_admin "
+-TESTS=$TESTS"mararc_n_spammers "
+ TESTS=$TESTS"mararc_n_synth_soa_origin "
+-TESTS=$TESTS"mararc_n_synth_soa_serial "
+ TESTS=$TESTS"mararc_n_timestamp_type "
+ TESTS=$TESTS"mararc_n_upstream_port "
+ TESTS=$TESTS"mararc_n_verbose_level "
+@@ -83,6 +88,38 @@
+ # 192.168.1.116, 172.16.116.70, 10.1.2.3, and 126.254.254.9)
+ TESTS=$TESTS"private_ips "
+ 
++for test in $WONKY ; do
++	cd $test
++	sh ./do.test > output.test
++	sleep 2
++	if ! cmp output.success output.test > /dev/null 2>&1 ; then
++		echo test $test failed\; trying again
++		sleep 30
++		sh ./do.test > output.test
++		sleep 2
++		if ! cmp output.success output.test > /dev/null 2>&1 ; then
++			echo test $test failed again
++			sleep 60
++			sh ./do.test > output.test
++			sleep 2
++			if ! cmp output.success output.test > /dev/null 2>&1 
++				then
++				echo $test failed again\; giving up
++				exit 1
++			else
++				echo $test finally succeeded
++			fi
++		
++		else
++			echo test $test succeeded this time
++		fi
++	else
++		echo test $test succeeded
++	fi
++	cd ..
++done
++
++	
+ for test in $TESTS ; do
+ 	cd $test
+ 	sh ./do.test > output.test
+@@ -96,3 +133,5 @@
+ 	cd ..
+ done
+ 
++echo All tests successful
++

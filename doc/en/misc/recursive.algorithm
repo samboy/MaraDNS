@@ -1,0 +1,139 @@
+This file describes how a recursive name lookup is performed.
+
+The following steps are performed:
+
+* We look in the cache of recursive lookups for the data we are looking
+  for.
+
+  * If the data is there, and the data has not expired:
+
+    1. Obtain the data.
+
+    2. Make the data available to the client which sent us the query.
+ 
+    3. Done.
+
+  * Else, if the data is there, and the data has expired:
+
+    1. Remove the data from the cache
+
+    2. Continue looking for the data.
+
+UP:
+
+* Go up the hierarchy, looking for the closest nameserver in the cache 
+  that can give us more information.  For example, if they looked for 
+  "nameless.party.beach.santa-cruz.ca.us", and didn't find it, see if
+  we have in our cache a nameserver for
+  "nameless.party.beach.santa-cruz.ca.us", then
+  "party.beach.santa-cruz.ca.us", then "beach.santa-cruz.ca.us", then
+  "santa-cruz.ca.us", then "ca.us", then "us", and finally "." (a root
+  nameserver).  
+
+* If no "closer" nameserver was found, this is a fatal error.
+
+* If a "closer" nameserver was found, but is expired from the cache, do
+  the following:
+
+  1. See if, once we "unmask" the expired entry, if there is an entry
+     that is not expired.
+
+  2. Destroy the memory the expired cache entry is taking up.
+
+  3. If we can get an unexpired one via unmasking do so.  Destroy all
+     "masked" entries while we are at it.
+
+  4. If no "masked" entry, go back to "UP" and find an unexpired name
+     server that is "closer".
+
+QUERY:
+
+* If a "closer" nameserver was found, and is not expired from the cache,
+  do the following:
+
+  1. Choose a "closer" DNS server at random.  If there are both "closer"
+     DNS servers with IP addresses and "closer" DNS servers with only names,
+     choose a DNS server with an IP address.
+
+  2. Send a DNS query to that "closer" server.  This query sending should 
+     be done by a sub-function.  If we only have a name,
+     and not an address, for the "closer" nameserver, then we increment
+     the "glueless" count and go back to the beginning of the lookup
+     process (use recursion), looking for the address of the name server 
+     in question.  Once the address has been found, we proceed as before.  
+     If the glueless count is greater than four, we give up.
+
+[ The querying should be done by a sub function with the following traits:
+
+  The function asks a given nameserver for a query.  
+  Input: The IP of the nameserver to query, the query to send to the
+         server in question.
+
+  Output: One of four things:
+          1. An answer was given and the cache was updated.
+          2. No valid answer was given.
+          3. A "fatal error" occurred
+          4. An answer with a closer nameserver was given.  We recurse
+             in this case, after adding the closer nameserver to the cache
+
+  The function does these things:
+
+  1. Wait for a response.
+
+  2. If a response was received, and the response was authoritative,
+     proceed by calling up a sub-function that does the "FUNCTION"
+     part of this document.
+]
+
+  3. If a response was not received, or the response received was not
+     authoritative, try one of the other name servers on the list
+     of "closer" name servers.  Go back to "QUERY"
+
+[ The following will not be implemented right away ]
+
+  4. If all of the "unmasked" closer servers were tried, try one of
+     the "masked" servers.  If the list of "closer" nameservers from 
+     one of the "masked" servers is the same as the "unmasked" list,
+     there was a name server failure.  If not, update the "unmasked"  
+     list and try again (Go back to "QUERY")
+
+  5. If there are no "unmasked" nameserver, or if all "unmasked" name
+     servers failed, then go up the tree one node and get a list of
+     closer nameservers.  If the list is the same as a list of 
+     failed name servers, there was a name server failure.
+
+FUNCTION:
+
+* Assuming we got an authoritative response, process the response:
+
+  1. If the response has an answer section:
+
+     a. Add the answer to the cahce
+  
+     b. Give the answer to the user
+
+  2. If the response does not have an answer section, and one of the
+     name servers listed in the NS section is the name server we are
+     contacting, consider it a "no host" reply (This is to work around 
+     a bug in Novell's DNS server).  Give the answer to the user after
+     adding it to the cache (make something up)
+
+  3. If the response does not have an answer section, this is a referral
+     to another name server.  The way we treat the referral depends on 
+     whether we have A records in the "additional" section corresponding
+     to the NS records:
+
+     a. All NS records in the authority section with corresponding A
+        records in the additional section are recorded as IPs in the
+        "closer" record we cache.  
+
+     b. All NS records in the authority section without corresponding
+        A records are recorded as host names in the "closer" section.
+        
+     Once the "closer" section has been updated, we go back to "UP"
+     and look for the host in question again.  (Recurse) We increment the 
+     "links" count by one when we do this, and fail after a links
+     count of 32 or so.
+
+
+

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo just run the perform.test script by hand

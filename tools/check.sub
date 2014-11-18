@@ -1,0 +1,61 @@
+#!/usr/bin/perl 
+
+# This is not a part of MaraDNS, per sé, but is the Perl script I whipped
+# together to insure only subscribers can post to the list
+
+# Like everything else, this program is public domain
+
+# This script returns an error if the person is not on the mailing list
+# specifified as the first argument
+$listplace = shift || "/home/maradns/list";
+
+# Get the list of people on this list
+open(P,"/usr/bin/ezmlm-list $listplace |") || die "Can not run ezmlm-list: $!\n";
+while(<P>) {
+    chop;
+    push(@address,$_);
+    }
+
+# Protect people from evil email
+
+$bozo = $seen = 0;
+
+while(!$body)
+  {
+  $line = <STDIN>;
+  $header .= $line;
+  if($line =~ /marihart/i || $line =~ /kittyfeet/i) { $seen = 1; }
+  if($line =~ /^to: (.*)/i && !$toname)
+    {
+    $toname = $1;
+    }
+  if($line =~ /^from: (.*)/i && !$fromname)
+    {
+    $fromname = $1;
+    @addrs = split(/[ \t\n\<\>]/,$1);
+    while(@addrs)
+      {
+      $word = shift @addrs;
+      if($word =~ /\@/)
+        {
+        $fname = $word;
+        break;
+        }
+      }
+    }
+  if($line =~ /^\s*$/)
+    {
+    $body = 1;
+    }
+  }
+
+foreach $address (@address) { 
+    if($fname =~ /^$address$/i) {
+         exit 0; # Success!
+         }
+    }
+
+exit 1;
+
+__END__
+

@@ -1,0 +1,56 @@
+   key     = 2b7e151628aed2a6abf7158809cf4f3c
+   input   = 3243f6a8885a308d313198a2e0370734
+   enc     = 887ef62c08ba7cc54ecc9697075a0b22
+
+   key     = 00000000000000000000000000000000
+   input   = 00000000000000000000000000000000
+   enc     = fdb658907c34944ce310738d9e34944d
+
+   key     = ffffffffffffffffffffffffffffffff
+   input   = 00000000000000000000000000000000
+   enc     = 1800bbaac718c1019ebcb37d854017dc
+
+   key     = ffffffffffffffffffffffffffffffff
+   input   = ffffffffffffffffffffffffffffffff
+   enc     = 701bf582f8bcf3cfc97e26f2c030ecbc
+
+   key     = 000102030405060708090a0b0c0d0e0f
+   input   = 000102030405060708090a0b0c0d0e0f
+   enc     = 0666b3b9a6c74f874f57ab13bbdba7ec
+
+   key     = 00ffeeddccbbaa998877665544332211
+   input   = 112233445566778899aabbccddeeff00
+   enc     = 9c01b41778aeabd145a0410883ca92e7
+
+   key     = ffeeddccbbaa99887766554433221100
+   input   = 00112233445566778899aabbccddeeff
+   enc     = 262bad4dff46ff9b732a9df604e1338f
+
+   key     = 00000000000000000000000000000000
+   input   = ffffffffffffffffffffffffffffffff
+   enc     = 9a37f2fd254b661c2f7dd40c9167035e
+
+   key     = 00000000000000000000000000000000
+   input   = fffffffffffffffffffffffffffffffe
+   enc     = a4e31d132be231ec238bf9ec057c2497
+
+   key     = 00000000000000000000000000000000
+   input   = 00000000000000000000000000000001
+   enc     = 69d4e513a275a429431dedba82c36b2d
+
+   key     = 00000000000000000000000000000000
+   input   = 000000000000000000000000ffffffff
+   enc     = fd766dbe429cdaa9e9437d9f1871ab86
+
+   key     = 000102030405060708090a0b0c0d0e0f
+   input   = 00000000000000000000000000000000
+   enc     = c1fa90a073dae650ce1f41cec4d3b453
+
+   key     = 000102030405060708090a0b0c0d0e0f
+   input   = ffffffffffffffffffffffffffffffff
+   enc     = 41d24ca869614cbe02c9168f3837accd
+
+   key     = ffffffffffffffffffffffffffffffff
+   input   = 0102030405060708090a0b0c0d0e0f10
+   enc     = 23fb85fa6c45f43eae7c881ac9f2f6fd
+

@@ -1,0 +1,32 @@
+#!/bin/sh
+
+cat > mararc << EOF
+ipv4_bind_addresses = "127.0.0.1"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["example.com."] = "db.example"
+EOF
+
+cat > db.example << EOF
+example.com. NS ns.example.com.
+ns.example.com. 127.0.0.1
+www.example.com. 127.10.1.1
+sub.example.com. NS ns.sub.example.com.
+ns.sub.example.com. A 127.0.0.4
+EOF
+
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+sleep 1
+
+../../../tools/askmara Awww.sub.example.com. 127.0.0.1
+sleep 1
+
+# Clean up
+kill $( ps auxw | grep maradns | grep -v grep | awk '{print $2}' )
+sleep 1
+# Linux specific; this does bad things on Solaris
+killall maradns > /dev/null 2>&1
+rm mararc
+rm db.example
+

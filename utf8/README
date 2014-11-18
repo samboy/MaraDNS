@@ -1,0 +1,2 @@
+This directory contains small programs which convert between
+iso 8859-1 and utf-8 (unicode); "l1" is short for "latin1".

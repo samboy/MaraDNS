@@ -1,0 +1,86 @@
+--- deadwood-2.9.07/doc/Windows/README.txt	2010-07-22 08:40:38.000000000 -0700
++++ deadwood-3.0.01/doc/Windows/README.txt	2010-09-22 10:48:13.000000000 -0700
+@@ -1,39 +1,21 @@
+ Deadwood is a program that allows one to have a recursive DNS cache on their
+ Windows system.  
+ 
+-These programs use the command-line to install the program, and assume
+-basic familiarity with the Windows command line.  The fastest way to get
+-to a command prompt in Windows XP is Start -> Run -> "cmd"
++The supplied 'install.bat' program will install and start the
++Deadwood service on a Windows system.  This file needs to be run as
++an administrator in this directory; Windows Vista and Windows 7 users
++need to read "Vista.txt" for details on how to install Deadwood on 
++their systems.
+ 
+-Before you can install the Deadwood service in Windows Vista or Windows 7, 
+-please read the file Vista.txt
++Do not move the contents of this folder after installing Deadwood.
++Otherwise, Windows may not be able to find the Deadwood service.
+ 
+-Deadwood is a Windows service.  This means that the program needs to be 
+-installed as a service before being used.  First, find a suitable directory 
+-on your file system to install Deadwood, such as "c:\Program Files\Deadwood\"
+-
+-Once Deadwood.exe is placed in this directory, install the service.  Type
+-in the following at a command prompt in the same directory as 
+-Deadwood.exe:
+-
+-        Deadwood --install 
+-
+-For security reasons, you need to make a file with random text in it called 
+-secret.txt.  One way to do this is to type in "notepad secret.txt", type in 
+-random gibberish, and save the file.
+-
+-Once these files are properly configured, and the Deadwood service is
+-installed, Deadwood can be started:
+-
+-        net start Deadwood
+-
+-(You can also start it from Control Panel -> Administrative Tools -> Services)
+-
+-Deadwood, at this point, should automatically start whenever the system is 
+-booted.  
++Once 'install.bat' is run, Deadwood should automatically start whenever 
++the system is booted.  
+ 
+ The file dwood3rc.txt can be edited to change a number of options that are 
+-described in Reference.txt.
++described in Reference.txt.  People should not use dwood3rc.txt files from 
++beta-test versions of Deadwood.
+ 
+ Deadwood uses a file to store messages called "dwlog.txt" (without the quotes)
+ in the same directory where Deadwood is started.  If there are any errors
+@@ -46,8 +28,8 @@
+ 
+ (Or from the Services control panel if you prefer mousing it)
+ 
+-Deadwood will write its cache to a file (if specified) when stopped as a
+-service.
++Deadwood will write its cache to a file when stopped as a service.  
++This file has the name 'dw_cache_bin'.
+ 
+ In order to actually use the Deadwood DNS cache on your computer, go
+ to the control panel entry for network connections (Control Panel ->
+@@ -56,16 +38,12 @@
+ types in the window, click on the button marked "properties", manually
+ select DNS servers, and make 127.0.0.1 the DNS server used.
+ 
+-It is also possible to remove the Deadwood service:
+-
+-        Deadwood --remove 
+-
+-if one wishes to uninstall Deadwood.  Be sure to reset the DNS servers used
+-before uninstalling Deadwood, otherwise it won't be possible to use the
+-internet.
++It is also possible to remove the Deadwood service.  'uninstall.bat' will 
++remove the Deadwood service from a Windows system; this file needs to be 
++run as an administrator.
+ 
+-A full manual for Deadwood, based on Deadwood's CentOS Linux manual, is in 
+-the file Reference.txt
++Be sure to reset the DNS servers used before uninstalling Deadwood, 
++otherwise it won't be possible to use the internet.
+ 
+ LEGAL DISCLAIMER
+ 

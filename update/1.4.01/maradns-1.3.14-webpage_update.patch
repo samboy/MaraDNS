@@ -1,0 +1,736 @@
+--- maradns-1.3.14/doc/en/webpage/advocacy.embed	2009-08-04 11:52:42.000000000 -0500
++++ maradns-1.4.01/doc/en/webpage/advocacy.embed	2009-12-20 21:21:16.000000000 -0600
+@@ -6,6 +6,7 @@
+ <h3>Table of contents</h3>
+ <ol>
+ <li><A href="#maradns">MaraDNS</A>
++<li><A href="#press">MaraDNS in the press</A>
+ <li><A href="#posadis">Posadis</A>
+ <li><A href="#pdnsd">Pdnsd</A>
+ <li><A href="#dents">Dents</A>
+@@ -15,6 +16,7 @@
+ <li><A href="#oldbind">Older versions of BIND</A>
+ <li><A href="#powerdns">PowerDNS</A>
+ <li><A href="#nsd">NSD</A>
++<li><A href="#other">Other DNS servers</A>
+ <li><A href="#nonfree">Commercial DNS servers</A>
+ <li><A href="#djbdns">Djbdns</A>
+ </ol>
+@@ -34,7 +36,7 @@
+ and MaraDNS 1.2 was released in December of 2005.  MaraDNS has been
+ extensively tested, both with a SQA process and with over four years of
+ real-world use.  MaraDNS continues to be fully supported: The most recent
+-release was done on February 13, 2009.
++release was done on August 4, 2009.
+ <li><b>Easy to use</b>.  A basic recursive configuration needs only a 
+ single three-line configuration file.  A basic authoritative configuration
+ needs only a four-line configuration file and a one-line zone file.
+@@ -84,6 +86,49 @@
+ still being actively developed.  Some other notable DNS server projects
+ which are not being actively developed:
+ 
++<A name="press"> </A>
++<h3>MaraDNS in the press</h3>
++
++MaraDNS has been praised in the press.  Here are some examples of books,
++articles, and papers which discuss MaraDNS:
++
++<ul>
++<li>Mens, Jan-Piet (2008). <i>Alternative DNS Servers: Choice and 
++Deployment, and Optional SQL/LDAP Back-Ends (Paperback)</i>. 
++UIT Cambridge Ltd. ISBN 0954452992.  <p> 
++This book devotes an entire chapter to MaraDNS</li>
++<li>Danchev, Dancho. <a 
++href="http://blogs.zdnet.com/security/?p=1562">How OpenDNS, PowerDNS and 
++MaraDNS remained unaffected by the DNS cache poisoning vulnerability</a> 
++ZDNet.  <p>
++This article affirms MaraDNS' excellent security design, pointing out
++that MaraDNS was never vulnerable to the 2008 cache poisoning attacks.
++<li>Schroder, Carla (2007). <i>Linux Networking Cookbook (Paperback)</i>. 
++O'Reilly. ISBN 0596102488.  <p> This book, on page 545, endorses MaraDNS, 
++stating that "My recommended combination is [...] MaraDNS for a public
++authoritative server"</li>
++<li>João Antunes; Nuno Ferreira Neves; Paulo Veríssimo (2007), <i><a 
++href="http://homepages.di.fc.ul.pt/~nuno/pubs.html">Finding Local 
++Resource Exhaustion Vulnerabilities</a></i>, 18th IEEE International 
++Symposium on Software Reliability Engineering, Trollhättan, Sweden
++<A href="http://homepages.di.fc.ul.pt/~nuno/pubs.html">http://homepages.di.fc.ul.pt/~nuno/pubs.html</a>
++<p> This article discussion MaraDNS' denial-of-service resistance, pointing
++out that "Figure 2, for instance, shows that the BIND server performs worse 
++than MaraDNS under the same attack, which means that the later is able to 
++sustain a larger number of attacks than the first"</li>
++<li>Rutherford, Matthew J. (2006), <i><a href=
++"http://mjrutherford.org/node/11">Adequate System-Level Testing of 
++Distributed Systems</a></i>, Department of Computer Science, Boulder, CO, 
++<a href="http://mjrutherford.org/node/11">http://mjrutherford.org/node/11</a>
++<p>
++This PhD thesis mentions MaraDNS several times.
++</li>
++</ul>
++
++MaraDNS is used by a number of ISPs to serve thousands of domains.  MaraDNS
++is used by Boeing.  MaraDNS is ready to be used by your business or 
++enterprise. 
++
+ <A name="posadis"> </A>
+ <h3>Posadis</h3>
+ 
+@@ -123,12 +168,14 @@
+ MyDNS is a one-trick-pony DNS server, which allows people to convert 
+ information from a MySQL database in to DNS records.  The last release was
+ in January of 2006.  People who want to use a SQL database with DNS are
+-probably better off using PowerDNS.
++probably better off using PowerDNS.  (<b>Update:</b> The software seems
++to be updated with <A href="http://www.mydns-ng.com/home.php">MyDNS-ng</A>)
+ 
+ <h3>Djbdns</h3>
+ 
+-Djbdns appears to now be public domain code, so I will need to rewrite the
+-section on DjbDNS.
++Djbdns is now public domain code; note that there are at three 
++security holes in the most recent (2001) DjbDNS tarball that need
++to be patched before compiling and installing DjbDNS.
+ 
+ <A name="etc"> </A>
+ <h3>Moodns, oakdns, etc.</h3>
+@@ -308,6 +355,11 @@
+ bytes on my system; the pdns_control program is 118,140 bytes
+ large (again, stripped).
+ 
++<p>
++
++(<b>Update:</b> It appears PowerDNS has made some effort to minimize
++"DLL hell", and the PowerDNS recursor is now its own package)
++
+ <a name="nsd"> </A>
+ <h3>NSD</h3>
+ 
+@@ -336,6 +388,14 @@
+ 
+ <hr>
+ 
++<A name="other"> </A>
++<h3>Other DNS servers</h3>
++
++There are other DNS servers out there, such as 
++<A href="http://unbound.net">Unbound</A> and 
++<A href="http://www.george-barwood.pwp.blueyonder.co.uk/DnsServer/">GbDNS</A>.  
++I have not had a chance to properly evaluate these DNS servers.
++
+ <A name="nonfree"> </A>
+ <h3>Commercial DNS programs</h3>
+ 
+@@ -376,7 +436,7 @@
+ 
+ Note that DJB himself
+ hasn't updated the software for over seven years (except for the license).
+-The software, notably, has one unpatched security bug (see below), and
++The software, notably, has three unpatched security bugs (see below), and
+ its list of root servers is out of date.
+ 
+ <p>
+@@ -438,6 +498,10 @@
+     to a dnscache server.
+ <sup><font size=-2><A href="http://marc.info/?l=djbdns&amp;m=104796742521473&amp;w=2">ref</A> 
+ <A href="http://marc.info/?l=djbdns&amp;m=104804013229536&amp;w=2">patch</A></font></sup>
++<li>It is possible to send spoofed DNS packets to DjbDNS <sup><A 
++href=http://your.org/djbdns>ref</A></sup>
++<li>Subdomains can overwrite zone information with the AXFR client <sup>
++<A href=http://article.gmane.org/gmane.network.djbdns/13864>ref</A></sup>
+ </ul>
+ 
+ 
+--- maradns-1.3.14/doc/en/webpage/changelog.embed	2009-08-04 11:52:42.000000000 -0500
++++ maradns-1.4.01/doc/en/webpage/changelog.embed	2009-12-20 21:34:56.000000000 -0600
+@@ -1,5 +1,16 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.4.01:</p>
++This is the stable branch of MaraDNS.
++<blockquote>
++<ul>
++<li>The * character is no longer allowed in zone names.
++<li>Deadwood updated to Deadwood 2.4.10
++<li>Documentation update
++</ul>
++(2009.12.21)
++</blockquote>
++
+ <p>maradns-1.3.14:</p>
+ This is the development branch of MaraDNS.
+ <blockquote>
+@@ -7,8 +18,13 @@
+ <li>William Summers submitted a patch to fix OpenBSD compile issues.
+ <li>Deadwood 2 updated to Deadwood-2.04 (with the tools also in MaraDNS
+     removed and the INSTALL document revised accordingly)
++<li>Workaround for AFNIC (.fr) registration issues added
++<li>GCC 4.3.2 compile-time warnings removed
++<li>Milan Kupcevic added <tt>dns_port</tt> support to zoneserver
++<li><tt>stdint.h</tt> now used for fixed-sized integers; this should make
++    MaraDNS easier to compile on unsupported platforms.
+ </ul>
+-(2009.??.??)
++(2009.08.04)
+ </blockquote>
+ 
+ <p>maradns-1.3.13:</p>
+--- maradns-1.3.14/doc/en/webpage/download.embed	2009-08-04 11:52:44.000000000 -0500
++++ maradns-1.4.01/doc/en/webpage/download.embed	2009-12-20 21:30:00.000000000 -0600
+@@ -3,48 +3,35 @@
+ <h1>&iexcl;Download MaraDNS!</h1>
+ 
+ <h2>Stable release</h2>
+-<p>This is the current stable release of MaraDNS, MaraDNS 1.3.07.09,
+-released August 4, 2008.
+-<p>This release is available both at <A 
+-href="http://sourceforge.net/project/showfiles.php?group_id=24033">sourceforge.net</A>
+-and on this page.
+-
++<p>This is the current stable release of MaraDNS, MaraDNS 1.4.01,
++released December 21, 2009.
+ <p>
+ 
+ <table><tr><td>
+ <A 
+-href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.bz2"><!--
+-                          -->maradns-1.3.07.09.tar.bz2</A>
++href="download/1.4/1.4.01/maradns-1.4.01.tar.bz2"><!--
++                       -->maradns-1.4.01.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.bz2.sha.asc">sig</A><p>
++href="download/1.4/1.4.01/maradns-1.4.01.tar.bz2.sha.asc">sig</A>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.lzma"><!--
+-                          -->maradns-1.3.07.09.tar.lzma</A>
+-</td><td>
+-<A 
+-href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.lzma.sha.asc">sig</A>
+-</td><td>
+-<A href="#lzma">info</A> 
+-</td></tr><tr><td>
+-<A 
+-href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.gz"><!--
+-                          -->maradns-1.3.07.09.tar.gz</A>
++href="download/1.4/1.4.01/maradns-1.4.01.tar.gz"><!--
++                       -->maradns-1.4.01.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.gz.sha.asc">sig</A>
++href="download/1.4/1.4.01/maradns-1.4.01.tar.gz.sha.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.07.09/maradns-1-3-07-09-win32.zip"><!--
+-                          -->maradns-1-3-07-09-win32.zip</A>
++href="download/1.4/1.4.01/maradns-1-4-01-win32.zip"><!--
++                       -->maradns-1-4-01-win32.zip</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.07.09/maradns-1-3-07-09-win32.zip.sha.asc">sig</A>
++href="download/1.4/1.4.01/maradns-1-4-01-win32.zip.sha.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ </td></tr></table>
+@@ -61,72 +48,92 @@
+ 
+ <table><tr><td>
+ <A 
+-href="deadwood/deadwood-2.3.02.tar.bz2"><!--
+-                          -->deadwood-2.3.02.tar.bz2</A>
++href="deadwood/stable/deadwood-2.4.10.tar.bz2"><!--
++                   -->deadwood-2.4.10.tar.bz2</A>
+ </td><td>
+ <A 
+-href="deadwood/deadwood-2.3.02.tar.bz2.asc">sig</A><p>
++href="deadwood/stable/deadwood-2.4.10.tar.bz2.asc">sig</A>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="deadwood/Deadwood-2-3-02-win32.zip"><!--
+-                          -->Deadwood-2-3-02-win32.zip</A>
++href="deadwood/stable/Deadwood-2-4-10-win32.zip"><!--
++                   -->Deadwood-2-4-10-win32.zip</A>
+ </td><td>
+ <A 
+-href="deadwood/Deadwood-2-3-02-win32.zip.asc">sig</A>
++href="deadwood/stable/Deadwood-2-4-10-win32.zip.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ </td></tr></table>
+ 
+ <hr>
+ 
+-<h2>Development release</h2>
++<h3>Pthreads soruce code</h3>
+ 
+-This is a development release.  This is where new features get added
+-to MaraDNS; new features have often not been fully tested so <b>use 
+-this release at your own risk</b>.
+-
+-<p>This is the current development release of MaraDNS, MaraDNS 1.3.13,
+-released February 13, 2009.  One can also download the <A 
+-href=download/1.3/snap>snapshot release</A>.
++The Windows port of MaraDNS 1.3 uses the LGPL phtreads library. Source 
++code for this library is available <A 
++href="download/pthreads-w32-2-8-0-release.tar.gz">here</A>
++
++<hr>
++
++<h2>Previous stable release</h2>
++<p>This is the previous stable release of MaraDNS, MaraDNS 1.3.07.09,
++released August 4, 2008.  This release doesn't have a couple of
++features MaraDNS 1.4 has (FQDN6 records, NAPTR support), nor bug
++fixes 1.4 has (Afnic fix, etc.).  This release will be supported
++with security bug fixes until December 21, 2012.
++
++<p>This release is available both at <A 
++href="http://sourceforge.net/project/showfiles.php?group_id=24033">sourceforge.net</A>
++and on this page.
+ 
+ <p>
++
+ <table><tr><td>
+ <A 
+-href="download/1.3/1.3.13/maradns-1.3.13.tar.bz2"><!--
+-                          -->maradns-1.3.13.tar.bz2</A>
++href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.bz2"><!--
++                          -->maradns-1.3.07.09.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.13/maradns-1.3.13.tar.bz2.sha.asc">sig</A><p>
++href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.bz2.sha.asc">sig</A>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.13/maradns-1.3.13.tar.gz"><!--
+-                          -->maradns-1.3.13.tar.gz</A>
++href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.lzma"><!--
++                          -->maradns-1.3.07.09.tar.lzma</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.13/maradns-1.3.13.tar.gz.sha.asc">sig</A>
++href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.lzma.sha.asc">sig</A>
++</td><td>
++<A href="#lzma">info</A> 
++</td></tr><tr><td>
++<A 
++href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.gz"><!--
++                          -->maradns-1.3.07.09.tar.gz</A>
++</td><td>
++<A 
++href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.gz.sha.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
++</td></tr><tr><td>
++<A 
++href="download/1.3/1.3.07.09/maradns-1-3-07-09-win32.zip"><!--
++                          -->maradns-1-3-07-09-win32.zip</A>
++</td><td>
++<A 
++href="download/1.3/1.3.07.09/maradns-1-3-07-09-win32.zip.sha.asc">sig</A>
++</td><td>
++<A href="#zip">info</A>
+ </td></tr></table>
+ 
+-<h3>Pthreads soruce code</h3>
+-
+-The Windows port of MaraDNS 1.3 uses the LGPL phtreads library. Source 
+-code for this library is available <A 
+-href="download/pthreads-w32-2-8-0-release.tar.gz">here</A>
+-
+-<hr>
+-
+ 
+-<h2>Previous stable release</h2>
++<h2>Legacy release</h2>
+ 
+-This is the previous stable branch of MaraDNS; this release will be 
+-supported with critical and maintenance updates until December 31, 2010.
++This is the legacy branch of MaraDNS; this release will be 
++supported with critical security updates until December 31, 2010.
+ Doesn't have BIND zone file support, nor a couple of other features,
+-but otherwise similar to the stable release of MaraDNS. <p>
++but otherwise similar to newer stable releases of MaraDNS. <p>
+ 
+ <p>This is the previous stable release of MaraDNS, MaraDNS 1.2.12.10,
+ released August 4, 2008.
+@@ -138,7 +145,7 @@
+                           -->maradns-1.2.12.10.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.10/maradns-1.2.12.10.tar.bz2.sha.asc">sig</A><p>
++href="download/1.2/1.2.12.10/maradns-1.2.12.10.tar.bz2.sha.asc">sig</A>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+--- maradns-1.3.14/doc/en/webpage/faq.embed	2009-08-04 11:52:42.000000000 -0500
++++ maradns-1.4.01/doc/en/webpage/faq.embed	2009-12-20 21:21:16.000000000 -0600
+@@ -107,6 +107,19 @@
+ <p>42. <A href="#afnic">I am having problems registering my domain with AFNIC 
+     (the registrar for .fr domains)</A>
+ 
++<p>43. <A href="#nsdangle">I can't see the full answers for subdomains I have
++       delegated</A>
++
++<p>44. <A href="#resolve">MaraDNS 1 has a problem resolving a domain</A>
++
++<p>45. <A href="#nxdomain2">MaraDNS 1.2 has issues with NXDOMAINS and 
++   case sensitivity.</a>
++
++<p>46. <A href="#phishing">Can MaraDNS offer protection from phishing and
++   malicious sites?</A>
++
++<p>47. <A href="#star">Does maradns support star (wildcard) records?</A>
++
+ </BLOCKQUOTE>
+ <H2>ANSWERS</H2>
+ 
+@@ -725,7 +738,7 @@
+ 
+ <A name="delegate">
+ </A>
+-<h2>I have a NS delegation, and MaraDNS is doing
++<h2>31. I have a NS delegation, and MaraDNS is doing
+     strange things.</h2>
+ 
+ In the case of there being a NS delegation, MaraDNS handles recursive
+@@ -796,7 +809,7 @@
+ 
+ <A name="synthns"> </A>
+ 
+-<h2>I am transferring a zone from another
++<h2>32. I am transferring a zone from another
+     server, but the NS records are these strange "synth-ip" records.
+ </h2>
+ 
+@@ -809,8 +822,8 @@
+ If a zone looks like this:
+ 
+ <pre>
+-example.net. +600 soa ns1.example.net. hostmaster@example.net 
+-10 10800 3600 604800 1080
++example.net. +600 soa ns1.example.net. 
++hostmaster@example.net 10 10800 3600 604800 1080
+ example.net. +600 mx 10 mail.example.net.
+ example.net. +600 a 10.2.3.5
+ example.net. +600 ns ns1.example.net.
+@@ -826,8 +839,8 @@
+ The zone should look like this:
+ 
+ <pre>
+-example.net. +600 soa ns1.example.net. hostmaster@example.net 
+-10 10800 3600 604800 1080
++example.net. +600 soa ns1.example.net. 
++hostmaster@example.net 10 10800 3600 604800 1080
+ example.net. +600 ns ns1.example.net.
+ example.net. +600 ns ns3.example.net.
+ example.net. +600 mx 10 mail.example.net.
+@@ -854,7 +867,7 @@
+ zonefile.csv2 with the name of the zone file MaraDNS loads.
+ 
+ <A name=roothints> </A>
+-<h2>Where is the root.hints file?</h2>
++<h2>33. Where is the root.hints file?</h2>
+ 
+ MaraDNS, unlike BIND, does not need a complicated root.hints file in
+ order to have custom root servers.  In order to change the root.hints
+@@ -873,7 +886,7 @@
+ information. 
+ 
+ <A name=autoconf> </A>
+-<h2>Are there any plans to use autoconf to build
++<h2>34. Are there any plans to use autoconf to build
+     MaraDNS?</h2>
+ 
+ No.  OK, let me qualify that: I won't do it unless you pay
+@@ -900,7 +913,7 @@
+ This leads us to the next question:
+    
+ <A name=flags> </A>
+-<h2>How do I change the compiler or compile-time flags
++<h2>35. How do I change the compiler or compile-time flags
+     with MaraDNS' build process?</h2>
+ 
+ To change the compiler used by MaraDNS:
+@@ -943,7 +956,7 @@
+ </ul>
+ 
+ <A name=makepkg> </A>
+-<h2>Will you make a package for the particular Linux
++<h2>36. Will you make a package for the particular Linux
+     distribution I am using?</h2>
+ 
+ No.  OK, let me qualify that: I won't do it unless you pay
+@@ -975,7 +988,7 @@
+ supported.
+ 
+ <A name=wincrippled> </A>
+-<h2>I am using the native Windows port of MaraDNS,
++<h2>37. I am using the native Windows port of MaraDNS,
+     and some features are not working.</h2>
+ 
+ Since Windows 32 does not have some features that *NIX OSes have, the native
+@@ -996,7 +1009,7 @@
+ 
+ <A name=startupfail> </A>
+ 
+-<h2>MaraDNS isn't starting up</h2>
++<h2>38. MaraDNS isn't starting up</h2>
+ 
+ This is usually caused by a syntax error in one's mararc file, or by
+ another MaraDNS process already running.  To see what is happening, look
+@@ -1007,7 +1020,7 @@
+ 
+ <A name=releases> </A>
+ 
+-<h2>You make a lot of releases of MaraDNS; at our
++<h2>39. You make a lot of releases of MaraDNS; at our
+     ISP/IT department, updating software is non-trivial.</h2>
+ 
+ The number of releases seen in the <A href=changelog.html>changelog</A>
+@@ -1053,7 +1066,7 @@
+ 
+ <A name=nxdomain> </A>
+ 
+-<h2>I have star records in my zones, and am having problems with 
++<h2>40. I have star records in my zones, and am having problems with 
+ NXDOMAINs/IPV6 resolution</h2>
+ 
+ MaraDNS 1.2 needs to be told to strictly follow the RFCs concerning 
+@@ -1071,7 +1084,8 @@
+ 
+ <A name=blankzone> </A>
+ 
+-<h2>I have a zone with only SOA/NS records, and the zone is not working.</h2>
++<h2>41. I have a zone with only SOA/NS records, and the zone is not 
++    working.</h2>
+ 
+ MaraDNS 1.2 has a bug where it does not correctly process zones without
+ any "normal" records.  For example, suppose a zone like this:
+@@ -1096,8 +1110,8 @@
+ 
+ <A name=afnic> </A>
+ 
+-<h2>I am having problems registering my domain with AFNIC (the registrar for
+-.fr domains)</h2>
++<h2>42. I am having problems registering my domain with AFNIC (the registrar 
++for .fr domains)</h2>
+ 
+ Because of an issue with AFNIC (who, annoyingly enough, check the RA bit
+ when registering a domain), in order to register a domain with AFNIC using
+@@ -1111,7 +1125,7 @@
+ <li> It is necessary to have recursion disabled.  This can be done either by
+ compiling MaraDNS without recursive support (./configure --authonly ; make),
+ or by making sure MaraDNS does not have recursion enabled (by not having
+-recursive_acl set in one's mararc file)
++<tt>recursive_acl</tt> set in one's mararc file)
+ 
+ </ul>
+ 
+@@ -1123,7 +1137,113 @@
+ 
+ <p>
+ 
+-Note also that AFNIC gives warnings about reverse DNS lookups; more
++Note also: AFNIC gives warnings about reverse DNS lookups; more
+ information about this issue can be found in <A href=#rdns>the FAQ entry 
+-about reverse DNS mappings</A> (question 7).
++about reverse DNS mappings</A> (question 7).  In addition, AFNIC 
++requires DNS-over-TCP to work; information on configuring MaraDNS to
++have this can be found <A 
++href="http://www.maradns.org/tutorial/dnstcp.html">in the DNS-over-TCP
++tutorial</A>.
++
++<A name=nsdangle> </A>
++
++<h2>43. I can't see the full answers for subdomains I have delegated</h2>
++
++To have the subdomains be visible to recursive nameservers, add the following
++to your mararc file:
++<p>
++<tt>recurse_delegation = 1</tt>
++
++<A name=resolve> </A>
++
++<h2>44. MaraDNS 1 has a problem resolving a domain</h2>
++
++This issue should be fixed when I release MaraDNS 2.0.  
++
++<p>
++
++Here's what happening: I'm rewriting the recursive resolver for MaraDNS.
++The old code was always designed to be a placeholder until I wrote a new
++recursive resolver.
++
++<p>
++
++The new recursive resolver is called "Deadwood"; right now it's a fully
++functional non-recursive DNS cache.  More information is here:
++<p>
++<A href=http://maradns.blogspot.com/search/label/Deadwood>http://maradns.blogspot.com/search/label/Deadwood</A>
++<p>
++<A href=http://maradns.org/deadwood>http://maradns.org/deadwood/</A>
++<p>
++Since the old recursive code is a bit difficult to maintain, and since I
++in the process of rewriting the recursive code, my rule is that I will only
++resolve issues where an Alexa top 500 site can not resolve with MaraDNS'
++current recursive resolver at all.  
++<p>
++If resolving a given domain with MaraDNS' code is an urgent issue
++for you, please consider sponsoring MaraDNS:
++<p>
++<A href=http://www.maradns.org/products.html>http://www.maradns.org/products.html</A>
++
++<A name=nxdomain2> </A>
++<h2>45. MaraDNS 1.2 has issues with NXDOMAINS and case sensitivity.</h2>
++
++There is a known bug in MaraDNS 1.2.12 where, should a client ask for
++a non-existent record in all caps, MaraDNS 1.2.12 will return a NXDOMAIN
++instead of a "not there" reply.  This can cause there to be problems
++delivering email to the host in question if a mail transport agent asks
++for a name in all caps.  
++
++<p>
++
++If this is an issue for your organization, please upgrade to a newer
++version of MaraDNS; neither MaraDNS 1.3.07.09 nor MaraDNS 1.3.14 have 
++this bug.  If you want to see this bug fixed in MaraDNS 1.2, please
++help sponsor MaraDNS.
++
++<A name=phishing> </A>
++<h2>46. Can MaraDNS offer protection from phishing and
++   malicious sites?</h2>
++
++Yes.
++
++<p>
++
++Here is a webpage that explains how its done:
++
++<P>
++
++<A 
++href=http://www.malwaredomains.com/?p=288>http://www.malwaredomains.com/?p=288</A>
++
++<p>
++
++Should that website be down, I have made a local mirror of the
++Perl script here:
++
++<p>
++
++<A href=http://www.maradns.org/createmaradns-pl.txt>createmaradns-pl.txt</A>
++
++<A name=star> </A>
++<h2>47. Does maradns support star (wildcard) records?</h2>
++
++Yes.
++
++<p>
++
++MaraDNS supports both having stars at the beginning of records and the
++end of records.  For example, to have <i>anything</i>.example.com. have
++the IP 10.1.2.3, add this line to the zone file for example.com:
++
++<p>
++
++<tt>*.example.com. A 10.1.2.3</tt>
++
++<p>
++
++To have stars at the end of records, <tt>csv2_default_zonefile</tt> has to
++be set.  The mararc parameter <tt>bind_star_handling</tt> affects how
++star records are handled.  More information is in the <A 
++href=http://www.maradns.org/tutorial/man.mararc.html>mararc man page</A>.
+ 
+--- maradns-1.3.14/doc/en/webpage/index.embed	2009-08-04 11:52:42.000000000 -0500
++++ maradns-1.4.01/doc/en/webpage/index.embed	2009-12-20 21:21:16.000000000 -0600
+@@ -12,14 +12,13 @@
+ href="http://maradns.blogspot.com/2008/07/maradns-is-immune-to-new-cache.html">
+ was never vulnerable to the "new" cache poisoning attack</A>.
+ <li><b>Supported</b>.
+-MaraDNS has a long history of being maintained and updated.  MaraDNS was 
+-originally created in 2001.  MaraDNS 1.0 was released in 2002
+-and MaraDNS 1.2 was released in December of 2005.  MaraDNS has been
+-extensively tested, both with a SQA process and with over four years of
+-real-world use.  MaraDNS continues to be fully supported: The most recent
+-release was done on February 13, 2009. Deadwood, the code that will
+-become part of MaraDNS 2.0, is being <A 
+-href=http://maradns.blogspot.com/search/label/Deadwood>actively developed</A>.
++MaraDNS has a long history of being maintained and updated.   
++Actively developed since 2001,
++MaraDNS continues to be fully supported: The most recent
++release was done on August 4, 2009. Deadwood, the code that will
++become part of MaraDNS 2.0, is <A 
++href="http://maradns.blogspot.com/search/label/Deadwood">frequently 
++updated</A>.
+ <li><b>Easy to use</b>.  A basic recursive configuration needs only a 
+ single three-line configuration file.  A basic authoritative configuration
+ needs only a four-line configuration file and a one-line zone file.
+@@ -41,14 +40,28 @@
+ A full comparison between MaraDNS and other DNS servers is available in the
+ <A href="advocacy.html">advocacy document</A>.
+ 
+-<h2>Mailing list</h2>
+-To join the mailing list, send an email to 
+-<A href="mailto:list-request@maradns.org">list-request@maradns.org</A> with
+-the word "subscribe" in the subject and body of the message.
++<h2>Support</h2>
++
++MaraDNS support (including bug reports) is available on the MaraDNS
++mailing list.  To join the mailing list, send an email to <A
++href="mailto:list-request@maradns.org">list-request@maradns.org</A>
++with the word "subscribe" in the subject and body
++of the message.  
++Once you join the list, send an email to 
++<A href="mailto:list@maradns.org">list@maradns.org</A> with your
++support concern.
++
++<p> 
++
++Mailing list archives are here: <A
++href="http://woodlane.webconquest.com/pipermail/list/">Archive #1</A>,
++<A href="http://marc.10east.com/?l=maradns-list">Archive #2</A>. 
++
+ <p>
+-Mailing list archives are here:
+-<A href="http://woodlane.webconquest.com/pipermail/list/">Archive #1</A>,
+-<A href="http://marc.10east.com/?l=maradns-list">Archive #2</A>.
++
++Support is also available in private email on a pay-per-incident basis.
++Please <A href=http://samiam.org/mailme.php>contact me</A> if you are
++interested in paying me for private email support.
+ 
+ <H2>Special Thanks</H2>
+ 
+--- maradns-1.3.14/doc/en/webpage/dns_software.embed	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.4.01/doc/en/webpage/dns_software.embed	2009-12-20 21:21:16.000000000 -0600
+@@ -65,7 +65,11 @@
+ </LI>
+ 
+ <LI><A href="http://mydns.bboy.net/">MyDNS</A> is an authoritative-only
+-    DNS server which uses MySQL as a database back end. </LI>
++    DNS server which uses MySQL as a database back end.   The most currently
++    updated version appears to be <A href="http://www.mydns-ng.com/"
++    >MyDNS-ng</A>, the "next generation" version of MyDNS.
++
++</LI>
+ 
+ <LI><A href="/download/non-maradns/sdns.tar.bz2">SDNS</A> is a project
+     written in the late 1990s by Sandia Labs.  Like MaraDNS, this project
+--- maradns-1.3.14/doc/en/webpage/notes.embed	2009-08-04 11:52:42.000000000 -0500
++++ maradns-1.4.01/doc/en/webpage/notes.embed	2009-12-20 21:21:16.000000000 -0600
+@@ -1,5 +1,5 @@
+ <h2>MaraDNS tutorial</h2>
+-A tutorial for using MaraDNS is available 
++Tutorials and HOWTOs for using MaraDNS are available 
+ <A href="tutorial/tutorial.html">here</A>.
+ 
+ <h2>MaraDNS FAQ</h2>

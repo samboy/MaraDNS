@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# This tests for a bug that MaraDNS had with LOC records
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+verbose_level = 0
+EOF
+
+cat > db.example.com << EOF
+% A 10.1.2.3
+% LOC 19 31 2.123 N 98 3 4 W 2000m 10m 100m 1000m
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+sleep 1
+dig @127.0.0.1 example.com loc | grep 123 | awk '{$1=$1;print $0}'
+sleep 1
+killall maradns > /dev/null 2>&1
+rm mararc
+rm db.example.com

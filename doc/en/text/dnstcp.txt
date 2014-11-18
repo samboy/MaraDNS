@@ -1,0 +1,89 @@
+                             DNS over TCP
+
+   MaraDNS has full support for DNS over TCP. However, this setup
+   is not automatically done; a little configuration needs to be
+   set up and the "zoneserver" daemon has to be running in addition
+   to the MaraDNS daemon in order for DNS records to be served over
+   TCP.
+
+   The first mararc variable that needs to be set is
+   tcp_convert_acl. This is a list of IPs that are allowed to make
+   DNS-over-TCP queries. In the case of using MaraDNS as an
+   authoritative nameserver, this should have a value of
+   "0.0.0.0/0" (anyone on the internet can make TCP DNS
+   connections).
+
+   The second mararc variable that needs to be set is
+   tcp_convert_server. This is the IP of the UDP DNS server that we
+   will connect whenever we get a DNS-over-TCP request. The way we
+   perform DNS over TCP is as follows:
+
+     * The resolver or end user connects via TCP to the zoneserver
+       daemon.
+     * The resolver sends a DNS query over TCP.
+     * The zoneserver program converts the query in to a UDP query.
+     * zoneserver sends the UDP query to the ip specified in the
+       tcp_convert_server mararc variable.
+     * zoneserver waits for a UDP reply
+     * After zoneserver gets a UDP reply, it converts this reply to
+       a TCP reply to give to the resolver/end user.
+
+   This is what a mararc file which serves the domain example.com
+   and will provide both DNS over UDP and TCP will look like:
+
+ ipv4_bind_addresses = "10.1.2.3"
+ chroot_dir = "/etc/maradns"
+ csv2 = {}
+ csv2["example.com."] = "db.example.com"
+ tcp_convert_acl = "0.0.0.0/0"
+ tcp_convert_server = "10.1.2.3"
+
+   With this mararc file, and the csv2 zone file "db.example.com"
+   in the directory /etc/maradns, the program maradns will process
+   UDP DNS queries, and zoneserver will process TCP DNS queries.
+   maradns is a standalone UDP DNS server; zoneserver is a TCP
+   proxy that converts TCP requests in to UDP requests. Both
+   daemons must be running to process both UDP and TCP DNS queries.
+
+   ----------------------------------------------------------------
+
+Long packets
+
+   maradns, the UDP DNS server, in compliance with RFC1035 section
+   2.3.4, will not output a packet longer than 512 bytes long. This
+   is sufficient packet size for well over 99% of the DNS traffic
+   out there.
+
+   However, some DNS packets may need to be longer than this.
+   MaraDNS has support for outputting DNS packets up to 4096 bytes
+   long. RFC1035 only allows such packets to be sent over TCP; the
+   work around is to have the UDP server only send long
+   RFC-violating DNS packets to the TCP server; which then converts
+   the long UDP packet in to a RFC-compliant long TCP packet.
+
+   One uses the long_packet_ipv4 mararc variable to tell maradns
+   which IPs we will send long UDP packets to. This value is
+   usually the same value as is set for ipv4_bind_addresses.
+
+   long_packet_ipv4 is a list of IPs maradns will send
+   RFC-violating long UDP packets to. When zoneserver listens for a
+   UDP reply from maradns, the zoneserver program will be able to
+   process long UDP packets, converting them in to RFC-compliant
+   TCP DNS packets.
+
+   This is what a mararc file which provides authoritative DNS over
+   TCP and UDP, sending long UDP packets to the TCP server to
+   process, will look like:
+
+ ipv4_bind_addresses = "10.1.2.3"
+ chroot_dir = "/etc/maradns"
+ csv2 = {}
+ csv2["example.com."] = "db.example.com"
+ tcp_convert_acl = "0.0.0.0/0"
+ tcp_convert_server = "10.1.2.3"
+ long_packet_ipv4 = "10.1.2.3"
+
+   ----------------------------------------------------------------
+
+   The zoneserver program can also be used to serve DNS zones; see
+   the file dnsmaster for details.

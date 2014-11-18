@@ -1,0 +1,9 @@
+# Win32-specific MaraRC file; this makes a basic recursive DNS
+# server.
+
+ipv4_bind_addresses = "127.0.0.1"
+recursive_acl = "127.0.0.1/8"
+timestamp_type = 2
+
+# This is insecure
+random_seed_file = "maradns.exe"

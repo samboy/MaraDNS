@@ -1,0 +1,17 @@
+<h1>MaraDNS support</h1>
+
+If you wish help with MaraDNS, please join the MaraDNS mailing list.
+To join the mailing list, send an email to 
+<A href="mailto:list-request@maradns.org">list-request@maradns.org</A> with
+the word "subscribe" in the subject and body of the message.  Once
+you join the mailing list, send an email to list@maradns.org with your
+concern.
+
+<p>
+
+If you have a security report, my email address is available 
+<A href="http://www.samiam.org/mailme.php">here</A>.  Note that
+I am aware of the July 2008 cache poison attack, and that 
+<A href=http://maradns.blogspot.com/2008/07/maradns-is-immune-to-new-cache.html>MaraDNS
+is immune</A>.
+

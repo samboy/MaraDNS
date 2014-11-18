@@ -1,0 +1,64 @@
+filter_rfc1918 = 0
+# Querying the server with the IP 127.0.0.1
+# Question: Ala.example.com.
+la.example.com. +86400 a 192.168.254.126
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Alb.example.com.
+lb.example.com. +86400 a 172.18.254.126
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Alc.example.com.
+lc.example.com. +86400 a 10.254.254.126
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Aga.example.com.
+ga.example.com. +86400 a 126.254.168.192
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Agb.example.com.
+gb.example.com. +86400 a 126.254.18.172
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Agc.example.com.
+gc.example.com. +86400 a 126.254.254.10
+# NS replies:
+# AR replies:
+
+filter_rfc1918 = 1
+# Querying the server with the IP 127.0.0.1
+# Question: Ala.example.com.
+# NS replies:
+la.example.com. +0 soa z.la.example.com. y@la.example.com. 1 1 1 1 1
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Alb.example.com.
+# NS replies:
+lb.example.com. +0 soa z.lb.example.com. y@lb.example.com. 1 1 1 1 1
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Alc.example.com.
+# NS replies:
+lc.example.com. +0 soa z.lc.example.com. y@lc.example.com. 1 1 1 1 1
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Aga.example.com.
+ga.example.com. +86400 a 126.254.168.192
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Agb.example.com.
+gb.example.com. +86400 a 126.254.18.172
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Agc.example.com.
+gc.example.com. +86400 a 126.254.254.10
+# NS replies:
+# AR replies:
+

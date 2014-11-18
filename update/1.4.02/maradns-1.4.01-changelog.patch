@@ -1,0 +1,21 @@
+--- maradns-1.4.01/doc/en/webpage/changelog.embed	2009-12-21 09:28:41.000000000 -0600
++++ maradns-1.4.02/doc/en/webpage/changelog.embed	2010-01-07 13:48:33.000000000 -0600
+@@ -1,5 +1,18 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.4.02:</p>
++This is the stable branch of MaraDNS.
++<blockquote>
++<ul>
++<li>Documentation updated for 1.4 MaraDNS release.
++<li>RPM spec file now builds RPM in CentOS (RHEL) 5.
++<li><tt>csv2_default_zonefile</tt> was accidently broken in MaraDNS 1.4.01;
++    fixed.
++<li>Updates to the SQA regressions.
++</ul>
++(2010.01.??)
++</blockquote>
++
+ <p>maradns-1.4.01:</p>
+ This is the stable branch of MaraDNS.
+ <blockquote>

@@ -1,0 +1,9 @@
+Any and case sensitivity bug
+
+Description: DNS ANY queries were incorrectly case-sensitive
+
+Expected output of test: ANY query for WwW.eXaMpLe.CoM resolves 
+
+Presence of bug output: ANY query for WwW.eXaMpLe.CoM does not resolve
+
+When fixed: 1.2.12.04

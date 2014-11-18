@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# This script makes the PGP/GPG signatures for MaraDNS
+# usage is something like:
+# do.gpg.sigs file1.tar.bz2 file2.tar.gz file3.zip 
+
+# I have had this script for a while; it finally entered the MaraDNS tree
+# in 1.3.07.05
+
+for file in $* ; do
+	gpg --default-key 6D150805 -b --armor --digest-algo SHA512 $file 
+done
+

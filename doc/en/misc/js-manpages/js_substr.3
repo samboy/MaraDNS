@@ -1,0 +1,73 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_substr 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_substr \- extract part of one js_string into another js_string object
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_substr(js_string *source, js_string *dest, int start, int count)"
+.fi
+.SH DESCRIPTION
+.B js_substr
+copys part of the
+.I js_string
+object
+.B source
+to the 
+.I js_string
+object
+.B dest,
+starting 
+.B start
+characters from the beginning of the string, copying
+.B count
+characters.
+
+.SH ARGUMENTS
+.B source
+is the source 
+.I js_string
+object, the string we copy part of.
+
+.B dest
+is the 
+.I js_string
+object we copy over.
+
+.B start
+is the number of characters in to the string we start copying from.  A value
+of 0 means we start copying from the beginning of the string, 1 means we start
+copying at the second character in the string, and so on.
+
+.B count
+is the number of characters we copy.  1 means we copy one character, 2
+means we copy two characters, and so on.  Be careful: there are cases where
+this behavior causes things to act a little different than expected.
+
+.SH "RETURN VALUE"
+.B js_substr
+returns 
+.I JS_SUCCESS 
+on successful copying of the sbstring,
+.I JS_ERROR
+otherwise.
+.SH EXAMPLE
+The following example will give bar the string "345":
+
+.nf
+	js_string *foo, *bar;
+	foo = js_create(256,1);
+	bar = js_create(256,1);
+	js_str2js(foo,"1234567890",10,1);
+	js_substr(foo,bar,2,3); /* bar is now "345" */
+.fi
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# This attempts to recreate the maradns crashes
+awk 'BEGIN{for(a=0;a<2500;a++){
+    print "askmara Atest.example.org. 127.0.3.3 > /dev/null &";
+    print "echo "a" | tr '\''\\012'\'' '\''\\015'\''"
+    }
+}' | sh

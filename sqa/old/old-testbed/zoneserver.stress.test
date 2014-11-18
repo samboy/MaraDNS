@@ -1,0 +1,23 @@
+#!/bin/bash
+
+NUM="$1"
+
+# Make sure the value is sane; if not, change it
+if [ -z "$NUM" ] ; then
+	NUM=10000
+fi
+if [ "$NUM" -le 1 ] ; then
+	NUM=10000
+fi
+
+COUNTER=0
+
+echo This will run until the following number has the value $NUM
+while [ $COUNTER -le $NUM ] ; do
+	../sendtcp Xexample.com. 127.0.0.1 > /dev/null
+	echo $COUNTER | tr '\012' '\015'
+	COUNTER=$(( $COUNTER + 1 ))
+done
+echo
+echo Done.
+

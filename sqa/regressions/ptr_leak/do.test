@@ -1,0 +1,35 @@
+cat > mararc1 << EOF
+ipv4_bind_addresses = "127.0.0.1"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["."] = "db.root"
+EOF
+cat > mararc2 << EOF
+ipv4_bind_addresses = "127.0.0.2"
+verbose_level=0
+chroot_dir = "$( pwd )"
+recursive_acl = "127.0.0.1/8"
+root_servers = {}
+root_servers["."] = "127.0.0.1"
+max_mem = 100000000
+EOF
+cat > db.root << EOF
+foo. CNAME bar.
+EOF
+
+../../../server/maradns -f mararc1 > /dev/null &
+echo wait 5 seconds
+sleep 5
+valgrind ../../../server/maradns -f mararc2 2>&1 | \
+	fgrep 'definitely lost' | awk '{print $4}' &
+echo wait 5 seconds
+sleep 5
+../../../tools/askmara 12:foo. 127.0.0.2 > /dev/null
+sleep 1
+kill $( ps auxw | grep maradns | grep -v grep | awk '{print $2}' )
+sleep 1
+# Linux specific; this does bad things on Solaris
+killall maradns > /dev/null 2>&1
+
+

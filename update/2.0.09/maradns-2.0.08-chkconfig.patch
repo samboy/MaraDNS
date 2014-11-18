@@ -1,0 +1,46 @@
+commit 9bda7f439ea7b60b7a53b109a4438996bc818341
+Author: Sam Trenholme <strenholme.usenet@gmail.com>
+Date:   Sat Feb 8 12:27:05 2014 -0800
+
+    Added and/or updated the chkconfig lines for MaraDNS’ startup scripts
+
+diff --git a/build/deadwood.startup b/build/deadwood.startup
+index 8da89a6..5321ca5 100644
+--- a/build/deadwood.startup
++++ b/build/deadwood.startup
+@@ -1,5 +1,8 @@
+ #!/bin/bash
+-# Copyright 2005-2006,2011 Sam Trenholme
++# chkconfig: 2345 55 45
++# description: Deadwood is MaraDNS' recursive name server
++
++# Copyright 2005-2006,2011,2014 Sam Trenholme
+ 
+ # TERMS
+ 
+diff --git a/build/mara.startup b/build/mara.startup
+index fdf04bd..db49107 100755
+--- a/build/mara.startup
++++ b/build/mara.startup
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ # MaraDNS	This shell script takes care of starting and stopping MaraDNS
+-# chkconfig: - 55 45
++# chkconfig: 2345 55 45
+ # description: MaraDNS is secure Domain Name Server (DNS)
+ # probe: true
+ 
+diff --git a/build/zoneserver.startup b/build/zoneserver.startup
+index d97ba85..aeac5db 100755
+--- a/build/zoneserver.startup
++++ b/build/zoneserver.startup
+@@ -1,6 +1,8 @@
+ #!/bin/bash
++# chkconfig: 2345 56 46
++# description: Give MaraDNS DNS-over-TCP
+ 
+-# Copyright 2005-2006 Sam Trenholme
++# Copyright 2005-2006,2014 Sam Trenholme
+ 
+ # TERMS
+ 

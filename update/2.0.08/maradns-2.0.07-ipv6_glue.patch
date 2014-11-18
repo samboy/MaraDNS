@@ -1,0 +1,117 @@
+--- maradns-2.0.08/server/MaraBigHash.c.orig	2013-09-17 17:02:50.057959896 -0700
++++ maradns-2.0.08/server/MaraBigHash.c	2013-09-17 17:24:06.637929493 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2007 Sam Trenholme
++/* Copyright (c) 2002-2013 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -176,6 +176,9 @@
+ void init_rr(rr *data) {
+      data->expire = data->ttl = data->authoritative = data->rr_type = 0;
+      data->next = data->ip = 0;
++#ifdef IPV6
++     data->ip6 = 0;
++#endif
+      data->query = data->data = 0;
+      data->ptr = 0;
+      data->seen = 0;
+@@ -1159,6 +1162,18 @@
+                                 }
+                             }
+                         }
++#ifdef IPV6
++                    if(change_rtype(a_query,RR_AAAA) == JS_ERROR)
++                        continue;
++                    adata = mhash_get(bighash,a_query);
++                    /* If so, point to it */
++                    if(adata.datatype == MARA_DNSRR) {
++                        if(record != 0 && adata.value != 0) {
++                            record->ip6 = adata.value;
++                            }
++			else { record->ip6 = 0; }
++                        }
++#endif
+                     } while ((record = record->next) != 0);
+                 }
+             /* If it is a CNAME query, proceed to find the assosciated
+--- maradns-2.0.08/server/udpsuccess.c.orig	2013-09-17 17:02:59.197527387 -0700
++++ maradns-2.0.08/server/udpsuccess.c	2013-09-17 17:24:17.403309482 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2008 Sam Trenholme
++/* Copyright (c) 2002-2013 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -277,6 +277,53 @@
+                     ipwhere = ipwhere->next;
+                     }
+                 }
++#ifdef IPV6
++              if(where->ip6 != 0 && where->rr_type != RR_CNAME) {
++                /* Reset the number of an records we have seen */
++                an_count = 0;
++                ipwhere = where->ip6;
++                while(ipwhere != 0 && ipwhere->rr_type != RR_NS) {
++                    /* We only show a given additional record once */
++                    if(ipwhere->seen == 1) { /* If we have displayed this RR
++                                                already */
++                        /* Go to the next link in the linked list */
++                        ipwhere = ipwhere->next;
++                        continue;
++                        }
++                    /* Stop showing records if we have exceeded our limit */
++                    if(an_count >= max_ar_chain || total_count >= max_total)
++                        break;
++                    an_count++;
++                    total_count++;
++                    /* Increment the number of additional records */
++                    header.arcount++;
++                    /* Append the name for this answer to the ip */
++                    if(js_append(ipwhere->query,ar) == JS_ERROR)
++                        goto giveerror;
++                    /* Append the class (in) to the ip */
++                    if(js_adduint16(ar,1) == JS_ERROR)
++                        goto giveerror;
++                    /* Append the TTL to the ip */
++                    if(js_adduint32(ar,
++                      determine_ttl(ipwhere->expire,ipwhere->ttl)) == JS_ERROR)
++                        goto giveerror;
++                    /* Add the rdlength to the ip */
++                    if(js_adduint16(ar,ipwhere->data->unit_count) == JS_ERROR)
++                        goto giveerror;
++                    /* Add the record itself to the ip */
++                    if(js_append(ipwhere->data,ar) == JS_ERROR)
++                        goto giveerror;
++                    /* Mark that we have seen this record already */
++                    if(seenlist_where < 250) {
++                        ipwhere->seen = 1;
++                        seenlist[seenlist_where] = ipwhere;
++                        seenlist_where++;
++                        }
++                    /* Go to the next link in the linked list */
++                    ipwhere = ipwhere->next;
++                    }
++                }
++#endif 
+             /* This code is only used by the recursive code; the
+              * authoritative code now uses where->list to attach
+              * a CNAME record to its corresponding rddata
+--- maradns-2.0.08/MaraDns.h.orig	2013-09-17 18:02:21.327154316 -0700
++++ maradns-2.0.08/MaraDns.h	2013-09-17 18:02:50.954960782 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2007 Sam Trenholme
++/* Copyright (c) 2002-2013 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -211,6 +211,9 @@
+                         of the same record for the same data type */
+     struct rr *ip; /* If this is a PTR, MX, or NS record, pointer to the
+                       ip the rr domain name points to (if applicable) */
++#ifdef IPV6
++    struct rr *ip6; /* It's the 2010s and time to link to IPv6 glue */
++#endif
+     js_string *ptr; /* If this is a PTR request pointing to a CNAME,
+                        we want to give them the PTR record along
+                        with the CNAME record. */

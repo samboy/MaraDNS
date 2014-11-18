@@ -1,0 +1,103 @@
+<HEAD><TITLE>DNS glossary</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+</HEAD><BODY>
+
+<!-- Copyright 2005-2006 Sam Trenholme
+
+    TERMS
+
+    Redistribution and use, with or without modification, are permitted 
+    provided that the following condition is met:
+
+    1. Redistributions must retain the above copyright notice, this 
+       list of conditions and the following disclaimer.
+
+    This documentation is provided 'as is' with no guarantees of 
+    correctness or fitness for purpose.
+
+ -->
+
+<H1>DNS glossary</H1>
+
+<DL>
+
+<A name="authoritative">
+<DT><b>Authoritative DNS server</b></DT>
+<DD>A DNS server which <i>recursive DNS servers</i> contact in order to 
+<i>resolve</i> a given <i>DNS node</i> <p></DD>
+
+<A name="dns_node">
+<DT><b>DNS node</b></DT>
+<DD>A name which DNS usually converts in to an IP, such as www.yahoo.com.  
+Not all DNS nodes have IPs, however.<p></DD>
+
+<A name="dns_record">
+<DT><b>DNS record</b></DT>
+<DD>A single piece of DNS data, which can either be data for a DNS node, 
+or meta-data which DNS uses.<p></DD>
+
+<A name="dns_server">
+<DT><b>DNS server</b></DT>
+<DD>A program which resolves DNS records<p></DD>
+
+<A name="dns_admin">
+<DT><b>DNS server administrator</b></DT>
+<DD>A person who manages DNS; setting up DNS servers, changing DNS records,
+and what not.<p></DD>
+
+<A name="registry">
+<DT><b>Domain registry</b></DT>
+<DD>A domain registry is a company that allows one to have their 
+<i>authoritative DNS servers</i> be contacted by <i>recursive name 
+servers</i>. <p></DD>
+
+<A name="suffix">
+<DT><b>Domain suffix</b></DT>
+<DD>The part of the domain which is (usually) after the first dot in a 
+DNS node.  The domain suffix for www.yahoo.com, for example, is yahoo.com. 
+<p></DD>
+
+<A name="zone">
+<DT><b>Domain zone</b></DT>
+<DD>A domain zone is a set of one or more DNS nodes.  All names in a given 
+domain zone share the same <i>domain suffix</i>. <p></DD>
+
+<A name="ip">
+<DT><b>IP</b></DT>
+<DD>A number which a computer connected to the internet has, similar to a 
+phone number. <p></DD>
+
+<A name="isp">
+<DT><b>Internet service provider</b></DT>
+<DD>An internet service provider (or ISP) is a company that offers
+access to the internet.<p></DD>
+
+<A name="mta">
+<DT><b>Mail Transport Agent</b></DT>
+<DD>A computer program which accepts incoming SMTP (email) connections,
+allowing a server to receive email.<p></DD>
+
+<A name="recursive">
+<DT><b>Recursive DNS server</b></DT>
+<DD>A recursive DNS server is a DNS server which contacts other DNS 
+servers to <i>resolve</i> a given <i>DNS node</i>. <p></DD>
+
+<A name="resolve">
+<DT><b>To resolve</b></DT>
+<DD>To convert a <i>DNS node</i>, such as www.yahoo.com, in
+to an IP, such as 10.17.243.32.<p></DD>
+
+<A name="serve">
+<DT><b>To serve</b></DT>
+<DD>The action of an authoritative DNS server making DNS nodes available 
+to recursive DNS servers.<p></DD>
+
+<A name="static">
+<DT><b>Static IP address</b></DT>
+<DD>A static IP address is an IP addresses whose value does not change.
+Only some internet service providers offer static IP addresses.<p></DD>
+
+</DL>
+
+</BODY>
+

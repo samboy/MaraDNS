@@ -1,0 +1,57 @@
+--- deadwood-2.9.07/doc/Windows/Vista.txt	2009-08-08 23:51:39.000000000 -0700
++++ deadwood-3.0.01/doc/Windows/Vista.txt	2010-09-22 10:29:35.000000000 -0700
+@@ -1,40 +1,22 @@
+-   One way to get Deadwood to work in Vista or Windows 7 is to use a cmd 
+-   prompt with administrator privileges.
++One way to get Deadwood to work in Vista or Windows 7 is to use a cmd 
++prompt with administrator privileges.
+ 
+-   To create a cmd prompt with admin rights:
++To open up an admin cmd prompt:
+ 
+-     * Right click on an unused part of the desktop
++* Go to the start menu and search for "cmd"
+ 
+-     * Select the "new" sub-menu
++* When found, right click on it and run "cmd" as an administrator
+ 
+-     * Select "shortcut" in this sub-menu
++Once this administrative "cmd" prompt is opened, it is necessary to
++install Deadwood:
+ 
+-     * When it asks for the location of the new shortcut, just type in "cmd"
+-       (without the quotes)
++* At the cmd prompt, use the "cd" command to find and enter the directory
++  where Deadwood is unpacked (where this file is located)
+ 
+-     * Click on "next"
++* Invoke the "install.bat" script from this directory (by simply typing in
++  "install.bat" without the quotes)
+ 
+-     * When it asks for a name for the shortcut, the name "cmd" is fine;
+-       click on "finish"
+-
+-     * There will now be a shortcut on your desktop with the name "cmd".
+-       Right click on this shortcut.
+-
+-     * Select "properties", and make sure the tab selected at the top of the
+-       "properties" window is the "shortcut" tab
+-
+-     * Click on the "advanced" button
+-
+-     * Check the "execute as administrator" checkbox
+-
+-     * Click OK in this window and (if needed) in the "properties" window
+-
+-   At this point, you will have a shortcut with the name "cmd" that is akin
+-   to the "su" command in *NIX: Clicking on this shortcut will give you a
+-   command prompt with full access to the system. Note that the UAC thingy
+-   will ask for confirmation every time before giving you access to this
+-   command prompt.
+-
+-   Once setup, this cmd window can be used to install Deadwood on Windows
+-   Vista as per the directions for installing Deadwood in Windows XP.
++* Once Deadwood is installed, it is important not to change the directory
++  where Deadwood is locted; otherwise the service manager may have problems
++  finding the Deadwood service.
+ 

@@ -1,0 +1,54 @@
+--- maradns-1.4.01/doc/en/source/mararc.ej	2009-12-21 09:28:41.000000000 -0600
++++ maradns-1.4.02/doc/en/source/mararc.ej	2009-12-29 11:02:17.000000000 -0600
+@@ -332,8 +332,8 @@
+ This accepts a single IP in dotted-decimal (e.g. "127.0.0.1")
+ notation, and specifies what IP address the MaraDNS server will
+ listen on.  Note that ipv4_bind_addresses has the same functionality.
+-This name is included so that MaraDNS 1.0 configuration files will 
+-continue to work with MaraDNS 1.2.
++This name is included so that old MaraDNS configuration files will 
++continue to work with new MaraDNS releases.
+ <p>
+ 
+ <h2>bind_star_handling</h2>
+@@ -429,8 +429,8 @@
+ 
+ <ul>
+ 
+-<li>0) The csv2 parser behaves the same as it does in MaraDNS 1.2: The
+-tilde has no special significance to the parser.
++<li>0) The csv2 parser behaves the same as it does in old MaraDNS releases: 
++The tilde has no special significance to the parser.
+ 
+ <li>1) A tilde is not allowed anywhere in a csv2 zone file.
+ 
+@@ -445,7 +445,7 @@
+ </ul>
+ 
+ The default value for csv2_tilde_handling is 2; this allows compatibility
+-with all 1.2 zone files without tildes while allowing zone files to be 
++with older zone files without tildes while allowing zone files to be 
+ updated to use the tilde to separate resource records.
+ 
+ <h2>debug_msg_level</h2>
+@@ -479,9 +479,9 @@
+ 
+ <h2>default_rrany_set</h2>
+ This variable used to determine what kind of resource records were returned
+-when an ANY query was sent.  In MaraDNS 1.2, the data structures have been 
++when an ANY query was sent.  In MaraDNS, the data structures have since been 
+ revised to return any resource record type when an ANY query is sent; this
+-variable does nothing, and is only here so that MaraDNS 1.0 mararc files
++variable does nothing, and is only here so that old MaraDNS mararc files
+ will continue to work.
+ 
+ The only accepted values for this variable were 3 and 15.
+@@ -826,7 +826,7 @@
+ <h2>retry_cycles</h2>
+ retry_cycles: The number of times the recursive resolver will try to contact 
+ all of the DNS servers to resolve a given name before giving up.  This 
+-feature was added to MaraDNS 1.2.08, and has a default value of 2.
++has a default value of 2.
+ 
+ <h2>spammers</h2>
+ spammers: A list of DNS servers which the recursive resolver will

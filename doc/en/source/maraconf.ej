@@ -1,0 +1,126 @@
+<HEAD>
+<TH>MARACONF 10 "August 2006" MARACONF "Maraconf reference"</TH>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+</HEAD>
+<BODY>
+<h1>NAME</h1>
+maraconf - MaraDNS configurator
+<h1>SYNOPSIS</h1>
+<b>maraconf [options] </b>
+Options: [-start] [-help]
+
+<h1>TABLE OF CONTENTS</h1>
+This man page has the following sections:
+
+<blockquote>
+<pre>
+Name 
+Synopsis
+Table of Contents
+Description
+Usage
+Legal Disclaimer
+Author
+</pre>
+</blockquote>
+<H1>DESCRIPTION</H1>
+<b>maraconf</b>
+is a MaraDNS DNS server configurator. It will guide you in the task of
+configuring your mararc and zone files.
+
+<p>
+
+<b>maraconf</b>
+has two arguments: <b>-start</b> that initializes the program, and
+<b>-help</b> to shows usage information.
+
+<p>
+
+<H1>USAGE</H1>
+
+Maraconf, like the rest of MaraDNS, is designed to be easy to use. 
+One can simply start maraconf with 
+the <b>-start</b> option and choose options in a menu.
+
+<p>
+
+There are two main configuration options: 
+Configuring a <b>recursive</b> server and an <b>authoritative</b>
+server. Pressing number one will start the recursive mode. 
+Pressing number two will start the authoritative mode.
+
+<p>
+
+<b>Recursive DNS server</b>
+
+<p>
+Recursive DNS servers can convert DNS nodes on the public internet in to their 
+corresponding number.  This kind of server can not 
+change the names of any DNS nodes out there. 
+Instead, they simply ask other DNS servers the IP for a given DNS node.
+
+<p>
+When configuring a recursive DNS server with maraconf, you will be 
+presented with two configuration modes:
+
+<p>
+1) The easy way (using a wizard)<br>
+2) The hard way (for experienced users)
+<p>
+The easy way:
+<p>
+
+Here the program will do most of the work. Only two two questions need to
+be answered:  The IP address that the server will run on and the ip allowed
+to perform recursive queries.  If you do not answer a given question,
+the program will use a reasonable default value.
+
+<p>
+The hard way:
+<p>
+
+The program will ask ten question about your MaraDNS setup.  This mode
+is designed for experienced administrators.  Again, if you do not answer
+a given question, the program will use a reasonable default value.
+
+<p>
+
+<b>Authoritative DNS server</b>
+
+<p>
+
+An authoritative DNS server actually controls the records for a subset of
+DNS nodes in the internet (such as the IPs corresponding to DNS names).
+Recursive DNS servers (see above) contact authoritative DNS servers in
+order to learn the IP for a given DNS node.
+
+<p>
+
+In this mode there is only one configuration mode; you will start
+directly answering questions about your zone. Here you can setup 
+A, NS, and MX records, among other things.
+
+<h1>LEGAL DISCLAIMER</h1>
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
+OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE 
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+<h1>AUTHOR</h1>
+
+<p>
+
+Maraconf is written by Daniel Zilli and Sam Trenholme. 
+Consequently, all errors in Maraconf
+are ours (but read the disclaimer above).
+
+<p>
+</body>

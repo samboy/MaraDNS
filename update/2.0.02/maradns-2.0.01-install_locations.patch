@@ -1,0 +1,28 @@
+--- maradns-2.0.01/build/install.locations	2002-05-05 06:11:47.000000000 -0600
++++ maradns-2.0.02/build/install.locations	2011-02-05 07:34:06.000000000 -0700
+@@ -44,13 +44,22 @@
+ # If the directory that MAN1 points to does not exist
+ if [ ! -d $MAN1 ] ; then
+         # Then try this location instead
+-	MAN1="/usr/local/share/man/man1"
++	MAN1="$PREFIX/share/man/man1"
++	if [ ! -d $MAN1 ] ; then
++		MAN1="/usr/local/share/man/man1"
++	fi
+ fi
+ # Do the same with the MAN5 and MAN8 directories
+ if [ ! -d $MAN5 ] ; then
+-	MAN5="/usr/local/share/man/man5"
++	MAN5="$PREFIX/share/man/man5"
++	if [ ! -d $MAN5 ] ; then
++		MAN5="/usr/local/share/man/man5"
++	fi
+ fi
+ if [ ! -d $MAN8 ] ; then
+-	MAN8="/usr/local/share/man/man8"
++	MAN8="$PREFIX/share/man/man8"
++	if [ ! -d $MAN8 ] ; then
++		MAN8="/usr/local/share/man/man8"
++	fi
+ fi
+ 

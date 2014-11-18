@@ -1,0 +1,36 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_buf_read 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_buf_read \- Private function that loads a new chunk of a file in to 
+the buffer
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_buf_read(js_file *desc)"
+.fi
+.SH DESCRIPTION
+.B js_buf_read
+is a private function that loads up a new chunk of a file in to the
+buffer.
+.SH NOTES
+I am declaring this function a private function because programs using
+the 
+.I js_string
+library really should not be playing around with the buffer in this manner.
+This function should only be called from other js_buf_* functions.
+In other
+words, use this function at your own risk, because I may change the
+interface of this function or delete this function altogether in
+future releases of the
+.I js_string 
+library.
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

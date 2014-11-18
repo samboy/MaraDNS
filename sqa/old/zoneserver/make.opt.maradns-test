@@ -1,0 +1,4 @@
+#!/bin/bash
+
+rm /opt/maradns-test
+ln -s $( pwd ) /opt/maradns-test

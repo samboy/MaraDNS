@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# This test makes sure Deadwood can handle pauses in the TCP stream
+# both upstream and downstream
+
+killall DwMain > /dev/null 2>&1
+killall Deadwood > /dev/null 2>&1
+sleep 30
+
+cat > dwood2rc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.2"
+upstream_servers = {}
+upstream_servers["."]="127.0.0.1"
+recursive_acl="127.0.0.1/16"
+tcp_listen=1
+filter_rfc1918 = 0
+EOF
+
+export CC="cc"
+export FLAGS="-O3"
+
+make > /dev/null
+../../src/Deadwood -f dwood2rc | grep -v version | sed 's/[(].*[)]//' &
+./truncated 127.0.0.1 &
+./show_packet_stdout 127.0.0.1 < dns.reply.txt.example.com > /dev/null &
+
+sleep 3
+
+#dig +tcp @127.0.0.2 txt.example.com
+./send_packet_stdin 127.0.0.2 < dns.query.txt.example.com | fmt -w 60
+
+killall Deadwood
+killall show_packet_stdout
+killall truncated
+rm dwood2rc
+make clean > /dev/null
+sleep 60
+

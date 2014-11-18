@@ -1,0 +1,34 @@
+--- deadwood-3.1.02/src/DwDict.c	2011-11-27 20:30:55.000000000 -0600
++++ deadwood-3.1.03/src/DwDict.c	2011-12-18 18:04:23.870403471 -0600
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2009 Sam Trenholme
++/* Copyright (c) 2009, 2011 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -36,6 +36,10 @@
+ #include "DwStr_functions.h"
+ #include "DwDict.h"
+ 
++/* Keep -Wall happy.  We can "legally" call this since we are a, if you
++ * will, "derived class" of DwHash.c */
++uint32_t dwh_hash_compress(dw_str *obj);
++
+ /* Initialize a Deadwood dictionary store */
+ dwd_dict *dwd_init() {
+         return dwh_hash_init(2);
+@@ -84,10 +88,13 @@
+ 
+         if(key == 0) {
+                 found = 1;
++                count = 0;
++        } else {
++                count = dwh_hash_compress(key) & hash->mask; /* Fast lookup */
+         }
+ 
+         /* Look for the key */
+-        for(count = 0; count <= hash->mask; count++) {
++        for(;count <= hash->mask; count++) {
+                 point = hash->hash[count];
+                 for(noloop = 0; noloop < 10000 && point != 0; noloop++) {
+                         next = point->next;

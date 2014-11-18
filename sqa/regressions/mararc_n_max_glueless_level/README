@@ -1,0 +1,8 @@
+This test makes sure the mararc variables max_glueless_level and
+max_queries_total work.
+
+Note that it *appears* that the variables may not work.  However, I'm not
+interested in non-critical bugfixes with the current recursive code.  This
+test is a good test, however, for the next-generation recursive code, since
+it sees how many levels of indirection a DNS server is willing to do.
+

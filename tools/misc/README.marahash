@@ -1,0 +1,22 @@
+Marahash is now a separate standalone program.  To download either source
+code or the Windows binary, go to this location:
+
+	http://www.maradns.org/download/non-maradns
+
+While this version of Marahash does compile and run, the pre-1.2 security
+enhancments to the underlying compession function make this program too 
+slow to be usable.  In addition, this program does not run correctly when
+compiled with MinGW for Windows.  
+
+The standalone version of Marahash also has a convenient way of
+hashing multiple files at the same time and recursively hashing entire
+directories.
+
+Marahash does not need the security enhancments; there is no secret
+informating when using the compression function to make a cryptographic
+sum.  Also, the slowdown caused by the security enhancments do not
+significantly impact MaraDNS performance.  The primary slowdown is in
+the key setup; with Marahash, a key setup is done with every 16 bytes
+of input.  With MaraDNS, a key setup is done at startup and once every
+2 million recursive queries.
+

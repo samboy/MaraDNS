@@ -1,0 +1,40 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_has_sanity 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_has_sanity \- determine if a given js_string object has valid data
+object
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_has_sanity(js_string *js);"
+.fi
+.SH DESCRIPTION
+.B js_has_sanity
+determines whether a given
+.I js_string
+object contains valid data.  Valid data meaning:
+.IP 1)
+A member of the 
+.I js_string 
+structure set up for sanity checks, 
+.I is_good,
+has the expected value, 
+.I JS_SANE_NUMBER.
+.IP 2)
+The number of units in the 
+.I js_string
+structure is less than or equal to the number of maximum allowed units.
+.SH "RETURN VALUE"
+.B js_has_sanity
+returns JS_ERROR if the 
+.I js_string 
+object in question is not valid, JS_SUCCESS otherwise.
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>

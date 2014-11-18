@@ -1,0 +1,92 @@
+                                 NAME
+
+   zoneserver - handle zone transfers and other TCP functions for
+   MaraDNS
+
+                             DESCRIPTION
+
+   zoneserver listens on port 53/tcp and handles DNS zone transfers
+   and any DNS query done over TCP instead of UDP. zoneserver uses
+   a configuration file, /etc/mararc by default, to determine its
+   parameters.
+
+                                USAGE
+
+   zoneserver -f pointer_to_mararc_file
+
+                               OPTIONS
+
+   -f
+           Specifies the location of the configuration file.
+           MaraDNS uses the same configuration file for both the
+           main dns server and the zoneserver.
+
+                      CONFIGURATION FILE FORMAT
+
+   The file format for the mararc file can be found in the
+   mararc(5) manual page. In particular, the zoneserver uses the
+   zone_transfer_acl, tcp_convert_acl, tcp_convert_server, and
+   bind_address mararc parameters.
+
+                         EXAMPLE MARARC FILE
+
+   In this example mararc file, which is used both by maradns and
+   zoneserver, we allow 10.1.2.3, 10.1.14.7, and 192.168.116.{any}
+   to transfer zones, and we allow anyone on the internet to
+   perform TCP queries. The only zone served in this example is
+   example.com:
+
+ ipv4_bind_addresses = "10.1.1.1" # Our IP
+ tcp_convert_server = "10.1.1.1" # IP of UDP DNS server
+ tcp_convert_acl = "0.0.0.0/0" # Anyone may do DNS-over-TCP
+ chroot_dir = "/etc/maradns" # Where zone files are
+ csv2 = {} # Initialize list of zone files
+ csv2["example.com."] = "db.example.com" # example.com zone file
+ # The next line is a list of who can transfer zones from us
+ zone_transfer_acl = "10.1.2.3, 10.1.14.7, 192,168.116.0/24"
+
+                               SEE ALSO
+
+   The man pages maradns(8) and mararc(5)
+
+   http://www.maradns.org
+
+                                 BUGS
+
+   zoneserver assumes that the authoritative NS records are
+   immediately after the SOA record, and that there is at least one
+   non-NS between that last authority NS record for the zone and
+   the first delegation NS record.
+
+   IXFR requests are incremental zone transfers, meaning that the
+   DNS server should only display records changed since the last
+   IXFR request. zoneserver, however, treats an IXFR as if it were
+   an AXFR request, outputting all of the records for the zone in
+   question.
+
+   zoneserver closes the TCP connection after transferring the
+   requested zone.
+
+   If an unauthorized client attempts to connect to the zoneserver,
+   zoneserver immediately disconnects the unauthorized client.
+
+                           LEGAL DISCLAIMER
+
+   THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY
+   EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+   THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+   PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS
+   OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+   LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+   USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+   AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+   IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+   THE POSSIBILITY OF SUCH DAMAGE.
+
+                                AUTHOR
+
+   MaraDNS is written by Sam Trenholme. Jaakko Niemi used 5 minutes
+   to put the original version this manpage together. Sam has
+   subsequently revised this manual page.

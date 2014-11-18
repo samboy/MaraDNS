@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# This script extracts examples from an ej document.  Basically, it prints
+# out everything between pre tags
+
+# !@#$ Awk regexes
+cat | awk '/[<][\/]pre[>]/ { a = 2 } a == 1 {print} /[<]pre[>]/ { a = 1 }'
+
+

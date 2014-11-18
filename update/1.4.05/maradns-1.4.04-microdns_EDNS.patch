@@ -1,0 +1,32 @@
+--- maradns-1.4.04/tools/misc/microdns.c	2010-02-02 09:12:48.000000000 -0800
++++ maradns-1.4.05/tools/misc/microdns.c	2010-08-05 04:10:40.000000000 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2009 Sam Trenholme
++/* Copyright (c) 2009-2010 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -136,12 +136,18 @@
+                 if(len_inet > 12) {
+                         /* Make this an answer */
+                         in[2] |= 0x80;
+-                        /* We add an additional answer */
+-                        in[7]++;
+-                }
+-                for(a=0;a<16;a++) {
+-                        in[len_inet + a] = p[a];
++			if(in[11] == 0) { /* EDNS not supported */
++                        	/* We add an additional answer */
++                        	in[7]++;
++			} else {
++				in[3] &= 0xf0; in[3] |= 4; /* NOTIMPL */
++			}
+                 }
++		if(in[11] == 0) { /* Again, EDNS not supported */
++                	for(a=0;a<16;a++) {
++                        	in[len_inet + a] = p[a];
++                	}
++		}
+ 
+                 /* Send the reply */
+                 sendto(sock,in,len_inet + 16,0, (struct sockaddr *)&dns_udp,

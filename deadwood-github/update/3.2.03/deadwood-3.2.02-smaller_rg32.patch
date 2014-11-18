@@ -1,0 +1,106 @@
+--- deadwood-3.2.03/src/DwRadioGatun.c.orig	2012-10-28 01:30:47.520688638 -0700
++++ deadwood-3.2.03/src/DwRadioGatun.c	2012-10-28 01:32:01.910497097 -0700
+@@ -27,56 +27,46 @@
+ #include "DwRadioGatun.h"
+ 
+ /* This is the mill part of the RadioGatun algorithm */
+-void dwr_mill(DWR_WORD *a) {
++void dwr_beltmill(DWR_WORD *a, DWR_WORD *b) {
++        DWR_WORD q[DWR_BELTROWS];
+         DWR_WORD A[DWR_MILLSIZE];
+         DWR_WORD x;
++        int s = 0;
+         int i = 0;
++        int v = 0;
+         int y = 0;
+         int r = 0;
+         int z = 0;
+-        for(i = 0; i < DWR_MILLSIZE ; i++) {
+-                y = (i * 7) % DWR_MILLSIZE;
+-                r = ((i * (i + 1)) / 2) % DWR_WORDSIZE;
+-                x = a[y] ^ (a[ ((y + 1) % DWR_MILLSIZE) ] |
+-                    (~a[ ((y + 2) % DWR_MILLSIZE) ]));
+-                A[i] = (x >> r) | (x << (DWR_WORDSIZE - r));
+-        }
+-        for(i = 0; i < DWR_MILLSIZE ; i++) {
+-                y = i;
+-                r = (i + 1) % DWR_MILLSIZE;
+-                z = (i + 4) % DWR_MILLSIZE;
+-                a[i] = A[y] ^ A[r] ^ A[z];
+-        }
+-        a[0] ^= 1;
+-}
+-
+-/* This is the belt part of the RadioGatun algorithm */
+-void dwr_belt(DWR_WORD *a, DWR_WORD *b) {
+-        DWR_WORD q[DWR_BELTROWS];
+-        int s = 0;
+-        int i = 0;
+-        int v = 0;
+         for(s = 0; s < DWR_BELTROWS ; s++) {
+                 q[s] = b[((s * DWR_BELTCOL) + DWR_BELTCOL - 1)];
+-        }
+-        for(i = DWR_BELTCOL - 1; i > 0; i--) {
+-                for(s = 0; s < DWR_BELTROWS ; s++) {
++        	for(i = DWR_BELTCOL - 1; i > 0; i--) {
+                         v = i - 1;
+                         if(v < 0) {
+                                 v = DWR_BELTCOL - 1;
+                         }
+                         b[((s * DWR_BELTCOL) + i)] =
+                                 b[((s * DWR_BELTCOL) + v)];
+-                }
+-        }
+-        for(s = 0; s < DWR_BELTROWS; s++) {
++		}
+                 b[(s * DWR_BELTCOL)] = q[s];
+         }
+         for(i = 0; i < DWR_BELTFEED ; i++) {
+                 s = (i + 1) + ((i % DWR_BELTROWS) * DWR_BELTCOL);
+                 b[s] ^= a[(i + 1)];
+         }
+-        dwr_mill(a);
++        for(i = 0; i < DWR_MILLSIZE ; i++) {
++                y = (i * 7) % DWR_MILLSIZE;
++                r = ((i * (i + 1)) / 2) % DWR_WORDSIZE;
++                x = a[y] ^ (a[ ((y + 1) % DWR_MILLSIZE) ] |
++                    (~a[ ((y + 2) % DWR_MILLSIZE) ]));
++                A[i] = (x >> r) | (x << (DWR_WORDSIZE - r));
++        }
++        for(i = 0; i < DWR_MILLSIZE ; i++) {
++                y = i;
++                r = (i + 1) % DWR_MILLSIZE;
++                z = (i + 4) % DWR_MILLSIZE;
++                a[i] = A[y] ^ A[r] ^ A[z];
++        }
++        a[0] ^= 1;
+         for(i = 0; i < DWR_BELTROWS; i++) {
+                 a[(i + DWR_BELTCOL)] ^= q[i];
+         }
+@@ -132,7 +122,7 @@
+                                         b[c * 13] ^= p[c]; \
+                                         a[16 + c] ^= p[c]; \
+                                 } \
+-                                dwr_belt(a,b)
++                                dwr_beltmill(a,b)
+ 
+ /* Create a Radio Gatun state, using the contents of a dw_str object
+  * as the key */
+@@ -173,7 +163,7 @@
+                                 if(done == 1) {
+                                         dwr_input_map();
+                                         for(c = 0; c < 16; c++) {
+-                                                dwr_belt(a,b);
++                                                dwr_beltmill(a,b);
+                                         }
+                                         return new;
+                                 }
+@@ -200,7 +190,7 @@
+                 in->index = 0; /* I am considering rekeying here */
+         }
+         if(in->index % 4 == 0) {
+-                dwr_belt(in->mill, in->belt);
++                dwr_beltmill(in->mill, in->belt);
+                 in->index++;
+                 return ((o[0] & 0xff) << 8) | ((o[0] & 0xff00) >> 8);
+         } else {

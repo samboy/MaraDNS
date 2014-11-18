@@ -1,0 +1,156 @@
+This is a description of the mararc parser that the Deadwood project 
+uses.  This is a rewrite of ParseMaraRc.c.
+
+We use a finite state machine to parse a mararc file.  Here are the 
+various classes of characters that we need to test for:
+
+A alpha: The letters A through Z, a through z, and the _ character 
+
+B alphanum: The letters A-Z, a-z, the _ character, and the numbers 0-9
+
+Y alphastart: The lettera A through Z, and a through z
+
+[ leftbrace: The [ character
+
+Q quote: The " character
+
+] rightbrace: The ] character
+
+D dname: The letters A-Z, a-z, the - character, the numbers 0-9, the 
+       '.' character, and the '_' character.
+
+S dname_start: The letters A-Z, a-z, and the numbers 0-9
+
+. dot: The '.' character
+
++ plus: The + symbol
+
+- minus: The - symbol
+
+= equals: The = symbol
+
+N number: The numbers 0-9
+
+H hash: The # Symbol
+
+I in_string: Any printable ASCII character except for the #, ", and 
+           newline
+
+R carriage return: The \r non-printable ASCII character
+
+T newline: The \n non-printable ASCII characters
+
+W whitespace: The space (' ') or tab character
+
+X any: Any printable ASCII character and the tab character
+
+{ left curly brace: The { character
+
+} right curly brace: The } character
+
+So, we have 13 character classes with letter shortcuts.  We have
+ten multi-character classes, and the " and # characters get letter
+shortcuts (": Because otherwise we need to have ugly \" sequences 
+in the quoted state machine definition; #: So we can potentially
+add comments to state machine definitions)
+
+We also have eight actions:
+
+1: Add the character we are looking at to variable 1
+2: Add the character we are looking at to variable 2
+3: Add the character we are looking at to variable 3
+4: Add the character we are looking at to variable 4
+5: Add the character we are looking at to variable 5
+6: Add the character we are looking at to variable 6
+7: Add the character we are looking at to variable 7
+8: Return a fatal error stating that leading whitespace is not allowed
+;: End the processing of the current line successfully
+
+The variables are:
+
+1: The mararc parameter
+2: The dictionary index
+3: The mararc string value
+4: The mararc numeric value
+5: If this is set, then we append instead of assigning
+6: If this is set, then we initialize the specified dictionary variable
+7: The filename to read and parse as a dwood2rc file
+
+Should there not be a new state specified for a given character class
+in a given state, we halt processing with an error
+
+We also have 51 states, represented by lower case letters.  The initial 
+state is state 'a'.  If the first letter of the state is 'x', the state
+representation uses two lower-case letters (such as 'xa' or 'xp'). 
+
+Instructions for the state machine are as follows:
+
+<state name>: <character class><action (optional)><new state>
+
+Again, here are the character classes using letters:
+
+A: A-Za-z_ 		B: A-Za-z_0-9		D: -A-Za-z0-9._
+H: #			I: pASCII except # and "
+N: 0-9			Q: "			S: A-Za-z0-9
+T: \n			W: [ \t]		X: pASCII, hi-bit, and \t
+Y: A-Za-z		R: \r
+
+And here is the specified state machine for mararc processing.  This
+state machine is run for each line in the mararc file
+
+Start of line:                       a: Hb Y1c Wxb Rxp T;
+In comment:                          b: Xb Rxp T;
+Reading mararc parameter:            c: B1c Wd =e [f +g (y
+Whitespace after mararc parameter:   d: Wd =e [f +g
+Equal sign:                          e: We N4h Qi {6w
+Leftbrace:                           f: Wf Qn
+Plus sign:                           g: =5e
+Numeric mararc parameter:            h: N4h Wk Hb Rxp T;
+Quote beginning mararc parameter:    i: I3m
+End of line:                         k: Wk Hb Rxp T;
+In mararc parameter:                 m: I3m Qk
+Quote beginning dictionary index:    n: .2o S2p -2p
+Dot as dictionary index:             o: Qq
+Dictionary index:                    p: D2p Qq 
+Quote at end of dictionary index:    q: Wq ]r
+Right brace ending dictionary index: r: Wr =s +t
+Equal sign before dictionary value:  s: Ws Qu 
+Plus sign before dictionary value:   t: =5s
+Quote beginning dictionary value:    u: I3v
+In dictionary value:                 v: I3v Qk
+At left curly brace:                 w: }k
+At carriage return:                  xp: T;
+At left paren:			     y: Qz
+In filename for execfile:	     z: I7z Qxa
+Quote after execfile filename:	     xa: )k
+After whitespace in line:            xb: Hb Wxb Y8xb Rxp T;
+
+Once a line is processed, we then look at the value of variable 1 (the 
+mararc parameter):
+
+Should 1 be a known normal mararc parameter we support, store the value
+of variable 3 in the parameter indexed by variable 1
+
+Note that, to make life easier for the initial version of Deadwood, we 
+will only support a dictionary index of ".".  This is temporary, so we 
+can more quickly get a very basic forwarding DNS server written.
+
+---
+
+When tokenizing the state machine, the state is converted from a lower
+case letter to a number between 0 (for 'a') to 52 (for 'xz').  Each
+<class><action><new state> is stored as three 8-bit numbers:
+
+* The pattern, which is the literal character.  E.G. Pattern 'A' is
+  tokenized as the number 65 ('A' in ASCII)
+
+* Action, which is a number from 0 to 10.  0 indicates "no action"; 1-9
+  indicate actions #1-9.  Action #10 means "terminate reading line with 
+  success".
+
+* New state: This is the converted state number ('a' becomes 0; 'z' becomes
+  25; 'xz' becomes 51; note that 'x' [23] isn't used)
+
+A given state can only have seven different patterns (this can be expanded
+by changing DWM_MAX_PATTERNS in DwMararc.h)
+

@@ -1,0 +1,257 @@
+#!/bin/bash
+
+# This is a shell script that will do all of the sqa tests; this script
+# will halt if any of the tests does not give the desired result
+
+# This test needs to be run from root, it needs to be run with Deadwood 
+# inside the MaraDNS source tree, and it needs to be run with the
+# current working directory the directory this test is in
+
+SQADIR=$(pwd)
+export CC=gcc
+
+cd ../..
+if [ ! -e maradns.gpg.key ] ; then
+	echo These tests must be run inside of MaraDNS\; place the
+	echo Deadwood code off of MaraDNS\' top-level directory before
+        echo running these tests
+	exit 0
+fi
+# Make sure MaraDNS is compiled
+echo compiling MaraDNS...
+make clean > /dev/null 2>&1 # MaraDNS
+make > /dev/null 2>&1 # MaraDNS
+#make # MaraDNS
+
+# Now compile Deadwood
+cd $SQADIR
+cd ../src
+export FLAGS='-O3'
+echo compiling Deadwood...
+make -f Makefile.sl6 clean > /dev/null 2>&1 
+make -f Makefile.sl6 > /dev/null 2>&1 
+#make -f Makefile.sl6
+
+# Now, back to the SQA directory to run the tests
+cd $SQADIR
+
+TESTS=""
+# I need to test ipv6 but haven't yet
+#TESTS=$TESTS"basic_test basic_tcp_test basic_ipv6_test "
+
+# Here are the tests we currently run
+#TESTS=$TESTS"
+
+# sqa_tcp is first because the example.com nameserver and DNS info
+# constantly move
+TESTS=$TESTS"sqa_tcp " # Disable this if you have no internet
+
+# These tests sometimes fail
+TESTS=$TESTS"sqa_tcp_buffering_2,5 " 
+TESTS=$TESTS"dwood2rc_n_maxprocs,2 "
+TESTS=$TESTS"dwood2rc_s_cache_file,2 "
+TESTS=$TESTS"sqa_one_upstream_down,2 "
+TESTS=$TESTS"sqa_easydns_bad_truncation,2 "
+TESTS=$TESTS"dwood2rc_n_num_retries,2 "
+
+# These tests are stable and don't fail
+TESTS=$TESTS"basic_test basic_tcp_test "
+TESTS=$TESTS"sqa_server_fail "
+TESTS=$TESTS"sqa_root_upstream "
+TESTS=$TESTS"dwood2rc_s_bind_address "
+TESTS=$TESTS"dwood2rc_n_dns_port,3 "
+TESTS=$TESTS"dwood2rc_n_filter_rfc1918 "
+TESTS=$TESTS"dwood2rc_n_handle_noreply "
+TESTS=$TESTS"dwood2rc_n_handle_noreply_tcp "
+TESTS=$TESTS"dwood2rc_n_handle_overload "
+TESTS=$TESTS"dwood2rc_s_ipv4_bind_addresses "
+TESTS=$TESTS"dwood2rc_n_maximum_cache_elements,2 " # Sometimes fails...
+TESTS=$TESTS"dwood2rc_n_maradns_gid "
+TESTS=$TESTS"dwood2rc_n_maradns_uid "
+TESTS=$TESTS"dwood2rc_n_max_ar_chain "
+TESTS=$TESTS"dwood2rc_s_random_seed_file "
+TESTS=$TESTS"dwood2rc_n_recurse_min_bind_port "
+TESTS=$TESTS"dwood2rc_n_recurse_number_ports "
+TESTS=$TESTS"dwood2rc_s_recursive_acl "
+TESTS=$TESTS"dwood2rc_n_resurrections "
+
+# CentOS 5.5's select() timeout broke this test; it's a bug caused because
+# CentOS 5.5's select() doubles the timeout (e.g. you ask for a one second 
+# timeout but CentOS 5.5 select() doesn't time out for two seconds)
+#
+# I updated the test to work around CentOS 5.5's broken select(), and
+# submitted a bug for both CentOS and RedHat:
+#
+# http://bugs.centos.org/view.php?id=4465
+# https://bugzilla.redhat.com/show_bug.cgi?id=619664 
+TESTS=$TESTS"dwood2rc_n_timeout_seconds "
+
+TESTS=$TESTS"dwood2rc_n_ttl_age "
+TESTS=$TESTS"dwood2rc_n_upstream_port "
+TESTS=$TESTS"dwood2rc_d_upstream_servers "
+TESTS=$TESTS"dwood2rc_n_verbose_level "
+TESTS=$TESTS"recurse_2link_cname "
+TESTS=$TESTS"recurse_es-us.noticias.yahoo.com "
+TESTS=$TESTS"sqa_badid_question "
+TESTS=$TESTS"sqa_bigpacket " # Needs BIND to run
+TESTS=$TESTS"sqa_cname_chain "
+TESTS=$TESTS"sqa_roy_arends "
+TESTS=$TESTS"sqa_tcp_buffering "
+TESTS=$TESTS"sqa_ttl_expire "
+# This test is last since it recompiles Deadwood
+# We run it seven times because some memleaks only happen some of the time
+TESTS=$TESTS"sqa_valgrind "
+TESTS=$TESTS"sqa_valgrind "
+TESTS=$TESTS"sqa_valgrind "
+TESTS=$TESTS"sqa_valgrind "
+TESTS=$TESTS"sqa_valgrind "
+TESTS=$TESTS"sqa_valgrind "
+TESTS=$TESTS"sqa_valgrind "
+
+for PAIR in $TESTS ; do
+	TEST=$( echo $PAIR | cut -f1 -d, )
+	TRIES="$( echo $PAIR | cut -f2 -d, -s )"
+	if [ -z "$TRIES" ] ; then
+		TRIES=1
+	fi
+	if [ "$TRIES" -lt 1 ] ; then
+		TRIES=1
+	fi
+	TRY=0
+	echo test $TEST tries $TRIES
+	while [ $TRY -lt $TRIES ]; do
+		cd $TEST
+		sh ./do.test > output.test 2> /dev/null
+		sleep 2
+		if ! cmp output.success output.test > /dev/null 2>&1 ; then
+			echo test $test failed
+			TRY=$(( $TRY + 1 ))
+			if [ $TRY -ge $TRIES ] ; then
+				exit 1
+			else
+				echo trying again
+			fi
+		else
+			# Success!
+			TRY=$TRIES
+		fi
+		rm output.test
+		cd ..
+	done
+done
+
+# Let's test RG32
+cd sqa_rg32
+echo running RG32 test
+sh ./do.test > output.test 2> /dev/null
+sleep 2
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+	echo test sqa_rg32 failed
+	exit 1
+fi
+echo RG32 pass
+rm -f output.test 2> /dev/null
+cd .. 
+
+# Let's test hash_magic_number
+cd ../src
+make -f Makefile.sl6 clean > /dev/null 2>&1
+export FLAGS='-O3 -DHASH_DEBUG -DXTRA_STUFF'
+make -f Makefile.sl6 > /dev/null 2>&1
+cd $SQADIR
+cd dwood2rc_n_hash_magic_number
+sh ./do.test > output.test 2> /dev/null
+sleep 2
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+	echo test dwood2rc_n_hash_magic_number failed
+	#exit 1
+else
+	echo test dwood2rc_n_hash_magic_number succeeded
+fi
+rm output.test
+cd ..
+
+# Inflight test
+cd $SQADIR
+cd ../src
+make -f Makefile.sl6 clean > /dev/null 2>&1
+export FLAGS='-O3 -DINFLIGHT_VERBOSE -DVALGRIND_NOERRORS'
+#export FLAGS='-g -DINFLIGHT_VERBOSE -DVALGRIND_NOERRORS'
+make -f Makefile.sl6 > /dev/null 2>&1
+cd $SQADIR
+cd dwood2rc_n_max_inflights
+sh ./do.test > output.test 2> /dev/null
+sleep 2
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+	echo test dwood2rc_n_max_inflights failed
+	exit 1
+else
+	echo test dwood2rc_n_max_inflights succeeded
+fi
+
+# Now, let's test IPv6
+cd $SQADIR
+cd ../..
+make clean > /dev/null 2>&1 # MaraDNS
+./configure --ipv6 > /dev/null 2>&1
+make > /dev/null 2>&1 # MaraDNS
+cd $SQADIR
+cd ../src
+make -f Makefile.sl6 clean > /dev/null 2>&1
+export FLAGS='-O3 -DIPV6'
+make -f Makefile.sl6 > /dev/null 2>&1
+cd $SQADIR
+cd basic_ipv6_test
+sh ./do.test > output.test 2> /dev/null
+sleep 2
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+	echo test basic_ipv6_test failed
+	exit 1
+else
+	echo test basic_ipv6_test succeeded
+fi
+rm output.test
+
+# dwood2rc_s_ip_blacklist
+cd ../dwood2rc_s_ip_blacklist
+sh ./do.test > output.test 2> /dev/null
+sleep 2
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+	echo test dwood2rc_s_ip_blacklist failed
+	exit 1
+else
+	echo test dwood2rc_s_ip_blacklist succeeded
+fi
+rm output.test
+
+# No warnings when compiled with gcc44
+cd $SQADIR
+cd ../src
+make -f Makefile.sl6 clean > /dev/null 2>&1
+export FLAGS='-O3'
+#export CC='gcc43' # For CentOS 5.3
+#export CC='gcc44'
+export CC='gcc' # Scientific Linux 6's normal gcc is GCC 4.4.4
+rm -f foo1 foo2 > /dev/null 2>&1
+make -f Makefile.sl6 > /dev/null 2> foo1
+touch foo2
+if ! cmp foo1 foo2 > /dev/null 2>&1 ; then
+	echo test gcc44 compile failed
+	exit 1
+else
+	echo test gcc44 compile succeeded
+fi
+rm foo1 foo2
+
+# OK, clean up
+cd $SQADIR
+cd ../src
+make -f Makefile.sl6 clean > /dev/null 2>&1
+cd $SQADIR
+cd ../../
+make clean > /dev/null 2>&1
+
+echo All tests successful
+
+cd ..
+

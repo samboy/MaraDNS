@@ -1,0 +1,6 @@
+These are miscellaneous technical documents which describe the internals
+of MaraDNS; none of these documents need to be translated when 
+translating user-documentation.  Most of these documents are in ASCII
+text format; some are in HTML format; one is in both HTML and AbiWord
+format; and the notes on the man page
+macros are in man format.

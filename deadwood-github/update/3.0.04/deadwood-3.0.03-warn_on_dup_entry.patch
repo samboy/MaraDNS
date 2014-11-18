@@ -1,0 +1,28 @@
+--- deadwood-3.0.04/src/DwMararc.c.orig	2011-09-11 23:37:07.463630664 -0500
++++ deadwood-3.0.04/src/DwMararc.c	2011-09-11 23:47:33.847409940 -0500
+@@ -554,6 +554,7 @@
+  */
+ void dwm_dict_add(int num, dw_str *key, dw_str *value, int todo) {
+         dw_str *temp = 0;
++	dw_str *check = 0;
+ 
+         if(num >= KEY_D_COUNT || num < 0) { /* Sanity check */
+                 dwm_fatal("Unknown dictionary variable");
+@@ -574,6 +575,17 @@
+         }
+ 
+         if(todo != 4) { /* =, create new dictionary element */
++		check = dwd_fetch(key_d[num],key);
++		if(check != 0) {
++			dw_log_dwstr_str("Warning: Dictionary element \"",
++					key,"\" defined more than once",0);
++			dw_destroy(check);
++			/* I am tempted to make this fatal but will not since
++			 * it could make managing large anti-phish/malware
++			 * blacklists harder */
++			/*dw_fatal(
++			    "Dictionary elements must be defined only once");*/
++		}
+                 key_d[num] = dwd_add(key_d[num],key,value);
+                 return;
+         }

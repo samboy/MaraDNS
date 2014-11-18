@@ -1,0 +1,10 @@
+RFC 1034 anally strict RFC compliance bugs
+
+Description: MaraDNS was not quite 100% anally correct about RFC1034
+             star handling
+
+Expected output of test: see output.success 
+
+Presence of bug output: sh ./do.test output is not the same as output.success
+
+When fixed: 1.3.06

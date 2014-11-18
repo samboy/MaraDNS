@@ -1,0 +1,15 @@
+--- maradns-1.4.01/doc/en/source/troubleshoot.ej	2008-03-24 09:52:27.000000000 -0600
++++ maradns-1.4.02/doc/en/source/troubleshoot.ej	2009-12-29 11:06:48.000000000 -0600
+@@ -8,9 +8,9 @@
+ 
+ This troubleshooting guide is an example of how problems with MaraDNS
+ may be resolved without needing to wait for support on the MaraDNS
+-mailing list.  This guide is a troubleshooting example that uses MaraDNS
+-on a CentOS 3.8 system.  People using MaraDNS on other systems will have
+-to adapt this guide to suit their needs. <p>
++mailing list.  This guide is a troubleshooting example that was written using 
++MaraDNS on an older CentOS 3.8 system.  Adapt this guide for the OS being
++used. <p>
+ 
+ The problem we will troubleshoot in this example is MaraDNS not
+ responding to DNS queries.  As we will see in this guide, a number of

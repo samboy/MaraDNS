@@ -1,0 +1,149 @@
+#!/bin/sh -e
+
+# The revision number; in the case of having multiple snapshots a day,
+# the revision number can be incremented so as to minimize confusion
+# This is only done when more than one snapshop is uploaded to the
+# maradns.org server in a given day.  Here at the top to be easy to change.
+REVISION=1
+
+# This script updates Deadwood 3.0
+
+# To run this script, make sure that this script is in the directory
+# containing the tarball for the version of Deadwood you wish to update, and
+# all of the patches are in a directory entitled 'patches'.
+
+CURRENT=${0%%-*}
+CURRENT=${CURRENT##*/}
+NEXT=${0##*-}
+
+# Make a clean CURRENT install, which we rename NEXT
+rm -fr deadwood-$CURRENT 2> /dev/null
+rm -fr deadwood-$NEXT 2> /dev/null
+echo extracting tarball
+tar xjf deadwood-$CURRENT.tar.bz2
+if [ $? != 0 ] ; then
+	echo run this from the correct directory
+	exit 1
+fi
+rm -fr deadwood-$NEXT*
+mv deadwood-$CURRENT deadwood-$NEXT
+cd deadwood-$NEXT
+
+# The patches
+
+mkdir update/$NEXT
+if [ "$1" != "new" ] ; then
+	cp ../patches/deadwood-$CURRENT* update/$NEXT
+	#cp ../patches/maradns* update/$NEXT
+	#echo
+fi
+
+# This is one of the few places where we will need to change anything
+# in this script from version to version
+
+echo applying patches
+
+# Regenerate Deadwood's random prime number (always done)
+echo Making new random prime
+cd src
+rm -f *orig # While we're here, remove any pesky .orig files
+cc -o foo RandomPrime.c
+./foo > DwRandPrime.h
+rm foo
+cd ..
+
+# BEGIN Release-specific fixes and changes go here
+
+# HOTFIX: Fix crashes while resolving queries
+patch -p1 < update/$NEXT/deadwood-3.1.01-crash_hotfix.patch
+
+# Since we're making a lot of changes to the code to speed up recursion,
+# we make .orig files of all source files to make patching easier
+if [ "$1" = "work" ] ; then 
+	cd src
+	for a in *.c *.h ; do
+		cp $a $a.orig
+	done
+	cd ..
+	cp doc/Deadwood.ej doc/Deadwood.ej.orig
+fi
+
+# END Release-specific fixes/changes
+
+# Convert tabs in code to spaces, since this is inconsistant in different
+# programs; disable when in "work" mode since it messes up patches
+if [ "$1" != "work" ] ; then 
+	echo removing tabs from source files
+	for a in $( find . -type f -name \*.[ch] ) ; do 
+		col -x < $a > foo
+		mv foo $a
+	done
+fi
+chmod 755 src/make.version.h
+
+echo updating documentation
+# Update the documentation
+cd doc
+make
+# Go back to the deadwood dir
+cd ..
+
+# Go one level higher than the toplevel directory to copy this script
+# over
+cd ..
+
+# Put this script in the "build" directory
+cp $0 deadwood-$NEXT/update/$NEXT
+
+# Version number always current
+cd deadwood-$NEXT/src
+./make.version.h > version.h
+cd ../..
+
+if [ "$1" = "new" ] ; then
+	tar xjf deadwood-$CURRENT.tar.bz2
+	echo OK, both deadwood-$CURRENT and deadwood-$NEXT made\; you
+	echo now can start making patches.
+	exit 0
+fi
+
+if [ "$1" != "go" ] && [ "$1" != "snap" ] && [ "$1" != "work" ] ; then
+	echo OK, deadwood-$NEXT built.  Confirm this compiles and	
+	echo perform basic regression before re-running this to make
+	echo the tarballs.  Once you have tested this, rerun this 
+	echo script as: \"$0 go\" or as \"$0 snap\" 
+        echo to make a daily snapshot
+	exit 0
+fi
+
+if [ "$1" = "work" ] ; then
+	tar xjf deadwood-$CURRENT.tar.bz2
+	echo OK, both deadwood-$CURRENT and deadwood-$NEXT made\; you
+	echo now can make more patches as needed.  
+	cd deadwood-$NEXT/src
+	echo '#define VERSION "'$NEXT'-pre"' > version.h
+	cd ../..
+	exit 0
+fi
+
+# Build the tarballs
+echo making new tarballs
+
+if [ "$1" = "snap" ] ; then
+	SNAP=S-$( date +%Y%m%d )-$REVISION
+	rm -fr deadwood-$SNAP
+	mv deadwood-$NEXT deadwood-$SNAP
+	cd deadwood-$SNAP/src
+	./make.version.h > version.h
+	cd ../..
+	tar cjf deadwood-$SNAP.tar.bz2 deadwood-$SNAP
+	exit 0
+else
+	SNAP=$NEXT
+	cd deadwood-$SNAP/src
+	./make.version.h > version.h
+	cd ../..
+	tar cjf deadwood-$SNAP.tar.bz2 deadwood-$SNAP
+fi
+
+exit 0 # Done

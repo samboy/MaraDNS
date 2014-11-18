@@ -1,0 +1,11 @@
+--- deadwood-3.2.01/src/DwHash.c.orig	2012-01-23 14:28:21.000000000 -0600
++++ deadwood-3.2.01/src/DwHash.c	2012-01-23 14:33:48.000000000 -0600
+@@ -1027,7 +1027,7 @@
+         out->key = dwh_get_dwstr(handle);
+         out->value = dwh_get_dwstr(handle);
+         out->expire = dwh_get_int64(handle);
+-        if(out->key == 0 || out->value == 0) {
++        if(out->key == 0 || out->value == 0 || out->expire < 2) {
+                 goto catch_dwh_get_hash_element;
+         }
+         if(out->key->len == 0 || out->value->len == 0) {

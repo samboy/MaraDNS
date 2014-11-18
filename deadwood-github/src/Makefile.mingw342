@@ -1,0 +1,74 @@
+# Makefile for Windows XP (Should also work in Vista and Windows 7; see
+# Vista.txt for details)
+
+OBJS=DwStr.o \
+	DwMararc.o \
+	DwRadioGatun.o \
+	DwSocket.o \
+	DwUdpSocket.o \
+	DwTcpSocket.o \
+	DwSys.o \
+	DwMain.o \
+	DwHash.o \
+	DwCompress.o \
+	DwDnsStr.o \
+	DwRecurse.o \
+	DwDict.o
+
+all:	Deadwood.exe 
+
+clean:
+	rm -f Test DwMain DwTcp *.exe *.txt *.o a.out Makefile
+
+version.h:
+	echo '#define VERSION "github"' > version.h
+
+DwRandPrime.h:
+	echo '#define MUL_CONSTANT 1748294267' > DwRandPrime.h
+
+DwStr.o:	DwStr.c DwStr.h
+	$(CC) $(FLAGS) -DMINGW -Wall -c -o DwStr.o DwStr.c
+
+DwCompress.o:	DwCompress.c DwStr.h
+	$(CC) $(FLAGS) -DMINGW -Wall -c -o DwCompress.o DwCompress.c
+
+DwDnsStr.o:	DwDnsStr.c DwStr.h DwRecurse.h
+	$(CC) $(FLAGS) -DMINGW -Wall -c -o DwDnsStr.o DwDnsStr.c
+
+DwMararc.o:	DwMararc.c DwMararc.h 
+	$(CC) $(FLAGS) -DMINGW -Wall -c -o DwMararc.o DwMararc.c
+
+DwRadioGatun.o:	DwRadioGatun.c DwRadioGatun.h DwStr.h
+	$(CC) $(FLAGS) -DMINGW -Wall -c -o DwRadioGatun.o DwRadioGatun.c
+
+DwTcpSocket.o:	DwTcpSocket.c DwStr.h
+	$(CC) $(FLAGS) -DMINGW -Wall -c -o DwTcpSocket.o DwTcpSocket.c
+
+DwUdpSocket.o:	DwUdpSocket.c DwStr.h
+	$(CC) $(FLAGS) -DMINGW -Wall -c -o DwUdpSocket.o DwUdpSocket.c
+
+DwSocket.o:	DwSocket.c DwStr.h
+	$(CC) $(FLAGS) -DMINGW -Wall -c -o DwSocket.o DwSocket.c
+
+DwSys.o:	DwSys.c DwStr.h version.h
+	$(CC) $(FLAGS) -DMINGW -Wall -c -o DwSys.o DwSys.c
+
+DwHash.o:	DwHash.c DwStr.h DwRandPrime.h DwHash.h
+	$(CC) $(FLAGS) -DMINGW -Wall -c -o DwHash.o DwHash.c
+
+DwRecurse.o:	DwRecurse.c DwRecurse.h
+	$(CC) $(FLAGS) -DMINGW -Wall -c -o DwRecurse.o DwRecurse.c
+
+DwDict.o:	DwDict.c DwStr.h DwRandPrime.h DwDict.h
+	$(CC) $(FLAGS) -Wall -c -o DwDict.o DwDict.c
+
+Test:		Test.c DwStr.o DwStr.h DwStr_functions.h
+	$(CC) $(FLAGS) -DMINGW -Wall -o Test Test.c $(OBJS)
+
+DwMain.o:	DwMain.c DwStr_functions.h DwSys.h
+	$(CC) $(FLAGS) -DMINGW -Wall -c -o DwMain.o DwMain.c 
+
+Deadwood.exe: 	DwWinSvc.c $(OBJS) version.h
+	$(CC) $(FLAGS) -DMINGW -Wall -o Deadwood.exe \
+		DwWinSvc.c $(OBJS) -lwsock32
+

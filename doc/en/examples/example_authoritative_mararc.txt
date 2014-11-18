@@ -1,0 +1,24 @@
+# Example simplified mararc file.  
+# This only shows a subset of MaraDNS' features needed to be an
+# authoritative name server; see the file example_full_mararc for a
+# mararc file that uses most of the parameters that can be set in a 
+# mararc file.
+
+# The address this DNS server runs on.  If you want to bind 
+# to multiple addresses, separate them with a comma like this:
+# "10.1.2.3,10.1.2.4,127.0.0.1"
+ipv4_bind_addresses = "127.0.0.1"
+# The directory with all of the zone files
+chroot_dir = "/etc/maradns"
+
+# The various zones we support
+
+# We must initialize the csv2 hash, or MaraDNS will not
+# load any zone files
+csv2 = {}
+
+# Here is a pointer to a zone file for example.com
+csv2["example.com."] = "db.example.com"
+# And a pointer to a zone file for example.org
+csv2["example.org."] = "db.example.org"
+

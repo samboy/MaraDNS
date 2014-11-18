@@ -1,0 +1,16 @@
+# Querying the server with the IP 127.0.0.1
+# Question: Zwww.example.com.
+www.example.com. +86400 a 10.1.2.3
+www.example.com. +86400 mx 10 mail.example.com.
+www.example.com. +86400 txt 'Hello, world!'
+www.example.com. +86400 raw 99 \x0a'SPF record' 
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Zwww.example.com.
+www.example.com. +86400 a 10.1.2.3
+www.example.com. +86400 mx 10 mail.example.com.
+www.example.com. +86400 txt 'Hello, world!'
+www.example.com. +86400 raw 99 \x0a'SPF record' 
+# NS replies:
+# AR replies:

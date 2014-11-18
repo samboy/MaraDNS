@@ -1,0 +1,53 @@
+diff -ur maradns-1.4.03/sqa/regressions/mararc_n_ipv6_bind_address/do.test maradns-1.4.04/sqa/regressions/mararc_n_ipv6_bind_address/do.test
+--- maradns-1.4.03/sqa/regressions/mararc_n_ipv6_bind_address/do.test	2008-03-24 09:52:27.000000000 -0600
++++ maradns-1.4.04/sqa/regressions/mararc_n_ipv6_bind_address/do.test	2010-05-12 11:49:49.000000000 -0500
+@@ -5,7 +5,7 @@
+ killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+ cat > mararc << EOF
+ chroot_dir="$( pwd )"
+-ipv6_bind_address="fecf:aff0::1"
++ipv6_bind_address="fd4d:6172:6144:4e53::1"
+ ipv4_bind_addresses="127.0.0.1"
+ csv2 = {}
+ csv2["example.com."] = "db.example.com"
+@@ -15,22 +15,22 @@
+ www.% A 10.1.2.3
+ EOF
+ 
+-# Give localhost the fecf:aff0::1 address
+-ip ad add fecf:aff0::1/128 dev lo
+-#route add fecf:aff0::1 lo
++# Give localhost the fd4d:6172:6144:4e53::1 address
++ip ad add fd4d:6172:6144:4e53::1/128 dev lo
++#route add fd4d:6172:6144:4e53::1 lo
+ 
+ # OK, test the server
+ ../../../server/maradns -f mararc > /dev/null 2>&1 &
+ #../../../server/maradns -f mararc 
+ sleep 1
+ #../../../tools/askmara Awww.example.com.
+-dig @fecf:aff0::1 www.example.com | grep -v DiG | grep -v WHEN | grep -v time \
+-	| grep -v HEADER | grep -v flags
++dig @fd4d:6172:6144:4e53::1 www.example.com | grep -v DiG | grep -v WHEN | \
++	grep -v time | grep -v HEADER | grep -v flags
+ echo done
+ sleep 1
+ killall maradns
+ rm mararc
+ rm db.example.com
+ 
+-ip ad del fecf:aff0::1/128 dev lo
++ip ad del fd4d:6172:6144:4e53::1/128 dev lo
+ 
+diff -ur maradns-1.4.03/sqa/regressions/mararc_n_ipv6_bind_address/output.success maradns-1.4.04/sqa/regressions/mararc_n_ipv6_bind_address/output.success
+--- maradns-1.4.03/sqa/regressions/mararc_n_ipv6_bind_address/output.success	2007-11-26 11:48:19.000000000 -0600
++++ maradns-1.4.04/sqa/regressions/mararc_n_ipv6_bind_address/output.success	2010-05-12 11:49:07.000000000 -0500
+@@ -15,7 +15,7 @@
+ ;; ADDITIONAL SECTION:
+ synth-ip-7f000001.example.com. 86400 IN	A	127.0.0.1
+ 
+-;; SERVER: fecf:aff0::1#53(fecf:aff0::1)
++;; SERVER: fd4d:6172:6144:4e53::1#53(fd4d:6172:6144:4e53::1)
+ ;; MSG SIZE  rcvd: 97
+ 
+ done

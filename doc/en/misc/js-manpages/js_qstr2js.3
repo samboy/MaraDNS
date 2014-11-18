@@ -1,0 +1,58 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_qstr2js 3 "October 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_qstr2js \- convert a standard character array in to a js_string object
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_qstr2js(js_string *js, char *string);"
+.fi
+.SH DESCRIPTION
+.B js_qstr2js
+converts the string pointed to by
+.I string 
+in to a
+.I js_string
+object.  The 
+.I js_string 
+object in question needs to have been previously created, and any string 
+currently in the
+.I js_string
+object will be cloberred.
+.SH ARGUMENTS
+.B js
+is a pointer to the  
+.I js_string
+object we will place the converted character array in.
+
+.B string
+is the character array we are converting in to a
+.I js_string
+object.
+
+.B js_str2js
+returns 
+.I JS_SUCCESS 
+on successful conversion of the string,
+.I JS_ERROR
+otherwise.
+.SH EXAMPLE
+The following example creates a 
+.B js_string
+object that is given the string "What's up doc?"
+
+.nf
+	js_string *foo;
+	foo = js_create(256,1);
+	js_qstr2js(foo,"What's up doc?"); 
+.fi
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

@@ -1,0 +1,19 @@
+# Querying the server with the IP 127.0.0.1
+# Question: @www.example.com.
+# NS replies:
+www.example.com. +86400 soa example.com. hostmaster@example.com. 1 2 3 4 5
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Aexample.net.
+example.net. +86400 a 10.1.2.3
+# NS replies:
+example.net. +86400 ns ns1.example.com.
+example.net. +86400 ns ns2.example.com.
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Afoo.bar.example.org.
+foo.bar.example.org. +86400 a 10.1.2.3
+# NS replies:
+foo.bar.example.org. +86400 ns ns1.example.com.
+foo.bar.example.org. +86400 ns ns2.example.com.
+# AR replies:

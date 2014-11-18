@@ -1,0 +1,306 @@
+--- deadwood-3.2.03/src/DwDnsStr.c.orig	2012-07-21 13:10:31.000000000 -0500
++++ deadwood-3.2.03/src/DwDnsStr.c	2012-07-21 13:11:00.000000000 -0500
+@@ -34,13 +34,13 @@
+                 int32_t arcount) {
+         dns_string *out = 0;
+ 
+-        out = malloc(sizeof(dns_string));
++        out = dw_malloc(sizeof(dns_string));
+         if(out == 0 || ancount < 0 || nscount < 0 || arcount < 0) {
+                 return 0;
+         }
+-        out->an = malloc((ancount * sizeof(uint16_t) * 2) + 2);
+-        out->ns = malloc((nscount * sizeof(uint16_t) * 2) + 2);
+-        out->ar = malloc((arcount * sizeof(uint16_t) * 2) + 2);
++        out->an = dw_malloc((ancount * sizeof(uint16_t) * 2) + 2);
++        out->ns = dw_malloc((nscount * sizeof(uint16_t) * 2) + 2);
++        out->ar = dw_malloc((arcount * sizeof(uint16_t) * 2) + 2);
+         out->packet = 0;
+         out->ancount = ancount;
+         out->nscount = nscount;
+--- deadwood-3.2.03/src/DwHash.c.orig	2012-07-21 13:10:31.000000000 -0500
++++ deadwood-3.2.03/src/DwHash.c	2012-07-21 13:12:16.000000000 -0500
+@@ -235,7 +235,7 @@
+                 return 0;
+         }
+ 
+-        out = malloc(sizeof(dw_hash));
++        out = dw_malloc(sizeof(dw_hash));
+         if(out == 0) {
+                 free(list);
+                 return 0;
+@@ -257,7 +257,7 @@
+ int dwh_fila_new(dw_hash *hash, dw_element *val) {
+         dw_fila *new = 0;
+ 
+-        new = malloc(sizeof(dw_fila));
++        new = dw_malloc(sizeof(dw_fila));
+ 
+         if(hash == 0 || val == 0 || new == 0) {
+                 goto catch_dwh_fila_new;
+@@ -492,7 +492,7 @@
+         /* Destructor: This element is destroyed when either the user
+          * asks for it to be destroyed, or when the hash is full and this
+          * element is at the bottom of the "fila" list */
+-        new = malloc(sizeof(dw_element));
++        new = dw_malloc(sizeof(dw_element));
+ 
+         key_copy = dw_copy(key);
+         val_copy = dw_copy(value);
+@@ -1017,7 +1017,7 @@
+         dw_element *out = 0;
+ 
+         /* These elements are destroyed when deleted from the hash */
+-        out=malloc(sizeof(dw_element));
++        out=dw_malloc(sizeof(dw_element));
+         if(out == 0) {
+                 return 0;
+         }
+--- deadwood-3.2.03/src/DwRadioGatun.c.orig	2012-07-21 13:10:31.000000000 -0500
++++ deadwood-3.2.03/src/DwRadioGatun.c	2012-07-21 13:13:08.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007, 2010 Sam Trenholme
++/* Copyright (c) 2007-2012 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -103,12 +103,12 @@
+         dwr_rg *new = 0;
+         DWR_WORD *a = 0, *b = 0;
+ 
+-        new = malloc(sizeof(dwr_rg));
++        new = dw_malloc(sizeof(dwr_rg));
+         if(new == 0) {
+                 goto catch_dwr_new;
+         }
+-        new->mill = malloc((DWR_MILLSIZE + 1) * sizeof(DWR_WORD));
+-        new->belt = malloc(((DWR_BELTROWS * DWR_BELTCOL) + 1) *
++        new->mill = dw_malloc((DWR_MILLSIZE + 1) * sizeof(DWR_WORD));
++        new->belt = dw_malloc(((DWR_BELTROWS * DWR_BELTCOL) + 1) *
+                            sizeof(DWR_WORD));
+         new->index = 0;
+         a = new->mill;
+--- deadwood-3.2.03/src/DwRecurse.c.orig	2012-07-21 13:10:31.000000000 -0500
++++ deadwood-3.2.03/src/DwRecurse.c	2012-07-21 13:14:09.000000000 -0500
+@@ -287,14 +287,14 @@
+                 return 0;
+         }
+ 
+-        out = malloc(sizeof(dns_details) + 1);
++        out = dw_malloc(sizeof(dns_details) + 1);
+         if(out == 0) {
+                 dw_fatal("Fatal: Can not init dns_details\n");
+         }
+         out->look = look;
+-        out->an_types = malloc((sizeof(int8_t) * look->ancount) + 1);
+-        out->ns_types = malloc((sizeof(int8_t) * look->nscount) + 1);
+-        out->ar_types = malloc((sizeof(int8_t) * look->arcount) + 1);
++        out->an_types = dw_malloc((sizeof(int8_t) * look->ancount) + 1);
++        out->ns_types = dw_malloc((sizeof(int8_t) * look->nscount) + 1);
++        out->ar_types = dw_malloc((sizeof(int8_t) * look->arcount) + 1);
+         return out;
+ }
+ 
+@@ -1372,7 +1372,7 @@
+         total_count = (view->look->ancount + view->look->nscount +
+                       view->look->arcount) * 2;
+ 
+-        offsets = malloc(((sizeof(uint16_t)) * total_count) + 1);
++        offsets = dw_malloc(((sizeof(uint16_t)) * total_count) + 1);
+         if(offsets == 0) {
+                 goto catch_dwx_make_complete_reply;
+         }
+@@ -1532,7 +1532,7 @@
+         dw_str *hack, *out;
+         int l = 20;
+ 
+-        hack = malloc(sizeof(dw_str));
++        hack = dw_malloc(sizeof(dw_str));
+         if(hack == 0) {
+                 return 0;
+         }
+@@ -2774,7 +2774,8 @@
+                 return -2; /* No more inflights for this query; make new one */
+         }
+         rem[already].num_locals++;
+-        rem[already].local[rem[already].num_locals-1]=malloc(sizeof(local_T));
++        rem[already].local[rem[already].num_locals-1] =
++			dw_malloc(sizeof(local_T));
+         if(rem[already].local[rem[already].num_locals-1] != 0) {
+                 rem[already].local[rem[already].num_locals-1]->orig_query = 0;
+                 rem[already].local[rem[already].num_locals-1]->action = 0;
+@@ -2837,7 +2838,7 @@
+                 goto catch_dwx_do_ns_glueless_new;
+         }
+         /* Connect to remote server... */
+-        rem[new_conn_num].local = malloc(num_alloc * sizeof(local_T *));
++        rem[new_conn_num].local = dw_malloc(num_alloc * sizeof(local_T *));
+         if(rem[new_conn_num].local == 0) {
+                 reset_rem(new_conn_num);
+                 closesocket(b_remote[new_conn_num]);
+@@ -2851,7 +2852,7 @@
+         /* Set new connection parameters */
+         rem[new_conn_num].die = get_time() + ((int64_t)timeout_seconds << 8);
+         rem[new_conn_num].num_locals = 1;
+-        rem[new_conn_num].local[0] = malloc(sizeof(local_T));
++        rem[new_conn_num].local[0] = dw_malloc(sizeof(local_T));
+         if(rem[new_conn_num].local[0] != 0) {
+                 rem[new_conn_num].local[0]->orig_query = 0;
+                 rem[new_conn_num].local[0]->action = 0;
+@@ -3103,11 +3104,11 @@
+         reset_rem(b);
+         rem[b].query = dw_copy(real_query);
+         rem[b].remote_id = dwr_rng(rng_seed);
+-        rem[b].local = malloc(num_alloc * sizeof(local_T *));
++        rem[b].local = dw_malloc(num_alloc * sizeof(local_T *));
+         if(rem[b].local == 0) {
+                 goto catch_dwx_cname_in_cache;
+         }
+-        rem[b].local[0] = malloc(sizeof(local_T));
++        rem[b].local[0] = dw_malloc(sizeof(local_T));
+         rem[b].num_locals = 0;
+         if(rem[b].local[0] == 0) {
+                 reset_rem(b);
+--- deadwood-3.2.03/src/DwStr.h.orig	2012-07-21 13:11:36.000000000 -0500
++++ deadwood-3.2.03/src/DwStr.h	2012-07-21 13:11:55.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007 Sam Trenholme
++/* Copyright (c) 2007-2012 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -20,6 +20,7 @@
+ #define __DWSTR_DEFINED__
+ /* Malloc */
+ #include <stdlib.h>
++#define dw_malloc malloc
+ 
+ /* Printf (used by dw_output) */
+ #include <stdio.h>
+--- deadwood-3.2.03/src/DwSys.c.orig	2012-07-21 13:10:31.000000000 -0500
++++ deadwood-3.2.03/src/DwSys.c	2012-07-21 13:14:29.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2011 Sam Trenholme
++/* Copyright (c) 2007-2012 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -591,7 +591,7 @@
+         int64_t tstamp = 0;
+         pid_t pnum = 1;
+ 
+-        noise = (uint8_t *)malloc(512);
++        noise = (uint8_t *)dw_malloc(512);
+ #ifdef VALGRIND_NOERRORS
+         /* Valgrind reports our intentional use of values of uncleared
+          * allocated memory as one source of entropy as an error, so we
+--- deadwood-3.2.03/src/DwTcpSocket.c.orig	2012-07-21 13:10:31.000000000 -0500
++++ deadwood-3.2.03/src/DwTcpSocket.c	2012-07-21 13:15:26.000000000 -0500
+@@ -1,4 +1,5 @@
+-/* Copyright (c) 2007-2010 Sam Trenholme and Jean-Jacques Sarton
++/* Copyright (c) 2007-2012 Sam Trenholme 
++ * IPv6 code contributed by Jean-Jacques Sarton in 2007
+  *
+  * TERMS
+  *
+@@ -62,7 +63,7 @@
+  * This memory is never freed once allocated, because this data is always
+  * used by the program */
+ void malloc_tcp_pend() {
+-        tcp_pend = malloc((max_tcp_procs + 1) * sizeof(tcp_pend_T));
++        tcp_pend = dw_malloc((max_tcp_procs + 1) * sizeof(tcp_pend_T));
+         if(tcp_pend == 0) {
+                 dw_alog_3strings("Fatal: Could not allocate tcp_pend","","");
+                 exit(1);
+@@ -176,7 +177,7 @@
+          * the information we want, then we went to send the reply back
+          * over TCP */
+         init_tcp_pend(b);
+-        tcp_pend[b].buffer = malloc(3); /* To put the two bytes we want */
++        tcp_pend[b].buffer = dw_malloc(3); /* To put the two bytes we want */
+         if(tcp_pend[b].buffer == 0) {
+                 closesocket(local);
+                 reset_tcp_pend(b);
+@@ -196,7 +197,7 @@
+         int toget = 0;
+         toget = tcp_pend[b].wanted - tcp_pend[b].got;
+         if(toget > 0 && tcp_pend[b].state == 0) {
+-                buffer = malloc(toget + 1);
++                buffer = dw_malloc(toget + 1);
+                 if(buffer == 0) {
+                         return;
+                 }
+@@ -239,7 +240,7 @@
+                         return;
+                 }
+                 tcp_pend[b].wanted = wanted;
+-                tcp_pend[b].buffer = malloc(wanted + 1);
++                tcp_pend[b].buffer = dw_malloc(wanted + 1);
+                 tcp_pend[b].die = get_time() +
+                         ((int64_t)timeout_seconds_tcp << 8);
+         } else if(tcp_pend[b].wanted >= 12) {
+@@ -298,7 +299,7 @@
+                 tcp_pend[b].buffer = 0;
+         }
+         tcp_pend[b].state = 2; /* Send TCP reply back to client */
+-        tcp_pend[b].buffer = malloc(len + 3);
++        tcp_pend[b].buffer = dw_malloc(len + 3);
+         /* 2-byte length header */
+         tcp_pend[b].buffer[0] = ((len & 0xff00) >> 8);
+         tcp_pend[b].buffer[1] = (len & 0xff);
+@@ -378,7 +379,7 @@
+         if(tmp == 0) {
+                 goto catch_tcp_truncated_retry;
+         }
+-        tcp_pend[b].buffer = malloc(tmp->len + 3);
++        tcp_pend[b].buffer = dw_malloc(tmp->len + 3);
+         if(tcp_pend[b].buffer == 0) {
+                 goto catch_tcp_truncated_retry;
+         }
+@@ -453,7 +454,7 @@
+         if(tcp_pend[b].state != 4) {
+                 return;
+         }
+-        tcp_pend[b].buffer = malloc(3);
++        tcp_pend[b].buffer = dw_malloc(3);
+         if(tcp_pend[b].buffer == 0) {
+                 closesocket(tcp_pend[b].local);
+                 closesocket(tcp_pend[b].upstream);
+@@ -492,7 +493,7 @@
+                 free(tcp_pend[b].buffer);
+                 tcp_pend[b].buffer = 0;
+                 tcp_pend[b].wanted = wanted;
+-                tcp_pend[b].buffer = malloc(wanted + 3);
++                tcp_pend[b].buffer = dw_malloc(wanted + 3);
+                 tcp_pend[b].die = get_time() +
+                         ((int64_t)timeout_seconds_tcp << 8);
+                 tcp_pend[b].state = 6;
+--- deadwood-3.2.03/src/DwUdpSocket.c.orig	2012-07-21 13:10:31.000000000 -0500
++++ deadwood-3.2.03/src/DwUdpSocket.c	2012-07-21 13:15:48.000000000 -0500
+@@ -334,7 +334,7 @@
+         }
+         rem[b].query = dw_get_dname_type(a,12,len);
+         dwc_lower_case(rem[b].query);
+-        rem[b].local = malloc(num_alloc * sizeof(local_T *));
++        rem[b].local = dw_malloc(num_alloc * sizeof(local_T *));
+         if(rem[b].local == 0) {
+                 return;
+         }
+@@ -395,7 +395,7 @@
+ #endif /* INFLIGHT_VERBOSE */
+         }
+ 
+-        rem[b].local[rem[b].num_locals - 1] = malloc(sizeof(local_T));
++        rem[b].local[rem[b].num_locals - 1] = dw_malloc(sizeof(local_T));
+         if(rem[b].local[rem[b].num_locals - 1] != 0) {
+                 rem[b].local[rem[b].num_locals - 1]->orig_query = 0;
+                 rem[b].local[rem[b].num_locals - 1]->action = 0;
+@@ -912,7 +912,7 @@
+         unsigned char *answer = 0;
+         int counter = 0;
+ 
+-        answer = malloc(*count + 43);
++        answer = dw_malloc(*count + 43);
+         if(answer == 0) {
+                 return 0;
+         }

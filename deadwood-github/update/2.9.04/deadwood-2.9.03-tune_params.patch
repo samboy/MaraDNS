@@ -1,0 +1,33 @@
+--- deadwood-2.9.04/src/DwSocket.c.orig	2010-08-10 08:28:50.000000000 -0700
++++ deadwood-2.9.04/src/DwSocket.c	2010-08-10 08:30:32.000000000 -0700
+@@ -432,7 +432,7 @@
+  * in dwm_init_mararc() in the file DwMararc.c */
+ void process_numeric_mararc_params() {
+ 
+-        maxprocs =        get_key_n(DWM_N_maxprocs,       8,1024,-1);
++        maxprocs =        get_key_n(DWM_N_maxprocs,       8,16384,-1);
+         max_tcp_procs =   get_key_n(DWM_N_max_tcp_procs,  4,1024,-1);
+         timeout_seconds = get_key_n(DWM_N_timeout_seconds,1,300,-1);
+         timeout_seconds_tcp = get_key_n(DWM_N_timeout_seconds_tcp,1,300,-1);
+--- deadwood-2.9.03/src/DwMararc.c	2010-08-06 09:41:59.000000000 -0700
++++ deadwood-2.9.04/src/DwMararc.c	2010-08-10 08:31:30.000000000 -0700
+@@ -368,7 +368,7 @@
+         dwm_dict_init();
+         /* Numeric mararc variables have default values.  */
+         key_n[DWM_N_maxprocs] = 32;
+-        key_n[DWM_N_timeout_seconds] = 3;
++        key_n[DWM_N_timeout_seconds] = 2;
+         key_n[DWM_N_dns_port] = 53;
+         key_n[DWM_N_upstream_port] = 53;
+         key_n[DWM_N_handle_overload] = 1;
+--- deadwood-2.9.03/doc/Deadwood.ej	2010-08-06 09:41:58.000000000 -0700
++++ deadwood-2.9.04/doc/Deadwood.ej	2010-08-10 08:31:55.000000000 -0700
+@@ -268,7 +268,7 @@
+ <h2>timeout_seconds</h2>
+ This is how long Deadwood will wait before giving
+ up and discarding a pending UDP DNS reply.  
+-The default value for this is 3, as in 3 seconds.
++The default value for this is 2, as in 2 seconds.
+ 
+ <h2>timeout_seconds_tcp</h2>
+ How long to wait on an idle TCP connection before 

@@ -1,0 +1,24 @@
+cat > mararc << EOF
+ipv4_bind_addresses = "127.0.0.1"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+bind_star_handling = 2
+csv2["example.net."] = "db.example.net"
+# Valgrind gets wonkey unless I disable the memleak cap
+max_mem = 0
+EOF
+cat > db.example.net << EOF
+ns.example.net. 127.0.0.1
+a.example.net. 127.0.0.2
+*.example.net. 127.0.0.3
+EOF
+
+valgrind ../../../server/maradns -f mararc 2>&1 | \
+	fgrep 'definitely lost' | awk '{print $4}' &
+echo wait 5 seconds
+sleep 5
+../../../tools/askmara Ab.a.example.net. 127.0.0.1 | grep NAME
+sleep 1
+kill $( ps auxw | grep maradns | grep -v grep | awk '{print $2}' )
+

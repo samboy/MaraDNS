@@ -1,0 +1,2 @@
+This test makes sure that the synthetic IPs for nameservers are correctly 
+generated when MaraDNS has both public and private IPs.

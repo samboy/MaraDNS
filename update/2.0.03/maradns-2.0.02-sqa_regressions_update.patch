@@ -1,0 +1,37 @@
+--- maradns-2.0.03/sqa/regressions/do.tests.authonly.orig	2011-08-05 05:15:21.793531164 -0500
++++ maradns-2.0.03/sqa/regressions/do.tests.authonly	2011-08-05 05:15:55.990363311 -0500
+@@ -20,9 +20,9 @@
+     exit 1
+ fi
+ 
+-# So we don't have to rewrite all of the tests, copy over maradns.authonly
+-# to maradns
+-cp ../../server/maradns.authonly ../../server/maradns
++# So we don't have to rewrite all of the tests, copy over maradns
++# to maradns.authonly
++cp ../../server/maradns ../../server/maradns.authonly
+ 
+ # Tests specifically for the authonly version of MaraDNS
+ TESTS=""
+--- maradns-2.0.03/sqa/regressions/mararc_n_admin_acl/do.test.orig	2011-08-05 05:19:54.853530903 -0500
++++ maradns-2.0.03/sqa/regressions/mararc_n_admin_acl/do.test	2011-08-05 05:20:08.266341202 -0500
+@@ -12,7 +12,7 @@
+ # OK, test the server
+ ../../../server/maradns -f mararc > /dev/null 2>&1 &
+ sleep 1
+-../../../tools/askmara Tversion.maradns. | sed 's/1\.4[0-9\.]*//' | \
++../../../tools/askmara Tversion.maradns. | sed 's/2\.0[0-9\.]*//' | \
+ 	sed 's/Q[0-9\.]*//'
+ sleep 1
+ killall maradns
+--- maradns-2.0.03/sqa/regressions/mararc_n_debug_msg_level/do.test.orig	2011-08-05 05:24:22.142281890 -0500
++++ maradns-2.0.03/sqa/regressions/mararc_n_debug_msg_level/do.test	2011-08-05 05:24:33.929854914 -0500
+@@ -17,7 +17,7 @@
+ #../../../server/maradns -f mararc &
+ sleep 1
+ echo $LEVEL
+-../../../tools/askmara Tversion.maradns. | sed 's/1\.4[0-9\.]*//' | \
++../../../tools/askmara Tversion.maradns. | sed 's/2\.0[0-9\.]*//' | \
+ 	sed 's/Q[0-9\.]*//'
+ ../../../tools/askmara Ttimestamp.maradns. | sed 's/: [0-9][0-9]*//'
+ echo

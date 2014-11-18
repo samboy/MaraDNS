@@ -1,0 +1,20 @@
+Code update:
+
+git commit -a -m 'Some reason for code change'
+git push -u origin master
+
+--
+
+Pull repo on new machine:
+
+git clone https://github.com/samboy/MaraDNS
+
+--
+
+Have permission to push repo on new machine:
+
+git remote set-url origin ssh://git@github.com/samboy/MaraDNS.git
+
+[Replace this with your github username, and make sure to add your
+ ssh key to your github account as per the instructions at
+ https://help.github.com/articles/generating-ssh-keys ]

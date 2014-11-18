@@ -1,0 +1,68 @@
+                                 NAME
+
+   fetchzone - get dns zone from server
+
+                             DESCRIPTION
+
+   fetchzone transfers a user-specified dns zone from a zone server
+   and displays it in csv2 format on the standard output.
+
+                                USAGE
+
+   fetchzone zone_name zone_server_IP [query_class]
+
+                               OPTIONS
+
+   zone_name
+
+   Name of the dns zone to be transferred.
+
+   zone_server_IP
+
+   IP address of dns server
+
+   query_class
+
+   Optional argument which can change the query class from 1 (the
+   default) to 255. This may be needed for some versions of Bind.
+
+                               EXAMPLES
+
+   To obtain the zone example.com from the server 192.168.9.8:
+
+ fetchzone example.com 192.168.9.8
+
+   To obtain the zone example.org from the server 10.9.8.78 using a
+   query class of 255:
+
+ fetchzone example.com 10.9.8.78 255
+
+                                 BUGS
+
+   Fetchzone will not correctly output host names with utf-8
+   characters in them.
+
+                               SEE ALSO
+
+   The man pages maradns(8) and csv2(5)
+
+   http://www.maradns.org
+
+                           LEGAL DISCLAIMER
+
+   THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY
+   EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+   THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+   PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS
+   OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+   LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+   USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+   AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+   IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+   THE POSSIBILITY OF SUCH DAMAGE.
+
+                                AUTHOR
+
+   Sam Trenholme

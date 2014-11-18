@@ -1,0 +1,282 @@
+#!/bin/sh -e
+
+# This script updates MaraDNS 1.4
+
+# To run this script, make sure that this script is in the directory
+# containing the tarball for the version of MaraDNS you wish to update, and
+# all of the patches are in a directory entitled 'patches'.
+
+# For example, to update MaraDNS 1.4.02 to 1.4.03, make sure 
+# maradns-1.3.02.tar.lzma is in the same directory as this script, and
+# that the directory containing this script has a directory called
+# "patches/" which has all of the maradns-1.2.02*.patch files.
+
+CURRENT=${0%%-*}
+CURRENT=${CURRENT##*/}
+NEXT=${0##*-}
+
+# The revision number; in the case of having multiple snapshots a day,
+# the revision number can be incremented so as to minimize confusion
+# This is only done when more than one snapshop is uploaded to the
+# maradns.org server in a given day.
+REVISION=.2
+
+# Make a clean CURRENT install, which we rename NEXT
+rm -fr maradns-$CURRENT 2> /dev/null
+rm -fr maradns-$NEXT 2> /dev/null
+echo extracting tarball
+tar xjf maradns-$CURRENT.tar.bz2
+if [ $? != 0 ] ; then
+	echo run this from the correct directory
+	exit 1
+fi
+rm -fr maradns-$NEXT*
+mv maradns-$CURRENT maradns-$NEXT
+cd maradns-$NEXT
+
+# J.J. Sarton's Makefile needs this file
+#echo VERSION=${NEXT} > version.mk
+
+# The patches
+
+mkdir update/$NEXT
+if [ "$1" != "new" ] ; then
+	cp ../patches/maradns-$CURRENT* update/$NEXT
+	#cp ../patches/maradns* update/$NEXT
+	#echo
+fi
+
+# This is one of the few places where we will need to change anything
+# in this script from version to version
+
+echo applying patches
+
+if [ "$1" != "new" ] ; then
+
+	# Update download link (this is always done)
+	#patch -p1 < update/$NEXT/maradns-$CURRENT-download.patch
+	#tools/misc/make.download.embed > doc/en/webpage/download.embed
+
+	# Patch: Update changelog
+	patch -p1 < update/$NEXT/maradns-$CURRENT-changelog.patch
+
+fi
+
+# This patch must be applied *before* making the RPM spec file; 
+# release-specific patch
+# Patch #1: Update the RedHat README and RPM spec to reflect MaraDNS 1.4
+patch -p1 < update/$NEXT/maradns-1.4.01-redhat.patch
+# End release-specific code
+
+# Update RPM spec file (We now have a script make the .spec file)
+rm build/maradns-$CURRENT.spec
+tools/misc/make.maradns.spec $NEXT > build/maradns-$NEXT.spec
+
+# Copy over the Deadwood project, which will eventually be an extensive
+# rewrite of MaraDNS (starting with the recursive core)
+tar xjf ../files/deadwood-2.4.10.tar.bz2
+# Regenerate the random prime number
+echo Making new random prime
+cd deadwood-2.4.10/src
+cc -o foo RandomPrime.c
+./foo > DwRandPrime.h
+rm foo
+cd ../..
+
+# Other release-specific fixes and changes go here
+
+# Patch #1 is above; needs to be applied *before* updating RPM spec file
+
+# Patch #2: Update the webpage
+patch -p1 < update/$NEXT/maradns-1.4.01-webpage_update.patch
+
+# Patch #3: Update the Debian doc to reflect MaraDNS 1.4
+patch -p1 < update/$NEXT/maradns-1.4.01-debiandoc_update.patch
+
+# Patch #4: Update the FILES file which describes files and folders in the
+# MaraDNS tarball
+patch -p1 < update/$NEXT/maradns-1.4.01-filelist.patch
+
+# Patch #5: Update the FAQ
+patch -p1 < update/$NEXT/maradns-1.4.01-faq.patch
+
+# Patch #6: Update bind2csv2 man page
+patch -p1 < update/$NEXT/maradns-1.4.01-bind2csv2.patch
+
+# Patch #7: Update compile guide
+patch -p1 < update/$NEXT/maradns-1.4.01-compile_doc.patch
+
+# Patch #8: Doc fix: Coding style doc should be a text, not HTML file
+patch -p1 < update/$NEXT/maradns-1.4.01-coding_style_doc.patch
+rm doc/en/text/coding_style.txt
+
+# Patch #9: Doc fix: Remove 1.2 mention in dnstcp doc
+patch -p1 < update/$NEXT/maradns-1.4.01-dnstcp.patch
+
+# Patch #10: Update csv2 man page to not mention MaraDNS 1.2 and 1.3
+patch -p1 < update/$NEXT/maradns-1.4.01-csv2_doc.patch
+
+# Patch #11: Remove MaraDNS 1.2 mention from MaraDNS manapge
+patch -p1 < update/$NEXT/maradns-1.4.01-maradns_manpage.patch
+
+# Patch #12: Update Mararc manpage to not mention MaraDNS 1.2
+patch -p1 < update/$NEXT/maradns-1.4.01-mararc_manpage.patch
+
+# Patch #13: Update Troubleshoot doc to reflect the fact no one uses
+# CentOS 3.x anymore
+patch -p1 < update/$NEXT/maradns-1.4.01-troubleshoot_doc.patch
+
+# Patch #14: Update Windows service document
+patch -p1 < update/$NEXT/maradns-1.4.01-win_service.patch
+
+# Patch #15: Clarify how SQA regressions are done
+patch -p1 < update/$NEXT/maradns-1.4.01-regressions_readme.patch
+
+# Patch #16: Update SQA regressions for MaraDNS 1.4
+patch -p1 < update/$NEXT/maradns-1.4.01-regressions-update.patch
+
+# Patch #17: csv2_default_zonefile accidently broken.  Fixed
+patch -p1 < update/$NEXT/maradns-1.4.01-default_zonefile_fix.patch
+
+# Patch #18: Update 00README.FIRST for 2010
+patch -p1 < update/$NEXT/maradns-1.4.01-2010.patch
+
+# Patch #19: Do wonky SQA regressions first
+patch -p1 < update/$NEXT/maradns-1.4.01-wonky-tests.patch
+
+# Remove older update scripts and patches
+rm -fr update/1.2*
+rm -fr update/1.3*
+
+# Remove cruft
+rm -f TODO.1.3
+rm -f version.mk
+
+# COPYING updated for 2010
+cp 00README.FIRST COPYING
+
+# Anything below this line normally is not changed between MaraDNS versions
+
+# Make sure text changelog and FAQ are up-to-date
+cp doc/en/webpage/faq.embed doc/en/source/faq.embed
+cp doc/en/webpage/changelog.embed doc/en/source/changelog.embed
+
+# Convert tabs in code to spaces, since this is inconsistant in different
+# programs
+echo removing tabs from source files
+if true ; then
+	for a in $( find . -type f -name \*.[ch] ) ; do 
+		col -x < $a > foo
+		mv foo $a
+	done
+fi
+
+echo updating documentation
+# Update the documentation
+cd doc/en
+make
+cd man
+make
+cd ../examples
+make
+cd ../tutorial
+make
+cd ../text
+make
+cd ../webpage
+#../../../tools/misc/make.download.embed > download.embed
+make
+# Go back to the maradns dir
+cd ../../..
+
+rm CHANGELOG
+ln -s doc/en/changelog.txt CHANGELOG
+
+# Go one level higher than the toplevel directory to copy this script
+# over
+cd ..
+
+# Put this script in the "build" directory
+cp $0 maradns-$NEXT/update/$NEXT
+
+if [ "$1" = "new" ] ; then
+	tar xjf maradns-$CURRENT.tar.bz2
+	echo OK, both maradns-$CURRENT and maradns-$NEXT made\; you
+	echo now can start making patches.
+	exit 0
+fi
+
+if [ "$1" != "go" ] && [ "$1" != "snap" ] && [ "$1" != "work" ] ; then
+	echo OK, maradns-$NEXT built.  Confirm this compiles and	
+	echo perform basic regression before re-running this to make
+	echo the tarballs.  Once you have tested this, rerun this 
+	echo script as: \"$0 go\" or as \"$0 snap\" 
+        echo to make a daily snapshot
+	exit 0
+fi
+
+if [ "$1" = "work" ] ; then
+	tar xjf maradns-$CURRENT.tar.bz2
+	echo OK, both maradns-$CURRENT and maradns-$NEXT made\; you
+	echo now can make more patches as needed.  
+	exit 0
+fi
+
+# Build the tarballs
+echo making new tarballs
+
+if [ "$1" = "snap" ] ; then
+	SNAP=Q.$( date +%Y%m%d )$REVISION
+	rm -fr maradns-$SNAP
+	mv maradns-$NEXT maradns-$SNAP
+	tar cjf maradns-$SNAP.tar.bz2 maradns-$SNAP
+	exit 0
+else
+	SNAP=$NEXT
+	tar cjf maradns-$SNAP.tar.bz2 maradns-$SNAP
+	tar czf maradns-$SNAP.tar.gz maradns-$SNAP
+
+	# All of the compression we actually use was originally written by 
+	# Igor Pavlov for the 7-zip compression suite
+	echo shrinking .gz tarball
+	advdef -z -4 maradns-$SNAP.tar.gz
+fi
+
+exit 0 # No exotic compression any more
+
+echo using exotic compression
+tar cf maradns-$SNAP.tar maradns-$SNAP
+
+echo lzma compression \(this will take about 5 minutes\)
+date
+# To decompress: cat file.tar.lzma | lzma d -si -so | tar xvf -
+# -d20 makes the file almost as small as -d22, but uses 1/4 of the memory
+# (only a little over one meg needed for decompression)
+lzma e maradns-$SNAP.tar maradns-$SNAP.tar.lzma -a2 -d20 -fb255
+date
+echo
+
+# Clean up the uncompressed tarball
+rm maradns-$SNAP.tar
+
+exit 0
+
+# The other exotic compressors can't be run in a pipeline
+
+echo 7zip compression
+date
+7za a maradns-$SNAP.tar.7z maradns-$SNAP.tar
+date
+echo
+
+echo paq6 compression \(This will take 2\-3 minutes\)
+date
+paq6v2 -2 maradns-$SNAP.tar.pq6 maradns-$SNAP.tar
+date
+echo
+
+echo rzip compression
+date
+rzip maradns-$SNAP.tar
+date
+echo

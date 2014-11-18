@@ -1,0 +1,28 @@
+--- maradns-1.4.03/doc/en/webpage/changelog.embed	2010-02-02 09:12:44.000000000 -0800
++++ maradns-1.4.04/doc/en/webpage/changelog.embed	2010-07-30 23:38:47.000000000 -0700
+@@ -1,5 +1,25 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.4.04:</p>
++This is the stable branch of MaraDNS.
++<blockquote>
++<ul>
++<ul>
++<li>Bugfix: NAPTR records now work when ~ is used to separate records
++<li>NAPTR records now documented
++<li>Bugfix: ANY queries now correctly work with NS referrals
++<li>Example IPv6 addresses now use RFC-4193 compliant IPs
++<li>Website updated to point out that Deadwood is now feature complete
++	and ready for beta-testing
++<li>Some updates to the SQA regressions
++<li>Deadwood updated to Deadwood 2.9.02
++<li>Windows-only <tt>mkSecretTxt</tt> program added (*NIX users can just
++	type in "<tt>dd if=/dev/urandom of=secret.txt bs=64 count=1</tt>";
++	this gives Windows the same ability).
++</ul>
++(2010.07.31)
++</blockquote>
++
+ <p>maradns-1.4.03:</p>
+ This is the stable branch of MaraDNS.
+ <blockquote>

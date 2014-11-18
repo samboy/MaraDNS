@@ -1,0 +1,43 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_show_stdout 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_show_stdout \- output the string contents of a js_string object to stdout
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_show_stdout(js_string *js)"
+.fi
+.SH DESCRIPTION
+.B js_show_stdout
+outputs the string contents of a 
+.I js_string
+object pointed to by
+.B js
+to the standard output.
+.SH "RETURN VALUE"
+.B js_show_stdout
+returns 
+.I JS_SUCCESS 
+if it was able to sucessfully display the string
+in question, 
+.I JS_ERROR 
+otherwise.
+.SH EXAMPLE
+The following example will print out "What's up doc?":
+
+.nf
+	js_string *foo;
+	foo = js_create(256,1);
+	js_str2js(foo,"What's up doc?",14,1);
+	js_show_stdout(foo);	
+.fi
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

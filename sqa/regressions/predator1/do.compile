@@ -1,0 +1,3 @@
+#!/bin/sh
+
+cc -g  -o sendp1 sendp1.c ../../../libs/JsStr.o ../../../libs/JsStrOS.o ../../../libs/JsStrCP.o  ../../../libs/MaraHash.o  ../../../dns/Queries.o ../../../dns/Compress.o ../../../dns/bobbit.o ../../../dns/Decompress.o  ../../../rng/rng-api-fst.o ../../../rng/rng-alg-fst.o ../../../parse/ParseMaraRc.o ../../../parse/ParseCsv1.o ../../../parse/ParseIpAcl.o ../../../server/timestamp.o 

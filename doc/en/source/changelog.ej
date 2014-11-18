@@ -1,0 +1,14 @@
+<HEAD>
+<TITLE>MaraDNS Change log</TITLE>
+<BODYFLAGS>bgcolor="#FFFFCC" text="#660000" link=#888888 vlink=#888888
+</BODYFLAGS>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+</HEAD>
+<BODY>
+
+<!-- This embeds the changelog.embed document; making it look pretty
+     when converted to HTML -->
+
+<INCLUDE "source/changelog.embed">
+
+</BODY>

@@ -1,0 +1,6 @@
+<h1>MaraDNS 1.0: Do not use</h1>
+
+This page used to contain a FAQ for version 1.0 of MaraDNS.  This
+release is no longer maintained and has known security problems.  
+Please update to version 1.4 (or 2.0 if feasible); a guide for
+updating MaraDNS is available <A href=/tutorial/update.html>here</A>.

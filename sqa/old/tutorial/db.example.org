@@ -1,0 +1,6 @@
+example.org. +86400 soa example.org. hostmaster@example.org. 140352452 7200 3600 604800 3600
+example.org. +86400 ns synth-ip-7f000001.example.org.
+synth-ip-7f000001.example.org. +86400 a 127.0.0.1
+a.example.org. +86400 a 10.10.10.2
+example.org. +86400 txt 'foo2'
+# Second SOA received, exiting

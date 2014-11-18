@@ -1,0 +1,22 @@
+One way to get Deadwood to work in Vista or Windows 7 is to use a cmd 
+prompt with administrator privileges.
+
+To open up an admin cmd prompt:
+
+* Go to the start menu and search for "cmd"
+
+* When found, right click on it and run "cmd" as an administrator
+
+Once this administrative "cmd" prompt is opened, it is necessary to
+install Deadwood:
+
+* At the cmd prompt, use the "cd" command to find and enter the directory
+  where Deadwood is unpacked (where this file is located)
+
+* Invoke the "install.bat" script from this directory (by simply typing in
+  "install.bat" without the quotes)
+
+* Once Deadwood is installed, it is important not to change the directory
+  where Deadwood is locted; otherwise the service manager may have problems
+  finding the Deadwood service.
+

@@ -1,0 +1,11 @@
+--- maradns-2.0.08/server/MaraDNS.c.orig	2013-09-17 18:11:16.087400228 -0700
++++ maradns-2.0.08/server/MaraDNS.c	2013-09-17 18:11:22.704707219 -0700
+@@ -3434,7 +3434,7 @@
+     }
+ 
+     /* Sanity checks */
+-    if(socket == 0)
++    if(sock == 0)
+         return JS_ERROR;
+ 
+     counter = 0;

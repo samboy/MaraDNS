@@ -1,0 +1,18 @@
+Deadwood is open for general testing.  Pretty much any bug can and should be
+reported.  Some notes:
+
+* Valgrind-reported memory leaks can always be reported.  Valgrind-reported
+	errors are only valid if Deadwood is compiled with -DVALGRIND_NOERRORS
+
+* The only officially supported OSes are Windows XP and Scientific Linux 6.
+	OS-specific issues such as startup, daemonizing, sysloggin, and 
+	/etc/resolv.conf setup are only supported on these two OSes.
+
+* Bugs need to be reported to the MaraDNS list, not to my email account nor
+	as blog comments.  
+
+* Bugs reporting Deadwood crashes will be marked "unreproducible" unless
+	either a stack trace (or core dump if the program was compiled with
+	'-g' to enable debugging symbols) or a recipe to reproduce the
+	crash is provided.
+

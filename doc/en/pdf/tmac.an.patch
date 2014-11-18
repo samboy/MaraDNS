@@ -1,0 +1,25 @@
+This patch is the difference between the file an-old.tmac that comes 
+with Groff 1.18.1 and the annp.tmac file that the ej2ps script uses.  
+While the an-old.tmac file is GPL licensed, the inclusion of small parts 
+of the file in order to make a patch file should qualify as fair use.  
+
+*** an-old.tmac	2004-02-27 07:35:05.000000000 -0800
+--- annp.tmac	2005-10-20 19:53:44.000000000 -0700
+***************
+*** 205,207 ****
+  .      sp .5i
+! .    tl '\\*[an-title](\\*[an-section])'\\*[an-extra3]'\\*[an-title](\\*[an-section])'
+  .    ie !\\n[cR] \
+--- 205,207 ----
+  .      sp .5i
+! .    tl '\\*[an-title]\\*[an-section]'\\*[an-extra3]'\\*[an-title]\\*[an-section]'
+  .    ie !\\n[cR] \
+***************
+*** 240,242 ****
+  .      ie \\n[cR] \
+! .        ds an-page-string "\\*[an-title](\\*[an-section])
+  .      el \
+--- 240,242 ----
+  .      ie \\n[cR] \
+! .        ds an-page-string "\\*[an-title]\\*[an-section]
+  .      el \

@@ -1,0 +1,117 @@
+max_chain is 1
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.1.2.1
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.1.2.2
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+max_chain is 2
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.1.2.1
+www.example.com. +86400 a 10.1.2.2
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.1.2.2
+www.example.com. +86400 a 10.1.2.3
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+max_chain is 3
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.1.2.1
+www.example.com. +86400 a 10.1.2.2
+www.example.com. +86400 a 10.1.2.3
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.1.2.2
+www.example.com. +86400 a 10.1.2.3
+www.example.com. +86400 a 10.1.2.4
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+max_chain is 6
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.1.2.1
+www.example.com. +86400 a 10.1.2.2
+www.example.com. +86400 a 10.1.2.3
+www.example.com. +86400 a 10.1.2.4
+www.example.com. +86400 a 10.1.2.5
+www.example.com. +86400 a 10.1.2.6
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.1.2.2
+www.example.com. +86400 a 10.1.2.3
+www.example.com. +86400 a 10.1.2.4
+www.example.com. +86400 a 10.1.2.5
+www.example.com. +86400 a 10.1.2.6
+www.example.com. +86400 a 10.1.2.7
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+max_chain is 9
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.1.2.1
+www.example.com. +86400 a 10.1.2.2
+www.example.com. +86400 a 10.1.2.3
+www.example.com. +86400 a 10.1.2.4
+www.example.com. +86400 a 10.1.2.5
+www.example.com. +86400 a 10.1.2.6
+www.example.com. +86400 a 10.1.2.7
+www.example.com. +86400 a 10.1.2.8
+www.example.com. +86400 a 10.1.2.9
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.1.2.2
+www.example.com. +86400 a 10.1.2.3
+www.example.com. +86400 a 10.1.2.4
+www.example.com. +86400 a 10.1.2.5
+www.example.com. +86400 a 10.1.2.6
+www.example.com. +86400 a 10.1.2.7
+www.example.com. +86400 a 10.1.2.8
+www.example.com. +86400 a 10.1.2.9
+www.example.com. +86400 a 10.1.2.1
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+

@@ -1,0 +1,66 @@
+diff -ur maradns-1.4.03/parse/Csv2_functions.h maradns-1.4.04/parse/Csv2_functions.h
+--- maradns-1.4.03/parse/Csv2_functions.h	2010-02-02 11:12:48.000000000 -0600
++++ maradns-1.4.04/parse/Csv2_functions.h	2010-05-12 10:25:37.000000000 -0500
+@@ -273,7 +273,7 @@
+ csv2_add_state *csv2_init_add_state(js_string *zone);
+ 
+ js_string *csv2_get_aaaa(csv2_read *stream);
+-js_string *csv2_get_string(csv2_read *stream, int datatype);
++js_string *csv2_get_string(csv2_read *stream, int datatype, int post_txt);
+ 
+ /* Csv2_rr_wks.c */
+ 
+diff -ur maradns-1.4.03/parse/Csv2_rr_txt.c maradns-1.4.04/parse/Csv2_rr_txt.c
+--- maradns-1.4.03/parse/Csv2_rr_txt.c	2010-02-02 11:12:48.000000000 -0600
++++ maradns-1.4.04/parse/Csv2_rr_txt.c	2010-05-12 10:27:04.000000000 -0500
+@@ -146,14 +146,14 @@
+  * Input: A pointer to the stream we are reading
+  * Output: A js_string object with the raw rddata we want */
+ js_string *csv2_get_txt(csv2_read *stream, int numchunks) {
+-        return csv2_get_string(stream,numchunks);
++        return csv2_get_string(stream,numchunks,0);
+ }
+ 
+ /* Get a RAW record from the stream.
+  * Input: A pointer to the stream we are reading
+  * Output: A js_string object with the raw rddata we want */
+ js_string *csv2_get_raw(csv2_read *stream) {
+-        return csv2_get_string(stream,-1);
++        return csv2_get_string(stream,-1,0);
+ }
+ 
+ /* Append a Unicode character to a stream, returning the length of the
+@@ -218,7 +218,7 @@
+    one or more chunks are allowed; -1 if we're not using chunks)
+  * Output: A js_string object with the raw rddata we want; 0 on error */
+ 
+-js_string *csv2_get_string(csv2_read *stream, int numchunks) {
++js_string *csv2_get_string(csv2_read *stream, int numchunks, int post_txt) {
+         int state;
+         int out_num = 0; /* Used for octal and hext sequences (\123 or \xE4) */
+         int txt_len_place = -1; /* Where we put binary length in TXT records */
+@@ -342,9 +342,11 @@
+                         }
+                         else if((csv2_is_delimiter(look) &&
+                                  stream->tilde_handling != 103) ||
+-                             (look == '~' && stream->tilde_handling == 103) ||
++                             (look == '~' && stream->tilde_handling == 103 &&
++				post_txt == 0) ||
+                              (csv2_is_delimiter(look) &&
+                                  numchunks == -1) ||
++			     (csv2_is_delimiter(look) && post_txt == 1) || 
+                                         look == -2 /* EOF */) {
+                                 return csv2_finalize_txt(stream,numchunks,
+                                        chunkcount,txt_len_place,txt_len,out);
+diff -ur maradns-1.4.03/parse/Csv2_rr_wks.c maradns-1.4.04/parse/Csv2_rr_wks.c
+--- maradns-1.4.03/parse/Csv2_rr_wks.c	2010-02-02 11:12:48.000000000 -0600
++++ maradns-1.4.04/parse/Csv2_rr_wks.c	2010-05-12 10:27:52.000000000 -0500
+@@ -665,7 +665,7 @@
+         }
+ 
+         /* Get "flags", "services", and "regexp" (three TXT-type fields) */
+-        name = csv2_get_string(stream,3);
++        name = csv2_get_string(stream,3,1);
+         if(name == 0) {
+                 js_destroy(out);
+                 return 0;

@@ -1,0 +1,72 @@
+#!/bin/sh
+
+# Placed in the public domain 2002 by Sam Trenholme
+
+# This is a script which fixes the bang path of a given program; e.g.
+# we have a script which starts of #!/usr/bin/perl but perl is really in
+# /usr/local/bin, this will make the bang path #!/usr/local/bin/perl
+
+if [ $# -lt 1 ] ; then
+	echo usage $0 script_to_fix_bang_path_of
+	exit 1
+fi
+
+FILENAME="$1"
+
+# Make sure that there is a file
+if [ ! -f $FILENAME ] ; then
+	echo Can not find the file $FILENAME
+	exit 1
+fi
+
+# Make sure we have a bang path
+# Deal with DOS newlines by zapping them
+BANGPATH=`head -1 $1 | tr -d '\015'`
+if ! echo $BANGPATH | egrep '^\#\!' > /dev/null ; then
+	echo $FILENAME does not have a bangpath
+	exit 1
+fi
+
+# See if the bang path points to something
+BANGPATH=`echo $BANGPATH | cut -f2 -d\!`
+# If it already does, we are gold
+if [ -f $BANGPATH ] ; then
+	chmod 755 $FILENAME
+	exit 0
+fi
+
+# If not, see if the same script exists in /bin, /usr/bin, /usr/local/bin,
+# /usr/share/bin, /usr/local/share/bin, /usr/share/local/bin, /sbin,
+# /usr/sbin, /usr/local/sbin, /usr/share/sbin, /usr/local/share/sbin,
+# or /usr/share/local/bin
+
+SCRIPTNAME=`basename $BANGPATH`
+DIRS="/ /usr/ /usr/local/ /usr/share/ /usr/local/share/ /usr/share/local/"
+D=""
+for dir in $DIRS ; do
+	D="$D ${dir}bin ${dir}sbin"
+done
+DIRS=$D
+
+# And, while we are at it, add anything in their $PATH
+for dir in `echo $PATH | tr : ' '`; do
+	DIRS="$DIRS $dir"
+done
+
+# Now, let us find out where that bang path should really point to
+for dir in $DIRS ; do
+	echo $dir/$SCRIPTNAME
+	if [ -f $dir/$SCRIPTNAME ] ; then
+		echo \#\!$dir/$SCRIPTNAME > $FILENAME.$$
+		# Zap dos newlines as needed
+		cat $FILENAME | tr -d '\015' >> $FILENAME.$$
+		mv $FILENAME.$$ $FILENAME
+		chmod 755 $FILENAME
+		echo Bang path for $FILENAME fixed
+		exit 0
+	fi
+done
+
+echo Could not fix bang path for $FILENAME
+exit 1
+

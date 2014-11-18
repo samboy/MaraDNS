@@ -1,0 +1,6 @@
+# Querying the server with the IP 127.0.0.1
+# Remote server said: NAME ERROR
+# Question: @www.example.com.
+# NS replies:
+www.example.com. +86400 soa example.com. hostmaster@example.com. 1 2 3 4 5
+# AR replies:

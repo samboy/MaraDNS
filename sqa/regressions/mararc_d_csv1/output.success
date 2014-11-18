@@ -1,0 +1,7 @@
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.0.0.2
+# NS replies:
+#example.com. +86400 ns ns.example.com.
+# AR replies:
+#ns.example.com. +86400 a 10.0.0.1

@@ -1,0 +1,31 @@
+MaraDNS can be compiled as a native Win32 binary which doesn't need the
+GPL CygWin library.
+
+A number of security features in MaraDNS had to be removed to make this
+program compile without needing CygWin's translation DLL.
+
+This program needs a version of mingw32 to compile.  The version I compiled
+MaraDNS.exe on is MinGW-3.1.0-1 with MSys-1.0.9.  To find mingw32:
+
+	http://www.mingw.org/
+
+This program also needs a version of pthreads-w32 to compile.  The version
+I used to compile MaraDNS was pthreads-w32-2-8-0-release.  Look here:
+
+	http://sources.redhat.com/pthreads-win32/
+
+The security features I had to remove to get this to compile in Windows
+include:
+
+* The chroot() functionality
+
+* The ability to drop root privileges 
+
+* There doesn't appear to be a good source of random numbers in Windows
+
+The only programs that I have modified to compile in Windows are 
+MaraDNS and Askmara.  These are the programs most commonly used on a 
+desktop machine; people who want all of MaraDNS to compile
+can use CygWin.  No other MaraDNS program will compile on Win32 w/o
+CygWin.
+

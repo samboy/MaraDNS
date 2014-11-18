@@ -1,0 +1,47 @@
+            Converting from another DNS server to MaraDNS
+
+   The procedure for converting from another authoritative DNS
+   server to MaraDNS is as follows:
+
+     * Make sure that the names of all zones that the other DNS
+       server has are in one's mararc file.
+     * Configure the other DNS server to allow the IP of the
+       machine which will run MaraDNS to perform zone transfers.
+     * Use the fetchzone client to transfer the zones over.
+
+   Assuming that one needs to transfer the zones for example.com,
+   maradns.org, and heaven.af.mil over, the procedure would be as
+   follows:
+
+     * Add the following lines to one's mararc file:
+
+ csv2["example.com."] = "db.example.com"
+ csv2["maradns.org."] = "db.maradns.org"
+ csv2["heaven.af.mil."] = "db.heaven.af.mil"
+
+     * By reading the documentation for the DNS server that one is
+       currently running, set up the DNS server to allow zone
+       transfers for example.com, maradns.org, and heaven.af.mil
+     * Run fetchzone three times. Assuming that the IP of the
+       server currently running DNS is at the IP 127.0.0.1:
+
+ cd /etc/maradns
+ fetchzone example.com 127.0.0.1 > db.example.com
+ fetchzone maradns.org 127.0.0.1 > db.maradns.org
+ fetchzone heaven.af.mil 127.0.0.1 > db.heaven.af.mil
+
+   ----------------------------------------------------------------
+
+   If one is converting from another DNS server, it is probably
+   best to have MaraDNS act in a strictly RFC-compliant manner. In
+   particular, star records should probably be handled in the exact
+   same manner described in section 4.3.3 of RFC1034, and MaraDNS
+   should be configured to have full support for DNS over TCP.
+
+   To make star record handling strictly RFC compliant, add the
+   following line to the mararc configuration file:
+
+     bind_star_handling = 1
+
+   To give MaraDNS full DNS-over-TCP support, follow the directions
+   in the dnstcp document.

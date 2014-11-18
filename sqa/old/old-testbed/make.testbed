@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Set up mararc files for testing purposes
+
+#cp mararc.1 mararc.2 mararc.4 mararc.5 mararc.6 mararc.7 mararc.8 /etc
+mkdir /var/maradns
+cp db.com db.example.com db-root db.org db.example.org \
+   db.nslist.example.com db.0.0.127.in-addr.arpa /var/maradns
+./make.many.records >> /var/maradns/db.example.com
+
+echo WARNING: This testbed includes one instance of MaraDNS which uses up
+echo more than 100 megabytes of memory.
+

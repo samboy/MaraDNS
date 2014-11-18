@@ -1,0 +1,71 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_set_encode 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_set_encode \- change the encoding that a given js_string object uses
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_set_encode(js_string *js, int encoding);"
+.fi
+.SH DESCRIPTION
+.B js_set_encode
+changes the encoding that a given 
+.B js_string 
+object uses.  In other words, you can use this function to set the encoding
+of a 
+.B js_string
+object to ASCII or BINARY.  Eventually, this function will allow you to
+set the encoding to UNICODE-3, ISO 8859-1, etc.
+.SH ARGUMENTS
+.B js
+is a pointer to the
+.B js_string
+object that you wish to change the encoding for.
+
+.B encoding
+is the type of coding the
+.B js_string
+object's string contains.  Currently supported values are
+.I JS_BINARY
+for binary data, and 
+.I JS_US_ASCII
+for data encoded in US ASCII format.
+.SH EXAMPLE
+The following example code creates a 
+.B js_string
+object, and, in series, sets the encoding to ASCII, then to binary data.
+.nf
+
+	js_string *foo;
+	foo = js_create(256,1);         /* Encoding starts off binary */
+	js_set_encode(foo,JS_US_ASCII); /* Encoding is now ASCII */
+	js_set_encode(foo,JS_BINARY);   /* Encoding is binary again */
+.fi
+.SH "RETURN VALUE"
+.B js_set_encode
+returns 
+.I 0
+on success, and
+.I JS_ERROR
+if it is not able to set the encoding for the
+.B js_string
+object.
+.SH NOTES
+A newly created 
+.B js_string 
+object has a default encoding of 
+.I JS_BINARY
+.SH BUGS
+This function does not change the size of octets for a js_string object.
+Since all presently supported encodings use a single octet to represent 
+a character, this is currently a non-issue.
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

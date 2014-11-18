@@ -1,0 +1,73 @@
+#!/bin/sh
+
+cat > mararc1 << EOF
+ipv4_bind_addresses = "127.0.0.1"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["."] = "db.root"
+EOF
+
+cat > mararc3 << EOF
+ipv4_bind_addresses = "127.0.0.3"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["example.com."] = "db.example"
+EOF
+
+cat > db.root << EOF
+example.com. NS ns.example.com.
+ns.example.com. 127.0.0.3
+EOF
+
+cat > db.example << EOF
+example.com. NS ns.example.com.
+ns.example.com. 127.0.0.3
+www.example.com. 127.10.1.1
+EOF
+
+
+../../../server/maradns -f mararc1 > /dev/null 2>&1 &
+sleep 1
+../../../server/maradns -f mararc3 > /dev/null 2>&1 &
+sleep 1
+
+for LEVEL in 0 1 ; do
+
+cat > mararc2 << EOF
+ipv4_bind_addresses = "127.0.0.2"
+verbose_level=0
+chroot_dir = "$( pwd )"
+recursive_acl = "127.0.0.1/8"
+verbose_level = 0
+verbose_query = ${LEVEL}
+root_servers = {}
+root_servers["."] = "127.0.0.1"
+EOF
+
+../../../server/maradns -f mararc2 | \
+	awk -F: '{$1=""}/[0-9]/{print "'$LEVEL' " $0 }' &
+sleep 1
+
+../../../tools/askmara -t 2 Awww.example.com. 127.0.0.2 > /dev/null
+
+kill $( \
+    ps auxw | grep maradns | grep mararc2 | grep -v grep | awk '{print $2}' ) \
+        > /dev/null 2>&1
+
+rm mararc2
+
+done
+
+# Clean up
+kill $( ps auxw | grep maradns | grep -v grep | awk '{print $2}' ) \
+	> /dev/null 2>&1
+sleep 1
+# Linux specific; this does bad things on Solaris
+killall maradns > /dev/null 2>&1
+rm mararc1
+rm mararc3
+rm db.root
+rm db.example
+

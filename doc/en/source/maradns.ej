@@ -1,0 +1,196 @@
+<HEAD>
+<TH>MARADNS 8 "January 2002" MARADNS "MaraDNS reference"</TH>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+</HEAD>
+<BODY>
+<pre>
+Erre con erre cigarro
+Erre con erre barril
+Rápido ruedan los carros
+En el ferrocarril
+</pre>
+<h1>NAME</h1>
+maradns - DNS server
+<h1>SYNOPSIS</h1>
+<b>maradns [ -v | -f mararc_file_location ]</b>
+<h1>TABLE OF CONTENTS</h1>
+This man page has the following sections:
+
+<blockquote>
+<pre>
+Name 
+Synopsis
+Table of Contents
+Description
+Usage
+Firewall Configuration
+Frequently Asked Questions
+Bugs
+Unimplemented Features
+Legal Disclaimer
+Authors
+</pre>
+</blockquote>
+<H1>DESCRIPTION</H1>
+<b>maradns</b>
+is a DNS server written with security, simplicity, and performance in mind.
+
+<p>
+
+<b>maradns</b>
+has two forms of arguments, both of which are optional.
+
+<p>
+
+The first is the location of a 
+<b>mararc</b>
+file which MaraDNS obtains all configuration information from.
+The default location of this file is
+<b>/etc/mararc</b>.
+This is specified in the form 
+<b>maradns -f mararc_file_location</b>;
+<i>mararc_file_location</i>
+is the location of the mararc file.
+
+<p>
+It is also possible to have MaraDNS display the version number and
+exit.  This is specified by invoking maradns in the form
+<b>maradns -v</b>
+or
+<b>maradns --version</b>
+
+<H1>USAGE</H1>
+If MaraDNS is functioning only as a recursive nameserver, just one file 
+needs to be set up: The mararc file.
+<p>
+In order for MaraDNS to function as an authoritative nameserver, two
+or more files need to be set up: the mararc file and one or more "csv2"
+(or "csv1") zone files.  
+<p>
+The format of a csv2 zone file can be obtained from the 
+<b>csv2(5)</b>
+manual page.  The configuration format of the mararc file can be obtained
+from the
+<b>mararc(5)</b>
+manual page.
+<p>
+In order to have MaraDNS run as a daemon, the duende program is used to
+daemonize MaraDNS.  See the <b>duende(8)</b> manual page for details.
+
+<h1>FIREWALL CONFIGURATION</h1>
+
+If MaraDNS is being used as an authoritative nameserver, allow UDP 
+connections from all hosts on the internet to UDP port 53 for the IP
+that the authoritative nameserver uses.
+<p>
+If MaraDNS is being used as a recursive nameserver, the firewall needs
+to allow the following packets to go to and from the IP the recursive
+nameserver uses:
+<ul>
+<li>
+Allow UDP connections from the MaraDNS-running server to any
+machine on the internet where the UDP destination port is 53
+<li>
+Allow UDP connections from any machine on the internet to the IP of the
+recursive server, where the source port from the remote server is 53, and the 
+destination port is between 15000 and 19095 (inclusive)
+<li>
+Allow UDP connections from IPs that use MaraDNS as a recursive DNS server 
+to port 53 of the MaraDNS server
+</ul>
+MaraDNS uses a strong secure RNG for both the query (16 bits of entropy) 
+and the source port of the query (12 bits of entropy).  This makes spoofing 
+replies to a MaraDNS server more difficult, since the attacker has only a 
+one in 250 million chance that a given spoofed reply will be considered 
+valid.
+<p>
+<include "../source/faq.embed">
+<p>
+<h1>BUGS</h1>
+In the unusual case of having a csv2 zone file with Macintosh-style newlines
+(as opposed to DOS or UNIX newlines), while the file will parse, any errors
+in the file will be reported as being on line 1.
+<p>
+The system startup script included with MaraDNS assumes that the only 
+MaraDNS processes running are started by the script; it stops <i>all</i>
+MaraDNS processes running on the server when asked to stop MaraDNS.
+<p>
+MaraDNS needs to use the <b>zoneserver</b> program to serve DNS records
+over TCP.  See <b>zoneserver(8)</b> for usage information.
+<p>
+MaraDNS does not use the zone file ("master file") format specified in 
+chapter 5 of RFC1035; however bind2csv2.py can convert the majority
+of such zone files.
+<p>
+MaraDNS default behavior with star records is not RFC-compliant.
+In more detail, 
+if a wildcard MX record exists in the form "*.example.com", and
+there is an A record for "www.example.com", but no MX record for
+"www.example.com", the correct behavior (based on RFC1034 
+<hibit alt="section ">§</hibit>4.3.3)
+is to return "no host" (nothing in the answer section, SOA in the
+authority section, 0 result code) for a MX request to "www.example.com".
+Instead, MaraDNS returns the MX record attached to "*.example.com".
+This can be changed by setting <tt>bind_star_handling</tt> to 1.
+<p>
+Star records (what RFC1034 calls "wildcards") can not be attached to
+NS records.
+<p>
+MaraDNS recursive resolver treats any TTL shorter than min_ttl seconds 
+(min_ttl_cname seconds when the record is a CNAME record)
+as if the TTL in question was min_ttl (or min_ttl_cname) seconds long when
+determining when to expire a record from MaraDNS' cache.
+<p>
+TTLs which are shorter than 20 seconds long are given a TTL of 20
+seconds; TTLs which are more than 63072000 (2 years) long are given
+a TTL of 2 years.
+<p>
+MaraDNS, like every other known DNS implementation, only supports a 
+QDCOUNT of 0 or 1.
+<h1>UNIMPLEMENTED FEATURES</h1>
+<i>These are features which I do not plan to implement in MaraDNS.</i>
+<p>
+MaraDNS does not have a disk-based caching scheme for authoritative 
+zones.  
+<p>
+MaraDNS' UDP server only loads zone files while MaraDNS is first started.  
+UDP Zone information can only be updated by stopping MaraDNS, and restarting
+MaraDNS again.  Note that TCP zone files are loaded from the filesystem
+at the time the client requests a zone.
+<p>
+MaraDNS does not have support for allowing given host names to only
+resolve for a limited range of IPs querying the DNS server, or for host
+names to resolve differently, depending on the IP querying the host name.
+<p>
+MaraDNS only allows wildcards
+at the beginning or end of a host name.  E.g. names with wildcards like 
+"foo.*.example.com".  "www.*" will work, however, if a default zonefile is
+set up.  Likewise, MaraDNS does not have regular expression hostname
+substitution.
+<p>
+MaraDNS does not have support for MRTG or any other SNMP-based logging
+mechanism.  
+
+<h1>LEGAL DISCLAIMER</h1>
+THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
+OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE 
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+<h1>AUTHORS</h1>
+Sam Trenholme (<A href=http://www.samiam.org/>http://www.samiam.org</a>) is 
+responsible for this man page.
+<p>
+MaraDNS is written by me, Sam Trenholme, with a little help from my
+friends.  Naturally, all errors in MaraDNS are my own (but read the 
+disclaimer above).
+<p>
+<include "../source/credits.embed">
+</body>

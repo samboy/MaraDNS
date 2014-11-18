@@ -1,0 +1,11 @@
+--- maradns-1.3.14/parse/Csv2_parse.c	2009-08-04 11:52:44.000000000 -0500
++++ maradns-1.3.15/parse/Csv2_parse.c	2009-08-25 11:05:19.000000000 -0500
+@@ -723,7 +723,7 @@
+         /* Get 1st character; we use a sub function so we can use the
+          * same code as process_something */
+         o = process_1stchar(stream,csv2_is_starwhitis_ordot,"Z");
+-        if(o == 0) {
++        if(o == 0 || o->string == 0) {
+                 return 0;
+         }
+ 

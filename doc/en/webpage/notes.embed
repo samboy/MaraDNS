@@ -1,0 +1,56 @@
+<h2>MaraDNS tutorial</h2>
+Tutorials and HOWTOs for using MaraDNS are available 
+<A href="tutorial/tutorial.html">here</A>.
+
+<h2>MaraDNS FAQ</h2>
+A FAQ for MaraDNS is available <A href="faq.html">here</A>.
+
+<h2>MaraDNS man pages</h2>
+
+<A href="http://www.maradns.org/tutorial/man.maradns.html">MaraDNS man page</A>
+<br>
+<A href="http://www.maradns.org/tutorial/man.mararc.html">mararc configuration
+file man page</A>
+<br>
+<A href="http://www.maradns.org/tutorial/man.csv1.html">csv1 zone file man
+page</A> (this format supported in 1.0 and future MaraDNS releases)
+<br>
+<A href="http://www.maradns.org/tutorial/man.csv2.html">csv2 zone file
+man page</A> (the MaraDNS 1.2 zone file format)
+<p>
+<A href="http://www.maradns.org/download/manpage_reference.pdf">All MaraDNS
+1.2 man pages as a single pdf file</A>
+
+<p>
+
+<h2>Security information</h2>
+<A href="security.html">Informaiton on MaraDNS' security design and a
+description of all of MaraDNS' security updates</A>
+
+<h2>Some other information</h2>
+
+<A href="speed.comparison.html">An informal speed comparison between MaraDNS
+ and two other DNS servers.</A>
+
+<P><A href="dns_software.html">A list of some other DNS server software 
+   available</A>.</P>
+
+<h2>Search MaraDNS documentation</h2>
+
+If you wish to search this site, please enter what you
+are looking for in the following box. <p>
+
+<!-- Google Custom Search Element -->
+<div id="cse" style="width:100%;">Loading</div>
+<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+<script type="text/javascript">
+  google.load('search', '1');
+  google.setOnLoadCallback(function(){
+    new google.search.CustomSearchControl().draw('cse');
+  }, true);
+</script>
+<noscript>Please enable JavaScript if you wish to search this site.
+If you do not wish to or can not enable JavaScript, go to <A 
+href=http://google.com>google.com</A> and type in a query like
+"<A href=http://www.google.com.mx/search?q=whatever+site%3Amaradns.org>whatever site:maradns.org</A>"</noscript>
+

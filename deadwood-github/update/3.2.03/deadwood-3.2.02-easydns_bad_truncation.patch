@@ -1,0 +1,27 @@
+--- deadwood-3.2.02/src/DwUdpSocket.c	2012-02-29 01:59:53.000000000 -0600
++++ deadwood-3.2.03/src/DwUdpSocket.c	2012-04-23 13:15:23.000000000 -0500
+@@ -1169,6 +1169,24 @@
+                 return 2; /* Don't kill pending UDP connection */
+         } else { /* Truncated over UDP; just given them a blank "truncated"
+                   * reply */
++		if(key_n[DWM_N_tcp_listen] != 1) {
++			/* EasyDNS sometimes has given out packets marked
++			 * "truncated" that, in violation of RFC1035 section
++			 * 4.1.1, do not mean that "[the] message was 
++                         * truncated due to length greater than that 
++			 * permitted on the transmission channel.", but mean
++			 * "our UDP server is broken, try using our TCP
++			 * server".  
++			 * 
++			 * This in mind, if we got a truncated packet and
++			 * can not extract any useful information from the
++			 * packet, unless Deadwood is using DNS-over-TCP,
++			 * it's better to completely ignore the reply (when 
++			 * EasyDNS has had this issue, only some of their 
++			 * DNS servers have been affected)
++			 */
++			return -1;
++		}	
+                 cache_dns_reply(a,count,b,1);
+         }
+ 

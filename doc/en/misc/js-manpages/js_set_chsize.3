@@ -1,0 +1,77 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.\" Last updated for MaraDNS 0.9.00 on 2001/12/17
+.\"
+.TH js_set_chsize 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_set_chsize \- change the character size that a given js_string object uses
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_set_chsize(js_string *js, int size);"
+.fi
+.SH IMPORTANT
+.B js_set_chsize
+is depricated; which means that one should not use this function.
+Future versions of the js_string library will not have this function.
+.SH DESCRIPTION
+.B js_set_chsize
+changes the size of a single character in a given
+.B js_string 
+object.  You can use this function to set the number of octets
+a single character of a 
+.B js_string
+uses.  This is useful, for example, if you are using UNICODE and wish to
+use two octets to represent a single character.
+.SH ARGUMENTS
+.B js
+is a pointer to the
+.B js_string
+object that you wish to change the character size for.
+
+.B size
+is the number of octets a single character in a 
+.B js_string
+object uses.  
+.SH EXAMPLE
+The following example code creates a 
+.B js_string
+object, and makes a single character two octets long.
+.nf
+
+	js_string *foo;
+	foo = js_create(256,1);         
+	js_set_chsize(foo,2); 
+.fi
+.SH "RETURN VALUE"
+.B js_set_encode
+returns 
+.I JS_SUCCESS
+on success, and
+.I JS_ERROR
+if it is not able to set the 
+.I size
+for the
+.B js_string
+object.
+.SH BUGS
+This function will return an error if either
+.IP 1)
+The 
+.B js_string
+object is not zero-length.
+.IP 2)
+The currently maximum allowed length, in octets, is not evenly divisible
+by the number of octets for the desired new 
+.I size.
+.SH ""
+These limitations need to be removed before this funciton is readily useful.
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

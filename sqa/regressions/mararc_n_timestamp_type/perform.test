@@ -1,0 +1,42 @@
+#!/bin/sh
+
+export LANG=C
+export LANGUAGE=C
+
+# This test to make sure the csv2 dictionary variable works
+
+for LEVEL in 0 1 2 3 4 5 6 7 ; do
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+admin_acl="127.0.0.1/24"
+verbose_level = 3
+timestamp_type = $LEVEL
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+max_mem = 0
+EOF
+
+cat > db.example.com << EOF
+www.% A 10.1.2.3
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc &
+sleep 3
+
+#../../../tools/askmara Awww.example.com. 
+
+../../../tools/askmara Awww.example.com. > /dev/null
+
+sleep 1
+killall maradns 
+rm mararc
+
+echo
+echo
+echo
+
+done
+

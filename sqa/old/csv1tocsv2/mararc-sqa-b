@@ -1,0 +1,86 @@
+# The only change in this from mararc-sqa is that we load the csv2 zone file
+# for example.com instead of the csv1 zone file.
+
+# Example simplified mararc file.  
+# This only shows a subset of MaraDNS' features needed to be an
+# authoritative and recursive name server.  Look at 
+# detailed/example_full_mararc for an example showing most of 
+# the features that MaraDNS has.
+
+# Note that this example mararc file will not actually do anything
+# without modification.
+# Look in the doc/en/examples directory for a working example 
+# authoritative nameserver, and a working recursive nameserver.
+
+# The various zones we support
+
+# When running in authoritative mode, we must initialize the csv1 hash, 
+# or MaraDNS will be unable to load any zone files
+csv2 = {}
+
+# This is just to show the format of the file
+# Note the this is commented out.  Any line that starts with 
+# a '#' is not read by the parser.  Remove the leading '# ' to 
+# enable any line that is commented out
+csv2["example.com."] = "test_csv1tocsv2"
+# Naturally, we can have multiple zone files
+csv2["example.net."] = "test_csv2"
+csv2["example.org."] = "test_csv2_txt"
+
+# The address this DNS server runs on.  If you want to bind 
+# to all addresses a given machine has, use "0.0.0.0".
+# Note that binding to all address can cause problems; please read
+# the FAQ.
+bind_address = "127.0.0.4"
+# The directory with all of the zone files
+chroot_dir = "/opt/maradns-test/"
+# The numeric UID MaraDNS will run as
+maradns_uid = 99
+# The maximum number of threads (or processes, with the zone server)
+# MaraDNS is allowed to run
+maxprocs = 96
+
+# Most of the time, this can stay 3.  However, when registering
+# a domain under .de, .au, and possibly other top-level-domains, 
+# this needs to have a value of 15.
+default_rrany_set = 3
+
+# The number of messages we log to stdout
+# 0: No messages except for fatal parsing errors and the legal 
+#    disclaimer
+# 1: Only startup messages logged (default)
+# 2: Error queries logged
+# 3: All queries logged (but not very verbosely right now)
+verbose_level = 1
+
+# Initialize the IP aliases, which are used by the list of root 
+# name servers, the ACL for zone transfers, and the ACL of who gets 
+# to perform recursive queries
+ipv4_alias = {}
+
+# Other root servers are in the full example mararc file
+
+# Here is a ACL which restricts who is allowed to perform zone 
+# transfer from the zoneserver program
+
+# VERY IMPORTANT: Do not put spaces in the zone_transfer_acl list
+# Good: zone_transfer_acl = "10.2.3.4,10.2.3.6"
+# Bad:  zone_transfer_acl = "10.2.3.4, 10.2.3.6"
+
+# Simplest form: 10.1.1.1/24 (IP: 10.1.1.1, 24 left bits in IP need 
+# to match) and 10.100.100.100/255.255.255.224 (IP: 10.100.100.100, 
+# netmask 255.255.255.224) are allowed to connect to the zone server 
+# NOTE: The "maradns" program does not serve zones.  Zones are served
+# by the "zoneserver" program.
+zone_transfer_acl = "127.0.0.1/8"
+
+# If you want to enable recursion on the loopback interface, uncomment
+# the relevent lines in the following section
+
+# Recursive ACL: Who is allowd to perform recursive queries.  The 
+# format is identical to that of "zone_transfer_acl", including 
+# ipv4_alias support
+
+ipv4_alias["localhost"] = "127.0.0.0/8"
+recursive_acl = "localhost"
+

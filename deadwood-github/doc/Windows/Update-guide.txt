@@ -1,0 +1,116 @@
+Deadwood 3.2.02 is a stable release.  This release has a new parameter:
+max_ttl, which limits how long an entry can stay in the cache; the default
+TTL cap is one day (86400 seconds).  
+
+---
+
+Deadwood 3.2.01 is a stable release.  The default timeout has been decreased
+from 2 to 1 second.  This will make resolution faster for the majority of
+users; for users on slow connections with problems resolving domains,
+add the following line to a dwood3rc file:
+
+timeout_seconds = 3
+
+num_retries now has a default value of 5 instead of 2.  To restore the
+old value, add this to the dwood3rc file:
+
+num_retries = 2
+
+---
+
+Deadwood 3.0.04, in addition to fixing a number of bugs, has added some
+features.  In particular:
+
+  * I consider it a bug if any valid dwood3rc file does not parse in Python 2.
+    That in mind, I have updated the dwood3rc parser to not allow parameters to
+    have any leading whitespace (since whitespace is significant in Python).
+
+    This is OK:
+
+recursive_acl = "127.0.0.1/16, 192.168.1.1/24"
+
+    But this will raise an error:
+
+  recursive_acl = "127.0.0.1/16, 192.168.1.1/24"
+
+    (Observe the extra space in the left of the second example)
+
+  * It is no longer allowed to set both root_servers or upstream_servers for a
+    given name. In other words, a configuration like this will now raise an
+    error:
+
+upstream_servers = {}
+upstream_servers["example.com."] = "127.0.0.1"
+root_servers = {}
+root_servers["example.com."] = "192.168.1.1"
+
+  * Deadwood now raises a warning when the same name is set more than once.
+    This will now trigger a warning:
+
+upstream_servers = {}
+upstream_servers["example.net."] = "10.1.2.3"
+upstream_servers["example.net."] = "192.168.1.1"
+
+    I was tempted to make this fatal, but decided not to because making this
+    fatal would make it more difficult to manage large anti-phish/malware
+    blacklists.
+
+  * It is no longer permitted to initialize root_servers or upstream_servers
+    more than once. This will now raise an error:
+
+upstream_servers = {}
+upstream_servers["example.net."] = "10.1.2.3"
+upstream_servers = {}
+upstream_servers["example.com."] = "192.168.1.1"
+
+  * Deadwood will now raise an error for invalid lists of root or upstream
+    servers. This is now fatal:
+
+root_servers = {}
+root_servers["."] = "foo"
+
+  * Deadwood now requires that any bind_address is in the recursive ACL.  
+    This is now fatal:
+
+bind_address = "127.0.0.1, 192.168.1.42"
+recursive_acl = "127.0.0.1/16"
+
+    It can be fixed thusly:
+
+bind_address = "127.0.0.1, 192.168.1.42"
+recursive_acl = "127.0.0.1/16, 192.168.1.1/24"
+
+
+---
+
+Deadwood 3.0.03 is a bugfix-only upgrade of Deadwood 3.0.02.  No changes made
+will impact users.
+
+---
+
+Deadwood 3.0.02 is a bugfix-only upgrade of Deadwood 3.0.01.  
+
+The one update that will noticably impact users is the fact that
+filter_rfc1918 now filters more DNS replies.  In particular, DNS
+answers with the following IP ranges are now filtered by default:
+
+     * 192.168.x.x
+     * 172.[16-31].x.x
+     * 10.x.x.x
+     * 127.x.x.x
+     * 169.254.x.x
+     * 224.x.x.x
+     * 0.0.x.x
+
+If one of the above IPs is detected in a DNS reply, and filter_rfc1918
+has a value of 1, Deadwood will return a synthetic "this host does not
+reply" response (a SOA record in the NS section) instead of the A record.
+
+The reason for this is to provide a "dnswall" that protects users for
+some kinds of attacks, as described at http://crypto.stanford.edu/dns/
+
+If it is desired to have DNS answers with these IPs, add the following
+line to dwood3rc.txt:
+
+filter_rfc1918 = 0
+

@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# Make sure Deadwood works
+# NOTE: No startup of MaraDNS because we're just looking at the address
+#       deadwood binds to
+
+for VALUE in 127.0.0.1 127.0.0.2 ; do
+
+cat > dwood2rc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="${VALUE}"
+upstream_servers = {}
+upstream_servers["."]="127.0.0.3"
+recursive_acl="127.0.0.1/16"
+maxprocs=8
+timeout_seconds=20
+tcp_listen =1
+filter_rfc1918 = 0
+EOF
+
+../../src/Deadwood -f dwood2rc > /dev/null &
+sleep 1
+echo
+echo $VALUE
+netstat -nap | grep Dea |perl -pe 's/[0-9\.\/]+(src\/)?Dead?(wood)?//;s/\s*//g'
+echo
+sleep 1
+killall Deadwood > /dev/null 2>&1
+sleep 1
+
+done
+
+rm dwood2rc

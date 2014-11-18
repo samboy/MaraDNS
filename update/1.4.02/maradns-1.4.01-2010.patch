@@ -1,0 +1,16 @@
+--- maradns-1.4.01/00README.FIRST	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.4.02/00README.FIRST	2010-01-07 18:54:17.000000000 -0600
+@@ -1,4 +1,4 @@
+-Copyright (c) 2002-2009 Sam Trenholme and others
++Copyright (c) 2002-2010 Sam Trenholme and others
+ 
+ TERMS
+ 
+--- maradns-1.4.01/COPYING	2007-10-19 08:54:14.000000000 -0500
++++ maradns-1.4.02/COPYING	2010-01-07 18:54:27.000000000 -0600
+@@ -1,4 +1,4 @@
+-Copyright (c) 2002-2007 Sam Trenholme
++Copyright (c) 2002-2010 Sam Trenholme and others
+ 
+ TERMS
+ 

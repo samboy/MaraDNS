@@ -1,0 +1,143 @@
+--- maradns-2.0.03/doc/en/webpage/download.embed	2011-08-05 06:59:44.000000000 -0500
++++ maradns-2.0.04/doc/en/webpage/download.embed	2011-11-12 02:23:40.820913041 -0600
+@@ -4,62 +4,77 @@
+ 
+ <h2>Current stable release</h2>
+ 
+-The current stable release of MaraDNS is MaraDNS 2.0.02, released
+-February 5, 2011.
++The current stable release of MaraDNS is MaraDNS 2.0.04, released
++November 12, 2011.  This release has both the UNIX/Windows source code
++(in two different compression formats) as well as a Windows
++binary (the win32.zip file).
+ 
+ <p>
+ <A 
+-href="download/2.0/2.0.02/maradns-2.0.02.tar.bz2"><!--
+-                       -->maradns-2.0.02.tar.bz2</A>
++href="download/2.0/2.0.04/maradns-2.0.04.tar.bz2"><!--
++                       -->maradns-2.0.04.tar.bz2</A>
+ <A 
+-href="download/2.0/2.0.02/maradns-2.0.02.tar.bz2.asc">sig</A>
++href="download/2.0/2.0.04/maradns-2.0.04.tar.bz2.asc">sig</A>
++<br>
++<A 
++href="download/2.0/2.0.04/maradns-2.0.04.tar.xz"><!--
++                       -->maradns-2.0.04.tar.xz</A>
++<A 
++href="download/2.0/2.0.04/maradns-2.0.04.tar.xz.asc">sig</A>
++<br>
++<A 
++href="download/2.0/2.0.04/maradns-2.0.04.tar.gz"><!--
++                       -->maradns-2.0.04.tar.gz</A>
++<A 
++href="download/2.0/2.0.04/maradns-2.0.04.tar.gz.asc">sig</A>
++<br>
++<A 
++href="download/2.0/2.0.04/maradns-2-0-04-win32.zip"><!--
++                       -->maradns-2-0-04-win32.zip</A>
++<A 
++href="download/2.0/2.0.04/maradns-2-0-03-win32.zip.asc">sig</A>
+ 
+ <h2>Previous stable release</h2>
+ 
+-<p>This is the previous stable release of MaraDNS, MaraDNS 1.4.06,
+-released January 29, 2011.  Unlike MaraDNS 2.0.02, a Windows
+-binary is included.  This release is available
+-both at <A 
+-href="http://sourceforge.net/project/showfiles.php?group_id=24033">sourceforge.n
+-et</A>
+-and on this page.
++<p>This is the previous stable release of MaraDNS, MaraDNS 1.4.07,
++released November 11, 2011.  
+ 
+ <p>
+ 
+ <table><tr><td>
+ <A 
+-href="download/1.4/1.4.06/maradns-1.4.06.tar.bz2"><!--
+-                       -->maradns-1.4.06.tar.bz2</A>
++href="download/1.4/1.4.07/maradns-1.4.07.tar.bz2"><!--
++                       -->maradns-1.4.07.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.4/1.4.06/maradns-1.4.06.tar.bz2.asc">sig</A>
++href="download/1.4/1.4.07/maradns-1.4.07.tar.bz2.asc">sig</A>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.4/1.4.06/maradns-1.4.06.tar.gz"><!--
+-                       -->maradns-1.4.06.tar.gz</A>
++href="download/1.4/1.4.07/maradns-1.4.07.tar.gz"><!--
++                       -->maradns-1.4.07.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/1.4/1.4.06/maradns-1.4.06.tar.gz.asc">sig</A>
++href="download/1.4/1.4.07/maradns-1.4.07.tar.gz.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+ <A 
+-href="download/1.4/1.4.06/maradns-1-4-06-win32.zip"><!--
+-                       -->maradns-1-4-06-win32.zip</A>
++href="download/1.4/1.4.07/maradns-1-4-07-win32.zip"><!--
++                       -->maradns-1-4-07-win32.zip</A>
+ </td><td>
+ <A 
+-href="download/1.4/1.4.06/maradns-1-4-06-win32.zip.asc">sig</A>
++href="download/1.4/1.4.07/maradns-1-4-07-win32.zip.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ </td></tr><tr><td>
+ <A 
+-href="download/1.4/1.4.06/maradns-1-4-06-win32.7z"><!--
+-                       -->maradns-1-4-06-win32.7z</A>
++href="download/1.4/1.4.07/maradns-1-4-07-win32.7z"><!--
++                       -->maradns-1-4-07-win32.7z</A>
+ </td><td>
+ <A 
+-href="download/1.4/1.4.06/maradns-1-4-06-win32.7z.asc">sig</A>
++href="download/1.4/1.4.07/maradns-1-4-07-win32.7z.asc">sig</A>
+ </td><td>
+ <A href="#7z">info</A>
+ </td></tr></table>
+@@ -68,28 +83,27 @@
+ 
+ <h2>Deadwood</h2>
+ 
+-Deadwood is the code that will soon become MaraDNS' next recursive
+-resolver; right now it is a recursive cache undergoing beta testing.
+-Deadwood, unlike MaraDNS, does not need threads to resolve queries, and
+-has features MaraDNS 1.x's recursive code doesn't have, such as 
+-"resurrections" and the ability to read and write the cache to disk.
++Deadwood is MaraDNS 2.0's recursive resolver.  Deadwood does not need
++threads to resolve queries, and has features MaraDNS 1.x's recursive
++code doesn't have, such as "resurrections" and the ability to read and
++write the cache to disk.
+ 
+ <table><tr><td>
+ <A 
+-href="deadwood/stable/deadwood-3.0.02.tar.bz2"><!--
+-                   -->deadwood-3.0.02.tar.bz2</A>
++href="deadwood/stable/deadwood-3.0.05.tar.bz2"><!--
++                   -->deadwood-3.0.05.tar.bz2</A>
+ </td><td>
+ <A 
+-href="deadwood/stable/deadwood-3.0.02.tar.bz2.asc">sig</A>
++href="deadwood/stable/deadwood-3.0.05.tar.bz2.asc">sig</A>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="deadwood/stable/Deadwood-3-0-02-win32.zip"><!--
+-                   -->Deadwood-3-0-02-win32.zip</A>
++href="deadwood/stable/Deadwood-3-0-05-win32.zip"><!--
++                   -->Deadwood-3-0-05-win32.zip</A>
+ </td><td>
+ <A 
+-href="deadwood/stable/Deadwood-3-0-02-win32.zip.asc">sig</A>
++href="deadwood/stable/Deadwood-3-0-05-win32.zip.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ </td></tr></table>

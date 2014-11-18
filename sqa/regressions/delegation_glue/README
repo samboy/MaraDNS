@@ -1,0 +1,12 @@
+Delegation glue
+
+Description: This verifiees that MaraDNS correctly shows glue records 
+             when delegating nameservers
+
+Expected output of test: A (IP) query for www.sub.example.com gives ip for 
+                         ns.sub.example.com 
+
+Presence of bug output: A (IP) query for www.sub.example.com does not give 
+                        ip for ns.sub.example.com
+
+When fixed: Never a known bug; but a useful regression to have

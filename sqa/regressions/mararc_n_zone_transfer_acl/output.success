@@ -1,0 +1,91 @@
+about to run fetchzone...
+example.net. +86400 soa example.net. email@example.net. 1 7200 3600 604800 1800 ~ 
+example.net. +86400 ns a.example.net. ~ 
+example.net. +86400 ns b.example.net. ~ 
+a.example.net. +86400 a 10.10.10.10 ~ 
+b.example.net. +86400 a 10.10.10.11 ~ 
+b.example.net. +86400 a 10.10.10.12 ~ 
+z.example.net. +86400 a 10.2.3.4 ~ 
+y.example.net. +86400 a 10.3.4.5 ~ 
+percent.example.net. +86400 a 10.9.8.7 ~ 
+d.example.net. +86400 a 10.11.12.13 ~ 
+f.example.net. +86400 a 10.2.19.83 ~ 
+c.example.net. +86400 a 10.1.1.1 ~ 
+e.example.net. +86400 a 10.2.3.4 ~ 
+h.example.net. +86400 a 10.9.8.7 ~ 
+g.example.net. +86400 a 10.11.9.8 ~ 
+example.net. +86400 mx 10 mail.example.net. ~ 
+mail.example.net. +86400 a 10.22.23.24 ~ 
+_http._tcp.example.net. +86400 raw 33 \x00\x00\x00\x00\x00'P'\x01'a'\x07'example'\x03'net'\x00 ~ 
+example.net. +86400 txt 'This is some text' ~ 
+example.net. +86400 raw 99 '%v=spf1 +mx a:colo.example.com/28 -all' ~ 
+example.net. +86400 raw 40 \x10\x01\x02'Kitchen sink@ data' ~ 
+example.net. +86400 raw 13 \x11'Intel Pentium III'\x10'CentOS Linux 3.7' ~ 
+example.net. +86400 raw 11 \x0a\x01\x02\x03\x06\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x01 ~ 
+example.net. +86400 mx 0 a.example.net. ~ 
+example.net. +86400 mx 10 b.example.net. ~ 
+example.net. +86400 raw 7 \x04'mail'\x07'example'\x03'net'\x00 ~ 
+example.net. +86400 raw 8 \x02'mg'\x07'example'\x03'net'\x00 ~ 
+example.net. +86400 raw 14 \x02'rm'\x07'example'\x03'net'\x00\x02're'\x07'example'\x03'net'\x00 ~ 
+example.net. +86400 raw 9 \x02'mr'\x07'example'\x03'net'\x00 ~ 
+example.net. +86400 raw 18 \x00\x01\x05'afsdb'\x07'example'\x03'net'\x00 ~ 
+example.net. +86400 raw 17 \x02'rp'\x07'example'\x03'net'\x00\x02'rp'\x07'example'\x03'net'\x00 ~ 
+example.net. +86400 raw 17 \x03'rp2'\x07'example'\x03'net'\x00\x00 ~ 
+example.net. +86400 raw 19 \x0c'311061700956' ~ 
+example.net. +86400 raw 20 \x0f'150862028003217' ~ 
+example.net. +86400 raw 20 \x0f'150862028003217'\x03'004' ~ 
+example.net. +86400 raw 21 \x00\x0a\x05'relay'\x07'example'\x03'net'\x00 ~ 
+example.net. +86400 raw 22 'G'\x00\x05\x80\x00'P'\x00\x00\x00\x00\x01'A3UUU'\x00\x01'b'\x00 ~ 
+example.net. +86400 raw 23 \x04'nsap'\x07'example'\x03'net'\x00 ~ 
+example.net. +86400 raw 26 \x00\x0f\x03'px1'\x07'example'\x03'net'\x00\x03'px2'\x07'example'\x03'net'\x00 ~ 
+example.net. +86400 raw 27 \x08'-98.6502'\x06'19.283'\x04'2134' ~ 
+example.net. +86400 raw 29 \x00'"BT'\x84'0'\x1d'kj'\xf5\xe4'@'\x00\x9b\xa3\xc0 ~ 
+# Second SOA received, exiting
+fetchzone done
+
+Sexample.net.|86400|example.net.|email@example.net.|1|7200|3600|604800|1800
+Nexample.net.|86400|a.example.net.
+Nexample.net.|86400|b.example.net.
+Aa.example.net.|86400|10.10.10.10
+Ab.example.net.|86400|10.10.10.11
+Ab.example.net.|86400|10.10.10.12
+Az.example.net.|86400|10.2.3.4
+Ay.example.net.|86400|10.3.4.5
+Apercent.example.net.|86400|10.9.8.7
+Ad.example.net.|86400|10.11.12.13
+Af.example.net.|86400|10.2.19.83
+Ac.example.net.|86400|10.1.1.1
+Ae.example.net.|86400|10.2.3.4
+Ah.example.net.|86400|10.9.8.7
+Ag.example.net.|86400|10.11.9.8
+@example.net.|86400|10|mail.example.net.
+Amail.example.net.|86400|10.22.23.24
+U_http._tcp.example.net.|86400|33|\000\000\000\000\000P\001a\007example\003net\000
+Texample.net.|86400|This is some text
+Uexample.net.|86400|99|\%v=spf1 +mx a:colo.example.com/28 -all
+Uexample.net.|86400|40|\020\001\002Kitchen sink@ data
+Uexample.net.|86400|13|\021Intel Pentium III\020CentOS Linux 3.7
+Uexample.net.|86400|11|\012\001\002\003\006\000\000\002\000\000\000\000\000\000\000\200\000\000\000\001
+@example.net.|86400|0|a.example.net.
+@example.net.|86400|10|b.example.net.
+Uexample.net.|86400|7|\004mail\007example\003net\000
+Uexample.net.|86400|8|\002mg\007example\003net\000
+Uexample.net.|86400|14|\002rm\007example\003net\000\002re\007example\003net\000
+Uexample.net.|86400|9|\002mr\007example\003net\000
+Uexample.net.|86400|18|\000\001\005afsdb\007example\003net\000
+Uexample.net.|86400|17|\002rp\007example\003net\000\002rp\007example\003net\000
+Uexample.net.|86400|17|\003rp2\007example\003net\000\000
+Uexample.net.|86400|19|\014311061700956
+Uexample.net.|86400|20|\017150862028003217
+Uexample.net.|86400|20|\017150862028003217\003004
+Uexample.net.|86400|21|\000\012\005relay\007example\003net\000
+Uexample.net.|86400|22|G\000\005\200\000P\000\000\000\000\001A3UUU\000\001b\000
+Uexample.net.|86400|23|\004nsap\007example\003net\000
+Uexample.net.|86400|26|\000\017\003px1\007example\003net\000\003px2\007example\003net\000
+Uexample.net.|86400|27|\010-98.6502\00619.283\0042134
+Uexample.net.|86400|29|\000"BT\2040\035kj\365\344@\000\233\243\300
+
+about to run fetchzone...
+fetchzone done
+
+

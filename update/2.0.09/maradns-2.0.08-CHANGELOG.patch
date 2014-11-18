@@ -1,0 +1,27 @@
+--- maradns-2.0.08/doc/en/source/changelog.embed	2014-01-14 13:46:25.000000000 -0800
++++ maradns-2.0.09/doc/en/source/changelog.embed	2014-02-11 23:42:57.910763461 -0800
+@@ -1,5 +1,15 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-2.0.09:</p>
++This is the stable release of MaraDNS.
++<blockquote>
++<ul>
++<li>Deadwood updated to <A href=/deadwood/doc/CHANGELOG>3.2.05</A>
++<li>Startup scripts are now chkconfig-compatible
++</ul>
++(2014.02.12)
++</blockquote>
++
+ <p>maradns-2.0.08:</p>
+ This is the stable release of MaraDNS.
+ <blockquote>
+@@ -11,7 +21,7 @@
+ <li>Remove warning when MaraDNS is compiled for IPv6
+ <li>Remove warning when compiling getzone.c
+ </ul>
+-(2014.??.??)
++(2014.01.14)
+ </blockquote>
+ 
+ <p>maradns-2.0.07d:</p>

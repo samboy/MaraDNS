@@ -1,0 +1,19 @@
+See https://forum.samiam.org/thread-39.html (removes compiler warning)
+
+--- maradns-2.0.07/tcp/getzone.c	2013-01-19 21:25:03.000000000 -0800
++++ maradns-2.0.08/tcp/getzone.c	2014-01-03 10:02:15.000000000 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2007 Sam Trenholme
++/* Copyright (c) 2002-2014 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -67,7 +67,7 @@
+ 
+     unsigned char len[2];
+ 
+-    if((argc < 3 && argc > 4) || argv[1] == 0 || argv[2] == 0) {
++    if(argv[1] == 0 || argv[2] == 0) {
+         harderror(L_USAGE); /* "Usage: getzone zone_name zone_server_IP" */
+         }
+     if(argc == 4 && argv[3] == 0) {

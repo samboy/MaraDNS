@@ -1,0 +1,13 @@
+Bogus invalid query message bug
+
+Description: DNS lookups would incorrectly give out invalid query responses
+             in addition to the desired answer
+
+Expected output of test: No extra invalid query message 
+
+Presence of bug output: Extra invalid query message
+
+When fixed: 1.2.12.03
+
+NOTE: Should something break DNS recursion, this is the first SQA test case
+      to fail.

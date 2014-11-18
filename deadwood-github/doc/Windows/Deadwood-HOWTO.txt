@@ -1,0 +1,31 @@
+Here are some typical ways to use Deadwood and the corresponding dwood3rc
+files:
+
+* To have Deadwood listen on 127.0.0.1 (the localhost IP used by a computer
+  so it can talk to itself) and perform local DNS queries:
+
+bind_address = "127.0.0.1"
+recursive_acl = "127.0.0.1/16"
+chroot_dir = "/etc/maradns"
+
+* To have Deadwood listen on 127.0.0.1 and 192.168.1.42 and perform DNS queries
+  for a small LAN:
+
+bind_address = "127.0.0.1, 192.168.1.42"
+recursive_acl = "127.0.0.1/16, 192.168.1.1/24"
+chroot_dir = "/etc/maradns"
+
+* To have Deadwood perform DNS queries for a small LAN and have the DNS server
+  on 192.168.1.111 resolve queries ending in "local":
+
+bind_address = "127.0.0.1, 192.168.1.42"
+recursive_acl = "127.0.0.1/16, 192.168.1.1/24"
+chroot_dir = "/etc/maradns"
+root_servers = {}
+root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
+root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, 128.63.2.53, "
+root_servers["."]+="192.36.148.17, 192.58.128.30, 193.0.14.129, 199.7.83.42, "
+root_servers["."]+="202.12.27.33"
+root_servers["local."]="192.168.1.111"
+filter_rfc1918 = 0
+

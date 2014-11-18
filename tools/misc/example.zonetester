@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# This script tests an example zone with TXT fields to make sure it works
+# correctly
+
+cat db.example | \
+	awk '$2 ~ /[Tt][Xx][Tt]/ {print "dig @127.0.0.3 " $1 " txt"}
+             $2 ~ /[Rr][Aa][Ww]/ {print "dig @127.0.0.3 " $1 " raw"}' | sh

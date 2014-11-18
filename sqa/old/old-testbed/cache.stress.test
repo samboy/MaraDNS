@@ -1,0 +1,28 @@
+#!/bin/sh
+
+NUM="$1"
+
+if [ -z "$NUM" ] ; then
+	NUM=10000
+fi
+
+echo This will run until the following number has the value $NUM
+# Use make.many.records to create the records that this stress test uses
+awk '
+BEGIN{
+    for(a=1;a<='$NUM';a++)
+        {
+	# A records 
+	print "askmara A"a".example.com. 127.0.3.3 > /dev/null"
+	# CNAME records
+	print "askmara Ac"a".example.com. 127.0.3.3 > /dev/null"
+	# CNAME records which point nowhere (SOA caching)
+	print "askmara Ad"a".example.com. 127.0.3.3 > /dev/null"
+	# NS records which point nowhere
+	#print "../sendudp Asub.r"a".example.com. 127.0.3.3 > /dev/null"
+	print "echo "a" | tr '\''\\012'\'' '\''\\015'\''"
+	}
+    }' | sh
+echo
+echo Done.
+

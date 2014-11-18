@@ -1,0 +1,2 @@
+;www.example.com.		IN	A
+www.example.com.	86400	IN	A	10.1.2.3

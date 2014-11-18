@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Convert an ej document to an HTML document; which we then make a text
+# document.  This is designed to "sew" together text data files
+# using the ej system and the relevent parts of the data files in <pre>
+# tags.
+# The perl script simply elimanates everything before a pre tag and 
+# everything after a /pre tag
+
+if [ ! -d ~/tmp ] ; then
+	echo ~/tmp directory is required
+fi
+
+ej2html < $1 > ~/tmp/$$.html
+cat ~/tmp/$$.html | perl -e \
+    'while(<>){$a.=$_};$a=~s|.*<pre>(.*)</pre>.*|$1|si;print $a'
+rm ~/tmp/$$.html
+

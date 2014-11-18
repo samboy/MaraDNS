@@ -1,0 +1,26 @@
+--- maradns-2.0.02/doc/en/source/maradns.ej	2010-09-27 21:27:15.000000000 -0500
++++ maradns-2.0.03/doc/en/source/maradns.ej	2011-04-29 14:06:21.000000000 -0500
+@@ -147,13 +147,6 @@
+ <p>
+ MaraDNS, like every other known DNS implementation, only supports a 
+ QDCOUNT of 0 or 1.
+-<p>
+-MaraDNS spawns a new thread for every single recursive DNS request 
+-when the data in question is not in MaraDNS' cache; this
+-makes MaraDNS an excellent stress tester for pthread implementations.  
+-Many pthread implementations can not handle this kind of load;
+-symptoms include high memory usage and termination of the MaraDNS
+-process.
+ <h1>UNIMPLEMENTED FEATURES</h1>
+ <i>These are features which I do not plan to implement in MaraDNS.</i>
+ <p>
+@@ -172,7 +165,8 @@
+ MaraDNS only allows wildcards
+ at the beginning or end of a host name.  E.g. names with wildcards like 
+ "foo.*.example.com".  "www.*" will work, however, if a default zonefile is
+-set up.
++set up.  Likewise, MaraDNS does not have regular expression hostname
++substitution.
+ <p>
+ MaraDNS does not have support for MRTG or any other SNMP-based logging
+ mechanism.  

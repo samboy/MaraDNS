@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# This tests to make sure tcp on the real internet works
+# This test will need to be updated whenever the servers for the
+# real www.example.com auth server changes.
+
+# OK, now run the TCP load balancer
+cat > dwood2rc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+# real www.example.com auth server; change this if www.example.com's DNS
+# moves
+upstream_servers = {}
+upstream_servers["."]="199.43.132.53"
+recursive_acl="127.0.0.1/16"
+tcp_listen = 1
+timeout_seconds_tcp = 10
+filter_rfc1918 = 0
+EOF
+
+#../../src/Deadwood -f dwood2rc | grep -v version | sed 's/[(].*[)]//' &
+../../src/Deadwood -f dwood2rc > /dev/null 2>&1 &
+
+sleep 3
+dig +tcp @127.0.0.1 www.example.com | \
+	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
+	grep -v 'WARNING: recursion requested but not available' | \
+	grep -v 'global options' | grep -v NS
+killall maradns > /dev/null 2>&1
+killall zoneserver > /dev/null 2>&1
+killall Deadwood
+sleep 30 # TIME_WAIT takes a while before the port is available again
+rm dwood2rc
+

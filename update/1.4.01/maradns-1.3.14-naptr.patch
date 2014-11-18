@@ -1,0 +1,12 @@
+Provided by Joey Parrish.
+
+--- maradns-1.3.14/parse/Csv2_parse.c	2009-08-04 11:52:44.000000000 -0500
++++ maradns-1.3.15/parse/Csv2_parse.c	2009-08-07 13:30:57.000000000 -0500
+@@ -1786,6 +1786,7 @@
+                         break;
+                 case RR_NAPTR:
+                         rddata = csv2_get_naptr(stream);
++			break;
+                 default:
+                         /* RAW rtype */
+                         if(rtype >= 100000 && rtype <= 165535) {

@@ -1,0 +1,5 @@
+all:
+	./configure
+
+clean:
+	cp build/Makefile.w Makefile

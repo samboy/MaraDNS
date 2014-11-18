@@ -1,0 +1,34 @@
+JOBJS=../libs/JsStr.o ../libs/JsStrOS.o ../libs/JsStrCP.o 
+MHOBJS=../libs/MaraHash.o
+DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o ../dns/Decompress.o
+SOBJECTS=../server/timestamp.o
+OUTOBJ=../parse/Csv2_esc_txt.o
+OBJECTS=$(JOBJS) $(MHOBJS) $(DOBJECTS) $(SOBJECTS)
+ROBJECTS=../rng/rng-alg-fst.o ../rng/rng-api-fst.o
+POBJECTS=../parse/ParseCsv1.o ../parse/ParseMaraRc.o 
+Q=$(ROBJECTS) $(POBJECTS)
+EXECS=askmara 
+
+FLAGS = -g $(DEBUG)
+#FLAGS = -g $(DEBUG)
+
+all: $(EXECS)
+
+clean:
+	rm -f core $(EXECS) *.exe
+
+askmara: askmara.c askmara_labels_en.h $(OBJECTS) $(Q) $(OUTOBJ)
+	$(CC) $(FLAGS) -o askmara askmara.c $(OBJECTS) $(Q) $(OUTOBJ) -lwsock32
+
+askmara-tcp: askmara-tcp.c askmara_labels_en.h $(OBJECTS) $(ROBJECTS) $(POBJECTS)
+	$(CC) $(FLAGS) -o askmara-tcp askmara-tcp.c $(OBJECTS) $(ROBJECTS) $(POBJECTS)
+
+benchmark: benchmark.c askmara_labels_en.h $(OBJECTS) $(POBJECTS)
+	$(CC) $(FLAGS) -o benchmark benchmark.c $(OBJECTS) $(POBJECTS)
+
+duende: duende.c 
+	$(CC) $(FLAGS) -o duende duende.c
+
+strip.control: strip.control.c
+	$(CC) $(FLAGS) -o strip.control strip.control.c
+

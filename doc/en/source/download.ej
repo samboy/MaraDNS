@@ -1,0 +1,76 @@
+<HEAD>
+<TITLE>Download MaraDNS</TITLE>
+<BODYFLAGS>bgcolor="#FFFFCC" text="#660000" link=#888888 vlink=#888888
+</BODYFLAGS>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+</HEAD>
+<BODY>
+
+<h1>¡Download La MaraDNS!</h1>
+<A href=download/maradns-1.0.02.tar.bz2>Get the current stable release</A>,
+MaraDNS 1.0.02, released 2002/06/30 
+(bzip2 compressed).  
+<p>
+<A href=download/maradns-1.0.02.tar.bz2.asc>bzip2 GPG sig</A>
+<p>
+<A href=download/maradns-1.0.02.tar.gz>gzip compressed version</A>
+<p>
+<A href=download/maradns-1.0.02.tar.gz.asc>gzip GPG sig</A>
+<p>
+
+<b>Source code RPM</b></p>
+<p><A href=download/maradns-1.0.02-1.src.rpm>maradns-1.0.02-1.src.rpm</A></p>
+<p><b>Binary RPM</b> (Built on RedHat 7.2; verified to work on RH 7.1 and
+SuSE 8.0)</p>
+<p><A href=download/maradns-1.0.02-1.i386.rpm>maradns-1.0.02-1.i386.rpm</A></p>
+<em>Note: The binary RPM automatically starts the MaraDNS service when
+installed</em>
+
+<h2>Other</h2>
+<p><A href=download/maradns-0.9.33>Browse files in the 0.9.33 release</A></p>
+</p>
+<p><A href=changelog.html>View the changelog</A></p>
+
+<H2>Tool to help verify the sums of MaraDNS (or any other file)</H2>
+<p>This is a mishmash of various cryptographic summing algorithms.  <b>By and
+large, the programs in this tarball are not public domain</b>
+<p><A href=download/sums-20010925.tar.bz2>sums-20010925.tar.bz2</A>  This is the
+actual code which performs various cryptographic hashes against the file.
+<p>
+<A href=download/sums-papers-20010818.tar.bz2>sums-papers-20010818.tar.bz2</A>  
+This is a collection of papers describing the various cryptographic hashes.
+
+<H2>Older branch</H2>
+<p><b>This branch is deprecated and will no longer be available in 2006</b>
+The 1.1 branch has an option for MaraDNS to be compiled without
+recursive support; this will replace this branch in the near future.
+<p>The older branch of MaraDNS is an authoritative-only nameserver which
+features an authoritative nameserver, a zone transfer client, and zone
+transfer
+server.  <b>This version of MaraDNS does not function as a caching 
+nameserver</b>.
+<p><b>Tar</b></p>
+<p><A href=download/maradns-0.5.33.tar.bz2>maradns-0.5.33.tar.bz2</A></p>
+<p><b>Source code RPM</b></p>
+<p><A href=download/maradns-0.5.33-1.src.rpm>maradns-0.5.33-1.src.rpm</A></p>
+<p><b>Binary RPM</b></p>
+<p><A href=download/maradns-0.5.33-1.i386.rpm>maradns-0.5.33-1.i386.rpm</A>
+(This RPM was built on a RedHat 7.1 machine)
+<p><b>Debian package</b></p>
+<p><A href=http://packages.debian.org/maradns>http://packages.debian.org/maradns</A>
+</p>
+<H2>Disclaimer</H2>
+THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
+OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE 
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+
+</BODY>

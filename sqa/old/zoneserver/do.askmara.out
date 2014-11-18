@@ -1,0 +1,177 @@
+# Querying the server with the IP 127.0.0.4
+# Question: Sexample.net.
+example.net. +86400 soa example.net. hostmaster@example.net. 140107862 7200 3600 604800 3600
+# Querying the server with the IP 127.0.0.4
+# Question: Nexample.net.
+example.net. +86400 ns synth-ip-7f000004.example.net.
+# Querying the server with the IP 127.0.0.4
+# Question: Asynth-ip-7f000004.example.net.
+synth-ip-7f000004.example.net. +86400 a 127.0.0.4
+# Querying the server with the IP 127.0.0.4
+# Question: Aa.example.net.
+a.example.net. +86400 a 10.11.12.13
+a.example.net. +86400 a 10.10.10.10
+# Querying the server with the IP 127.0.0.4
+# Question: Ab.example.net.
+b.example.net. +86400 a 10.11.12.14
+b.example.net. +86400 a 10.10.10.11
+b.example.net. +86400 a 10.10.10.12
+# Querying the server with the IP 127.0.0.4
+# Question: Ac.example.net.
+c.example.net. +64000 a 10.11.12.15
+c.example.net. +86400 a 10.1.1.1
+# Querying the server with the IP 127.0.0.4
+# Question: @example.net.
+example.net. +86400 mx 10 mail.example.net.
+example.net. +86400 mx 10 mail.example.net.
+# Querying the server with the IP 127.0.0.4
+# Question: Amail.example.net.
+mail.example.net. +86400 a 10.11.12.16
+mail.example.net. +86400 a 10.22.23.24
+# Querying the server with the IP 127.0.0.4
+# Question: Ua.example.net.
+a.example.net. +86400 raw 28 '?'\xfe\xff\xff\x0f\xfe\x05\x01\xff\xff\x00\x0b\x00\x0c\x00\x0d 
+a.example.net. +86400 raw 28 '?'\xfe\xff\xff\x00\x01\x00\x02\x00\x03\x00\x00\x00\x04\x00\x0f 
+# Querying the server with the IP 127.0.0.4
+# Question: U_http._tcp.example.net.
+_http._tcp.example.net. +86400 raw 33 \x00\x00\x00\x00\x00'P'\x01'a'\x07'example'\x03'net'\x00 
+_http._tcp.example.net. +86400 raw 33 \x00\x00\x00\x00\x00'P'\x01'a'\x07'example'\x03'net'\x00 
+# Querying the server with the IP 127.0.0.4
+# Question: Texample.net.
+example.net. +86400 txt 'This is an example text field'
+# Querying the server with the IP 127.0.0.4
+# Question: Uexample.net.
+example.net. +86400 raw 40 \x10\x01\x02'Kitchen sink@ data' 
+# Querying the server with the IP 127.0.0.4
+# Question: Aa.example.net.
+a.example.net. +86400 a 10.10.10.10
+a.example.net. +86400 a 10.11.12.13
+# Querying the server with the IP 127.0.0.4
+# Question: Ab.example.net.
+b.example.net. +86400 a 10.10.10.11
+b.example.net. +86400 a 10.10.10.12
+b.example.net. +86400 a 10.11.12.14
+# Querying the server with the IP 127.0.0.4
+# Question: Ab.example.net.
+b.example.net. +86400 a 10.10.10.12
+b.example.net. +86400 a 10.11.12.14
+b.example.net. +86400 a 10.10.10.11
+# Querying the server with the IP 127.0.0.4
+# Question: Az.example.net.
+z.example.net. +86400 a 10.2.3.4
+# Querying the server with the IP 127.0.0.4
+# Question: Ay.example.net.
+y.example.net. +86400 a 10.3.4.5
+# Querying the server with the IP 127.0.0.4
+# Question: Apercent.example.net.
+percent.example.net. +86400 a 10.9.8.7
+# Querying the server with the IP 127.0.0.4
+# Question: A*.example.net.
+*.example.net. +86400 a 10.11.12.13
+# Querying the server with the IP 127.0.0.4
+# Question: Ad.example.net.
+d.example.net. +86400 a 10.11.12.13
+# Querying the server with the IP 127.0.0.4
+# Question: Af.example.net.
+f.example.net. +86400 a 10.2.19.83
+# Querying the server with the IP 127.0.0.4
+# Question: Ac.example.net.
+c.example.net. +86400 a 10.1.1.1
+c.example.net. +64000 a 10.11.12.15
+# Querying the server with the IP 127.0.0.4
+# Question: Ae.example.net.
+e.example.net. +86400 a 10.2.3.4
+# Querying the server with the IP 127.0.0.4
+# Question: Ah.example.net.
+h.example.net. +86400 a 10.9.8.7
+# Querying the server with the IP 127.0.0.4
+# Question: Ag.example.net.
+g.example.net. +86400 a 10.11.9.8
+# Querying the server with the IP 127.0.0.4
+# Question: @example.net.
+example.net. +86400 mx 10 mail.example.net.
+example.net. +86400 mx 10 mail.example.net.
+# Querying the server with the IP 127.0.0.4
+# Question: Amail.example.net.
+mail.example.net. +86400 a 10.22.23.24
+mail.example.net. +86400 a 10.11.12.16
+# Querying the server with the IP 127.0.0.4
+# Question: Ua.example.net.
+a.example.net. +86400 raw 28 '?'\xfe\xff\xff\x00\x01\x00\x02\x00\x03\x00\x00\x00\x04\x00\x0f 
+a.example.net. +86400 raw 28 '?'\xfe\xff\xff\x0f\xfe\x05\x01\xff\xff\x00\x0b\x00\x0c\x00\x0d 
+# Querying the server with the IP 127.0.0.4
+# Question: U_http._tcp.example.net.
+_http._tcp.example.net. +86400 raw 33 \x00\x00\x00\x00\x00'P'\x01'a'\x07'example'\x03'net'\x00 
+_http._tcp.example.net. +86400 raw 33 \x00\x00\x00\x00\x00'P'\x01'a'\x07'example'\x03'net'\x00 
+# Querying the server with the IP 127.0.0.4
+# Question: Tz.example.net.
+z.example.net. +86400 txt 'This is some text'
+# Querying the server with the IP 127.0.0.4
+# Question: Tza.example.net.
+za.example.net. +86400 txt 'This is some text'
+# Querying the server with the IP 127.0.0.4
+# Question: Tzb.example.net.
+zb.example.net. +86400 txt 'This is some text'\x0a'       with a linefeed in it, and an example UTF-8 character: I  MaraDNS'
+# Querying the server with the IP 127.0.0.4
+# Question: Tzc.example.net.
+zc.example.net. +86400 txt 'This_is_100%_unquoted_text_+symbols!'
+# Querying the server with the IP 127.0.0.4
+# Question: Tzd.example.net.
+zd.example.net. +86400 txt 'This is a mix of_unquoted and quoted text!'
+# Querying the server with the IP 127.0.0.4
+# Question: Tze.example.net.
+ze.example.net. +86400 txt \x80\x81\x82\x83
+# Querying the server with the IP 127.0.0.4
+# Question: Tzf.example.net.
+zf.example.net. +86400 txt \x80\x81\x82\x83
+# Querying the server with the IP 127.0.0.4
+# Question: Tzg.example.net.
+zg.example.net. +86400 txt \x80\x81\x82\x83
+# Querying the server with the IP 127.0.0.4
+# Question: Tzh.example.net.
+zh.example.net. +86400 txt 'perl -e '\''print "A Perl of a TXT record!\n"'\'''
+# Querying the server with the IP 127.0.0.4
+# Question: Tzh1.example.net.
+zh1.example.net. +86400 txt 'for(a=0;a<10;a++)'\x7b'printf("%d\n",a);sleep(1)'\x7d
+# Querying the server with the IP 127.0.0.4
+# Question: Tzi.example.net.
+zi.example.net. +86400 txt 'Not only did the quick brown fox jump over the lazy dog, but the lazy dog jumped over the cat.'
+# Querying the server with the IP 127.0.0.4
+# Question: Tzj.example.net.
+zj.example.net. +86400 txt 'Not only did the quick brown fox jump over the lazy dog, but the lazy dog jumped over the cat.'
+# Querying the server with the IP 127.0.0.4
+# Question: Tzk.example.net.
+zk.example.net. +86400 txt 'Not only did the quick brown fox jump over the lazy dog, but the lazy dog jumped over the cat.'
+# Querying the server with the IP 127.0.0.4
+# Question: Tzk2.example.net.
+zk2.example.net. +86400 txt 'This is some data and this is the rest of the data'
+# Querying the server with the IP 127.0.0.4
+# Question: Tzo.example.net.
+zo.example.net. +86400 txt 'TXT record with only one chunk'
+# Querying the server with the IP 127.0.0.4
+# Question: Tzp.example.net.
+zp.example.net. +86400 txt 'This is chunk one';'This is chunk two'
+# Querying the server with the IP 127.0.0.4
+# Question: Tzq.example.net.
+zq.example.net. +86400 txt 'This is chunk one';'This_is_chunk_two';'This is chunk three'
+# Querying the server with the IP 127.0.0.4
+# Question: Tzr.example.net.
+zr.example.net. +86400 txt 'chunk one';;'chunk three'
+# Querying the server with the IP 127.0.0.4
+# Question: Tzs.example.net.
+zs.example.net. +86400 txt ;'chunk two';
+# Querying the server with the IP 127.0.0.4
+# Question: Uzt1.example.net.
+zt1.example.net. +86400 raw 40 \x10\x01\x02'Kitchen sink+ data' 
+# Querying the server with the IP 127.0.0.4
+# Question: Uzt.example.net.
+zt.example.net. +86400 raw 40 \x10\x01\x02'Kitchen sink+ data' 
+# Querying the server with the IP 127.0.0.4
+# Question: Uzu.example.net.
+zu.example.net. +86400 raw 40 \x10\x01\x02'Kitchen sink+ data' 
+# Querying the server with the IP 127.0.0.4
+# Question: Uzv.example.net.
+zv.example.net. +86400 raw 40 \x10\x01\x02'Kitchen sink+ data' 
+# Querying the server with the IP 127.0.0.4
+# Question: Uzw.example.net.
+zw.example.net. +86400 raw 40 \x10\x01\x02'Kitchen sink+ data' 

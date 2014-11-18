@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>MaraDNS - a security-aware DNS server</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" title="Woodson (Default)"
+ type="text/css" media="screen, projection" href="maradns-1.2-s.css">
+<link rel="alternate stylesheet" title="Large Print" 
+ type="text/css" media="screen, projection" href="maradns-1.2-l.css">
+<link rel="stylesheet" type="text/css" media="print" 
+ href="maradns-1.2-p.css">
+<link rel="stylesheet" type="text/css" media="handheld" 
+ href="maradns-1.2-h.css">
+<script type=text/javascript src=styleswitcher.js></script>
+</head>
+<body>
+
+<div align=center id=maradns-all>
+<table><tr><td>
+<div align=left>
+<table><tr>
+<td valign=top width=340>
+<font id=maradns-name size="+4"><i><b>MaraDNS</b></i></font>
+<br>
+<div id=maradns-t>
+A&nbsp;security-aware DNS&nbsp;server
+</div>
+</td>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td valign=top id=topright width=220>
+        <div align=right><table><tr><td id=trabalengua>
+        <i>
+                Erre con erre cigarro<br>
+                Erre con erre barril<br> 
+                R&aacute;pido&nbsp;ruedan&nbsp;los&nbsp;carros<br>
+                En el ferrocarril<br></i>
+        </td></tr></table></div>
+</td>
+</tr></table>
+<script type=text/javascript>
+</script>
+<div id=lefthand>
+<div id=maradns-l>
+	<a href="index.html">Main</a>
+	<a href="download.html">Download</a>
+	<a href="changelog.html">Changelog</a>
+	<a href="notes.html">Documentation</a>
+	<a href="search.html">Search</a>
+	<a href="/blog">Blog</a>
+	<a href="security.html">Security</a>
+</div> <!-- maradns-l -->
+<script type="text/javascript">
+<!--
+if(isOKbrowser()) { 
+document.write("<p class=nocss><font size=-1>The following links that change text size will do nothing on your browser because your browser does not support CSS.  This page is otherwise usable in a non-CSS browser.");
+document.write("<\/font><\/p><div class=makelarge><div class=iebug>");
+document.write("To make the font larger, <A href=\"#\" onclick=\"setActiveStyleSheet('Large Print');return false;\">click here<\/A><\/div><\/div><p class=makenormal>");
+document.write("To see this without using a large font, <A href=\"#\" onclick=\"setActiveStyleSheet('Woodson (Default)');return false;\">click here<\/A><\/p>");
+}
+-->
+</script>
+</div>
+<hr class=moyet>
+<table><tr><td class=content width=596>
+<div id=maradns-r>
+<!-- -->
+<div id=paypal>
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but04.gif" border="0" name="submit" alt="PayPal Donate">
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+">
+</form>
+</div>
+<!-- -->
+<!-- end header -->
+<h2>A note for Debian users</h2>
+
+First of all, I would like to point out that I really appreciate Debian
+making a MaraDNS package available.  This package has increased the number
+of MaraDNS users, and the Debian developers have given me feedback that
+has improved MaraDNS.<p>
+
+However, because of Debian's policies, their "Stable" version of MaraDNS
+is usually an outdated version of MaraDNS that contains bugs that I
+have since fixed.  I do not support these outdated versions of MaraDNS,
+and request that Debian users upgrade to the current stable version of
+MaraDNS before sending the mailing list bug reports or asking for technical 
+support.  Here is my guide for Debian users, telling them how to upgrade the
+outdated version of MaraDNS Debian comes with:<ul>
+
+<li>	MaraDNS 1.4 is a "bugfix only" branch, 
+and no new features have been added to this version of MaraDNS.  
+
+<li>	Updating from previous versions of MaraDNS to MaraDNS 1.4
+	is trivial and <A href=http://maradns.org/tutorial/update.html>fully
+	documented</A>
+
+<li>	It is very easy to update the buggy version of MaraDNS 
+that the Debian package comes with an updated MaraDNS.
+
+<li> First, download the most recent stable version of MaraDNS from the 
+<A href="download.html">MaraDNS download page</A> 
+or from the <A href="http://sourceforge.net/projects/maradns">Sourceforge
+page</A>.
+
+<li>	Next, unpack the MaraDNS tarball.  For example, if you 
+downloaded the file "maradns-1.4.01.tar.bz2" (please only download
+MaraDNS-1.4.01 if it is the current stable version, which it is at 
+time of writing this document), type in this command:
+<blockquote><tt>
+	tar xvjf maradns-1.4.01.tar.bz2
+</tt></blockquote>
+
+<li>	Enter the maradns-1.4.<i>version</i> directory, where 
+<i>version</i> is the bugfix revision number of the most current 1.4 
+release of MaraDNS.
+
+<li>	Compile MaraDNS 1.4.<i>version</i> with the following 
+commands:
+
+<blockquote><tt>
+		./configure; make  
+</tt></blockquote>
+
+<li>	If the above fails, you may need to install the "gcc" and 
+"libc6-dev" packages before being able to compile programs:
+
+<blockquote><tt>
+		sudo apt-get install gcc<br>
+		sudo apt-get install libc6-dev
+</tt></blockquote>
+
+<li>	Once MaraDNS is compiled, make sure to stop the MaraDNS daemon:
+	
+<blockquote><tt>
+		/etc/init.d/maradns stop
+</tt></blockquote>
+
+<li>	Now, replace the outdated MaraDNS program that comes with 
+Debian.  From the maradns-1.2.12.<i>version</i> directory, type in the 
+following command:
+
+<blockquote><tt>
+		sudo cp server/maradns /usr/sbin/
+</tt></blockquote>
+
+<li>	Restart the MaraDNS daemon:
+
+<blockquote><tt>
+		/etc/init.d/maradns start
+</tt></blockquote>
+
+</ul> At this point, your MaraDNS daemon is now the fully supported 
+version of MaraDNS.  If you continue to have the bug or concern after 
+upgrading to the latest 1.4 release, please let us know on the mailing 
+list so we can begin to resolve the issue.
+
+</div>
+</td></table>
+</div>
+</td></table>
+</div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+                   Using BIND zone files in MaraDNS
+
+   MaraDNS has some BIND zone file support. This means it is
+   possible to use BIND zone files in MaraDNS. This makes it easier
+   for people to use MaraDNS in mixed DNS server environments.
+
+   Instead of having direct BIND zone file support, MaraDNS has a
+   script, called bind2csv2.py, that converts BIND zone files in to
+   the "csv2" zone file format that MaraDNS uses.
+
+   bind2csv2.py is a Python script, written in version 2.2.3 of the
+   Python interpreter. The script should be compatible with more
+   recent versions of Python. The script assumes Python is the file
+   /usr/bin/python on your system; if Python is located elsewhere
+   on your system, please change the first line of bind2csv2.py.
+   Naturally, you will need the Python interpreter installed on
+   your system to use bind2csv2.py. This is a well-known open
+   source language supported by most modern Linux and BSD
+   distributions.
+
+   To use the script, enter a directory containing BIND zone files,
+   and invoke the script thusly:
+
+ bind2csv2.py -c zone1 zone2 zone3
+
+   Substitute "zone1", "zone2", and "zone3" with a list of one or
+   more BIND zone files you wish be converted in to MaraDNS csv2
+   zone files.
+
+   Once the script is run, you should have files with names like
+   "zone1.csv2", "zone2.csv2", and "zone3.csv2". These files are
+   csv2 zone files that MaraDNS will be able to parse. Copy these
+   csv2 zone files to a place where MaraDNS can find the zone
+   files.
+
+   Should there already be a "zone1.csv2" file when bind2csv2.py is
+   run, the "zone1.csv2" file will be replaced.
+
+BUGS
+
+   bind2csv2.py is not a perfect zone file converter. In
+   particular, bind2csv2.py does not act like BIND when NS records
+   have different TTLs. Please make sure all NS records in your
+   BIND zone files have the same TTL.
+
+   In addition, bind2csv2.py also does not support all resource
+   record types that BIND supports. Only the following RRs are
+   supported by bind2csv2.py: A AAAA AFSDB CNAME GPOS HINFO ISDN
+   LOC MB MD MF MG MINFO MR MX NS NSAP PTR PX RP RT SOA SPF SRV TXT
+   WKS X25

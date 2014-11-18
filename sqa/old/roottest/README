@@ -1,0 +1,3 @@
+This is a mini-setup where we set up a bogus root server, a bogus simple
+.com server, and a bogus example.com server.  The purpose of this is to
+verify that delegation and what not work.

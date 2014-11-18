@@ -1,0 +1,91 @@
+The execfile mechanism allows one to have Deadwood include another file
+in the dwood3rc configuration file.
+
+<p>
+
+For example, let us suppose we want to have a file with a list of
+domains to be solved by a name server for <A href=http://opennicproject.org>the
+Open NIC project</A>.  We want to make this an external file, since this
+information will probably have to be updated more frequently than other
+configuration data in our dwood3rc file (located at <tt>/etc/dwood3rc</tt>).
+
+<p>
+
+First, Deadwood requires that the directory <tt>/etc/deadwood/execfile</tt>
+exists:
+
+<p>
+<tt>
+$ <b>mkdir /etc/deadwood/</b>
+<br>$ <b>mkdir /etc/deadwood/execfile/</b>
+</tt>
+<p>
+
+This directory should be owned by root.
+
+<p>
+
+Now, let's take a simple dwood3rc file:
+
+<pre>
+bind_address = "127.0.0.1,192.168.42.101"
+recursive_acl = "127.0.0.0/16,192.168.42.0/24"
+chroot_dir = "/etc/deadwood"
+root_servers = {}
+root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
+root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, 128.63.2.53, "
+root_servers["."]+="192.36.148.17, 192.58.128.30, 193.0.14.129, 199.7.83.42, "
+root_servers["."]+="202.12.27.33"
+upstream_servers = {}
+</pre><p>
+
+We now make a file pointing to a recursive server used by the Open NIC project:
+
+<pre>
+$ <b>cat > /etc/deadwood/execfile/opennicproject</b>
+upstream_servers["bit."] = "178.32.31.41"
+upstream_servers["glue."] = "178.32.31.41"
+upstream_servers["geek."] = "178.32.31.41"
+upstream_servers["free."] = "178.32.31.41"
+upstream_servers["indy."] = "178.32.31.41"
+upstream_servers["parody."] = "178.32.31.41"
+upstream_servers["bbs."] = "178.32.31.41"
+upstream_servers["fur."] = "178.32.31.41"
+upstream_servers["null."] = "178.32.31.41"
+upstream_servers["oss."] = "178.32.31.41"
+upstream_servers["ing."] = "178.32.31.41"
+upstream_servers["dyn."] = "178.32.31.41"
+upstream_servers["gopher."] = "178.32.31.41"
+upstream_servers["micro."] = "178.32.31.41"
+</pre>
+
+<p>(At this point hit Ctrl + D at the beginning of a blank line to end the
+file)<p>
+
+In plain English, the above lines tell Deadwood to have names ending
+in ".bit", ".glue" (such as "opennic.glue"), ".geek", ".free", and so
+on be recursively resolved by the DNS server with the IP 178.32.31.41.
+
+<p>
+
+This file needs to be referred to by Deadwood, so let's edit the
+dwood3rc file to refer to it:
+
+
+<pre>
+bind_address = "127.0.0.1,192.168.42.101"
+recursive_acl = "127.0.0.0/16,192.168.42.0/24"
+chroot_dir = "/etc/deadwood"
+root_servers = {}
+root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
+root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, 128.63.2.53, "
+root_servers["."]+="192.36.148.17, 192.58.128.30, 193.0.14.129, 199.7.83.42, "
+root_servers["."]+="202.12.27.33"
+upstream_servers = {}
+<b>execfile("opennicproject")</b>
+</pre>
+
+That's all there is to it.  Now, Deadwood will read the contents of the
+/etc/deadwood/execfile/opennicproject file as if it were part of the
+dwood3rc file.
+

@@ -1,0 +1,46 @@
+# This zone file is set up to test the various slash commands which we
+# are adding to CSV2 zone files
+
+% 	SOA	% email@% /serial 7200 3600 604800 1800
+
+% 	NS 	a.%
+%	NS	b.%
+
+/ttl 3600
+www.%	10.1.2.3
+/ttl 7200
+a.% 	10.1.2.4
+/ttl 9600
+b.% 	10.1.2.5
+
+
+/origin foo.
+
+z.% 10.1.2.6
+
+/opush bar.%
+z.% txt z+bar+foo
+/opush baz.%
+z.% txt z+baz+bar+foo
+/opop
+y.% txt y+bar+foo
+/opop # Clear the stack
+
+/origin example.com.
+/opush mail.% # origin is now mail.example.com; example.com is on stack
+a.% 10.4.0.1 # a.mail.example.com has IP 10.4.0.1
+/opush web.example.com. # mail.example.com and example.com are on stack
+a.% 10.5.0.1 # a.web.example.com has IP 10.5.0.1
+b.% 10.5.0.2 # b.web.example.com has IP 10.5.0.2
+/opop # origin is now mail.example.com again
+b.% 10.4.0.2 # b.mail.example.com has IP 10.4.0.2
+/opop # origin is now example.com
+% MX 10 a.mail.% # example.com. MX 10 a.mail.example.com.
+% MX 20 b.mail.% # example.com. MX 20 b.mail.example.com.
+
+/opush %
+/read testfile
+/opop
+
+bar.example.net. TXT 'Youve read bar!'
+

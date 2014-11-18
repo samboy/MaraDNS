@@ -1,0 +1,14 @@
+truncation
+
+Descrption: This test makes sure that MaraDNS correctly performs RFC2181
+            compliant truncation.
+
+Expected output of test: MaraDNS correctly truncates the records, and has
+                         an output that looks like output.success
+
+Presence of bug output: MaraDNS does not correctly truncate the records, and
+                        has an output that looks like one of the output.fail
+                        files
+
+When fixed: 1.2.12.02
+

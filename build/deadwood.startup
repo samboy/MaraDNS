@@ -1,0 +1,85 @@
+#!/bin/bash
+# chkconfig: 2345 55 45
+# description: Deadwood is MaraDNS' recursive name server
+
+# Copyright 2005-2006,2011,2014 Sam Trenholme
+
+# TERMS
+
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+
+# This software is provided 'as is' with no guarantees of correctness or
+# fitness for purpose.
+
+# This is a script which stops and starts the MaraDNS process
+# The first line points to bash because I don't have a true Solaris /bin/sh
+# to test this against.
+
+# The following is a pointer to the MaraDNS program
+if [ -x "/usr/sbin/Deadwood" ] ; then
+	DEADWOOD="/usr/sbin/Deadwood"
+elif [ -x "/usr/local/sbin/Deadwood" ] ; then
+	DEADWOOD="/usr/local/sbin/Deadwood"
+elif [ -x "/usr/local/bin/Deadwood" ] ; then
+	DEADWOOD="/usr/local/bin/Deadwood"
+elif [ -x "/usr/bin/Deadwood" ] ; then
+	DEADWOOD="/usr/bin/Deadwood"
+else
+	echo unable to find Deadwood
+	exit 1
+fi
+
+# The following is a pointer to the duende daemonizer
+if [ -x "/usr/sbin/duende" ] ; then
+	DUENDE="/usr/sbin/duende"
+elif [ -x "/usr/local/sbin/duende" ] ; then
+	DUENDE="/usr/local/sbin/duende"
+elif [ -x "/usr/local/bin/duende" ] ; then
+	DUENDE="/usr/local/bin/duende"
+elif [ -x "/usr/bin/duende" ] ; then
+	DUENDE="/usr/bin/duende"
+else
+	echo unable to find duende
+	exit 1
+fi
+
+# The following is the directory we place MaraDNS log entries in
+LOGDIR="/var/log"
+
+# Show usage information if this script is invoked with no arguments
+if [ $# -lt 1 ] ; then
+    echo Usage: $0 \(start\|stop\|restart\)
+    exit 1
+fi
+
+# If invoked as stop or restart, kill *all* MaraDNS processes
+if [ $1 = "stop" -o $1 = "restart" ] ; then
+    echo Sending all Deadwood processes the TERM signal
+    ps -e | awk '{print $1":"$NF}' | grep Deadwood | grep -v $$ | \
+      cut -f1 -d: | xargs kill > /dev/null 2>&1
+    echo waiting 5 seconds
+    sleep 5
+    echo Sending all Deadwood processes the KILL signal
+    ps -e | awk '{print $1":"$NF}' | grep Deadwood | grep -v $$ | \
+      cut -f1 -d: | xargs kill -9 > /dev/null 2>&1
+    echo MaraDNS should have been stopped
+    if [ $1 = "stop" ] ; then
+    	exit 0
+    fi
+fi
+
+# If invoked as start or restart, start the Deadwood processes
+if [ $1 = "start" -o $1 = "restart" ] ; then
+    echo Starting Deadwood process
+    $DUENDE $DEADWOOD 
+    exit 0
+fi
+

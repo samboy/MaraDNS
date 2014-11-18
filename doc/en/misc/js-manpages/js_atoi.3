@@ -1,0 +1,52 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_atoi 3 "October 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_atoi \- Return the integer value of a positive number embedded in a 
+js_string object
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "unsigned int js_atoi(js_string *js, int offset);"
+.fi
+.SH DESCRIPTION
+.B js_atoi
+determines the integer value of a string of numbers in a
+.B js_string 
+object.  
+.SH ARGUMENTS
+.B js
+is a pointer to the
+.B js_string
+object that you wish to view the integer value of a string of numbers in.
+.B offset
+is the character number of the character we want to look at.  0 is the
+first character in the string, 1 is the second character, and so on.
+.SH EXAMPLE
+The following example code creates a 
+.B js_string
+object, then determines the string value starting at the second character.
+.nf
+
+	js_string *foo;
+	int val;
+	foo = js_create(256,1);         
+	js_set_encode(foo,JS_US_ASCII); 
+        js_qstr2js(foo,"Z123");
+	val = js_atoi(foo,1); /* Should be 123 */
+.fi
+.SH "RETURN VALUE"
+.B js_atoi
+returns the integer value of the non-negative string in question.
+This function will return
+.I 0
+if it is not able to get the value for the string in question.
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

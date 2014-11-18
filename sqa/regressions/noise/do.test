@@ -1,0 +1,24 @@
+#!/bin/sh
+
+if test ! -e sendnoise ; then
+	./do.compile
+fi
+
+cat > mararc << EOF
+chroot_dir="$( /bin/pwd )"
+recursive_acl="127.0.0.1/16"
+ipv4_bind_addresses="127.0.0.1"
+max_mem = 100000000
+EOF
+
+valgrind ../../../server/maradns -f mararc 2>&1 | \
+	fgrep 'definitely lost' | awk '{print $4}' &
+echo wait 5 seconds
+sleep 5
+for a in 1 2 3 4 5 ; do
+	./sendnoise Awww${a}.example.com. 127.0.0.1 > /dev/null
+	echo wait 1 second
+	sleep 1
+done
+kill $( ps auxw | grep maradns | grep -v grep | awk '{print $2}' )
+

@@ -1,0 +1,210 @@
+dos_protection_level is 0
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.1.2.3
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+# Querying the server with the IP 127.0.0.1
+# Question: Zwww.example.com.
+www.example.com. +86400 a 10.1.2.3
+www.example.com. +86400 raw 99 \x0a'SPF record' 
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Question: Acname.example.com.
+cname.example.com. +86400 cname www.example.com.
+#www.example.com. +86400 a 10.1.2.3
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.sub.example.com.
+# NS replies:
+#sub.example.com. +86400 ns ns.sub.example.com.
+# AR replies:
+#ns.sub.example.com. +86400 a 10.99.99.99
+
+# Querying the server with the IP 127.0.0.1
+# Question: Afoo.example.com.
+foo.example.com. +86400 a 10.1.2.99
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+
+dos_protection_level is 8
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.1.2.3
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+# Querying the server with the IP 127.0.0.1
+# Question: Zwww.example.com.
+www.example.com. +86400 a 10.1.2.3
+www.example.com. +86400 raw 99 \x0a'SPF record' 
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Question: Acname.example.com.
+# NS replies:
+#example.com. +86400 soa example.com. hostmaster@example.com. 1 2 3 4 5
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.sub.example.com.
+# NS replies:
+#sub.example.com. +86400 ns ns.sub.example.com.
+# AR replies:
+#ns.sub.example.com. +86400 a 10.99.99.99
+
+# Querying the server with the IP 127.0.0.1
+# Question: Afoo.example.com.
+foo.example.com. +86400 a 10.1.2.99
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+
+dos_protection_level is 12
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.1.2.3
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+# Querying the server with the IP 127.0.0.1
+# Question: Zwww.example.com.
+www.example.com. +86400 a 10.1.2.3
+www.example.com. +86400 raw 99 \x0a'SPF record' 
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Remote server said: REFUSED
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.sub.example.com.
+www.sub.example.com. +86400 a 10.1.2.99
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+# Querying the server with the IP 127.0.0.1
+# Question: Afoo.example.com.
+foo.example.com. +86400 a 10.1.2.99
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+
+dos_protection_level is 14
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.1.2.3
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+# Querying the server with the IP 127.0.0.1
+# Remote server said: REFUSED
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Remote server said: REFUSED
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.sub.example.com.
+www.sub.example.com. +86400 a 10.1.2.99
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+# Querying the server with the IP 127.0.0.1
+# Question: Afoo.example.com.
+foo.example.com. +86400 a 10.1.2.99
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+
+dos_protection_level is 18
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.1.2.3
+# NS replies:
+#example.com. +86400 ns synth-ip-7f000001.example.com.
+# AR replies:
+#synth-ip-7f000001.example.com. +86400 a 127.0.0.1
+
+# Querying the server with the IP 127.0.0.1
+# Remote server said: REFUSED
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Remote server said: REFUSED
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Remote server said: REFUSED
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Remote server said: REFUSED
+# NS replies:
+# AR replies:
+
+
+dos_protection_level is 78
+# Querying the server with the IP 127.0.0.1
+# Remote server said: REFUSED
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Remote server said: REFUSED
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Remote server said: REFUSED
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Remote server said: REFUSED
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Remote server said: REFUSED
+# NS replies:
+# AR replies:
+
+

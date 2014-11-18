@@ -1,0 +1,73 @@
+EJ is a document format which I made specifically for MaraDNS documentation.
+
+All of the tags which EJ supports are described fully in the README.ej
+document in the same directory as the ej scripts
+
+EJ is essentially HTML; here are the differences between making an EJ
+document and making a HTML document:
+
+* An EJ document requires a HEAD and a BODY section.  
+
+* The HEAD section can have three tags: TITLE; META (but only to declare 
+  the charset); and three tags which do not exist in html: One called TH;
+  one called DTWIDTH; and one called BODYFLAGS
+
+  The header must have a line in this format:
+
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+
+  Where the CHARSET is the charset that the EJ document uses. 
+  For man page conversions, the document will be converted to iso 8859-1
+  using iconv; as a practical matter this means that documents using
+  characters outside of 8859-1 (the first 256 spots of Unicode) can not 
+  be converted in to man pages.
+
+  The TH tag is used for converting EJ documents in to man pages; it
+  has five parts: 
+  
+   1. The name of the man page; usually same as the filename of the
+      document
+   2. The section the man page is placed in
+   3. The date the man page was written
+   4. The program for which the man page was written; this is placed
+      in the bottom left hand corner of every single page of the
+      document
+   5. What this man page should be filed as; this is placed in the top
+      center of every single page of the document
+
+  DTWIDTH determines how wide to make DT headings when translating to the 
+  man page format; if a given DT heading is too wide for the allowed space,
+  the DD section will roll over to the next line
+
+  BODYFLAGS are flags given to the BODY tag when the document is 
+  converted in to HTML.  This is here to allow an HTML document to
+  be more aesthetically pleasing.
+
+* The BODY section uses two tags which do not exist in html: 
+
+  1. The INCLUDE tag, which is used for loading the contents of another 
+     file, and embedding the contents of that file in the EJ document.
+ 
+  2. The HINCLUDE tag, which is like the INCLUDE tag, but is designed
+     to include HTML code which makes a rendered web page more 
+     aesthetically pleasing; this code is included only when rendering the 
+     EJ document in question in to HTML.
+
+  EJ docs support the following HTML tags: <H1> (becomes section header
+  when translating to man page); <H2>; <B> and </B>; <I> and </I>; <UL>
+  and </UL>; <LI>; <PRE> and </PRE>; <BLOCKQUOTE> and </BLOCKQUOTE>;
+  <P>; <A ...> and </A>; <TT> and </TT>; <DL>, <DT>, and <DD>; <HR> and
+  finally <BR>.
+
+  EJ also supports <TABLE>, <TD>, and <TR> tags, but only in a very
+  limited fashion when converting to man pages; a table can only have
+  three columns, and the first two columns need to be fairly short
+  fields, and the third column can not be more than 35 characters (or
+  so) long.
+
+* In addition, the EJ doc format supports the <!-- ... --> form for
+  comments; these comments will not be visible in the rendered HTML
+  page or man document (perhaps EJ needs a comment tag which generates
+  comments in the rendered man page/HTML document which HTML/man renderers
+  will not see when rendering the page)
+

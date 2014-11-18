@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# This tests for the "something.% 10.1.2.3" csv2 parse bug
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+verbose_level = 0
+EOF
+
+cat > db.example.com << EOF
+www.% 10.1.2.3
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+sleep 1
+../../../tools/askmara Awww.example.com.
+sleep 1
+killall maradns
+rm mararc
+rm db.example.com

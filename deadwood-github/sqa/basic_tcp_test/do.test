@@ -1,0 +1,47 @@
+#!/bin/sh
+
+# This tests to make sure tcp works
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+killall zoneserver > /dev/null 2>&1 
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.2"
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+verbose_level = 0
+long_packet_ipv4="127.0.0.2"
+tcp_convert_acl="0.0.0.0/0" # Anyone on the 'net
+tcp_convert_server="127.0.0.2"
+EOF
+
+# OK, run the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+../../../tcp/zoneserver -f mararc > /dev/null 2>&1 &
+
+# OK, now run the Deadwood daemon to test its TCP
+cat > dwood2rc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+upstream_servers = {}
+upstream_servers["."]="127.0.0.2"
+recursive_acl="127.0.0.1/16"
+tcp_listen=1
+ttl_age = 0
+max_ar_chain = 2
+filter_rfc1918 = 0
+EOF
+
+../../src/Deadwood -f dwood2rc | grep -v version | sed 's/[(].*[)]//' &
+
+sleep 3
+dig +tcp @127.0.0.1 www.example.com | \
+	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
+	grep -v 'global options' | grep -v 'WARNING'
+killall maradns > /dev/null 2>&1
+killall zoneserver > /dev/null 2>&1
+killall Deadwood
+sleep 30 # TIME_WAIT takes a while before the port is available again
+rm mararc
+rm dwood2rc
+

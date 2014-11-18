@@ -1,0 +1,10 @@
+chroot_dir="/home/set/maradns/maradns-1.4.03/deadwood-2.6.05p2/sqa/dwood2rc_n_hash_magic_number"
+ipv4_bind_addresses="127.0.0.1"
+upstream_servers = {}
+upstream_servers["."]="127.0.0.2"
+recursive_acl="127.0.0.1/16"
+maxprocs=8
+timeout_seconds=1
+hash_magic_number=1441614611
+num_retries=0
+filter_rfc1918 = 0

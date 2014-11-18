@@ -1,0 +1,15 @@
+ptr_leak
+
+Description: MaraDNS would leak memory when making a recursive query for
+             a PTR record that is a CNAME that doesn't point to an existing
+             record.
+
+Expected output of test: MaraDNS does not leak memory
+
+Presence of bug output: MaraDNS leaks memory
+
+When fixed: 1.2.12.01
+
+Note: Valgrind needed to run this test; Valgrind may report 
+      "68 bytes possibly lost" even though memory is not really leaking
+

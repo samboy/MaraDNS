@@ -1,0 +1,13 @@
+Update this to work with YYYY-MM-DD snapshots.
+
+--- deadwood-3.2.03d/src/make.version.h	2012-12-20 10:30:37.000000000 -0800
++++ deadwood-S-2014-01-03-1/src/make.version.h	2014-01-07 19:14:52.000000000 -0800
+@@ -5,7 +5,7 @@
+         pwd | awk -F/ '{print $(NF - 1)}' | \
+                 awk -F- '{
+                 if($2 == "H" || $2 == "S" || $2 == "Q") {
+-                        print "#define VERSION \""$(NF-1)"-"$NF"\""
++                print "#define VERSION \""$(NF-3)"-"$(NF-2)"-"$(NF-1)"-"$NF"\""
+                 } else {
+                         print "#define VERSION \""$NF"\""
+                         } }' > version.h

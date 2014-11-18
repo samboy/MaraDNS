@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Make postscript man pages for all the man pages in the current working
+# directory, assuming that the user is using groff, and assuming that
+# all the man pages use the man macro set
+
+# The ps2pdf CentOS 3 comes with is buggy; we have the latest AFPL
+# ps2pdf in /usr/local/bin with the name ps2pdf-afpl (8.53)
+PS2PDF=ps2pdf
+if [ -e /usr/local/bin/ps2pdf-afpl ] ; then
+	PS2PDF=/usr/local/bin/ps2pdf-afpl
+fi
+
+# We don't include the csv1 pages (since csv1 is here for MaraDNS 1.0 
+# compatibility)
+groff -mman -rS12 -Tps -P -pletter \
+$( ls *.[1-8] | grep -v csv1 | grep -v getzone | grep -v mqhash \
+  ) > manpage_reference.ps
+$PS2PDF manpage_reference.ps ../pdf/manpage_reference.pdf
+rm *.ps
+

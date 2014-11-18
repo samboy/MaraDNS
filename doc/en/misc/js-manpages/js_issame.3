@@ -1,0 +1,41 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_issame 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_issame \- determine if two js_string objects have the same data
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "js_issame(js_string *js1, js_string *js2)"
+.fi
+.SH DESCRIPTION
+.B js_issame
+determines whether two 
+.I js_string
+objects contain the same data.  Both strings need to have
+the same 
+.I unit
+size, the same number of
+.I units,
+and identical strings.
+
+Note that two strings with different maximum
+.I unit
+values still contain the same data.  Additionally, two strings that
+are otherwise identical but have different encodings will be 
+considered identical.
+
+.SH "RETURN VALUE"
+.B js_issame
+returns 0 if the strings are not the same, 1 if they are, and
+.I JS_ERROR
+if there was an error when comparing the strings.
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

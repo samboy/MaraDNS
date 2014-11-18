@@ -1,0 +1,14 @@
+
+; (1 server found)
+;; Got answer:
+
+;; QUESTION SECTION:
+;www.example.com.		IN	A
+
+www.example.com.	86400	IN	A	93.184.216.119
+
+;; AUTHORITY SECTION:
+
+;; SERVER: 127.0.0.1#53(127.0.0.1)
+;; MSG SIZE  rcvd: 97
+

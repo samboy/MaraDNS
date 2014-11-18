@@ -1,0 +1,14 @@
+handle_noreply=0
+;; communications error to 127.0.0.1#53: end of file
+handle_noreply=1
+
+; (1 server found)
+;; Got answer:
+;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;www.example.com.		IN	A
+
+;; SERVER: 127.0.0.1#53(127.0.0.1)
+;; MSG SIZE  rcvd: 33
+

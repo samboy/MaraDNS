@@ -1,0 +1,51 @@
+#!/bin/ksh
+
+# This script is a recursive stress test; we run a large number of queries
+# against MaraDNS and make sure MaraDNS doesn't crash nor become unable to
+# resolve hostnames.  We also make sure that Mara doesn't leak memory.
+
+NUM=1
+ASKMARA=../tools/$ASKMARA
+HOSTFILE=hosts3
+
+while : ; do
+	echo Test round $NUM
+	NUM=$(( $NUM + 1 ))
+	echo >> sqa.output
+	echo >> sqa.output
+	echo >> sqa.output
+	date >> sqa.output
+	ps auxw | grep maradns >> sqa.output
+	cat $HOSTFILE | sed 's/[^A-Za-z0-9\-\.\n]//g' | awk '
+            BEGIN{srand();}
+	    { a++; b++
+            if(a % 7 == 0) { b++
+		    print "./sendudp Awww.google.com. 127.0.0.4 > /dev/null"}
+            if(a % 11 == 0) { b++
+		    print "./sendudp Ayahoo.com. 127.0.0.4 > /dev/null"}
+            if(a % 13 == 0) { b++
+		    print "./sendudp Awww.msn.com. 127.0.0.4 > /dev/null"}
+            if(a % 83 == 0) { b++
+		    print "./sendudp Awww.myspace.com. 127.0.0.4 > /dev/null"}
+	    if(a % 17 == 0) { b++
+            w = int(rand() * 256);
+            x = int(rand() * 256);
+            y = int(rand() * 256);
+            z = int(rand() * 256);
+ print "./sendudp P" w "." x "." y "." z ".in-addr.arpa. 127.0.0.4 > /dev/null"
+               }
+	    print "./sendudp A"$0". 127.0.0.4 > /dev/null"
+            if(b > 10) {print "sleep 1"; b = 0} }' | sh
+	sleep 10
+        # Make sure we'll still able to resolve host names
+	$ASKMARA 1:www.google.com. 127.0.0.4 >> sqa.output
+	$ASKMARA 1:www.yahoo.com. 127.0.0.4 >> sqa.output
+	$ASKMARA 1:www.msn.com. 127.0.0.4 >> sqa.output
+	$ASKMARA 1:www.microsoft.com. 127.0.0.4 >> sqa.output
+	$ASKMARA 1:www.redhat.com. 127.0.0.4 >> sqa.output
+	$ASKMARA 1:www.distrowatch.com. 127.0.0.4 >> sqa.output
+	$ASKMARA 1:www.myspace.com. 127.0.0.4 >> sqa.output
+	$ASKMARA 1:www.maradns.org. 127.0.0.4 >> sqa.output
+	$ASKMARA 1:www.samiam.org. 127.0.0.4 >> sqa.output
+done
+

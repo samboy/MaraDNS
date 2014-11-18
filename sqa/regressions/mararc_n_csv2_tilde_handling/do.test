@@ -1,0 +1,49 @@
+#!/bin/sh
+
+# This test to make sure the csv2_tilde_handling dictionary variable works
+
+cat > db.0 << EOF
+example.com. 10.1.2.3
+example.com. txt '~~##||' #~~~~
+EOF
+
+cat > db.1 << EOF
+example.com. 10.1.2.3
+example.com. txt 'Life is life' #~~~~
+EOF
+
+cat > db.2 << EOF
+example.com. 10.1.2.3 ~
+example.com. txt 'Life is life' #~~~~
+EOF
+
+cat > db.3 << EOF
+example.com. 10.1.2.3 ~
+example.com. txt 'Life is life' #~~~~
+EOF
+
+for LEVEL in 0 1 2 3 ; do
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+csv2_tilde_handling = ${LEVEL}
+csv2 = {}
+csv2["example.com."] = "db.${LEVEL}"
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+sleep 1
+echo level $LEVEL
+../../../tools/askmara Aexample.com.
+../../../tools/askmara Texample.com.
+echo
+sleep 1
+killall maradns
+
+done
+
+rm mararc
+rm db.[0-5]
+

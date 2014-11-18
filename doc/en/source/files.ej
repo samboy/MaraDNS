@@ -1,0 +1,127 @@
+<HEAD>
+<TITLE>Files in the MaraDNS source directory</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<DTWIDTH>4</DTWIDTH>
+</HEAD>
+<BODY>
+This document describes each file or directory at the MaraDNS
+source top-level directory.
+<DL>
+<DT>00README.FIRST
+<DD>Legal disclaimer and license
+
+<DT>0QuickStart
+<DD>Quick start guide; geared for experienced UNIX admins
+
+<DT>build/
+<DD>Files used to compile, install, and make RPMs of MaraDNS.  This will also
+    include patches and scripts that update a stable release of MaraDNS.
+
+<DT>CHANGELOG
+<DD>Link to an ASCII version of the changelog document
+
+<DT>COPYING
+<DD>License describing permission to copy MaraDNS (BSD license)
+
+<DT>configure
+<DD>Script which sets up the Makefile; uses uname to detect the system
+    being used.  Non-autoconf because an autoconf-enabled system requires
+    the presence of non-BSD licensed code.
+
+<DT>CREDITS
+<DD>List of people who have helped with MaraDNS' development
+
+<DT>deadwood-2.4.##
+<DD>Deadwood is the code that will become MaraDNS 2.0's recursive resolver;
+    the 2.4 branch of Deadwood is a non-recursive cache.
+
+<DT>dns/
+<DD>Source code files with functions which manipulate the raw DNS data 
+
+<DT>doc/
+<DD>Documentation
+
+<DT>FAQ
+<DD>Link to an ASCII version of the MaraDNS FAQ (Frequently Asked Questions)
+
+<DD>FILES
+<DD>This document listing the files here.
+
+<DT>libs/
+<DD>The libraries for the overflow-resistant string functions, and to the
+    hashing core used by MaraDNS.
+
+<DT>locale.de
+<DD>Shell script which changes some of the messages which MaraDNS outputs 
+    from English to German.  This needs to be run <i>before</i> compiling
+    MaraDNS.
+
+<DT>locale.en
+<DD>Shell script which changes the language of MaraDNS' messages to English
+    (this is the default language).  This needs to be run <i>before</i>
+    compiling MaraDNS.
+
+<DT>locale.es
+<DD>Shell script which changes some of the messages which MaraDNS outputs
+    from English to Spanish.  This needs to be run <i>before</i> compiling
+    MaraDNS.
+
+<DT>locale.pt_br
+<DD>Shell script to set the language for various messages to 
+    Brasil Portuguese
+
+<DT>Makefile
+<DD>Starts off as a wrapper which runs configure to generate the makefile,
+    then runs 'make' on that Makefile.
+
+<DT>MaraDNS.h
+<DD>Header files which defines some of MaraDNS' structures; this file is
+    used by source files in many different MaraDNS directories.
+
+<DT>maradns.gpg.key
+<DD>The GPG key which is used to sign MaraDNS releases.
+
+<DT>parse/
+<DD>Routines which parse the mararc file and the csv1 zone files.
+
+<DT>qual/
+<DD>Y2038 compliant timestamp routines
+
+<DT>README.Debian
+<DD>Note for Debian users telling them to upgrade to the most recent
+    1.4 release of MaraDNS
+
+<DT>README.RedHat
+<DD>Note for RedHat users telling them how to make a .rpm build of MaraDNS
+
+<DT>README.mingw32
+<DD>Note for people wishing to compile MaraDNS in Windows
+
+<DT>rng/
+<DD>Routines used by the secure random number generator
+
+<DT>server/
+<DD>The core maradns server
+
+<DT>sqa/
+<DD>Routines used for MaraDNS regression and stress testing; not compiled
+    by default
+
+<DT>tcp/
+<DD>The TCP domain zone and TCP server and the getzone domain zone client 
+
+<DT>tools/
+<DD>askmara; the "ej" tools used for processing MaraDNS documentation; and 
+    some other scripts I wrote for various MaraDNS-development related
+    purposes
+
+<DT>update/
+<DD>Scripts for updating from one version of MaraDNS to the next version.
+
+<DT>utf8/
+<DD>Some routines for 8859-1 to utf-8 conversion; currently unused by 
+    MaraDNS
+
+</DL>
+</BODY>
+

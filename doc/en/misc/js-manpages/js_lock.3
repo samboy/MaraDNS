@@ -1,0 +1,48 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_lock 3 "October 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_lock \- Place an exclusive lock on an open file
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_lock(js_file *desc)"
+.fi
+.SH DESCRIPTION
+.B js_lock
+is a function that places an exclusive lock on an open file.
+If the file is already locked, then this function will wait until the
+file is unlocked before locking the file.  Note that the amount of time
+this funciton will take to run is undetermined.
+.SH ARGUMENTS
+.B desc
+is a pointer to an open file object.
+.SH "RETURN VALUE"
+.B js_lock
+returns 
+.I JS_SUCCESS.
+.SH NOTES
+.B js_lock
+uses
+.B flock
+to lock the file.
+.SH EXAMPLE
+The following locks the file "filename":
+
+.nf
+	js_string *foo;
+	js_file *bar;
+	foo = js_create(256,1);		
+	js_str2js(foo,"filename",8,1);
+	js_open_write(foo,bar);
+	js_lock(bar); 
+.fi
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

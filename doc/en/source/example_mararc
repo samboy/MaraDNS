@@ -1,0 +1,35 @@
+# Example mararc file. 
+# This only shows a subset of MaraDNS' features needed to be an
+# authoritative name server.  Look at 
+# detailed/example_full_mararc for an example showing most of 
+# the features that MaraDNS has.
+
+# Note that this example mararc file will not actually do anything
+# without modification.
+# Look in the doc/en/examples directory for a working example 
+# authoritative nameserver, and a working recursive nameserver.
+
+# The various zones we support
+
+# When running in authoritative mode, we must initialize the csv2 hash, 
+# or MaraDNS will be unable to load any csv2 zone files
+csv2 = {}
+
+# This is just to show the format of the file
+# Note the this is commented out.  Any line that starts with 
+# a '#' is not read by the parser.  Remove the leading '#' to 
+# enable any line that is commented out
+
+# The following line (commented out) tells MaraDNS to look at the 
+# file db.example.net to get the zone for example.net
+csv2["example.net."] = "db.example.net"
+# Naturally, we can have multiple zone files
+#csv2["example.com."] = "db.example.com"
+
+# The address this DNS server runs on.  If you want to bind 
+# to multiple addresses, separate them with a comma like this:
+# "10.1.2.3, 10.1.2.4, 127.0.0.1"
+ipv4_bind_addresses = "127.0.0.1"
+# The directory with all of the zone files
+chroot_dir = "/etc/maradns"
+

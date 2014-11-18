@@ -1,0 +1,25 @@
+#!/usr/bin/perl
+
+# Create 65536 * 5 records, which is more than enough to fill up the MaraDNS
+# cache.
+
+$suffix = shift || "example.com.";
+
+for($a=1;$a<255;$a++) {
+	for($b=1;$b<255;$b++) {
+		$c++;
+		# Simple A records
+		print "A$c.$suffix|86400|10.0.$a.$b\n";
+		# MX records
+		print "\@$c.$suffix|86400|5|$c.$suffix\n";
+		# CNAME records which point to a name that exists
+		print "Cc$c.$suffix|86400|$c.$suffix\n";
+		# CNAME records which point to a name which does not
+		# exist (this tests the caching of SOA records)
+		print "Cd$c.$suffix|86400|e$c.$suffix\n";
+		# NS records which point somewhere (this tests the
+		# caching of NS records)
+		print "Nr$c.$suffix|86400|n$c.$suffix\n";
+		print "An$c.$suffix|86400|10.99.$a.$b\n";
+		}
+	}

@@ -1,0 +1,17 @@
+--- deadwood-3.2.02/src/DwMararc.c.orig	2012-02-25 15:34:29.000000000 -0600
++++ deadwood-3.2.02/src/DwMararc.c	2012-02-25 15:35:20.000000000 -0600
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2011 Sam Trenholme
++/* Copyright (c) 2007-2012 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -506,7 +506,7 @@
+  * 3: Set dictionary variable
+  * 4: Append to dictionary variable
+  * 5: Set numeric variable
+- * 6: Init dictionary variable (currently not used)
++ * 6: Init dictionary variable 
+  * 7: Read other file for more dwood2rc parameters
+  */
+ 

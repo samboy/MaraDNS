@@ -1,0 +1,15 @@
+diff -ur maradns-1.1.59/build/install.locations maradns-1.1.59-rpm/build/install.locations
+--- maradns-1.1.59/build/install.locations	2002-05-05 05:11:47.000000000 -0700
++++ maradns-1.1.59-rpm/build/install.locations	2005-11-28 09:46:03.000000000 -0800
+@@ -8,8 +8,8 @@
+ # PREFIX=/usr/ ; make install
+ # Thanks to D Richard Felker III for this suggestion
+ if [ -z "$PREFIX" ]; then
+-	PREFIX="/usr/local/"
+-#	PREFIX="$RPM_BUILD_ROOT/usr/"
++#	PREFIX="/usr/local/"
++	PREFIX="$RPM_BUILD_ROOT/usr/"
+ fi
+ 
+ # Try to determine which language to use
+Sólo en maradns-1.1.59/build/patches: maradns-1.1.59-rpm.patch

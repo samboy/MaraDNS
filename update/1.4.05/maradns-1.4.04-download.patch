@@ -1,0 +1,29 @@
+--- maradns-1.4.04/doc/en/webpage/download.embed	2010-07-31 00:17:06.000000000 -0700
++++ maradns-1.4.05/doc/en/webpage/download.embed	2010-08-05 04:21:13.000000000 -0700
+@@ -60,20 +60,20 @@
+ 
+ <table><tr><td>
+ <A 
+-href="deadwood/testing/deadwood-2.9.02.tar.bz2"><!--
+-                    -->deadwood-2.9.02.tar.bz2</A>
++href="deadwood/testing/deadwood-2.9.03.tar.bz2"><!--
++                    -->deadwood-2.9.03.tar.bz2</A>
+ </td><td>
+ <A 
+-href="deadwood/testing/deadwood-2.9.02.tar.bz2.asc">sig</A>
++href="deadwood/testing/deadwood-2.9.03.tar.bz2.asc">sig</A>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="deadwood/testing/Deadwood-2-9-02-win32.zip"><!--
+-                    -->Deadwood-2-9-02-win32.zip</A>
++href="deadwood/testing/Deadwood-2-9-03-win32.zip"><!--
++                    -->Deadwood-2-9-03-win32.zip</A>
+ </td><td>
+ <A 
+-href="deadwood/testing/Deadwood-2-9-02-win32.zip.asc">sig</A>
++href="deadwood/testing/Deadwood-2-9-03-win32.zip.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ </td></tr></table>

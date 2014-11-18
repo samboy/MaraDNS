@@ -1,0 +1,67 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_nonmatch_offset 3 "October 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_nonmatch_offset \- search for anything besides a literal character in exp in the string js
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_nonmatch_offset(js_string *exp, js_string *js, int offset)"
+.fi
+.SH DESCRIPTION
+.B js_nonmatch_offset
+searches for any single character that is not in the expression 
+.B exp
+in the string
+.B js.
+
+The expression 
+.B exp
+is treated as a list of characters we do not look for in the string
+.B js.
+No characters are considered metacharacters in the expression
+.B exp.
+
+The argument
+.B offset
+determines the minimum offset we will not look for a character in the expression
+.B exp
+at.  An offset of 0 indicates we start looking at the beginning of the
+string
+.B js, 
+an offset of 1 means that we will start looking at the second character 
+in the string, and so on.
+
+.SH "RETURN VALUE"
+.B js_nonmatch_offset
+returns -2 if all of the characters in the string
+.B js 
+were found in the string
+.B exp,
+the offset of the first found character if the a character not in exp 
+was found (0 if it 
+was found at the top of the string, 1 if it was found starting at the 
+second character in the string, etc), and 
+.I JS_ERROR
+if there was an error when searching for a character in the expression.
+.SH EXAMPLE
+The following example will find the first character 6 not in the string "543" 
+in the string "3634567890":
+
+.nf
+	js_string *foo, *bar;
+	foo = js_create(256,1);
+	bar = js_create(256,1);
+	js_str2js(foo,"3634567890",10,1);
+	js_str2js(bar,"543",3,1);
+	printf("%d\\n",js_nonmatch_offset(bar,foo,1)); /* You will see 2 */
+.fi
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

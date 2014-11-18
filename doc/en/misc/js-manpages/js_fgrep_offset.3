@@ -1,0 +1,69 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_fgrep_offset 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_fgrep_offset \- search 
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "js_fgrep_offset(js_string *exp, js_string *js, int offset)"
+.fi
+.SH DESCRIPTION
+.B js_fgrep_offset
+searches for the expression 
+.B exp
+in the string
+.B js, 
+starting at the offset
+.B offset.
+
+The expression 
+.B exp
+is simply a string that we look for in the string 
+.B js.
+No characters are considered metacharacters in the expression
+.B exp.
+
+The argument
+.B offset
+determines the minimum offset we will look for the expression
+.B exp
+at.  An offset of 0 indicates we start looking at the beginning of the
+string
+.B js, 
+an offset of 1 means that we will start looking at the second character 
+in the string, and so on.
+
+.SH "RETURN VALUE"
+.B js_fgrep_offset
+returns -2 if the
+.B exp
+was not found in the string
+.B js,
+the offset of the first found expression if the string was found (0 if it 
+was found at the top of the string, 1 if it was found starting at the 
+second character in the string, etc), and 
+.I JS_ERROR
+if there was an error when searching for the expression.
+.SH EXAMPLE
+The following example will find the second string "34" in the string 
+"3434567890":
+
+.nf
+	js_string *foo, *bar;
+	foo = js_create(256,1);
+	bar = js_create(256,1);
+	js_str2js(foo,"3434567890",10,1);
+	js_str2js(bar,"34",2,1);
+	printf("%d\\n",js_fgrep_offset(bar,foo,1)); /* You will see 2 */
+.fi
+
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

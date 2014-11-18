@@ -1,0 +1,33 @@
+0
+# uerying the server with the IP 127.0.0.1
+# Remote server said: REFUSED
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Remote server said: REFUSED
+# NS replies:
+# AR replies:
+
+1
+# uerying the server with the IP 127.0.0.1
+# uestion: Tversion.maradns.
+version.maradns. +770616 txt 'MaraDNS version '
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Remote server said: REFUSED
+# NS replies:
+# AR replies:
+
+3
+# uerying the server with the IP 127.0.0.1
+# uestion: Tversion.maradns.
+version.maradns. +770616 txt 'MaraDNS version '
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Ttimestamp.maradns.
+timestamp.maradns. +770616 txt 'Timestamp'
+# NS replies:
+# AR replies:
+

@@ -1,0 +1,10 @@
+Default zonefile and incorrect NXDOMAINs bug
+
+Description: Default zone files incorrectly returned NXDOMAIN results
+
+Expected output of test: "not there" DNS reply
+
+Presence of bug output: NXDOMAIN ("NAME ERROR") DNS reply
+
+When fixed: 1.3.05; 1.2.12.06
+

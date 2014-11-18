@@ -1,0 +1,12 @@
+bind_star_handling having a value of 1 bugs (yes, I know, in star_handling_1
+bind_star_handling has a value of 2; and in star_handling_2, 
+bind_star_handling has a value of 1.  Possibly confusing)
+
+Description: MaraDNS would sometimes incorrectly return NXDOMAINS when
+             bind_star_handling had a value of 1
+
+Expected output of test: see output.success 
+
+Presence of bug output: sh ./do.test output is not the same as output.success
+
+When fixed: Unknown, but incorrect NXDOMAINS present in 1.2.12.02

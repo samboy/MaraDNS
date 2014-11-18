@@ -1,0 +1,54 @@
+--- maradns-2.0.06/doc/en/source/changelog.embed	2012-03-11 10:41:38.000000000 -0700
++++ maradns-2.0.07/doc/en/source/changelog.embed	2013-01-19 21:22:30.000000000 -0800
+@@ -1,5 +1,35 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-2.0.07:</p>
++This is the stable release of MaraDNS.
++<blockquote>
++<ul>
++<li>MaraDNS updated for CentOS 6
++<li>Deadwood updated to 3.2.03
++<li>GPG key updated
++<li>Installs and tests pass in new CentOS install
++</ul>
++(2013.01.20)
++</blockquote>
++
++<p>maradns-1.4.12:</p>
++This is the legacy branch of MaraDNS.  Please upgrade to MaraDNS 2.
++<blockquote>
++<ul>
++<li>Maximum TTL now one day to eliminate ghost domain-style attacks.
++</ul>
++(2012.03.17)
++</blockquote>
++
++<p>maradns-1.3.07.15:</p>
++This is the obsolete branch of MaraDNS.
++<blockquote>
++<ul>
++<li>Maximum TTL now one day to eliminate ghost domain-style attacks.
++</ul>
++(2012.03.17)
++</blockquote>
++
+ <p>maradns-2.0.06:</p>
+ This is a stable release of MaraDNS.
+ <blockquote>
+@@ -9,6 +39,15 @@
+ (2012.03.11)
+ </blockquote>
+ 
++<p>maradns-1.4.11:</p>
++This is the legacy branch of MaraDNS.  Please upgrade to MaraDNS 2.
++<blockquote>
++<ul>
++<li>Deadwood updated to 3.2.02
++</ul>
++(2012.03.11)
++</blockquote>
++
+ <p>maradns-2.0.05:</p>
+ This is a stable release of MaraDNS.
+ <blockquote>

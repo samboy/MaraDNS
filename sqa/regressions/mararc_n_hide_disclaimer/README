@@ -1,0 +1,5 @@
+This test makes sure the mararc variable hide_disclaimer works.
+
+Note that this test is performed only to make sure this mararc variable
+works, and that running this test does not invalidate MaraDNS' disclaimer.
+

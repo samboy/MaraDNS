@@ -1,0 +1,17 @@
+<HEAD>
+<TITLE>MaraDNS credits file</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+</HEAD>
+<BODY>
+
+One of the things that is very delightful about writing open-source 
+software is the incredible amount of help people have been offering
+me with MaraDNS.  Numerous people have provided invaluable assistance
+with filing bug reports, making usability suggestions, providing
+patches and reports with respect to running MaraDNS on other operating
+systems, and otherwise making MaraDNS a superior program.
+<p>
+<include "source/credits.embed">
+
+</BODY>
+

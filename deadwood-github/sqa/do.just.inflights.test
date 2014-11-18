@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# This is a shell script that will do all of the sqa tests; this script
+# will halt if any of the tests does not give the desired result
+
+# This test needs to be run from root, it needs to be run with Deadwood 
+# inside the MaraDNS source tree, and it needs to be run with the
+# current working directory the directory this test is in
+
+SQADIR=$(pwd)
+export CC=gcc
+
+# Inflight test
+cd $SQADIR
+cd ../src
+make -f Makefile.centos5 clean > /dev/null 2>&1
+export FLAGS='-O3 -DINFLIGHT_VERBOSE -DVALGRIND_NOERRORS'
+#export FLAGS='-g -DINFLIGHT_VERBOSE -DVALGRIND_NOERRORS'
+make -f Makefile.centos5 > /dev/null 2>&1
+cd $SQADIR
+cd dwood2rc_n_max_inflights
+sh ./do.test > output.test 2> /dev/null
+sleep 2
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+	echo test dwood2rc_n_max_inflights failed
+	exit 1
+else
+	echo test dwood2rc_n_max_inflights succeeded
+fi
+

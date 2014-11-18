@@ -1,0 +1,126 @@
+html {
+        overflow-y: scroll;
+	overflow: -moz-scrollbars-vertical;
+        /*min-height: 100.1%;*/
+}
+
+.moyet { display: none; }
+
+#paypal { float: right; }
+
+body {
+        color: #000000;
+        background: #ded1be url(mara-tile.jpg);
+        font-family: Verdana, "Bitstream Vera Sans", sans-serif;
+}
+
+h1 {
+	color: #405040;
+}
+
+h2 {
+	color: #405040;
+}
+
+b {
+	color: #405040;
+}
+
+font b {
+	color: #405040;
+}
+
+#maradns-t {
+	font-weight: bold;
+        font-size: medium;
+	background-color: inherit;
+	color: #405040;
+}
+
+#logo {
+	font-size: 300%;
+}
+
+#topright {
+	width: 345px;
+}
+
+#trabalengua {
+        font-weight: bold;
+        font-size: medium;
+	background-color: inherit;
+        color: #405040;
+}
+
+#lefthand {
+	float: left;
+	width: 8.5em;
+}
+
+#maradns-l {
+	border-bottom: 2px solid #989088;
+	border-top: 2px solid #989088;
+       	margin-top: 3px;
+}
+
+#maradns-l a {
+	color: #000000;
+	background-color: white;
+	border-left: 2px solid #989088;
+	border-right: 2px solid #989088;
+	color: #ffffff;
+	background-color: #5a4529; 
+	display: block;
+	width: auto !important;
+	width: 100%;
+	text-decoration: none;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-left: .2em;
+	padding-right: .1em;
+}
+
+.makelarge {
+	border: 2px solid #989088;
+	background-color: white; 
+	color: #000000;
+       	margin-top: 3px;
+	padding-left: .2em;
+}
+
+.iebug {
+	margin-top: 4px;
+	margin-bottom: 4px;
+	margin-left: .1em;
+	margin-right: .1em;
+}
+
+#maradns-l a:hover {
+	background-color: #ded1be;
+	text-decoration: none;
+	color: #000000;
+}
+
+#maradns-r {
+        margin-top: 0px;
+        margin-left: 4px !important;
+        margin-left: 0px;
+	margin-right: 4px;
+        margin-bottom: 4px;
+	padding: 7px;
+}
+
+.nocss {
+	display: none;
+}
+
+.makenormal {
+	display: none;
+}
+
+#maradns-r {
+	border: 2px solid #989088;
+	background-color: #ffffff; 
+	color: #000000;
+}
+

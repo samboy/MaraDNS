@@ -1,0 +1,64 @@
+#!/bin/sh
+
+# This tests for ANY and case-insensitivity
+
+for IPS in '127.0.0.1' '127.0.0.1,192.168.1.116' \
+	'127.0.0.1,192.168.1.116,126.254.254.9' '127.0.0.1,172.16.116.70' \
+	'127.0.0.1,172.16.116.70,126.254.254.9' \
+        '127.0.0.1,10.1.2.3' '127.0.0.1,10.1.2.3,126.254.254.9' \
+        '127.0.0.1,10.1.2.3,172.16.116.70,192.168.1.116' \
+        '127.0.0.1,10.1.2.3,172.16.116.70,192.168.1.116,126.254.254.9' ; do
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="${IPS}"
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+verbose_level = 0
+EOF
+
+cat > db.example.com << EOF
+www.% A 10.1.2.3
+EOF
+
+ADD=""
+NUM=""
+for ITEM in $(echo $IPS | tr ',' ' ') ; do
+	ifconfig lo${ADD}${NUM} $ITEM
+	ADD=":"
+	if [ -z "$NUM" ] ; then
+		NUM=0
+	else
+		NUM=$( expr $NUM + 1 )
+	fi
+done
+
+echo IPS: $IPS
+# OK, test the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+#../../../server/maradns -f mararc &
+sleep 1
+../../../tools/askmara Awww.example.com. | grep synth
+sleep 1
+killall maradns
+rm mararc
+rm db.example.com
+
+ADD=""
+NUM=""
+for ITEM in $(echo $IPS | tr ',' ' ') ; do
+	ifconfig lo${ADD}${NUM} del $ITEM
+	ADD=":"
+	if [ -z "$NUM" ] ; then
+		NUM=0
+	else
+		NUM=$( expr $NUM + 1 )
+	fi
+done
+ifconfig lo:0:1 down > /dev/null 2>&1
+
+done
+
+ifconfig lo 127.0.0.1
+

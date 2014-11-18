@@ -1,0 +1,51 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_tolower 3 "October 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_tolower \- convert all uppercase characters in a js_string object to 
+lower case
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_tolower(js_string *js)"
+.fi
+.SH DESCRIPTION
+.B js_tolower
+converts all uppercase characters in the
+.I js_string
+object
+.B js
+to lower case letters.  Note that the encoding of the string has to be one 
+with upper and lower case letters.
+.SH ARGUMENTS
+.B js
+is a pointer to the  
+.I js_string
+object we will make all letters lowercase.
+
+.SH "RETURN VALUE"
+.B js_wolower
+returns 
+.I JS_SUCCESS 
+on successful conversion of the string,
+.I JS_ERROR
+otherwise.
+.SH EXAMPLE
+The following example will give foo the string "upperlower":
+
+.nf
+	js_string *foo, *bar;
+	foo = js_create(256,1);
+        js_set_encode(foo,JS_US_ASCII); /* required */
+	js_qstr2js(foo,"UPPERlower");
+	js_tolower(foo); /* foo is now "upperlower" */
+.fi
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

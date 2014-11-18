@@ -1,0 +1,64 @@
+                             DNS glossary
+
+   Authoritative DNS server
+           A DNS server which recursive DNS servers contact in
+           order to resolve a given DNS node
+
+   DNS node
+           A name which DNS usually converts in to an IP, such as
+           www.yahoo.com. Not all DNS nodes have IPs, however.
+
+   DNS record
+           A single piece of DNS data, which can either be data for
+           a DNS node, or meta-data which DNS uses.
+
+   DNS server
+           A program which resolves DNS records
+
+   DNS server administrator
+           A person who manages DNS; setting up DNS servers,
+           changing DNS records, and what not.
+
+   Domain registry
+           A domain registry is a company that allows one to have
+           their authoritative DNS servers be contacted by
+           recursive name servers.
+
+   Domain suffix
+           The part of the domain which is (usually) after the
+           first dot in a DNS node. The domain suffix for
+           www.yahoo.com, for example, is yahoo.com.
+
+   Domain zone
+           A domain zone is a set of one or more DNS nodes. All
+           names in a given domain zone share the same domain
+           suffix.
+
+   IP
+           A number which a computer connected to the internet has,
+           similar to a phone number.
+
+   Internet service provider
+           An internet service provider (or ISP) is a company that
+           offers access to the internet.
+
+   Mail Transport Agent
+           A computer program which accepts incoming SMTP (email)
+           connections, allowing a server to receive email.
+
+   Recursive DNS server
+           A recursive DNS server is a DNS server which contacts
+           other DNS servers to resolve a given DNS node.
+
+   To resolve
+           To convert a DNS node, such as www.yahoo.com, in to an
+           IP, such as 10.17.243.32.
+
+   To serve
+           The action of an authoritative DNS server making DNS
+           nodes available to recursive DNS servers.
+
+   Static IP address
+           A static IP address is an IP addresses whose value does
+           not change. Only some internet service providers offer
+           static IP addresses.

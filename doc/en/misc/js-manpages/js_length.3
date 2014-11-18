@@ -1,0 +1,53 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_length 3 "October 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_length \- determine the length that a given js_string object has
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_length(js_string *js);"
+.fi
+.SH DESCRIPTION
+.B js_length
+determines the length that a given 
+.B js_string 
+object has.  
+You can use this function to see how many units a 
+.B js_string
+object has.  
+.SH ARGUMENTS
+.B js
+is a pointer to the
+.B js_string
+object that you wish to view the length of.
+.SH EXAMPLE
+The following example code creates a 
+.B js_string
+object, then gets the length of the string.
+.nf
+
+	js_string *foo;
+	int len;
+	foo = js_create(256,1);         
+	js_set_encode(foo,JS_US_ASCII); 
+	len = js_length(foo);
+.fi
+.SH "RETURN VALUE"
+.B js_length
+returns the length (in units) of the string in question.  The size of
+a unit is determined by the unit_size of the js_string object in question.
+This function will return
+.I JS_ERROR
+if it is not able to get the length for the
+.B js_string
+object.
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

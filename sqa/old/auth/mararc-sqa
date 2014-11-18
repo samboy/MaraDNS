@@ -1,0 +1,8 @@
+csv2 = {}
+csv1["example.com."] = "test1"
+csv2["example.net."] = "test2"
+bind_address = "127.0.0.4"
+chroot_dir = "/opt/maradns-test/"
+ipv4_alias = {}
+ipv4_alias["localhost"] = "127.0.0.0/8"
+recursive_acl = "localhost"

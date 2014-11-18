@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [ -z "$1" ] ; then
+	echo usage $0 page.html
+	exit 1
+fi
+if [ "$1" == "head.html" ] ; then 
+	echo don\'t zap $1
+	exit 2
+fi
+if [ "$1" == "body.html" ] ; then 
+	echo don\'t zap $1
+	exit 3
+fi
+f=$1
+f=${f%.embed}
+f=${f%.html}.html
+n=${1%.embed}
+n=${n%.html}.embed
+#cat head.html > $f
+cat maradns-1.2-top.html > $f
+cat $n >> $f
+#cat tail.html >> $f
+cat maradns-1.2-bottom.html >> $f
+

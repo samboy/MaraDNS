@@ -1,0 +1,61 @@
+                         Introduction to DNS
+
+   This document is meant to be an introduction to DNS for someone
+   who has never administrated a DNS server or registered a domain
+   before. Being a part of the MaraDNS package, this tutorial
+   assumes that one is using the MaraDNS package.
+
+What is DNS?
+
+   DNS is the method that the internet uses to convert
+   difficult-to-remember numbers, such as '10.17.243.32', in to
+   easy-to-remember names, such as 'www.yahoo.com'. The reason for
+   this conversion is because the underlying protocol for the
+   internet, TCP/IP, uses difficult-to-remember numbers to connect
+   to other computers.
+
+What is a DNS server
+
+   A DNS server is a program that performs the DNS conversion
+   from names in to number. There are three kinds of DNS servers
+   out there:
+
+     * DNS servers which can convert most DNS nodes in to their
+       corresponding number. These DNS servers are called
+       recursive DNS servers. This kind of server can not change
+       the names of any DNS nodes out there. Instead, they
+       simply ask other DNS servers the IP for a given DNS node.
+
+       This kind of DNS server does not depend on one's ISP's DNS
+       servers to resolve a given name, but directly contacts the
+       relevant authoritative DNS servers anywhere on the internet
+       to resolve a given DNS node.
+     * DNS servers which can only convert DNS nodes which a
+       DNS server administrator manages from DNS nodes in to
+       IPs. The DNS server administrator can change the IPs that
+       the DNS nodes have. These kinds of DNS servers are called
+       authoritative DNS servers. Recursive DNS servers contact
+       authoritative DNS servers in order to learn the IP for a
+       given DNS node.
+     * DNS servers which simply cache information obtained from
+       other recursive DNS servers. The "Deadwood" program included
+       with MaraDNS supports this type of configuration via the
+       "upstream_servers" mararc variable; this program can also
+       act as a full fledged recursive DNS server.
+
+   MaraDNS' "Deadwood" program is a recursive DNS server; the
+   "maradns" program is an authoritative DNS server. Whether one
+   needs a recursive or an authoritative DNS server depends on what
+   one is trying to do with dns:
+
+     * If one simply wishes to contact other sites on the internet,
+       one only needs to set up a recursive DNS server.
+       Tutorial for setting up MaraDNS as a recursive DNS
+       server
+     * If one wishes to register domains, and have their own
+       computers serve the domain names in question, then one needs
+       to set up an authoritative DNS server. Tutorial for
+       setting up MaraDNS as an authoritative DNS server.
+     * If one has a current DNS setup using another DNS server,
+       this document details how to convert from another DNS
+       server to MaraDNS.

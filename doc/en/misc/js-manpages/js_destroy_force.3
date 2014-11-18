@@ -1,0 +1,59 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_destroy_force 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_destroy_force \- forcibly destroy a js_string object
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_destroy_force(js_string *object);"
+.fi
+.SH DESCRIPTION
+.B js_destroy
+forcibly destroys an existing
+.I js_string
+object, freeing any memory the 
+.I js_string 
+object allocated.
+.SH ARGUMENTS
+.B object
+is a pointer to the 
+.I js_string
+object you wish to forcibly destroy.
+.SH "RETURN VALUE"
+.B js_destroy
+returns 
+.I JS_SUCCESS
+if it was able to destroy the 
+.I js_string 
+object in question.  If not, the behavior of this
+function is undefined, usually causing a segmentation fault.
+The most common reason for not being able to destory an object is
+because the object is not a legitimate
+.B
+js_string
+object.
+.SH EXAMPLE
+The following example creates then forcibly destroys a 
+.B js_string
+object.
+
+.nf
+	js_string *foo;
+	foo = js_create(256,1);
+	js_destroy_force(foo);
+.fi
+.SH BUGS
+This function will usually cause a segmentation fault if the object 
+in question is not a legitimate
+.I js_string
+object.
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

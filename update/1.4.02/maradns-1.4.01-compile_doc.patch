@@ -1,0 +1,45 @@
+--- maradns-1.4.01/doc/en/source/compile.ej	2005-12-06 13:32:37.000000000 -0600
++++ maradns-1.4.02/doc/en/source/compile.ej	2009-12-28 16:11:27.000000000 -0600
+@@ -4,7 +4,7 @@
+ 
+ </HEAD><BODY>
+ 
+-<!-- Copyright 2005 Sam Trenholme
++<!-- Copyright 2005,2009 Sam Trenholme
+ 
+     TERMS
+ 
+@@ -23,15 +23,14 @@
+ 
+ <H2>Requirements</H2>
+ 
+-MaraDNS needs a UNIX-compatible operating system, ideally one which
+-is not proprietary, such as Linux or FreeBSD.
+-MaraDNS is currently being developed on a CentOS 3.6 (RHEL 3 compatible) 
+-machine.  
+-
+-<p>MaraDNS currently will only compile on Linux, FreeBSD, Cygwin,
+-and Mac OS X systems.  Other systems can be easily ported to.
+-MaraDNS also has partial MinGW32 
+-support; this allows MaraDNS to (partially) run as a native Win32 binary.
++MaraDNS is supported on two platforms: CentOS Linux 5, and Windows XP (via
++MinGW32).
++
++<p>
++Other systems can be easily ported to, but are not supported.  This means
++that, while it should be fairly easy to port MaraDNS to another platform,
++you will have to port it yourself or pay me to port it for you.  The Windows
++XP port does not support all of the features the CentOS Linux version has.
+ 
+ <H2>Downloading, compiling, and installing MaraDNS</H2>
+ 
+@@ -61,7 +60,8 @@
+   will (if the files are not already present), install an example /etc/mararc,
+   make the /etc/maradns directory, and place an example zone file
+   (db.example.com) in /etc/maradns.  Finally, this will place MaraDNS
+-  documentation in /usr/local/doc.  
++  documentation in /usr/local/doc ; man pages will be placed in /usr/local/man
++  or /usr/local/share/man.
+ 
+ </UL>
+ </BODY>

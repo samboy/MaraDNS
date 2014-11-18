@@ -1,0 +1,77 @@
+<HEAD><TITLE>What is DNS?</TITLE>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+
+</HEAD><BODY>
+
+<H1>What is DNS?</H1>
+
+DNS is something that the majority of internet users are not aware or or
+take for granted, but is essential for the internet to function.  Plain
+simply put, without DNS, there is no internet.  Anyone that wants to use the
+internet needs a DNS server or access to a DNS server.  This is why every
+internet service provider provides DNS servers for their customers to
+use.
+
+<p>
+
+There are, however, disadvantages to using an ISP's DNS servers.  The main
+disadvantage is that the servers might be overloaded; every single internet
+connection (every single email sent, every single web page accessed, etc.)
+requires a DNS query.  With a large number of customers querying the same
+two DNS servers over and over again, those servers can become slow and
+overloaded.
+
+<p>
+
+This is why you may wish to run your own DNS server.  This DNS server can
+run much faster than your ISP's DNS servers, allowing you to access
+the internet much more quickly.
+
+<p>
+
+There are actually a couple of ways of using a DNS server to speed up the
+internet; but first I should describe what DNS is.
+
+<p>
+
+DNS is the process of taking a name, such as "www.yahoo.com" and 
+converting it in to a number, such as "10.22.45.32".  It is, if
+you will, the phone book of the internet.   
+
+<p>
+
+As I said before, there are two ways to have your own DNS server
+speed up the internet.  One is to simply act as a cache: A program 
+that queries your ISP's DNS servers once for "www.yahoo.com", and
+remembers the number (this number is called an "IP") for you so that
+you don't need to ask your ISP the number for www.yahoo.com every
+time you go to that web site.  This is what I call a downstream
+DNS server.  This mode of operation is done with the Deadwood
+program included with MaraDNS.
+
+<p>
+
+The other way is to have your DNS servers do what your ISP's DNS
+servers do: Directly query various machines on the internet for 
+the IP for "www.yahoo.com", and give you the answer after doing all
+of the bureaucracy needed to find out what the IP for "www.yahoo.com"
+is.  This is what I call a recursive DNS server, and Deadwood, in addition
+to being able to be a DNS cache, can also be a fully recursive DNS server.
+
+<p>
+
+Now, as I said before, there is some nasty bureaucracy involved in 
+converting "www.yahoo.com" from a name in to an IP (as long as you don't
+ask your ISP's DNS servers to do it for you).  This bureaucracy involves
+querying various servers on the internet for "www.yahoo.com".  To make a
+long story short, if you want to host your own domains, such as 
+"www.yourname.com", you will need to run your own DNS server.  This kind
+of DNS server is not used to speed up the internet, but is used so that
+other DNS servers can find out the IP for "www.yourname.com".  This kind
+of DNS server is called an authoritative DNS server.  Instead of using
+"Deadwood", one uses the "maradns" daemon (program that runs as a network
+server) to support this mode of operation.
+
+</body>
+

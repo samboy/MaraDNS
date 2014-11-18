@@ -1,0 +1,185 @@
+#!/bin/sh -e
+
+# The revision number; in the case of having multiple snapshots a day,
+# the revision number can be incremented so as to minimize confusion
+# This is only done when more than one snapshop is uploaded to the
+# maradns.org server in a given day.  Here at the top to be easy to change.
+REVISION=1
+
+# This script updates Deadwood 2.9 to Deadwood 3.0
+
+# To run this script, make sure that this script is in the directory
+# containing the tarball for the version of Deadwood you wish to update, and
+# all of the patches are in a directory entitled 'patches'.
+
+CURRENT=${0%%-*}
+CURRENT=${CURRENT##*/}
+NEXT=${0##*-}
+
+# Make a clean CURRENT install, which we rename NEXT
+rm -fr deadwood-$CURRENT 2> /dev/null
+rm -fr deadwood-$NEXT 2> /dev/null
+echo extracting tarball
+tar xjf deadwood-$CURRENT.tar.bz2
+if [ $? != 0 ] ; then
+	echo run this from the correct directory
+	exit 1
+fi
+rm -fr deadwood-$NEXT*
+mv deadwood-$CURRENT deadwood-$NEXT
+cd deadwood-$NEXT
+
+# The patches
+
+mkdir update/$NEXT
+if [ "$1" != "new" ] ; then
+	cp ../patches/deadwood-$CURRENT* update/$NEXT
+	#cp ../patches/maradns* update/$NEXT
+	#echo
+fi
+
+# This is one of the few places where we will need to change anything
+# in this script from version to version
+
+echo applying patches
+
+# Regenerate Deadwood's random prime number (always done)
+echo Making new random prime
+cd src
+rm -f *orig # While we're here, remove any pesky .orig files
+cc -o foo RandomPrime.c
+./foo > DwRandPrime.h
+rm foo
+cd ..
+
+# Release-specific fixes and changes go here
+
+# Remove junk file
+rm src/.foo.swp
+
+# Patch #1: Update changelog
+patch -p1 < update/$NEXT/deadwood-2.9.07-changelog.patch
+
+# Update Reference.txt to use most recent *NIX man page
+cd doc/Windows
+echo 'Please read the file README.txt first; this file is the reference' \
+	> Reference.txt
+echo 'manual for Deadwood and does not describe how to install the Deadwood ' \
+	>> Reference.txt
+echo 'service.' >> Reference.txt
+echo >> Reference.txt
+cat ../Deadwood.txt >> Reference.txt
+unix2dos Reference.txt
+#cp Reference.txt Reference.txt.orig
+cd ../..
+# Patch #2: Take the *NIX man page and make it more applicable for Windows
+patch -p1 < update/$NEXT/deadwood-2.9.07-win_reference.patch
+
+# Patch #3: Simplify the wording of readme.txt for Windows users
+patch -p1 < update/$NEXT/deadwood-2.9.07-readme_txt.patch
+
+# Patch #4: Update the *NIX manpage
+patch -p1 < update/$NEXT/deadwood-2.9.07-deadwood_manpage.patch
+
+# Patch #5: Update Windows Copying.txt to have year 2010
+patch -p1 < update/$NEXT/deadwood-2.9.07-copying_2010.patch
+
+# Patch #6: Update Vista.txt to more quickly describe the more involved
+# process of installing Deadwood in Windows
+patch -p1 < update/$NEXT/deadwood-2.9.07-Windows7_doc.patch
+
+# Patch #7: Update Deadwood's FAQ
+patch -p1 < update/$NEXT/deadwood-2.9.07-faq.patch
+
+# Patch #8: Update "ej" tools to work in Ubuntu 10
+patch -p1 < update/$NEXT/deadwood-2.9.07-ej_ubuntu_10.patch
+
+# Patch #9: Update dwood3rc parser to require dwood3rc files to be
+# Python2-compatible
+patch -p1 < update/$NEXT/deadwood-2.9.07-dict_element_append.patch
+
+# Patch #10: Update Windows dwood3rc file to reflect changes in dwood3rc
+# parser
+patch -p1 < update/$NEXT/deadwood-2.9.07-win_dwood3rc.patch
+
+# Add install.bat and uninstall.bat files for Windows users
+cp ../files/install.bat doc/Windows
+cp ../files/uninstall.bat doc/Windows
+
+# Convert tabs in code to spaces, since this is inconsistant in different
+# programs; disable when in "work" mode since it messes up patches
+if [ "$1" != "work" ] ; then 
+	echo removing tabs from source files
+	for a in $( find . -type f -name \*.[ch] ) ; do 
+		col -x < $a > foo
+		mv foo $a
+	done
+fi
+chmod 755 src/make.version.h
+
+echo updating documentation
+# Update the documentation
+cd doc
+make
+# Go back to the deadwood dir
+cd ..
+
+# Go one level higher than the toplevel directory to copy this script
+# over
+cd ..
+
+# Put this script in the "build" directory
+cp $0 deadwood-$NEXT/update/$NEXT
+
+# Version number always current
+cd deadwood-$NEXT/src
+./make.version.h > version.h
+cd ../..
+
+if [ "$1" = "new" ] ; then
+	tar xjf deadwood-$CURRENT.tar.bz2
+	echo OK, both deadwood-$CURRENT and deadwood-$NEXT made\; you
+	echo now can start making patches.
+	exit 0
+fi
+
+if [ "$1" != "go" ] && [ "$1" != "snap" ] && [ "$1" != "work" ] ; then
+	echo OK, deadwood-$NEXT built.  Confirm this compiles and	
+	echo perform basic regression before re-running this to make
+	echo the tarballs.  Once you have tested this, rerun this 
+	echo script as: \"$0 go\" or as \"$0 snap\" 
+        echo to make a daily snapshot
+	exit 0
+fi
+
+if [ "$1" = "work" ] ; then
+	tar xjf deadwood-$CURRENT.tar.bz2
+	echo OK, both deadwood-$CURRENT and deadwood-$NEXT made\; you
+	echo now can make more patches as needed.  
+	cd deadwood-$NEXT/src
+	echo '#define VERSION "'$NEXT'-pre"' > version.h
+	cd ../..
+	exit 0
+fi
+
+# Build the tarballs
+echo making new tarballs
+
+if [ "$1" = "snap" ] ; then
+	SNAP=H-$( date +%Y%m%d )-$REVISION
+	rm -fr deadwood-$SNAP
+	mv deadwood-$NEXT deadwood-$SNAP
+	cd deadwood-$SNAP/src
+	./make.version.h > version.h
+	cd ../..
+	tar cjf deadwood-$SNAP.tar.bz2 deadwood-$SNAP
+	exit 0
+else
+	SNAP=$NEXT
+	cd deadwood-$SNAP/src
+	./make.version.h > version.h
+	cd ../..
+	tar cjf deadwood-$SNAP.tar.bz2 deadwood-$SNAP
+fi
+
+exit 0 # Done

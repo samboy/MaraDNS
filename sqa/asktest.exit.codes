@@ -1,0 +1,18 @@
+ 0 Normal answer from server (either answer or 'not there')
+ 1 Format error 
+ 2 Server failure
+ 3 Qdcount is not 0 or 1
+ 4 Not implemeted by DNS server
+ 5 Query refused
+ 6 Unknown rcode
+ 7 Timeout
+ 8 Server gives us no answers (???)
+ 9 Currupt DNS header or data
+10 Different header ID from server than what we got
+11 Reply from server not marked as reply
+12 The question they sent us is not the one we sent them
+13 The question type they sent us is not the one we sent them
+14 The question class they sent us is not the one we sent them
+15 Problem reading a record in the AN (answer) section
+16 Problem reading a record in the NS (authority) section
+17 Problem reading a record in the AR (additional) section

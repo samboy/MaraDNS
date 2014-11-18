@@ -1,0 +1,7 @@
+a.maradns. NS ns.a.maradns.
+ns.a.maradns. 127.0.10.6
+b.maradns. NS ns.b.maradns.
+ns.b.maradns. 10.0.0.0
+c.maradns. NS ns.c.maradns.
+ns.c.maradns. 127.0.10.6
+

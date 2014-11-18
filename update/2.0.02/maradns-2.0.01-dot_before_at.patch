@@ -1,0 +1,62 @@
+--- maradns-2.0.01/parse/Csv2_rr_soa.c	2010-08-28 16:13:20.000000000 -0600
++++ maradns-2.0.02/parse/Csv2_rr_soa.c	2011-02-05 17:56:59.000000000 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004-2007 Sam Trenholme
++/* Copyright (c) 2004-2011 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -39,7 +39,8 @@
+                         in == '!' || in == '^' || in == '=');
+ }
+ 
+-/* Process an address in the form 'a@foo.bar.baz.' or 'a.foo.bar.baz.' */
++/* Process an address in the form 'a@foo.bar.baz.' or 'a.foo.bar.baz.',
++ * or even (thanks to Yarin for the idea) 'a\.b\.c@foo.bar.baz.' */
+ 
+ js_string *process_mbox(csv2_read *stream) {
+         js_string *o;
+@@ -93,6 +94,21 @@
+                         }
+                         break;
+                 }
++		if(look == '\\') {
++                        look = csv2_read_unicode(stream);
++			if(look != '.') {
++				csv2_error(stream, 
++					"Illegal character after \\");
++				js_destroy(o);
++				return 0;
++			}
++                        if(csv2_append_utf8(o, '.') < 0) {
++                                csv2_error(stream,"Error appending dot");
++                                js_destroy(o);
++                                return 0;
++                        }
++                        look = csv2_read_unicode(stream);
++		}
+                 if(csv2_b4_at(look)) {
+                         if(csv2_append_utf8(o, look) < 0) {
+                                 csv2_error(stream,"Error appending character");
+--- maradns-2.0.01/doc/en/source/csv2.ej	2010-07-31 01:17:06.000000000 -0600
++++ maradns-2.0.02/doc/en/source/csv2.ej	2011-02-05 18:11:16.000000000 -0700
+@@ -171,6 +171,19 @@
+ x.org. SOA x.org. email@x.org. 1 7200 3600 604800 1800 ~
+ </pre>
+ 
++If there is a '.' (dot) character in the part of the email address before
++the '@', it needs to be escaped thusly:
++
++<pre>
++x.org. SOA x.org. john\.doe@x.org. 1 7200 3600 604800 1800 ~
++</pre>
++
++Note that the csv2 parser will not allow more than one dot in a row;
++'john\.\.doe@x.org' will cause a parse error.  In addition, the
++dot character must be escaped with a backslash.
++
++<p>
++
+ The serial numeric field may be replaced by the string '/serial'; this
+ string tells the CSV2 zone parser to synthesize a serial number for the
+ zone based on the timestamp for the zone file.  This allows one to 

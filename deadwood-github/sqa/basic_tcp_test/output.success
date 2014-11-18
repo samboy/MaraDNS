@@ -1,0 +1,23 @@
+
+; (1 server found)
+;; Got answer:
+;; flags: qr aa rd; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 1
+
+;; QUESTION SECTION:
+;www.example.com.		IN	A
+
+;; ANSWER SECTION:
+www.example.com.	86400	IN	A	10.1.1.1
+
+;; AUTHORITY SECTION:
+example.com.		86400	IN	NS	synth-ip-7f000002.example.com.
+
+;; ADDITIONAL SECTION:
+synth-ip-7f000002.example.com. 86400 IN	A	127.0.0.2
+
+;; SERVER: 127.0.0.1#53(127.0.0.1)
+;; MSG SIZE  rcvd: 97
+
+Deadwood: A DNS UDP non-recursive cache 
+We bound to 1 addresses
+Got signal 1 to process...

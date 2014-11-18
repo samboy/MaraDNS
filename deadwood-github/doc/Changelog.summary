@@ -1,0 +1,36 @@
+Post 2.3 changes:
+
+* TCP and UDP now done by the same process/service (2.4.01)
+
+* upstream_servers now a full "dictionary" variable (2.4.02, 2.4.03)
+
+* Full DNS compression and decompression support (2.4.04)
+
+* RR rotation and TTL aging (2.4.05)
+
+* ip_blacklist support (2.4.06)
+
+* execfile support (2.4.07)
+
+* Merging multiple identical in-flight queries (2.4.07)
+
+* Deadwood 2.4 marked stable (2.4.08)
+
+* Default DNS servers are Google's DNS servers (2.4.09)
+
+* filter_rfc1918 parameter added (2.5.01)
+
+* infrastructure to process DNS packets from non-recursive servers (2.6.01)
+
+* non-glueless recursion (2.6.02)
+
+* NS glueless recursion (2.6.03)
+
+* Recursion with incomplete CNAME records (2.6.04)
+
+* Recursion with ANY records (2.6.05)
+
+* reject_aaaa ; feature-complete testing release (2.9.01)
+
+* stable release of fully recursive Deadwood (3.0.01)
+

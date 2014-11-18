@@ -1,0 +1,71 @@
+--- deadwood-3.2.03/src/DwSys.c.orig	2012-11-24 09:43:48.291079897 -0800
++++ deadwood-3.2.03/src/DwSys.c	2012-11-24 09:47:53.226795055 -0800
+@@ -21,6 +21,8 @@
+ #include <unistd.h>
+ #include <fcntl.h>
+ #include <time.h>
++#include <sys/types.h>
++#include <sys/stat.h>
+ #ifndef MINGW
+ #include <grp.h>
+ #include <signal.h>
+@@ -35,6 +37,10 @@
+ /* RNG seed/state */
+ dwr_rg *rng_seed;
+ 
++/* Whether to read the cache file */
++int do_read_cache = 1;
++struct stat mararc_st;
++
+ /* Mararc parameters that are set in DwMararc.c */
+ extern dw_str *key_s[];
+ extern dw_str *key_d[];
+@@ -487,6 +493,7 @@
+ void init_cache() {
+         dw_str *filename = 0;
+         char *fname_convert = 0;
++	struct stat cache_st;
+ 
+         dwh_process_mararc_params(); /* Get the cache size */
+         if(cache != 0) { /* Don't init cache twice */
+@@ -495,10 +502,16 @@
+ 
+         /* See if we can read the cache from a file */
+         filename = key_s[DWM_S_cache_file];
+-        if(filename != 0) {
++        if(filename != 0 && do_read_cache == 1) {
+                 dw_filename_sanitize(filename);
+                 fname_convert = (char *)dw_to_cstr(filename);
+-                cache = dwh_read_hash(fname_convert);
++		if(stat(fname_convert,&cache_st) == 0 &&
++		   cache_st.st_mtime < mararc_st.st_mtime) {
++			dw_log_string(
++			      "Cache older than rc file; not reading cache",0);
++		} else {
++                	cache = dwh_read_hash(fname_convert);
++		}
+                 free(fname_convert);
+         }
+ 
+@@ -508,7 +521,7 @@
+ }
+ 
+ /* Read mararc parameters and set global variables based on those
+- * parameters */
++ * parameters; disable cache reading if cache file is more recent */
+ void process_mararc(char *name) {
+         if(dwm_parse_mararc(name) != 1) {
+                 dw_log_3strings("Fatal error parsing file ",name,"",1);
+@@ -518,6 +531,12 @@
+         /*if(key_s == 0 || key_d == 0) {
+                 dw_fatal("error getting mararc parameters");
+         }*/
++	/* If the dwood3rc is newer than the cache file, do not read the
++	 * cache */
++	if(stat(name,&mararc_st) != 0) {
++		dw_log_string("Can not stat rc file; not reading cache",0);
++		do_read_cache = 0;
++	}
+ }
+ 
+ /* Given a C-string string containing random noise, the length of that

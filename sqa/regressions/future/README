@@ -1,0 +1,2 @@
+This test makes sure the mararc dictionary variable future works (in other
+words, for 1.3.07, does nothing but parses correctly)

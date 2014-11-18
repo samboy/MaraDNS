@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# This test to make sure the csv2 variables maradns_uid and maradns_gid work
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+maradns_uid = 12345
+maradns_gid = 54321
+EOF
+
+cat > db.example.com << EOF
+www.% A 10.1.2.3
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+sleep 1
+../../../tools/askmara Awww.example.com.
+echo
+ps -eo '%u %U %G %c' | grep maradns
+sleep 1
+killall maradns
+rm mararc
+rm db.example.com

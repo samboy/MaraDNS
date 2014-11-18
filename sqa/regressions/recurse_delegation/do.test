@@ -1,0 +1,115 @@
+#!/bin/sh
+
+cat > mararc1 << EOF
+ipv4_bind_addresses = "127.0.0.1"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["."] = "db.root"
+EOF
+
+cat > mararc2 << EOF
+ipv4_bind_addresses = "127.0.0.2"
+verbose_level=0
+chroot_dir = "$( pwd )"
+recursive_acl = "127.0.0.1/8"
+root_servers = {}
+root_servers["."] = "127.0.0.1"
+EOF
+
+cat > mararc3 << EOF
+ipv4_bind_addresses = "127.0.0.3"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["example.com."] = "db.example"
+EOF
+
+cat > mararc4 << EOF
+ipv4_bind_addresses = "127.0.0.4"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["sub.example.com."] = "db.sub"
+EOF
+
+cat > mararc5 << EOF
+ipv4_bind_addresses = "127.0.0.5"
+verbose_level=0
+recurse_delegation=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["example.com."] = "db.example"
+recursive_acl = "127.0.0.1/8"
+root_servers = {}
+root_servers["."] = "127.0.0.1"
+EOF
+
+cat > mararc6 << EOF
+ipv4_bind_addresses = "127.0.0.6"
+verbose_level=0
+recurse_delegation=1
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["example.com."] = "db.example"
+recursive_acl = "127.0.0.1/8"
+root_servers = {}
+root_servers["."] = "127.0.0.1"
+EOF
+
+cat > db.root << EOF
+example.com. NS ns.example.com.
+ns.example.com. 127.0.0.3
+EOF
+
+cat > db.example << EOF
+example.com. NS ns.example.com.
+ns.example.com. 127.0.0.3
+www.example.com. 127.10.1.1
+sub.example.com. NS ns.sub.example.com.
+ns.sub.example.com. A 127.0.0.4
+EOF
+
+cat > db.sub << EOF
+sub.example.com. NS ns.sub.example.com.
+ns.sub.example.com. A 127.0.0.4
+www.sub.example.com. A 127.10.1.2
+EOF
+
+../../../server/maradns -f mararc1 > /dev/null 2>&1 &
+sleep 1
+../../../server/maradns -f mararc2 > /dev/null 2>&1 &
+sleep 1
+../../../server/maradns -f mararc3 > /dev/null 2>&1 &
+sleep 1
+../../../server/maradns -f mararc4 > /dev/null 2>&1 &
+sleep 1
+../../../server/maradns -f mararc5 > /dev/null 2>&1 &
+sleep 1
+../../../server/maradns -f mararc6 > /dev/null 2>&1 &
+sleep 1
+
+../../../tools/askmara -t 2 Awww.sub.example.com. 127.0.0.2
+echo
+../../../tools/askmara -t 2 Awww.sub.example.com. 127.0.0.5
+echo
+../../../tools/askmara -t 2 Awww.sub.example.com. 127.0.0.6
+echo
+../../../tools/askmara -n Awww.sub.example.com. 127.0.0.6
+sleep 1
+
+# Clean up
+kill $( ps auxw | grep maradns | grep -v grep | awk '{print $2}' )
+sleep 1
+# Linux specific; this does bad things on Solaris
+killall maradns > /dev/null 2>&1
+rm mararc1
+rm mararc2
+rm mararc3
+rm mararc4
+rm mararc5
+rm mararc6
+rm db.root
+rm db.example
+rm db.sub
+

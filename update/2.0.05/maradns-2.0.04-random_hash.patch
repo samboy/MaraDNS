@@ -1,0 +1,95 @@
+diff -ur maradns-2.0.04/libs/functions_MaraHash.h maradns-2.0.05/libs/functions_MaraHash.h
+--- maradns-2.0.04/libs/functions_MaraHash.h	2011-11-12 02:25:44.000000000 -0600
++++ maradns-2.0.05/libs/functions_MaraHash.h	2012-01-01 01:32:32.021593745 -0600
+@@ -39,3 +39,5 @@
+ */
+ void *mhash_undef(mhash *hash, js_string *key);
+ 
++/* Read four bytes from a filename and use that as a secret add constant */
++int mhash_set_add_constant(char *filename);
+diff -ur maradns-2.0.04/libs/MaraHash.c maradns-2.0.05/libs/MaraHash.c
+--- maradns-2.0.04/libs/MaraHash.c	2011-11-12 02:25:44.000000000 -0600
++++ maradns-2.0.05/libs/MaraHash.c	2012-01-01 01:34:31.357938082 -0600
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2006 Sam Trenholme
++/* Copyright (c) 2006,2011 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -32,6 +32,7 @@
+ #include "JsStr.h"
+ #endif
+ #include "MaraHash.h"
++#include <stdio.h>
+ 
+ /* Masks to limit the size of the hash */
+ /* These are powers of two, minus one */
+@@ -41,6 +42,8 @@
+                           16777215, 33554431, 67108863, 134217727,
+                           268435455, 536870911, 1073741823 };
+ 
++mhash_offset mhash_secret_add_constant = 7;
++
+ /* Create a new, blank mhash object
+    input: none
+    output: pointer to the object in quesiton on success, NULL (0)
+@@ -100,6 +103,8 @@
+     /* Simple enough hash */
+     while(point < max) {
+         ret += (mhash_offset)(*point << shift);
++	ret += mhash_secret_add_constant;
++	ret *= 45737;
+         shift += 7;
+         shift %= hash_bits;
+         point++;
+@@ -684,3 +689,23 @@
+     return tuple->tuple_list[element];
+     }
+ 
++/* Read four bytes from a filename and use that as a secret add constant */
++int mhash_set_add_constant(char *filename) {
++	FILE *read = 0;
++
++	read = fopen(filename,"rb");
++	if(read == NULL) {
++		return -1;
++	}
++	
++	mhash_secret_add_constant ^= getc(read);
++	mhash_secret_add_constant <<= 8;
++	mhash_secret_add_constant ^= getc(read);
++	mhash_secret_add_constant <<= 8;
++	mhash_secret_add_constant ^= getc(read);
++	mhash_secret_add_constant <<= 7;
++	mhash_secret_add_constant ^= getc(read);
++	fclose(read);
++	return 1;
++}
++
+--- maradns-2.0.04/server/MaraDNS.c	2011-11-12 02:25:43.000000000 -0600
++++ maradns-2.0.05/server/MaraDNS.c	2012-01-01 01:32:32.104598594 -0600
+@@ -3749,6 +3749,24 @@
+     int recurse_number_ports = 4096;
+ #endif
+ 
++    /* First order of business: Initialize the hash */
++    if(mhash_set_add_constant(
++#ifdef MINGW32
++	"secret.txt"
++#else
++	"/dev/urandom"
++#endif
++		) != 1) {
++	printf(
++#ifdef MINGW32
++	"Fatal error opening secret.txt"
++#else
++	"Fatal error opening /dev/urandom"
++#endif
++			);
++			return 32;
++	}
++    
+     memset(&client,0,sizeof(client)); /* Initialize ya variables */
+     clin = (struct sockaddr_in *)&client;
+ #ifdef AUTHONLY

@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# This tests to make sure tcp_convert_server works
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+verbose_level = 0
+long_packet_ipv4="127.0.0.1"
+tcp_convert_acl="0.0.0.0/0" # Anyone on the 'net
+tcp_convert_server="127.0.0.1"
+EOF
+
+# OK, test the server
+../../../server/maradns.authonly -f mararc > /dev/null 2>&1 &
+../../../tcp/zoneserver -f mararc > /dev/null 2>&1 &
+sleep 3
+dig +tcp @127.0.0.1 long.example.com txt | \
+	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
+	grep -v cmd
+killall maradns.authonly > /dev/null 2>&1
+killall zoneserver > /dev/null 2>&1
+sleep 30
+rm mararc
+

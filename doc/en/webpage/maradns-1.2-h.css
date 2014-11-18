@@ -1,0 +1,12 @@
+#topright {
+	display: none;
+}
+
+#maradns-name {
+	font-size: large;
+	font-weight: bold;
+}
+
+.makelarge, .makenormal, .nocss {
+	display: none;
+}

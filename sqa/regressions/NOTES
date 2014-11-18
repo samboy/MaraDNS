@@ -1,0 +1,33 @@
+These are notes for the various mararc_d (MaraDNS dictionary variable)
+and mararc_n (MaraDNS normal variable) tests in this directory.
+
+The following mararc parameters do not have tests:
+
+	maximum_cache_elements
+	maxprocs
+	max_tcp_procs
+	max_mem
+	no_fingerprint (see below)
+	random_seed_file
+	recurse_min_bind_port
+	recurse_number_ports
+	retry_cycles
+	tcp_convert_acl
+	tcp_convert_server
+	timeout_seconds
+	zone_transfer_acl
+
+The following mararc parameters look to not work or be outdated:
+
+	no_fingerprint (The decompression code eats the kinds of
+                        packets where no_fingerprint matters)
+        max_glueless_level (Doesn't appear to do anything)
+        max_queries_total (Doesn't appear to do anything) 
+
+I have undocumented these outdated mararc variables.
+
+The following mararc parameter tests have to be done by hand
+
+	timestamp_type
+	verbose_level
+

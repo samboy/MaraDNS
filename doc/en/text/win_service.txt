@@ -1,0 +1,179 @@
+           Running MaraDNS as a Windows NT/2000/XP service
+
+   Note: This document only applies for the Windows port of MaraDNS
+
+   Most users of MaraDNS in Windows will probably only being using
+   the MaraDNS suite to recursively resolve records in MaraDNS. The
+   maradns.exe program does not recursively resolve records; that
+   is done by deadwood.exe, which has full support for being a
+   Windows service and does not need to use srvany to be a service.
+
+   The only people who would want to run MaraDNS 2.0 as a service
+   is anyone who is in the somewhat unusual position of using
+   MaraDNS on Windows to authoritatively resolve records.
+
+   It is possible to run the native 32bit-Windows port of MaraDNS
+   as a service that starts up automatically when Windows is
+   started and runs in the background. This document gives step by
+   step instructions on how to do this. These instructions assume
+   one is using Windows XP; they probably can be adapted to work
+   with Windows NT and 2000.
+
+   Deadwood, it should be noted, can natively run as a Windows
+   service.
+
+   The rest of this document will simply call Windows XP "Windows".
+   These directions will not work with Windows 95, 98, or ME.
+
+   In order to run MaraDNS as a service on Windows, the following
+   is needed:
+
+     * The native Windows32 port of MaraDNS, with a name like
+       maradns-1-4-01-win32.zip
+     * A zip file, originally issued by Microsoft and freely
+       available several places on the Internet called
+       "srvany.zip". This file can be easily found via an Internet
+       search engine. The file in question is 24,287 bytes long,
+       has an md5 sum of 7e827466629dea02d8f16648d9c43400, a sha1
+       sum of e2e2ea3701046eb782bd58ae05fb9face1e03543, and a
+       RadioGatun-32 sum of
+       804d8c46904e2e42b9164ecf4e44119db0b22b80c385776240f692d2d43c18b6.
+
+   Once these files are obtained, unpack both .zip files by
+   right-clicking on them and selecting "extract all" (Windows XP
+   finally has native zipfile support). The rest of this document
+   will assume that you have extracted all the files in both zip
+   files to the directory c:\maradns.
+
+   Here are all the files that will be in c:\maradns if the files
+   were correctly obtained and extracted:
+
+     * mararc
+     * readme.txt
+     * run_maradns.bat
+     * maradns.exe
+     * askmara.exe
+     * Askmara.html
+     * pthreadGC2.dll
+     * pthreads.txt
+     * Service.html
+     * secret.txt
+     * srvany.exe
+     * instsrv.exe
+     * srvany.wri
+
+   Since it may be desirable to actually have these files in a
+   directory besides c:\maradns, the rest of this document will
+   have this directory in bold face; substitute c:\maradns with the
+   directory actually containing the above files.
+
+   At this point, here is what is needed to make MaraDNS a Windows
+   service:
+
+    1. Log in to Windows as a user with administrative privileges.
+
+    2. Open up a command prompt by going to the start menu,
+       selecting "run", and typing in cmd when Windows asks you
+       what file to run.
+
+    3. In the command prompt window, type in the following command:
+
+         instsrv MaraDNS c:\maradns\srvany.exe
+
+    4. Open up the Windows registry editor. This can be done by
+       selecting "run" from the Windows start menu and running the
+       command "regedit". Note: Incorrect usage of the Windows
+       registry editor may cause your system to be unusable,
+       forcing a reinstall of the operating system. Please use this
+       program with the utmost of care. If you are not comfortable
+       editing the registry of your system, or think that you may
+       make an error, please seek the advice of someone more
+       comfortable with the registry editor.
+
+    5. Go to the "key"
+       HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\MaraDNS
+       This is done by clicking on the "+" to the left of
+       "HKEY_LOCAL_MACHINE", followed by clicking on the
+       now-revealed "+" to the left of the word "SYSTEM" under
+       "HKEY_LOCAL_MACHINE", followed by clicking on the
+       now-revealed "+" to the left of "CurrentControlSet", and so
+       on.
+
+    6. Create a new key under MaraDNS called Parameters. This is
+       done by right-clicking (clicking with the right mouse
+       button) on "MaraDNS", selecting (with the left mouse button)
+       new -> Key, and typing in the name "Parameters" (without the
+       quotes in the name) to replace "New Key #1".
+
+    7. Under
+       HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\MaraDNS\Parameters,
+       the following three new strings need to be created:
+
+          * Application
+          * AppParameters
+          * AppDirectory
+
+       This is done by going to the
+       HKEY_LOCAL_MACHINE\system\CurrentControlSet\Services\MaraDNS\Parameters
+       key, right clicking on the key for each of the above values,
+       selecting "new string value", and selecting one of the above
+       three names. Repeat this process until all of the three
+       above strings are added to the Windows registry.
+
+    8. Double click on the newly created Application key. Give this
+       key the value "c:\maradns\maradns.exe" (without the quotes).
+
+    9. Double click on the newly created AppParameters key. Give
+       this key the value "-f mararc" (again, without the quotes).
+
+   10. Double click on the newly created AppDirectory key, and give
+       it the value "c:\maradns".
+
+   11. Now we need to start up the MaraDNS service, and make sure
+       it starts up every time Windows is rebooted. From the
+       Windows desktop, go to Start -> Control Panel ->
+       Administrator tools -> Services.
+
+       If you can not find "Administrator tools" under the control
+       panel, make sure you are using classic instead of category
+       view (selected on the left hand side of the control panel
+       window), or select "upkeep and maintenance", followed by
+       "Administrator tools".
+
+   12. Find the MaraDNS service in the list of services.
+
+   13. Double click on the service to bring up its properties.
+
+   14. Make sure the MaraDNS service is automatically started up,
+       and start the MaraDNS service.
+
+   At this point, the MaraDNS service should be running. To verify
+   this, enter the c:\maradns directory from the cmd prompt (the
+   commands are "c:" followed by "cd c:\maradns"). Next, type in
+   the following command:
+
+     askmara 1:www.example.com.
+
+   The output should look something like this:
+
+ # Querying the server with the IP 127.0.0.1
+ # Question: Awww.microsoft.com.
+ www.microsoft.com. +900 cname toggle.www.ms.akadns.net.
+ toggle.www.ms.akadns.net. +300 a 207.46.19.30
+ # NS replies:
+ # AR replies:
+
+   Please replace "example.com" above with any domain that MaraDNS
+   is resolving.
+
+   If not, verify that you have a working internet connection. If
+   you do, make sure MaraDNS is running by seeing if it is listed
+   as "maradns.exe" in the task manager (Ctrl + Alt + Del) under
+   the "Processes" tab. Note: If you can't see tabs in the task
+   manager, simply double click in the blank area on the side of
+   the task manager.
+
+   If the MaraDNS service can not start up, you can try starting it
+   from a cmd prompt. Run the run_maradns.bat file and see if
+   MaraDNS starts up. If it does, make sure you correctly set the
+   relevant register values.

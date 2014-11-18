@@ -1,0 +1,44 @@
+--- maradns-1.4.02/doc/en/webpage/changelog.embed	2010-01-08 10:07:40.000000000 -0600
++++ maradns-1.4.03/doc/en/webpage/changelog.embed	2010-02-02 11:05:00.000000000 -0600
+@@ -1,5 +1,28 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.4.03:</p>
++This is the stable branch of MaraDNS.
++<blockquote>
++<ul>
++<li>Patch fixing bug where an improperly terminated domain
++name in a csv2 zone file terminated MaraDNS.
++<li>Documentation for <tt>reject_aaaa</tt> and <tt>reject_ptr</tt> (which
++have been around since 2003 but never documented until now) added.
++<li>Other documentation updates
++</ul>
++(2010.02.02)
++</blockquote>
++
++<p>maradns-1.3.07.10:</p>
++This is the previous stable branch of MaraDNS.
++<blockquote>
++<ul>
++<li>Backport of patch fixing bug where an improperly terminated domain
++name in a csv2 zone file terminated MaraDNS.
++</ul>
++(2010.02.02)
++</blockquote>
++
+ <p>maradns-1.4.02:</p>
+ This is the stable branch of MaraDNS.
+ <blockquote>
+@@ -8,9 +31,10 @@
+ <li>RPM spec file now builds RPM in CentOS (RHEL) 5.
+ <li><tt>csv2_default_zonefile</tt> was accidently broken in MaraDNS 1.4.01;
+     fixed.
+-<li>Updates to the SQA regressions.
++<li>Updates to the SQA regressions; we now try some regressions that 
++    intermittently fail in CentOS 5 up to three times before giving up.
+ </ul>
+-(2010.01.??)
++(2010.01.08)
+ </blockquote>
+ 
+ <p>maradns-1.4.01:</p>

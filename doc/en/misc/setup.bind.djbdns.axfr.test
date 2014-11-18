@@ -1,0 +1,52 @@
+This file describes how to set up various other DNS packages to 
+transfer over a zone file.
+
+--
+
+DjbDNS:
+
+To transfer over the zone for example.com, using the axfr-get client 
+that djbdns comes with, to a DNS server with the IP 127.0.0.3:
+
+tcpclient 127.0.0.3 53 axfr-get example.com foo foo.tmp
+
+Where tcpclient is a tool that ucspi-tcp comes with, and axfr-get is a tool
+that djbdns comes with (the daemontools package does not have to be 
+installed).
+
+To compile ucspi-tcp on Linux, type in this command before 'make'
+
+	echo gcc -O2 -include /usr/include/errno.h > conf-cc
+
+--
+
+Bind8/9:
+
+Bind 8 and Bind 9 use the exact same configuration file.
+
+/etc/named.conf should look like this:
+
+options {
+        directory "/var/named";
+};
+
+zone "example.com" {
+  type slave;
+  file "example.com.zone";
+  masters { 127.0.0.3; };
+};
+
+Make sure there is a directory named /var/named, and that this directory
+does not have a file called "example.com.zone".  Make sure that the
+"example.com.zone" file is created by the zone transfer.  Look in
+/var/log/messages for bind's output.
+
+--
+
+Bind 4:
+
+Bind 4 has been declared deprecated by ISC, and doesn't compile in
+Fedora core 3.  As I recall, I sucessfully transferred zone files to
+a Bind 4 server back in the 0.5.xx days, when I wrote the original
+zone server.
+

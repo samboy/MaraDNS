@@ -1,0 +1,4 @@
+#!/bin/sh
+
+rm mararc
+rm db.example.net

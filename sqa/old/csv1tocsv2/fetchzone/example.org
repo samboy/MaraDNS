@@ -1,0 +1,27 @@
+example.org. +86400 soa example.org. hostmaster@example.org. 140001723 7200 3600 604800 3600
+example.org. +86400 ns synth-ip-7f000004.example.org.
+synth-ip-7f000004.example.org. +86400 a 127.0.0.4
+a.example.org. +86400 txt 'This is some text'
+b.example.org. +86400 txt 'This is some text'\x0a'       with a linefeed in it, and an example UTF-8 character: I  MaraDNS'
+c.example.org. +86400 txt 'This_is_100%_unquoted_text_+symbols!'
+d.example.org. +86400 txt 'This is a mix of_unquoted and quoted text!'
+e.example.org. +86400 txt \x80\x81\x82\x83
+f.example.org. +86400 txt \x80\x81\x82\x83
+g.example.org. +86400 txt \x80\x81\x82\x83
+h.example.org. +86400 txt 'perl -e '\''print "A Perl of a TXT record!\n"'\'''
+h1.example.org. +86400 txt 'for(a=0;a<10;a++)'\x7b'printf("%d\n",a);sleep(1)'\x7d
+i.example.org. +86400 txt 'Not only did the quick brown fox jump over the lazy dog, but the lazy dog jumped over the cat.'
+j.example.org. +86400 txt 'Not only did the quick brown fox jump over the lazy dog, but the lazy dog jumped over the cat.'
+k.example.org. +86400 txt 'Not only did the quick brown fox jump over the lazy dog, but the lazy dog jumped over the cat.'
+k2.example.org. +86400 txt 'This is some data and this is the rest of the data'
+o.example.org. +86400 txt 'TXT record with only one chunk'
+p.example.org. +86400 raw 16 \x11'This is chunk one'\x11'This is chunk two'
+q.example.org. +86400 raw 16 \x11'This is chunk one'\x11'This_is_chunk_two'\x13'This is chunk three'
+r.example.org. +86400 raw 16 \x09'chunk one'\x00\x0b'chunk three'
+s.example.org. +86400 raw 16 \x00\x09'chunk two'\x00
+t1.example.org. +86400 raw 40 \x10\x01\x02'Kitchen sink+ data'
+t.example.org. +86400 raw 40 \x10\x01\x02'Kitchen sink+ data'
+u.example.org. +86400 raw 40 \x10\x01\x02'Kitchen sink+ data'
+v.example.org. +86400 raw 40 \x10\x01\x02'Kitchen sink+ data'
+w.example.org. +86400 raw 40 \x10\x01\x02'Kitchen sink+ data'
+# Second SOA received, exiting

@@ -1,0 +1,174 @@
+--- maradns-1.4.01/README.Debian	2007-10-19 08:54:14.000000000 -0500
++++ maradns-1.4.02/README.Debian	2009-12-23 13:43:09.000000000 -0600
+@@ -1,61 +1,71 @@
+-   First of all, I would like to point out that I really appreciate Debian
+-   making a MaraDNS package available.  This package has increased the number
+-   of MaraDNS users, and the Debian developers have given me feedback that
+-   has improved MaraDNS. 
+-
+-   However, because of Debian's policies, their "Stable" version of MaraDNS is
+-   usually an outdated version of MaraDNS containing bugs that I have
+-   since fixed. I do not support these outdated versions of MaraDNS, and
+-   request that Debian users upgrade to the current stable version of MaraDNS
+-   before sending me bug reports or asking for technical support. Here is my
+-   guide for Debian users, telling them how to upgrade the outdated version
+-   of MaraDNS Debian comes with:
+-
+-     * MaraDNS 1.2 has been, since 1.2.12.04, a "bugfix only" branch, and no
+-       new features have been added to this version of MaraDNS.
+-
+-     * It is very easy to update the buggy version of MaraDNS that the 
+-       Debian package comes with an updated MaraDNS.
+-
+-     * First, download the most recent stable version of MaraDNS from the
+-       MaraDNS download page (http://www.maradns.org/download.html) or from
+-       the Sourceforge page (http://sourceforge.net/projects/maradns).
+-
+-     * Next, unpack the MaraDNS tarball. For example, if you downloaded the
+-       file "maradns-1.2.12.08.tar.bz2" (please only download 
+-       MaraDNS-1.2.12.08 if it is the current stable version, which it is at
+-       time of writing this document), type in this command:
++A note for Debian users
+ 
+-         tar xvjf maradns-1.2.12.08.tar.bz2
++   First of all, I would like to point out that I really appreciate
++   Debian making a MaraDNS package available. This package has
++   increased the number of MaraDNS users, and the Debian developers
++   have given me feedback that has improved MaraDNS.
++
++   However, because of Debian's policies, their "Stable" version of
++   MaraDNS is usually an outdated version of MaraDNS that contains
++   bugs that I have since fixed. I do not support these outdated
++   versions of MaraDNS, and request that Debian users upgrade to
++   the current stable version of MaraDNS before sending the mailing
++   list bug reports or asking for technical support. Here is my
++   guide for Debian users, telling them how to upgrade the outdated
++   version of MaraDNS Debian comes with:
++
++     * MaraDNS 1.4 is a "bugfix only" branch, and no new features
++       have been added to this version of MaraDNS.
++
++     * Updating from previous versions of MaraDNS up to MaraDNS 1.4
++       is trivial and fully documented
++
++     * It is very easy to update the buggy version of MaraDNS that
++       the Debian package comes with an updated MaraDNS.
++
++     * First, download the most recent stable version of MaraDNS
++       from the MaraDNS download page or from the Sourceforge
++       page.
++
++     * Next, unpack the MaraDNS tarball. For example, if you
++       downloaded the file "maradns-1.4.01.tar.bz2" (please only
++       download MaraDNS-1.4.01 if it is the current stable version,
++       which it is at time of writing this document), type in this
++       command:
++
++         tar xvjf maradns-1.4.01.tar.bz2
++
++     * Enter the maradns-1.4.version directory, where version is
++       the bugfix revision number of the most current 1.4 release
++       of MaraDNS.
+ 
+-     * Enter the maradns-1.2.12.{version} directory, where {version} is the
+-       bugfix revision number of the most current 1.2 release of MaraDNS.
+-
+-     * Compile MaraDNS 1.2.12.version with the following commands:
++     * Compile MaraDNS 1.4version with the following commands:
+ 
+          ./configure; make
+ 
+-     * If the above fails, you may need to install the "gcc" and "libc6-dev"
+-       packages before being able to compile programs:
++     * If the above fails, you may need to install the "gcc" and
++       "libc6-dev" packages before being able to compile programs:
+ 
+          sudo apt-get install gcc
+          sudo apt-get install libc6-dev
+ 
+-     * Once MaraDNS is compiled, make sure to stop the MaraDNS daemon:
++     * Once MaraDNS is compiled, make sure to stop the MaraDNS
++       daemon:
+ 
+-         sudo /etc/init.d/maradns stop
++         /etc/init.d/maradns stop
+ 
+-     * Now, replace the outdated MaraDNS program that comes with Debian. From
+-       the maradns-1.2.12.{version} directory, type in the following command:
++     * Now, replace the outdated MaraDNS program that comes with
++       Debian. From the maradns-1.4.version directory, type in the
++       following command:
+ 
+          sudo cp server/maradns /usr/sbin/
+ 
+      * Restart the MaraDNS daemon:
+ 
+-         sudo /etc/init.d/maradns start
++         /etc/init.d/maradns start
+ 
+-   At this point, your MaraDNS daemon is now the fully supported version of
+-   MaraDNS. If you continue to have the bug or concern after upgrading to the
+-   latest 1.2 release, please let us know so we can begin to resolve the
+-   issue.
++   At this point, your MaraDNS daemon is now the fully supported
++   version of MaraDNS. If you continue to have the bug or concern
++   after upgrading to the latest 1.4 release, please let us know on
++   the mailing list so we can begin to resolve the issue.
+ 
+--- maradns-1.4.01/doc/en/webpage/debian.embed	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.4.02/doc/en/webpage/debian.embed	2009-12-23 14:42:02.000000000 -0600
+@@ -9,13 +9,17 @@
+ is usually an outdated version of MaraDNS that contains bugs that I
+ have since fixed.  I do not support these outdated versions of MaraDNS,
+ and request that Debian users upgrade to the current stable version of
+-MaraDNS before sending me bug reports or asking for technical support.
+-Here is my guide for Debian users, telling them how to upgrade the
++MaraDNS before sending the mailing list bug reports or asking for technical 
++support.  Here is my guide for Debian users, telling them how to upgrade the
+ outdated version of MaraDNS Debian comes with:<ul>
+ 
+-<li>	MaraDNS 1.2 has been, since 1.2.12.04, a "bugfix only" branch, 
++<li>	MaraDNS 1.4 is a "bugfix only" branch, 
+ and no new features have been added to this version of MaraDNS.  
+ 
++<li>	Updating from previous versions of MaraDNS to MaraDNS 1.4
++	is trivial and <A href=http://maradns.org/tutorial/update.html>fully
++	documented</A>
++
+ <li>	It is very easy to update the buggy version of MaraDNS 
+ that the Debian package comes with an updated MaraDNS.
+ 
+@@ -25,18 +29,18 @@
+ page</A>.
+ 
+ <li>	Next, unpack the MaraDNS tarball.  For example, if you 
+-downloaded the file "maradns-1.2.12.08.tar.bz2" (please only download
+-MaraDNS-1.2.12.08 if it is the current stable version, which it is at 
++downloaded the file "maradns-1.4.01.tar.bz2" (please only download
++MaraDNS-1.4.01 if it is the current stable version, which it is at 
+ time of writing this document), type in this command:
+ <blockquote><tt>
+-	tar xvjf maradns-1.2.12.08.tar.bz2
++	tar xvjf maradns-1.4.01.tar.bz2
+ </tt></blockquote>
+ 
+-<li>	Enter the maradns-1.2.12.<i>version</i> directory, where 
+-<i>version</i> is the bugfix revision number of the most current 1.2 
++<li>	Enter the maradns-1.4.<i>version</i> directory, where 
++<i>version</i> is the bugfix revision number of the most current 1.4 
+ release of MaraDNS.
+ 
+-<li>	Compile MaraDNS 1.2.12.<i>version</i> with the following 
++<li>	Compile MaraDNS 1.4.<i>version</i> with the following 
+ commands:
+ 
+ <blockquote><tt>
+@@ -73,6 +77,6 @@
+ 
+ </ul> At this point, your MaraDNS daemon is now the fully supported 
+ version of MaraDNS.  If you continue to have the bug or concern after 
+-upgrading to the latest 1.2 release, please let us know so we can begin 
+-to resolve the issue.
++upgrading to the latest 1.4 release, please let us know on the mailing 
++list so we can begin to resolve the issue.
+ 

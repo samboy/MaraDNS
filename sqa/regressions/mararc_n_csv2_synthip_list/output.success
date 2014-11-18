@@ -1,0 +1,9 @@
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+www.example.com. +86400 a 10.1.2.3
+# NS replies:
+#example.com. +86400 ns synth-ip-0a010203.example.com.
+#example.com. +86400 ns synth-ip-0a010204.example.com.
+# AR replies:
+#synth-ip-0a010203.example.com. +86400 a 10.1.2.3
+#synth-ip-0a010204.example.com. +86400 a 10.1.2.4

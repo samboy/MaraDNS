@@ -1,0 +1,63 @@
+--- maradns-2.0.03/doc/en/webpage/changelog.embed	2011-08-05 06:59:44.000000000 -0500
++++ maradns-2.0.04/doc/en/webpage/changelog.embed	2011-11-12 02:20:01.574557012 -0600
+@@ -1,13 +1,57 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-2.0.04:</p>
++This is a stable release of MaraDNS.
++<blockquote>
++<ul>
++<li>AngelD's issue with zone transfers when there are a lot of FQDN4 records
++    fixed.
++<li>Karim's issue with '/read' directive fixed
++</ul>
++(2011.11.12)
++</blockquote>
++
++<p>maradns-1.4.07:</p>
++This is a legacy release of MaraDNS.  All patches are backports
++of MaraDNS 2.0 bug fixes.
++<blockquote>
++<ul>
++<li>A typo fix for fetchzone
++<li>AXFR-over-UDP packets are now correctly marked "truncated"
++<li>It is now possible to have the '/' in hostnames
++<li>Fix for Debian bug #607739: Hostname shown when complaining about DDIP
++    issues
++<li>AngelD's issue with zone transfers when there are a lot of FQDN4 records
++    fixed.
++<li>Karim's issue with '/read' directive fixed
++</ul>
++(2011.11.11)
++</blockquote>
++
+ <p>maradns-2.0.03:</p>
+-This is a stable branch of MaraDNS
++This is a stable release of MaraDNS.
+ <blockquote>
+ <ul>
+-<li>ANY queries that do not fit in 512 bytes are not properly truncated
++<li>Deadwood updated to Deadwood 3.0.03
++<li>ANY queries that do not fit in 512 bytes are now properly truncated
+ <li>RFC2317 hostnames with slash characters ('/') are now supported
++<li>MaraDNS is now fully installed when 'make install' is invoked (at
++    least on CentOS 5)
++<li>DDIP MX problem records now show hostname
++<li>Correct handling of IXFR and AXFR requests sent over UDP (the UDP server
++    now always marks these as being truncated)
++<li>Documentation updates
++<li>Give information on how to RTFM (correct manpage pointed out) if a 
++    csv2 file doesn't parse
++<li>Added support for --pid=/path/to/file to Duende (courtesy Yarin)
++<li>ipv6 fixes applied
++<li>Courtesy of Nicholas Bamber, Duende should now reap all 
++    children (as long as they don't need a KILL/9 signal to exit)
++<li>Updates to the SQA regressions
++<li>MaraDNS 2.0 tarball is now xz compressed; MaraDNS 2.0 Windows binary is
++    now provided.
+ </ul>
+-(2011.??.??)
++(2011.08.05)
+ </blockquote>
+ 
+ <p>maradns-2.0.02:</p>

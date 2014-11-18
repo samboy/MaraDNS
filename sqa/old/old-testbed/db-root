@@ -1,0 +1,23 @@
+# Zone file for example.com (example file)
+
+# See 'doc/csv1.format' for detailed help on the format of this file
+
+# The SOA record must be first, followed by all authoritative NS records
+# for this zone.
+S.|86400|.|hostmaster@example.com.|19771108|7200|3600|604800|1800
+N.|86400|ns1.example.net.
+Ncom.|86400|ns2.example.net.
+Norg.|86400|ns1.example.org.
+N0.0.127.in-addr.arpa.|86400|ns1.0.0.127.in-addr.arpa.
+
+# Some 'IN A' records
+Ans1.example.net.|86400|127.0.3.1
+# Deliberately an address that does not exist
+Ans2.example.net.|86400|127.0.3.2
+Ans1.example.org.|86400|127.0.3.5
+Ans1.0.0.127.in-addr.arpa.|86400|127.0.3.8
+
+# A 'PTR' record which, while marked as unauthoritative, allows this
+# program to work with the obsolete tool nslookup when bound on IP 127.0.0.3
+P1.3.0.127.in-addr.arpa.|1234|ns1.example.net.
+

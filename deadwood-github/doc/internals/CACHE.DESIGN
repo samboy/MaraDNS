@@ -1,0 +1,104 @@
+[Note: This data is terribly out of date, based on the peliminary design for
+ Deadwood 2 back in 2007.  In 2010, in order to implement full recursion,
+ I added a whole bunch of types, such as CNAME referrals, NS referrals,
+ and a couple of types for truncated replies.  I also have two different
+ types for "not found" packets; one for NXDOMAIN, and another for 
+ non-NXDOMAIN "not found" replies.  See DwRecurse.h and DwRecurse.c for
+ an overview; there are extensive comments that explain the datatypes
+ stored here.
+
+ I should also point out the simple answers have offsets to RRs in the
+ answers, and are no longer stored in compressed form.  The following data
+ types are only used in the "tiny" 2.3 branch of Deadwood]
+
+Cache data: Cached data will use the hash (see HASH.DESIGN) 
+            and be stored like this:
+
+       <raw DNS answer><ANCOUNT><NSCOUNT><ARCOUNT><type>
+
+       The raw DNS answer is the packet, as-is sent from the server (complete
+       with compression pointers, etc), starting after the end of the 
+       question.  Basically, we reject DNS replies that don't have a QDCOUNT
+       of 1, that don't have the expected DNS question, or that don't have
+       the expected query ID.  We then shave off the DNS header (noting
+       ANCOUNT, NSCOUNT, and ARCOUNT), the question, and put the rest of
+       the reply in the cache, adding (AN/NS/AR)COUNT at the end of the
+       cached packet.
+
+       The cache is an assosciative array; the "key" is the DNS question;
+       the value is the answer as described above.
+
+       When getting an answer from the cache, we sew the key, value, and 
+       current query to give the client an answer.  Basically, in the
+       header:
+
+       ID: As sent by the client
+       QR: 1, since it is a reply
+       OPCODE: 0
+       AA: 0 (since we're a cache)
+       TC: 0 (if we get a TC of 1 from the remote server, we do not
+              cache the reply, but pass on a reply to the client with
+              the TC bit on.  This way, they can use DwTcp to get
+              a non-cached answer.  Yes, the real solution is to use
+              TCP and UDP in the same daemon, but we'll deal with that 
+              later)
+       RD: 1 (We reject queries where this is 0)
+       RA: 1 (Some DNS stub resolvers actually check this bit)
+       Z: 0
+       RCODE: 0 or 3 if "type" in cache is 1 (would be 2 if we have a 
+              server failure)
+       QDCOUNT: 1
+       (AN/NS/AR)COUNT: As per the last 6 bytes of the value in the cache
+       Question: As per the key + (0x0001) (CLASS 1)
+       Answer: The rest of the value after shaving off (AN/NS/AR)COUNT
+
+type: Type is an 8-bit value placed at the end of the string for each
+      cache entry.  Type currently has two values:
+
+	0: This indicates that the rest of the string is stored as described
+           here, with an RCODE of 0
+
+	1: This indicates that the rest of the string is stored as described
+           here, with an RCODE of 1
+
+== The cache on disk ==
+
+The cache file on disk is pretty simple; it just has a 4-byte header, 
+followed by the maximum number of elements the cache can have (not really
+used in Deadwood 2.4), followed by each hash element.
+
+Each hash element has three values: A 4-byte big endian number storing the
+number of bytes in the key, followed by the actual key.  The same string
+format for the value in the hash.  This is followed by an 8-byte timestamp
+that uses a Deadwood-specific format for the time when the entry expires.
+
+The expires are stored with the least important entries being first in
+the file, followed by more and more important entires.
+
+OK, in more detail, there are three data types in the cache:
+
+1) 4-byte big endian binary numbers
+
+2) Strings (this is a black box, as far as the code that writes to disk is
+   concerned)
+
+3) 8-byte binary timestamps.
+
+The cache starts with a 4-byte header '\0'DX2 (An ASCII null, followed by 
+"DX2" in ASCII).  It then has a 4-byte number with the maximum allowed number 
+of entries in the cache.
+
+This is followed by each hash element.
+
+4-byte: Length of key
+String: Key
+4-byte: Length of value
+String: Value
+Timestamp: Expire time for record
+
+The records closer to the end of the file are considered more important
+than records at the beginning of the file; this means they are less likely
+to be axed when the hash is full and needs to remove elements.
+
+
+

@@ -1,0 +1,11 @@
+long.chunk
+
+Descrption: MaraDNS would not always correctly report that a TXT chunk
+            was too long.
+
+Expected output of test: MaraDNS complains that TXT chunk is too long.
+
+Presence of bug output: MaraDNS loads the zone file without reporting an
+                        error.
+
+When fixed: 1.3.07.02

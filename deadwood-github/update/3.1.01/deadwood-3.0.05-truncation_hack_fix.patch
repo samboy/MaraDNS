@@ -1,0 +1,11 @@
+--- deadwood-3.1.01/src/DwUdpSocket.c.orig	2011-11-27 01:26:56.421867739 -0600
++++ deadwood-3.1.01/src/DwUdpSocket.c	2011-11-27 01:27:59.598428635 -0600
+@@ -1068,7 +1068,7 @@
+          * answers will be treated as if it has only one answer */
+         if((a[2] & 0x02) != 0x00 && a[7] > 0 &&
+                         key_n[DWM_N_truncation_hack] == 1) {
+-                a[6] = 0;
++                a[6] = a[8] = a[9] = a[10] = a[11] = 0;
+                 a[7] = 1;
+                 /* Cut off answer after first reply */
+                 for(z=12;z<count;z++) {

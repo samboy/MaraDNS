@@ -1,0 +1,87 @@
+--- deadwood-2.9.05/doc/Deadwood.ej	2010-08-13 01:48:00.000000000 -0700
++++ deadwood-2.9.06/doc/Deadwood.ej	2010-08-31 11:47:34.000000000 -0700
+@@ -5,14 +5,16 @@
+ <BODY>
+ 
+ <h1>NAME</h1>
+-Deadwood - A non-recursive caching DNS resolver
++Deadwood - A fully recursive caching DNS resolver
+ 
+ <h1>DESCRIPTION</h1>
+-Deadwood is a working DNS forwarding cache.  This is a DNS server with
++Deadwood is a fully recursive DNS cache.  This is a DNS server with
+ the following features:
+ 
+ <ul>
+ 
++<li>Full support for both DNS recursion and DNS forwarding caching
++
+ <li>Small size and memory footprint suitable for embedded systems
+ 
+ <li>Simple and clean codebase
+@@ -464,7 +466,7 @@
+ In addition to use a buffer-overflow resistant string library and a coding
+ style and SQA process that checks for buffer overflows and memory leaks,
+ Deadwood uses a strong pseudo-random number generator (The 32-bit version
+-of Radio Gatun) to generate both the query ID and source port.  For the
++of RadioGatun) to generate both the query ID and source port.  For the
+ random number generator to be secure, Deadwood needs a good source of
+ entropy; by default Deadwood will use /dev/urandom to get this entropy.
+ If you are on a system without /dev/urandom support, it is important
+@@ -474,6 +476,16 @@
+ 
+ <p>
+ 
++The Windows port of Deadwood includes a program called 
++"mkSecretTxt.exe" that creates a 64-byte (512 bit) random file called 
++"secret.txt" that can be used by Deadwood (via the "random_seed_file"
++parameter); Deadwood also gets entropy from the timestamp
++when Deadwood is started and Deadwood's process ID number, so it is
++same to use the same static secret.txt file as the random_seed_file
++for multiple invocations of Deadwood.
++
++<p>
++
+ Note that Deadwood is not protected from someone on the same network viewing
+ packets sent by Deadwood and sending forged packets as a reply.  
+ 
+@@ -492,7 +504,7 @@
+ On systems without direct /dev/urandom support, it is suggested to see if
+ there is a possible way to give the system a working /dev/urandom.  This
+ way, when Deadwood is compiled, the hash magic number will be suitably 
+-random.
++random.  
+ 
+ <p>
+ 
+@@ -524,15 +536,14 @@
+ chroot_dir = "/etc/deadwood" 
+ 
+ # The following upstream DNS servers are Google's 
+-# newly-announced (as of December 2009) public DNS 
+-# servers.  For more information, see the page at
++# (as of December 2009) public DNS servers.  For 
++# more information, see the page at
+ # http://code.google.com/speed/public-dns/
+ #
+-# These IPs can be changed to the IPs of any recursive 
+-# DNS servers that can be reached from the computer 
+-# running Deadwood, such as your ISP's DNS servers.
+-upstream_servers = {}
+-upstream_servers["."]="8.8.8.8, 8.8.4.4" 
++# If neither root_servers nor upstream_servers are set,
++# Deadwood will use the default ICANN root servers.
++#upstream_servers = {}
++#upstream_servers["."]="8.8.8.8, 8.8.4.4" 
+ 
+ # Who is allowed to use the cache.  This line
+ # allows anyone with "127.0" as the first two
+@@ -553,7 +564,7 @@
+ # If you want to read and write the cache from disk, 
+ # make sure chroot_dir above is readable and writable 
+ # by the maradns_uid/gid above, and uncomment the 
+-# following line
++# following line. 
+ #cache_file = "dw_cache"
+ 
+ # If your upstream DNS server converts "not there" DNS replies

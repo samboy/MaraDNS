@@ -1,0 +1,63 @@
+<HEAD>
+<TH>FETCHZONE 1 "fetchzone" "June 2004" "fetchzone"</TH>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+</HEAD>
+<body>
+<h1>NAME</h1>
+fetchzone - get dns zone from server
+<h1>DESCRIPTION</h1>
+<b>fetchzone</b> transfers a user-specified dns zone from a zone server 
+and displays it in csv2 format on the standard output.
+<h1>USAGE</h1>
+<b>fetchzone</b> zone_name zone_server_IP [query_class]
+<h1>OPTIONS</h1>
+<b>zone_name</b>
+<p>
+Name of the dns zone to be transferred.
+<p>
+<b>zone_server_IP</b>
+<p>
+IP address of dns server
+<p>
+<b>query_class</b>
+<p>
+Optional argument which can change the query class from 1 (the 
+default) to 255.  This may be needed for some versions of Bind.
+<H1>EXAMPLES</H1>
+To obtain the zone example.com from the server 192.168.9.8:
+<blockquote>
+<pre>
+fetchzone example.com 192.168.9.8 
+</pre>
+</blockquote>
+To obtain the zone example.org from the server 10.9.8.78 using a query 
+class of 255:
+<blockquote>
+<pre>
+fetchzone example.com 10.9.8.78 255
+</pre>
+</blockquote>
+<h1>BUGS</h1>
+Fetchzone will not correctly output host names with utf-8 characters in
+them.
+<h1>SEE ALSO</h1>
+The man pages <b>maradns(8)</b> and <b>csv2(5)</b>
+<p>
+<A href=http://www.maradns.org>http://www.maradns.org</A>
+<h1>LEGAL DISCLAIMER</h1>
+THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
+OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE 
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+<h1>AUTHOR</h1>
+Sam Trenholme
+</body>
+

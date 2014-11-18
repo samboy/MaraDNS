@@ -1,0 +1,88 @@
+# This is a small change to the other Makefile to make it compile on
+# FreeBSD.  This file is a third-party contribution; MaraDNS support can 
+# not help people who wish to compile MaraDNS on FreeBSD free of charge.
+
+# Server objects
+SOBJECTS=server/MaraBigHash.o
+# js_string library (buffer overflow resistant string library) objects
+JOBJS=libs/JsStr.o libs/JsStrOS.o libs/JsStrCP.o 
+# MaraHash (assosciative array) library objects
+MHOBJS=libs/MaraHash.o
+# Parser objects
+POBJECTS=parse/ParseMaraRc.o parse/ParseCsv1.o ../parse/ParseIpAcl.o
+# DNS query processing library objects
+DOBJECTS=dns/Queries.o dns/Compress.o dns/bobbit.o
+# Secure random number generator objects
+ROBJECTS=rng/rng-api-fst.o rng/rng-alg-fst.o
+OBJECTS=$(JOBJS) $(MHOBJS) $(SOBJECTS) $(DOBJECTS) $(POBJECTS) $(DOBJECTS) $(ROBJECTS)
+EXECS=server/maradns
+
+# Uncomment the following three lines to get this to compile on Solaris
+# LDFLAGS=-lxnet
+# CC=gcc $(LDFLAGS) -DSELECT_PROBLEM
+# M="CC=$(CC)"
+# These are currently unused, but will be needed again if we use flock() again
+# CFLAGS=-I/usr/ucbinclude 
+# L="CC=$(CC) $(CFLAGS)"
+# LDFLAGS=-L/usr/ucblib -lucb -lxnet
+# end the Solaris section
+# Non-Solaris version of "M"
+M="VERSION=$(VERSION)"
+Q="DEFINES=-DSELECT_PROBLEM"
+
+# FreeBSD needs some special flags to compile MaraDNS
+CC="cc -O2 -Wall -pipe -D_THREAD_SAFE -pthread"
+M=CC=$(CC) 
+V="VERSION=$(VERSION)"
+
+# Debug
+D=$(M) DEBUG=-DDEBUG
+
+FLAGS = -O2 -Wall 
+#FLAGS = -g
+
+all: 
+	cd libs ; make $(M) ; cd ../dns ; make $(M) ; \
+	cd ../rng ; make $(M) ; cd ../parse ; make $(M) ; \
+	cd ../qual ; make $(M) ; cd ../server ; \
+	make $(M) $(Q) COMPILED=\"$(COMPILED)\" $(V) ; \
+	cd ../tools ; make $(M) ; \
+	cd ../deadwood-*/src/ ; make FLAGS="-O2"; \
+	cd ../../tcp ; make $(M) $(V) ; cat ../00README.FIRST
+
+debug: 
+	cd libs ; make $(D) DEBUG="-DDEBUG -DTHREADS" ; \
+	cd ../dns ; make $(D) ; cd ../rng ; make $(D) ; \
+	cd ../parse ; make $(D) ; cd ../qual ; make $(D) ; \
+	cd ../server ; \
+	make $(D) $(Q) COMPILED=\"$(COMPILED_DEBUG)\" ; \
+	cd ../tools ; make $(D) ; \
+	cd ../tcp ; make $(D) ; cat ../00README.FIRST
+
+clean:
+	rm -f $(OBJECTS) core $(EXECS) ; \
+	cd dns ; make clean ; \
+	cd ../libs ; make clean ; cd ../parse ; make clean ; \
+	cd ../qual ; make clean ; \
+	cd ../server ; make clean ; \
+	cd ../test ; make clean ; \
+	cd ../tools ; make clean ; \
+	cd misc ; make clean ; \
+	cd ../../utf8 ; make clean ; \
+	cd ../tcp ; make clean ; \
+	cd ../rng ; make clean ; \
+	cd ../sqa ; make clean ; \
+	cd ../deadwood-*/src ; make clean ; \
+	# ; cd .. ; find . -type d | grep .deps | xargs rm -fr ; find . -name '*.o' | xargs rm
+
+strip:
+	cd server; strip maradns ; cd ../tcp ; \
+	strip zoneserver getzone fetchzone ; \
+	cd ../tools ; strip askmara
+
+install:
+	VERSION=$(VERSION) ./build/install.sh
+
+uninstall:
+	VERSION=$(VERSION) ./build/uninstall.sh
+

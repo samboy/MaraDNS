@@ -1,0 +1,25 @@
+body, #maradns-t, #maradns-r, .makenormal, a, h1, h2, h3 {
+        font-family: Verdana, Bitstream Vera Sans, sans-serif;
+	font-weight: bold;
+	font-size: xx-large;
+}
+
+h1, h2, h3 {
+        margin-top: .5em;
+        margin-bottom: .5em;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+#topright {
+	display: none;
+}
+
+.content {
+	width: 100%;
+}
+
+.makelarge, .nocss {
+	display: none;
+}
+

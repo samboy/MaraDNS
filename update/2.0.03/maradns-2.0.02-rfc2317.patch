@@ -1,0 +1,47 @@
+--- maradns-2.0.02/parse/Csv2_parse.c	2011-02-05 19:21:33.000000000 -0700
++++ maradns-2.0.03/parse/Csv2_parse.c	2011-02-15 14:12:35.000000000 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004-2006 Sam Trenholme
++/* Copyright (c) 2004-2011 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -662,6 +662,11 @@
+         return (csv2_is_alphanum(in) || in > 0x7f);
+ }
+ 
++/* Match on [0-9a-zA-z\-\_\/] or anything utf-8 */
++int csv2_is_dname(int32 in) {
++        return (csv2_is_alphanum(in) || in == '/' || in > 0x7f);
++}
++
+ /* Match on [0-9a-zA-Z\-\_\%] or anything utf-8 */
+ int csv2_is_dchar(int32 in) {
+         return (csv2_is_text(in) || in == '%');
+@@ -784,7 +789,7 @@
+          * first character of a hostname is already read and added to
+          * the output string */
+         if(starwhitis != 0 && starwhitis != 5) {
+-                if(csv2_is_text(look)) {
++                if(csv2_is_dname(look)) {
+                         state = NON_DOT_STATE;
+                 }
+                 else if(look == '*') {
+@@ -827,7 +832,7 @@
+                                 return 0;
+                         }
+                 }
+-                else if(state == NON_DOT_STATE && csv2_is_text(look)) {
++                else if(state == NON_DOT_STATE && csv2_is_dname(look)) {
+                         if(csv2_append_utf8(o,look) < 0) {
+                                 csv2_error(stream,"Error appending character");
+                                 js_destroy(o);
+@@ -864,7 +869,7 @@
+                 /* text character after dot (or at beginning of string)
+                  * means we process that text label in the hostname
+                  * until we see a dot again */
+-                else if(state == DOT_STATE && csv2_is_text(look)) {
++                else if(state == DOT_STATE && csv2_is_dname(look)) {
+                         state = NON_DOT_STATE;
+                         if(csv2_append_utf8(o,look) < 0) {
+                                 csv2_error(stream,"Error appending character");

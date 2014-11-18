@@ -1,0 +1,72 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_js2str 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_js2str \- convert a js_string object in to a NULL-terminated string
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "js_js2str(js_string *js, char *string, int max)"
+.fi
+.SH DESCRIPTION
+.B js_js2str
+converts the 
+.I js_string
+object pointed to by
+.I js 
+in to a NULL-terminated string, adding a NULL to the end of the string.
+
+The NULL-terminated string in question needs to be be previously allocated,
+and have at least max + 1 bytes allocated to it, otherwise a buffer overflow
+may happen.
+
+Should the
+.I js_string
+object have NULLs in its string, these NULLs will be copied to the destination
+string.  This may cause routines that use a NULL to terminate a string to 
+inappropriatly terminate the string.
+.SH ARGUMENTS
+.B js
+is a pointer to the  
+.I js_string
+object we will convert in to a NULL-terminated string.
+
+.B string
+is a pointer to where we will place the NULL-terminated string.
+
+.B max
+is the number of characters allocated to the string - 1.  If the string
+we are pointing to does not have at least max + 1 bytes allocated to it, we
+may get a buffer overflow.
+.B js_js2str
+returns 
+.I JS_SUCCESS 
+on successful conversion of the 
+.I js_string
+object,
+.I JS_ERROR
+otherwise.
+.SH EXAMPLE
+The following example creates a 
+.B js_string
+object that is given the string "What's up doc?", which is then 
+copied to the string bar, and printed out with 
+.I printf.
+
+.nf
+	js_string *foo;
+	char bar[256];
+	foo = js_create(256,1);
+	js_str2js(foo,"What's up doc?",14,1); 
+	js_js2str(foo,bar,255);
+	printf("%s\\n",bar);
+.fi
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

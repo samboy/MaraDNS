@@ -1,0 +1,19 @@
+<h1>Search MaraDNS documentation</h1>
+
+If you wish to search this site, please enter what you
+are looking for in the following box. <p>
+
+<!-- Google Custom Search Element -->
+<div id="cse" style="width:100%;">Loading</div>
+<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+<script type="text/javascript">
+  google.load('search', '1');
+  google.setOnLoadCallback(function(){
+    new google.search.CustomSearchControl().draw('cse');
+  }, true);
+</script>
+<noscript>Please enable JavaScript if you wish to search this site.
+If you do not wish to or can not enable JavaScript, go to <A 
+href=http://google.com>google.com</A> and type in a query like
+"<A href=http://www.google.com.mx/search?q=whatever+site%3Amaradns.org>whatever site:maradns.org</A>"</noscript>
+

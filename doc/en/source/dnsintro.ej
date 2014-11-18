@@ -1,0 +1,115 @@
+<HEAD><TITLE>MaraDNS tutorial</TITLE>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+
+</HEAD><BODY>
+
+<!-- Copyright 2005-2010 Sam Trenholme
+
+    TERMS
+
+    Redistribution and use, with or without modification, are permitted 
+    provided that the following condition is met:
+
+    1. Redistributions must retain the above copyright notice, this 
+       list of conditions and the following disclaimer.
+
+    This documentation is provided 'as is' with no guarantees of 
+    correctness or fitness for purpose.
+
+ -->
+
+<H1>Introduction to DNS</H1>
+
+This document is meant to be an introduction to DNS for someone who has
+never administrated a DNS server or registered a domain before.  Being a
+part of the MaraDNS package, this tutorial assumes that one is using
+the MaraDNS package.
+
+<H2>What is DNS?</H2>
+
+DNS is the method that the internet uses to convert difficult-to-remember
+numbers, such as '10.17.243.32', in to easy-to-remember names, such as
+'www.yahoo.com'.  The reason for this conversion is because the underlying
+protocol for the internet, TCP/IP, uses difficult-to-remember numbers
+to connect to other computers.
+
+<H2>What is a DNS server</H2>
+
+A <!-- This 'A' should be here -->
+<A href="glossary.html#dns_server">
+<i>DNS server</i></A>
+is a program that performs the DNS conversion from 
+names in to number.  There are three kinds of DNS servers out there:
+
+<UL>
+
+<LI>DNS servers which can convert most 
+<A href="glossary.html#dns_node"><i>DNS nodes</i></A>
+in to their
+corresponding number.  These DNS servers are called 
+<A href="glossary.html#recursive">
+<i>recursive DNS servers</i></A>.
+This kind of server can not change the names of any 
+<A href="glossary.html#dns_node">
+<i>DNS nodes</i></A>
+out there.  Instead, they simply ask other DNS servers the IP
+for a given DNS node.  
+
+<p>
+
+This kind of DNS server does not depend on one's ISP's DNS servers 
+to resolve a given name, but directly contacts the relevant authoritative
+DNS servers anywhere on the internet to resolve a given DNS node.
+
+<LI>DNS servers which can only convert 
+<A href="glossary.html#dns_node">
+<i>DNS nodes</i></A>
+which a 
+<A href="glossary.html#dns_admin">
+<i>DNS server administrator</i></A>
+manages from DNS nodes in to IPs.  The DNS
+server administrator can change the IPs that the DNS nodes have.  
+These kinds of DNS servers are called
+<A href="glossary.html#authoritative">
+<i>authoritative DNS servers</i></A>.
+Recursive DNS servers contact authoritative DNS servers in order to learn
+the IP for a given DNS node. 
+
+<LI>DNS servers which simply cache information obtained from other 
+    recursive DNS servers.  The "Deadwood" program included with
+    MaraDNS supports this type of 
+    configuration via the "upstream_servers" 
+    <A href=man.mararc.html>mararc</A> variable; this program can also act
+    as a full fledged recursive DNS server.
+
+</UL>
+
+MaraDNS' "Deadwood" program is a recursive DNS server; the "maradns" program
+is an authoritative DNS server.  Whether one 
+needs a recursive or an authoritative DNS server depends on what one is 
+trying to do with dns:
+
+<UL>
+
+<LI>If one simply wishes to contact other sites on the internet, one only
+    needs to set up a 
+    <A href="glossary.html#recursive">
+    <i>recursive DNS server</i></A>.
+    <A href=recursive.html>Tutorial for setting up MaraDNS as a recursive 
+    DNS server</A>
+
+<LI>If one wishes to register domains, and have their own computers serve 
+    the domain names in question, then one needs to set up an 
+    <A href="glossary.html#authoritative">
+    <i>authoritative DNS server</i></A>.  
+    <A href=authoritative.html>Tutorial
+    for setting up MaraDNS as an authoritative DNS server.</A>
+
+<LI>If one has a current DNS setup using another DNS server, 
+    <A href=convert.html>this document details how to convert from 
+    another DNS server to MaraDNS</A>.
+
+</UL>
+
+</body>

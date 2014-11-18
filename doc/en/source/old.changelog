@@ -1,0 +1,491 @@
+[This changelog is out of date.  Look at changelog.html]
+
+maradns-0.0.01: First version of MaraDNS package.  Added iso-8859-1 support
+                to JsStr routines.  Added js_qappend and js_qprepend
+                functions there.  In addition to js_qfgrep.  All tested
+                functions work and are without error. (2001.02.17)
+
+maradns-0.0.02: MaraHash functions--assosciative array methods utilizing
+                a hash--have been set up.  This has the functions
+                mhash_create, mhash_js, mhash_inc, mhash_put,
+                mhash_get, mhash_undef, mhash_put_js, and mhash_get_js.
+                Debugging done--these functions can perform basic
+                get/put operatins with elements in an assosciative
+                array. (2001.02.18)
+
+maradns-0.0.03: Some more work has been done.  mhash_undef_js and
+                mhash_resize functions written and compile. (2001.02.18)
+
+maradns-0.0.04: We now properly handle the case of trying to add an
+                element already there (return an error), and have
+                more error checking to make sure we don't crash
+                because of corrupt hash data.  Added an interactive
+                test which lets the user interactively add, delete, and
+                view hash elements.  Time to go to bed (2001.02.18)
+
+maradns-0.0.05: Corrected mhash_resize to blank out the hash we resize to.
+                Create mtest.c program to test the creation of hash
+                elements.  Time to get ready for church.  (2001.02.18)
+
+maradns-0.0.06: Added mara_tuple support and verified that hash collisions
+                are properly handled.  Time to go to evening church recital.
+                (2001.02.18)
+
+maradns-0.0.07: Good morning!  Added mtuple_new, mtuple_put, and mtuple_get
+                functions.  Fixed bug where mhash_inc would allow a return
+                value of 0.  Fixed Makefile so make clean cleans up mtest
+                binary.  Added bounds testing to mhash_resize hashtable size.
+                Time to eat breakfast. (2001.02.19)
+
+maradns-0.0.08: Added js_anq_chars, js_alpha_chars, and js_an_chars to 
+                JsStrCP object.  (2001.02.19)
+
+maradns-0.1.00: Begin work on handlers to handle various data types that
+                RFC1035 has. (2001.02.20)
+
+maradns-0.1.01: Added some more RFC1035 data to MaraDns.h (2001.02.20)
+
+maradns-0.1.02: Wrote first (test-only) server that listens on port 53.
+                Using this server to determine what kind of data resolvers
+                ask for. (2001.02.20)
+
+maradns-0.1.03: Began work on debugging routines in Query.  Time to go to
+                work (2001.02.20)
+
+maradns-0.1.04: Debugged routines in Query.c that convert a RFC1035 question
+                in to a query.  Added routine that converts a RFC1035 domain
+                name (with class) in to a dotted-decimal hostname.
+                (2001.02.20)
+
+maradns-0.1.05: Added hname_2rfc1035, which does the reverse of 
+                hname_translate.  Beginning work on ctest, which is a
+                test DNS client, to see what kind of replies we get
+                from DNS servers. (2001.02.21)
+
+maradns-0.1.06: ctest now sends correctly formed DNS queries to a DNS server
+                (2001.02.21)
+
+maradns-0.1.07: Fixed potential overflow in rtest (probably never exploitable)
+                Discovered that DNS servers do not support QDCOUNT > 1 in DNS
+		queries.  Made notes in "doc" about this.  (2001.02.21)
+
+maradns-0.1.08: Added read_rr_h.  Also began work on decompress_data
+                (Ugh.  rfc1035 compression is horrible.)  (2001.02.22)
+
+maradns-0.1.09: Had a good weekend.  Got to see a friend of mine and his wife
+                get baptised.  Continued work on decompress_data.  It is 
+                still buggy, but I am working out the bugs. (2001.02.26)
+
+maradns-0.1.10: You know how to handle buggy code?  Rewirte the code so 
+                that it is simpler and less buggy.  A lot of the overhead
+                I had was not needed to keep things secure.  The docs
+                on how MaraDNS handles decompression have been revised 
+                also.  RFC1035 decompression now works, still need to
+                add MX and SOA, and possibly support for other data types
+                that get compressed (SRV, the obscure RFC1035 datatypes, 
+                etc.) Also, get rid of some of the cruft variables in the
+                decompression code. (2001.02.26)
+
+maradns-0.1.11: Support for MX and SOA, and a number of other formats that
+                may have compressed data in them now added to the 
+                decompression routine.  ctest now can parse any RR that
+                MaraDNS fully supports except TXT (A, NS, SOA, MX, CNAME, 
+                HINFO), and is now a rather verbose dig replacment.  Got
+                rid of the cruft variables in the decompression routine.
+                Next: Have a routine to decode TXT data.
+                (2001.02.27)
+
+maradns-0.1.12: Added support for TXT in ctest resolver code.  Made ctest code
+                more hardy--it validates all input and returns an error if
+                there is a problem at any point.  
+                (2001.02.27)
+
+maradns-0.1.13: Fixed bug where ctest resolver program did not print out SOA
+                replies (2001.02.28)
+
+maradns-0.1.14: Beginning the retooling of code from the KiwiSpam package
+                to use assosciative arrays in ParseMaraRC.c.  This will
+                be a fairly extensive code rewrite, considering the code I am
+                modding is somewhat hacky itself. (2001.03.01)
+ 
+maradns-0.1.15: Continuing the retooling of code from the KiwiSpam package
+                to use assosciative arrays in ParseMaraRC.c.  Yes, this whole
+                parser is a hack instead of a proper parser.  Right now, the
+                single line parser groks foo["bar"] = baz.  Next: get it
+                to grok foo = {} (2001.03.01)
+
+maradns-0.1.16: Modified js_anq_chars handle just numerics.  Made it 
+                correctly handle just alphabetics.  Renamed 'ctest' to
+                'askmara'.  Rewrote askmara.c to have all labels in
+                another file (askmara_labels_en.h), to make translation
+                easier.  (2001.03.02)
+
+maradns-0.1.17: More ParseMaraRC.c hacking.  Now, it can parse
+                'foo = {}', 'foo["bar"] = "baz"', and 'foo = "bar"'.  
+                Next: Write the routine to read an entire maradnsrc (maybe
+                we should just call this mararc) and fill up the hash
+                table with the names of all of the zones. (2001.03.03)
+
+maradns-0.1.18: More ParseMaraRC hacking (this this is a real hack. 
+                A really bad hack.  At least the elegant js_string lib
+                stops it from being a security problem).  It now has
+                routines that can fill up an assosciative array based
+                on user-specified keys and values.  Next: Routine that
+                reads the rc file, and, based on the data there, begins 
+                reading zone files.  The zone files will then be read in
+                turn, and then populate a hash.  (2001.03.03)
+
+maradns-0.1.19: Added routines to handle getting all of the keys of a hash
+                in series (in the semi-random order they are in the hash
+                table).  Corrected errors in parseline code, it now
+                works with foo["bar"] = "baz" lines and no longer considers
+                foo["bar"] = baz legal.  foo["bar"] = 1 is still legal.
+                (2001.03.04)
+
+maradns-0.1.20: I have decided that MaraDNS will use UTF-8 to support 
+     		international characters in domain names.  I have added
+ 		the draft RFC for UTF8 domain names and a description of
+       		UTF8 in the docs.  In terms of code, we now have code	
+		that converts ISO 8859-1 to UTF-8.  In addition, I have
+ 		written up a couple of documents describing the csv1
+		non-standard Zone file format, and how MaraDNS will
+		resolve a domain name. (2001.03.06)
+
+maradns-0.1.21: Wrote utf8test to test the ability to convert ISO 8859-1
+                strings to UTF-8 strings.  Found minor bug in code, fixed,
+                and now ISO 8859-1 strings are correctly copied.  I had to 
+                set up X and recompile xterm to support all this.  Cleaned
+	        up the comments in the js_notmatch_offset code (they were
+                never cleaned up from the Kiwi days).  Clean up of some
+                code in Queries.c.  Wrote about half of the line parsing
+                code for parsing csv1 lines. csv1 format doc clean
+                up. (2001.03.07)
+
+maradns-0.1.22: Split off some of the routines in other files to new .c
+                files: ParseCsv1.c and Utf8.c.  Created js_addbyte routine.
+                Added csv1test and example_csv1 files to test the csv1
+                parsing routines.  Created js_changebyte routine.  
+                ParseCsv1 routine now parses all data types except for the
+                SOA datatype.  Next: SOA datatype, shortcut for PTR datatype.
+                (2001.03.07)
+
+maradns-0.1.23: Changed js_atoi to return unsigned integers.  Added support
+                for TXT and SOA records.  Tested to make sure error 
+                correction looks good.  Next: PTR shorthand, more efficient 
+                Makefile. (2001.03.07)
+
+maradns-0.1.24: Added support for MX and "Unknown" (user-specified query
+                type) data types.  Added support for '\xxx'-style escape
+                sequences, making it possible to have arbitrary data in
+                the csv1 zone file. (2001.03.08)
+
+maradns-0.1.25: Added support for % in csv1 file.  Revised csv1.format
+                document.  Next: figure out a way to store "star records" 
+                in the hash table in such a way as to not step on the 
+                EDNS standards.  And implement that method. (2001.03.09)
+
+maradns-0.1.26: Made the code that parses mararc lines a little more
+                senisible.  It's still hackish, but is somewhat pedantic
+                about what kind of syntax it accepts, returning errors
+                when wrong syntax is given to it.  (2001.03.10)
+
+maradns-0.1.27: Pasted in read/write/setup kvar code from the code that
+                parsed the kiwirc file in the kiwi2 anti-spam package.
+                Modified mararc code so that it can parse both simple
+                strings and dictionaries (Assosciative arrays)
+                Next: The code that populates the DNS lookup hash based on
+                the data read from the mararc file.  (2001.03.11) 
+
+maradns-0.1.28: Made all of the string literals in ParseMaraRc.c labels which
+                point to entries in ParseMaraRc_en.h.  Wrote and documented
+                Perl script which automates this kind of work.  
+                I did the same with ParseCsv1.c (ParseCsv1_en.h).  
+                (2001.03.11)
+
+maradns-0.1.29: Installed a new verison of Linux on my Laptop (Esware 2.0r2,
+                a Spanish RedHat clone with the 2.4 kernel).  Begun work
+                on MaraDNS.c.  Next: continue work on MaraDNS.c
+                (2001.03.13)
+
+maradns-0.1.30: Worked on the routine to fill up the "big hash" with the
+                appropriate data.  Now, I need to replace the "dummy"
+                add_rr_to_bighash with a routine that adds the appropriate
+                rr to the big hash (if appropriate).  (2001.03.14)
+
+maradns-0.1.31: Additional work on that routine.  Now, it correctly make
+                sure that we add the NS records for the zone before the
+                NS records, and also fixed some other bugs in this 
+                routine.  Next: Make add_rr_to_bighash really check the
+                authority of a record and and data to the big hash 
+                (2001.03.15)
+
+maradns-0.1.32: More work on the the populate+bighash routine.  Now, when
+                a syntax error is encountered, MaraDNS makes a best-faith
+                effort to continue processing zone files.  (2001.03.16)
+
+maradns-0.1.33: Plugged up some memory leaks in MaraHash.c.  Added a lot
+                of code which starts populating the big hash with data.
+                (2001.03.17)
+
+maradns-0.1.34: Added some more security features: It now chroot's and
+                changes the uid if it is run as root.  Also made a function
+                that adds a RR to the end of a chain of RRs before the first
+                NS RR. (2001.03.17)
+
+maradns-0.1.35: Verified that records are placed in the bug hash correctly.
+                Next: We can now start making this a working DNS server.
+                Bind to the port, answering UDP queries using a simple 
+                forking model. (2001.03.18)
+
+maradns-0.1.36: Now we convert star records (record which start off with
+                a * label) to an EDNS-style format MaraDNS uses for its
+                internal hash of RRs (2001.03.19)
+
+maradns-0.1.37: Placed the code that converts star records in a more sensible
+                location.  Added a new element in the rr answer which is 
+                a pointer to the query string (we need this so we can tell
+                the resolver both the question and the answer with the NS
+                records, and which IP addresses go with which answers in
+                the AR records) (2001.03.21)
+
+maradns-0.1.38: Added the code that adds pointers to the corresponding A
+                records for MX, NS, and CNAME records.  (2001.03.23)
+
+maradns-0.1.39: At this point, MaraDNS binds to a port and listens to
+                incoming data.  Next: Actually process the data that 
+                she gets (2001.03.24)
+
+maradns-0.1.40: MaraDNS now resolves hosts.  It doesn't handle a lot
+                of cases where the resolution is not an exact match
+                (NS records for stuff below us, star records, etc.) nor
+                does it give us NS or AN records, nor the IP for a Cname
+                record (if applicable), but at least MaraDNS is finally
+                resolving.  To do: js_string function for adding uint16s
+                and uin32s in a single fell swoop, and real name resolution.
+                (2001.03.25)
+
+maradns-0.2.00: Incremented minor number in light of the fact MaraDNS now
+                actually resolves, albeit in a very limited fashion.  Added
+                some QuickStart notes, and added the ability for uint16s and
+                uint32s to be added directly to the end of a JS_STRING 
+                object.  (2001.03.25)
+
+maradns-0.2.01: Bugfix: SOA lines can now have percent escape sequences in 
+                them. (2001.03.25)
+
+maradns-0.2.02: Now, MaraDNS correctly returns NS records and AN records for 
+                every query where it has NS and AN records in its local 
+                database.  While I wait for the clows at NSI to figure 
+                out why we can't make maradns.com and maradns.org use 
+                ns.maradns.com and ns.maradns.org as name servers for
+                both domains, I can test things with www.z.maradns.org
+                (2001.03.25) 
+
+maradns-0.2.03: I have made the directory structure a little cleaner.  The
+                only problem I have now is that multiple Makefiles have to
+                be changed if I add a new object file.  I also have improved
+                the way MaraDNS cleans up after her children. (2001.03.26)
+
+maradns-0.2.04: New security feature: Maxprocs, which is a mandatory way
+                of limiting the resources MaraDNS uses.  Added fix.perms
+                tool. (2001.03.26)
+
+maradns-0.2.05: Cleaned up the makefile so that we don't have compiled 
+                binaries in any of the directories after a "make clean" is
+                performed.  Added support for CNAME and limited NS record
+                support.  (2001.03.26)
+
+maradns-0.2.06: A and CNAME queries are now case-insensitive.  Changed 
+                the bs_process routine to have domain-labels converted to
+		their lower-case format before octal processing is done
+		(so we can still have 'A' in a domain label with '\101')
+		Returns NS delegation if we asked for a host in a
+		sub-delegated domain. (2001.03.27)
+
+maradns-0.2.07: Fixed bug in MaraDNS' handling of case folding.  Added some
+                support for star records. (2001.03.27)
+
+maradns-0.2.08: Added support for ddip addresses (An IP query for '127.1.1.1'
+                gives the IP '127.1.1.1').  Added almost full support for 
+		star records. Only these somewhat silly star record cases are
+		not supported: Star records pointing to CNAMEs and to NSs 
+		records.  Added code that warns the user if they try to add
+		an unsupported star record type.  Next: The code to give
+		out a "notfound" reply. (2001.03.28)
+
+maradns-0.2.09: Moved check for star records attached to CNAME or to NS RRs
+                in the CSV1 parser, where it belongs.  Added support for
+                "notfound" reply.  Next: RFC1035 compression (ugh). 
+                (2001.03.29)
+
+maradns-0.2.10: My theory is that they made DNS comprssion so difficult to 
+                implement out of fear that anyone would be crazy enough to
+                write their own DNS server.  Continued work on the compression
+                routines.  (2001.03.31)
+
+maradns-0.3.00: The DNS compression routines now work.  Also set up the server
+                to return "Not implemented" to the unimplemented requests for
+                zone transfers and the unimplemented requests for all RRs
+                attached to a hostname. (2001.04.01)
+
+maradns-0.3.01: Fixed bug where the MX preference changed on DNS compressing
+                and DNS decompressing.  (2001.04.01)
+
+maradns-0.3.02: Added support for truncating headers.  Began work on getzone
+                zone transfer client.  (2001.04.03)
+
+maradns-0.3.03: The getzone program in tcp now generates working, albeit 
+                ugly (too many RR types are still marked 'U'), MaraDNS zone
+                files based on the data from a zone transfer.  Also found and
+                fixed other bugs the popped up when stressing the various
+                queries routines with a full Zone transfer.  Unreleated
+                to MaraDNS per se, MaraDNS now has a `real' web page. (Thanks,
+                Leo!) (2001.04.04)
+
+maradns-0.3.04: TXT, A, and MX records are now "pretty printed" when downloaded
+                from a foreign zone.  All seven RR types supported by MaraDNS
+         	are now pretty printed.  Fixed bug with the handling of 
+	       	"umbrella" NS records.  Fixed bug with the handling of high
+	        serial numbers and extra-long TTL values.  Next: the AXFR
+	        server. (2001.04.04)
+
+maradns-0.3.05: An entire parsing engine which processes ip-based ACLs has
+                been created, complete with recursive aliases.  Zoneserver
+                now only needs the code that reads the client's request
+                and send them the zone they ask for (as long as they have
+                access).  (2001.04.08)
+
+maradns-0.3.06: Security fix: The zone transfer client now checks for and
+                disables any out-of-baliwick records it finds when performing
+                a zone transfer.  Feature enhancment: Maradns now has a 
+                working zone transfer server. (2001.04.10)
+
+maradns-0.4.00: Stable branch:  This is the stable branch of MaraDNS, which 
+                will only be updated with security fixes.  Made zoneserver
+                check the query type, and drop connection on anything
+                besides AXFR and IXFR (Hack: The zone server treats an IXFR
+                exactly like an AXFR).  Also cleaned up the error
+                handling in the zone and udp server code in preparation to
+                make maradns multithreaded.  (2001.04.11)
+
+maradns-0.4.01: Bugfix: Fixed bug where SOA records were not properly loaded
+                when we have multiple zones. (2001.04.11)
+
+maradns-0.4.02: Bigfix: Hacked zoneserver so that it can work as a zone server
+                in cases where the zone transfer client asks for the SOA
+		record before downloading the zone.  Also: Added the ability
+		to verbosely log invalid queries sent to the DNS server,
+		and to have a log level of 0 make MaraDNS give out no logs
+		whatsoever.  Next: Fix bug where the last line of a csv1
+		file is not parsed.  (2001.04.12)
+
+maradns-0.4.03: Bugfix: The zone server is now hacked up to give a  
+                plausable-looking answer to a SOA request on the TCP port.
+		As a result, BIND 4 and BIND 8 will now transfer zones from 
+		the maradns zoneserver. (2001.04.12)
+
+maradns-0.4.04: More bug fixes: Plugged potential memory leaks in 
+                js_buf_getline.  Fixed bug where the last line of a
+                csv1 file was not read.  Fixed makefile so that it cleans
+                files in new location of the zonefile stuff--it's now in
+                a directory called "tuzona".  Next:  Go from a multi-process
+                model to a single process model.  (2001.04.12)
+
+maradns-0.5.00: The UDP server no longer fork()s off processes to process
+                queries.  I performed a mild stress test, where MaraDNS was 
+                processing 81 queries a second for over an hour--MaraDNS 
+                performed beautifully--memory usage did not increase, and
+                queries were fast during this test.  I am making this
+                release the stable branch.  Next: Get string literals out
+                of the code. (2001.04.12)
+
+maradns-0.5.01: Bugfix: Since mail exchangers routinely ask for "all records"
+                queries (to get both A and MX records), I have hacked MaraDNS
+                to deliver A and MX records if a request for all records
+                is received.  I still need to code the case of a request for
+                "all records" pointing to a CNAME, though.  Also, I have
+                added a benchmark tool which times a DNS server by sending
+                50,000 queries to the server in question as quickly as
+                possible.  (2001.04.13)
+
+maradns-0.5.02: Most of the text messages that MaraDNS' various utilities 
+                generate have been moved to separate files, which will make 
+                localization easier.  (2001.04.16)
+
+maradns-0.5.03: If a "give me all records for a given hostname" query appears,
+                MaraDNS will now look for a CNAME with the same hostname, 
+                returning only that if found (and she will only look for a
+                CNAME if an A and MX were not found), and if A, MX, and
+                CNAME records are not found, MaraDNS will see if the person
+                entered a dotted decimal ip and respond appropriately.
+                (2001.04.16)
+
+maradns-0.5.04: Added more support for dotted decimal IPs in NS, CNAME, and
+                MX records.  Added handles for code which will warn the user
+                of the presence of these dotted-decimal IP records.  Fixed
+                bug where js_copy was not returning an appropriate value on
+                success (2001.04.17)
+
+maradns-0.5.05: Phil Homewood generously supplied a patch that makes this
+                compiles on FreeBSD.  In addition, he fixed a bug in the
+                Makefile in dns/Makefile which made it so bobbit.c 
+                compiles instead of using the Linux-specific object file
+                (Which I didn't catch, since make clean didn't remove it
+                and make didn't recreate it).  I also fixed a bug in
+                getzone.c which was introduced when I put the string
+                literals in a language-specific file. (2001.04.17)
+ 
+maradns-0.5.06: The zone server for MaraDNS can now be run from inetd. 
+                Due to the security implications of this (MaraDNS' IP-based
+                ACLs stop working when run from inetd), this will be an
+                undocumented feature.  (2001.04.18)
+    
+maradns-0.5.07: Plugged some memory leaks in the zoneserver which, while
+                not currently a problem, could have been a problem if
+                I had started coding threads before plugging the memory
+                leaks.  Some of the leaks were is the js_string library,
+                so that code base is a lot cleaner now.  Made the
+                functions in ParseCsv1.c thread-safe.  My friend Fatma 
+                generously supplied a German translation of the error
+                strings in MaraDNS_en.h--we now have a MaraDNS_de.h which,
+                while not perfect, will be appreciated by the Germans.
+                (2001.04.18)
+ 
+maradns-0.5.08: Begin a "stable" brach for the only-authoritative
+                non-threaded nameserver.  Changed compiler option from
+                -g to -O2.  Made RPM of MaraDNS-0.5.08.  (2001.04.19)
+
+maradns-0.5.09: The server crashes were causes by pointers that were
+                not correctly initialized to zero.  The pointers causing
+                the crash have been initialized, and hopefully this one
+                will be crashproof.  Next: Look for other incorrectly
+                initialized variables.  (2001.04.20)
+
+maradns-0.5.10: Code cleanup: I added -Wall as an option in the libs, dns,
+                and server directories.  Cleanup of all the warnings that
+                -Wall generated.  Added /etc/mararc and
+                /var/maradns/db.example.com to RPM file. (2001.04.20)
+
+maradns-0.5.11: Tollef Fog Heen generously ran autoconf for MaraDNS.  The 
+                build process now consists of './configure;make'".
+                (2001.04.21)
+
+maradns-0.5.12: Added better support for CNAME records: If the CNAME record
+                points to an A record, and we have the A record "on file",
+                MaraDNS will add the CNAME record to the ar section of the
+                reply.  Also added support for getting the version number
+                for maradns via a 'erre-con-erre-cigarro.maradns.org.' 
+                TXT query.  Set things up so we can both a autoconf-based
+                and a non-autoconf-based build process, and we can switch
+                between the two).
+                Next: Branch off to development again, because I need to 
+                get the zone server multithreaded.  (2001.04.22)
+
+maradns-0.5.13: Manpage for maradns added.  (2001.04.22)
+ 
+maradns-0.5.14: Added "no_fingerprint" feature which minimizes the
+                MaraDNS-specific features, making it more difficult
+                to determine which DNS server one is running.  (2001.04.23)
+
+[See CHANGELOG.html for newer changelog entries]
+

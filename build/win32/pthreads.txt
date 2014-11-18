@@ -1,0 +1,26 @@
+The pthreadGC2.dll file is a compiled version of Pthreads win32 version
+2.8.0.  This is an unmodified LGPL licensed library.  In accordance with
+the terms of the LGPL, the file is available at the following
+location:
+
+    http://www.maradns.org/download/pthreads-win32
+
+The file is also available in the list of files for this version of MaraDNS
+over at sourceforge.
+
+The original page for pthreads-win32 is here:
+
+    http://sourceware.org/pthreads-win32/
+    http://sources.redhat.com/pthreads-win32/
+
+Some other download mirrors for Pthreads win32:
+
+    http://mirrors.kernel.org/sources.redhat.com/pthreads-win32/
+    http://public.planetmirror.com/pub/sourceware/pthreads-win32/
+    http://www.mirrorservice.org/sites/sources.redhat.com/pub/pthreads-win32/
+
+A full listing of mirrors:
+
+    http://sourceware.org/mirrors.html
+
+

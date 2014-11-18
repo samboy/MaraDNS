@@ -1,0 +1,7 @@
+Nicholas Bamber has added a lot of functionality to Duende.  Since this
+functionality uses the argp library, and since MaraDNS 2.0.03 is a 
+bugfix-only release of MaraDNS, I have given this improved Duende the
+name "duende-ng.c" in the "tools/" directory.  Most MaraDNS users should
+use this improved Duende.
+
+Its new command-line options are documented in the source of duende-ng.c

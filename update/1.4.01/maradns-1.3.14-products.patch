@@ -1,0 +1,56 @@
+--- maradns-1.3.14/doc/en/webpage/Makefile	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.3.15/doc/en/webpage/Makefile	2009-08-25 11:00:45.000000000 -0500
+@@ -1,6 +1,7 @@
+ all: changelog.html contact.html dns_software.html download.html \
+ 	faq-1.0.html faq.html index.html license.html notes.html \
+-	sponsors.html security.html advocacy.html debian.html
++	sponsors.html security.html advocacy.html debian.html \
++	products.html
+ 
+ changelog.html: changelog.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page changelog.embed
+@@ -8,6 +9,9 @@
+ contact.html: contact.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page contact.embed
+ 
++products.html: products.embed maradns-1.2-top.html maradns-1.2-bottom.html
++	./make.page products.embed
++
+ dns_software.html: dns_software.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page dns_software.embed
+ 
+--- maradns-1.3.14/doc/en/webpage/maradns-1.2-top.html	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.3.15/doc/en/webpage/maradns-1.2-top.html	2009-08-25 11:00:06.000000000 -0500
+@@ -45,7 +45,7 @@
+ 	<a href="/blog">Blog</a>
+ 	<a href="changelog.html">Changelog</a>
+ 	<a href="sponsors.html">Sponsors</a>
+-	<a href="contact.html">Contact</a>
++	<a href="products.html">Products</a>
+ </div> <!-- maradns-l -->
+ <script type="text/javascript">
+ <!--
+--- maradns-1.3.14/doc/en/webpage/products.embed	2009-08-25 11:01:28.000000000 -0500
++++ maradns-1.3.15/doc/en/webpage/products.embed	2009-08-25 11:00:06.000000000 -0500
+@@ -0,0 +1,21 @@
++<h1>MaraDNS products</h1>
++
++Sponsorship is what makes continued MaraDNS development possible.
++
++<p>
++
++Do you want private email support?  Would you like to see a feature 
++added to MaraDNS?  Do you have a need for specialized C programming
++or Linux/UNIX scripting?
++
++<p>
++
++I offer, for very reasonable prices, a number of services, including:
++<ul>
++<li>Private MaraDNS email support.
++<li>MaraDNS customization.
++<li>C, Perl, Python, and other programming services.
++</ul>
++
++If you are interested in paying me, please <A 
++href=http://samiam.org/mailme.php>contact me</A>

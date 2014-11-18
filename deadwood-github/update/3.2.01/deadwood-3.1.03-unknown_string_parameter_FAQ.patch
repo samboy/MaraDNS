@@ -1,0 +1,57 @@
+--- deadwood-3.1.04/doc/FAQ.ej.orig	2012-01-08 10:58:45.449816308 -0600
++++ deadwood-3.1.04/doc/FAQ.ej	2012-01-08 11:10:26.749699468 -0600
+@@ -182,4 +182,54 @@
+ </li>
+ </ul>
+ 
++<h2>I get the error message "Unknown dwood3rc string parameter"</h2>
++
++This error message indicates either one of two things:
++
++<ul>
++<li>The relevant parameter is misspelled.  For example, if one has a line
++like this in their dwood3rc file:
++
++<pre>
++bind_adress = "127.0.0.1"
++</pre>
++
++This error message will appear.  To fix it, correct the spelling of
++the variable name:
++
++<pre>
++bind_address = "127.0.0.1"
++
++</li>
++<li>The relevant parameter is a numeric parameter, but has quotes around it.  
++For example, the following line will trigger this error message:
++
++<pre>
++filter_rfc1918 = "0"
++</pre>
++
++To correct this, remove the quotes around the number:
++
++<pre>
++filter_rfc1918 = 0
++</pre>
++
++</li>
++</ul>
++
++For the record, all dwood3rc parameters <i>except</i> the following are 
++numeric parameters:
++
++<ul>
++<li>bind_address 
++<li>cache_file
++<li>chroot_dir
++<li>ip_blacklist
++<li>ipv4_bind_addresses
++<li>random_seed_file
++<li>recursive_acl
++<li>root_servers 
++<li>upstream_servers
++</ul>
++
+ </BODY>

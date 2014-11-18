@@ -1,0 +1,56 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_newline_chars 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_newline_chars \- place an list of all newline chars in a js_string object
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_newline_chars(js_string *js)"
+.fi
+.SH DESCRIPTION
+.B js_newline_chars
+clobbers the contents of the 
+.I js_string
+object
+.B js,
+and places a list of all of the newline characters for the
+.I encoding
+of the 
+.I js_string
+object in question in 
+.B js
+
+.SH ARGUMENTS
+.B js
+is a pointer to the
+.I js_string
+object we wish to place all of the newline characters for
+.I js'
+encoding in.
+
+.SH "RETURN VALUE"
+.B js_newline_chars
+returns 
+.I JS_SUCCESS 
+on successful copying of the newline characters in to the string,
+.I JS_ERROR
+otherwise.
+.SH EXAMPLE
+The following fills the string foo with all of the newline characters for
+the ASCII character set.
+.nf
+	js_string *foo;
+	foo = js_create(256,1);
+	js_set_encode(foo,JS_US_ASCII);
+	js_newline_chars(foo);	
+.fi
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

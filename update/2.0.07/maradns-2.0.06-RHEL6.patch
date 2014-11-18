@@ -1,0 +1,115 @@
+--- maradns-2.0.06/tools/ej/ej2html	2005-12-06 03:43:38.000000000 -0600
++++ maradns-2.0.07/tools/ej/ej2html	2012-05-21 10:07:12.000000000 -0500
+@@ -15,10 +15,10 @@
+ 
+ while(<>){$doc .= $_}
+ 
+-$* = 1; # Match multiple lines
++#$* = 1; # Match multiple lines (depreciated)
+ 
+ # Get rid of <!-- ... --> comments
+-$doc =~ s|<\!\-\-.*?\-\->||sg;
++$doc =~ s|<\!\-\-.*?\-\->||sgm;
+ 
+ # body flags
+ $bodyflags = "";
+@@ -27,11 +27,11 @@
+ if($doc =~ m|<head>(.*?)</head>|is) {
+     $header = $1;
+     # Get rid of the TH; HTML doesn't use it
+-    $header =~ s|<th>.*?</th>||igs;
++    $header =~ s|<th>.*?</th>||igsm;
+     # Get rid of DTWIDTH too
+-    $header =~ s|<dtwidth>.*?</dtwidth>||igs;
++    $header =~ s|<dtwidth>.*?</dtwidth>||igsm;
+     # Parse the body flags
+-    if($header =~ s|<bodyflags>(.*?)</bodyflags>||igs) {
++    if($header =~ s|<bodyflags>(.*?)</bodyflags>||igsm) {
+         $bodyflags = $1;
+ 	}
+     }
+@@ -69,7 +69,7 @@
+ # Enough of header processing; let's get to the body of the document
+ 
+ # Grab the body
+-if($doc =~ m|<body>(.*?)</body>|is) {
++if($doc =~ m|<body>(.*?)</body>|ism) {
+     $body = $1;
+     }
+ else {
+@@ -91,17 +91,17 @@
+    my($hack,$filename);
+ 
+    # The INCLUDE and HINCLUDE tags
+-   while($body =~ m|\<h?include\s+\"([^"]+)\"\s*\>|is) {
++   while($body =~ m|\<h?include\s+\"([^"]+)\"\s*\>|ism) {
+        $filename = $1;
+        open(FILE,"< $filename") || die "Can not find file $filename\n";
+        $hack = "";
+        while(<FILE>) {$hack .= $_}
+        close(FILE);
+        #$hack = process_body($hack);
+-       $body =~ s|\<h?include\s+\"([^"]+)\"\s*\>|$hack|is;
++       $body =~ s|\<h?include\s+\"([^"]+)\"\s*\>|$hack|ism;
+        }
+ 
+-   $body =~ s|\<\/?hibit[^>]*\>||ig;
++   $body =~ s|\<\/?hibit[^>]*\>||igm;
+ 
+    return $body;
+ 
+--- maradns-2.0.06/sqa/regressions/mararc_n_ipv6_bind_address/do.test	2010-07-31 02:17:06.000000000 -0500
++++ maradns-2.0.07/sqa/regressions/mararc_n_ipv6_bind_address/do.test	2012-05-21 10:22:42.000000000 -0500
+@@ -25,7 +25,8 @@
+ sleep 1
+ #../../../tools/askmara Awww.example.com.
+ dig @fd4d:6172:6144:4e53::1 www.example.com | grep -v DiG | grep -v WHEN | \
+-	grep -v time | grep -v HEADER | grep -v flags
++	grep -v time | grep -v HEADER | grep -v flags | grep -v cmd | \
++	grep -v 'WARNING: recursion requested'
+ echo done
+ sleep 1
+ killall maradns
+--- maradns-2.0.06/sqa/regressions/mararc_n_ipv6_bind_address/output.success	2010-07-31 02:17:06.000000000 -0500
++++ maradns-2.0.07/sqa/regressions/mararc_n_ipv6_bind_address/output.success	2012-05-21 10:28:43.000000000 -0500
+@@ -1,6 +1,5 @@
+ 
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+ 
+ ;; QUESTION SECTION:
+diff -ur maradns-2.0.06/sqa/regressions/mararc_n_tcp_convert_server/do.test maradns-2.0.07/sqa/regressions/mararc_n_tcp_convert_server/do.test
+--- maradns-2.0.06/sqa/regressions/mararc_n_tcp_convert_server/do.test	2007-10-12 08:42:21.000000000 -0500
++++ maradns-2.0.07/sqa/regressions/mararc_n_tcp_convert_server/do.test	2012-05-21 10:32:18.000000000 -0500
+@@ -19,7 +19,8 @@
+ ../../../tcp/zoneserver -f mararc > /dev/null 2>&1 &
+ sleep 3
+ dig +tcp @127.0.0.1 long.example.com txt | \
+-	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER
++	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
++	grep -v cmd
+ killall maradns.authonly > /dev/null 2>&1
+ killall zoneserver > /dev/null 2>&1
+ sleep 30
+diff -ur maradns-2.0.06/sqa/regressions/mararc_n_tcp_convert_server/output.success maradns-2.0.07/sqa/regressions/mararc_n_tcp_convert_server/output.success
+--- maradns-2.0.06/sqa/regressions/mararc_n_tcp_convert_server/output.success	2007-10-12 08:53:02.000000000 -0500
++++ maradns-2.0.07/sqa/regressions/mararc_n_tcp_convert_server/output.success	2012-05-21 10:32:27.000000000 -0500
+@@ -1,6 +1,5 @@
+ 
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+ ;; flags: qr aa; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 1
+ 
+--- maradns-2.0.06/tools/ej/ej2txt	2007-09-21 07:07:48.000000000 -0500
++++ maradns-2.0.07/tools/ej/ej2txt	2012-09-22 09:51:41.007840175 -0500
+@@ -19,7 +19,7 @@
+ fi
+ 
+ $CMD $1 > $TMP/$$.html
+-links -dump-width 70 -dump -no-references $TMP/$$.html | awk '
++lynx -dump -width=70 -nolist $TMP/$$.html | awk '
+ 	{gsub(/\[[0-9]+\]/,"");print}' 
+ rm $TMP/$$.html
+ 

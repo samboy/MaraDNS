@@ -1,0 +1,9 @@
+This is documentation for the js string library, which is a buffer-overflow
+resistant string library which MaraDNS uses.
+
+Note that this documentation does not have all functions that the string
+library has, since this documentation actually predates MaraDNS--my 
+previous project, the Kiwi spam-protection package, used the same
+string library, and this documentation has (by and large) not been 
+updated since then.
+

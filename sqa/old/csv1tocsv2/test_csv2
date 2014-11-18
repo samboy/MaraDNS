@@ -1,0 +1,35 @@
+# This includes all of the examples in the man pages
+a.example.net.              10.11.12.13
+b.example.net.        A     10.11.12.14
+c.example.net. +64000 A     10.11.12.15
+13.12.11.10.in-addr.arpa.        PTR    a.example.net.
+14.12.11.10.in-addr.arpa.        PTR    b.example.net.
+15.12.11.10.in-addr.arpa. +64000 PTR    c.example.net.
+example.net.      MX   10 mail.example.net.
+mail.example.net.      10.11.12.16
+a.example.net.   AAAA    3ffe:ffff:ffe:501:ffff::b:c:d
+_http._tcp.% srv 0 0 80 a.%
+example.net. TXT 'This is an example text field'
+example.net. RAW 40 \x10\x01\x02'Kitchen sink'\x40' data'
+a.example.net.      10.10.10.10
+b.example.net.  10.10.10.11
+b.example.net.  10.10.10.12
+Z.EXAMPLE.NET.      10.2.3.4
+Y.EXAMPLE.net.  10.3.4.5
+percent.% a         10.9.8.7
+*.example.net.  A       10.11.12.13
+d.example.net. +86400 A 10.11.12.13
+f.example.net. # As you can see, records can span multiple lines
+                 A    10.2.19.83
+c.example.net.           # Our C class machine
+               +86400      # This record is stored for one day
+               A           # A record
+               10.1.1.1    # Where we are
+e.example.net.|+86400|a|10.2.3.4
+h.example.net.|a|10.9.8.7
+g.example.net.|+86400|10.11.9.8
+% mx 10 mail.%
+mail.% +86400 IN A 10.22.23.24
+a.example.net.           aaaa      3ffe:ffff:1:2:3::4:f
+_http._tcp.% srv 0 0 80 a.%
+example.net.    txt 'This is some text'

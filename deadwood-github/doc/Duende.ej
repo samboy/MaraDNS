@@ -1,0 +1,121 @@
+<HEAD>
+<TH>DUENDE 8 "duende" "January 2003" "duende"</TH>
+<DTWIDTH>4</DTWIDTH>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+</HEAD>
+<BODY>
+<H1>NAME</H1>
+duende - run a child process as a daemon
+<H1>DESCRIPTION</H1>
+
+<b>duende</b> makes a given child process a daemon.  The standard output
+and standard error
+of the child process is logged via syslog() with a priority of
+LOG_INFO (LOG_ALERT on FreeBSD systems).
+
+<H1>USAGE</H1>
+<b>duende</b> (--pid=/path/to/file) child_process [ all subsequent arguments passed on to child ]
+
+<H1>DETAILS</H1>
+
+When <b>duende</b> is invoked, it spawns two processes.  In addition to
+spawning the daemonized child process, <b>duende</b> also spawns a process
+which reads and logs the standard output of the daemonized process.  The
+parent process stays alive so as to monitor the daemonized process. If
+the optional <tt>--pid</tt> argument is supplied, <b>duende</b> will write
+it's PID to the file specified by the argument. It is an error to supply
+the <tt>--pid</tt> argument without an equal sign and file name.
+<p>
+<b>duende</b> requires a blank directory named <tt>/etc/maradns/logger</tt> 
+to run.
+<p>
+Should the parent duende process a
+HUP signal, <b>duende</b> will restart the child process.  Should the
+daemonized or logging process received an untrapped HUP signal or exit 
+with an exit
+code of 8, <b>duende</b> will restart the process.  Should the daemonized
+or logging
+process exit for any other reason, <b>duende</b> will send the logger
+process a TERM signal and exit.
+Should the duende
+parent process receive a TERM or INT signal, <b>duende</b> sends all of its
+children TERM signals, then exits.  
+<p>
+The duende process must be started as the superuser; this is because
+Duende's intended child processes (maradns, DwMain, and DwTcp) need to bind 
+to privileged ports, and because 
+duende uses a setuid() call to change the user ID of the logging process
+to the user with ID 66.
+
+<H1>LOGGING</H1>
+
+<b>duende</b> uses the syslog() facility to log the standard output of the
+program that it invokes.  The name of the program (in other words, the
+"ident" given to openlog()) is the full path of the first argument given
+to <b>duende</b>.  All messages created by the child process are sent
+to syslog() with a priority of LOG_INFO (LOG_ALERT on FreeBSD systems)
+and a "facility" of LOG_DAEMON; should duende itself encounter an error, 
+it will send messages to syslog() with a priority of LOG_ALERT.  <p>
+
+For example, suppose one invokes duende thusly:
+
+<pre>
+	duende /usr/local/sbin/DwMain
+</pre>
+
+If invoked thusly, duende will log all messages with the "ident" (program
+name) of "/usr/local/sbin/DwMain".  If this is not desired, invoke duende
+with something like:
+
+<pre>
+	export PATH=$PATH:/usr/local/sbin
+	duende DwMain
+</pre>
+
+This will log messages with a (more sensible) "ident" of DwMain.
+<p>
+Note: If a non-POSIX Bourne shell (such as csh, es, rc, or fish) is used to 
+invoke DwMain, the above syntax needs to be changed.
+<p>
+Also, the directory /etc/maradns/logger, while used by duende, is not used
+to store any log messages.  That is unless, for some reason, one 
+configures syslog to store messages there.  
+
+<h1>EXAMPLES</h1>
+
+Using duende to start DwMain, where the configuration file is /etc/dwood3rc.2
+
+<pre>
+	duende DwMain -f /etc/dwood3rc.2
+</pre>
+
+Using duende to start zoneserver, where the mararc file is /etc/mararc.4
+
+<pre>
+	duende zoneserver -f /etc/mararc.4
+</pre>
+<h1>BUGS</h1>
+
+<b>Duende</b> assumes that all of its children are well-behaved, eating
+their vegetables, going to bed when told, and terminating
+when receiving a TERM signal.  
+
+<h1>LEGAL DISCLAIMER</h1>
+THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
+OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE 
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+<h1>AUTHOR</h1>
+Duende and this man page are written by Sam Trenholme.  D Richard Felker
+III provided some invaluable assistance with the piping code which 
+<b>duende</b> uses.
+
+</BODY>

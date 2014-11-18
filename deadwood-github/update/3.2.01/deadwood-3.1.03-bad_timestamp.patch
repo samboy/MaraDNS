@@ -1,0 +1,76 @@
+--- deadwood-3.1.03/doc/FAQ.ej	2010-09-24 20:45:11.000000000 -0500
++++ deadwood-3.1.04/doc/FAQ.ej	2012-01-07 13:37:23.990898909 -0600
+@@ -130,4 +130,56 @@
+ position to take the time and effort to implement DNSSEC without being
+ compensated for my work.
+ 
++<h2>Records added to the cache when the timestamp is set to 1970 do not
++expire</h2>
++
++Deadwood is year-2038 compliant, even on systems with
++a 32-bit time_t.  In order to pull this off, Deadwood
++assumes that 32-bit time_t systems showing a timestamp
++before May 6 2007 (chosen because it was 6 months before the first
++Deadwood release</A>) have had their clock "wrap around" and that it's
++really far in the future, not far in the past.
++
++<p>
++
++This allows Deadwood to have accurate timestamps on systems with a
++32-bit time_t until 2143.  The side effect is that Deadwood assumes
++that systems with a timestamp of 0 are not in 1970, but instead are in
++the year 2106.  This results in all records stored in the cache on
++systems with an incorrect timestamp not expiring until 2106.
++
++<p>
++
++If building Deadwood on a system which sometimes has an
++incorrect timestamp, there are a couple of ways to work around this:
++
++<ul>
++<li> Run Deadwood on a system with a 64-bit time_t.<p>
++Deadwood will interpret a timestamp with a time in 1970 as being in
++1970 if time_t is a 64-bit number. <p>
++
++<li> Set up the system to not start up Deadwood unless the system clock
++is set to May 2007 or later.
++
++
++<p>
++<li> Change the value of DW_MINTIME in DwSys.h to a lower or negative
++value.  Note that, if this is set, for example, to -1 instead of its
++current value (1178488417: May of 2007), Deadwood will start to have
++inaccurate timestamps on systems with 32-bit time_t in 2106, not 2143.
++If this is done, please upgrade to a system with a 64-bit time_t 
++before 2106.
++
++<p>
++
++Please also note that dwh_put_int64() in DwHash.c (the code that
++writes the cache to disk) will not correctly store timestamps earlier
++than March 20, 1979 (they will simply be marked as being on that day).
++Such records in the cache <i>should</i> immediately expire on systems once
++the timestamp is correctly set, but this has not been tested at all.
++
++<p>
++</li>
++</ul>
++
+ </BODY>
+--- deadwood-3.1.04/src/DwHash.c.orig	2012-01-07 13:34:28.503271689 -0600
++++ deadwood-3.1.04/src/DwHash.c	2012-01-07 13:34:28.680153974 -0600
+@@ -793,10 +793,12 @@
+ void dwh_put_int64(FILE *handle, int64_t num) {
+         int counter = 0;
+         uint8_t val = 0;
+-        /* If the number is negative, put 0xffffffffffffffff in the file */
++        /* If the number is negative, put 0x0000000000000000 in the file.
++         * No, Deadwood will not put an accurate timestamp before March
++         * 20, 1979 in the cache file.  If you wonder: Blake's 7 Gambit */
+         if(num < 0) {
+                 for(counter = 0; counter < 8; counter++) {
+-                        putc(255,handle);
++                        putc(0,handle);
+                 }
+                 return;
+         }

@@ -1,0 +1,28 @@
+# These file has the version number, which is generated from the commit ID
+version.h
+/Makefile
+
+# Remove compiled object files
+*.o
+
+# Dynamically generated files
+rng/rng-32bit-tables.h
+DwRandPrime.h
+
+# Dynamically generated Makefiles
+server/Makefile
+tools/Makefile
+
+# And compiled binaries
+Deadwood
+RandomPrime
+duende
+git.commit
+server/maradns
+tools/askmara
+tools/askmara-tcp
+tools/strip.control
+tools/benchmark
+tcp/getzone
+tcp/zoneserver
+tcp/fetchzone

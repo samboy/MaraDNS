@@ -1,0 +1,230 @@
+--- deadwood-3.0.03/src/DwMararc.h	2011-07-22 15:41:29.000000000 -0500
++++ deadwood-3.0.04/src/DwMararc.h	2011-09-10 11:30:08.499404642 -0500
+@@ -188,7 +188,7 @@
+ /* The actual state machine that we use to parse a MaraRC file; this is
+  * described in the file doc/internals/MARARC.parser */
+ 
+-#define dwm_machine "a Hb Y1c Wa Rxp T;\n" \
++#define dwm_machine "a Hb Y1c Wxb Rxp T;\n" \
+                     "b Xb Rxp T;\n" \
+                     "c B1c Wd =e [f +g (y\n" \
+                     "d Wd =e [f +g\n" \
+@@ -212,7 +212,8 @@
+                     "xp T;\n" \
+                     "y Qz\n" \
+                     "z I7z Qxa\n" \
+-                    "xa )k\n"
++                    "xa )k\n" \
++                    "xb Hb Wxb Rxp T;\n"
+ 
+ /* A tokenized single state in the finite state machine */
+ typedef struct {
+--- deadwood-3.0.03/doc/internals/MARARC.parser	2009-08-21 09:59:17.000000000 -0500
++++ deadwood-3.0.04/doc/internals/MARARC.parser	2011-09-10 11:30:08.500407417 -0500
+@@ -94,7 +94,7 @@
+ And here is the specified state machine for mararc processing.  This
+ state machine is run for each line in the mararc file
+ 
+-Start of line:                       a: Hb Y1c Wa Rxp T;
++Start of line:                       a: Hb Y1c Wxb Rxp T;
+ In comment:                          b: Xb Rxp T;
+ Reading mararc parameter:            c: B1c Wd =e [f +g (y
+ Whitespace after mararc parameter:   d: Wd =e [f +g
+@@ -119,6 +119,7 @@
+ At left paren:			     y: Qz
+ In filename for execfile:	     z: I7z Qxa
+ Quote after execfile filename:	     xa: )k
++After whitespace in line:            xb: Hb Wxb Rxp T;
+ 
+ Once a line is processed, we then look at the value of variable 1 (the 
+ mararc parameter):
+--- deadwood-3.0.03/doc/Deadwood.ej	2011-01-29 14:55:07.000000000 -0600
++++ deadwood-3.0.04/doc/Deadwood.ej	2011-09-10 11:32:40.564542222 -0500
+@@ -56,6 +56,34 @@
+ 
+ <h1>CONFIGURATION FILE FORMAT</h1>
+ 
++The Deadwood configuration file is modeled after Python 2's syntax.  Any 
++valid Deadwood configuration file should also correctly parse in both 
++Python 2.4.3 and Python 2.6.6.  If any configuration file does correctly
++parse in Deadwood but raises a syntax error in Python, this is a bug that
++should be fixed.
++
++<p>
++
++This in mind, whitespace is significant; Deadwood parameters must be in
++the leftmost column with no leading whitespace.  This is a valid line
++(as long as there are no spaces to its left):
++
++<pre>
++recursive_acl = "127.0.0.1/16"
++</pre>
++
++The following line, however, will raise a parse error:
++
++<pre>
++ recursive_acl = "127.0.0.1/16"
++</pre>
++
++Observe the space to the left of the "recusive_acl" string in the incorrectly
++formatted line.
++
++<p>
++
++
+ The Deadwood configuration file supports the following parameters:
+ 
+ <h2>bind_address</h2> 
+@@ -184,11 +212,11 @@
+ The default value is 1: Resource record rotation enabled.
+ 
+ <h2>max_inflights</h2>
+-The maximum number of simultanious clients we process at the same
++The maximum number of simultaneous clients we process at the same
+ time for the same query.
+ <p>
+ 
+-If, while processone a query for, say, "example.com.", another
++If, while processing a query for, say, "example.com.", another
+ DNS client sends to Deadwood another query for example.com, instead
+ of creating a new query to process example.com, Deadwood will
+ attach the new client to the same query that is already "in flight", and
+@@ -407,7 +435,7 @@
+ </pre>
+ 
+ The reason for this is because BIND engages in unexpected behavior
+-when a host name deoesn't end in a dot, and by forcing a dot at the end
++when a host name doesn't end in a dot, and by forcing a dot at the end
+ of a hostname, Deadwood doesn't have to guess whether the user wants
+ BIND's behavior or the "normal" behavior.
+ <p>
+--- deadwood-3.0.03/doc/Windows/Reference.txt	2010-09-24 20:45:11.000000000 -0500
++++ deadwood-3.0.04/doc/Windows/Reference.txt	2011-09-10 11:38:25.459795265 -0500
+@@ -30,6 +30,25 @@
+ 
+                       CONFIGURATION FILE FORMAT
+ 
++   The Deadwood configuration file is modeled after Python 2's
++   syntax. Any valid Deadwood configuration file should also
++   correctly parse in both Python 2.4.3 and Python 2.6.6. If any
++   configuration file does correctly parse in Deadwood but raises a
++   syntax error in Python, this is a bug that should be fixed.
++
++   This in mind, whitespace is significant; Deadwood parameters
++   must be in the leftmost column with no leading whitespace. This
++   is a valid line (as long as there are no spaces to its left):
++
++recursive_acl = "127.0.0.1/16"
++
++   The following line, however, will raise a parse error:
++
++  recursive_acl = "127.0.0.1/16"
++
++   Observe the space to the left of the "recusive_acl" string in
++   the incorrectly formatted line.
++
+    The Deadwood configuration file, dwood3rc.txt, supports the following
+    parameters:
+ 
+@@ -477,55 +496,55 @@
+ 
+    Here is an example dwood3rc configuration file:
+ 
+- # This is an example deadwood rc file
+- # Note that comments are started by the hash symbol
++# This is an example deadwood rc file
++# Note that comments are started by the hash symbol
+ 
+- bind_address="127.0.0.1" # IP we bind to
++bind_address="127.0.0.1" # IP we bind to
+ 
+- # The following line is disabled by being commented out
+- #bind_address="::1" # We have optional IPv6 support
++# The following line is disabled by being commented out
++#bind_address="::1" # We have optional IPv6 support
+ 
+- # Directory we run program from (not used in Win32)
+- chroot_dir = "/etc/deadwood"
+-
+- # The following upstream DNS servers are Google's
+- # (as of December 2009) public DNS servers.  For
+- # more information, see the page at
+- # http://code.google.com/speed/public-dns/
+- #
+- # If neither root_servers nor upstream_servers are set,
+- # Deadwood will use the default ICANN root servers.
+- #upstream_servers = {}
+- #upstream_servers["."]="8.8.8.8, 8.8.4.4"
+-
+- # Who is allowed to use the cache.  This line
+- # allows anyone with "127.0" as the first two
+- # digits of their IP to use Deadwood
+- recursive_acl = "127.0.0.1/16"
+-
+- # Maximum number of pending requests
+- maxprocs = 8
+-
+- # Send SERVER FAIL when overloaded
+- handle_overload = 1
+-
+- maradns_uid = 99 # UID Deadwood runs as
+- maradns_gid = 99 # GID Deadwood runs as
+-
+- maximum_cache_elements = 60000
+-
+- # If you want to read and write the cache from disk,
+- # make sure chroot_dir above is readable and writable
+- # by the maradns_uid/gid above, and uncomment the
+- # following line.
+- #cache_file = "dw_cache"
+-
+- # If your upstream DNS server converts "not there" DNS replies
+- # in to IPs, this parameter allows Deadwood to convert any reply
+- # with a given IP back in to a "not there" IP.  If any of the IPs
+- # listed below are in a DNS answer, Deadwood converts the answer
+- # in to a "not there"
+- #ip_blacklist = "10.222.33.44, 10.222.3.55"
++# Directory we run program from (not used in Win32)
++chroot_dir = "/etc/deadwood"
++
++# The following upstream DNS servers are Google's
++# (as of December 2009) public DNS servers.  For
++# more information, see the page at
++# http://code.google.com/speed/public-dns/
++#
++# If neither root_servers nor upstream_servers are set,
++# Deadwood will use the default ICANN root servers.
++#upstream_servers = {}
++#upstream_servers["."]="8.8.8.8, 8.8.4.4"
++
++# Who is allowed to use the cache.  This line
++# allows anyone with "127.0" as the first two
++# digits of their IP to use Deadwood
++recursive_acl = "127.0.0.1/16"
++
++# Maximum number of pending requests
++maxprocs = 8
++
++# Send SERVER FAIL when overloaded
++handle_overload = 1
++
++maradns_uid = 99 # UID Deadwood runs as
++maradns_gid = 99 # GID Deadwood runs as
++
++maximum_cache_elements = 60000
++
++# If you want to read and write the cache from disk,
++# make sure chroot_dir above is readable and writable
++# by the maradns_uid/gid above, and uncomment the
++# following line.
++#cache_file = "dw_cache"
++
++# If your upstream DNS server converts "not there" DNS replies
++# in to IPs, this parameter allows Deadwood to convert any reply
++# with a given IP back in to a "not there" IP.  If any of the IPs
++# listed below are in a DNS answer, Deadwood converts the answer
++# in to a "not there"
++#ip_blacklist = "10.222.33.44, 10.222.3.55"
+ 
+                                  BUGS
+ 

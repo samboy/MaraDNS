@@ -1,0 +1,33 @@
+--- deadwood-2.9.01/INSTALL.txt	2010-07-22 08:28:33.000000000 -0700
++++ deadwood-2.9.02/INSTALL.txt	2010-07-23 20:37:53.000000000 -0700
+@@ -58,10 +58,10 @@
+ 	mkdir /etc/deadwood
+ 	chown 99:99 /etc/deadwood
+ 	
+-DwMain doesn't have any daemonization capability; this is handled
++Deadwood doesn't have any daemonization capability; this is handled
+ by a separate program I wrote for MaraDNS, 'duende'.  This program
+ is in the tools/ directory, and needs to be compiled separately
+-from DwMain.  
++from Deadwood.  
+ 
+ 	cd tools/
+ 	make
+@@ -72,7 +72,7 @@
+ The directory /etc/maradns/logger is needed for duende to run.
+ 
+ Now, you will want to edit your system start-up scripts to start
+-up DwMain.  To do this in CentOS 5, make a file with the name 
++up Deadwood.  To do this in CentOS 5, make a file with the name 
+ /etc/init.d/deadwood with the following content:
+ 
+ #!/bin/sh
+@@ -81,7 +81,7 @@
+         /usr/local/bin/duende /usr/local/bin/Deadwood
+         ;;
+   stop)
+-        killall DwMain
++        killall Deadwood
+         ;;
+ esac
+ # End of startup script

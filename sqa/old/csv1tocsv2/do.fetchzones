@@ -1,0 +1,7 @@
+#!/bin/sh
+
+FETCHZONE=../../tcp/fetchzone
+
+$FETCHZONE example.com 127.0.0.4 > fetchzone/example.com
+$FETCHZONE example.org 127.0.0.4 > fetchzone/example.org
+$FETCHZONE example.net 127.0.0.4 > fetchzone/example.net

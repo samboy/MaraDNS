@@ -1,0 +1,33 @@
+# Querying the server with the IP 127.0.0.2
+# Question: Awww.example.com.
+www.example.com. +86400 a 127.10.1.1
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.2
+# Hard Error: Timeout
+
+# Querying the server with the IP 127.0.0.2
+# Question: Awww.example.com.
+www.example.com. +86400 a 127.10.1.1
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.2
+# Remote server said: SERVER FAILURE
+# Question: Awww.example.net.
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.2
+# Question: Awww.example.com.
+www.example.com. +86400 a 127.10.1.1
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.2
+# Question: Awww.example.net.
+# NS replies:
+www.example.net. +60 soa . m@m.m. 1 60 60 60 60
+# AR replies:
+

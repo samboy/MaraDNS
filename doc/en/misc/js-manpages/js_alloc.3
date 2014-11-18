@@ -1,0 +1,55 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_alloc 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_alloc \- allocate memory from the underlying OS
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "void *js_alloc(int unit_count, int unit_size)"
+.fi
+.SH DESCRIPTION
+.B js_alloc
+allocates memory from the underlying OS.  It returns a pointer to the
+allocated memory.
+.SH ARGUMENTS
+.B unit_count
+is the number of 
+.I units
+that are allocated.  A single 
+.I unit 
+takes up one or more octets of memory space.  The amount of space a single 
+.I unit
+takes up is determined by the 
+.B unit_size
+argument.
+
+.B unit_size
+determines the number of bytes a single
+.I unit
+takes up.
+.SH "RETURN VALUE"
+.B js_alloc
+returns a pointer to the allocated memory.
+If it is unable to allocate memory, this function will return the value 0 (the
+null pointer, as defined by the C standard).
+.SH EXAMPLE
+The following example allocates 256 octets of memory.
+
+.nf
+	char *foo;
+	foo = js_alloc(256,1);
+.fi
+.SH NOTES
+This function assumes that an allocated chunk of memory will not move in 
+memory.  On certain embedded systems, such as the Palm Pilot, allocated memory
+may move around in memory.
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

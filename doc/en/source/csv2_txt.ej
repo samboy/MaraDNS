@@ -1,0 +1,373 @@
+<HEAD>
+<TH>CSV2_TXT 5 "January 2007" MARADNS "MaraDNS reference"</TH>
+<DTWIDTH>3</DTWIDTH>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+</HEAD>
+<BODY>
+<h1>NAME</h1>
+csv2_txt - Description of txt and raw resource records in the csv2 zone file
+<h1>DESCRIPTION</h1>
+
+Due to the complexity of TXT and RAW records, this man page is
+dedicated to describing the csv2 format of this RR.
+
+<p>
+
+TXT and RAW rrs in MaraDNS' csv2 zone files can store any arbitrary 
+binary data.  Additionally, it is possible to arbitrarily divide up
+TXT records in to chunks (chunks, which RFC1035 call "character-string"s,
+are described below).
+
+<h2>ASCII AND UTF-8 DATA</h2>
+
+If a given TXT field or RAW record contains only ASCII data, creating a
+record is easy: Place the full data between single quotes, like
+this:
+
+<pre>
+a.example.com. TXT 'This is some text' ~
+</pre>
+
+It is also possible, to place almost any printable ASCII characters 
+between quotes.  The '~' (tilde) character is not allowed unless 
+csv2_tilde_handling has a value of 0; the '|' (pipe), '#' (hash) and
+non-printable ASCII control characters are not allowed in TXT data
+if the ~ is used to separate records.  If there are any bytes
+with a value of 0x80 or more, the data must be UTF-8 encoded Unicode.
+<hibit>
+For example:
+
+<pre>
+b.example.com. TXT 'This is an example UTF-8 character: I ♥ MaraDNS'
+</pre>
+ 
+(If your font does not have this Unicode symbol, it is a heart)
+</hibit>
+
+<p>
+
+The printable ASCII characters not allowed in quotes are the ' character,
+the '|' character, the '~' (tilde) character, and the '#' character.
+See BACKSLASH ESCAPE SEQUENCES below for information on adding these
+characters to TXT or RAW fields.
+
+<h2>UNQUOTED DATA</h2>
+
+Note that the record does not have to be quoted.  As long as the
+record only contains ASCII alphanumeric data, and/or the characters
+'-', '_', '+', '%', '!', '^', and '=', the data can be unquoted
+as follows:
+
+<pre>
+c.example.com. TXT This_is_100%_unquoted_text_+symbols!
+</pre>
+
+It is also possible to mix quoted and unquoted text, such as this:
+
+<pre>
+d.example.com. TXT This' is a mix 'of_unquoted' and quoted 'text!
+</pre>
+
+Which will have its data look like this:
+
+<pre>
+This is a mix of_unquoted and quoted text!
+</pre>
+
+When mixing quoted and unquoted data, it is important to have all whitespace
+<i>inside</i> quotes.
+
+<h2>BACKSLASH ESCAPE SEQUENCES</h2>
+
+In order to accommodate storing non-UTF-8 high bit characters, the
+single quote character, non-printable ASCII control codes, the '|',
+'~', and '#' characters, and to permit multi-line TXT/RAW records
+(with comments allowed mid-record), the TXT/RAW RR allows backslashes.
+These backslashes only have significance <i>outside</i> of quoted text;
+if they are placed inside single quotes, they are not interpreted and
+result in a literal backslash being added to the resource record data.
+
+<p>
+
+The following characters can be backslashed:
+
+<dl>
+<dt>
+'
+<dd>
+When backslashed, the adds a literal quote to the resource record.
+<dt>
+whitespace
+<dd>
+When any whitespace is backslashed (space, newline, cr, and tab), this
+indicates that the record has not ended, and that more data for this
+resource will follow.  This also allows comments to be placed in 
+TXT and RAW resource records.  What happens is that the backslash
+indicates that any whitespace characters (space, tab, carriage return,
+and line feed) are to be ignored until
+the next non-whitespace character that is not a # (hash).  If a
+# is seen, this indicates that we ignore any and all characters until the
+next carriage return or line feed, and continue to ignore everything
+until the next non-whitespace character.  
+See the section on multi-line and
+commented records for examples.
+<dt>
+0123
+<dd>
+When a number between 0 and 3 is backslashed, this indicates the 
+beginning of a three-digit octal number.
+<dt>
+x
+<dd>
+When an x is backslashed, this indicates the beginning of a two-digit
+hexadecimal number.
+</dl>
+
+Note that, with the exception of the single quote, the backslash character
+is <i>not</i> used to remove the meta-significance of a given character.
+In particular, unlike other environments, it is not possible to backslash
+spaces.  Spaces can be represented either as ' ' in quotes, \x20, or 
+as \040.
+
+<p>
+
+Here are some examples of backslashed data.
+
+In this example, we see backslash sequences being used to store non-UTF-8
+hi-bit data:
+
+<pre>
+e.example.com. TXT \x80\x81\x82\x83 ~
+</pre>
+
+This same data can also be created as follows:
+
+<pre>
+f.example.com. TXT \200\201\202\203 ~
+</pre>
+
+Octal and hex information can be mixed:
+
+<pre>
+g.example.com. TXT \200\x81\202\x83 ~
+</pre>
+
+Literal single quotes can be placed in resource records:
+
+<pre>
+h.example.com. TXT 'perl -e '\''print "A Perl of a TXT record!\n"'\' ~
+</pre>
+
+The above example produces this record:
+
+<pre>
+perl -e 'print "A Perl of a TXT record!\n"' ~
+</pre>
+
+To render the '~' character, use the escape sequence \x7e (outside of
+quotes).  For example:
+
+<pre>
+h1.example.com. TXT 'http://ocf.berkeley.edu/'\x7e'set' ~
+</pre>
+
+Produces this record:
+
+<pre>
+http://ocf.berkeley.edu/~set
+</pre>
+
+To render the '|' character, use the escape sequence \x7c:
+
+<pre>
+h2.example.com. TXT 'ls '\x7c' more' ~
+</pre>
+
+Produces this record:
+
+<pre>
+ls | more
+</pre>
+
+To render the '#' character, use the escape sequence \x23:
+
+<pre>
+h3.example.com. TXT 'Press '\x23' for customer service' ~
+</pre>
+
+Produces this record:
+
+<pre>
+Press # for customer service
+</pre>
+
+<h2>MULTI-LINE AND COMMENTED RECORDS</h2>
+
+By utilizing backslashes followed by comments, it is possible to have
+multi-line and commented TXT and RAW records.  The following resource
+record will span more than one line on an 80-column display:
+
+<pre>
+i.example.com. TXT 'Not only did the quick brown fox jump over the lazy dog, but the lazy dog jumped over the cat.' ~
+</pre>
+
+Without affecting this resource record, the same data can be split over 
+multiple lines:
+
+<pre>
+j.example.com. TXT 'Not only did the quick brown fox jump '\
+                   'over the lazy dog, but the lazy dog'\
+                   ' jumped over the cat.' ~
+</pre>
+
+Some points:
+
+<ul>
+<li>The backslash must be outsize of the quotes (or a literal backslash will
+    be added to the record)
+<li>The backslash must be present <i>before</i> any unquoted white space.  
+    Usually, the backslash is placed immediately after the
+    quote character.
+<li>Unlike other environments, it does not matter whether or not there
+    is invisible whitespace after the backslash.
+</ul>
+
+It is also possible to add comments after such a backslash as follows:
+
+<pre>
+k.example.com. TXT 'Not only did the quick brown fox jump '\ # The fox
+                   'over the lazy dog, but the lazy dog'\    # The dog
+                   ' jumped over the cat.' ~                 # The cat
+</pre>
+
+Note that, since the third comment is not preceded by a backslash, this
+indicates the end of the resource record.  
+
+<p>
+
+There can also be multiple lines dedicated to 
+comments (and, optionally, even blank lines) in the middle 
+of TXT and RAW record data:
+
+<pre>
+k2.example.com. TXT 'This is some data '\
+# Here we have some comments followed by a blank line
+
+# Now we have some more comments, 
+# followed by the rest of the data
+    'and this is the rest of the data' ~
+</pre>
+
+<p>
+
+<h2>MULTIPLE TXT CHUNKS</h2>
+
+TXT RRs may be divided up in to multiple "chunks" (RFC1035 calls these
+"character-string"s).  A single chunk can be anywhere from zero to 255
+bytes long.  The default is to have one chunk, as follows:
+
+<pre>
+o.example.com. TXT 'TXT record with only one chunk' ~
+</pre>
+
+It is also possible to have a record with multiple chunks.  Chunks
+are delimited by an unquoted ';' character:
+
+<pre>
+p.example.com. TXT 'This is chunk one';'This is chunk two' ~
+</pre>
+
+Or:
+
+<pre>
+q.example.com. TXT 'This is chunk one';\   # Our first chunk
+                    This_is_chunk_two;\    # Our second chunk
+                   'This is chunk three' ~ # Our final chunk
+</pre>
+
+Quoted ; characters simply add a ; to the record data.
+
+<p>
+
+If a single TXT chunk is longer than 255 bytes long, the csv2 parser will
+report an error in the zone file: Single TXT chunk too long
+
+<p>
+
+In order to resolve this, place unquoted ; characters in the record data
+so that each chunk is under 255 octets (bytes or characters) in length.
+
+<p>
+
+It is possible to have zero length chunks:
+
+<pre>
+r.example.com. TXT 'chunk one';;'chunk three' ~ # Chunk two zero-length
+</pre>
+
+In particular, is is possible to have zero length chunks at the
+beginning and end of a TXT record:
+
+<pre>
+s.example.com. TXT ;'chunk two'; ~ # Chunks one and three zero-length
+</pre>
+
+Do not place semicolons at the beginning nor end of TXT records unless
+you wish to have these zero-length chunks.
+
+<p>
+
+Chunk support only exists for TXT records.  An unquoted ; character will
+cause a syntax error in a RAW record.
+
+<h2>RAW RECORDS</h2>
+
+With the exception of no support for chunk delimiters, and the addition of a
+numeric record type before the record data, the format for RAW records is
+identical to text records.  For example, if we wish to have a "Kitchen Sink"
+RR record, which has the 8-bit binary numbers "16", "1", and "2", followed
+by the ASCII string "Kitchen sink+ data", we can specify this in any of the
+following manners:
+
+<pre>
+t1.example.com. RAW 40 \x10\x01\x02'Kitchen sink'\x2b' data' ~
+</pre>
+
+<pre>
+t.example.com. RAW 40 \020\001\002Kitchen' sink+ data' ~
+</pre>
+
+<pre>
+u.example.com. RAW 40 \x10\x01\x02Kitchen\x20sink+\x20data ~
+</pre>
+
+<pre>
+v.example.com. RAW 40 \x10\001\x02\
+                      'Kitchen sink+ data' ~
+</pre>
+
+<pre>
+w.example.com. RAW 40 \x10\ # Meaning: 16
+                      \x01\ # Coding: 1
+                      \x02\ # Sub-coding: 2
+                      'Kitchen sink+ data' ~ # Data: 'Kitchen sink+ data'
+</pre>
+
+<h1>LEGAL DISCLAIMER</h1>
+THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
+OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE 
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+<h1>AUTHOR</h1>
+Sam Trenholme 
+<A href=http://www.samiam.org/>http://www.samiam.org/</a>
+</body>
+

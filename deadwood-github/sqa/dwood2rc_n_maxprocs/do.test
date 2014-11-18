@@ -1,0 +1,54 @@
+#!/bin/sh
+
+# Test "maxprocs"
+# MaraDNS isn't started because 127.0.0.2 is *supposed* to not reply
+
+for VALUE in 8 128 ; do
+
+echo ${VALUE} maxprocs
+
+cat > dwood2rc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+upstream_servers = {}
+upstream_servers["."]="127.0.0.2"
+timeout_seconds=10
+num_retries=2
+recursive_acl="127.0.0.1/16"
+max_inflights=1
+maxprocs=${VALUE}
+max_tcp_procs=${VALUE}
+filter_rfc1918 = 0
+EOF
+
+../../src/Deadwood -f dwood2rc > /dev/null &
+#../../src/Deadwood -f dwood2rc &
+
+sleep 1
+echo
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+sleep 5
+askmara -t 3 Awww.example.com. 
+sleep 1
+killall Deadwood > /dev/null 2>&1
+sleep 1
+
+echo
+
+done
+
+rm dwood2rc

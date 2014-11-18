@@ -1,0 +1,63 @@
+--- maradns-1.4.03/doc/en/webpage/index.embed	2009-12-21 07:28:41.000000000 -0800
++++ maradns-1.4.04/doc/en/webpage/index.embed	2010-07-30 23:29:39.000000000 -0700
+@@ -15,10 +15,9 @@
+ MaraDNS has a long history of being maintained and updated.   
+ Actively developed since 2001,
+ MaraDNS continues to be fully supported: The most recent
+-release was done on August 4, 2009. Deadwood, the code that will
+-become part of MaraDNS 2.0, is <A 
+-href="http://maradns.blogspot.com/search/label/Deadwood">frequently 
+-updated</A>.
++release was done on July 31, 2010. Deadwood, the recursive code that will
++become part of MaraDNS 2.0, is currently <A href=deadwood/>undergoing 
++beta-testing</A>.
+ <li><b>Easy to use</b>.  A basic recursive configuration needs only a 
+ single three-line configuration file.  A basic authoritative configuration
+ needs only a four-line configuration file and a one-line zone file.
+@@ -68,7 +67,6 @@
+ I would like to thank <A href="http://www.webconquest.com/">WebConquest</A> for
+ hosting MaraDNS.org's web page.
+ 
+-I would like to thank my various sponsors for helping fund MaraDNS development,
+-including XeroBank, a source of <A href=http://xerobank.com>Internet 
+-Privacy</A> software.
++<p>I would also like to thank my <A href=sponsors.html>various sponsors</A> for
++helping fund MaraDNS development.
+ 
+--- maradns-1.4.03/doc/en/webpage/advocacy.embed	2010-02-02 09:12:44.000000000 -0800
++++ maradns-1.4.04/doc/en/webpage/advocacy.embed	2010-07-30 23:34:22.000000000 -0700
+@@ -36,7 +36,7 @@
+ and MaraDNS 1.2 was released in December of 2005.  MaraDNS has been
+ extensively tested, both with a SQA process and with over four years of
+ real-world use.  MaraDNS continues to be fully supported: The most recent
+-release was done on August 4, 2009.
++release was done on July 31, 2010.
+ <li><b>Easy to use</b>.  A basic recursive configuration needs only a 
+ single three-line configuration file.  A basic authoritative configuration
+ needs only a four-line configuration file and a one-line zone file.
+@@ -463,10 +463,11 @@
+ <p>
+ 
+ The recursive server (dnscache) is somewhat unique among DNS servers.
+-It is the only DNS server I know of that has a small footprint and
+-doesn't use threads to make recursive queries.  I am working on adding
+-this capability to MaraDNS, but until I finish my work, dnscache has a
+-monopoly on the market for a small, non-threaded recursive DNS server.
++It was, for many years, the only DNS server I know of that has a small 
++footprint and
++doesn't use threads to make recursive queries.  Deadwood finally became
++feature complete in July of 2010 with the same capability, allowing people
++choice in which small, non-threaded recursive DNS server to use.
+ 
+ <p>
+ One nice thing is that there are
+@@ -504,6 +505,9 @@
+ <A href=http://article.gmane.org/gmane.network.djbdns/13864>ref</A></sup>
+ </ul>
+ 
++There are a number of unofficial forks of DjbDNS with patches to fix
++some (or all) of these issues; one worth looking at is <A 
++href=http://sourceforge.net/projects/zinq/>Zinq</A>.
+ 
+ <h3>Conclusion</h3>
+ 

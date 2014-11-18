@@ -1,0 +1,56 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_space_chars 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_space_chars \- place an list of all whitespace chars in a js_string object
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_space_chars(js_string *js)"
+.fi
+.SH DESCRIPTION
+.B js_space_chars
+clobbers the contents of the 
+.I js_string
+object
+.B js,
+and places a list of all of the whitespace characters for the
+.I encoding
+of the 
+.I js_string
+object in question in 
+.B js
+
+.SH ARGUMENTS
+.B js
+is a pointer to the
+.I js_string
+object we wish to place all of the whitespace characters for
+.I js'
+encoding in.
+
+.SH "RETURN VALUE"
+.B js_space_chars
+returns 
+.I JS_SUCCESS 
+on successful copying of the whitespace characters in to the string,
+.I JS_ERROR
+otherwise.
+.SH EXAMPLE
+The following fills the string foo with all of the whitespace characters for
+the ASCII character set.
+.nf
+	js_string *foo;
+	foo = js_create(256,1);
+	js_set_encode(foo,JS_US_ASCII);
+	js_space_chars(foo);	
+.fi
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

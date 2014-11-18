@@ -1,0 +1,24 @@
+--- maradns-1.4.01/doc/en/source/maradns.ej	2008-03-24 09:52:27.000000000 -0600
++++ maradns-1.4.02/doc/en/source/maradns.ej	2009-12-29 10:27:55.000000000 -0600
+@@ -201,8 +201,9 @@
+ NS record to be unreachable by MaraDNS, even if other DNS servers for
+ the domain have correct NS referrals.
+ <h1>UNIMPLEMENTED FEATURES</h1>
+-<i>These are features which will not be implemented in the 1.2 release 
+-of MaraDNS:</i>
++<i>These are features which I do not plan to implement in MaraDNS.  If
++you wish to see these features, consider sponsoring MaraDNS
++development:</i>
+ <p>
+ MaraDNS does not have a disk-based caching scheme for authoritative 
+ zones.  
+@@ -216,7 +217,8 @@
+ resolve for a limited range of IPs querying the DNS server, or for host
+ names to resolve differently, depending on the IP querying the host name.
+ <p>
+-MaraDNS only has limited authoritative-only support for IPv6.
++MaraDNS 1.4 only has authoritative-only support for IPv6.  Deadwood, 
++however, has full IPv6 support.
+ <p>
+ MaraDNS only allows wildcards
+ at the beginning or end of a host name.  E.g. names with wildcards like 

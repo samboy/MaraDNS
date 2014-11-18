@@ -1,0 +1,221 @@
+--- maradns-2.0.02/doc/en/webpage/download.embed	2010-09-26 12:55:06.000000000 -0400
++++ maradns-2.0.03/doc/en/webpage/download.embed	2011-03-18 12:32:19.000000000 -0400
+@@ -2,48 +2,64 @@
+ <!-- &iexcl; instead of ¡ because of *@#$ Dillo -->
+ <h1>&iexcl;Download MaraDNS!</h1>
+ 
+-<h2>Stable release</h2>
+-<p>This is the current stable release of MaraDNS, MaraDNS 1.4.05,
+-released September 25, 2010.
+-<p>This release is available both at <A 
+-href="http://sourceforge.net/project/showfiles.php?group_id=24033">sourceforge.net</A>
++<h2>Current stable release</h2>
++
++The current stable release of MaraDNS is MaraDNS 2.0.02, released
++February 5, 2011.
++
++<p>
++<A 
++href="download/2.0/2.0.02/maradns-2.0.02.tar.bz2"><!--
++                       -->maradns-2.0.02.tar.bz2</A>
++<A 
++href="download/2.0/2.0.02/maradns-2.0.02.tar.bz2.asc">sig</A>
++
++<h2>Previous stable release</h2>
++
++<p>This is the previous stable release of MaraDNS, MaraDNS 1.4.06,
++released January 29, 2011.  Unlike MaraDNS 2.0.02, a Windows
++binary is included.  This release is available
++both at <A 
++href="http://sourceforge.net/project/showfiles.php?group_id=24033">sourceforge.n
++et</A>
+ and on this page.
++
+ <p>
+ 
+ <table><tr><td>
+ <A 
+-href="download/1.4/1.4.05/maradns-1.4.05.tar.bz2"><!--
+-                       -->maradns-1.4.05.tar.bz2</A>
++href="download/1.4/1.4.06/maradns-1.4.06.tar.bz2"><!--
++                       -->maradns-1.4.06.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.4/1.4.05/maradns-1.4.05.tar.bz2.asc">sig</A>
++href="download/1.4/1.4.06/maradns-1.4.06.tar.bz2.asc">sig</A>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.4/1.4.05/maradns-1.4.05.tar.gz"><!--
+-                       -->maradns-1.4.05.tar.gz</A>
++href="download/1.4/1.4.06/maradns-1.4.06.tar.gz"><!--
++                       -->maradns-1.4.06.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/1.4/1.4.05/maradns-1.4.05.tar.gz.asc">sig</A>
++href="download/1.4/1.4.06/maradns-1.4.06.tar.gz.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+ <A 
+-href="download/1.4/1.4.05/maradns-1-4-05-win32.zip"><!--
+-                       -->maradns-1-4-05-win32.zip</A>
++href="download/1.4/1.4.06/maradns-1-4-06-win32.zip"><!--
++                       -->maradns-1-4-06-win32.zip</A>
+ </td><td>
+ <A 
+-href="download/1.4/1.4.05/maradns-1-4-05-win32.zip.asc">sig</A>
++href="download/1.4/1.4.06/maradns-1-4-06-win32.zip.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ </td></tr><tr><td>
+ <A 
+-href="download/1.4/1.4.05/maradns-1-4-05-win32.7z"><!--
+-                       -->maradns-1-4-05-win32.7z</A>
++href="download/1.4/1.4.06/maradns-1-4-06-win32.7z"><!--
++                       -->maradns-1-4-06-win32.7z</A>
+ </td><td>
+ <A 
+-href="download/1.4/1.4.04/maradns-1-4-05-win32.7z.asc">sig</A>
++href="download/1.4/1.4.06/maradns-1-4-06-win32.7z.asc">sig</A>
+ </td><td>
+ <A href="#7z">info</A>
+ </td></tr></table>
+@@ -52,28 +68,28 @@
+ 
+ <h2>Deadwood</h2>
+ 
+-Deadwood is the code that is MaraDNS 2.0's recursive
+-resolver; right now it is a stable recursive cache.
+-Deadwood, unlike MaraDNS 1, does not need threads to resolve queries, and
++Deadwood is the code that will soon become MaraDNS' next recursive
++resolver; right now it is a recursive cache undergoing beta testing.
++Deadwood, unlike MaraDNS, does not need threads to resolve queries, and
+ has features MaraDNS 1.x's recursive code doesn't have, such as 
+ "resurrections" and the ability to read and write the cache to disk.
+ 
+ <table><tr><td>
+ <A 
+-href="deadwood/stable/deadwood-3.0.01.tar.bz2"><!--
+-                   -->deadwood-3.0.01.tar.bz2</A>
++href="deadwood/stable/deadwood-3.0.02.tar.bz2"><!--
++                   -->deadwood-3.0.02.tar.bz2</A>
+ </td><td>
+ <A 
+-href="deadwood/stable/deadwood-3.0.01.tar.bz2.asc">sig</A>
++href="deadwood/stable/deadwood-3.0.02.tar.bz2.asc">sig</A>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="deadwood/stable/Deadwood-3-0-01-win32.zip"><!--
+-                   -->Deadwood-3-0-01-win32.zip</A>
++href="deadwood/stable/Deadwood-3-0-02-win32.zip"><!--
++                   -->Deadwood-3-0-02-win32.zip</A>
+ </td><td>
+ <A 
+-href="deadwood/stable/Deadwood-3-0-01-win32.zip.asc">sig</A>
++href="deadwood/stable/Deadwood-3-0-02-win32.zip.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ </td></tr></table>
+@@ -88,9 +104,9 @@
+ 
+ <hr>
+ 
+-<h2>Previous stable release</h2>
+-<p>This is the previous stable release of MaraDNS, MaraDNS 1.3.07.10,
+-released February 2, 2010.  This release doesn't have a couple of
++<h2>Deprecated release</h2>
++<p>This is the deprecated release of MaraDNS, MaraDNS 1.3.07.11,
++released January 29, 2011.  This release doesn't have a couple of
+ features MaraDNS 1.4 has (FQDN6 records, NAPTR support), nor bug
+ fixes 1.4 has (Afnic fix, etc.).  This release will be supported
+ with security bug fixes until December 21, 2012.
+@@ -99,63 +115,25 @@
+ 
+ <table><tr><td>
+ <A 
+-href="download/1.3/1.3.07.10/maradns-1.3.07.10.tar.bz2"><!--
+-                          -->maradns-1.3.07.10.tar.bz2</A>
+-</td><td>
+-<A 
+-href="download/1.3/1.3.07.10/maradns-1.3.07.10.tar.bz2.asc">sig</A>
+-</td><td>
+-<A href="#bz2">info</A> 
+-</td></tr>
+-<tr><td>
+-<A 
+-href="download/1.3/1.3.07.10/maradns-1.3.07.10.tar.gz"><!--
+-                          -->maradns-1.3.07.10.tar.gz</A>
+-</td><td>
+-<A 
+-href="download/1.3/1.3.07.10/maradns-1.3.07.10.tar.gz.asc">sig</A>
+-</td><td>
+-<A href="#gz">info</A>
+-</td></tr></table>
+-
+-<h2>Legacy release</h2>
+-
+-This is the legacy branch of MaraDNS; this release will be 
+-supported with critical security updates until December 31, 2010.
+-Doesn't have BIND zone file support, nor a couple of other features,
+-but otherwise similar to newer stable releases of MaraDNS. <p>
+-
+-<p>This is the legacy stable release of MaraDNS, MaraDNS 1.2.12.10,
+-released August 4, 2008.
+-
+-<p>
+-<table><tr><td>
+-<A 
+-href="download/1.2/1.2.12.10/maradns-1.2.12.10.tar.bz2"><!--
+-                          -->maradns-1.2.12.10.tar.bz2</A>
++href="download/1.3/maradns-1.3.07.11.tar.bz2"><!--
++                -->maradns-1.3.07.11.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.10/maradns-1.2.12.10.tar.bz2.sha.asc">sig</A>
++href="download/1.3/maradns-1.3.07.11.tar.bz2.asc">sig</A>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr>
+ <tr><td>
+ <A 
+-href="download/1.2/1.2.12.10/maradns-1.2.12.10.tar.gz"><!--
+-                          -->maradns-1.2.12.10.tar.gz</A>
++href="download/1.3/maradns-1.3.07.11.tar.gz"><!--
++                -->maradns-1.3.07.11.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.10/maradns-1.2.12.10.tar.gz.sha.asc">sig</A>
++href="download/1.3/maradns-1.3.07.11.tar.gz.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr></table>
+ 
+-<h3>Contributed packages</h3>
+-
+-<A
+-href="download/1.2/3rd_party/maradns-1.2.12.08-i486-2.tgz"><!--
+-                          -->maradns-1.2.12.08-i486-2.tgz</A> 
+-<A href="#tgz">info</A>
+ <h2>Other</h2>
+ <p><A href=changelog.html>View the changelog</A></p>
+ 
+@@ -170,15 +148,6 @@
+ This is a collection of papers describing some of the various 
+ cryptographic hashes.
+ 
+-<h2>Obsolete 1.0 MaraDNS branch</h1>
+-
+-The <A href=download/1.0>obsolete 1.0 branch of MaraDNS</A>.  The only 
+-updates I would do on this branch are critical security fixes.  You're
+-better off using 1.2 or 1.3.  If you want something small for embedded
+-systems, the "Deadwood" code in the 1.3 development snapshots is your
+-best bet.  Unless you've found a critical security hole, I don't
+-support this version.
+-
+ <H2>Disclaimer</H2>
+ THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
+ OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 

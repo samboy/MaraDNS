@@ -1,0 +1,8 @@
+MaraDNS has added, in the 1.1 branch, full support for 64-bit timestamps.
+On machines with a 32-bit timestamp, MaraDNS is smart enough to convert 
+the 32-bit timestamp in to a 64-bit timestamp, which pushes the rollover 
+date in to the future.
+
+On 32-bit systems, MaraDNS will work fine until at least 2106 (Mara should 
+work fine until 2115.)
+

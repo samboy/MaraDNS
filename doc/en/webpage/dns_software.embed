@@ -1,0 +1,198 @@
+<H1>Other DNS software</H1>
+
+<P>
+This is a list of some other DNS software out there.  Note that a
+more detailed comparison between MaraDNS and the more notable projects
+listed here is available in the <A href=advocacy.html>advocacy document</A>.
+</P>
+
+<H2>Freely downloadable DNS servers</H2>
+
+<B>Caching DNS servers</B>
+
+<UL>
+
+<LI><A href="http://www.isc.org/products/BIND/bind9.html">BIND 9</A> is
+    a complete rewrite of BIND, and, as such, probably does not have the
+    security issues that previous versions of BIND has.  In fact, one of the
+    BIND developers found a security problem in earlier versions of MaraDNS.  
+    Very full-featured, and is the reference standard for the newer DNS RFCs.
+</LI>
+
+<LI><A href="http://www.powerdns.com">PowerDNS</A> is an authoritative
+and recursive
+DNS server with support for, among other things, SQL.  I would like to
+applaud the PowerDNS developers for making a <i>libre</i> release of this
+software.  
+</LI>
+
+<LI><A href="http://unbound.net">Unbound</A> is a recursive-only DNS
+    server. </LI>
+
+<LI><A href="http://www.thekelleys.org.uk/dnsmasq/doc.html">DnsMasq</A>
+    is a non-recursive caching DNS server. </LI>
+
+<LI><A href="http://www.maradns.org/deadwood">My own Deadwood project</A>
+    is another non-recursive caching DNS server. </LI>
+
+
+<LI><A href="http://cr.yp.to/djbdns.html">DjbDNS</A>  DJ Bernstein's DNS
+    package, which has both an authoritative DNS server and a caching
+    nameserver.  It is now public domain software, no longer under
+    a restrictive license.  I don't like DjbDNS myself: It's out of
+    date and no one has bothered to make a currently maintained fork of it.
+</LI>
+
+<LI><A href="http://freshmeat.net/projects/pdnsd/">pdnsd</A> is a 
+    recursive caching DNS server.  Paul Rombouts is (was?) the current 
+    maintainer of this program.
+</LI>
+
+<LI><A href="http://posadis.sourceforge.net">Posadis</A> is another DNS
+    server project, similiar to MaraDNS.  This server is now both
+    a resolving and an authoritative DNS server.  Hasn't been updated in
+    a while.
+</LI>
+
+</UL>
+
+<B>Non-recursive DNS servers</B>
+
+<UL>
+
+<LI><A href="http://www.nlnetlabs.nl/nsd/">NSD</A> is an authoritative-only
+    DNS server which is compatible with BIND zone files.
+</LI>
+
+<LI><A href="http://mydns.bboy.net/">MyDNS</A> is an authoritative-only
+    DNS server which uses MySQL as a database back end.   The most currently
+    updated version appears to be <A href="http://www.mydns-ng.com/"
+    >MyDNS-ng</A>, the "next generation" version of MyDNS.
+
+</LI>
+
+<LI><A href="/download/non-maradns/sdns.tar.bz2">SDNS</A> is a project
+    written in the late 1990s by Sandia Labs.  Like MaraDNS, this project
+    was written with security in mind.  Since this is a government
+    project, the code is public domain.  The program does not seem to be
+    downloadable anywhere, so I am mirroring it here.  I would like to thank
+    Fred Cohen for informing me about this package.
+
+<LI>The Pliant language/package 
+    <A href="http://pliant.cx/pliant/protocol/dns/">comes with a
+    DNS server</A>.  This DNS server can not recursively process DNS queries
+    given a list of root servers.
+
+</LI>
+<LI><A href="http://www.twistedmatrix.com/">Twisted</A> includes a 
+    non-recursive DNS server.
+</LI>
+<LI><A href="http://www.xbill.org/dnsjava/">DnsJAVA</A> is an authoritative-only
+    DNS server written in Java.
+</LI>
+<LI>The Eddit project includes a
+    <A href="http://eddie.sourceforge.net/lbdns.html">DNS server</A>
+</LI>
+<LI><A href="http://threading.2038bug.com/sheerdns/">SheerDNS</A> is a 
+    simple non-caching DNS server that stores all records as their
+    own files.
+
+</UL>
+
+<B>Abandoned DNS server projects</B>
+
+<p>
+
+These are DNS server projects which have not released any files for a
+significant period of time, and are not fully functioning DNS servers
+(either because the program did not have basic DNS functionality when 
+abandoned, the program was not documented before being abandoned, or
+because the program was abandoned so long ago that it is not fully
+functional on today's internet).
+
+<UL>
+<LI><A href="http://www.digitallumber.com/oak">Oak DNS</A> is a DNS
+server written completely in python.  It is compatible (I think) with
+both BIND zone files and cache files.  The file can be downloaded
+<A href="http://www.maradns.org/download/non-maradns/oak-1.2.tar.gz">here</A>,
+or <A href="http://www.lpthe.jussieu.fr/~talon/oak-1.2.tar.gz">here</A>.
+The most recent alpha version can be downloaded 
+<A 
+href="http://www.maradns.org/download/non-maradns/oak-1.4.tar.gz">here</A>.
+The most recent file in this alpha is from February of 2003; the original
+website is now owned by a cyber-squatter.
+(Thanks, Michel Talon, for the update)
+</LI>
+
+<LI><A href="http://moodns.sourceforge.net">MooDNS</A> is another DNS server
+    project.  
+    A CVS checkout on January 21, 2003 shows that no files have been updated
+    since July 20, 2002, except for a single readme file updated on August
+    1, 2002.  This project is abadoned. 
+    <p>
+    I have made a
+    <A href="moodns-20021011.tar.bz2">tarball available</A> for people who
+    do not want to bother with a CVS checkout.</p>
+</LI>
+<LI><A href="http://sourceforge.net/projects/dents">Dents</A> is a DNS
+    server that showed a lot of promise.  Unfortunatly, no files have been
+    released since 1999.
+</LI>
+
+<LI><A href="http://www.kyuzz.org/antirez/ens.html">Yaku-NS</A> is a
+    DNS server geared towards embedded systems.  According to the changelog,
+    no one has made any changes to this software since Feburary, 2001.
+</LI>
+
+<LI><A href="http://customdns.sourceforge.net">CustomDNS</A> has not released
+    any files since the summer of 2000. 
+</LI>
+
+</UL>
+
+<B>Other</B>
+<UL>
+<LI><A href="http://www.nimh.org/code/">LdapDNS</A> is a small DNS server
+    which converts DNS requests in to LDAP requests, without caching.
+</LI>
+<LI><A href="http://www.dnspython.org/">DnsPython</A> is a DNS toolkit for
+    Python.
+</LI>
+<LI><A href="http://gnudip2.sourceforge.net/">GnuDIP</A> is designed for
+    dynamically assigned IP addresses.
+<LI><A href="http://jdrowell.com/Linux/Projects/jdresolve">JD Resolve</A> is
+    a tool written in Perl that uses DNS to resolve hostnames.
+</LI>
+<LI><A href="http://dproxy.sourceforge.net/">Dproxy</A> is a caching DNS proxy.
+</LI>
+
+<!--
+<LI><A href="http://posadis.sourceforge.net/servers.php">A list that the
+    Posadis developers have of DNS servers</A>
+ -->
+<LI><A href="http://cr.yp.to/djbdns/other.html">Dan J. Bernstein also has a list
+    of DNS servers</A>
+</LI>
+
+</UL>
+
+<h2>Proprietary DNS solutions</h2>
+
+<em>No, I have not listed every single DNS server that exists here.</em>
+
+<UL>
+<LI><A href="http://www.ultradns.com">UltraDNS</A></LI>
+<LI><A 
+href="http://www.cisco.com/warp/public/cc/pd/nemnsw/nerr/prodlit/cnr30_ov.htm">Cisco  
+    Network Registrar</A></LI>
+<LI><A href="http://www.qip.lucent.com/">QIP</A> These people are obviously 
+    hiding something, since they require a password to look up the 
+    technical details of their product.</LI>
+<LI><A href="http://www.incognito.com/products/DNSCommander/overview.jsp">DNS
+    commander</A></LI>
+<LI><A href="http://www.jhsoft.com/">Simple DNS plus</A>.  Only available for
+     Windows.
+<LI><A href="http://www.menandmice.com/2000/2200_quick_dns.html">Yet another
+DNS program; this one at least has a Linux port</A>
+</UL>
+

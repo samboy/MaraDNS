@@ -1,0 +1,134 @@
+<HTML>
+<HEAD><TITLE>DNS record types</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+</HEAD><BODY>
+
+
+<!-- Copyright 2005 Sam Trenholme
+
+    TERMS
+
+    Redistribution and use, with or without modification, are permitted 
+    provided that the following condition is met:
+
+    1. Redistributions must retain the above copyright notice, this 
+       list of conditions and the following disclaimer.
+
+    This documentation is provided 'as is' with no guarantees of 
+    correctness or fitness for purpose.
+
+ -->
+
+<H1>DNS record types</H1>
+
+This is a list of some DNS record types which MaraDNS supports.
+
+<DL>
+
+<DT>A
+<DD>A, or address, records describe the IP that a given DNS node has.
+
+<p> MaraDNS optionally uses the 'A' to signify an A record.  
+This has one data-dependent field: The ip 
+for the node in question, in dotted decimal (e.g. 192.168.42.55) format.
+
+<DT>MX
+<DD>MX, or mail exchange, records describe the machines to contact in 
+order to send mail to a given DNS node.  
+
+<p>
+This has two data-dependent fields: 
+
+The preference for the mail exchanger (lower preferences get higher priority), 
+and the name of the DNS node to deliver mail to.  
+
+<DT>NS
+<DD>A NS record tells name servers which machines are in charge
+of a given domain zone.
+<p>
+This has one data-dependent field: 
+The name of the DNS node which a given NS record points to.
+<p>
+
+Any given zone must have one or more NS records.  If no NS records are
+present in a zone, MaraDNS will synthesize NS records for the zone
+in question.  If one wishes to set up their own NS records, all of the 
+NS records for a given DNS zone need to be placed immediately after the 
+SOA record.
+
+<p>
+MaraDNS also supports delegation NS records, which name the DNS servers
+for a sub-zone, which usually is on another DNS server.  
+DNS allows for people to delegate sub-zones in DNS.  Just as the "." server
+delegates any name that ends in ".com." to another set of name servers,
+and the ".com." name servers, in turn, delegate any names that ends 
+in "example.com.", such as "www.example.com.", to the "example.com." 
+name servers, the "example.com." name servers may further delegate
+sub-zones.
+
+<p>
+
+For example, if example.com wishes
+to sub-delegate "john.example.com." to John who works at Example, inc.,
+lines like this can be added to the example.com zone file:
+
+<pre>
+john.example.com. NS ns1.john.example.com.
+john.example.com. NS ns2.john.example.com.
+# It's important to provide "glue"; in other words, let the world know
+# the IPs for these name servers.
+ns1.john.example.com. 10.9.8.7
+ns2.john.example.com. 10.5.77.65
+</pre>
+
+John, who is running is own nameservers with the IPs 10.9.8.7 and 10.5.77.65
+then has a zone file for john.example.com. that looks something like this:
+
+<pre>
+# It is best if the NS records for a subzone agree with the delegation
+# records above
+john.example.com. NS ns1.john.example.com.
+john.example.com. NS ns2.john.example.com.
+
+ns1.john.example.com. 10.9.8.7
+ns2.john.example.com. 10.5.77.65
+
+# Now that that is out of the way, here is the rest of the zone
+john.example.com. 10.9.8.7
+www.john.example.com. 10.5.77.65
+john.example.com. MX 10 mail.john.example.com.
+mail.john.example.com. 10.9.8.7
+</pre>
+
+
+<DT>SOA
+
+<DD>
+This is a record used when using DNS to synchronize data between multiple
+computers.  Details on how this record works is in the 
+<A href=dnsmaster.html>DNS master</A> document.
+
+<p>
+A given zone must have precisely one SOA record.  If a SOA record is not 
+present in a zone file, MaraDNS will synthesize a SOA record.  If the
+record is in a zone file, it must be the first line of the zone file.
+Any other use of a SOA record will result in MaraDNS returning an error.
+
+
+<DT>TXT
+<DD>TXT, or text, records are arbitrary text strings 
+which can be attached to given DNS nodes.  Certain protocols, such as SPF,
+use this field to store protocol-specific data.
+
+<p>
+
+This has one data-dependent field: The text string in question.
+
+</DL>
+
+Note that this document does not describe every single record type that 
+MaraDNS support.  Please refer to the <A href=man.csv2.html>CSV2 manual 
+page</A> for a more complete reference.
+
+</BODY>
+

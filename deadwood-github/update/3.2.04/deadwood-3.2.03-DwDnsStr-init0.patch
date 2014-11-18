@@ -1,0 +1,45 @@
+--- deadwood-3.2.04/src/DwDnsStr.c.orig	2013-12-03 03:13:36.000000000 -0500
++++ deadwood-3.2.04/src/DwDnsStr.c	2013-12-03 03:56:49.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2009-2012 Sam Trenholme
++/* Copyright (c) 2009-2013 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -33,14 +33,36 @@
+ dns_string *dwc_init_dns_str(int32_t ancount, int32_t nscount,
+                 int32_t arcount) {
+         dns_string *out = 0;
++	int a;
+ 
+         out = dw_malloc(sizeof(dns_string));
+         if(out == 0 || ancount < 0 || nscount < 0 || arcount < 0) {
+                 return 0;
+         }
+         out->an = dw_malloc((ancount * sizeof(uint16_t) * 2) + 2);
++	if(out->an != 0) {
++		for(a = 0; a < (ancount * 2); a++) {
++			out->an[a] = 0;
++		}
++	} else if(ancount > 0) {
++		return 0;
++	}
+         out->ns = dw_malloc((nscount * sizeof(uint16_t) * 2) + 2);
++	if(out->ns != 0) {
++		for(a = 0; a < (nscount * 2); a++) {
++			out->ns[a] = 0;
++		}
++	} else if(nscount > 0) {
++		return 0;
++	}
+         out->ar = dw_malloc((arcount * sizeof(uint16_t) * 2) + 2);
++	if(out->ar != 0) {
++		for(a = 0; a < (arcount * 2); a++) {
++			out->ar[a] = 0;
++		}
++	} else if(arcount > 0) {
++		return 0;
++	}
+         out->packet = 0;
+         out->ancount = ancount;
+         out->nscount = nscount;

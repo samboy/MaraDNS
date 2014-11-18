@@ -1,0 +1,74 @@
+--- maradns-1.4.02/doc/en/source/mararc.ej	2010-01-08 10:07:40.000000000 -0600
++++ maradns-1.4.03/doc/en/source/mararc.ej	2010-02-01 22:21:57.000000000 -0600
+@@ -805,6 +805,30 @@
+ The format of this string is identical to the format of an ipv4_alias
+ entry.
+ 
++<h2>reject_aaaa</h2>
++If this has a value of 1, a bogus SOA "not there" reply is sent whenever
++an AAAA query is sent to MaraDNS.  In other words, every time a program asks
++MaraDNS for an IPv6 IP address, instead of trying to process the request,
++when this is set to 1, MaraDNS pretends the host name in question does not
++have an IPv6 address.
++<p>
++
++This is useful for people who aren't using IPv6 but use applications (usually
++*NIX command like applications like "telnet") which slow things down trying
++to find an IPv6 address.
++
++<h2>reject_ptr</h2>
++If this has a value of 1, a bogus SOA "not there" reply is sent whenever
++an PTR query is sent to MaraDNS.  In other words, every time a program asks
++MaraDNS for an IP-to-name mapping, instead of trying to process the request,
++when this is set to 1, MaraDNS pretends the IP in question does not
++have a host name.
++<p>
++
++This is useful for people who don't need this data but use applications 
++(usually *NIX command like applications like "telnet") which slow things 
++down trying to look up a host name for an IP.
++
+ <h2>remote_admin</h2>
+ remote_admin: Whether we allow <tt>verbose_level</tt> to be changed
+ after MaraDNS is started.
+--- maradns-1.4.02/doc/en/webpage/faq.embed	2010-01-08 10:07:40.000000000 -0600
++++ maradns-1.4.03/doc/en/webpage/faq.embed	2010-02-01 22:27:11.000000000 -0600
+@@ -120,6 +120,9 @@
+ 
+ <p>47. <A href="#star">Does maradns support star (wildcard) records?</A>
+ 
++<p>48. <A href="#reject">I'm having problems using MaraDNS with some *NIX
++   command line applications like telnet</A>
++
+ </BLOCKQUOTE>
+ <H2>ANSWERS</H2>
+ 
+@@ -1147,3 +1150,28 @@
+ star records are handled.  More information is in the <A 
+ href=http://www.maradns.org/tutorial/man.mararc.html>mararc man page</A>.
+ 
++<a name=reject> </A>
++<h2>48. I'm having problems using MaraDNS with some *NIX
++   command line applications like telnet.</h2>
++
++Some *NIX command line networking applications, such as telnet and ssh,
++try to do either a reverse DNS lookup (IP-to-host name conversion) or an
++IPv6 lookup.  This slows things down and sometimes causes the applications
++to not work at all.
++<p>
++
++For people who do not need IPv6 lookups, add the following line to
++one's mararc file to have MaraDNS respond to all IPv6 lookups with a
++bogus "not found" reply:
++
++<p>
++<tt>reject_aaaa = 1</tt>
++<p>
++
++If knowing the hostname a given IP has isn't important, these kinds of lookups
++can also be disabled:
++
++<p>
++<tt>reject_ptr = 1</tt>
++
++

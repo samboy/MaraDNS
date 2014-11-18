@@ -1,0 +1,12 @@
+testing badid.dns
+# Querying the server with the IP 127.0.0.2
+# Remote server said: SERVER FAILURE
+# Question: Awww.example.com.
+# NS replies:
+# AR replies:
+testing badquestion.dns
+# Querying the server with the IP 127.0.0.2
+# Remote server said: SERVER FAILURE
+# Question: Awww.example.com.
+# NS replies:
+# AR replies:

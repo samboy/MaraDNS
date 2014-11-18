@@ -1,0 +1,599 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>MaraDNS - a security-aware DNS server</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" title="Woodson (Default)"
+ type="text/css" media="screen, projection" href="maradns-1.2-s.css">
+<link rel="alternate stylesheet" title="Large Print" 
+ type="text/css" media="screen, projection" href="maradns-1.2-l.css">
+<link rel="stylesheet" type="text/css" media="print" 
+ href="maradns-1.2-p.css">
+<link rel="stylesheet" type="text/css" media="handheld" 
+ href="maradns-1.2-h.css">
+<script type=text/javascript src=styleswitcher.js></script>
+</head>
+<body>
+
+<div align=center id=maradns-all>
+<table><tr><td>
+<div align=left>
+<table><tr>
+<td valign=top width=340>
+<font id=maradns-name size="+4"><i><b>MaraDNS</b></i></font>
+<br>
+<div id=maradns-t>
+A&nbsp;security-aware DNS&nbsp;server
+</div>
+</td>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td valign=top id=topright width=220>
+        <div align=right><table><tr><td id=trabalengua>
+        <i>
+                Erre con erre cigarro<br>
+                Erre con erre barril<br> 
+                R&aacute;pido&nbsp;ruedan&nbsp;los&nbsp;carros<br>
+                En el ferrocarril<br></i>
+        </td></tr></table></div>
+</td>
+</tr></table>
+<script type=text/javascript>
+</script>
+<div id=lefthand>
+<div id=maradns-l>
+	<a href="index.html">Main</a>
+	<a href="download.html">Download</a>
+	<a href="changelog.html">Changelog</a>
+	<a href="notes.html">Documentation</a>
+	<a href="search.html">Search</a>
+	<a href="/blog">Blog</a>
+	<a href="security.html">Security</a>
+</div> <!-- maradns-l -->
+<script type="text/javascript">
+<!--
+if(isOKbrowser()) { 
+document.write("<p class=nocss><font size=-1>The following links that change text size will do nothing on your browser because your browser does not support CSS.  This page is otherwise usable in a non-CSS browser.");
+document.write("<\/font><\/p><div class=makelarge><div class=iebug>");
+document.write("To make the font larger, <A href=\"#\" onclick=\"setActiveStyleSheet('Large Print');return false;\">click here<\/A><\/div><\/div><p class=makenormal>");
+document.write("To see this without using a large font, <A href=\"#\" onclick=\"setActiveStyleSheet('Woodson (Default)');return false;\">click here<\/A><\/p>");
+}
+-->
+</script>
+</div>
+<hr class=moyet>
+<table><tr><td class=content width=596>
+<div id=maradns-r>
+<!-- -->
+<div id=paypal>
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but04.gif" border="0" name="submit" alt="PayPal Donate">
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----MIIHLwYJKoZIhvcNAQcEoIIHIDCCBxwCAQExggEwMIIBLAIBADCBlDCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20CAQAwDQYJKoZIhvcNAQEBBQAEgYA9Nwuu0ttKwa5d+XlH72dMuPfwlJFi3ohwNwhKMHHFM8oGkJzQZEoxmCFUNYwHbU23nZLRtG9VDWNqU0dXjLp+as35K+YhSX4/9mbHZVjfUKSRAcdw3ceBjpPjV0PiyoSsEdsFzPjjnK7fTzKVBDtDmKlrSVcdzN3xQ0VnbASVwjELMAkGBSsOAwIaBQAwgawGCSqGSIb3DQEHATAUBggqhkiG9w0DBwQIhqiVIQRAj8qAgYhtT0+SDskyUncn8rgsm5jyCgQFp3vhNHx3VqkiZeCt+yMM6hkf4enKUZbKAueuWkcAZTcQV/ZLWivUqHLkr8dOpF+Z7gnfeeGUAa0dyJhVf75heYttZ/dSdrl+PLiSHguLh8/jDhzcCBrIiOTVp5iE4d4MZFfuhq/T+XL1eUv4p/HeVlxNUuDMoIIDhzCCA4MwggLsoAMCAQICAQAwDQYJKoZIhvcNAQEFBQAwgY4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTEWMBQGA1UEBxMNTW91bnRhaW4gVmlldzEUMBIGA1UEChMLUGF5UGFsIEluYy4xEzARBgNVBAsUCmxpdmVfY2VydHMxETAPBgNVBAMUCGxpdmVfYXBpMRwwGgYJKoZIhvcNAQkBFg1yZUBwYXlwYWwuY29tMB4XDTA0MDIxMzEwMTMxNVoXDTM1MDIxMzEwMTMxNVowgY4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTEWMBQGA1UEBxMNTW91bnRhaW4gVmlldzEUMBIGA1UEChMLUGF5UGFsIEluYy4xEzARBgNVBAsUCmxpdmVfY2VydHMxETAPBgNVBAMUCGxpdmVfYXBpMRwwGgYJKoZIhvcNAQkBFg1yZUBwYXlwYWwuY29tMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDBR07d/ETMS1ycjtkpkvjXZe9k+6CieLuLsPumsJ7QC1odNz3sJiCbs2wC0nLE0uLGaEtXynIgRqIddYCHx88pb5HTXv4SZeuv0Rqq4+axW9PLAAATU8w04qqjaSXgbGLP3NmohqM6bV9kZZwZLR/klDaQGo1u9uDb9lr4Yn+rBQIDAQABo4HuMIHrMB0GA1UdDgQWBBSWn3y7xm8XvVk/UtcKG+wQ1mSUazCBuwYDVR0jBIGzMIGwgBSWn3y7xm8XvVk/UtcKG+wQ1mSUa6GBlKSBkTCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb22CAQAwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOBgQCBXzpWmoBa5e9fo6ujionW1hUhPkOBakTr3YCDjbYfvJEiv/2P+IobhOGJr85+XHhN0v4gUkEDI8r2/rNk1m0GA8HKddvTjyGw/XqXa+LSTlDYkqI8OwR8GEYj4efEtcRpRYBxV8KxAW93YDWzFGvruKnnLbDAF6VR5w/cCMn5hzGCAZowggGWAgEBMIGUMIGOMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxFDASBgNVBAoTC1BheVBhbCBJbmMuMRMwEQYDVQQLFApsaXZlX2NlcnRzMREwDwYDVQQDFAhsaXZlX2FwaTEcMBoGCSqGSIb3DQEJARYNcmVAcGF5cGFsLmNvbQIBADAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDYxMjIwMDAzMTE3WjAjBgkqhkiG9w0BCQQxFgQUxkXiKgzuVHNlG0VLqllkOj/5XQAwDQYJKoZIhvcNAQEBBQAEgYB17oonnjrk0sG0chHKkb8jPX/Ic7F3kSjBu3oF807dttqJz4370BodKrhym0Lljqvhis67fMzqmuPkhjxvF19lXUr6ufNqQWo8lrE2Qc7jk0j0iKLiOWq2kxDUzI5IacNTVFRduuVrt3xuXkiIo6WiRk1IlO6w3zGsSGovSZIdGQ==-----END PKCS7-----
+">
+</form>
+</div>
+<!-- -->
+<!-- end header -->
+<!-- end header -->
+<h2>MaraDNS Advocacy</h2>
+
+This article discusses the advantages and disadvantages of using MaraDNS, 
+and compares MaraDNS to a number of different DNS servers.
+
+<h3>Table of contents</h3>
+<ol>
+<li><A href="#maradns">MaraDNS</A>
+<li><A href="#press">MaraDNS in the press</A>
+<li><A href="#posadis">Posadis</A>
+<li><A href="#pdnsd">Pdnsd</A>
+<li><A href="#dents">Dents</A>
+<li><A href="#mydns">MyDNS</A>
+<li><A href="#etc">Other abandoned DNS servers</A>
+<li><A href="#bind9">BIND version 9</A>
+<li><A href="#oldbind">Older versions of BIND</A>
+<li><A href="#powerdns">PowerDNS</A>
+<li><A href="#nsd">NSD</A>
+<li><A href="#other">Other DNS servers</A>
+<li><A href="#nonfree">Commercial DNS servers</A>
+<li><A href="#djbdns">Djbdns</A>
+</ol>
+
+<A name="maradns"> </A>
+<h3>Why use MaraDNS?</h3>
+
+MaraDNS has the following advantages:
+
+<ul>
+<li><b>Secure</b>. MaraDNS has a strong <A
+href="security.html">security history</A>.
+For example, MaraDNS has <i>always</i> randomized, using
+a secure random number generator, the Query ID and source port of DNS queries;
+and <A
+href="http://maradns.blogspot.com/2008/07/maradns-is-immune-to-new-cache.html">
+was never vulnerable to the "new" cache poisoning attack</A>.
+<li><b>Supported</b>.
+MaraDNS has a long history of being maintained and updated.
+Actively developed since 2001,
+MaraDNS continues to be supported: The most recent
+release was done on February 5, 2011. Deadwood, the recursive code that is
+part of MaraDNS 2.0, is <A href=deadwood/>stable code</A>.
+<li><b>Easy to use</b>.  A basic recursive configuration needs only a
+single three-line configuration file.  A basic authoritative configuration
+needs only a four-line configuration file and a one-line zone file.
+MaraDNS is fully documented, with both easy-to-follow tutorials and a
+complete and up-to-date reference manual.
+<li><b>Small</b>.  MaraDNS is well suited for embedded applications
+and other environments where the server must use the absolute minimum
+number of resources possible.
+<li><b>Open Source</b>.  MaraDNS is fully open-source, The license is a
+<A href=license.html>two-clause BSD license</A> that is almost
+identical to the
+<A href="http://www.freebsd.org/copyright/freebsd-license.html">FreeBSD
+license</A>.
+</li>
+</ul>
+
+MaraDNS is the best DNS server to use if you need a lightweight, secure,
+and actively maintained DNS solution.  Keep in mind that MaraDNS may not
+be for you.  MaraDNS has the following, ummm, features:
+
+<ul>
+
+<li>In order to change any DNS records, MaraDNS needs to be restarted.  
+    This is because MaraDNS uses a model that pulls DNS records from memory
+    very quickly.  
+
+<li>MaraDNS support for BIND zone files uses a Python script to convert 
+    zone files from BIND's format to MaraDNS' BIND-like format.  
+</ul>
+
+Many, many DNS server projects have come and gone over the years; to
+the extent of my knowledge, only BIND, MaraDNS, NSD, and Power DNS are
+still being actively developed.  Some other notable DNS server projects
+which are not being actively developed:
+
+<A name="press"> </A>
+<h3>MaraDNS in the press</h3>
+
+MaraDNS has been praised in the press.  Here are some examples of books,
+articles, and papers which discuss MaraDNS:
+
+<ul>
+<li>Mens, Jan-Piet (2008). <i>Alternative DNS Servers: Choice and 
+Deployment, and Optional SQL/LDAP Back-Ends (Paperback)</i>. 
+UIT Cambridge Ltd. ISBN 0954452992.  <p> 
+This book devotes an entire chapter to MaraDNS</li>
+<li>Danchev, Dancho. <a 
+href="http://blogs.zdnet.com/security/?p=1562">How OpenDNS, PowerDNS and 
+MaraDNS remained unaffected by the DNS cache poisoning vulnerability</a> 
+ZDNet.  <p>
+This article affirms MaraDNS' excellent security design, pointing out
+that MaraDNS was never vulnerable to the 2008 cache poisoning attacks.
+<li>Schroder, Carla (2007). <i>Linux Networking Cookbook (Paperback)</i>. 
+O'Reilly. ISBN 0596102488.  <p> This book, on page 545, endorses MaraDNS, 
+stating that "My recommended combination is [...] MaraDNS for a public
+authoritative server"</li>
+<li>João Antunes; Nuno Ferreira Neves; Paulo Veríssimo (2007), <i><a 
+href="http://homepages.di.fc.ul.pt/~nuno/pubs.html">Finding Local 
+Resource Exhaustion Vulnerabilities</a></i>, 18th IEEE International 
+Symposium on Software Reliability Engineering, Trollhättan, Sweden
+<A href="http://homepages.di.fc.ul.pt/~nuno/pubs.html">http://homepages.di.fc.ul.pt/~nuno/pubs.html</a>
+<p> This article discussion MaraDNS' denial-of-service resistance, pointing
+out that "Figure 2, for instance, shows that the BIND server performs worse 
+than MaraDNS under the same attack, which means that the later is able to 
+sustain a larger number of attacks than the first"</li>
+<li>Rutherford, Matthew J. (2006), <i><a href=
+"http://mjrutherford.org/node/11">Adequate System-Level Testing of 
+Distributed Systems</a></i>, Department of Computer Science, Boulder, CO, 
+<a href="http://mjrutherford.org/node/11">http://mjrutherford.org/node/11</a>
+<p>
+This PhD thesis mentions MaraDNS several times.
+</li>
+</ul>
+
+MaraDNS is used by a number of ISPs to serve thousands of domains.  MaraDNS
+is used by Boeing.  MaraDNS is ready to be used by your business or 
+enterprise. 
+
+<A name="posadis"> </A>
+<h3>Posadis</h3>
+
+This project showed a lot of promise; its zone file format, for example,
+was superior to MaraDNS' 1.0 zone file format.  It also has some graphical
+programs which MaraDNS doesn't have at all.  Alas, there have been some
+problems with the program crashing, and some serious security problems with
+the underlying code.  The last release for this program was in 2004,
+so these problems will probably never be resolved.
+
+<A name="pdnsd"> </A>
+
+<h3>Pdnsd</h3>
+
+Pdnsd is an excellent little caching name server that predates MaraDNS.
+Years ago, the principal author stopped actively maintaining Pdnsd.  
+Another person is currently maintaining Pdnsd; the last release was
+done in the fall of 2006.  I have heard that pdnsd has some stability 
+problems.
+
+<p>
+
+In terms of security, one of the last updates removed a buffer overflow;
+contrast this to MaraDNS, whose design makes buffer overflows
+nay-to-impossible.
+
+<A name="dents"> </A>
+<h3>Dents</h3>
+
+Dents was a DNS server project which the author one day lost interest in 
+and stopped developing.  It was not a usable DNS server when this 
+happened.
+
+<A name="mydns"> </A>
+<h3>MyDNS</h3>
+
+MyDNS is a one-trick-pony DNS server, which allows people to convert 
+information from a MySQL database in to DNS records.  The last release was
+in January of 2006.  People who want to use a SQL database with DNS are
+probably better off using PowerDNS.  (<b>Update:</b> The software seems
+to be updated with <A href="http://www.mydns-ng.com/home.php">MyDNS-ng</A>)
+
+<h3>Djbdns</h3>
+
+Djbdns is now public domain code; note that there are at three 
+security holes in the most recent (2001) DjbDNS tarball that need
+to be patched before compiling and installing DjbDNS.
+
+<A name="etc"> </A>
+<h3>Moodns, oakdns, etc.</h3>
+
+A number of other ideas for open-source DNS server projects have come 
+and gone over the years.  Not one of them is being actively developed.
+
+<hr>
+
+Now that I have gone over the DNS servers that are not being actively
+developed, I will compare  compare MaraDNS to the servers that are 
+undergoing active development:
+
+<a name="bind9"> </A>
+<h3>BIND version 9</h3>
+BIND9 is the emacs of DNS servers: It includes everything but the 
+kitchen sink.  This results in a full-featured DNS server that has
+about 5,000 features you will never use.  
+
+<p>
+
+BIND is a very large application.  On my system, a stripped BIND 9.2.6
+binary is some 1,117,348 bytes in size.  The maradns binary is only
+150,912 bytes in size.  The zoneserver binary, if needed, is only
+110,912 bytes in size--resulting in a combined size of 261,824 bytes.
+This is a fraction of the size of BIND, making MaraDNS more suitable
+for embedded applications or on systems with limited resources (such as
+heavily loaded web servers).
+
+<p>
+
+BIND's configuration is somewhat cryptic.  For example, here a BIND
+setup that uses a custom root server; this shell scipt will set up
+all the files needed to start up BIND9 and run named in the current
+directory:
+
+<pre>
+cat &gt; named.conf &lt;&lt; EOF
+options {
+        directory "$( pwd )";
+        pid-file "named.pid";
+        allow-query { 127.0.0.1/8; };
+};
+zone "." { 
+        type hint; 
+        file "root.hint"; 
+};
+EOF
+cat &gt; root.hint &lt;&lt; EOF
+\$TTL 86400
+.               IN NS a.root.bogus.
+a.root.bogus.   IN A  127.0.3.1
+EOF
+chown root:root .
+named -c named.conf
+</pre>
+
+Note that this basic configuration needs two different files with two
+different syntaxes.  Compare this to MaraDNS, which needs just one 
+simple four-line file:
+
+<pre>
+cat &gt; mararc &lt;&lt; EOF
+chroot_dir = "$( pwd )"
+ipv4_bind_addresses = "127.0.0.1"
+recursive_acl = "127.0.0.1/8"
+root_servers["."] = "127.0.3.1"
+EOF 
+maradns -f mararc
+</pre>
+
+One key difference between this simple MaraDNS configuration and
+the corresponding simplified named configuration is that the named
+server will run as root with full access to the filesystem; the 
+corresponding simple MaraDNS confiuration will run as "nobody" in
+a limited-access chroot() environment.  While it is possible to
+run BIND as an unprivileged user in a chroot() environment, this
+configuration is non-trivial and not fully described in BIND's
+documentation.
+
+<P>
+
+Indeed, BIND9 has had one remotely exploitable buffer overflow.
+Basically, older versions of BIND9 linked to the OpenSSL library, which
+had the offending buffer overflow.  This is why MaraDNS has a strong
+"not invented here" policy; the only external libraries that MaraDNS
+uses are the libc library and the pthreads library.  The reason for this
+is to minimize security problems that external libraries may cause--a
+problem that bit BIND9.
+
+<p>
+
+BIND, to its credit, does have a number of features which I haven't
+yet implemented in MaraDNS.  BIND supports standard RFC-compliant zone
+files.  While MaraDNS' csv2 zone file format is mostly BIND-like, there
+are differences that make the two zone files incompatible.  I have 
+written a converter and MaraDNS, in the beta-test branch, has BIND
+zone file support.   BIND, of course, also has full support for being
+a DNS slave, including NOTIFY and IXFR support--features which I may
+eventually add to MaraDNS.
+
+<p>
+
+One of the reasons why BIND has good RFC support is because the BIND
+developers are the people most involved with the DNS standards.  For many
+years, BIND was the only usable DNS server that existed; as more and
+more features were added to BIND, the standards were revised to have the
+new features.  There are no less than 96 different RFCs which at least
+in part discuss DNS; very few, if any, people are familiar with all of
+the relevant DNS standards.  Not even BIND follows all of the standards;
+for example, BIND only supports a QDCOUNT of 0 or 1, but the stadnards
+say that a DNS server should support a QDCOUNT between 0 and 65535
+(RFC1035 section 4.1.1).
+
+<p>
+
+In conclusion, while BIND9 has better RFC compliance and more features,
+it is a far bigger program that is more difficult to configure than 
+MaraDNS.  It is a bigger binary that uses up more memory than MaraDNS.
+Its security history is not as good as MaraDNS' security history.  The
+two DNS servers have different compromises between code size, features,
+ease of use, and security.
+
+<A name="oldbind"> </A>
+<h3>Older versions of BIND</h3>
+If you are using an older version of BIND, such as BIND 4 or BIND 8, please
+stop reading this article right now and immediately upgrade your DNS server 
+to either BIND 9 or to MaraDNS.  Older versions of BIND are a security 
+incident waiting to happen.
+
+<A name="powerdns"> </A>
+
+<h3>PowerDNS</h3>
+
+PowerDNS is a DNS server undergoing active development.  The comparison
+between PowerDNS and MaraDNS is similar to the comparison between
+BIND9 and MaraDNS: PowerDNS has more features, but does not have
+as strong of a security history as MaraDNS.  For example, the
+3.0.1 release had an update fixing a bug where "Certain malformed 
+packets could crash the recursor", and which could potentially
+lead to a buffer overflow.
+
+<p>
+
+PowerDNS is harder to compile than MaraDNS; you need to download two
+separate packages (the "Boost" packages and the core PowerDNS package)
+to compile it.  The Boost packages are easy to download and install, but
+are quite big (over 10 megabytes in size) and took hours for me to
+compile on my MaraDNS development laptop.  
+
+<p>
+
+Even after compiling Boost with "./configure; make" followed by
+"make install" as root, the PowerDNS configure script was unable 
+to find the Boost libraries.  I had to manually move the
+Boost include files from /usr/local/include/boost-1_33_1/boost to
+/usr/local/include/boost.
+
+<p>
+
+After getting Boost installed, I also had to install MySQL on my
+system before installing PowerDNS.  This required installing some
+six different .rpm packages. [<A href="#1">1</A>] <A name=r1> </A>
+
+<p>
+
+PowerDNS is the only actively maintained DNS server with "dependency 
+hell"--the requiring of external libraries that a baseline UNIX
+system will not have.  While this makes PowerDNS more feature-rich,
+it also makes it harder to install and less secure (see the BIND portion
+of this advocacy document for information on how an external library
+can result in a remote root compromise).
+
+<p>
+
+PowerDNS' binary is quite big: A stripped binary is 1,055,732
+bytes on my system; the pdns_control program is 118,140 bytes
+large (again, stripped).
+
+<p>
+
+(<b>Update:</b> It appears PowerDNS has made some effort to minimize
+"DLL hell", and the PowerDNS recursor is now its own package)
+
+<a name="nsd"> </A>
+<h3>NSD</h3>
+
+NSD is an authoritative-only DNS server with BIND zone file support.  
+For people already using BIND in an authoritative-only mode, this is
+a drop-in replacment.  Like BIND, NSD has a cryptic configuration 
+format.  There does not appear to be any reported security problems
+with NSD, but, then again, making a secure authoritative-only DNS server 
+is easier than making a secure authoritative + recusive DNS server.
+
+<p>
+
+One interesting feature that NSD has is the separation of the zone file
+compiler from the main program.  This allows the core DNS server to be
+smaller and use less memory resources.
+
+<p>
+
+The NSD binary is divided in four parts; the core nsd daeon is only
+69,572 bytes in size (stripped).  All four parts of NSD (including 
+the zone transfer program) have a total size of 237,348 bytes--smaller 
+than both MaraDNS (150,912 bytes stripped) and the zoneserver (combined 
+size 261,824 bytes).  Then again, MaraDNS has functionality that NSD 
+doesn't have, including recursive DNS support, a secure random number
+generator, and a secure string library.
+
+<hr>
+
+<A name="other"> </A>
+<h3>Other DNS servers</h3>
+
+There are other DNS servers out there, such as 
+<A href="http://unbound.net">Unbound</A> and 
+<A href="http://www.george-barwood.pwp.blueyonder.co.uk/DnsServer/">GbDNS</A>.  
+I have not had a chance to properly evaluate these DNS servers.
+
+<A name="nonfree"> </A>
+<h3>Commercial DNS programs</h3>
+
+There are a number of commercial DNS programs available.  Since I can not
+freely download any of these programs, I can not fairly describe them.  The
+most popular commerical DNS server is Microsoft's DNS server, which, as far
+as I can tell, is a fork of an older version of BIND.  This DNS server
+does not appear to be very secure; a couple of years ago, people pointed
+out that this DNS server is vulnerable to DNS cache poisoning, a long-known
+DNS security issue that has long since been fixed by all the open-source
+DNS servers, including BIND version 8.
+
+<p>
+
+Microsoft's DNS server only makes sense if you are working for an 
+all-Microsoft shop, or have a clueless "pointy hair boss" who only
+allows your workplace to use software with the "Microsoft" name on it.
+
+<p>
+
+There are other offerings, of course, but I think it's pretty likely that
+all of them have a bigger binary than MaraDNS, and that some of them
+have security problems.
+
+<hr>
+
+<A name=djbdns> </A>
+<h3>Djbdns</h3>
+This is a very polarizing nameserver; people either love
+DjbDNS or hate it.  
+
+<p>I have always felt it was an excellent piece of
+software hapmered by a not-quite-Open Source license.  DJB, however, 
+made DjbDNS public domain in late 2007, so I no longer
+have any real issues with the package.  
+
+<p>
+
+Note that DJB himself
+hasn't updated the software for over seven years (except for the license).
+The software, notably, has three unpatched security bugs (see below), and
+its list of root servers is out of date.
+
+<p>
+
+One issue I have with DjbDNS is that it is a little more difficult
+to set up than it should be.  Three packages have to be downloaded (less
+if you install DjbDNS in a non-standard way) and set up before you can
+run DjbDNS.  In addition, DjbDNS has to be patched.  The security holes
+have to be patched, of course, and another
+patch has to be applied before it can compile in Linux.  
+The configuration process is sometimes difficult and requires a 
+different way of looking at software--a lot of people don't care
+for it.
+
+<p>
+
+The authoritative nameserver emphasizes simplicity in the C code; in
+particular, the parser for zone files isn't too sophisticated and the zone
+files are unattractive for people used to BIND zone files.  Unlike BIND,
+the zone file allows arbitrary RRs not directly supported by tinydns
+(the name of DjbDNS' authoritative half) to be added to zones. (MaraDNS
+also has this capability).
+
+<p>
+
+The recursive server (dnscache) is somewhat unique among DNS servers.
+It was, for many years, the only DNS server I know of that has a small 
+footprint and
+doesn't use threads to make recursive queries.  Deadwood finally became
+feature complete in July of 2010 with the same capability, allowing people
+choice in which small, non-threaded recursive DNS server to use.
+
+<p>
+One nice thing is that there are
+a lot of third party patches for DjbDNS available.  Want support for
+the LOC record?  It's not available (in a human-readable form) in tinydns'
+zone file format, but there is a patch to change that.  Want IPv6?  Again, 
+it's available as a patch.
+Many patches can be found at <A
+href=http://tinydns.org>tinydns.org</A>.
+
+<p>
+
+Here are some known bugs that DjbDNS has: 
+
+<ul>
+<li>There are problems resolving some domains with DjbDNS' resolver.  This
+    is the 'akamai djbdns' problem. 
+<sup><font size=-2><A href="http://marc.theaimsgroup.com/?l=djbdns&amp;m=113733374006571">ref</A></font></sup>
+<li>DjbDNS does not correctly periodically check upstream DNS servers to
+    make sure a given domain has not moved.
+<sup><font size=-2><A href="http://marc.info/?l=djbdns&amp;m=113898636032186&amp;w=2">ref</A></font></sup>
+<li>The list of root servers included with DjbDNS is out of date.
+<sup><font size=-2><A href="http://securepoint.com/lists/html/djbdns/2007-03/msg00001.html">ref</A></font></sup>
+<li>DjbDNS can not compile in Linux without using a special 
+    incantation. 
+<sup><font size=-2><A href="http://djbware.csi.hu/patches/djbdns-1.05.errno.patch">patch</A></font></sup>
+<li>There is a denial of service problem where a remote attacker can
+    clear DjbDNS' recursive cache by sending a single "packet of death"
+    to a dnscache server.
+<sup><font size=-2><A href="http://marc.info/?l=djbdns&amp;m=104796742521473&amp;w=2">ref</A> 
+<A href="http://marc.info/?l=djbdns&amp;m=104804013229536&amp;w=2">patch</A></font></sup>
+<li>It is possible to send spoofed DNS packets to DjbDNS <sup><A 
+href=http://your.org/djbdns>ref</A></sup>
+<li>Subdomains can overwrite zone information with the AXFR client <sup>
+<A href=http://article.gmane.org/gmane.network.djbdns/13864>ref</A></sup>
+</ul>
+
+There are a number of unofficial forks of DjbDNS with patches to fix
+some (or all) of these issues; one worth looking at is <A 
+href=http://sourceforge.net/projects/zinq/>Zinq</A>.
+
+<h3>Conclusion</h3>
+
+In closing, a number of DNS server offerings are available.  MaraDNS is the 
+most secure recursive and authoritative DNS server being actively 
+maintained, and has the smallest footprint of any actively maintained 
+recursive DNS server.
+
+<hr>
+
+<h3>Footnotes</h3>
+
+<A name=1> </A>
+[<A href="#r1">1</A>] I understand that tools like "Yum" automate 
+this process; however I like to know *exactly* what packages are 
+on my system and Yum can make some major changes to my system 
+without my direct knowledge or consent if I am not careful.
+
+</div>
+</td></table>
+</div>
+</td></table>
+</div>
+</body>
+</html>

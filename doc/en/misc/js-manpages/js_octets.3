@@ -1,0 +1,36 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_octets 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_octets \- determine the maximum number of octets for a given js_string
+object
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_octets(js_string *js);"
+.fi
+.SH DESCRIPTION
+.B js_octets
+determines the maximum number of octets allowed in a given
+.B js_string
+object.  This function is mainly used in 
+.B js_string's
+internal functions to ensure that buffers can not be overflowed.
+.SH "RETURN VALUE"
+.B js_octets
+returns, as a signed integer, the maximum number of octets allowed in a
+given
+.C js_string
+object.
+.SH BUGS
+This function should be an inline function.
+.SH NOTES
+If C had OO capabilities, this would be a private function.
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>

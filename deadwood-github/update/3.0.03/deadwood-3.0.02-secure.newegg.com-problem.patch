@@ -1,0 +1,33 @@
+The DNS servers for secure.newegg.com do not like DNS queries where the
+RA bit is set (they discard any such DNS queries); this patch sets
+RA to 0 when we are recursively querying an upstream server.
+
+--- deadwood-3.0.03/src/DwRecurse.c.orig	2011-06-10 08:58:13.248114924 -0500
++++ deadwood-3.0.03/src/DwRecurse.c	2011-06-10 13:04:05.010877652 -0500
+@@ -1659,7 +1659,7 @@
+ 
+         /* Create a DNS query packet to send upstream */
+         packet = make_dns_header(rem[connection_number].remote_id,
+-                0x0080,0,0,0);
++                0x0000,0,0,0);
+         if(dw_append(query,packet) == -1 || dw_put_u16(packet,1,-1) == -1) {
+                 goto catch_dwx_handle_ns_refer;
+         }
+@@ -2747,7 +2747,7 @@
+         rem[new_conn_num].remote_id = dwr_rng(rng_seed);
+         /* Note that RD is always set to 0, even though the upstream server
+          * may be an upstream, and not root, server.  This is a bug. */
+-        packet = make_dns_header(rem[new_conn_num].remote_id,0x080,0,0,0);
++        packet = make_dns_header(rem[new_conn_num].remote_id,0x0000,0,0,0);
+         if(packet == 0 || dw_append(rem[new_conn_num].query,packet) == -1 ||
+                         dw_put_u16(packet,1,-1) == -1 /* QCLASS: 1 */) {
+                 reset_rem(new_conn_num);
+@@ -2863,7 +2863,7 @@
+         rem[conn_num].remote_id = dwr_rng(rng_seed);
+         /* Make sure the following does not leak */
+         /* Yes, RD is 0.  Yes, this may very well be a bug */
+-        packet = make_dns_header(rem[conn_num].remote_id,0x080,0,0,0);
++        packet = make_dns_header(rem[conn_num].remote_id,0x0000,0,0,0);
+         if(packet == 0 || dw_append(rem[conn_num].query,packet) == -1 ||
+                         dw_put_u16(packet,1,-1) == -1 /* QCLASS: 1 */) {
+                 goto catch_dwx_glueless_done;

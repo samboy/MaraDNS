@@ -1,0 +1,65 @@
+#!/bin/sh
+
+# This script is called by install.sh and uninstall.sh to determine
+# where the installed binaries and man pages are
+
+# Note that the script will break if PREFIX is not an absolute path
+# We allow the user to supply the prefix on the command line, e.g.
+# PREFIX=/usr/ ; make install
+# Thanks to D Richard Felker III for this suggestion
+if [ -z "$PREFIX" ]; then
+	PREFIX="/usr/local/"
+#	PREFIX="$RPM_BUILD_ROOT/usr/"
+fi
+
+# Try to determine which language to use
+if [ -z "$LANGUAGE" ]; then
+	LANGUAGE=`echo $LANG | cut -f1 -d_`
+fi
+
+# If there are no man pages for their language, default to English
+if [ ! -d doc/$LANGUAGE/man ]; then
+	LANGUAGE="en"
+fi
+
+# The location of programs that the end user may wish to use
+BIN="$PREFIX/bin/"
+# The location of the server programs
+SBIN="$PREFIX/sbin/"
+# The directory to put man pages which describe the end-user programs
+MAN1="$PREFIX/man/man1/"
+# The directory to put man pages which describe configuration file formats
+MAN5="$PREFIX/man/man5/"
+# The directory to put man pages which describe the server programs
+MAN8="$PREFIX/man/man8/"
+# The directory to put a copy of the MaraDNS documents on the system
+DOCS="$PREFIX/doc/maradns-$VERSION"
+
+# Mandrake does not have a /usr/local/man.  Ugh.
+# As a result, we need the following kludge to get this to
+# install correctly on Mandrake
+# Thanks to Ole Tange for pointing this out to me.
+# Ignore or erase the following lines if editing this by hand.
+
+# If the directory that MAN1 points to does not exist
+if [ ! -d $MAN1 ] ; then
+        # Then try this location instead
+	MAN1="$PREFIX/share/man/man1"
+	if [ ! -d $MAN1 ] ; then
+		MAN1="/usr/local/share/man/man1"
+	fi
+fi
+# Do the same with the MAN5 and MAN8 directories
+if [ ! -d $MAN5 ] ; then
+	MAN5="$PREFIX/share/man/man5"
+	if [ ! -d $MAN5 ] ; then
+		MAN5="/usr/local/share/man/man5"
+	fi
+fi
+if [ ! -d $MAN8 ] ; then
+	MAN8="$PREFIX/share/man/man8"
+	if [ ! -d $MAN8 ] ; then
+		MAN8="/usr/local/share/man/man8"
+	fi
+fi
+

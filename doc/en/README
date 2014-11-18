@@ -1,0 +1,13 @@
+People interested in translating documentation need only translate 
+documentation in the "source/" directory; all user-level documentation
+is generated from these source files.
+
+The documentation is in a format called "ej"; ej is a format created
+to meet the needs of people who are translating MaraDNS documentation.
+The format is an XMLish format; in fact, it mostly resembles HTML.  The
+converters which convert from "ej" to the various document formats are
+in the directory tools/ej.  Currently there are three tools: ej2html,
+ej2man, and ej2txt, which, as expected, convert documents from the
+ej format to html, man page *roff source (using man macros), and
+to text format.
+

@@ -1,0 +1,54 @@
+.\" Last revised for MaraDNS 0.8.27 on October 16, 2001
+.\"
+.TH js_open 3 "October 2001" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_open \- Private function that opens up a file with open(2)
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "void js_open(js_string *filename, js_file *desc, int flags)"
+.fi
+.SH DESCRIPTION
+.B js_open
+is a function that opens up a file with open(2), using the
+contents in the
+.I js_string
+object
+.B filename
+to determine the file name, and 
+.B flags
+to determine the opening flags.
+.B desc 
+is where we store the opened file descriptor.
+.SH "RETURN VALUE"
+.B js_open
+is a void function.  The member 
+.I filetype
+of the structure
+.I desc
+will have an invalid value if an error occured opening the file.
+.SH NOTES
+Please do not use this function. Use
+.BR js_open_read ,
+.BR js_open_write ,
+or
+.B js_open_append
+instead.
+
+I am declaring this function a private function because programs using
+the 
+.I js_string
+library really should not be utilizing Unix-specific file flags.  In other
+words, use this function at your own risk, because I may change the
+interface of this function or delete this function altogether in
+future releases of the
+.I js_string 
+library.
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

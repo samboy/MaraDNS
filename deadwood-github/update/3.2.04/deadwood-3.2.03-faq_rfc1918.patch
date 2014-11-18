@@ -1,0 +1,39 @@
+--- deadwood-3.2.03/doc/FAQ.ej	2012-02-28 23:59:53.000000000 -0800
++++ deadwood-3.2.04/doc/FAQ.ej	2013-06-21 18:35:00.000000000 -0700
+@@ -21,6 +21,8 @@
+                  to 1970 do not expire</A><p>
+ 10. <A href="#10">I get the error message "Unknown dwood3rc string 
+ 		 parameter"</A><p>
++11. <A href="#11">Internal IPs (198.168.x.x, 10.x.x.x, 172.16.x.x, 
++	127.x.x.x) do not resolve in Deadwood</A><p>
+ </BLOCKQUOTE>
+ 
+ <A name="01"> </A>
+@@ -220,4 +222,27 @@
+ <li>upstream_servers
+ </ul>
+ 
++<A name="11"> </A>
++<h2>Internal IPs (198.168.x.x, 10.x.x.x, 172.16.x.x, 127.x.x.x) do not 
++    resolve in Deadwood</h2>
++
++Deadwood, by default, filters out RFC1918 and other non-routable IPs from
++DNS replies, namely IPs in the form: 192.168.x.x, 172.[16-31].x.x, 10.x.x.x,
++127.x.x.x, 169.254.x.x, 224.x.x.x, and 0.0.x.x.  
++
++<p>
++
++To disable this behavior, so that Deadwood can resolve internal and
++other non-routable IPs, add this line to the Dwood3rc file:
++
++<pre>
++filter_rfc1918 = 0
++</pre>
++
++Note that some routers filter DNS packets with non-routable IPs.  Dave
++Owens, for example, 
++<A href="http://serverfault.com/questions/513608/maradns-does-not-respond-to-a-record-queries-of-locally-connected-rfc1918-addres/516464#516464">had
++this problem</A>.
++
++
+ </BODY>

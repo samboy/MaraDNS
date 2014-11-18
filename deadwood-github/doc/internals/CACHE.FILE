@@ -1,0 +1,50 @@
+It is now possible to write the contents of Deadwood-3's cache to a 
+file, and to read the contents of said file to update the cache.  This 
+is useful for people with intermittent online connections, who may wish 
+to connect to sites even if their upstream DNS server is dodgy.
+
+To enable this feature, add a line such as the following to your 
+dwood2rc file:
+
+	cache_file = "cache/dwood_cache"
+
+The '/' is used to place the cache in a separate directory; the 
+location of the filename is relative to the chroot_dir parameter; for 
+example, if ones dwood2rc file has the two following lines:
+
+	chroot_dir = "/etc/deadwood"
+	cache_file = "cache/dwood_cache"
+
+Then the cache file would be stored in the file 
+"/etc/deadwood/cache/dwood_cache".
+
+Note that, for security reasons, the cache_file can not have any 
+characters besides lowercase letters, the '-' symbol, the '_' symbol, 
+and the '/' symbol.  Any other symbols in the filename are converted to 
+'_'; in particular, the '.' symbol is not allowed.
+
+The user-id and group-id that the file is read as and written as are 
+determined by the maradns_uid and maradns_gid parameters (the reason for 
+these names is for maximum MaraDNS mararc compatibility).  For example, 
+in some systems, the user-id and group-id '99' indicate the "nobody" 
+user; this would be set up as follows in the dwood3rc file:
+
+	maradns_uid = 99
+	maradns_gid = 99
+
+Note that you need to use the numeric user and group id values; like 
+MaraDNS, Deadwood-2 doesn't look up usernames in /etc/passwd.
+
+Optimally, one would create a "deadwood" user and group, which no other 
+application shares, and have Deadwood's user and group ID be the user 
+and group ID of the deadwood user.
+
+Once this is done, one should ideally have Deadwood's chroot directory 
+be a directory the deadwood user can *not* write in, and a subdirectory 
+that the deadwood user can write in (ideally owned by Deadwood with 700 
+permissions; the cache does list what web sites users go to, which has 
+privacy implications).
+
+Please delete the cache file if making changes to the dwood3rc file; 
+otherwise changes in this file may not "stick".
+

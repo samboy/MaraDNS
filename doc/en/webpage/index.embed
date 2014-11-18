@@ -1,0 +1,60 @@
+<h2>What is MaraDNS ?</h2>
+
+MaraDNS is a package that implements the Domain Name Service (DNS), an
+essential internet service.  MaraDNS has the following advantages:
+
+<ul>
+<li><b>Secure</b>. MaraDNS has a strong <A   
+href="security.html">security history</A>.
+For example, MaraDNS has <i>always</i> randomized, using
+a secure random number generator, the Query ID and source port of DNS queries;
+and <A 
+href="http://maradns.blogspot.com/2008/07/maradns-is-immune-to-new-cache.html">
+was never vulnerable to the "new" cache poisoning attack</A>.
+<li><b>Supported</b>.
+MaraDNS has a long history of being maintained and updated.   
+Actively developed since 2001,
+MaraDNS continues to be supported: The most recent
+release was done on February 5, 2011. Deadwood, the recursive code that 
+is part of MaraDNS 2.0, is currently <A href=deadwood/>stable code</A>.
+<li><b>Easy to use</b>.  A basic recursive configuration needs only a 
+single three-line configuration file.  A basic authoritative configuration
+needs only a four-line configuration file and a one-line zone file.
+MaraDNS is fully documented, with both easy-to-follow tutorials and a 
+complete and up-to-date reference manual.
+<li><b>Small</b>.  MaraDNS is well suited for embedded applications 
+and other environments where the server must use the absolute minimum 
+number of resources possible.
+<li><b>Open Source</b>.  MaraDNS is fully open-source, The license is a
+<A href=license.html>two-clause BSD license</A> that is almost
+identical to the 
+<A href="http://www.freebsd.org/copyright/freebsd-license.html">FreeBSD
+license</A>.
+</li>
+</ul>
+
+A full comparison between MaraDNS and other DNS servers is available in the
+<A href="advocacy.html">advocacy document</A>.
+
+<h2>Support</h2>
+
+MaraDNS support (including bug reports) is available on the MaraDNS
+mailing list.  To join the mailing list, send an email to <A
+href="mailto:list-request@maradns.org">list-request@maradns.org</A>
+with the word "subscribe" in the subject and body
+of the message.  
+Once you join the list, send an email to 
+<A href="mailto:list@maradns.org">list@maradns.org</A> with your
+support concern.
+
+<p> 
+
+Mailing list archives are here: <A
+href="http://woodlane.webconquest.com/pipermail/list/">Archive #1</A>,
+<A href="http://marc.10east.com/?l=maradns-list">Archive #2</A>. 
+
+<H2>Special Thanks</H2>
+
+I would like to thank <A href="http://www.webconquest.com/">WebConquest</A> for
+hosting MaraDNS.org's web page.
+

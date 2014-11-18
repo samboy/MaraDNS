@@ -1,0 +1,11 @@
+--- maradns-2.0.01/server/MaraDNS.c	2010-08-28 16:34:40.000000000 -0600
++++ maradns-2.0.02/server/MaraDNS.c	2011-02-05 18:22:12.000000000 -0700
+@@ -4538,7 +4538,7 @@
+     if(1 == 2) {
+ #endif /* __CYGWIN__ */
+ #ifndef ALLOW_NON_ROOT
+-        harderror("Running MaraDNS 1.2 as a non-root server support disabled");
++        harderror("Running MaraDNS 2.0 as a non-root server support disabled");
+ #else
+         /* Bind to port 53 as a non-root user */
+         bind_address = read_string_kvar("bind_address");

@@ -1,0 +1,26 @@
+            if(*(js->string + counter) >= 192 /* À */ &&
+               *(js->string + counter) <= 214 /* Ö */)
+                *(js->string + counter) += 32;
+            /* Why they had to put × and the corresponding ÷ smack dab in
+               the middle of the international letters is a mystery to me */
+            if(*(js->string + counter) >= 216 /* Ø */ &&
+               *(js->string + counter) <= 222 /* Þ */)
+                /* À to Ö */
+                for(counter=192;counter<=214;counter++) {
+	            *(js->string + place) = counter;
+		    place++;
+		    }
+                /* Ø to ö */
+	        for(counter=216;counter<=246;counter++) {
+	            *(js->string + place) = counter;
+	            place++;
+	            }
+                /* ø to þ */
+	        for(counter=248;counter<255;counter++) {
+	            *(js->string + place) = counter;
+	            place++;
+	            }
+                /* ÿ ( We do it this way because counter is always <= 255 ) */
+
+csv1["à±²³´µ¶·¸¹°­½½Ñ×ÅÒÔÙÕÉ"] = "ÚØÃÖÂÎÍÄÊÈÕÆÉ×³Æ"
+

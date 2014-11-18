@@ -1,0 +1,36 @@
+; This is a sample BIND zonefile for testing the bind2csv2.py script
+foo.example.com. A 10.1.2.3  ; foo
+foo A 10.1.2.4   
+foobar A 10.1.2.5
+bar 86400 A 10.1.2.4
+
+example.com. SOA example.com.  hostmaster.example.com. ( 1 
+                                                         22 
+                                                         333 
+                                                         4444 
+                                                         56789 )
+
+example.com. NS x.example.com.
+; this is a comment
+baz 86400 A 10.1.2.6
+
+baz IN A 10.1.2.7 ; this is another comment
+example.com. MX 10 mail.example.com.
+example.com.   MX   10   mail
+bozo 86400 IN A 10.1.2.7
+www IN 86400 A 10.1.2.8
+    A 10.1.2.9
+
+_http.example.com. SRV 5 5 80 www.example.com.
+example.com. AAAA 3ffe:ffff:ffe:501:ffff::b:c:d 
+
+; obscure rr types follow
+
+example.com.	MB	mb
+		MD	md
+		MF	mf
+		MG	mg
+		MR	mr
+		RT	10	rt
+		AFSDB	20	afsdb
+

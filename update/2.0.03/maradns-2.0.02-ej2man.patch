@@ -1,0 +1,12 @@
+--- maradns-2.0.02/tools/ej/ej2man	2006-11-24 05:44:29.000000000 -0600
++++ maradns-2.0.03/tools/ej/ej2man	2011-04-29 14:14:48.000000000 -0500
+@@ -162,6 +162,9 @@
+     }
+ 
+ $body = process_body($body,0);
++$body =~ s/\&gt\;/>/g;
++$body =~ s/\&lt\;/</g;
++$body =~ s/\&amp\;/&/g;
+ 
+ print($body);
+ 

@@ -1,0 +1,21 @@
+Neither DjbDNS, BIND, nor MSDNS support queries where QDCOUNT > 1.  DjbDNS 
+ignores queries where QDCOUNT > 1. Microsoft DNS server replies with a "format 
+error", and the qdcount is set to the number of questions sent to the server.
+BIND 8 replies with a "format error", and QDCOUNT is set to zero.
+
+Realistically, DNS servers should probably reply with "not implemented"
+instead of "format error".
+
+Some discussion of the fact that QDCOUNT > 1 queries are not handled
+by modern-day DNS servers:
+
+http://www.ietf.org/proceedings/98aug/I-D/draft-ietf-dnsind-edns-03.txt
+http://www.vpnc.org/ietf-ipsec/96.ipsec/msg00779.html
+http://www.wcug.wwu.edu/lists/ipng/200005/msg00080.html
+
+In summary, the nitty gritty implementation details of handling multiple
+question queries in a single packet make this difficult to correctly handle.
+
+I'm making the handling of multiple QDCOUNT queries a low priority in
+MaraDNS.
+

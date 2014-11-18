@@ -1,0 +1,40 @@
+.\" Process this file with
+.\" groff -man -Tascii cryptday.1
+.\"
+.TH js_dealloc 3 "August 2000" JS "js library reference"
+.\" We don't want hyphenation (it's too ugly)
+.\" We also disable justification when using nroff
+.hy 0
+.if n .na
+.SH NAME
+js_dealloc \- allocate memory from the underlying OS
+.SH SYNOPSIS
+.nf
+.B #include "JsStr.h"
+.sp
+.B "int js_dealloc(void *pointer)"
+.fi
+.SH DESCRIPTION
+.B js_dealloc
+returns previously allocated memory back to the underlying OS.  
+.SH ARGUMENTS
+.B pointer
+is a pointer to the memory we wish to free up.
+.SH "RETURN VALUE"
+.B js_dealloc
+returns JS_SUCCESS after deallocating the memory in question.
+.SH EXAMPLE
+The following example allocates then deallocates 256 octets of memory.
+
+.nf
+	char *foo;
+	foo = js_alloc(256,1);
+	js_dealloc(foo);
+.fi
+.SH NOTES
+This function assumes that an allocated chunk of memory will not move in 
+memory.  On certain embedded systems, such as the Palm Pilot, allocated memory
+may move around in memory.
+.SH AUTHOR
+Sam Trenholme <kiwi-zttfryb@koala.samiam.org>
+

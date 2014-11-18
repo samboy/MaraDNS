@@ -1,0 +1,47 @@
+#!/bin/sh
+
+# This test to make sure the csv2 dictionary variable works
+
+for LEVEL in 0 8 12 14 18 78 ; do
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+dos_protection_level = ${LEVEL}
+EOF
+
+cat > db.example.com << EOF
+% SOA example.com. hostmaster@example.com. 1 2 3 4 5
+www.% A 10.1.2.3
+cname.% CNAME www.%
+sub.% NS ns.sub.%
+ns.sub.% A 10.99.99.99
+www.% SPF 'SPF record'
+*.% A 10.1.2.99
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+sleep 1
+echo dos_protection_level is ${LEVEL}
+../../../tools/askmara Awww.example.com.
+echo
+../../../tools/askmara Zwww.example.com.
+echo
+../../../tools/askmara Acname.example.com.
+echo
+../../../tools/askmara Awww.sub.example.com.
+echo
+../../../tools/askmara Afoo.example.com.
+echo
+echo
+sleep 1
+killall maradns
+
+done
+
+rm mararc
+rm db.example.com

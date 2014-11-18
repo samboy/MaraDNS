@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>MaraDNS - a security-aware DNS server</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" title="Woodson (Default)"
+ type="text/css" media="screen, projection" href="maradns-1.2-s.css">
+<link rel="alternate stylesheet" title="Large Print" 
+ type="text/css" media="screen, projection" href="maradns-1.2-l.css">
+<link rel="stylesheet" type="text/css" media="print" 
+ href="maradns-1.2-p.css">
+<link rel="stylesheet" type="text/css" media="handheld" 
+ href="maradns-1.2-h.css">
+<script type=text/javascript src=styleswitcher.js></script>
+</head>
+<body>
+
+<div align=center id=maradns-all>
+<table><tr><td>
+<div align=left>
+<table><tr>
+<td valign=top width=340>
+<font id=maradns-name size="+4"><i><b>MaraDNS</b></i></font>
+<br>
+<div id=maradns-t>
+A&nbsp;security-aware DNS&nbsp;server
+</div>
+</td>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td valign=top id=topright width=220>
+        <div align=right><table><tr><td id=trabalengua>
+        <i>
+                Erre con erre cigarro<br>
+                Erre con erre barril<br> 
+                R&aacute;pido&nbsp;ruedan&nbsp;los&nbsp;carros<br>
+                En el ferrocarril<br></i>
+        </td></tr></table></div>
+</td>
+</tr></table>
+<script type=text/javascript>
+</script>
+<div id=lefthand>
+<div id=maradns-l>
+	<a href="index.html">Main</a>
+	<a href="download.html">Download</a>
+	<a href="notes.html">Documentation</a>
+	<a href="/blog">Blog</a>
+	<a href="changelog.html">Changelog</a>
+	<!--
+	<a href="sponsors.html">Sponsors</a>
+	<a href="products.html">Products</a>
+	-->
+</div> <!-- maradns-l -->
+<script type="text/javascript">
+<!--
+if(isOKbrowser()) { 
+document.write("<p class=nocss><font size=-1>The following links that change text size will do nothing on your browser because your browser does not support CSS.  This page is otherwise usable in a non-CSS browser.");
+document.write("<\/font><\/p><div class=makelarge><div class=iebug>");
+document.write("To make the font larger, <A href=\"#\" onclick=\"setActiveStyleSheet('Large Print');return false;\">click here<\/A><\/div><\/div><p class=makenormal>");
+document.write("To see this without using a large font, <A href=\"#\" onclick=\"setActiveStyleSheet('Woodson (Default)');return false;\">click here<\/A><\/p>");
+}
+-->
+</script>
+</div>
+<hr class=moyet>
+<table><tr><td class=content width=596>
+<div id=maradns-r>
+<!-- end header -->
+<h1>MaraDNS products</h1>
+
+Sponsorship is what made continued MaraDNS development possible.
+
+<p>
+
+For a while, I accepted sponsorship for people who helped compensate me
+for the hard work I did developing MaraDNS.  <b>I no longer need donations
+to help with MaraDNS development</b>
+

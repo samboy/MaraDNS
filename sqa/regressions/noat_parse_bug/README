@@ -1,0 +1,10 @@
+noat parse bug
+
+Description: DNS SOA records without an at in the email contact for a domain
+             did not correctly parse 
+
+Expected output of test: SOA query for example.com resolves 
+
+Presence of bug output: SOA query for example.com does not resolve
+
+When fixed: 1.2.11

@@ -1,0 +1,14 @@
+Update versions to use YYYY-MM-DD datestamps
+
+--- maradns-2.0.07d/configure	2011-08-05 04:59:45.000000000 -0700
++++ maradns-Q.2014-01-07.1/configure	2014-01-08 09:06:51.000000000 -0800
+@@ -50,7 +50,8 @@
+ elif [ -f $BUILDDIR/VERSION ] ; then
+ 	cp $BUILDDIR/VERSION Makefile
+ else
+-	pwd | awk -F- '{print "VERSION="$NF}' > Makefile
++	pwd | awk -F- '{if($2 ~ /Q/){print "VERSION="$2 "-" $3 "-" $4}
++		else{print "VERSION="$NF}}' > Makefile
+ fi
+ 
+ # Set up the informaiton on where and when this version of MaraDNS was

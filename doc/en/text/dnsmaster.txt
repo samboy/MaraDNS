@@ -1,0 +1,116 @@
+                Having MaraDNS be a master DNS server
+
+   A master (sometimes called primary) DNS server is a DNS server
+   that other DNS servers can automatically transfer zone files
+   from. There are limitations to this way of transferring zone
+   files; zone files transferred this way lose all comments and the
+   ordering of records in the zone file is usually changed.
+
+   In other words, DNS has a mechanism for automatically having
+   multiple different servers have the same zone file data. This is
+   akin to the rsync program; this allows one to change a zone file
+   on the master machine, then have the slave machines
+   automatically transfer the zone file from the master machine.
+
+   This is useful when one wants to have multiple machines serving
+   DNS data. This is also useful when one wants to register a
+   domain, but only has a single IP on the internet. There are a
+   number of free DNS secondary (slave) services out there that one
+   can use to have a second IP for a DNS server of a domain.
+
+   To set this up, one needs to run the zoneserver daemon in
+   addition to the maradns daemon. Both daemons use the same mararc
+   configuration file; there are a few mararc variables that affect
+   the zoneserver daemon but not the maradns daemon (and vice
+   versa).
+
+   When setting up a master DNS server, only one additional mararc
+   variable needs to be set up, zone_transfer_acl. This variable
+   needs to list the IPs of the slave DNS servers that will
+   transfer zones from the master server. For example, if the slave
+   DNS servers have the IPs 192.168.72.34, 10.34.56.98, and
+   172.17.23.37, the line will look like this:
+
+     zone_transfer_acl = "192.168.72.34, 10.34.56.98, 172.17.23.37"
+
+   If you do not know the IPs of the slave DNS servers, you can
+   allow any computer on the internet to connect to your zone
+   server thusly:
+
+     zone_transfer_acl = "0.0.0.0/0"
+
+   Note that this will make potentially private information public.
+
+   Something like this can also be done:
+
+     zone_transfer_acl = "192.168.42.0/24, 10.0.0.0/8,
+     172.19.0.0/16"
+
+   This will allow any IP starting with "192.168.42" to connect to
+   the zone server, any IP starting with "10" to connect to the
+   zone server, and any IP starting with "172.19" to connect to the
+   zone server.
+
+   Here is a example mararc file which is on the ip 10.1.2.3, and
+   serves the zone example.com to the IPs 192.168.72.34,
+   10.34.56.98, and 172.17.23.37:
+
+ ipv4_bind_addresses = "10.1.2.3"
+ chroot_dir = "/etc/maradns"
+ csv2 = {}
+ csv2["example.com."] = "db.example.com"
+ zone_transfer_acl = "192.168.72.34, 10.34.56.98, 172.17.23.37"
+
+   ----------------------------------------------------------------
+
+How SOA records affect slave zone servers
+
+   The SOA record tells the slave zone servers how often to check
+   to see if a zone file needs to be reloaded. Here is what a SOA
+   record looks like:
+
+     example.com. SOA example.com. hostmaster@example.com. 1 7200
+     3600 604800 1800
+
+   The first field is the name of the zone this SOA record is for.
+
+   The second field tells the csv2 parser that this is a SOA
+   record.
+
+   The third field is the name of the machine which is the DNS
+   master server for this zone.
+
+   The fourth field is the email address for the person in charge
+   of this zone.
+
+   The fifth field (first numeric field) is what is called the
+   "serial" number. This number is used by slave DNS servers to see
+   if the zone file has changed. This number should be increased
+   every time a zone file is changed. MaraDNS, when generating a
+   synthetic SOA record, looks to see when the zone file was last
+   changed, and uses a time stamp which updates every six seconds
+   as the SOA serial number.
+
+   The sixth field (second numeric field) is the "refresh" for the
+   domain; this is how often (in seconds) a slave DNS server could
+   check to see if the serial on the master DNS server has changed.
+
+   The seventh field (third numeric field) is the "retry" for the
+   domain; when the master DNS server is down, this is how often
+   the slave DNS server will check to see if the master DNS server
+   is up again. This value, like all time values, is in seconds.
+
+   The eight field (fourth numeric field) is the "expire" for the
+   domain; this is how long the slave server will wait before no
+   longer attempting to get a zone from a master DNS server when
+   the master DNS server is down. This should be a large value.
+
+   The ninth field (fifth numeric field) is the "minimum" for the
+   domain; this does not affect how MaraDNS processes a zone file
+   and is not used by slave DNS servers (it determines the
+   default/minimum TTL with other DNS servers).
+
+   ----------------------------------------------------------------
+
+   The zoneserver program can also be used to serve other DNS
+   records over TCP; see the file dnstcp for details.

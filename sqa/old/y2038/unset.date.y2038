@@ -1,0 +1,3 @@
+#!/bin/sh
+
+rdate -s time.nist.gov

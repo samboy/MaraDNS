@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# This tests for ANY and case-insensitivity
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+cat > mararc << EOF
+ipv4_bind_addresses = "127.0.0.1"
+verbose_level=3
+chroot_dir = "$( pwd )"
+csv2 = {}
+bind_star_handling = 2
+csv2["example.net."] = "db.example.net"
+EOF
+
+cat > db.example.net << EOF
+example.net. +86400 soa example.net. hostmaster@example.net. 
+1 7200 3600 604800 3600
+example.net. ns ns.example.net.
+ns.example.net. 127.0.0.1
+a.example.net. 127.0.0.2
+*.example.net. 127.0.0.3
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+sleep 1
+../../../tools/askmara Aa.example.net.
+../../../tools/askmara Ab.example.net.
+../../../tools/askmara Ac.example.net.
+../../../tools/askmara Aa.a.example.net.
+../../../tools/askmara Aa.b.example.net.
+../../../tools/askmara Aa.a.a.example.net.
+../../../tools/askmara Aa.a.b.example.net.
+../../../tools/askmara @a.example.net.
+../../../tools/askmara @b.example.net.
+../../../tools/askmara @c.example.net.
+../../../tools/askmara @a.a.example.net.
+../../../tools/askmara @a.b.example.net.
+../../../tools/askmara @a.a.a.example.net.
+../../../tools/askmara @a.a.b.example.net.
+sleep 1
+killall maradns
+rm mararc
+rm db.example.net

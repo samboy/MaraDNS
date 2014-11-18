@@ -1,0 +1,42 @@
+--- deadwood-3.0.02/doc/dwood3rc	2010-07-22 11:18:47.000000000 -0500
++++ deadwood-3.0.03/doc/dwood3rc	2011-07-08 17:15:21.392743869 -0500
+@@ -20,6 +20,18 @@
+ #upstream_servers = {}
+ #upstream_servers["."]="8.8.8.8, 8.8.4.4" # Servers we connect to
+ 
++# It is also possible to use other root servers or to blacklist
++# a phising website.  However, to do this, root_servers needs to be
++# defined.  For example, to blacklist the domain "phish.example.com":
++#root_servers = {}
++# ICANN DNS root servers (Deadwood default if both root_servers and
++# upstream_servers are not defined)
++#root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 128.8.10.90,"
++#root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, 128.63.2.53, "
++#root_servers["."]+="192.36.148.17, 192.58.128.30, 193.0.14.129, 199.7.83.42, "
++#root_servers["."]+="202.12.27.33"
++#root_servers["phish.example.com."]="10.254.254.254"
++
+ recursive_acl = "127.0.0.1/16" # Who is allowed to use the cache
+ 
+ maxprocs = 8 # Maximum number of pending requests
+--- deadwood-3.0.02/doc/Windows/dwood3rc.txt	2011-01-29 14:55:07.000000000 -0600
++++ deadwood-3.0.03/doc/Windows/dwood3rc.txt	2011-07-08 17:15:03.565688775 -0500
+@@ -6,6 +6,18 @@
+ #upstream_servers = {}
+ #upstream_servers["."]="8.8.8.8, 8.8.4.4" # Servers we connect to
+ 
++# It is also possible to use other root servers or to blacklist
++# a phising website.  However, to do this, root_servers needs to be
++# defined.  For example, to blacklist the domain "phish.example.com":
++#root_servers = {}
++# ICANN DNS root servers (Deadwood default if both root_servers and 
++# upstream_servers are not defined)
++#root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 128.8.10.90, "
++#root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, 128.63.2.53, "
++#root_servers["."]+="192.36.148.17, 192.58.128.30, 193.0.14.129, 199.7.83.42, "
++#root_servers["."]+="202.12.27.33"
++#root_servers["phish.example.com."]="10.254.254.254"
++
+ # The IP this program has 
+ bind_address="127.0.0.1"
+ 

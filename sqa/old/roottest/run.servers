@@ -1,0 +1,19 @@
+#!/bin/sh
+
+cp db.* /etc/maradns
+
+rm foo*
+
+../../server/maradns -f mararc.roottest0 > foo0 &
+sleep 1
+../../server/maradns -f mararc.roottest1 > foo1 &
+sleep 1
+../../server/maradns -f mararc.roottest2 > foo2 &
+sleep 1
+../../server/maradns -f mararc.roottest3 > foo3 &
+sleep 1
+../../server/maradns -f mararc.roottest4 > foo4 &
+sleep 1
+../../server/maradns -f mararc.roottest5 > foo5 &
+sleep 1
+../../server/maradns -f mararc.roottest6 > foo6 &

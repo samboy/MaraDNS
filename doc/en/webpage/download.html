@@ -1,0 +1,300 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>MaraDNS - a security-aware DNS server</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" title="Woodson (Default)"
+ type="text/css" media="screen, projection" href="maradns-1.2-s.css">
+<link rel="alternate stylesheet" title="Large Print" 
+ type="text/css" media="screen, projection" href="maradns-1.2-l.css">
+<link rel="stylesheet" type="text/css" media="print" 
+ href="maradns-1.2-p.css">
+<link rel="stylesheet" type="text/css" media="handheld" 
+ href="maradns-1.2-h.css">
+<script type=text/javascript src=styleswitcher.js></script>
+</head>
+<body>
+
+<div align=center id=maradns-all>
+<table><tr><td>
+<div align=left>
+<table><tr>
+<td valign=top width=340>
+<font id=maradns-name size="+4"><i><b>MaraDNS</b></i></font>
+<br>
+<div id=maradns-t>
+A&nbsp;security-aware DNS&nbsp;server
+</div>
+</td>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td valign=top id=topright width=220>
+        <div align=right><table><tr><td id=trabalengua>
+        <i>
+                Erre con erre cigarro<br>
+                Erre con erre barril<br> 
+                R&aacute;pido&nbsp;ruedan&nbsp;los&nbsp;carros<br>
+                En el ferrocarril<br></i>
+        </td></tr></table></div>
+</td>
+</tr></table>
+<script type=text/javascript>
+</script>
+<div id=lefthand>
+<div id=maradns-l>
+	<a href="index.html">Main</a>
+	<a href="download.html">Download</a>
+	<a href="changelog.html">Changelog</a>
+	<a href="notes.html">Documentation</a>
+	<a href="search.html">Search</a>
+	<a href="/blog">Blog</a>
+	<a href="security.html">Security</a>
+</div> <!-- maradns-l -->
+<script type="text/javascript">
+<!--
+if(isOKbrowser()) { 
+document.write("<p class=nocss><font size=-1>The following links that change text size will do nothing on your browser because your browser does not support CSS.  This page is otherwise usable in a non-CSS browser.");
+document.write("<\/font><\/p><div class=makelarge><div class=iebug>");
+document.write("To make the font larger, <A href=\"#\" onclick=\"setActiveStyleSheet('Large Print');return false;\">click here<\/A><\/div><\/div><p class=makenormal>");
+document.write("To see this without using a large font, <A href=\"#\" onclick=\"setActiveStyleSheet('Woodson (Default)');return false;\">click here<\/A><\/p>");
+}
+-->
+</script>
+</div>
+<hr class=moyet>
+<table><tr><td class=content width=596>
+<div id=maradns-r>
+<!-- -->
+<div id=paypal>
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but04.gif" border="0" name="submit" alt="PayPal Donate">
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+">
+</form>
+</div>
+<!-- -->
+<!-- end header -->
+<A NAME=stable> </A>
+<!-- &iexcl; instead of ¡ because of *@#$ Dillo -->
+<h1>&iexcl;Download MaraDNS!</h1>
+
+<h2>Current stable release</h2>
+
+The current stable release of MaraDNS is MaraDNS 2.0.04, released
+November 12, 2011.  This release has both the UNIX/Windows source code
+(in two different compression formats) as well as a Windows
+binary (the win32.zip file).
+
+<p>
+<A 
+href="download/2.0/2.0.04/maradns-2.0.04.tar.bz2"><!--
+                       -->maradns-2.0.04.tar.bz2</A>
+<A 
+href="download/2.0/2.0.04/maradns-2.0.04.tar.bz2.asc">sig</A>
+<br>
+<A 
+href="download/2.0/2.0.04/maradns-2.0.04.tar.xz"><!--
+                       -->maradns-2.0.04.tar.xz</A>
+<A 
+href="download/2.0/2.0.04/maradns-2.0.04.tar.xz.asc">sig</A>
+<br>
+<A 
+href="download/2.0/2.0.04/maradns-2.0.04.tar.gz"><!--
+                       -->maradns-2.0.04.tar.gz</A>
+<A 
+href="download/2.0/2.0.04/maradns-2.0.04.tar.gz.asc">sig</A>
+<br>
+<A 
+href="download/2.0/2.0.04/maradns-2-0-04-win32.zip"><!--
+                       -->maradns-2-0-04-win32.zip</A>
+<A 
+href="download/2.0/2.0.04/maradns-2-0-03-win32.zip.asc">sig</A>
+
+<h2>Previous stable release</h2>
+
+<p>This is the previous stable release of MaraDNS, MaraDNS 1.4.07,
+released November 11, 2011.  
+
+<p>
+
+<table><tr><td>
+<A 
+href="download/1.4/1.4.07/maradns-1.4.07.tar.bz2"><!--
+                       -->maradns-1.4.07.tar.bz2</A>
+</td><td>
+<A 
+href="download/1.4/1.4.07/maradns-1.4.07.tar.bz2.asc">sig</A>
+</td><td>
+<A href="#bz2">info</A> 
+</td></tr><tr><td>
+<A 
+href="download/1.4/1.4.07/maradns-1.4.07.tar.gz"><!--
+                       -->maradns-1.4.07.tar.gz</A>
+</td><td>
+<A 
+href="download/1.4/1.4.07/maradns-1.4.07.tar.gz.asc">sig</A>
+</td><td>
+<A href="#gz">info</A>
+</td></tr><tr><td>
+<A 
+href="download/1.4/1.4.07/maradns-1-4-07-win32.zip"><!--
+                       -->maradns-1-4-07-win32.zip</A>
+</td><td>
+<A 
+href="download/1.4/1.4.07/maradns-1-4-07-win32.zip.asc">sig</A>
+</td><td>
+<A href="#zip">info</A>
+</td></tr><tr><td>
+<A 
+href="download/1.4/1.4.07/maradns-1-4-07-win32.7z"><!--
+                       -->maradns-1-4-07-win32.7z</A>
+</td><td>
+<A 
+href="download/1.4/1.4.07/maradns-1-4-07-win32.7z.asc">sig</A>
+</td><td>
+<A href="#7z">info</A>
+</td></tr></table>
+
+<hr>
+
+<h2>Deadwood</h2>
+
+Deadwood is MaraDNS 2.0's recursive resolver.  Deadwood does not need
+threads to resolve queries, and has features MaraDNS 1.x's recursive
+code doesn't have, such as "resurrections" and the ability to read and
+write the cache to disk.
+
+<table><tr><td>
+<A 
+href="deadwood/stable/deadwood-3.0.05.tar.bz2"><!--
+                   -->deadwood-3.0.05.tar.bz2</A>
+</td><td>
+<A 
+href="deadwood/stable/deadwood-3.0.05.tar.bz2.asc">sig</A>
+</td><td>
+<A href="#bz2">info</A> 
+</td></tr><tr><td>
+<A 
+href="deadwood/stable/Deadwood-3-0-05-win32.zip"><!--
+                   -->Deadwood-3-0-05-win32.zip</A>
+</td><td>
+<A 
+href="deadwood/stable/Deadwood-3-0-05-win32.zip.asc">sig</A>
+</td><td>
+<A href="#zip">info</A>
+</td></tr></table>
+
+<hr>
+
+<h3>Pthreads soruce code</h3>
+
+The Windows port of MaraDNS 1.4 uses the LGPL phtreads library. Source 
+code for this library is available <A 
+href="download/pthreads-w32-2-8-0-release.tar.gz">here</A>
+
+<hr>
+
+<h2>Deprecated release</h2>
+<p>This is the deprecated release of MaraDNS, MaraDNS 1.3.07.11,
+released January 29, 2011.  This release doesn't have a couple of
+features MaraDNS 1.4 has (FQDN6 records, NAPTR support), nor bug
+fixes 1.4 has (Afnic fix, etc.).  This release will be supported
+with security bug fixes until December 21, 2012.
+
+<p>
+
+<table><tr><td>
+<A 
+href="download/1.3/maradns-1.3.07.11.tar.bz2"><!--
+                -->maradns-1.3.07.11.tar.bz2</A>
+</td><td>
+<A 
+href="download/1.3/maradns-1.3.07.11.tar.bz2.asc">sig</A>
+</td><td>
+<A href="#bz2">info</A> 
+</td></tr>
+<tr><td>
+<A 
+href="download/1.3/maradns-1.3.07.11.tar.gz"><!--
+                -->maradns-1.3.07.11.tar.gz</A>
+</td><td>
+<A 
+href="download/1.3/maradns-1.3.07.11.tar.gz.asc">sig</A>
+</td><td>
+<A href="#gz">info</A>
+</td></tr></table>
+
+<h2>Other</h2>
+<p><A href=changelog.html>View the changelog</A></p>
+
+<H2>Tools to help verify the sums of MaraDNS (or any other file)</H2>
+<p>This is a mismash of various cryptographic summing algorithms.  <b>By and
+large, the programs in this tarball are not public domain</b>
+<p><A href=download/non-maradns/sums-20070214.tar.bz2>sums-20070214.tar.bz2</A>  This is the
+actual code which performs various cryptographic hashes against the file.
+(<A href=download/non-maradns/sums-20070214.tar.bz2.sha.asc>PGP signature</A>)
+<p>
+<A href=download/sums-papers-20010818.tar.bz2>sums-papers-20010818.tar.bz2</A>  
+This is a collection of papers describing some of the various 
+cryptographic hashes.
+
+<H2>Disclaimer</H2>
+THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
+OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE 
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+<hr>
+
+<h2>Information on file types</h2>
+
+<A name="bz2"><b>.bz2</b> A .bz2 file is compressed with the bzip2 program.  The
+maradns tar.bz2 file contains the source code for MaraDNS.</A>
+<p>
+<A name="lzma"><b>.lzma</b> A .lzma file
+is compressed with LZMA compression, which both compresses
+better and decompresses faster than bzip2 compressed files.  Information
+on decompressing LZMA files can be found </A><A 
+href="download/1.2/00Uncompress.txt">here</A>.  The maradns tar.lzma
+file contains the source code for MaraDNS.
+<p>
+<A name="gz"><b>.gz</b> A .gz file is compressed with the gzip program.  
+The maradns .tar.gz file contains the source code for MaraDNS.</A>
+<p>
+<A name="srcrpm"><b>.src.rpm</b> A .src.rpm file is a package with 
+source for rpm-based
+Linux distributions.  This file was created on CentOS 3, and contains
+the source code for MaraDNS.</A>
+<p>
+<A name="rpm"><b>.i386.rpm</b> A .i386.rpm file is a binary RPM package.  
+The RPM file
+was built on CentOS 3, and should run on other RPM-based systems.</A>
+<p>
+<A name="zip"><b>.zip</b> A .zip file is a compressed file that 
+Windows XP can open.
+The MaraDNS .zip file contains a Windows native binary of MaraDNS.
+This is a partial port of MaraDNS to Windows.  While this port
+does not have all of the security nor features of the Linux/UNIX version of
+MaraDNS, this port allows Windows to have a basic, 
+reasonably secure DNS client and recursive resolver.  People who want a full 
+Windows port of MaraDNS can compile MaraDNS on</A>
+<A href="http://www.cygwin.com">Cygwin</A>.
+<p>
+<A name="tgz"><b>.tgz</b> A .tgz file is a tar.gz file.  The MaraDNS 
+.tgz file contains
+the Slackware package for MaraDNS.</A>
+<p><A name="7z"><b>.7z</b> A .7z file is a file compressed by <A 
+href=http://www.7-zip.org>7-zip</A>.  The MaraDNS .7z file contains
+the Windows port of MaraDNS.</A>
+</div>
+</td></table>
+</div>
+</td></table>
+</div>
+</body>
+</html>

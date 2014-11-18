@@ -1,0 +1,49 @@
+askmara.ej: Askmara man page
+authoritative.ej: Authoritative name server tutorial
+changelog.ej: Wrapper for changelog.embed
+changelog.embed: MaraDNS changelog
+compile.ej: Tutorial on compiling MaraDNS
+convert.ej: Tutorial on moving from another DNS server to MaraDNS
+copy: The copyright statement for MaraDNS documents
+credits.ej: Wrapper for credits.embed
+credits.embed: People who have helped make MaraDNS a reality
+csv1.ej: Csv1(5) man page (describes MaraDNS' legacy zone file format)
+csv2.ej: Csv2(5) man page (describes MaraDNS' zone file format)
+csv2_txt.ej: Csv2_txt(5) man page (describes TXT and "RAW" RRs in csv2 zones)
+dangling.ej: How to handling the "dangling CNAME record" warning
+data_structures.ej: Technical notes on MaraDNS' internal data structures
+default_zonefile.ej: How to have stars at the end of hostnames
+dns_intro.ej: Description of DNS for newbies (currently unused; to be merged)
+dnsintro.ej: DNS introductory document used in MaraDNS tutorial
+dnsmaster.ej: How to allow others to transfer zones from MaraDNS
+dnsslave.ej: How to transfer zones from other servers to MaraDNS
+dnstcp.ej: How to perform DNS over TCP with MaraDNS
+download.ej: Old webpage template for MaraDNS download page (to be deleted)
+duende.ej: Man page for Duende MaraDNS daemonizer
+ej.doc.format: Description of EJ's document format
+ej.template: Tamplate for making new ej files
+example_auth_mararc: ASCII example authoritative-only mararc file
+example_csv2: ASCII example csv2 zone file
+example_full_mararc: ASCII mararc example showing most mararc parameters
+example_mararc: ASCII default simplified example mararc file
+example_mararc.ej: ej wrapper for example_mararc
+example_recursive_mararc: ASCII example recursive-only mararc file
+example_simple_csv1: ASCII example simplified csv1 zone file
+faq.ej: ej wrapper for faq.embed
+faq.embed: MaraDNS FAQ
+fetchzone.ej: Man page for fetchzone zone transfer program
+files.ej: List of files in the top-level MaraDNS directory
+getzone.ej: Man page for legacy csv1 getzone program
+glossary.ej: Glossary of DNS terms for the tutorial
+maradns.ej: MaraDNS man page
+mararc.ej: mararc(5) man page; described the MaraDNS man page format
+old.changelog: Old change entries (to be deleted; info already merged)
+quick_start.ej: Quick start guide for MaraDNS
+recordtypes.ej: Description of some DNS record types in the tutorial
+recursive.ej: Tutorial on setting up a recursive DNS server
+security_design.embed: Description of the MaraDNS security design
+SOURCE.FILES: This file; describes files in this directory
+tutorial.ej: Index of tutorial files
+update.ej: How to update from MaraDNS 1.0 to MaraDNS 1.2
+zoneserver.ej: Man page for the zoneserver
+

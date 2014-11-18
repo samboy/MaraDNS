@@ -1,0 +1,353 @@
+                          Table of contents
+
+     * Updating from 1.0 to 1.2
+     * Updating from 1.2.03 to a later 1.2 release
+     * Updating from 1.2.12 to a 1.3 release
+     * Updating from 1.3 to a 1.4 release
+     * Updatring from MaraDNS 1.4 to MaraDNS 2.0
+
+   This document is divided in to two parts; anyone upgrading from
+   a 1.0 release to a recent 1.2 release will need to look over
+   both sections of this document.
+
+                       Updating from 1.0 to 1.2
+
+   MaraDNS 1.2 has a number of advantages over 1.0, including Y2038
+   compliance, full support for DNS over TCP, and a new zone file
+   format. While including a number of new features, MaraDNS 1.2 is
+   almost completely compatible with all MaraDNS 1.0 data files. An
+   update from 1.0 to 1.2 will, with very few exceptions, not need
+   any data files to be changed. All MaraDNS 1.0 zone files will
+   work with MaraDNS 1.2, and almost all 1.0 mararc configuration
+   files will work with MaraDNS 1.2.
+
+   To update a MaraDNS install from 1.0 to 1.2, download the
+   MaraDNS 1.2 tarball, and type in the following command:
+
+         ./configure ; make
+
+   This is followed by:
+
+         make install
+
+   No configuration files will be overwritten by the installation
+   of the new MaraDNS 1.2 binaries (making backups of all data
+   files, naturally, is always a good idea).
+
+   ----------------------------------------------------------------
+
+   The only time a 1.0 mararc file will not work is when there is a
+   misspelled mararc variable in the mararc file. For example, let
+   us suppose we have a mararc file that looks like this:
+
+ bind_address = "127.0.0.1"
+ chroot_dir = "/etc/maradns"
+ maradns_uid = 99
+ maxprocs = 96
+ default_rrany_set = 3
+ verbose_levul = 1
+
+   This will run fine in MaraDNS 1.0. However, when we try to run
+   this file in MaraDNS 1.2, we will get this error message:
+
+ FATAL ERROR: Unknown mararc variable verbose_levul
+ Please look for the uncommented string "verbose_levul"
+ in your mararc file and remove this line.
+
+ The line this error is on looks like this:
+ verbose_levul = 1
+
+   This misspelled mararc variable needs to either be completely
+   removed from the mararc file, or disabled by commenting out. The
+   following mararc snippet will work identically in MaraDNS 1.0 as
+   the above snippet, and will parse in MaraDNS 1.2 without a fatal
+   error:
+
+ bind_address = "127.0.0.1"
+ chroot_dir = "/etc/maradns"
+ maradns_uid = 99
+ maxprocs = 96
+ default_rrany_set = 3
+ # Comment out the misspelled mararc variable
+ #verbose_levul = 1
+
+   ----------------------------------------------------------------
+
+   Since MaraDNS 1.2 is usually started with the new duende
+   daemonizing program, timestamps are, by default, no longer shown
+   (since otherwise the system logs would have a redundant
+   timestamp in them). If the older behavior of showing a UNIX time
+   stamp is desired, add the following to a MaraDNS 1.2 mararc
+   file:
+
+ timestamp_type = 0
+
+             Updating from 1.2.03 to a later 1.2 release
+
+   There are a few minor changes between the 1.2.03 branch and
+   later 1.2 releases of MaraDNS:
+
+  The special remote queries have been changed
+
+   The special remote queries, which can obtain information about
+   MaraDNS' internal state, have been changed:
+
+     * The admin_acl variable needs to be set for these variables
+       to work. E.g. admin_acl = "127.0.0.1, 192.168.116.0/24",
+       which only allows 127.0.0.1 (the same machine) or any
+       machine with an IP that starts with 192.168.116 to access
+       this information.
+     * The TXT query erre-con-erre-cigarro.maradns.org is now done
+       with version.maradns
+     * The TXT query numthreads (this and all other special queries
+       except version.maradns are only enabled when debug_msg_level
+       is set) is now numthreads.maradns
+     * The TXT query cache-elements is now cache-elements.maradns
+     * The TXT query memusage is now memusage.maradns
+     * The TXT query timestamp is now timestamp.maradns
+     * The TXT query number.verbose_level.maradns has been added,
+       but is only enabled if the remote_admin mararc variable is
+       set.
+
+   Further information about these queries can be obtained by
+   looking at the mararc man page; in particular, look for
+   admin_acl, debug_msg_level, and remote_admin.
+
+  Zone names are now case-insensitive
+
+   Zone names are now case-insensitive. In other words, a line like
+   this in the mararc file:
+
+ csv2["EXAMPLE.COM."] = "DB.EXAMPLE.COM"
+
+   Is converted as if the line were:
+
+ csv2["example.com."] = "DB.EXAMPLE.COM"
+
+   This affects both csv1 and csv2 zone names. Since hostnames in
+   both csv1 and csv2 host names are converted to lower-case, the
+   impact of this change should be minimal.
+
+  Dictionary variables now must be initialized before being used
+
+   MaraDNS 1.2.07 now mandates that dictionary variables must be
+   initialized before being used. This line, by itself, used to
+   parse in a mararc file:
+
+ upstream_servers["."] = "10.1.2.3"
+
+   However, this line would do nothing unless the upstream_servers
+   dictionary variable was first initialized, e.g:
+
+ upstream_servers = {}
+ upstream_servers["."] = "10.1.2.3"
+
+   MaraDNS 1.2.07 now mandates the initialization line or exits
+   with a fatal error when parsing a mararc file. The reason for
+   this is to make debugging mararc files easier.
+
+                Updating from 1.2.12 to a 1.3 release
+
+  Updates to the csv2 parser
+
+   In MaraDNS 1.3, some changes have been made to the csv2 parser.
+   In particular:
+
+     * The first record in a csv2 zone file can no longer be a TXT,
+       WKS, or LOC record.
+     * TXT (and SPF) records can no loner have tildes (the '~'
+       character) in them.
+
+   If these changes to the csv2 parser are not desired, it is
+   possible to have MaraDNS 1.3's csv2 parser act like MaraDNS' 1.2
+   csv2 parser by adding the following line to one's mararc file:
+
+ csv2_tilde_handling = 0
+
+   The above line is also accepted by MaraDNS 1.2 releases starting
+   with 1.2.12.04; this allows MaraDNS 1.2 and 1.3 use the same
+   configuration file.
+
+   The reason for this change is because MaraDNS now can use tildes
+   to separate records. A MaraDNS 1.2 csv2 zone file that looked
+   like this:
+
+ example.com. 10.1.2.4
+ www.example.com. A 10.1.2.5
+ example.com. MX mail.example.com.
+ mail.example.com. 10.1.2.6
+ example.com. TXT 'Hello, world!'
+
+   Now can look like this:
+
+ example.com. 10.1.2.4 ~
+ www.example.com. A 10.1.2.5 ~
+ example.com. MX mail.example.com. ~
+ mail.example.com. 10.1.2.6 ~
+ example.com. TXT 'Hello, world!'
+
+   The way MaraDNS figures out whether to use tilde to separate
+   records is by looking between the first and second record to see
+   if a tilde is present. If so, MaraDNS requires tildes to be
+   between all records. If not, MaraDNS' csv2 parsing is almost
+   completely 1.2 compatible, the only difference being that tildes
+   can not be in TXT records.
+
+   Note that, if tildes are used to separate records, the following
+   restrictions are added to TXT records:
+
+     * The pipe (|) character is not allowed in TXT records. Use
+       the '\x7c' escape sequence instead. For example, change a
+       TXT record that looks like 'ls | more' to become 'ls '\x7c'
+       more'
+     * The pipe (#) character is not allowed in TXT records. Use
+       the '\x23' escape sequence instead. For example, change a
+       TXT record that looks like 'press the # key' to become
+       'press the '\x23' key'
+     * Control characters, including the newline character, are not
+       allowed. The escape sequence used depends on the desired
+       control character. For example, use \x0a for a UNIX
+       linefeed.
+
+   Another MaraDNS 1.3 change only affects the unusual case when
+   one has delegation NS records. Let us suppose we have a zone
+   file with the following records:
+
+ example.com. A 10.1.2.3 ~
+ www.example.com. A 10.1.2.4 ~
+ joe.example.com. NS ns.joe.example.com. ~
+ ns.joe.example.com. A 10.1.2.5
+
+   In MaraDNS 1.2, if we send a recursive request for
+   www.joe.example.com, MaraDNS will convert the request in to a
+   recursive request. In MaraDNS 1.3, we will get the following
+   answer:
+
+ joe.example.com. NS ns.joe.example.com. ~
+ ns.joe.example.com. A 10.1.2.5
+
+   If the old MaraDNS 1.2 behavior is desired, such as for someone
+   who is using the same nameserver to both give out delegation
+   records and to recursively resolve records, add the following
+   line to one's mararc file:
+
+ recurse_delegation = 1
+
+  bind_star_handling
+
+   bind_star_handling is a variable that determines whether MaraDNS
+   should be strictly RFC compliant with regard to star records. In
+   MaraDNS 1.2, the default value for this was 0. In MaraDNS 1.3,
+   the default value is 1. If, for some reason, the older non-RFC
+   compliant behavior is desired, add this line to your mararc
+   file:
+
+ bind_star_handling = 0
+
+  max_mem
+
+   max_mem determined the maximum amount of memory MaraDNS is
+   allowed to allocate. This is a numeric variable, and the value
+   is in kilobytes. The default value of this is to allocate 1
+   megabyte for MaraDNS' general use, and in addition, to allocate
+   1536 bytes for each element we can have in the cache or DNS
+   record that we are authoritatively serving.
+
+   If, for whatever reason, you wish to disable this feature, add
+   the following lint to your mararc file:
+
+ max_mem = 0
+
+                  Updating from 1.3 to a 1.4 release
+
+   MaraDNS 1.4 has a few features added compared to the MaraDNS 1.3
+   branch:
+
+     * NAPTR support
+     * askmara, askmara-tcp and fetchzone now can have IPv6 support
+     * Bugfix: The RA bit is set if recursion is enabled; otherwise
+       it is not set.
+     * stdint.h (instead of the old BSD-specific types.h) is now
+       used for fixed-sized integers.
+     * New parameter: notthere_ip
+     * Zoneserver now supports dns_port parameter
+     * It is no longer possible to have the * character in zone
+       names
+     * Documentation updates
+     * Other bug fixes
+
+   MaraDNS 1.4 is compatible with MaraDNS 1.3 unless one has a * in
+   a zone name. Sometimes, people get confused and think this is
+   how to have MaraDNS support wildcard records:
+
+ csv2["*.example.com."] = "db.example.star"
+
+   However, this does not work. The correct way to support star
+   records is to have the star in the zone file, not the mararc
+   file, like this:
+
+ *.example.com.  A       10.2.3.4
+
+   Have csv2["*.example.com."] will result in a zone file for the
+   domain name "*.example.com." (with a literal star in the domain
+   name), which is usually not what one wants.
+
+              Updatring from MaraDNS 1.4 to MaraDNS 2.0
+
+   MaraDNS 2.0 is MaraDNS 1.4 with all recursive support removed
+   from the maradns daemon and done with the separate daemon
+   Deadwood. Because of this:
+
+     * MaraDNS can no longer serve both authoritative and recursive
+       records on the same IP.
+     * While Deadwood uses a compatible rc file format, there are
+       enough differences between a mararc file (MaraDNS'
+       configuration file) and a dwood3rc file (Deadwood's
+       configuration file) that a conversion has to be done by
+       hand.
+
+   The most important thing to keep in mind when converting a
+   mararc file to a dwood3rc file is that Deadwood does not support
+   the following mararc parameters:
+
+     * csv1
+     * csv2
+     * ipv4_alias
+     * admin_acl
+     * bind_star_handling
+     * csv2_default_zonefile
+     * csv2_synthip_list
+     * csv2_tilde_handling
+     * debug_msg_level
+     * default_rrany_set
+     * dos_protection_level
+     * hide_disclaimer
+     * long_packet_ipv4
+     * ipv6_bind_address (bind_address supports one or more ipv6
+       addresses if Deadwood is compiled with IPv6 support)
+     * max_chain
+     * max_mem
+     * max_total
+     * min_ttl
+     * min_ttl_cname
+     * min_visible_ttl
+     * notthere_ip (If you want to make money with NX redirects,
+       let's talk money)
+     * recurse_delegation
+     * reject_ptr (but Deadwood does support reject_aaaa)
+     * remote_admin
+     * retry_cycles (use num_retries instead)
+     * spammers
+     * synth_soa_origin
+     * synth_soa_serial
+     * tcp_convert_acl
+     * tcp_convert_server
+     * timestamp_type (We assume the logger makes a timestamp for
+       us)
+     * verbose_query (verbose_level will do this at a level of 100
+       or more)
+     * zone_transfer_acl
+
+   Also, Deadwood handles "verbose_level" differently; to get fully
+   verbose messages, "verbose_level" has to be 200 (as opposed to
+   MaraDNS' 10).

@@ -1,0 +1,352 @@
+#!/bin/sh
+
+cat > mararc1 << EOF
+ipv4_bind_addresses = "127.0.0.1"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["."] = "db.root"
+EOF
+
+cat > mararc3 << EOF
+ipv4_bind_addresses = "127.0.0.3"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["foo."] = "db.foo"
+EOF
+
+cat > mararc4 << EOF
+ipv4_bind_addresses = "127.0.0.4"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["bar."] = "db.bar"
+EOF
+
+cat > mararc5 << EOF
+ipv4_bind_addresses = "127.0.0.5"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["h.bar."] = "db.h.bar"
+csv2["g.foo."] = "db.g.foo"
+EOF
+
+cat > mararc6 << EOF
+ipv4_bind_addresses = "127.0.0.6"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["g.bar."] = "db.g.bar"
+EOF
+
+cat > mararc7 << EOF
+ipv4_bind_addresses = "127.0.0.7"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["f.foo."] = "db.f.foo"
+EOF
+
+cat > mararc8 << EOF
+ipv4_bind_addresses = "127.0.0.8"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["f.bar."] = "db.f.bar"
+EOF
+
+cat > mararc9 << EOF
+ipv4_bind_addresses = "127.0.0.9"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["e.foo."] = "db.e.foo"
+EOF
+
+cat > mararc10 << EOF
+ipv4_bind_addresses = "127.0.0.10"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["e.bar."] = "db.e.bar"
+EOF
+
+cat > mararc11 << EOF
+ipv4_bind_addresses = "127.0.0.11"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["d.foo."] = "db.d.foo"
+EOF
+
+cat > mararc12 << EOF
+ipv4_bind_addresses = "127.0.0.12"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["d.bar."] = "db.d.bar"
+EOF
+
+cat > mararc13 << EOF
+ipv4_bind_addresses = "127.0.0.13"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["c.foo."] = "db.c.foo"
+EOF
+
+cat > mararc14 << EOF
+ipv4_bind_addresses = "127.0.0.14"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["c.bar."] = "db.c.bar"
+EOF
+
+cat > mararc15 << EOF
+ipv4_bind_addresses = "127.0.0.15"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["b.foo."] = "db.b.foo"
+EOF
+
+cat > mararc16 << EOF
+ipv4_bind_addresses = "127.0.0.16"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["b.bar."] = "db.b.bar"
+EOF
+
+cat > mararc17 << EOF
+ipv4_bind_addresses = "127.0.0.17"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["a.foo."] = "db.a.foo"
+EOF
+
+cat > mararc18 << EOF
+ipv4_bind_addresses = "127.0.0.18"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["a.bar."] = "db.a.bar"
+EOF
+
+cat > mararc19 << EOF
+ipv4_bind_addresses = "127.0.0.19"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["example.foo."] = "db.example.foo"
+EOF
+
+cat > db.root << EOF
+foo. NS ns.foo.
+ns.foo. 127.0.0.3
+bar. NS ns.bar.
+ns.bar. 127.0.0.4
+baz. NS ns.baz.
+ns.baz. 127.0.0.55
+EOF
+
+cat > db.foo << EOF
+example.foo. NS ns.a.bar.
+a.foo. NS ns.b.bar.
+b.foo. NS ns.c.bar.
+c.foo. NS ns.d.bar.
+d.foo. NS ns.e.bar.
+e.foo. NS ns.f.bar.
+f.foo. NS ns.g.bar.
+g.foo. NS ns.h.bar.
+EOF
+
+cat > db.bar << EOF
+a.bar. NS ns.a.foo.
+b.bar. NS ns.b.foo.
+c.bar. NS ns.c.foo.
+d.bar. NS ns.d.foo.
+e.bar. NS ns.e.foo.
+f.bar. NS ns.f.foo.
+g.bar. NS ns.g.foo.
+h.bar. NS ns.h.bar.
+ns.h.bar. A 127.0.0.5
+EOF
+
+cat > db.h.bar << EOF
+% ns ns.%
+ns.% 127.0.0.5
+www.% 10.0.1.1
+EOF
+
+cat > db.g.foo << EOF
+% ns ns.h.bar.
+ns.g.foo. 127.0.0.6
+www.% 10.0.1.2
+EOF
+
+cat > db.g.bar << EOF
+% ns ns.g.foo.
+ns.g.bar. 127.0.0.7
+www.% 10.0.1.3
+EOF
+
+cat > db.f.foo << EOF
+% ns ns.g.bar.
+ns.f.foo. 127.0.0.8
+www.% 10.0.1.4
+EOF
+
+cat > db.f.bar << EOF
+% ns ns.f.foo.
+ns.f.bar. 127.0.0.9
+www.% 10.0.1.5
+EOF
+
+cat > db.e.foo << EOF
+% ns ns.f.bar.
+ne.e.foo. 127.0.0.10
+www.% 10.0.1.6
+EOF
+
+cat > db.e.bar << EOF
+% ns ns.e.foo.
+ns.e.bar. 127.0.0.11
+www.% 10.0.1.7
+EOF
+
+cat > db.d.foo << EOF
+% ns ns.e.bar.
+ns.d.foo. 127.0.0.12
+www.% 10.0.1.8
+EOF
+
+cat > db.d.bar << EOF
+% ns ns.d.foo.
+ns.d.bar. 127.0.0.13
+www.% 10.0.1.9
+EOF
+
+cat > db.c.foo << EOF
+% ns ns.d.bar.
+ns.c.foo. 127.0.0.14
+www.% 10.0.1.10
+EOF
+
+cat > db.c.bar << EOF
+% ns ns.c.foo.
+ns.c.bar. 127.0.0.15
+www.% 10.0.1.11
+EOF
+
+cat > db.b.foo << EOF
+% ns ns.c.bar.
+ns.b.foo. 127.0.0.16
+www.% 10.0.1.12
+EOF
+
+cat > db.b.bar << EOF
+% ns ns.b.foo.
+ns.b.bar. 127.0.0.17
+www.% 10.0.1.13
+EOF
+
+cat > db.a.foo << EOF
+% ns ns.b.bar.
+ns.a.foo. 127.0.0.18
+www.% 10.0.1.14
+EOF
+
+cat > db.a.bar << EOF
+% ns ns.a.foo.
+ns.a.bar. 127.0.0.19
+www.% 10.0.1.15
+EOF
+
+cat > db.example.foo << EOF
+% ns ns.a.bar.
+www.example.foo. 127.0.0.20
+EOF
+
+for NUM in 1 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 ; do
+	../../../server/maradns -f mararc${NUM} > /dev/null 2>&1 &
+	sleep 1
+done
+
+for LEVEL in 5 10 15 20 25 ; do
+
+echo max_glueless_level is $LEVEL
+echo max_queries_total is $(( $LEVEL * 3 ))
+
+cat > mararc2 << EOF
+ipv4_bind_addresses = "127.0.0.2"
+verbose_level=0
+chroot_dir = "$( pwd )"
+recursive_acl = "127.0.0.1/8"
+root_servers = {}
+root_servers["."] = "127.0.0.1"
+max_glueless_level=${LEVEL}
+max_queries_total=$(( $LEVEL * 3 ))
+EOF
+
+../../../server/maradns -f mararc2 > /dev/null 2>&1 &
+sleep 1
+
+../../../tools/askmara -t 2 Awww.h.bar. 127.0.0.2
+../../../tools/askmara -t 2 Awww.g.foo. 127.0.0.2
+../../../tools/askmara -t 2 Awww.g.bar. 127.0.0.2
+../../../tools/askmara -t 2 Awww.f.foo. 127.0.0.2
+../../../tools/askmara -t 2 Awww.f.bar. 127.0.0.2
+../../../tools/askmara -t 2 Awww.e.foo. 127.0.0.2
+../../../tools/askmara -t 2 Awww.e.bar. 127.0.0.2
+../../../tools/askmara -t 2 Awww.d.foo. 127.0.0.2
+../../../tools/askmara -t 2 Awww.d.bar. 127.0.0.2
+../../../tools/askmara -t 2 Awww.c.foo. 127.0.0.2
+../../../tools/askmara -t 2 Awww.c.bar. 127.0.0.2
+../../../tools/askmara -t 2 Awww.b.foo. 127.0.0.2
+../../../tools/askmara -t 2 Awww.b.bar. 127.0.0.2
+../../../tools/askmara -t 2 Awww.a.foo. 127.0.0.2
+../../../tools/askmara -t 2 Awww.a.bar. 127.0.0.2
+
+../../../tools/askmara -t 10 Awww.example.foo. 127.0.0.2
+echo
+sleep 1
+
+kill $( \
+    ps auxw | grep maradns | grep mararc2 | grep -v grep | awk '{print $2}' ) \
+	> /dev/null 2>&1
+
+done
+
+# Clean up
+kill $( ps auxw | grep maradns | grep -v grep | awk '{print $2}' ) \
+	> /dev/null 2>&1
+sleep 1
+# Linux specific; this does bad things on Solaris
+killall maradns > /dev/null 2>&1
+
+rm mararc1
+rm mararc2
+rm mararc3
+rm mararc4
+rm mararc5
+rm mararc6
+rm mararc7
+rm mararc8
+rm mararc9
+rm mararc10
+rm mararc11
+rm mararc12
+rm mararc13
+rm mararc14
+rm mararc15
+rm mararc16
+rm mararc17
+rm mararc18
+rm mararc19
+rm db.*
+

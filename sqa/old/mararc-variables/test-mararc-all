@@ -1,0 +1,56 @@
+# The purpose of this file is to test every single mararc variable that
+# is documented in the Mararc man page
+
+# This particular file will make maradns not be able to startup, since
+# a number of variables are mutually exclusive
+
+# Don't use this file as an example mararc file; a recursive MaraDNS server
+# only needs three variables set (ipv4_bind_addresses, chroot_dir, and 
+# recursive_acl); an authoritative MaraDNS also only needs three varables
+# set (ipv4_bind_addresses, chroot_dir, and csv2)
+
+csv2 = {}
+csv2["example.net."] = "db.example.net"
+csv1 = {}
+csv1["example.org."] = "db.example.org"
+ipv4_alias = {}
+ipv4_alias["localhost"] = "127.0.0.1"
+root_servers = {}
+root_servers["."] = "198.41.0.4"
+upstream_servers = {}
+upstream_servers["."] = "192.168.1.1"
+ipv4_bind_addresses = "127.0.0.3"
+bind_address = "127.0.0.3"
+chroot_dir = "/etc/maradns"
+csv2_default_zonefile = "db.default"
+csv2_synthip_list = "10.1.1.1, 10.1.1.2"
+debug_msg_level = 3
+default_rrany_set = 3
+dos_protection_level = 1
+ipv6_bind_address = "::1"
+hide_disclaimer = "yes"
+long_packet_ipv4 = "127.0.0.1"
+maradns_uid = 84
+maradns_gid = 84
+maximum_cache_elements = 2048
+maxprocs = 32
+max_ar_chain = 1
+max_chain = 6
+max_glueless_level = 12
+max_queries_total = 25
+max_tcp_procs = 12
+max_total = 12
+min_ttl = 450
+min_ttl_cname = 180
+no_fingerprint = 1
+random_seed_file = "/dev/urandom"
+recursive_acl = "127.0.0.0/8"
+spammers = "192.168.42.1/24"
+synth_soa_origin = "vela.example.com"
+synth_soa_serial = 1
+tcp_convert_acl = "127.0.0.0/8"
+tcp_convert_server = "127.0.0.3"
+timeout_seconds = 3
+timestamp_type = 5
+verbose_level = 2
+zone_transfer_acl = "127.0.0.0/8"

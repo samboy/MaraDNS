@@ -1,0 +1,10 @@
+--- maradns-1.4.04/doc/en/webpage/changelog.embed	2010-07-31 00:17:06.000000000 -0700
++++ maradns-1.4.05/doc/en/webpage/changelog.embed	2010-08-05 04:20:11.000000000 -0700
+@@ -4,7 +4,6 @@
+ This is the stable branch of MaraDNS.
+ <blockquote>
+ <ul>
+-<ul>
+ <li>Bugfix: NAPTR records now work when ~ is used to separate records
+ <li>NAPTR records now documented
+ <li>Bugfix: ANY queries now correctly work with NS referrals
