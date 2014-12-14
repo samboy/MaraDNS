@@ -317,7 +317,7 @@ dw_str *make_dns_packet(dw_str *question, dw_str *answer, int32_t id);
 
 /* Given a remote number, a C-string with the packet to send them, and
  * the length of that string, make a connection to a remote server */
-void make_remote_connection(int32_t n, unsigned char *packet, int len,
+int make_remote_connection(int32_t n, unsigned char *packet, int len,
         dw_str *query, SOCKET x_socket_num);
 
 /* Forward a remote reply back to the client */
