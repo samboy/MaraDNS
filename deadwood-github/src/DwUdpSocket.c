@@ -186,9 +186,11 @@ int make_remote_connection(int32_t n, unsigned char *packet, int len,
         socklen_t inet_len = sizeof(struct sockaddr_in);
 
         if(rem[n].socket != x_socket_num || /* Already used (sanity check) */
-           rem[n].recurse_depth > 32) { /* Infinite recursion protection */
+           rem[n].recurse_depth > 83) { /* Infinite recursion protection */
                 return -1;
         }
+
+	rem[n].recurse_depth++;
 
         /* Get a random query ID to send to the remote server */
         rnum = set_dns_qid(packet,len,dwr_rng(rng_seed));

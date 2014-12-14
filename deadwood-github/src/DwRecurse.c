@@ -2831,10 +2831,13 @@ void dwx_init_conn_local(int32_t conn_number, int local_number) {
 int dwx_do_glueless_inflight(int32_t conn_number, int already, int type) {
         int max = 0, num_alloc = 0;
 
-        if(already == conn_number || rem[conn_number].recurse_depth >= 32 ||
-           rem[already].recurse_depth >= 32) {
+        if(already == conn_number || rem[conn_number].recurse_depth >= 83 ||
+           rem[already].recurse_depth >= 83) {
                 return -1;
         }
+
+	rem[conn_number].recurse_depth++;
+	rem[already].recurse_depth++;
 
         num_alloc = key_n[DWM_N_max_inflights];
         if(num_alloc < 1) {
@@ -2893,9 +2896,11 @@ void dwx_do_glueless_new(dw_str *query, int32_t conn_number, int type) {
                 num_alloc = 32000;
         }
         num_alloc++; /* Stop off-by-one attacks */
-        if(rem[conn_number].recurse_depth > 32) {
+        if(rem[conn_number].recurse_depth > 83) {
                 return;
         }
+
+	rem[conn_number].recurse_depth++;
 
         new_conn_num = find_free_remote();
         if(new_conn_num == -1) { /* No more remote pending connections */
@@ -3004,6 +3009,11 @@ void dwx_glueless_done(dw_str *query, int32_t conn_num) {
         sockaddr_all_T server;
         SOCKET s = INVALID_SOCKET;
         socklen_t inet_len = sizeof(struct sockaddr_in);
+
+	if(rem[conn_num].recurse_depth > 83) {
+		return;
+	}
+	rem[conn_num].recurse_depth++;
 
         /* Get answer from cache */
         answer = dwh_get(cache,query,0,1);
