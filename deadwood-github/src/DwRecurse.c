@@ -2887,6 +2887,7 @@ int dwx_do_glueless_inflight(int32_t conn_number, int already, int type) {
 void dwx_do_glueless_new(dw_str *query, int32_t conn_number, int type) {
         int32_t new_conn_num = 0;
         int num_alloc = 0;
+	int depth = 0;
         dw_str *packet = 0;
 
         num_alloc = key_n[DWM_N_max_inflights];
@@ -2899,6 +2900,23 @@ void dwx_do_glueless_new(dw_str *query, int32_t conn_number, int type) {
         if(rem[conn_number].recurse_depth > 83) {
                 return;
         }
+
+	/* Make sure we "bubble up" the fact we have made a new query */
+	new_conn_num = conn_number;
+	depth = 0;
+	while(rem[conn_number].num_locals > 0 && 
+	      rem[conn_number].local != 0 && 
+	      depth < 30) {	
+		if(rem[conn_number].local[0] != 0) {
+			conn_number = rem[conn_number].local[0]->glueless_conn;
+		}
+		rem[conn_number].recurse_depth++;
+        	if(rem[conn_number].recurse_depth > 83) {
+                	return;
+        	}
+		depth++;
+	}
+	conn_number = new_conn_num;
 
 	rem[conn_number].recurse_depth++;
 

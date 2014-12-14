@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2012 Sam Trenholme
+/* Copyright (c) 2007-2014 Sam Trenholme
  * IPv6 code by Jean-Jacques Sarton
  *
  * TERMS
