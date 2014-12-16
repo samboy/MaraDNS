@@ -2906,7 +2906,7 @@ void dwx_do_glueless_new(dw_str *query, int32_t conn_number, int type) {
 	depth = 0;
 	while(rem[conn_number].num_locals > 0 && 
 	      rem[conn_number].local != 0 && 
-	      depth < 30) {	
+	      depth < 120) {	
 		if(rem[conn_number].local[0] != 0) {
 			conn_number = rem[conn_number].local[0]->glueless_conn;
 		}
