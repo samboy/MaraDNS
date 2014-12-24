@@ -2897,9 +2897,10 @@ void dwx_do_glueless_new(dw_str *query, int32_t conn_number, int type) {
                 num_alloc = 32000;
         }
         num_alloc++; /* Stop off-by-one attacks */
-        if(rem[conn_number].recurse_depth > 83) {
+        if(rem[conn_number].recurse_depth >= 83) {
                 return;
         }
+	rem[conn_number].recurse_depth++;
 
 	/* Make sure we "bubble up" the fact we have made a new query */
 	new_conn_num = conn_number;
@@ -2910,15 +2911,14 @@ void dwx_do_glueless_new(dw_str *query, int32_t conn_number, int type) {
 		if(rem[conn_number].local[0] != 0) {
 			conn_number = rem[conn_number].local[0]->glueless_conn;
 		}
-		rem[conn_number].recurse_depth++;
         	if(rem[conn_number].recurse_depth > 83) {
                 	return;
         	}
+		rem[conn_number].recurse_depth++;
 		depth++;
 	}
 	conn_number = new_conn_num;
 
-	rem[conn_number].recurse_depth++;
 
         new_conn_num = find_free_remote();
         if(new_conn_num == -1) { /* No more remote pending connections */
