@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2014 Sam Trenholme
+/* Copyright (c) 2007-2015 Sam Trenholme
  *
  * TERMS
  *
@@ -214,6 +214,40 @@ void dw_log_dwstr(char *s1, dw_str *s2, int min_log_level) {
         }
 
         dw_log_dwstr_p(s1,s2,min_log_level);
+
+        /* OK, add a newline */
+
+#ifndef MINGW
+        printf("%s","\n");
+#else /* MINGW */
+        fprintf(LOG,"%s","\n");
+#endif /* MINGW */
+}
+
+/* Log a string followed by the contents of a DwStr object as a series of
+ * decimal integers separated by dots (so IPs in strings look normal) */
+void dw_log_dwstrip(char *s1, dw_str *s2, int min_log_level) {
+        int32_t ll = key_n[DWM_N_verbose_level];
+        int a;
+        if(ll <= 0 || ll < min_log_level) {
+                return;
+        }
+
+#ifndef MINGW
+        printf("%s",s1);
+#else /* MINGW */
+        fprintf(LOG,"%s",s1);
+#endif /* MINGW */
+
+        if(s2 != 0) {
+                for(a=0;a<s2->len;a++) {
+#ifndef MINGW
+                        printf("%d.",*(s2->str + a));
+#else /* MINGW */
+                        fprintf(LOG,"%d.",*(s2->str + a));
+#endif /* MINGW */
+                }
+        }
 
         /* OK, add a newline */
 

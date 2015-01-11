@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2010 Sam Trenholme
+/* Copyright (c) 2007-2015 Sam Trenholme
  *
  * TERMS
  *
@@ -56,6 +56,10 @@ void dw_log_ip(char *string, ip_addr_T *ip, int min_log_level);
 
 /* Log a string followed by the contents of a DwStr object */
 void dw_log_dwstr(char *s1, dw_str *s2, int min_log_level);
+
+/* Log a string followed by the contents of a DwStr object as a series of
+ *  * decimal integers separated by dots (so IPs in strings look normal) */
+void dw_log_dwstrip(char *s1, dw_str *s2, int min_log_level);
 
 /* Log a string followed by the contents of a DwStr object followed by
  * another string */
