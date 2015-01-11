@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2014 Sam Trenholme
+/* Copyright (c) 2009-2015 Sam Trenholme
  *
  * TERMS
  *
@@ -596,6 +596,9 @@ int dwc_has_bad_ip(dw_str *answer, dwd_dict *blacklist_hash) {
                         ip = dw_substr(answer,
                                 look->an[(counter * 2) + 1] + 10,4,1);
                         if(dwc_check_ip(blacklist_hash,ip) != 0) {
+				dw_log_dwstr(
+"IP blocked. Check filter_rfc1918 or ip_blacklist to allow IP: ",
+						ip,10);
                                 dwc_zap_dns_str(look);
                                 dw_destroy(ip);
                                 return 1;
