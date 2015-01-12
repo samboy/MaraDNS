@@ -239,7 +239,7 @@ void dw_log_dwstrip(char *s1, dw_str *s2, int min_log_level) {
         fprintf(LOG,"%s",s1);
 #endif /* MINGW */
 
-        if(s2 != 0) {
+        if(s2 != 0 && s2->str != 0) {
                 for(a=0;a<s2->len;a++) {
 #ifndef MINGW
                         printf("%d.",*(s2->str + a));
