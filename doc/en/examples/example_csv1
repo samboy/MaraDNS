@@ -3,8 +3,8 @@
 # This is what is known as a SOA record.  All zone files need to have one
 # of these
 S%|86400|%|hostmaster@%|19771108|7200|3600|604800|1800
-# These are known as authoritative NS records.  All zone files need
-# one or more of these
+# These are known as authoritative NS records.  All zone files need one or
+# more of these
 N%|86400|ns1.%
 N%|86400|ns2.%
 
