@@ -226,7 +226,7 @@ int32_t dwc_decomp_rddata(int16_t desc, int32_t offset, dw_str *in,
         offset += 10;
         rdo = out->len - 2; /* Where RDLENGTH is in string */
         if(lead > 0) {
-		if(in->len < offset + lead) { /* No truncated packets */
+                if(in->len < offset + lead) { /* No truncated packets */
                         goto catch_dwc_decomp_rddata;
                 }
                 tmp = dw_substr(in,offset,lead,1);
@@ -250,7 +250,7 @@ int32_t dwc_decomp_rddata(int16_t desc, int32_t offset, dw_str *in,
                 ndnames--;
         }
         if(tail > 0) {
-		if(in->len < offset + tail) { /* No truncated packets */
+                if(in->len < offset + tail) { /* No truncated packets */
                         goto catch_dwc_decomp_rddata;
                 }
                 tmp = dw_substr(in,offset,tail,1);
@@ -312,9 +312,9 @@ int32_t dwc_decomp_rr(dw_str *in, dw_str *out, dw_str *q, dw_str *stack,
 
         val = dw_fetch_u16(in,offset + 8); /* RDLENGTH */
         if(desc == 0) { /* No compression pointers */
-		if(in->len < offset + 10 + val) { /* No truncated packets */
-			goto catch_dwc_decomp_rr;
-		}
+                if(in->len < offset + 10 + val) { /* No truncated packets */
+                        goto catch_dwc_decomp_rr;
+                }
                 tmp = dw_substr(in,offset + 10,val,1);
                 dw_append(tmp,out);
                 dw_destroy(tmp);

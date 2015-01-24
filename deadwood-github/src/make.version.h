@@ -4,9 +4,9 @@
 
 # Now that this is in github, pull the version number from the git log
 if git log -1 > git.commit ; then
-	head -1 git.commit | awk '
-		{print "#define VERSION \"git-"$NF"\""}' > version.h
-	exit 0
+        head -1 git.commit | awk '
+                {print "#define VERSION \"git-"$NF"\""}' > version.h
+        exit 0
 fi
 
 pwd | awk -F/ '{print $(NF - 1)}' | \

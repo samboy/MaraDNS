@@ -190,7 +190,7 @@ int make_remote_connection(int32_t n, unsigned char *packet, int len,
                 return -1;
         }
 
-	rem[n].recurse_depth++;
+        rem[n].recurse_depth++;
 
         /* Get a random query ID to send to the remote server */
         rnum = set_dns_qid(packet,len,dwr_rng(rng_seed));
@@ -246,7 +246,7 @@ int make_remote_connection(int32_t n, unsigned char *packet, int len,
         }
         rem[n].socket = s;
         rem[n].remote_id = rnum;
-	return 1;
+        return 1;
 }
 
 /* Send a server failure back to the client when the server is overloaded.
@@ -342,9 +342,9 @@ int make_new_udp_connect(int b, unsigned char *a, int len, int num_alloc) {
                 return -1;
         }
         z = make_remote_connection(b,a,len,rem[b].query,INVALID_SOCKET);
-	if(z != 1) {
-		return z;
-	}
+        if(z != 1) {
+                return z;
+        }
 
         for(counter = 0; counter < num_alloc; counter++) {
                 rem[b].local[counter] = 0;
@@ -361,7 +361,7 @@ int make_new_udp_connect(int b, unsigned char *a, int len, int num_alloc) {
                 }
                 dw_destroy(answer);
         }
-	return 1;
+        return 1;
 }
 
 /* Send a local DNS request to the upstream (remote) server; this
@@ -390,8 +390,8 @@ int forward_local_udp_packet(SOCKET sock, int32_t local_id,
                 } else { /* Create new connection */
                         reset_rem(b);
                         if(make_new_udp_connect(b,a,len,num_alloc) == 2) {
-				return 0;
-			}
+                                return 0;
+                        }
                 }
         } else { /* Add new local to already inflight connection */
                 if(rem[b].num_locals >= num_alloc - 2) {
@@ -622,14 +622,14 @@ void try_forward_local_udp_packet(SOCKET sock, int32_t local_id,
      int len, sockaddr_all_T *client,dw_str *query, int tcp_num,
      dw_str *orig_query) {
 
-	unsigned char p0 = 0, p1 = 0, p2 = 0;
+        unsigned char p0 = 0, p1 = 0, p2 = 0;
 
-	if(packet == 0 || len < 12) { /* Sanity check */
-		return;
-	}
-	p0 = packet[0];
-	p1 = packet[1];
-	p2 = packet[2];
+        if(packet == 0 || len < 12) { /* Sanity check */
+                return;
+        }
+        p0 = packet[0];
+        p1 = packet[1];
+        p2 = packet[2];
 
         /* If not cached, get a reply that we will cache and send back to
          * the client */
@@ -648,9 +648,9 @@ void try_forward_local_udp_packet(SOCKET sock, int32_t local_id,
         }
 
         if(handle_overload == 1) {
-		packet[0] = p0;
-		packet[1] = p1;
-		packet[2] = p2;
+                packet[0] = p0;
+                packet[1] = p1;
+                packet[2] = p2;
                 send_server_fail(client,packet,len,sock,tcp_num);
         }
 }
