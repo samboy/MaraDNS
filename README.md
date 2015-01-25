@@ -7,12 +7,18 @@
 
 ## Table of contents
 
+* Important note for Windows users
 * What is DNS
 * MaraDNS' History
 * Overview
 * Internals
 * Other DNS servers
 * MaraDNS' future
+
+## Important note for Windows users
+
+   Users of Microsoft Windows are better off downloading a prebuilt Windows
+   binary over at [Sourceforge] (https://sourceforge.net/projects/maradns/)
 
 ## What is DNS
 
