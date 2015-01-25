@@ -18,7 +18,7 @@
 ## Important note for Windows users
 
    Users of Microsoft Windows are better off downloading a prebuilt Windows
-   binary over at [Sourceforge] (https://sourceforge.net/projects/maradns/).
+   binary over at Sourceforge: https://sourceforge.net/projects/maradns/
    Be sure to download the file with the .zip extension.
 
 ## What is DNS
