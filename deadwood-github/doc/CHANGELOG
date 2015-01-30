@@ -1,3 +1,7 @@
+3.2.07 (2015-01-29):
+
+- HOTFIX: NS tarpit fix would sometimes go out of bounds; fixed
+
 3.2.06 (2015-01-24):
 
 - Security update: Better protection against malicious NS tarpits
