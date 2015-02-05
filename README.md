@@ -5,6 +5,12 @@
    comfortable editing text configuration files. MaraDNS is released under
    a BSD license.
 
+   I wrote MaraDNS while I was a college student and a travelling English
+   teacher during the first 2000s decade. Now that I’m working as
+   a professional software developer, the program is finished: I only
+   provide bug fixes and other basic maintenance unless I’m getting
+   paid.
+
 ## Table of contents
 
 * Important note for Windows users
