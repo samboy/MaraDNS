@@ -11,6 +11,10 @@
    provide bug fixes and other basic maintenance unless I’m getting
    paid.
 
+   Since MaraDNS is open sourced, there is nothing stopping anyone from 
+   forking this repository and implementing new features; I ask such users 
+   to please not call any such forks “MaraDNS”.
+
 ## Table of contents
 
 * Important note for Windows users
