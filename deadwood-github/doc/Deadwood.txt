@@ -522,8 +522,8 @@ upstream_servers
  199.7.83.42     l.root-servers.net (IANA)
  202.12.27.33    m.root-servers.net (WIDE)
 
-   This list is current as of May 3, 2010, and was last changed on
-   November 1, 2007.
+   This list is current as of February 9, 2015, and was last
+   changed on January 3, 2013.
 
    Please note that each upstream_servers entry takes up space in
    Deadwood's cache and that maximum_cache_elements will need to be
