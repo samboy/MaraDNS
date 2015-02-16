@@ -802,6 +802,13 @@ in DNS names.  Even if they were, Deadwood does not allow ASCII
 control characters (bytes with a value less then 32) in DNS names.
 Other characters (UTF-8, etc.) are allowed.
 
+<p>
+
+Combining a CNAME record with other records is prohibited in
+RFC1034 section 3.6.2 and RFC1912 section 2.4; it makes an
+answer ambiguous.  Deadwood handles this ambiguity differently
+than other DNS servers.
+
 <h1>LEGAL DISCLAIMER</h1>
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
 OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
