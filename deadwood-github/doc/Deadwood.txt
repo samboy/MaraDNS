@@ -756,6 +756,11 @@ verbose_level
    allow ASCII control characters (bytes with a value less then 32)
    in DNS names. Other characters (UTF-8, etc.) are allowed.
 
+   Combining a CNAME record with other records is prohibited in
+   RFC1034 section 3.6.2 and RFC1912 section 2.4; it makes an
+   answer ambiguous. Deadwood handles this ambiguity differently
+   than some other DNS servers.
+
                            LEGAL DISCLAIMER
 
    THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY

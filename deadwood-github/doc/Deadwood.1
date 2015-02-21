@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Mon Feb  9 21:46:05 2015
+.\" Last updated Sat Feb 21 09:03:11 2015
 .\"
 .TH DEADWOOD 1 "August 2009" DEADWOOD "Deadwood reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -934,6 +934,11 @@ It is not clear whether the DNS RFCs allow ASCII control characters
 in DNS names. Even if they were, Deadwood does not allow ASCII
 control characters (bytes with a value less then 32) in DNS names.
 Other characters (UTF-8, etc.) are allowed.
+.PP
+Combining a CNAME record with other records is prohibited in
+RFC1034 section 3.6.2 and RFC1912 section 2.4; it makes an
+answer ambiguous. Deadwood handles this ambiguity differently
+than some other DNS servers.
 .SH "LEGAL DISCLAIMER"
 .PP
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS \(aq\(aqAS IS\(aq\(aq AND ANY
