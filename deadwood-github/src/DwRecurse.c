@@ -52,7 +52,7 @@ extern u_long dont_block;
 /* Numeric mararc parameters */
 extern int32_t max_ttl;
 /* Maximum number of remote connections */
-extern int maxprocs;
+extern int_fast32_t maxprocs;
 
 #ifdef OTHER_STUFF
 /* Show a single character on the standard output, escaping the

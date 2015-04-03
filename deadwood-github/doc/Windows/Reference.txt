@@ -218,7 +218,7 @@ maximum_cache_elements
 maxprocs
 
    This is the maximum number of pending remote UDP connections
-   Deadwood can have. The default value for this is 32.
+   Deadwood can have. The default value for this is 1024.
 
 max_tcp_procs
 

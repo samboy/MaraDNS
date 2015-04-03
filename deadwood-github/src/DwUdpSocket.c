@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2014 Sam Trenholme and others
+/* Copyright (c) 2007-2015 Sam Trenholme and others
  *
  * TERMS
  *
@@ -47,7 +47,7 @@ extern remote_T *rem;
 dw_hash *inflight;
 
 /* The numeric mararc parameters */
-extern int maxprocs;
+extern int_fast32_t maxprocs;
 extern int timeout_seconds;
 extern int dns_port;
 extern int upstream_port;

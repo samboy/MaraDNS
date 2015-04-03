@@ -41,7 +41,7 @@ chroot_dir = "/etc/deadwood" # Directory we run program from (not used in Win32)
 
 recursive_acl = "127.0.0.1/16" # Who is allowed to use the cache
 
-maxprocs = 8 # Maximum number of pending requests
+maxprocs = 2048 # Maximum number of pending requests
 handle_overload = 1 # Send SERVER FAIL when overloaded
 
 maradns_uid = 99 # UID Deadwood runs as

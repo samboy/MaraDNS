@@ -57,7 +57,7 @@ maximum_cache_elements = 1024
 
 # Maximum number of pending connections.  
 # Increase this for an enterprise
-maxprocs = 32
+maxprocs = 2048
 
 # Maximum number of TCP connections.  tcp_listen also must be set.
 max_tcp_procs = 8

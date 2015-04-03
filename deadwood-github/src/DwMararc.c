@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2012 Sam Trenholme
+/* Copyright (c) 2007-2015 Sam Trenholme
  *
  * TERMS
  *
@@ -367,7 +367,7 @@ void dwm_init_mararc() {
         }
         dwm_dict_init();
         /* Numeric mararc variables have default values.  */
-        key_n[DWM_N_maxprocs] = 32;
+        key_n[DWM_N_maxprocs] = 1024;
 #ifndef FALLBACK_TIME
         key_n[DWM_N_timeout_seconds] = 1;
 #else /* FALLBACK_TIME */
