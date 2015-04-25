@@ -1300,3 +1300,35 @@ the open-source BSD variants, or what not.
 
 The <A href=https://github.com/mustafaramadhan/kloxo/tree/dev>Kloxo-MR</A>
 control panel has MaraDNS support.
+
+<A name="trailing"> </A>
+<h2>What does the message “don’t forget the trailing dot” mean?</h2>
+
+It means to not forget the tailing dot.
+
+<p>
+
+Hostnames in zone files need to be properly terminated; if a hostname
+is in the form “foo.example.com”, this name will not parse and return
+an error with a note to not forget the trailing dot.  
+
+<p>
+
+To fix this, put a trailing dot at the end of the hostname, so it
+looks like “foo.example.com.” (observe that dot at the end) instead
+of “foo.example.com”
+
+<A name="tld"> </A>
+
+<h2>Does MaraDNS support newer top level domains?</h2>
+
+MaraDNS does not impose any limitations on the top level domain used
+in zone files and other places, as is fully compatible with newer
+top level domains like “today.”  
+
+<p>
+
+Note that, if using an internationalized domain name, it needs
+to be translated in to Punycode first. For example, if 
+using the domain name “ñ.com.”, it needs to be in the form
+“xn--ida.com.” in MaraDNS’ mararc and zone files.
