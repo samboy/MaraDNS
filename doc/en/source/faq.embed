@@ -879,8 +879,19 @@ will be visible when starting MaraDNS.
 <h2>39. You make a lot of releases of MaraDNS; at our
     ISP/IT department, updating software is non-trivial.</h2>
 
-The last security bug which required a MaraDNS update was on March
-17, 2012.
+Regularly updating software is required to keep something as
+complicated as a DNS server secure; there is not a DNS
+server out there so secure that it never needs to be updated.
+
+<p>
+
+Since MaraDNS is finished, updates usually only happen about once a 
+year.
+
+<p>
+
+The last security bug which required a MaraDNS update was made before
+January 30, 2015.
 
 <A name=nxdomain> </A>
 
