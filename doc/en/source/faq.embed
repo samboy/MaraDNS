@@ -1213,7 +1213,8 @@ http://samiam.org/blog/20120326.html>http://samiam.org/blog/20120326.html</A>
 distributed denial-of-service attack?</h2>
 
 While
-<a href="http://woodlane.webconquest.com/pipermail/list/2013-March/001157.html">I do not have time to implement rate limiting</a>,
+<a href="http://maradns.samiam.org/old-list-archive/2013-March/001157.html"
+>I do not have time to implement rate limiting</a>,
 CentOS 6 does support response rate limiting at the firewall level.  
 The following iptables commands allow a given IP to
 only send MaraDNS/Deadwood 20 DNS queries every four seconds:
