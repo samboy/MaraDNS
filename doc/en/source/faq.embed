@@ -208,8 +208,8 @@ fitness for purpose.
 </A>
 <H2>4. How do I report bugs in MaraDNS?</H2>
 
-Post your bug report in the <A href=http://forum.samiam.org/forum-5.html
->MaraDNS support forum</A>.
+Post your bug report as a <A href=https://github.com/samboy/MaraDNS/issues
+>Github issue</A>.
 
 <A NAME=chatter>
 </A>
@@ -307,8 +307,8 @@ at what point it had to terminate parsing of the zone file.
 <p>
 
 If MaraDNS does return a cryptic error message without letting you know
-what is wrong, let us know on the <A href=http://forum.samiam.org/forum-5.html
->support forum</A>
+what is wrong, let us know in a <A 
+href=https://github.com/samboy/MaraDNS/issues>Github issue</A>
 so that we can fix the bug.  MaraDNS is designed
 to be easy to use; cryptic error messages go against this spirit.
 
@@ -480,8 +480,8 @@ root_servers dictionary variable.
 <p>
 
 If you still see MaraDNS freeze up after making this correction, please
-send a bug report to the <A href=http://forum.samiam.org/forum-5.html>support
-forum</A>.
+send a bug report as a <A href=https://github.com/samboy/MaraDNS/issues>Github
+issue</A>.
 
 <A NAME=python>
 </A>
@@ -1048,8 +1048,8 @@ to verify your virus scanner has not reported a false positive.
 <p>
 
 If you have verified the GPG signature of the program and AVG reports a 
-virus, please let us know on the MaraDNS 
-<A href=http://forum.samiam.org/forum-5.html>support forum</A>.  
+virus, please let us know with a
+<A href=https://github.com/samboy/MaraDNS/issues>Github issue</A>.  
 Otherwise, please
 use a better virus scanner and make sure there are no viruses on your 
 computer.
@@ -1296,8 +1296,8 @@ possible.
 When I say that Windows 7 and CentOS 6 are the only supported operating
 systems for MaraDNS, this does not mean that MaraDNS will not compile and
 run on other systems; it merely means that I can not provide hand-holding
-support on the <A href=https://forum.samiam.org/forum-5.html>MaraDNS
-support forum</A> for people who want to run MaraDNS in Minix, one of
+support when answering <A href=https://github.com/samboy/MaraDNS/issues>Github
+bug reports</A> for people who want to run MaraDNS in Minix, one of
 the open-source BSD variants, or what not.
 
 <A name="kloxomr"> </A>
