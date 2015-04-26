@@ -273,7 +273,7 @@ SOCKET do_bind(ip_addr_T *ip,int type);
 ip_addr_T get_upstream_ip();
 
 /* Find a free remote pending connection */
-int32_t find_free_remote();
+int_fast32_t find_free_remote();
 
 /* In DwUdpSocket.c */
 /* Get and process a local DNS request */
