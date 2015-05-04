@@ -1353,7 +1353,7 @@ to be translated in to Punycode first. For example, if
 using the domain name “ñ.com.”, it needs to be in the form
 “xn--ida.com.” in MaraDNS’ mararc and zone files.
 
-<A name="mobile> </A>
+<A name="mobile"> </A>
 
 <h2>Why isn't MaraDNS' web design more small screen compatible?</h2>
 
