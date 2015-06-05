@@ -633,7 +633,7 @@ the corresponding SPF record, which will have the syntax
 Use '\x7e' to put a tilde in a SPF record:
 
 <p>
-<tt>example.com. SPF 'v=spf1 a mx ptr ip4:10.1.22.333 '\x7e'all'</tt>
+<tt>example.com. SPF 'v=spf1 +mx a:colo.example.com/28 '\x7e'all'</tt>
 
 <A name="cname"> </A>
 <h2>30. I'm having problems resolving CNAMES I have set up.</h2>
