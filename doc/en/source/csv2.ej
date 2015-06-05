@@ -224,7 +224,21 @@ sequences; read the csv2_txt man page for details.
 
 A SPF record is, with the exception of the numeric rtype, identical to
 a TXT record.  SPF records are designed to make it more difficult to
-forge email.  More information about SPF records can be found in 
+forge email.  
+
+Here is one example SPF record:
+
+<pre>
+example.com. SPF 'v=spf1 a mx ptr ip4:10.1.22.333 -all'
+</pre>
+
+Use '\x7e' to put a tilde in a SPF record:
+
+<pre>
+example.com. SPF 'v=spf1 a mx ptr ip4:10.1.22.333 '\x7e'all'
+</pre>
+
+More information about SPF records can be found in 
 RFC4408, or by performing a web search for 'sender policy framework'.
 
 <h2>RAW</h2>
