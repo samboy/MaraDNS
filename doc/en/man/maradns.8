@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Sat Jan 24 09:43:29 2015
+.\" Last updated Sat Jun  6 09:50:34 2015
 .\"
 .TH MARADNS 8 "January 2002" MARADNS "MaraDNS reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -272,6 +272,27 @@ list
 .PP
 52. How to I get MaraDNS to always give the same IP to
 all DNS queries?
+.PP
+53. Why did you change MaraDNS\(aq tagline?
+.PP
+54. How do you stop MaraDNS from taking part in a
+distributed denial-of-service attack?
+.PP
+55. What about DNS-over-TCP?
+.PP
+56. How do I use MaraDNS with systemd?
+.PP
+57. Why doesn\(aqt MaraDNS use IP_FREEBIND?
+.PP
+58. Is there a web interface for MaraDNS?
+.PP
+59. What does the message “don’t forget the trailing
+dot” mean?
+.PP
+60. Does MaraDNS support newer top level domains?
+.PP
+61. Why isn\(aqt MaraDNS\(aq web design more small screen
+compatible?
 .RE
 .PP
 .PP
@@ -282,28 +303,13 @@ all DNS queries?
 .in -3
 \fB1. I\(aqm using an older version of MaraDNS\fR
 .PP
-Upgrade to MaraDNS 1.4 or MaraDNS 2.0. MaraDNS 1.4 is compatible with
-older versions of MaraDNS, with the relatively few changes need to
-upgrade
-documented.
+Upgrade to MaraDNS 2.0.
+Here is an upgrade guide.
 .PP
-Use MaraDNS 2.0 if there are any issues using MaraDNS 1.4 to
-recursively
-resolve records (via recursive_acl); the recursive resolver
-in MaraDNS 1.4 is deprecated and only critical security issues are
-fixed
-with it. MaraDNS 2.0 uses the separate daemon Deadwood to recursively
-resolve records.
-.PP
-MaraDNS 1.0 and 1.2 are only supported for critical security updates,
-and
-will no longer be supported on December 21, 2010. MaraDNS 1.3 is also
-only
-supported for critical security updates, and support will stop on
-December
-21, 2012. MaraDNS 1.4 and MaraDNS 2.0 are both fully supported
-(security
-and other important bug fixes) for the foreseeable future.
+MaraDNS 1.4 is only supported for critical security updates; this
+support
+is being phased out and MaraDNS 1 will no longer be supported on
+June 21, 2015.
 .PP
 .in -3
 \fB2. How do I try out MaraDNS?\fR
@@ -317,11 +323,11 @@ distribution.
 .in -3
 \fB3. What license is MaraDNS released under?\fR
 .PP
-MaraDNS 1.2 is released with the following two-clause
+MaraDNS is released with the following two-clause
 BSD-type license:
 .PP
 .RS 4
-Copyright (c) 2002-2009 Sam Trenholme and others
+Copyright (c) 2002-2015 Sam Trenholme and others
 .PP
 TERMS
 .PP
@@ -345,20 +351,25 @@ fitness for purpose.
 .in -3
 \fB4. How do I report bugs in MaraDNS?\fR
 .PP
-Send an email to the MaraDNS mailing list. Details on how to do
-this are at http://www.maradns.org/
+Post your bug report as a Github issue.
 .PP
 .in -3
 \fB5. Some of the postings to the mailing list do not talk about
 MaraDNS!\fR
 .PP
-Topic drift sometimes happens. It\(aqs a part of life.
+As of September 2013, the mailing list has become moderated and
+only postings on the mailing list are relevant MaraDNS announcements.
 .PP
 .in -3
 \fB6. How do I get off the mailing list?\fR
 .PP
-Send an email to list-request@maradns.org with "unsubscribe" as the
+Send an email to list-unsubscribe@maradns.org, or an
+email to list-request@maradns.org with "unsubscribe" as the
 subject line.
+.PP
+The mailing list will send you an email confirming the unsubscribe
+request;
+this email needs to be replied to in order to get off the list.
 .PP
 .in -3
 \fB7. How do I set up reverse DNS on MaraDNS?\fR
@@ -389,7 +400,7 @@ matter of just adding a record like this to a MaraDNS zonefile. One
 also
 needs control of the appropriate in-addr.arpa. domain.
 .PP
-While it can make logical sense to contact the IP 10.11.12.13 when
+While it could make logical sense to contact the IP 10.11.12.13 when
 trying
 to get the reverse DNS lookup (fully qualified domain name) for a given
 IP, DNS servers don\(aqt do this. DNS server, instead, contact the root
@@ -433,7 +444,7 @@ is a syntax error in a csv2 zone file, MaraDNS will tell you exactly
 at what point it had to terminate parsing of the zone file.
 .PP
 If MaraDNS does return a cryptic error message without letting you know
-what is wrong, let us know on the mailing list
+what is wrong, let us know in a Github issue
 so that we can fix the bug. MaraDNS is designed
 to be easy to use; cryptic error messages go against this spirit.
 .PP
@@ -467,11 +478,7 @@ distribution
 .PP
 MaraDNS 2.0 no longer uses threads.
 .PP
-The multi-threaded model was the simplest way to write
-a functioning recursive DNS server for MaraDNS 1.0. There is a reason
-why MaraDNS, pdnsd, and BIND 9 all use the multi-threaded model.
-.PP
-It took me nearly three years to rewrite MaraDNS\(aq recursive resolver
+It took me three years to rewrite MaraDNS\(aq recursive resolver
 as a separate non-threaded daemon. This has been done, and now all
 recursion
 is done with Deadwood which does not need threads.
@@ -513,35 +520,8 @@ without precedent; Perl uses its own "pod" documentation format.
 MaraDNS?\fR
 .PP
 .PP
-Yes.
-.PP
-Here is the procedure for making a proper patch:
-.PP
-.TP 2
-*
-Enter the directory that the file is in, for example
-maradns-1.4.01/server
-.TP 2
-*
-Copy over the file that you wish to modify to another file
-name. For example: cp MaraDNS.c MaraDNS.c.orig
-.TP 2
-*
-Edit the file in question, e.g: vi MaraDNS.c
-.TP 2
-*
-After editing, do something like this:
-.br
-diff -u MaraDNS.c.orig MaraDNS.c > maradns.patch
-.TP 2
-*
-Make sure the modified version compiles cleanly
-.PP
-Send a patch to the MaraDNS mailing list, along with a statement that
-you place
-the contents of the patch under MaraDNS\(aq BSD license. If I find that
-the patch
-works well, I will integrate it in to MaraDNS.
+I no longer accept
+third party patches
 .PP
 .in -3
 \fB16. Can MaraDNS act as a primary nameserver?\fR
@@ -610,7 +590,7 @@ question.
 \fB20. Is MaraDNS portable?\fR
 .PP
 .PP
-MaraDNS is developed on a CentOS 5 and Windows XP dual boot laptop.
+MaraDNS is developed in CentOS 6 and Windows 7.
 MaraDNS may or may not compile and run on other systems.
 .PP
 .in -3
@@ -627,11 +607,6 @@ run as a service.
 .in -3
 \fB22. MaraDNS freezes up after being used for a while\fR
 .PP
-There is a bug with the Linux kernel
-which causes UDP clients to freeze unless code is written to work
-around
-the kernel bug. This workaround was first introduced in MaraDNS 1.0.28
-and 1.1.35 and accidently disabled in 1.2.03.1.
 .PP
 If using your ISP\(aqs name servers or some other name servers which
 are not, in fact, root name servers, please make sure that you are
@@ -639,7 +614,8 @@ using the upstream_servers dictionary variable instead of the
 root_servers dictionary variable.
 .PP
 If you still see MaraDNS freeze up after making this correction, please
-send a bug report to the mailing list.
+send a bug report as a Github
+issue.
 .PP
 .in -3
 \fB23. What kind of Python integration does MaraDNS have\fR
@@ -647,7 +623,7 @@ send a bug report to the mailing list.
 The mararc file uses the same syntax that Python uses; in fact, Python
 can parse a properly formatted mararc file.
 .PP
-There is currently no other integration with Python.
+There is no other integration with Python.
 .PP
 .in -3
 \fB24. Doesn\(aqt "kvar" mean "four" in Esperanto?\fR
@@ -780,12 +756,11 @@ As an aside, do not have MX records point to CNAMEs.
 .PP
 SPF, or sender policy framework, is method of using DNS that makes
 it more difficult to forge email. MaraDNS has full support for SPF,
-both via TXT records and, starting with MaraDNS 1.2.08, via RFC4408
-SPF records.
+both via TXT records and RFC4408 SPF records.
 .PP
 SPF configuration is beyond the scope of MaraDNS\(aq documentation.
 However,
-at the time of this FAQ entry being written (June, 2006), information
+at the time this FAQ entry was last updated (July, 2013), information
 and documentation concerning SPF is available at
 http://openspf.org. The BIND examples
 will work in MaraDNS csv2 zone files as long as the double quotes (")
@@ -794,9 +769,14 @@ replaced by single quotes (\(aq). For example, a SPF TXT record that
 looks like example.net. IN TXT "v=spf1 +mx a:colo.example.com/28 -all"
 in a BIND zone file will look like
 example.net. TXT \(aqv=spf1 +mx a:colo.example.com/28 -all\(aq in a
-MaraDNS zone file. MaraDNS version 1.2.08 and higher can also make
+MaraDNS zone file. MaraDNS can also make
 the corresponding SPF record, which will have the syntax
 example.net. SPF \(aqv=spf1 +mx a:colo.example.com/28 -all\(aq.
+.PP
+Use \(aq\\x7e\(aq to put a tilde ("~" character) in a SPF record:
+.PP
+example.com. SPF \(aqv=spf1 +mx a:colo.example.com/28
+\(aq\\x7e\(aqall\(aq
 .PP
 .in -3
 \fB30. I\(aqm having problems resolving CNAMES I have set up.\fR
@@ -818,7 +798,7 @@ www.google.com, and render the above record like this:
 
 .nf
 	google.example.com. CNAME www.google.com.
-	www.google.com. CNAME 66.102.7.104
+	www.google.com. A 66.102.7.104
 .fi
 .PP
 For security reasons, MaraDNS doesn\(aqt do this. Instead, MaraDNS will
@@ -1047,6 +1027,9 @@ The maxprocs mararc variable
 .TP 2
 *
 The synth_soa_serial variable can not have a value of 2
+.TP 2
+*
+There is no DNS-over-TCP support
 .PP
 If any of the above features are desired, try compiling MaraDNS using
 Cygwin. Note that the Cygwin port of MaraDNS does not have ipv6
@@ -1069,37 +1052,15 @@ will be visible when starting MaraDNS.
 \fB39. You make a lot of releases of MaraDNS; at our ISP/IT department,
 updating software is non-trivial.\fR
 .PP
-The number of releases seen in the changelog
-is not an accurate reflection of how often someone using a stable
-branch of MaraDNS will need to update.
+Regularly updating software is required to keep something as
+complicated as a DNS server secure; there is not a DNS
+server out there so secure that it never needs to be updated.
 .PP
-MaraDNS 1.2 and 1.3.07, the older stable branches of MaraDNS, were last
-updated in August of 2008.
+Since MaraDNS is finished, updates usually only happen about once a
+year.
 .PP
-I go to a great deal of effort to make sure MaraDNS releases are as
-painless to update as possible. I ensure configuration file format
-compatibility, even between major versions of MaraDNS. With the
-exception
-of configuration file parser bugfixes, MaraDNS 1.0 configuration files
-are compatible with MaraDNS 1.4.
-.PP
-It is impossible to make code that is bug-free or without security
-problems. This is especially true with code that runs on the public
-internet.<sup><font size=-2>1</font></sup> Code has to be updated from
-time to time. What I do in order to minimize the disruption caused by
-an
-update is to always have a stable bugfix-only branch of MaraDNS (right
-now I
-have
-.I "two"
-bugfix-only branches), and to, as much as possible, evenly
-space out the bugfix updates.
-.PP
-Footnote 1: Even DJB\(aqs code has security problems. Both Qmail and
-DjbDNS
-have known security problems, and need to be patched before put on a
-public
-internet server.
+The last security bug which required a MaraDNS update was made before
+January 30, 2015.
 .PP
 .in -3
 \fB40. I have star records in my zones, and am having problems with
@@ -1111,26 +1072,8 @@ This was a bug in MaraDNS 1.2 which has long since been fixed.
 \fB41. I have a zone with only SOA/NS records, and the zone is not
 working.\fR
 .PP
-MaraDNS 1.2 has a bug where it does not correctly process zones without
-any "normal" records. For example, suppose a zone like this:
-
-.nf
-% SOA localhost. root@localhost. 1 7200 600 1209600 3600
-% NS localhost.
-.fi
-
-This zone will not work until some non-SOA/NS record is added, such
-as in this zone file:
-
-.nf
-% SOA localhost. root@localhost. 1 7200 600 1209600 3600
-% NS localhost.
-foo.% TXT \(aqMaraDNS 1.2 needs this record.\(aq
-.fi
-
-This bug has been fixed in MaraDNS 1.3 and 1.4; since this is not a
-security bug (there is a perfectly good workaround), this bug will not
-be fixed in MaraDNS 1.2 unless you pay me to fix it.
+MaraDNS 1.2 had a bug where it did not correctly process zones without
+any "normal" records. Upgrade to MaraDNS 2.0.
 .PP
 .in -3
 \fB42. I am having problems registering my domain with AFNIC (the
@@ -1197,7 +1140,7 @@ functional and part of MaraDNS 2.0. More information is here:
 .PP
 http://maradns.blogspot.com/search/label/Deadwood
 .PP
-http://maradns.org/deadwood/
+http://maradns.samiam.org/deadwood/
 .PP
 Since the old recursive code is a bit difficult to maintain, and since
 I
@@ -1207,34 +1150,20 @@ resolve security issues with MaraDNS 1.0\(aqs recursive resolver.
 .PP
 .PP
 .in -3
-\fB45. MaraDNS 1.2 has issues with NXDOMAINS and case sensitivity.\fR
+\fB45. MaraDNS 1.2 had issues with NXDOMAINS and case sensitivity.\fR
 .PP
-There is a known bug in MaraDNS 1.2.12 where, should a client ask for
+There was a known bug in MaraDNS 1.2.12 where, should a client ask for
 a non-existent record in all caps, MaraDNS 1.2.12 will return a
 NXDOMAIN
-instead of a "not there" reply. This can cause there to be problems
-delivering email to the host in question if a mail transport agent asks
-for a name in all caps.
-.PP
-If this is an issue for your organization, please upgrade to a newer
-version of MaraDNS; MaraDNS 1.4 and 2.0 do not have
-this bug. If you want to see this bug fixed in MaraDNS 1.2, please
-help sponsor MaraDNS.
+instead of a "not there" reply. Upgrade to 2.0.
 .PP
 .in -3
 \fB46. Can MaraDNS offer protection from phishing and malicious
 sites?\fR
 .PP
-Yes.
-.PP
-Here is a webpage that explains how its done:
-.PP
-http://www.malwaredomains.com/?p=288
-.PP
-Should that website be down, I have made a local mirror of the
-Perl script here:
-.PP
-createmaradns-pl.txt
+Deadwood can block up to about 20,000 domains.
+More details are in the
+Deadwood FAQ.
 .PP
 .in -3
 \fB47. Does maradns support star (wildcard) records?\fR
@@ -1292,19 +1221,23 @@ use)
 to verify your virus scanner has not reported a false positive.
 .PP
 If you have verified the GPG signature of the program and AVG reports a
-virus, please let us know on the MaraDNS mailing list. Otherwise,
-please
+virus, please let us know with a
+Github issue.
+Otherwise, please
 use a better virus scanner and make sure there are no viruses on your
 computer.
 .PP
 .in -3
 \fB50. I can not subscribe to the MaraDNS mailing list\fR
 .PP
+.I "Please note that the mailing list is no longer used to handle MaraDNS support requests. Please file a Github issue at https://github.com/samboy/MaraDNS/issues to get MaraDNS support."
+.PP
 The procedure for subscribing to the mailing list is as follows:
 .TP 2
 *
 Send an email to list-request@maradns.org with "Subscribe" as the
-subject
+subject,
+or an email to list-subscribe@maradns.org
 .TP 2
 *
 You will get an email from list-request@maradns.org asking you to
@@ -1320,8 +1253,10 @@ You will now get a message stating \(aqWelcome to the "list" mailing
 list\(aq.
 .TP 2
 *
-This email will tell you how to post to the mailing list. I suggest
-reading it.
+Note that the mailing list is moderated and only relevant MaraDNS
+announcements are approved. People who need help should
+file a
+Github issue.
 .PP
 If you get an email from list-request@maradns.org with the subject
 "The results of your email commands", you did not correctly send an
@@ -1334,7 +1269,8 @@ mail" folder. If you are unable to get these emails at your email
 address,
 please get a gmail email account, which can successfully subscribe to
 the
-MaraDNS mailing list.
+MaraDNS mailing list. Note that subscription confirmation emails
+may be in Gmail\(aqs "promotions" tab.
 .PP
 .in -3
 \fB51. How does MaraDNS respond to EDNS (RFC2671) packets?\fR
@@ -1423,6 +1359,152 @@ call it NanoDNS, and invoke it with NanoDNS 10.11.12.13
 Note that NanoDNS does not daemonize, nor log anything, nor have any
 other
 space-wasting features.
+.PP
+.PP
+.in -3
+\fBWhy did you change MaraDNS\(aq tagline?\fR
+.PP
+I have changed MaraDNS\(aq tagline from "MaraDNS: A
+security-aware DNS server" to "MaraDNS: A small open-source DNS server"
+because MaraDNS does not support DNSSEC. I have blogged about this:
+.PP
+.RS 4
+http://samiam.org/blog/20120326.html
+.RE
+.PP
+.PP
+.in -3
+\fBHow do you stop MaraDNS from taking part in a distributed
+denial-of-service attack?\fR
+.PP
+While
+I do not have time to implement rate limiting,
+CentOS 6 does support response rate limiting at the firewall level.
+The following iptables commands allow a given IP to
+only send MaraDNS/Deadwood 20 DNS queries every four seconds:
+.PP
+iptables -A INPUT -p udp --dport 53 -m state --state NEW -m recent
+--set --name DDOS --rsource
+.br
+.PP
+iptables -A INPUT -p udp --dport 53 -m state --state NEW -m recent
+--update --seconds 4 --hitcount 20 --name DDOS --rsource -j DROP
+.br
+.PP
+To verify they are applied:
+.PP
+iptables --list
+.br
+.PP
+To save these commands in CentOS so they are applied at system boot
+time:
+.PP
+iptables-save > /etc/sysconfig/iptables
+.br
+.PP
+.I "Disclaimer"
+.PP
+These incantations work in CentOS 6 but may or may not work in other
+versions of Linux. I do not support non-CentOS6 Linux installs of
+MaraDNS.
+.PP
+.in -3
+\fBWhat about DNS-over-TCP?\fR
+.PP
+For people who want DNS-over-TCP, instructions are
+in the DNS-over-TCP
+tutorial. Note that Windows users will have to use Cygwin to have
+DNS-over-TCP.
+.PP
+However, DNS-over-TCP is not necessary. DNS-over-TCP is optional as per
+section 6.1.3.2 of RFC1123; any program or web service that considers
+no DNS-over-TCP an error is not RFC-compliant.
+.PP
+Not having DNS-over-TCP is more secure, because it gives attackers a
+smaller surface to attack.
+.PP
+.in -3
+\fBHow do I use MaraDNS with systemd?\fR
+.PP
+While I like systemd, it
+is not part of CentOS 6 nor, obviously, Windows 7. That in mind, I have
+no
+plans to support systemd until 2017, when I plan to update MaraDNS\(aq
+supported
+operating systems.
+.PP
+However, Tomasz Torcz has
+kindly made some systemd files for MaraDNS, which people are free to
+use.
+.PP
+As an aside, I do not like the fact that Debian will probably not make
+systemd
+the default init; I do not think this kind of fragmentation is good
+for Linux.
+.PP
+.in -3
+\fBWhy doesn\(aqt MaraDNS use IP_FREEBIND?\fR
+.PP
+IP_FREEBIND is a non-POSIX Linux-specific extension
+to POSIX\(aqs netinet/in.h,
+and, as such, has no place in MaraDNS\(aq code. MaraDNS strives to use
+POSIX-compliant calls so that it can compile on as many systems as
+possible.
+.PP
+When I say that Windows 7 and CentOS 6 are the only supported operating
+systems for MaraDNS, this does not mean that MaraDNS will not compile
+and
+run on other systems; it merely means that I can not provide
+hand-holding
+support when answering Github
+bug reports for people who want to run MaraDNS in Minix, one of
+the open-source BSD variants, or what not.
+.PP
+.in -3
+\fBIs there a web interface for MaraDNS?\fR
+.PP
+The Kloxo-MR
+control panel has MaraDNS support.
+.PP
+.in -3
+\fBWhat does the message “don’t forget the trailing dot” mean?\fR
+.PP
+It means to not forget the tailing dot.
+.PP
+Hostnames in zone files need to be properly terminated; if a hostname
+is in the form “foo.example.com”, this name will not parse and
+return
+an error with a note to not forget the trailing dot.
+.PP
+To fix this, put a trailing dot at the end of the hostname, so it
+looks like “foo.example.com.” (observe that dot at the end) instead
+of “foo.example.com”
+.PP
+.in -3
+\fBDoes MaraDNS support newer top level domains?\fR
+.PP
+MaraDNS does not impose any limitations on the top level domain used
+in zone files and other places, as is fully compatible with newer
+top level domains like “today.”
+.PP
+Note that, if using an internationalized domain name, it needs
+to be translated in to Punycode first. For example, if
+using the domain name “ñ.com.”, it needs to be in the form
+“xn--ida.com.” in MaraDNS’ mararc and zone files.
+.PP
+.in -3
+\fBWhy isn\(aqt MaraDNS\(aq web design more small screen compatible?\fR
+.PP
+MaraDNS is a project from the first 2000s decade (oughts) and much of
+its development, including its website design, was done before the
+iPhone existed, in an era when getting a site to look good in Internet
+Explorer 6 mattered a lot more than making it adaptable to different
+screen sizes.
+.PP
+It would be nice if I somehow became independently wealthy and could
+retire young, which would give me enough free time to update
+MaraDNS\(aq
+web site design for the 2010s.
 .PP
 .SH "BUGS"
 .PP

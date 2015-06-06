@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Sat Jan 24 09:43:30 2015
+.\" Last updated Sat Jun  6 09:50:35 2015
 .\"
 .TH CSV2 5 "January 2007" MARADNS "MaraDNS reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -271,18 +271,32 @@ Any binary data can be specified; see the
 manual page
 for full details.
 .PP
-If tildes are used to separate records, a TXT record can not contain a
-\(aq|\(aq (pipe) character, a \(aq#\(aq character, nor any ASCII
-control character;
-these characters can be added to a TXT record via the use of escape
-sequences; read the csv2_txt man page for details.
+If tildes are used to separate records, a TXT record can not contain
+a literal \(aq|\(aq (pipe) character, a \(aq#\(aq literal, a \(aq~\(aq
+literal, nor any
+ASCII control literal; these characters can be added to a TXT record
+via the use of escape sequences; read the
+csv2_txt man page for details.
 .PP
 .in -3
 \fBSPF\fR
 .PP
 A SPF record is, with the exception of the numeric rtype, identical to
 a TXT record. SPF records are designed to make it more difficult to
-forge email. More information about SPF records can be found in
+forge email.
+Here is one example SPF record:
+
+.nf
+example.com. SPF \(aqv=spf1 +mx a:colo.example.com/28 -all\(aq
+.fi
+
+Use \(aq\\x7e\(aq to put a tilde ("~" character) in a SPF record:
+
+.nf
+example.com. SPF \(aqv=spf1 +mx a:colo.example.com/28 \(aq\\x7e\(aqall\(aq
+.fi
+
+More information about SPF records can be found in
 RFC4408, or by performing a web search for \(aqsender policy
 framework\(aq.
 .PP
