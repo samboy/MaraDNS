@@ -215,10 +215,11 @@ Any binary data can be specified; see the <b>csv2_txt(5)</b> manual page
 for full details.  
 <p>
 
-If tildes are used to separate records, a TXT record can not contain a
-'|' (pipe) character, a '#' character, nor any ASCII control character;
-these characters can be added to a TXT record via the use of escape
-sequences; read the csv2_txt man page for details.
+If tildes are used to separate records, a TXT record can not contain
+a literal '|' (pipe) character, a '#' literal, a '~' literal, nor any
+ASCII control literal; these characters can be added to a TXT record
+via the use of escape sequences; read the 
+<A href="man.csv2_txt.html">csv2_txt man page</A> for details.
 
 <h2>SPF</h2>
 
