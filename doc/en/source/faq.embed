@@ -630,7 +630,7 @@ the corresponding SPF record, which will have the syntax
 
 <p>
 
-Use '\x7e' to put a tilde in a SPF record:
+Use '\x7e' to put a tilde ("~" character) in a SPF record:
 
 <p>
 <tt>example.com. SPF 'v=spf1 +mx a:colo.example.com/28 '\x7e'all'</tt>

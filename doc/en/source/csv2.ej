@@ -232,7 +232,7 @@ Here is one example SPF record:
 example.com. SPF 'v=spf1 +mx a:colo.example.com/28 -all'
 </pre>
 
-Use '\x7e' to put a tilde in a SPF record:
+Use '\x7e' to put a tilde ("~" character) in a SPF record:
 
 <pre>
 example.com. SPF 'v=spf1 +mx a:colo.example.com/28 '\x7e'all'
