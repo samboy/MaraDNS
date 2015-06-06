@@ -1,5 +1,25 @@
                           MaraDNS changelog
 
+   maradns-2.0.10:
+   This is the stable release of MaraDNS.
+
+     * Deadwood updated to 3.2.06
+     * Zoneserver now compiles and runs in Cygwin (so Windows
+       users can have DNS-over-TCP support).
+
+     (2015.01.24)
+
+   maradns-1.4.15:
+   This is the legacy branch of MaraDNS. Please upgrade to
+   MaraDNS 2. This will probably be the final MaraDNS 1 release;
+   all MaraDNS 1 support ends on June 21, 2015.
+
+     * Deadwood updated to 3.2.06
+     * CERT vulnerability VU#264212 update: max_glueless_level
+       now defaults to 4 instead of 10
+
+     (2015.01.24)
+
    maradns-2.0.09:
    This is the stable release of MaraDNS.
 
