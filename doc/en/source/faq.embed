@@ -419,7 +419,7 @@ server?</H2>
 
 A recursive DNS server is a DNS server that is able to contact other DNS
 servers in order to resolve a given domain name label.  This is the kind 
-of DNS server one points to in <tt>/etc/resolve.conf</tt>.  MaraDNS uses
+of DNS server one points to in <tt>/etc/resolv.conf</tt>.  MaraDNS uses
 the Deadwood daemon to process recursive DNS queries.
 
 <p>
