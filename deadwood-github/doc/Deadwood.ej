@@ -282,7 +282,8 @@ requests for the same query, but give each request its own connection.
 The default value is 8.
 
 <h2>max_ttl</h2>
-The maximum amount of time we will keep an entry in the cache, in seconds.
+The maximum amount of time we will keep an entry in the cache, in seconds
+(also called "Maximum TTL").
 
 <p>
 
