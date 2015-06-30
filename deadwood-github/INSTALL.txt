@@ -234,8 +234,8 @@ allocating then freeing a lot of small blocks of memory.
 
 ==SUPPORT==
 
-The channels of support for Deadwood are the same as for MaraDNS: Post an
-issue on Github:
+The only Deadwood support provided is bug fixes.  To report a bug, post
+an issue on GitHub:
 	
 	https://github.com/samboy/MaraDNS/issues
 

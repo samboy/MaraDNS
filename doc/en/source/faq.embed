@@ -1081,8 +1081,8 @@ computer.
 <i>Please note that the mailing list is no longer used to handle
 MaraDNS support requests. Please file a Github issue at
 <A href=https://github.com/samboy/MaraDNS/issues
->https://github.com/samboy/MaraDNS/issues</A> to get MaraDNS
-support.</i>
+>https://github.com/samboy/MaraDNS/issues</A> to file a MaraDNS bug
+report.</i>
 
 <p> The procedure for subscribing to the mailing list is as follows:
 
@@ -1102,8 +1102,9 @@ support.</i>
 
 <li>Note that the mailing list is moderated and only relevant MaraDNS
    	announcements are approved.  People who need help should 
-	<A href=https://github.com/samboy/MaraDNS/issues>file a 
-	Github issue</A>.
+	<A href=http://maradns.samiam.org/notes.html>read the manuals</A>
+	or <A href=http://maradns.samiam.org/search.html>search the MaraDNS
+	webpage</A> for support.
 
 </ul>
 
@@ -1317,8 +1318,8 @@ possible.
 
 When I say that Windows 7 and CentOS 6 are the only supported operating
 systems for MaraDNS, this does not mean that MaraDNS will not compile and
-run on other systems; it merely means that I can not provide hand-holding
-support when answering <A href=https://github.com/samboy/MaraDNS/issues>Github
+run on other systems; it merely means that I can not provide 
+support for <A href=https://github.com/samboy/MaraDNS/issues>Github
 bug reports</A> for people who want to run MaraDNS in Minix, one of
 the open-source BSD variants, or what not.
 
