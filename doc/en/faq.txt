@@ -360,8 +360,8 @@ DNS server?
    A recursive DNS server is a DNS server that is able to
    contact other DNS servers in order to resolve a given domain
    name label. This is the kind of DNS server one points to in
-   /etc/resolve.conf. MaraDNS uses the Deadwood daemon to
-   process recursive DNS queries.
+   /etc/resolv.conf. MaraDNS uses the Deadwood daemon to process
+   recursive DNS queries.
 
    An authoritative DNS server is a DNS server that a recursive
    server contacts in order to find out the answer to a given
@@ -887,8 +887,8 @@ applications like telnet.
 
    Please note that the mailing list is no longer used to handle
    MaraDNS support requests. Please file a Github issue at
-   https://github.com/samboy/MaraDNS/issues to get MaraDNS
-   support.
+   https://github.com/samboy/MaraDNS/issues to file a MaraDNS
+   bug report.
 
    The procedure for subscribing to the mailing list is as
    follows:
@@ -905,7 +905,8 @@ applications like telnet.
        mailing list'.
      * Note that the mailing list is moderated and only relevant
        MaraDNS announcements are approved. People who need help
-       should file a Github issue.
+       should read the manuals or search the MaraDNS webpage for
+       support.
 
    If you get an email from list-request@maradns.org with the
    subject "The results of your email commands", you did not
@@ -1066,10 +1067,9 @@ Why doesn't MaraDNS use IP_FREEBIND?
    When I say that Windows 7 and CentOS 6 are the only supported
    operating systems for MaraDNS, this does not mean that
    MaraDNS will not compile and run on other systems; it merely
-   means that I can not provide hand-holding support when
-   answering Github bug reports for people who want to run
-   MaraDNS in Minix, one of the open-source BSD variants, or
-   what not.
+   means that I can not provide support for Github bug reports
+   for people who want to run MaraDNS in Minix, one of the
+   open-source BSD variants, or what not.
 
 Is there a web interface for MaraDNS?
 

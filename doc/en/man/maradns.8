@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Sat Jun  6 09:50:34 2015
+.\" Last updated Fri Jul  3 15:08:28 2015
 .\"
 .TH MARADNS 8 "January 2002" MARADNS "MaraDNS reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -82,8 +82,9 @@ or
 .B "maradns --version"
 .SH "USAGE"
 .PP
-If MaraDNS is functioning only as a recursive nameserver, just one file
-needs to be set up: The mararc file.
+MaraDNS consists of two programs: maradns, an authoritative-only
+nameserver,
+and Deadwood, a recursive name server. Deadwood has its own man page.
 .PP
 In order for MaraDNS to function as an authoritative nameserver, two
 or more files need to be set up: the mararc file and one or more "csv2"
@@ -103,13 +104,11 @@ daemonize MaraDNS. See the
 manual page for details.
 .SH "FIREWALL CONFIGURATION"
 .PP
-If MaraDNS is being used as an authoritative nameserver, allow UDP
+When using the maradns authoritative nameserver, allow UDP
 connections from all hosts on the internet to UDP port 53 for the IP
 that the authoritative nameserver uses.
 .PP
-If MaraDNS is being used as a recursive nameserver, the firewall needs
-to allow the following packets to go to and from the IP the recursive
-nameserver uses:
+When using the Deadwood recursive nameserver:
 .TP 2
 *
 Allow UDP connections from the MaraDNS-running server to any
@@ -122,7 +121,7 @@ and the
 destination port is between 15000 and 19095 (inclusive)
 .TP 2
 *
-Allow UDP connections from IPs that use MaraDNS as a recursive DNS
+Allow UDP connections from IPs that use Deadwood as a recursive DNS
 server
 to port 53 of the MaraDNS server
 .PP
@@ -130,10 +129,10 @@ MaraDNS uses a strong secure RNG for both the query (16 bits of
 entropy)
 and the source port of the query (12 bits of entropy). This makes
 spoofing
-replies to a MaraDNS server more difficult, since the attacker has only
-a
-one in 250 million chance that a given spoofed reply will be considered
-valid.
+replies to a Deadwood recursive server more difficult, since the
+attacker
+has only a one in 250 million chance that a given spoofed reply will be
+considered valid.
 .PP
 .SH "FREQUENTLY ASKED QUESTIONS"
 .PP
@@ -554,7 +553,7 @@ DNS server?\fR
 A recursive DNS server is a DNS server that is able to contact other
 DNS
 servers in order to resolve a given domain name label. This is the kind
-of DNS server one points to in /etc/resolve.conf. MaraDNS uses
+of DNS server one points to in /etc/resolv.conf. MaraDNS uses
 the Deadwood daemon to process recursive DNS queries.
 .PP
 An authoritative DNS server is a DNS server that a recursive server
@@ -1230,7 +1229,7 @@ computer.
 .in -3
 \fB50. I can not subscribe to the MaraDNS mailing list\fR
 .PP
-.I "Please note that the mailing list is no longer used to handle MaraDNS support requests. Please file a Github issue at https://github.com/samboy/MaraDNS/issues to get MaraDNS support."
+.I "Please note that the mailing list is no longer used to handle MaraDNS support requests. Please file a Github issue at https://github.com/samboy/MaraDNS/issues to file a MaraDNS bug report."
 .PP
 The procedure for subscribing to the mailing list is as follows:
 .TP 2
@@ -1255,8 +1254,9 @@ list\(aq.
 *
 Note that the mailing list is moderated and only relevant MaraDNS
 announcements are approved. People who need help should
-file a
-Github issue.
+read the manuals
+or search the MaraDNS
+webpage for support.
 .PP
 If you get an email from list-request@maradns.org with the subject
 "The results of your email commands", you did not correctly send an
@@ -1455,8 +1455,7 @@ When I say that Windows 7 and CentOS 6 are the only supported operating
 systems for MaraDNS, this does not mean that MaraDNS will not compile
 and
 run on other systems; it merely means that I can not provide
-hand-holding
-support when answering Github
+support for Github
 bug reports for people who want to run MaraDNS in Minix, one of
 the open-source BSD variants, or what not.
 .PP
@@ -1544,16 +1543,6 @@ This can be changed by setting bind_star_handling to 1.
 .PP
 Star records (what RFC1034 calls "wildcards") can not be attached to
 NS records.
-.PP
-MaraDNS recursive resolver treats any TTL shorter than min_ttl seconds
-(min_ttl_cname seconds when the record is a CNAME record)
-as if the TTL in question was min_ttl (or min_ttl_cname) seconds long
-when
-determining when to expire a record from MaraDNS\(aq cache.
-.PP
-TTLs which are shorter than 20 seconds long are given a TTL of 20
-seconds; TTLs which are more than 63072000 (2 years) long are given
-a TTL of 2 years.
 .PP
 MaraDNS, like every other known DNS implementation, only supports a
 QDCOUNT of 0 or 1.
