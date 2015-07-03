@@ -86,7 +86,7 @@ that the authoritative nameserver uses.
 When using the Deadwood recursive nameserver:
 <ul>
 <li>
-Allow UDP connections from the MaraDNS-running server to any
+Allow UDP connections from the Deadwood server to any
 machine on the internet where the UDP destination port is 53
 <li>
 Allow UDP connections from any machine on the internet to the IP of the
@@ -96,12 +96,13 @@ destination port is between 15000 and 19095 (inclusive)
 Allow UDP connections from IPs that use Deadwood as a recursive DNS server 
 to port 53 
 </ul>
-Deadwood uses a strong secure RNG for both the query (16 bits of entropy) 
-and the source port of the query (12 bits of entropy).  This makes spoofing 
-replies to a Deadwood recursive server more difficult, since the attacker
-has only a one in 250 million chance that a given spoofed reply will be
-considered valid.
+Deadwood uses a strong secure RNG (RadioGatun[32]) for both the query (16
+bits of entropy) and the source port of the query (12 bits of entropy).
+This makes spoofing replies to a Deadwood recursive server more difficult,
+since the attacker has only a one in 250 million chance that a given
+spoofed reply will be considered valid.
 <p>
+
 <include "../source/faq.embed">
 <p>
 <h1>BUGS</h1>
