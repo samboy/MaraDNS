@@ -1121,17 +1121,16 @@ may be in Gmail's "promotions" tab.
 <a name=edns> </a>
 <h2>51. How does MaraDNS respond to EDNS (RFC2671) packets?</h2>
 
-MaraDNS 1.4 responds to EDNS packets by ignoring the OPT record and acting
+MaraDNS 2 responds to EDNS packets by ignoring the OPT record and acting
 as if it the packet did not have an OPT record.
 
 <p>
 
-<A href=http://maradns.samiam.org/deadwood>Deadwood</A> (the recursive resolver 
-for Deadwood 2.0, available in the deadwood-#.#.## directory of any 1.4
-MaraDNS release), up through Deadwood
-2.9.02 responds to EDNS packets by discarding the packet and not
+<A href=http://maradns.samiam.org/deadwood>Deadwood</A>,
+up through Deadwood
+2.9.02, responded to EDNS packets by discarding the packet and not
 responding.  This was changed in Deadwood 2.9.03: Deadwood, as
-per RFC2671 section 5.3, now responds to EDNS queries by replying with 
+per RFC2671 section 5.3, now responded to EDNS queries by replying with 
 the NOTIMPL ("not implemented") error code instead of answering the query.  
 This was changed again in Deadwood 2.9.04: Deadwood now, like MaraDNS 1
 (as well as DJBdns), handles a EDNS packet as if the OPT record did not
@@ -1140,8 +1139,8 @@ exist.
 <p>
 
 <A href=http://samiam.org/software/microdns.html>MicroDNS</A> (available
-in the <tt>tools/misc</tt> directory of any 1.4 MaraDNS release), as of
-MaraDNS 1.4.05, responds to EDNS queries the same way Deadwood 2.9.03 did:
+in the <tt>tools/misc</tt> directory of any MaraDNS 2 release) 
+responds to EDNS queries the same way Deadwood 2.9.03 did:
 By giving back "NOTIMPL" instead of answering the query with the
 default IP.  <A 
 href=http://maradns.blogspot.com/search/label/NanoDNS>NanoDNS</A>, in the 
