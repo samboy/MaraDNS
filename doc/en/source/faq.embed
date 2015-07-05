@@ -152,9 +152,6 @@ distributed denial-of-service attack?</A>
 
 <p>60. <A href="#tld">Does MaraDNS support newer top level domains?</A>
 
-<p>61. <A href="#mobile">Why isn't MaraDNS' web design more small screen
-       compatible?</A>
-
 </BLOCKQUOTE>
 <H2>ANSWERS</H2>
 
@@ -1360,20 +1357,4 @@ Note that, if using an internationalized domain name, it needs
 to be translated in to Punycode first. For example, if 
 using the domain name “ñ.com.”, it needs to be in the form
 “xn--ida.com.” in MaraDNS’ mararc and zone files.
-
-<A name="mobile"> </A>
-
-<h2>Why isn't MaraDNS' web design more small screen compatible?</h2>
-
-MaraDNS is a project from the first 2000s decade (oughts) and much of
-its development, including its website design, was done before the
-iPhone existed, in an era when getting a site to look good in Internet
-Explorer 6 mattered a lot more than making it adaptable to different
-screen sizes.
-
-<p>
-
-It would be nice if I somehow became independently wealthy and could 
-retire young, which would give me enough free time to update MaraDNS'
-web site design for the 2010s.
 
