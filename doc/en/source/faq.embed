@@ -1121,20 +1121,9 @@ may be in Gmail's "promotions" tab.
 <a name=edns> </a>
 <h2>51. How does MaraDNS respond to EDNS (RFC2671) packets?</h2>
 
-MaraDNS 2 responds to EDNS packets by ignoring the OPT record and acting
-as if it the packet did not have an OPT record.
-
-<p>
-
-<A href=http://maradns.samiam.org/deadwood>Deadwood</A>,
-up through Deadwood
-2.9.02, responded to EDNS packets by discarding the packet and not
-responding.  This was changed in Deadwood 2.9.03: Deadwood, as
-per RFC2671 section 5.3, now responded to EDNS queries by replying with 
-the NOTIMPL ("not implemented") error code instead of answering the query.  
-This was changed again in Deadwood 2.9.04: Deadwood now, like MaraDNS 1
-(as well as DJBdns), handles a EDNS packet as if the OPT record did not
-exist.
+MaraDNS 2 (both the authoritative maradns server and the recursive
+Deadwood server) responds to EDNS packets by ignoring the OPT record
+and acting as if it the packet did not have an OPT record.
 
 <p>
 
