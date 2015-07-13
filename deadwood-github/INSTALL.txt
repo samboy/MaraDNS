@@ -113,11 +113,9 @@ the place where you obtained this source code, with a name like
 "Deadwood-3-1-XX-win32.zip".
 
 The way I compile this program in Windows 7 is with MinGW-3.4.2 and
-MSYS-1.0.10.  These programs are available at the following locations:
+MSYS-1.0.10.  These programs are available at the following location:
 
-	ftp://ftp.trolltech.com/misc/ (MinGW 3.4.2)
-	http://prdownloads.sourceforge.net/mingw/MSYS-1.0.10.exe?download
-	http://samiam.org/software (both)
+	http://samiam.org/software 
 
 Once MinGW is set up, to compile the Deadwood service, enter the "src/"
 directory and run the following commands:
