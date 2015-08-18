@@ -606,6 +606,8 @@ int serve_zone(int connect, int perms) {
     int counter;
     uint32 ttl;
 
+    desc.buffer = 0;
+
     /* 30-second idle timeout */
     alarm(30);
 
