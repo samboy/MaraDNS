@@ -10,7 +10,7 @@ cp rg32 ~-
 
 # Clean up
 rm rg32 DwStr.o
-make -f Makefile.centos5 clean > /dev/null 2>&1
+make clean > /dev/null 2>&1
 
 # OK, come back here to run the test
 cd ~-

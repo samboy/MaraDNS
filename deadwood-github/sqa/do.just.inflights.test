@@ -13,10 +13,10 @@ export CC=gcc
 # Inflight test
 cd $SQADIR
 cd ../src
-make -f Makefile.centos5 clean > /dev/null 2>&1
+make clean > /dev/null 2>&1
 export FLAGS='-O3 -DINFLIGHT_VERBOSE -DVALGRIND_NOERRORS'
 #export FLAGS='-g -DINFLIGHT_VERBOSE -DVALGRIND_NOERRORS'
-make -f Makefile.centos5 > /dev/null 2>&1
+make > /dev/null 2>&1
 cd $SQADIR
 cd dwood2rc_n_max_inflights
 sh ./do.test > output.test 2> /dev/null
