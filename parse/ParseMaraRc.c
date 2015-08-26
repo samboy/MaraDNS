@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2009 Sam Trenholme
+/* Copyright (c) 2002-2009, 2015 Sam Trenholme
  *
  * TERMS
  *
@@ -353,13 +353,19 @@ mhash *dvar[DKEYCOUNT];
    ouput: pointer to mhash object on success, 0 on failure
 */
 
+/*
+ * See https://github.com/samboy/MaraDNS/issues/19
+ * Non-exploitable buffer overflow
+ * (non-expoitable because index is always, in MaraDNS code, set
+ *  by code which never makes index be DKEYCOUNT)
+ */
 mhash *dvar_raw(int index) {
-    if(index < 0 || index > DKEYCOUNT)
+    if(index < 0 || index >= DKEYCOUNT)
         return 0;
     return dvar[index];
     }
 
-/* dq_keyword2n: Convert a null-terminated string (like "csv1")
+ * dq_keyword2n: Convert a null-terminated string (like "csv1")
  * to a number (0, in this case)
  * input: A null-terminated string with the keyword
  * Output: The number of the keyword (starting at 0), JS_ERROR on error,
@@ -448,7 +454,7 @@ int init_dvars() {
 int new_dvar(js_string *name) {
     int num;
     num = dkeyword2num(name);
-    if(dvar[num] != 0 || num < 0 || num > DKEYCOUNT)
+    if(num < 0 || num >= DKEYCOUNT || dvar[num] != 0)
         return JS_ERROR;
     if((dvar[num] = mhash_create(7)) == 0)
         return JS_ERROR;
