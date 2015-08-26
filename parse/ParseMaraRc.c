@@ -365,7 +365,7 @@ mhash *dvar_raw(int index) {
     return dvar[index];
     }
 
- * dq_keyword2n: Convert a null-terminated string (like "csv1")
+/* dq_keyword2n: Convert a null-terminated string (like "csv1")
  * to a number (0, in this case)
  * input: A null-terminated string with the keyword
  * Output: The number of the keyword (starting at 0), JS_ERROR on error,
