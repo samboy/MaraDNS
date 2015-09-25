@@ -404,6 +404,10 @@ int forward_local_udp_packet(SOCKET sock, int32_t local_id,
 #endif /* INFLIGHT_VERBOSE */
         }
 
+	if(rem[b].num_locals == 0) {
+		reset_rem(b);
+		return -1;
+	}	
         rem[b].local[rem[b].num_locals - 1] = dw_malloc(sizeof(local_T));
         if(rem[b].local[rem[b].num_locals - 1] != 0) {
                 rem[b].local[rem[b].num_locals - 1]->orig_query = 0;
