@@ -1,5 +1,17 @@
 <H1>MaraDNS changelog</H1>
 
+<p>maradns-2.0.13:</p>
+This is the stable release of MaraDNS.
+<blockquote>
+<ul>
+<li>Two non-critical buffer overflows from ParseMaraRc fixed.  One can never be 
+    exploited; the other one can only be exploted by the (usually)
+    root user by writing to the system mararc file.
+<li>Deadwood updated to <a href=/deadwood/doc/CHANGELOG>3.2.09</a>
+</ul>
+(2015-09-25)
+</blockquote>
+
 <p>maradns-2.0.12:</p>
 This is the stable release of MaraDNS.
 <blockquote>
