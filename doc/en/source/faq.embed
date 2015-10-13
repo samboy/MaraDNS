@@ -152,6 +152,8 @@ distributed denial-of-service attack?</A>
 
 <p>60. <A href="#tld">Does MaraDNS support newer top level domains?</A>
 
+<p>61. <a href="#idn">Can MaraDNS handle IDN domain names?</A>
+
 </BLOCKQUOTE>
 <H2>ANSWERS</H2>
 
@@ -1345,4 +1347,13 @@ Note that, if using an internationalized domain name, it needs
 to be translated in to Punycode first. For example, if 
 using the domain name “ñ.com.”, it needs to be in the form
 “xn--ida.com.” in MaraDNS’ mararc and zone files.
+
+<A name="idn"> </A>
+<h2>Can MaraDNS handle IDN domain names?</h2>
+
+Yes, but it needs
+to be translated in to Punycode first. For example, if
+using the domain name “ñ.com.”, it needs to be in the form
+“xn--ida.com.” in MaraDNS’ mararc and zone files.
+
 
