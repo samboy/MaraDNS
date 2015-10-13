@@ -1351,7 +1351,7 @@ using the domain name “ñ.com.”, it needs to be in the form
 <A name="idn"> </A>
 <h2>Can MaraDNS handle IDN domain names?</h2>
 
-Yes, but it needs
+Yes, but the internationalized domain name (IDN) needs
 to be translated in to Punycode first. For example, if
 using the domain name “ñ.com.”, it needs to be in the form
 “xn--ida.com.” in MaraDNS’ mararc and zone files.
