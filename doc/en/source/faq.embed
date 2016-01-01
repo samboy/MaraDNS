@@ -166,8 +166,7 @@ Upgrade to MaraDNS 2.0.
 
 <p>
 
-MaraDNS 1.4 is only supported for critical security updates; this support
-is being phased out and MaraDNS 1 will no longer be supported on 
+MaraDNS 1 is no longer supported; support ended on
 June 21, 2015.
 
 <A NAME=tryout>
@@ -187,7 +186,7 @@ distribution.
 MaraDNS is released with the following two-clause 
 BSD-type license:
 <BLOCKQUOTE>
-Copyright (c) 2002-2015 Sam Trenholme and others
+Copyright (c) 2002-2016 Sam Trenholme and others
 <p>
 TERMS
 <p>
@@ -900,7 +899,7 @@ year.
 <p>
 
 The last security bug which required a MaraDNS update was made before
-January 30, 2015.
+September 28, 2015.
 
 <A name=nxdomain> </A>
 
