@@ -109,7 +109,7 @@ Numeric mararc parameter:            h: N4h Wk Hb Rxp T;
 Quote beginning mararc parameter:    i: I3m
 End of line:                         k: Wk Hb Rxp T;
 In mararc parameter:                 m: I3m Qk
-Quote beginning dictionary index:    n: .2o S2p -2p
+Quote beginning dictionary index:    n: .2o S2p -2p _2p
 Dot as dictionary index:             o: Qq
 Dictionary index:                    p: D2p Qq 
 Quote at end of dictionary index:    q: Wq ]r

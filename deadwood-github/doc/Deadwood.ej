@@ -282,7 +282,8 @@ requests for the same query, but give each request its own connection.
 The default value is 8.
 
 <h2>max_ttl</h2>
-The maximum amount of time we will keep an entry in the cache, in seconds.
+The maximum amount of time we will keep an entry in the cache, in seconds
+(also called "Maximum TTL").
 
 <p>
 
@@ -323,7 +324,7 @@ will need to be increased to store a large number of these entries.
 
 <h2>maxprocs</h2>
 This is the maximum number of pending remote UDP connections
-Deadwood can have.  The default value for this is 32.  
+Deadwood can have.  The default value for this is 1024.  
 
 <h2>max_tcp_procs</h2>
 This is the number of allowed open TCP connections.  Default value: 8
@@ -552,8 +553,8 @@ root_servers to use the default ICANN root servers, as follows:
 202.12.27.33    m.root-servers.net (WIDE) 
 </pre>
 
-This list is current as of May 3, 2010, and was last changed on
-November 1, 2007.
+This list is current as of February 9, 2015, and was last changed on
+January 3, 2013.
 
 <p>
 
@@ -751,7 +752,7 @@ chroot_dir = "/etc/deadwood"
 recursive_acl = "127.0.0.1/16" 
 
 # Maximum number of pending requests
-maxprocs = 8 
+maxprocs = 2048
 
 # Send SERVER FAIL when overloaded
 handle_overload = 1 
@@ -801,6 +802,13 @@ It is not clear whether the DNS RFCs allow ASCII control characters
 in DNS names.  Even if they were, Deadwood does not allow ASCII
 control characters (bytes with a value less then 32) in DNS names.
 Other characters (UTF-8, etc.) are allowed.
+
+<p>
+
+Combining a CNAME record with other records is prohibited in
+RFC1034 section 3.6.2 and RFC1912 section 2.4; it makes an
+answer ambiguous.  Deadwood handles this ambiguity differently
+than some other DNS servers.
 
 <h1>LEGAL DISCLAIMER</h1>
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 

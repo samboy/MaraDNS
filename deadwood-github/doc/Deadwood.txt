@@ -292,7 +292,7 @@ maximum_cache_elements
 maxprocs
 
    This is the maximum number of pending remote UDP connections
-   Deadwood can have. The default value for this is 32.
+   Deadwood can have. The default value for this is 1024.
 
 max_tcp_procs
 
@@ -522,8 +522,8 @@ upstream_servers
  199.7.83.42     l.root-servers.net (IANA)
  202.12.27.33    m.root-servers.net (WIDE)
 
-   This list is current as of May 3, 2010, and was last changed on
-   November 1, 2007.
+   This list is current as of February 9, 2015, and was last
+   changed on January 3, 2013.
 
    Please note that each upstream_servers entry takes up space in
    Deadwood's cache and that maximum_cache_elements will need to be
@@ -706,7 +706,7 @@ verbose_level
  recursive_acl = "127.0.0.1/16"
 
  # Maximum number of pending requests
- maxprocs = 8
+ maxprocs = 2048
 
  # Send SERVER FAIL when overloaded
  handle_overload = 1
@@ -755,6 +755,11 @@ verbose_level
    characters in DNS names. Even if they were, Deadwood does not
    allow ASCII control characters (bytes with a value less then 32)
    in DNS names. Other characters (UTF-8, etc.) are allowed.
+
+   Combining a CNAME record with other records is prohibited in
+   RFC1034 section 3.6.2 and RFC1912 section 2.4; it makes an
+   answer ambiguous. Deadwood handles this ambiguity differently
+   than some other DNS servers.
 
                            LEGAL DISCLAIMER
 

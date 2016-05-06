@@ -717,6 +717,8 @@ int parse_csv1s(mhash *maintable, js_string *error, int recursive) {
         return JS_ERROR;
         }
 
+    desc->buffer = 0;
+
     /* Pass 1: fill up the hash with the AN and NS answers */
 
     /* Get all of the keys in the csv1 hash */

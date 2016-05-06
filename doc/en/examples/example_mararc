@@ -1,6 +1,6 @@
 # Example mararc file. 
 # This only shows a subset of MaraDNS' features needed to be an
-# authoritative and recursive name server.  Look at 
+# authoritative name server.  Look at 
 # detailed/example_full_mararc for an example showing most of 
 # the features that MaraDNS has.
 

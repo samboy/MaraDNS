@@ -132,11 +132,13 @@ else
 	echo This is an unknown platform.  MaraDNS may or may not compile
 	echo on this platform.  If you are able to sucessfully compile
 	echo and install MaraDNS on this platform, please let me know
-	echo by contacting the mailing list. 
+	echo by filing a Github issue. 
 	echo
-	echo I encourage you to make an official port of MaraDNS for this
-	echo platform so other users of MaraDNS do not see this obnoxious
+	echo I encourage you to make a fork of MaraDNS for this
+	echo platform so other users may not see this obnoxious
 	echo warning.
+	echo
+	echo I ask that any fork of MaraDNS not be called \"MaraDNS\"
 	echo
 	echo You might be able to compile MaraDNS by typing \"make\"
 	echo \(if you typed in \"make\" before, just type it again\)

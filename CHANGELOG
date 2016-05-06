@@ -1,44 +1,5 @@
                           MaraDNS changelog
 
-   maradns-2.0.13:
-   This is the stable release of MaraDNS.
-
-     * Two non-critical buffer overflows from ParseMaraRc fixed.
-       One can never be exploited; the other one can only be
-       exploted by the (usually) root user by writing to the
-       system mararc file.
-     * Deadwood updated to 3.2.09
-
-     (2015-09-25)
-
-   maradns-2.0.12:
-   This is the stable release of MaraDNS.
-
-     * Security fix for improper free() in zoneserver
-     * Deadwood updated to 3.2.08
-     * Zone transfers now work with newer versions of dig
-     * Documentation updates
-
-     (2015.08.19)
-
-   maradns-2.0.11:
-   This is the stable release of MaraDNS.
-
-     * Deadwood updated to 3.2.07
-
-     (2015.01.30)
-
-   maradns-1.4.16:
-   This is the final MaraDNS 1 release. Please be aware that
-   MaraDNS 1 has at least one unpatched security hole
-
-   This is the legacy branch of MaraDNS. Please upgrade to
-   MaraDNS 2. All MaraDNS 1 support ends on June 21, 2015.
-
-     * Deadwood updated to 3.2.07
-
-     (2015.01.30)
-
    maradns-2.0.10:
    This is the stable release of MaraDNS.
 

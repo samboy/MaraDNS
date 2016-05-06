@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2014 Sam Trenholme
+/* Copyright (c) 2007-2015 Sam Trenholme
  * IPv6 code by Jean-Jacques Sarton
  *
  * TERMS
@@ -53,7 +53,7 @@ remote_T *rem;
 extern dw_hash *cache;
 
 /* Some dwood3rc parameters */
-int maxprocs = 32;
+int_fast32_t maxprocs = 1024;
 int max_tcp_procs = 8;
 #ifndef FALLBACK_TIME
 int timeout_seconds = 1;
@@ -62,16 +62,16 @@ int timeout_seconds_tcp = 4;
 int timeout_seconds = 2;
 int timeout_seconds_tcp = 4;
 #endif /* FALLBACK_TIME */
-int dns_port = 53;
-int upstream_port = 53;
+int_fast32_t dns_port = 53;
+int_fast32_t upstream_port = 53;
 int handle_overload = 1;
 int handle_noreply = 1;
 int resurrections = 1;
-int32_t min_bind = 15000;
-int32_t num_ports = 4096;
-int32_t maradns_uid = 99;
-int32_t maradns_gid = 99;
-int32_t max_ttl = 86400;
+int_fast32_t min_bind = 15000;
+int_fast32_t num_ports = 4096;
+int_fast32_t maradns_uid = 99;
+int_fast32_t maradns_gid = 99;
+int_fast32_t max_ttl = 86400;
 int num_retries = 5;
 dwd_dict *blacklist_dict = 0;
 
@@ -482,7 +482,7 @@ int check_ip_acl(ip_addr_T *ip) {
  * in dwm_init_mararc() in the file DwMararc.c */
 void process_numeric_mararc_params() {
 
-        maxprocs =        get_key_n(DWM_N_maxprocs,       8,16384,-1);
+        maxprocs =        get_key_n(DWM_N_maxprocs,       8,8388608,-1);
         max_tcp_procs =   get_key_n(DWM_N_max_tcp_procs,  4,1024,-1);
 #ifndef FALLBACK_TIME
         timeout_seconds = get_key_n(DWM_N_timeout_seconds,1,300,-1);
@@ -656,7 +656,7 @@ void process_mararc_params() {
 
 /* Initialize the list of pending remote replies */
 void init_b_remote() {
-        int a = 0;
+        int_fast32_t a = 0;
         for(a = 0; a < maxprocs; a++) {
                 b_remote[a] = INVALID_SOCKET;
                 rem[a].socket = INVALID_SOCKET;
@@ -669,8 +669,8 @@ void init_b_remote() {
 }
 
 /* Search for the highest socket number in a list of sockets */
-SOCKET find_max(int *list, int max) {
-        int a = 0;
+SOCKET find_max(int *list, int_fast32_t max) {
+        int_fast32_t a = 0;
         int ret = -1;
         for(a = 0; a < max ; a++) {
                 if(list[a] > ret) {
@@ -710,7 +710,7 @@ SOCKET get_max() {
 
 /* Set the rx_fd list (A list used by select() ) */
 void set_rx_fd(fd_set *rx_fd) {
-        int a = 0;
+        int_fast32_t a = 0;
         FD_ZERO(rx_fd);
 
         /* UDP */
@@ -737,8 +737,8 @@ void set_rx_fd(fd_set *rx_fd) {
 }
 
 /* Find a free remote pending connection */
-int32_t find_free_remote() {
-        int32_t a = 0;
+int_fast32_t find_free_remote() {
+        int_fast32_t a = 0;
         for(a = 0; a < maxprocs; a++) {
                 if(rem[a].socket == INVALID_SOCKET &&
                                 rem[a].local == 0) { /* Available for use */
@@ -812,7 +812,7 @@ ip_addr_T get_upstream_ip(dw_str *query, int b) {
 
 /* If we have a pending connection, process the pending connection */
 void process_results(int a, fd_set *rx_fd) {
-        int b = 0, z = 0;
+        int_fast32_t b = 0, z = 0;
 
         /* Find the pending connection */
         while(a > 0 && z < 50000) {
@@ -951,7 +951,7 @@ catch_handle_expired:
 
 /* Kill any pending remote connections that have timed out */
 void kill_expired() {
-        int a = 0;
+        int_fast32_t a = 0;
         for(a = 0; a < maxprocs; a++) {
                 if(rem[a].die > 0 && rem[a].die < get_time()) {
                         if(handle_expired(a) == 1) {

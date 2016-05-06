@@ -5,14 +5,31 @@
    comfortable editing text configuration files. MaraDNS is released under
    a BSD license.
 
+   I wrote MaraDNS while I was a college student and a travelling English
+   teacher during the first 2000s decade. Now that I’m working as
+   a professional software developer, the program is finished: I only
+   provide bug fixes and other basic maintenance unless I’m getting
+   paid.
+
+   Since MaraDNS is open source, there is nothing stopping anyone from 
+   forking this repository and implementing new features; I ask such users 
+   to please not call any such forks “MaraDNS”.
+
 ## Table of contents
 
+* Important note for Windows users
 * What is DNS
 * MaraDNS' History
 * Overview
 * Internals
 * Other DNS servers
 * MaraDNS' future
+
+## Important note for Windows users
+
+   Users of Microsoft Windows are better off downloading a prebuilt Windows
+   binary: http://maradns.samiam.org/download.html
+   Be sure to download the file with the .zip extension.
 
 ## What is DNS
 

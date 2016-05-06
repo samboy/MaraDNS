@@ -1,3 +1,24 @@
+3.2.08 (2015-08-18):
+
+- Default maxprocs increased to 1024; maximum maxprocs increased to 
+  8,388,608
+
+- Added hi-bit non-ASCII string to RadioGatún[32] test vectors
+
+- Documentation updates
+
+- Deadwood should compile in cygwin again (unsupported platform)
+
+- Example.com changed its record.  Again.
+
+- Added note to not share a CNAME record with another record (forbidden
+  in the RFCs), and that Deadwood handles these illegal DNS entries
+  differently than other DNS servers.
+
+3.2.07 (2015-01-29):
+
+- HOTFIX: NS tarpit fix would sometimes go out of bounds; fixed
+
 3.2.06 (2015-01-24):
 
 - Security update: Better protection against malicious NS tarpits

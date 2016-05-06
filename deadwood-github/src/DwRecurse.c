@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2014 Sam Trenholme
+/* Copyright (c) 2009-2015 Sam Trenholme
  *
  * TERMS
  *
@@ -51,6 +51,8 @@ extern u_long dont_block;
 #endif /* MINGW */
 /* Numeric mararc parameters */
 extern int32_t max_ttl;
+/* Maximum number of remote connections */
+extern int_fast32_t maxprocs;
 
 #ifdef OTHER_STUFF
 /* Show a single character on the standard output, escaping the
@@ -2250,12 +2252,12 @@ int dwx_cache_reply(dw_hash *cache, dw_str *query, dw_str *in, int32_t ttl,
         int ret = 0;
 
         if(query == 0 || in == 0) {
-		ret = -1;
+                ret = -1;
                 goto catch_dwx_cache_reply;
         }
 
         if(rem[connection_number].ns == 0) {
-		ret = -1;
+                ret = -1;
                 goto catch_dwx_cache_reply;
         }
 
@@ -2268,13 +2270,13 @@ int dwx_cache_reply(dw_hash *cache, dw_str *query, dw_str *in, int32_t ttl,
 
         bailiwick = dw_get_dname(rem[connection_number].ns->str, 0, 260);
         if(bailiwick == 0 || bailiwick->len > 256) {
-		ret = -1;
+                ret = -1;
                 goto catch_dwx_cache_reply;
         }
 
         action = dwx_dissect_packet(in,query,bailiwick);
-	if(action == 0) {
-		ret = -1;
+        if(action == 0) {
+                ret = -1;
                 goto catch_dwx_cache_reply;
         }
         type = dw_fetch_u8(action,-1);
@@ -2836,8 +2838,8 @@ int dwx_do_glueless_inflight(int32_t conn_number, int already, int type) {
                 return -1;
         }
 
-	rem[conn_number].recurse_depth++;
-	rem[already].recurse_depth++;
+        rem[conn_number].recurse_depth++;
+        rem[already].recurse_depth++;
 
         num_alloc = key_n[DWM_N_max_inflights];
         if(num_alloc < 1) {
@@ -2887,7 +2889,7 @@ int dwx_do_glueless_inflight(int32_t conn_number, int already, int type) {
 void dwx_do_glueless_new(dw_str *query, int32_t conn_number, int type) {
         int32_t new_conn_num = 0;
         int num_alloc = 0;
-	int depth = 0;
+        int depth = 0;
         dw_str *packet = 0;
 
         num_alloc = key_n[DWM_N_max_inflights];
@@ -2900,24 +2902,30 @@ void dwx_do_glueless_new(dw_str *query, int32_t conn_number, int type) {
         if(rem[conn_number].recurse_depth >= 83) {
                 return;
         }
-	rem[conn_number].recurse_depth++;
+        rem[conn_number].recurse_depth++;
 
-	/* Make sure we "bubble up" the fact we have made a new query */
-	new_conn_num = conn_number;
-	depth = 0;
-	while(rem[conn_number].num_locals > 0 && 
-	      rem[conn_number].local != 0 && 
-	      depth < 120) {	
-		if(rem[conn_number].local[0] != 0) {
-			conn_number = rem[conn_number].local[0]->glueless_conn;
+        /* Make sure we "bubble up" the fact we have made a new query */
+        new_conn_num = conn_number;
+        depth = 0;
+        while(rem[conn_number].num_locals > 0 &&
+              rem[conn_number].local != 0 &&
+              depth < 120) {
+                if(rem[conn_number].local[0] != 0) {
+                        conn_number = rem[conn_number].local[0]->glueless_conn;
+                }
+		if(conn_number == -1) {
+			break;
+		}	
+		if(conn_number < 0 || conn_number > maxprocs) {
+			return;
 		}
-        	if(rem[conn_number].recurse_depth > 83) {
-                	return;
-        	}
-		rem[conn_number].recurse_depth++;
-		depth++;
-	}
-	conn_number = new_conn_num;
+                if(rem[conn_number].recurse_depth > 83) {
+                        return;
+                }
+                rem[conn_number].recurse_depth++;
+                depth++;
+        }
+        conn_number = new_conn_num;
 
 
         new_conn_num = find_free_remote();
@@ -3028,10 +3036,10 @@ void dwx_glueless_done(dw_str *query, int32_t conn_num) {
         SOCKET s = INVALID_SOCKET;
         socklen_t inet_len = sizeof(struct sockaddr_in);
 
-	if(rem[conn_num].recurse_depth > 83) {
-		return;
-	}
-	rem[conn_num].recurse_depth++;
+        if(rem[conn_num].recurse_depth > 83) {
+                return;
+        }
+        rem[conn_num].recurse_depth++;
 
         /* Get answer from cache */
         answer = dwh_get(cache,query,0,1);

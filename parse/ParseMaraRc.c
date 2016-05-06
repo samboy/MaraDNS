@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2009 Sam Trenholme
+/* Copyright (c) 2002-2009, 2015 Sam Trenholme
  *
  * TERMS
  *
@@ -353,8 +353,14 @@ mhash *dvar[DKEYCOUNT];
    ouput: pointer to mhash object on success, 0 on failure
 */
 
+/*
+ * See https://github.com/samboy/MaraDNS/issues/19
+ * Non-exploitable buffer overflow
+ * (non-expoitable because index is always, in MaraDNS code, set
+ *  by code which never makes index be DKEYCOUNT)
+ */
 mhash *dvar_raw(int index) {
-    if(index < 0 || index > DKEYCOUNT)
+    if(index < 0 || index >= DKEYCOUNT)
         return 0;
     return dvar[index];
     }
@@ -448,7 +454,7 @@ int init_dvars() {
 int new_dvar(js_string *name) {
     int num;
     num = dkeyword2num(name);
-    if(dvar[num] != 0 || num < 0 || num > DKEYCOUNT)
+    if(num < 0 || num >= DKEYCOUNT || dvar[num] != 0)
         return JS_ERROR;
     if((dvar[num] = mhash_create(7)) == 0)
         return JS_ERROR;
@@ -1092,11 +1098,13 @@ int read_mararc(js_string *fileloc,js_string *errorstr,int *errorret) {
             js_qstr2js(errorstr,L_JSCREATE_FATAL); /* "Fatal error creating js_string" */
             return JS_ERROR;
             }
-    if(file == 0)
+    if(file == 0) {
         if((file = js_alloc(1,sizeof(js_file))) == 0) {
             js_qstr2js(errorstr,L_FILEMAKE_FATAL); /* "Fatal error creating file" */
             return JS_ERROR;
             }
+	file->buffer = 0;
+    }
 
     /* Initialize values */
     js_qstr2js(errorstr,"");

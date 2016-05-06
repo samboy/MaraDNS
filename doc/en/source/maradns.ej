@@ -60,8 +60,8 @@ or
 <b>maradns --version</b>
 
 <H1>USAGE</H1>
-If MaraDNS is functioning only as a recursive nameserver, just one file 
-needs to be set up: The mararc file.
+MaraDNS consists of two programs: maradns, an authoritative-only nameserver,
+and Deadwood, a recursive name server.  Deadwood has its own man page.
 <p>
 In order for MaraDNS to function as an authoritative nameserver, two
 or more files need to be set up: the mararc file and one or more "csv2"
@@ -79,31 +79,30 @@ daemonize MaraDNS.  See the <b>duende(8)</b> manual page for details.
 
 <h1>FIREWALL CONFIGURATION</h1>
 
-If MaraDNS is being used as an authoritative nameserver, allow UDP 
+When using the maradns authoritative nameserver, allow UDP 
 connections from all hosts on the internet to UDP port 53 for the IP
 that the authoritative nameserver uses.
 <p>
-If MaraDNS is being used as a recursive nameserver, the firewall needs
-to allow the following packets to go to and from the IP the recursive
-nameserver uses:
+When using the Deadwood recursive nameserver:
 <ul>
 <li>
-Allow UDP connections from the MaraDNS-running server to any
+Allow UDP connections from the Deadwood server to any
 machine on the internet where the UDP destination port is 53
 <li>
 Allow UDP connections from any machine on the internet to the IP of the
 recursive server, where the source port from the remote server is 53, and the 
 destination port is between 15000 and 19095 (inclusive)
 <li>
-Allow UDP connections from IPs that use MaraDNS as a recursive DNS server 
-to port 53 of the MaraDNS server
+Allow UDP connections from IPs that use Deadwood as a recursive DNS server 
+to port 53 
 </ul>
-MaraDNS uses a strong secure RNG for both the query (16 bits of entropy) 
-and the source port of the query (12 bits of entropy).  This makes spoofing 
-replies to a MaraDNS server more difficult, since the attacker has only a 
-one in 250 million chance that a given spoofed reply will be considered 
-valid.
+Deadwood uses a strong secure RNG (RadioGatun[32]) for both the query (16
+bits of entropy) and the source port of the query (12 bits of entropy).
+This makes spoofing replies to a Deadwood recursive server more difficult,
+since the attacker has only a one in 250 million chance that a given
+spoofed reply will be considered valid.
 <p>
+
 <include "../source/faq.embed">
 <p>
 <h1>BUGS</h1>
@@ -135,15 +134,6 @@ This can be changed by setting <tt>bind_star_handling</tt> to 1.
 <p>
 Star records (what RFC1034 calls "wildcards") can not be attached to
 NS records.
-<p>
-MaraDNS recursive resolver treats any TTL shorter than min_ttl seconds 
-(min_ttl_cname seconds when the record is a CNAME record)
-as if the TTL in question was min_ttl (or min_ttl_cname) seconds long when
-determining when to expire a record from MaraDNS' cache.
-<p>
-TTLs which are shorter than 20 seconds long are given a TTL of 20
-seconds; TTLs which are more than 63072000 (2 years) long are given
-a TTL of 2 years.
 <p>
 MaraDNS, like every other known DNS implementation, only supports a 
 QDCOUNT of 0 or 1.

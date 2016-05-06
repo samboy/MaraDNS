@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2014 Sam Trenholme 
+/* Copyright (c) 2002-2014 Sam Trenholme
  * Contributions made by Albert Lee (He made a valuable 1-line fix
  * back in 2005 to work around a kernel bug which was making MaraDNS
  * freeze up)
@@ -606,6 +606,8 @@ int serve_zone(int connect, int perms) {
     int counter;
     uint32 ttl;
 
+    desc.buffer = 0;
+
     /* 30-second idle timeout */
     alarm(30);
 
@@ -1150,9 +1152,9 @@ on %s\nFor usage information, type in 'man maradns'" */
 
     /* Determine if we are root */
 #ifndef __CYGWIN__
-    if(geteuid() == 0) 
+    if(geteuid() == 0)
 #else
-    if(1==1) 
+    if(1==1)
 #endif /* CYGWIN doesn't have root */
     {
         /* Change the root directory */
@@ -1246,7 +1248,7 @@ on %s\nFor usage information, type in 'man maradns'" */
                     setgid(gid);
 #ifndef __CYGWIN__
                     if(setuid(uid) != 0) {
-			    /* This is an ancient Linux kernel bug */
+                            /* This is an ancient Linux kernel bug */
                             harderror("Parent couldn't drop UID\n");
                     }
 #endif
@@ -1307,7 +1309,7 @@ on %s\nFor usage information, type in 'man maradns'" */
         }
     else {
         harderror("inetd is not zero; this is a fatal error.\n"
-		  "Make sure to be the root user.\n");
+                  "Make sure to be the root user.\n");
         }
 
     /* Make a database of IPs permitted to transfer zone file */

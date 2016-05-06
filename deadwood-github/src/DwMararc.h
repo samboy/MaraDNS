@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2014 Sam Trenholme
+/* Copyright (c) 2007-2016 Sam Trenholme
  *
  * TERMS
  *
@@ -207,7 +207,7 @@ char *key_n_names[KEY_N_COUNT + 1] = {
                     "i I3m\n" \
                     "k Wk Hb Rxp T;\n" \
                     "m I3m Qk\n" \
-                    "n .2o S2p -2p\n" \
+                    "n .2o S2p -2p _2p\n" \
                     "o Qq\n" \
                     "p D2p Qq\n" \
                     "q Wq ]r\n" \

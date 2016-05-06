@@ -1,4 +1,4 @@
-/* Copyright (c) 2004-2010 Sam Trenholme
+/* Copyright (c) 2004-2015 Sam Trenholme
  *
  * TERMS
  *
@@ -210,12 +210,12 @@ int csv2_tcp_spit_data(csv2_add_state *state, int connect, q_header *header,
         /* Determine the number of NS records to put in the header */
         point = state->buffer;
 
-        if(point == 0 && type != 3) {
+        if(point == 0 && type != 3 && type != 4) {
                 js_dealloc(h_copy);
                 return JS_ERROR;
         }
 
-        if(type != 3) { /* type 3: SOA at end of AXFR */
+        if(type != 3 && type != 4) { /* type 3: SOA at end of AXFR */
                 point = point->next;
         }
 
@@ -266,24 +266,34 @@ int csv2_tcp_spit_data(csv2_add_state *state, int connect, q_header *header,
                         return JS_ERROR;
                 }
                 js_destroy(zone_name);
-        } else if(type == 2 || type == 3) {
+        } else if(type == 2 || type == 3 || type == RR_AXFR || type == 4) {
                 csv2_rr *point;
-                if(type == 2) {
+                if(type == 2 || type == RR_AXFR) {
                         point = state->buffer;
                 }
                 else {
                         point = soa;
                 }
-                if(js_append(point->query,reply) == JS_ERROR) {
+		/* Newer versions of Dig whine if the initial question is 
+                 * not an AXFR RR type */
+		if(type != RR_AXFR && type != 4) {
+                    if(js_append(point->query,reply) == JS_ERROR) {
                         js_dealloc(h_copy);
                         js_destroy(reply);
                         return JS_ERROR;
-                }
-                if(js_adduint16(reply,point->rtype) == JS_ERROR) {
+                    }
+                    if(js_adduint16(reply,point->rtype) == JS_ERROR) {
                         js_dealloc(h_copy);
                         js_destroy(reply);
                         return JS_ERROR;
-                }
+                    }
+                } else {
+		    if(js_append(soa->query,reply) == JS_ERROR) {
+                        js_dealloc(h_copy); js_destroy(reply); return JS_ERROR;
+		    }
+                    if(js_adduint16(reply,RR_AXFR) == JS_ERROR) {
+                        js_dealloc(h_copy); js_destroy(reply); return JS_ERROR;
+		}}
         } else { /* Shouldn't get here... */
                 js_dealloc(h_copy);
                 js_destroy(reply);
@@ -298,10 +308,10 @@ int csv2_tcp_spit_data(csv2_add_state *state, int connect, q_header *header,
         }
 
         /* Put the answer in to the reply */
-        if(type == 1 || type == 2) {
+        if(type == 1 || type == 2 || type == RR_AXFR) {
                 point = state->buffer;
         }
-        else if(type == 3) {
+        else if(type == 3 || type == 4) {
                 point = soa;
         }
         if(csv2_append_rr(reply,point) == JS_ERROR) {
@@ -360,12 +370,12 @@ int csv2_tcp_spit_soa(csv2_add_state *state, int connect, q_header *header,
 /* Send out all of the zones in a given state's buffer to TCP; clearing
  * the buffer in the process */
 int csv2_tcp_spit_buffer(csv2_add_state *state, int connect, q_header *header,
-                js_string *zone) {
+                js_string *zone, csv2_rr *soa) {
         if(state->add_method != 2) { /* We only do this for the zoneserver */
                 return JS_ERROR;
         }
         while(state->buffer != 0) {
-                if(csv2_tcp_spit_data(state,connect,header,zone,2,0)
+                if(csv2_tcp_spit_data(state,connect,header,zone,RR_AXFR,soa)
                                 == JS_ERROR) {
                         return JS_ERROR;
                 }
@@ -509,7 +519,8 @@ int csv2_parse_zone_zoneserver(js_string *zone,
         soa_save = copy_csv2_rr(state->buffer);
 
         /* Second, flush the buffer out */
-        if(csv2_tcp_spit_buffer(state,connect,header,zone) == JS_ERROR) {
+        if(csv2_tcp_spit_buffer(state,connect,header,zone,soa_save) 
+			== JS_ERROR) {
                 js_dealloc(soa_save);
                 csv2_zap_add_state(state);
                 return JS_ERROR;
@@ -527,7 +538,7 @@ int csv2_parse_zone_zoneserver(js_string *zone,
                         }
                 }
 
-                if(csv2_tcp_spit_buffer(state,connect,header,zone) ==
+                if(csv2_tcp_spit_buffer(state,connect,header,zone,soa_save) ==
                                 JS_ERROR) {
                         js_dealloc(soa_save);
                         csv2_zap_add_state(state);
@@ -541,7 +552,7 @@ int csv2_parse_zone_zoneserver(js_string *zone,
         }
 
         /* Finally, give them the first SOA record again */
-        if(csv2_tcp_spit_data(state,connect,header,zone,3,soa_save)
+        if(csv2_tcp_spit_data(state,connect,header,zone,4,soa_save)
                         == JS_ERROR) {
                 js_dealloc(soa_save);
                 csv2_zap_add_state(state);
