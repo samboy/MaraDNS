@@ -28,3 +28,9 @@ right now are security bugs and simple typo bugs.  Some notes:
 Welcome to the world of open source economics: The code is free, but
 there is no guarantee of support, since there is no money on the table
 compelling one to support the program.
+
+Here are some bugs I will not fix:
+
+https://github.com/samboy/MaraDNS/issues/8
+https://github.com/samboy/MaraDNS/issues/12
+https://github.com/samboy/MaraDNS/issues/26 
