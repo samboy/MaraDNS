@@ -33,4 +33,11 @@ Here are some bugs I will not fix:
 
 https://github.com/samboy/MaraDNS/issues/8
 https://github.com/samboy/MaraDNS/issues/12
+https://github.com/samboy/MaraDNS/issues/14
 https://github.com/samboy/MaraDNS/issues/26 
+
+I mark bugs claiming that various parameters do not always work as
+expected as “WORKSFORME” unless one includes a script to reproduce
+the issue in the bug report; I do run automated tests to make sure pretty
+much all Deadwood parameters work correctly every time I make a Deadwood
+release.
