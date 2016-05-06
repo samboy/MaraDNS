@@ -1,18 +1,30 @@
-Deadwood is open for general testing.  Pretty much any bug can and should be
-reported.  Some notes:
+Deadwood is a released and stable program.  The only bugs I am fixing 
+right now are security bugs and simple typo bugs.  Some notes:
 
 * Valgrind-reported memory leaks can always be reported.  Valgrind-reported
 	errors are only valid if Deadwood is compiled with -DVALGRIND_NOERRORS
 
-* The only officially supported OSes are Windows XP and Scientific Linux 6.
+* The only officially supported OSes are Windows 7 and CentOS 6.
 	OS-specific issues such as startup, daemonizing, sysloggin, and 
 	/etc/resolv.conf setup are only supported on these two OSes.
 
-* Bugs need to be reported to the MaraDNS list, not to my email account nor
+* Bugs need to be reported in GitHub, not to my email account nor
 	as blog comments.  
 
-* Bugs reporting Deadwood crashes will be marked "unreproducible" unless
-	either a stack trace (or core dump if the program was compiled with
-	'-g' to enable debugging symbols) or a recipe to reproduce the
-	crash is provided.
+* Bugs reporting Deadwood crashes will probably be marked "unreproducible" 
+	unless either a stack trace (or core dump if the program was 
+	compiled with '-g' to enable debugging symbols) or a recipe to 
+	reproduce the crash is provided.
 
+* Bugs involving Deadwood recursively resolving a name different than
+	other DNS servers when the domain is misconfigured will probably
+	not be fixed. 
+
+* Bugs involving RFCs with a date more recent than July of 2010 will 
+	probably not be fixed. If the RFC number is higher then 5900 or so, 
+	or has a date in the top of the RFC more recent than July 2010,
+	I will probably ignore it.
+
+Welcome to the world of open source economics: The code is free, but
+there is no guarantee of support, since there is no money on the table
+compelling one to support the program.
