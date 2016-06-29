@@ -111,6 +111,9 @@ elif echo $UNAME | grep -i cygwin > /dev/null ; then
 	echo ' '
 	echo THIS IS NOT A SUPPORTED PLATFORM.
 	echo DO NOT WASTE MY TIME FILING GITHUB ISSUES ABOUT THIS PLATFORM.
+	echo
+	echo To install Deadwood by hand, please read 
+	echo deadwood-github/INSTALL.txt
 	EXITCODE=0
 # This is a a template for adding support to a new OS for MaraDNS.
 # Some points: If you port MaraDNS, make sure the underlying OS has
@@ -135,6 +138,9 @@ else
 	echo This is an unknown platform.  MaraDNS may or may not compile
 	echo on this platform.  THIS IS NOT A SUPPORTED PLATFORM.
 	echo DO NOT WASTE MY TIME FILING GITHUB ISSUES ABOUT THIS PLATFORM.
+	echo
+	echo To install Deadwood by hand, please read 
+	echo deadwood-github/INSTALL.txt 
 	echo
 	echo I encourage you to make a fork of MaraDNS for this
 	echo platform so other users may not see this obnoxious
