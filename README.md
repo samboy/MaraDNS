@@ -31,11 +31,11 @@
    Just like MaraDNS’s sub-project Deadwood, the only supported OSes are
    CentOS 6 and Windows 7.  
 
-   Just because MaraDNS is only fully supported in Scientific Linux 6
-   and Windows 7 doesn’t mean it doesn't run on other platforms.  It just 
-   means that, if you wish to run it on another platform, it’s up to you 
-   to make the port. Feel free to fork the MaraDNS Github repository, but 
-   please do not name any such ports “MaraDNS”.
+   Just because MaraDNS is only fully supported in CentOS 6 and Windows 7 
+   doesn’t mean it doesn't run on other platforms.  It just means that, if 
+   you wish to run it on another platform, it’s up to you to make the port. 
+   Feel free to fork the MaraDNS Github repository, but please do not name 
+   any such port “MaraDNS”.
 
 ## Important note for Windows users
 
