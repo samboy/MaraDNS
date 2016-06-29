@@ -106,8 +106,11 @@ elif echo $UNAME | grep -i mingw32 > /dev/null ; then
 	exit 0
 elif echo $UNAME | grep -i cygwin > /dev/null ; then
 	cat $BUILDDIR/Makefile.noflock >> Makefile
-	echo It looks like you are using Cygwin\; this should compile fine
+	echo It looks like you are using Cygwin\; this might compile fine
 	echo by typing in \'make\'.
+	echo ' '
+	echo THIS IS NOT A SUPPORTED PLATFORM.
+	echo DO NOT WASTE MY TIME FILING GITHUB ISSUES ABOUT THIS PLATFORM.
 	EXITCODE=0
 # This is a a template for adding support to a new OS for MaraDNS.
 # Some points: If you port MaraDNS, make sure the underlying OS has
@@ -130,9 +133,8 @@ else
 	echo WARNING WARNING WARNING
 	echo
 	echo This is an unknown platform.  MaraDNS may or may not compile
-	echo on this platform.  If you are able to sucessfully compile
-	echo and install MaraDNS on this platform, please let me know
-	echo by filing a Github issue. 
+	echo on this platform.  THIS IS NOT A SUPPORTED PLATFORM.
+	echo DO NOT WASTE MY TIME FILING GITHUB ISSUES ABOUT THIS PLATFORM.
 	echo
 	echo I encourage you to make a fork of MaraDNS for this
 	echo platform so other users may not see this obnoxious
