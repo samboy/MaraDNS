@@ -11,7 +11,7 @@ Do not move the contents of this folder after installing Deadwood.
 Otherwise, Windows may not be able to find the Deadwood service.
 
 Once 'install.bat' is run, Deadwood should automatically start whenever 
-the system is booted.  
+the system is booted.  This needs to be run as an administrator.
 
 The file dwood3rc.txt can be edited to change a number of options that are 
 described in Reference.txt.  People should not use dwood3rc.txt files from 
@@ -44,6 +44,8 @@ run as an administrator.
 
 Be sure to reset the DNS servers used before uninstalling Deadwood, 
 otherwise it won't be possible to use the internet.
+
+There is no need to stop Windows "DNS client" service.
 
 LEGAL DISCLAIMER
 
