@@ -553,6 +553,7 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
         }
 #endif
 
+	dwc_lower_case(query);/* https://github.com/samboy/MaraDNS/issues/30 */
         dw_log_dwstr("Looking in cache for query ",query,100);
         type = dw_fetch_u16(query,-1);
         if(type == RR_MX && key_n[DWM_N_reject_mx] != 0) {
