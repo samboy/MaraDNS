@@ -1,0 +1,30 @@
+Deadwood's recursive resolution is not bug-for-bug identical to BIND's
+recursive resolution; I have, ever since the beginning of 2015, have
+not had time to fix these issues. This in mind, if using root_servers,
+a small number of misconfigured domains which resolve in BIND anyway do
+not resolve in Deadwood. These are the known issues:
+
+*   MaraDNS does not resolve RFC-violating CNAME records
+    combined with other records the way BIND does. Discussion:
+    http://samiam.org/blog/2015-02-11.html
+
+*   MaraDNS does not handle out-of-bailiwick glue records
+    for CNAME records the way BIND does. Discussion:
+    http://samiam.org/blog/2016-07-21.html#MaraDNS_Not_chasing_moving_goalposts
+
+*   MaraDNS does not handle out-of-bailiwick glue records for NS referrals
+    the way BIND does.
+
+The first issue is caused because CNAME records with other records
+downright violate the RFCs, so there's no standardized behavior for
+handling them. The second and third issue are caused because older
+versions of BIND handled them differently than newer versions of BIND;
+MaraDNS' recursive algorithm was designed in 2001 to emulated BIND's
+older behavior, and the 2010 recursive rewrite used the same algorithm.
+
+If I were to win the lottery, allowing me to retire early, I would have
+time to fix these issues -- but right now I do not. 
+
+In other words, use upstream_servers instead of root_servers unless 
+you're willing to fork MaraDNS/Deadwood and Use The Source Luke (UTSL)
+to fix the bugs.
