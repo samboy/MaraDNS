@@ -16,6 +16,19 @@
  * fitness for purpose.
  */
 
+/* This is a tool for sending a RAW UDP packet to MaraDNS for "gremlin"
+ * testing. This program receives the UDP packet on standard input (which,
+ * yes, can have NULLs in it); once standard input is closed, this
+ * program sends the packet to the IP specified on the command line.
+ * E.g. let's make 32 random bytes:
+ *
+ * dd if=/dev/urandom of=foo bs=32 count=1
+ *
+ * And send them to the DNS server on port 53:
+ *
+ * cat foo | ./sendpacket 127.0.0.1
+ */
+
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
