@@ -545,7 +545,7 @@ root_servers to use the default ICANN root servers, as follows:
 192.203.230.10  e.root-servers.net (NASA Ames) 
 192.5.5.241     f.root-servers.net (ISC) 
 192.112.36.4    g.root-servers.net (DOD NIC) 
-128.63.2.53     h.root-servers.net (ArmyRU) 
+198.97.190.53   h.root-servers.net (ArmyRU) 
 192.36.148.17   i.root-servers.net (NORDUnet) 
 192.58.128.30   j.root-servers.net (VeriSign) 
 193.0.14.129    k.root-servers.net (Reseaux) 
@@ -553,8 +553,8 @@ root_servers to use the default ICANN root servers, as follows:
 202.12.27.33    m.root-servers.net (WIDE) 
 </pre>
 
-This list is current as of February 9, 2015, and was last changed on
-January 3, 2013.
+This list is current as of December 5, 2016, and was last changed on
+December 1, 2015.
 
 <p>
 

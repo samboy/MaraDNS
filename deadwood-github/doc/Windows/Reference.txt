@@ -408,7 +408,7 @@ upstream_servers
  192.203.230.10  e.root-servers.net (NASA Ames)
  192.5.5.241     f.root-servers.net (ISC)
  192.112.36.4    g.root-servers.net (DOD NIC)
- 128.63.2.53     h.root-servers.net (ArmyRU)
+ 198.97.190.53   h.root-servers.net (ArmyRU)
  192.36.148.17   i.root-servers.net (NORDUnet)
  192.58.128.30   j.root-servers.net (VeriSign)
  193.0.14.129    k.root-servers.net (Reseaux)
