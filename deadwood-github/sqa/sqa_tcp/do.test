@@ -11,7 +11,7 @@ ipv4_bind_addresses="127.0.0.1"
 # real www.example.com auth server; change this if www.example.com's DNS
 # moves
 upstream_servers = {}
-upstream_servers["."]="199.43.132.53"
+upstream_servers["."]="8.8.8.8"
 recursive_acl="127.0.0.1/16"
 tcp_listen = 1
 timeout_seconds_tcp = 10
@@ -25,6 +25,7 @@ sleep 3
 dig +tcp @127.0.0.1 www.example.com | \
 	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
 	grep -v 'WARNING: recursion requested but not available' | \
+	grep -v 'MSG SIZE' | perl -pe 's/(\d)+\s*IN/IN/' | \
 	grep -v 'global options' | grep -v NS
 killall maradns > /dev/null 2>&1
 killall zoneserver > /dev/null 2>&1
