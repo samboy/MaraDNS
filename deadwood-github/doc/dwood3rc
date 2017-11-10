@@ -30,7 +30,7 @@ chroot_dir = "/etc/deadwood" # Directory we run program from (not used in Win32)
 #root_servers = {}
 # ICANN DNS root servers (Deadwood default if both root_servers and
 # upstream_servers are not defined)
-#root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
+#root_servers["."]="198.41.0.4, 199.9.14.201, 192.33.4.12, 199.7.91.13,"
 #root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
 #root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
 #root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
