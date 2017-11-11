@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2016 Sam Trenholme
+/* Copyright (c) 2007-2017 Sam Trenholme
  *
  * TERMS
  *
@@ -19,10 +19,10 @@
 #ifndef __DW_SOCKET_DEFINED__
 #define __DW_SOCKET_DEFINED__
 
-/* This is the root server list as of 2016/12/05; the IPv4 root servers were
- * last changed 2015/12/01 */
+/* This is the root server list as of 2017-11-11; the IPv4 root servers were
+ * last changed 2017-10 */
 #define ROOT_SERVERS "198.41.0.4"       /* a.root-servers.net (VeriSign) */ \
-                     ",199.9.14.201"  /* b.root-servers.net (ISI) */ \
+                     ",199.9.14.201"    /* b.root-servers.net (ISI) */ \
                      ",192.33.4.12"     /* c.root-servers.net (Cogent) */ \
                      ",199.7.91.13"     /* d.root-servers.net (UMaryland) */ \
                      ",192.203.230.10"  /* e.root-servers.net (NASA Ames) */ \
