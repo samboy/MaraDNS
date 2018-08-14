@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2012 Sam Trenholme
+/* Copyright (c) 2007-2018 Sam Trenholme
  *
  * TERMS
  *
@@ -58,7 +58,11 @@ void dwr_beltmill(DWR_WORD *a, DWR_WORD *b) {
                 r = ((i * (i + 1)) / 2) % DWR_WORDSIZE;
                 x = a[y] ^ (a[ ((y + 1) % DWR_MILLSIZE) ] |
                     (~a[ ((y + 2) % DWR_MILLSIZE) ]));
-                A[i] = (x >> r) | (x << (DWR_WORDSIZE - r));
+		if(r > 0 && r < DWR_WORDSIZE) {
+                	A[i] = (x >> r) | (x << (DWR_WORDSIZE - r));
+		} else {
+			A[i] = x;
+		}
         }
         for(i = 0; i < DWR_MILLSIZE ; i++) {
                 y = i;
@@ -212,7 +216,7 @@ uint16_t dwr_rng(dwr_rg *in) {
 
 #ifdef HAVE_MAIN
 
-main(int argc, char **argv) {
+int main(int argc, char **argv) {
         dw_str *q = 0;
         dwr_rg *r = 0;
         int c = 0;
@@ -229,6 +233,7 @@ main(int argc, char **argv) {
         printf("\n");
         dw_destroy(q);
         dwr_zap(r);
+	return 0;
 }
 
 #endif /* HAVE_MAIN */
