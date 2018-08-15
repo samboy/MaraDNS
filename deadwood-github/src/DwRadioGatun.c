@@ -225,7 +225,7 @@ int main(int argc, char **argv) {
                 exit(1);
         }
         q = dw_create(2048);
-        dw_qrappend(argv[1],q,0);
+        dw_qrappend((uint8_t *)argv[1],q,0);
         r = dwr_init_rg(q);
         for(c = 0; c < 20; c++) {
                 printf("%04x ",dwr_rng(r));
