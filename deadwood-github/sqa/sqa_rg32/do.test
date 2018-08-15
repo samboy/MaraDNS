@@ -1,25 +1,20 @@
 #!/bin/bash
 
-# Make the rg32 binary
-cd ../../src
-gcc -g -DSTANDALONE -c -o DwStr.o DwStr.c
-gcc -g -o rg32 -DHAVE_MAIN DwRadioGatun.c DwStr.o
+# Since there was a bug in another rg32 implementation which only showed 
+# up with "clang -O2" and "clang -O3" (it passed with all gcc and tcc 
+# options), we now have a test to make sure rg32 works with all compilers 
+# and all flags
 
-# Copy the rg32 binary here
-cp rg32 ~-
+gcc -O3 -o rg32hash rg32hash.c 2> /dev/null
+rm -f output.test
 
-# Clean up
-rm rg32 DwStr.o
-make clean > /dev/null 2>&1
+for cc in gcc clang ; do
+    for opt in '-g' '' '-Os' '-O1' '-O2' '-O3' ; do
+	export COMPILER="$cc"
+	export FLAGS="$opt"
+       	./one.test > test.output
+	echo $( rg32hash test.output ) $COMPILER $FLAGS 
+    done
+done
 
-# OK, come back here to run the test
-cd ~-
-
-# The test
-cat Input | awk '
-	{print "./rg32 '\''" $0 "'\'' | \\"; 
-	 print "awk '\''{$17=$18=$19=$20=\"\" ; print $0}'\'' | tr -d \" \" "}
-' | sh
-
-# Clean up here
-rm rg32 
+rm rg32hash
