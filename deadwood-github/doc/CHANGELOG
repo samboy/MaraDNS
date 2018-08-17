@@ -1,3 +1,36 @@
+3.2.12 (2018-08-15):
+
+- Security fix: There was a theoretical issue with the cryptographic
+  code in Deadwood, where a standards-compliant compiler might not
+  generate correct secure random numbers (used for the query ID and 
+  query source port).  I can not find a compiler which actually
+  generates insecure code (I tested against gcc 4.8.5, gcc 7.3.0, clang
+  3.4.2, and clang 5.0.1), but in the interest of caution, I am making
+  a security update, and have added tests to make sure this bug does
+  not manifest itself when run against multiple compilers and compile
+  flags (it's only an issue with -O2 and -O3 in clang using a different
+  implementation of RadioGatun[32]).
+
+3.2.11 (2018-01-10):
+
+- b.root-servers.net IP updated
+
+3.2.10 (2017-06-10):
+
+- h.root-servers.net IP updated
+
+- Slow down issue with mixed case queries fixed
+
+- We allow names to start with an underscore
+
+- Documentation updates
+
+3.2.09 (2015-09-25):
+
+- Security fix: Deadwood would crash if it was unable to make a UDP
+  connection to a given IP (usually caused when a system did not have
+  a default route).  
+
 3.2.08 (2015-08-18):
 
 - Default maxprocs increased to 1024; maximum maxprocs increased to 
