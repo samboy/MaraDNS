@@ -7,6 +7,11 @@
 # inside the MaraDNS source tree, and it needs to be run with the
 # current working directory the directory this test is in
 
+if ! command -v askmara > /dev/null 2>&1 ; then
+	echo askmara must be in path to run tests
+	exit 1
+fi
+
 SQADIR=$(pwd)
 export CC=gcc
 
