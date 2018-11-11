@@ -118,6 +118,12 @@ TESTS=$TESTS"sqa_valgrind "
 TESTS=$TESTS"sqa_valgrind "
 TESTS=$TESTS"sqa_valgrind "
 
+# Allow it to be possible to specify tests on the command line
+# e.g. ./do.tests sqa_rg32
+if [ ! -z "$*" ] ; then
+	TESTS="$*"
+fi
+
 for PAIR in $TESTS ; do
 	TEST=$( echo $PAIR | cut -f1 -d, )
 	TRIES="$( echo $PAIR | cut -f2 -d, -s )"
