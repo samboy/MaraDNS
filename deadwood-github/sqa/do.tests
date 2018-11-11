@@ -127,7 +127,8 @@ for PAIR in $TESTS ; do
 			echo test $test failed
 			TRY=$(( $TRY + 1 ))
 			if [ $TRY -ge $TRIES ] ; then
-				exit 1
+				#exit 1
+				echo TEST FAILURE
 			else
 				echo trying again
 			fi
