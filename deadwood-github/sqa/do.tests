@@ -7,6 +7,9 @@
 # inside the MaraDNS source tree, and it needs to be run with the
 # current working directory the directory this test is in
 
+# Before running this test, be sure to have no processes which bind
+# to either UDP or TCP port 53 on the system running the tests
+
 if ! command -v askmara > /dev/null 2>&1 ; then
 	echo askmara must be in path to run tests
 	exit 1
