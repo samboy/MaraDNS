@@ -22,9 +22,7 @@ EOF
 ../../src/Deadwood -f dwood2rc > /dev/null &
 sleep 1
 echo handle_noreply=$VALUE
-dig +tcp @127.0.0.1 www.example.com | \
-        grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
-	grep -v 'global options'
+askmara-tcp Awww.example.com. 127.0.0.1 | awk -F\| '{print $1}'
 sleep 1
 killall Deadwood > /dev/null 2>&1
 sleep 1

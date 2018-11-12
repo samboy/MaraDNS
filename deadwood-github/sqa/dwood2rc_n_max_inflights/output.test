@@ -15,8 +15,3 @@ Connection 0 has 8 locals
 Connection 0 has 9 locals
 Connection 0 has 10 locals
 Got signal 1 to process...
-
- definitely lost: 0 bytes in 0 blocks
- indirectly lost: 0 bytes in 0 blocks
- possibly lost: 0 bytes in 0 blocks
- ERROR SUMMARY: 0 errors from 0 contexts
