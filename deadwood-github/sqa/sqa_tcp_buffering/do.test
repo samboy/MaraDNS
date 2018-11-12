@@ -24,9 +24,8 @@ make > /dev/null
 
 sleep 3
 
-dig +tcp @127.0.0.2 txt.example.com TXT | \
-	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
-	grep -v 'global options'
+askmara-tcp Atxt.example.com. 127.0.0.2
+
 #./send_packet_stdin 127.0.0.2 < dns.query.txt.example.com | fmt -w 60
 
 killall Deadwood
