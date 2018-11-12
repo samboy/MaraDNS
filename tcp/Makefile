@@ -17,7 +17,7 @@ OBJECTS=$(JOBJS) $(MHOBJS) $(MJOBJS) $(DOBJECTS) $(POBJECTS) $(SOBJECTS) \
 	$(TCPOBJS)
 EXECS=getzone zoneserver fetchzone
 
-FLAGS = -DAUTHONLY
+FLAGS = -DAUTHONLY -DIPV6
 
 all: $(EXECS)
 

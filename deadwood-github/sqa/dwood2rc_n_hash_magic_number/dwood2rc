@@ -1,4 +1,4 @@
-chroot_dir="/home/set/maradns/maradns-1.4.03/deadwood-2.6.05p2/sqa/dwood2rc_n_hash_magic_number"
+chroot_dir="/home/set/maradns/MaraDNS-github/deadwood-github/sqa/dwood2rc_n_hash_magic_number"
 ipv4_bind_addresses="127.0.0.1"
 upstream_servers = {}
 upstream_servers["."]="127.0.0.2"

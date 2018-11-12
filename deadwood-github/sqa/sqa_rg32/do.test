@@ -6,7 +6,6 @@
 # and all flags
 
 gcc -O3 -o rg32hash rg32hash.c 2> /dev/null
-rm -f output.test
 
 for cc in gcc clang ; do
     for opt in '-g' '' '-Os' '-O1' '-O2' '-O3' ; do
