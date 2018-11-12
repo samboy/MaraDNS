@@ -1,0 +1,11 @@
+
+; (1 server found)
+;; Got answer:
+
+;; QUESTION SECTION:
+;www.example.com.		IN	A
+
+www.example.com.	IN	A	93.184.216.34
+
+;; SERVER: 127.0.0.1#53(127.0.0.1)
+

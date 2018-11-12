@@ -1,0 +1,11 @@
+This test makes sure that TCP works on the real internet (where buffering 
+is used, unlike over the loopback interface).  This test works by
+using the real server for www.example.com as the upstream server, and
+making a query to that server.
+
+Note that this test will need to be revised if the real server for 
+www.example.com changes or the data for www.example.com changes.
+That in mind, this test is done first because it will fail every
+time the server/data for www.example.com changes but this test
+isn't updated to reflect those changes.
+
