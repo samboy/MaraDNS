@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This tests to make sure tcp on the real internet works
 # This test will need to be updated whenever the servers for the
@@ -20,13 +20,10 @@ EOF
 
 #../../src/Deadwood -f dwood2rc | grep -v version | sed 's/[(].*[)]//' &
 ../../src/Deadwood -f dwood2rc > /dev/null 2>&1 &
+#../../src/Deadwood -f dwood2rc &
 
 sleep 3
-dig +tcp @127.0.0.1 www.example.com | \
-	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
-	grep -v 'WARNING: recursion requested but not available' | \
-	grep -v 'MSG SIZE' | perl -pe 's/(\d)+\s*IN/IN/' | \
-	grep -v 'global options' | grep -v NS
+askmara-tcp Awww.example.com. 127.0.0.1 | awk -F\| '{print $1}'
 killall maradns > /dev/null 2>&1
 killall zoneserver > /dev/null 2>&1
 killall Deadwood

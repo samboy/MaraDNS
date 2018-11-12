@@ -12,6 +12,11 @@ if ! command -v askmara > /dev/null 2>&1 ; then
 	exit 1
 fi
 
+if ! command -v askmara-tcp > /dev/null 2>&1 ; then
+	echo askmara-tcp must be in path to run tests
+	exit 1
+fi
+
 if ! id | grep root > /dev/null 2>&1 ; then
 	echo the tests must be run as a root user
 	exit 1
