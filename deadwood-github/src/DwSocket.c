@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2015 Sam Trenholme
+/* Copyright (c) 2007-2018 Sam Trenholme
  * IPv6 code by Jean-Jacques Sarton
  *
  * TERMS
@@ -558,6 +558,31 @@ int process_root_upstream_servers(int param, int is_upstream, char *bad) {
 
         return out;
 
+}
+
+/* Read and process the ip4 named IPs */
+int process_ip4_params() {
+	dw_str *q = 0, *r = 0;
+	int a = 0, out = 0, b = 0;
+	char *z;
+	for(a=0;a<20000;a++) {
+		r = dwm_dict_nextkey(DWM_D_ip4,q);
+		dw_destroy(q);
+		if(r == 0) {
+			break;
+		}
+		out = 1;
+		printf("DEBUG ip4: ");
+		z = (char *)r->str;
+		for(b = 0; b < r->len; b++) {
+			printf("%c",*z);
+			z++;
+		}	
+		printf("\n");
+                q = dw_copy(r);
+                dw_destroy(r);
+	}
+	return out;
 }
 
 /* Process the root_servers and upstream_servers values, using
