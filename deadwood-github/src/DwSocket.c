@@ -562,26 +562,35 @@ int process_root_upstream_servers(int param, int is_upstream, char *bad) {
 
 /* Read and process the ip4 named IPs */
 int process_ip4_params() {
-	dw_str *q = 0, *r = 0;
-	int a = 0, out = 0, b = 0;
-	char *z;
+	dw_str *lastkey = 0, *key = 0, *value = 0, *rawname = 0, *s = 0;
+	char *ip_human = 0;
+	int a = 0, out = 0;
 	for(a=0;a<20000;a++) {
-		r = dwm_dict_nextkey(DWM_D_ip4,q);
-		dw_destroy(q);
-		if(r == 0) {
+		key = dwm_dict_nextkey(DWM_D_ip4,lastkey);
+		dw_destroy(lastkey);
+		if(key == 0) { /* End of dictionary */
 			break;
 		}
+		value = dwm_dict_fetch(DWM_D_ip4,key);		
+		rawname = dw_dnsname_convert(key);
+		ip_human = (char *)dw_to_cstr(value);
+		if(value == 0 || rawname == 0 || ip_human == 0) {
+			dw_log_dwstr_str(bad,value," is ip4 entry name",0);
+			dw_fatal("Fatal error processing ip4 entry");
+		}
+		// CODE HERE: Convert value in to 4-byte IPv4 using
+		// inet_pton
 		out = 1;
-		printf("DEBUG ip4: ");
-		z = (char *)r->str;
-		for(b = 0; b < r->len; b++) {
-			printf("%c",*z);
-			z++;
-		}	
-		printf("\n");
-                q = dw_copy(r);
-                dw_destroy(r);
+                lastkey = dw_copy(key);
+		// Clean up copied strings
+                dw_destroy(key);
+		dw_destroy(value);
+		dw_destroy(rawname);
+		free(ip_human);
 	}
+        if(a == 20000) {
+                dw_fatal("Too many ip4 entries, limit 20,000");
+        }
 	return out;
 }
 
