@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2011 Sam Trenholme
+/* Copyright (c) 2002-2019 Sam Trenholme
  *
  * TERMS
  *
@@ -4446,8 +4446,8 @@ int main(int argc, char **argv) {
     /* Limit the maximum amount of memory we can allocate, in
      * bytes */
     maxprocs = read_numeric_kvar("max_mem",
-               1048576 + thread_overhead +
-               ((cache_size + dns_records_served) * 1536));
+               2097072 + thread_overhead +
+               ((cache_size + dns_records_served) * 3072));
     if(maxprocs < 262144 && maxprocs > 0) { maxprocs = 262144; }
     if(maxprocs > 0) {
       rlim.rlim_cur = rlim.rlim_max = maxprocs;
