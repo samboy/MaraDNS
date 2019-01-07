@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2015 Sam Trenholme
+/* Copyright (c) 2007-2019 Sam Trenholme
  *
  * TERMS
  *
@@ -618,7 +618,11 @@ void get_entropy_from_seedfile(uint8_t *noise,int len) {
                 zap = 1;
         }
 
+#ifdef MINGW
+        seed = open(filename, O_RDONLY|O_BINARY);
+#else /* MINGW */
         seed = open(filename, O_RDONLY);
+#endif /* MINGW */
         if(seed == -1) {
                 dw_log_3strings("Fatal error opening random seed file ",
                        filename,"",1);
