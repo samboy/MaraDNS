@@ -557,10 +557,10 @@ available in a DNS reply.
 <h2>max_mem</h2>
 
 max_mem is the maximum amount of memory we allow MaraDNS to allocate,
-in bytes. <p>
+in bytes.<p>
 
-The default value of this is to allocate 1 megabyte for MaraDNS' general
-use, and in addition, to allocate 1536 bytes for each element we
+The default value of this is to allocate 2 megabytes for MaraDNS' general
+use, and in addition, to allocate 3072 bytes for each element we
 can have in the cache or DNS record that we are authoritatively serving.  
 
 <h2>min_visible_ttl</h2>

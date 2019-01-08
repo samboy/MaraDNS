@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Fri Jul  3 15:08:28 2015
+.\" Last updated Mon Jan  7 21:10:48 2019
 .\"
 .TH MARADNS 8 "January 2002" MARADNS "MaraDNS reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -111,7 +111,7 @@ that the authoritative nameserver uses.
 When using the Deadwood recursive nameserver:
 .TP 2
 *
-Allow UDP connections from the MaraDNS-running server to any
+Allow UDP connections from the Deadwood server to any
 machine on the internet where the UDP destination port is 53
 .TP 2
 *
@@ -123,16 +123,15 @@ destination port is between 15000 and 19095 (inclusive)
 *
 Allow UDP connections from IPs that use Deadwood as a recursive DNS
 server
-to port 53 of the MaraDNS server
+to port 53
 .PP
-MaraDNS uses a strong secure RNG for both the query (16 bits of
-entropy)
-and the source port of the query (12 bits of entropy). This makes
-spoofing
-replies to a Deadwood recursive server more difficult, since the
-attacker
-has only a one in 250 million chance that a given spoofed reply will be
-considered valid.
+Deadwood uses a strong secure RNG (RadioGatun[32]) for both the query
+(16
+bits of entropy) and the source port of the query (12 bits of entropy).
+This makes spoofing replies to a Deadwood recursive server more
+difficult,
+since the attacker has only a one in 250 million chance that a given
+spoofed reply will be considered valid.
 .PP
 .SH "FREQUENTLY ASKED QUESTIONS"
 .PP
@@ -290,8 +289,7 @@ dot” mean?
 .PP
 60. Does MaraDNS support newer top level domains?
 .PP
-61. Why isn\(aqt MaraDNS\(aq web design more small screen
-compatible?
+61. Can MaraDNS handle IDN domain names?
 .RE
 .PP
 .PP
@@ -305,9 +303,7 @@ compatible?
 Upgrade to MaraDNS 2.0.
 Here is an upgrade guide.
 .PP
-MaraDNS 1.4 is only supported for critical security updates; this
-support
-is being phased out and MaraDNS 1 will no longer be supported on
+MaraDNS 1 is no longer supported; support ended on
 June 21, 2015.
 .PP
 .in -3
@@ -326,7 +322,7 @@ MaraDNS is released with the following two-clause
 BSD-type license:
 .PP
 .RS 4
-Copyright (c) 2002-2015 Sam Trenholme and others
+Copyright (c) 2002-2016 Sam Trenholme and others
 .PP
 TERMS
 .PP
@@ -1059,7 +1055,7 @@ Since MaraDNS is finished, updates usually only happen about once a
 year.
 .PP
 The last security bug which required a MaraDNS update was made before
-January 30, 2015.
+September 28, 2015.
 .PP
 .in -3
 \fB40. I have star records in my zones, and am having problems with
@@ -1275,26 +1271,13 @@ may be in Gmail\(aqs "promotions" tab.
 .in -3
 \fB51. How does MaraDNS respond to EDNS (RFC2671) packets?\fR
 .PP
-MaraDNS 1.4 responds to EDNS packets by ignoring the OPT record and
-acting
-as if it the packet did not have an OPT record.
-.PP
-Deadwood (the recursive resolver
-for Deadwood 2.0, available in the deadwood-#.#.## directory of any 1.4
-MaraDNS release), up through Deadwood
-2.9.02 responds to EDNS packets by discarding the packet and not
-responding. This was changed in Deadwood 2.9.03: Deadwood, as
-per RFC2671 section 5.3, now responds to EDNS queries by replying with
-the NOTIMPL ("not implemented") error code instead of answering the
-query.
-This was changed again in Deadwood 2.9.04: Deadwood now, like MaraDNS 1
-(as well as DJBdns), handles a EDNS packet as if the OPT record did not
-exist.
+MaraDNS 2 (both the authoritative maradns server and the recursive
+Deadwood server) responds to EDNS packets by ignoring the OPT record
+and acting as if it the packet did not have an OPT record.
 .PP
 MicroDNS (available
-in the tools/misc directory of any 1.4 MaraDNS release), as of
-MaraDNS 1.4.05, responds to EDNS queries the same way Deadwood 2.9.03
-did:
+in the tools/misc directory of any MaraDNS 2 release)
+responds to EDNS queries the same way Deadwood 2.9.03 did:
 By giving back "NOTIMPL" instead of answering the query with the
 default IP. NanoDNS, in the
 interest of minimizing code side, responds to EDNS requests by
@@ -1492,18 +1475,12 @@ using the domain name “ñ.com.”, it needs to be in the form
 “xn--ida.com.” in MaraDNS’ mararc and zone files.
 .PP
 .in -3
-\fBWhy isn\(aqt MaraDNS\(aq web design more small screen compatible?\fR
+\fBCan MaraDNS handle IDN domain names?\fR
 .PP
-MaraDNS is a project from the first 2000s decade (oughts) and much of
-its development, including its website design, was done before the
-iPhone existed, in an era when getting a site to look good in Internet
-Explorer 6 mattered a lot more than making it adaptable to different
-screen sizes.
-.PP
-It would be nice if I somehow became independently wealthy and could
-retire young, which would give me enough free time to update
-MaraDNS\(aq
-web site design for the 2010s.
+Yes, but the internationalized domain name (IDN) needs
+to be translated in to Punycode first. For example, if
+using the domain name “ñ.com.”, it needs to be in the form
+“xn--ida.com.” in MaraDNS’ mararc and zone files.
 .PP
 .SH "BUGS"
 .PP
