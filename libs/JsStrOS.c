@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2006 Sam Trenholme
+/* Copyright (c) 2002-2019 Sam Trenholme
  *
  * TERMS
  *
@@ -119,7 +119,7 @@ void *js_alloc(int unit_count, int unit_size) {
         /* Securty: In a situtation where we can not allocate memory,
            the subsequent behavior of the program is undefined.  Hence,
            the best thing to do is exit then and there */
-        printf("Aieeeeee, can not allocate memory!");
+        printf("Aieeeeee, can not allocate memory (increase max_mem maybe?)!");
         exit(64);
         return (void *)0;
         }
