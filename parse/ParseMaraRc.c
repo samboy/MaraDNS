@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2009, 2015 Sam Trenholme
+/* Copyright (c) 2002-2019 Sam Trenholme
  *
  * TERMS
  *
@@ -139,7 +139,7 @@ char *keywords[KEYCOUNT] = {
         "recurse_number_ports", /* The number of ports the recursive resolver
                                  * is allowed to bind to */
         "max_mem", /* The maximum amount of memory we allow MaraDNS to
-                    * allocate, in kilobytes */
+                    * allocate, in bytes */
         "notthere_ip", /* The IP to give users when they try to recursively
                         * query a host that is not there or isn't responding
                         */
