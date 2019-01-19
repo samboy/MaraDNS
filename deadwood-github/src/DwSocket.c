@@ -562,7 +562,7 @@ int process_root_upstream_servers(int param, int is_upstream, char *bad) {
 
 /* Read and process the ip4 named IPs */
 int process_ip4_params() {
-	dw_str *lastkey = 0, *key = 0, *value = 0, *rawname = 0, *s = 0;
+	dw_str *lastkey = 0, *key = 0, *value = 0, *rawname = 0;
 	char *ip_human = 0;
 	int a = 0, out = 0;
 	for(a=0;a<20000;a++) {
@@ -575,7 +575,7 @@ int process_ip4_params() {
 		rawname = dw_dnsname_convert(key);
 		ip_human = (char *)dw_to_cstr(value);
 		if(value == 0 || rawname == 0 || ip_human == 0) {
-			dw_log_dwstr_str(bad,value," is ip4 entry name",0);
+			dw_log_dwstr_str(" ",value," is ip4 entry name",0);
 			dw_fatal("Fatal error processing ip4 entry");
 		}
 		// CODE HERE: Convert value in to 4-byte IPv4 using

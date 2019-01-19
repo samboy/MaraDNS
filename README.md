@@ -161,12 +161,18 @@
 
 ## MaraDNS' future
 
+   *2019 update*: There have been been some changes in my personal life
+   which make it possible for me to work on MaraDNS and Deadwood again
+   for a couple of hours each week.  
+
+   My plans for MaraDNS in 2019 is to fix at least two bugs (I have already
+   fixed one and released Deadwood 3.2.14), and to add at least one new
+   feature to MaraDNS. While I now have a little more time to look at
+   non-critical bugs and to add small features, I do not have enough
+   free time for MaraDNS to do significant overhauls (e.g. DNSSEC).
+
    It would require some large company or government agency paying me a
-   full-time living wage to add significant new features to MaraDNS. Since
-   this is unlikely to happen, especially in today's economy, I am
-   declaring MaraDNS finished: While I will still fix important security
-   bugs in MaraDNS, and will probably still fix other critical bugs, I
-   currently have no plans to add new features to MaraDNS.
+   full-time living wage to add significant new features to MaraDNS. 
 
    Feel free to fork this repository, but please do not name your fork
    "MaraDNS".
