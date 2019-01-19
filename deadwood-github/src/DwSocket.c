@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2018 Sam Trenholme
+/* Copyright (c) 2007-2015 Sam Trenholme
  * IPv6 code by Jean-Jacques Sarton
  *
  * TERMS
@@ -558,40 +558,6 @@ int process_root_upstream_servers(int param, int is_upstream, char *bad) {
 
         return out;
 
-}
-
-/* Read and process the ip4 named IPs */
-int process_ip4_params() {
-	dw_str *lastkey = 0, *key = 0, *value = 0, *rawname = 0;
-	char *ip_human = 0;
-	int a = 0, out = 0;
-	for(a=0;a<20000;a++) {
-		key = dwm_dict_nextkey(DWM_D_ip4,lastkey);
-		dw_destroy(lastkey);
-		if(key == 0) { /* End of dictionary */
-			break;
-		}
-		value = dwm_dict_fetch(DWM_D_ip4,key);		
-		rawname = dw_dnsname_convert(key);
-		ip_human = (char *)dw_to_cstr(value);
-		if(value == 0 || rawname == 0 || ip_human == 0) {
-			dw_log_dwstr_str(" ",value," is ip4 entry name",0);
-			dw_fatal("Fatal error processing ip4 entry");
-		}
-		// CODE HERE: Convert value in to 4-byte IPv4 using
-		// inet_pton
-		out = 1;
-                lastkey = dw_copy(key);
-		// Clean up copied strings
-                dw_destroy(key);
-		dw_destroy(value);
-		dw_destroy(rawname);
-		free(ip_human);
-	}
-        if(a == 20000) {
-                dw_fatal("Too many ip4 entries, limit 20,000");
-        }
-	return out;
 }
 
 /* Process the root_servers and upstream_servers values, using
