@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2010 Sam Trenholme
+/* Copyright (c) 2007-2018 Sam Trenholme
  *
  * TERMS
  *
@@ -109,6 +109,7 @@ int dw_udp_main(int argc, char **argv) {
         sandbox();
         init_cache();
         process_root_upstream();
+	process_ip4_params();
         malloc_tcp_pend();
         init_tcp_b_pend();
         init_b_remote();

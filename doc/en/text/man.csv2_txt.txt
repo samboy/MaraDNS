@@ -5,8 +5,8 @@
 
                              DESCRIPTION
 
-   Due to the complexity of TXT and RAW records, this man page is
-   dedicated to describing the csv2 format of this RR.
+   Due to the complexity of TXT and RAW records, this man page
+   is dedicated to describing the csv2 format of this RR.
 
    TXT and RAW rrs in MaraDNS' csv2 zone files can store any
    arbitrary binary data. Additionally, it is possible to
@@ -18,8 +18,7 @@ ASCII AND UTF-8 DATA
    If a given TXT field or RAW record contains only ASCII data,
    creating a record is easy: Place the full data between single
    quotes, like this:
-
- a.example.com. TXT 'This is some text' ~
+a.example.com. TXT 'This is some text' ~
 
    It is also possible, to place almost any printable ASCII
    characters between quotes. The '~' (tilde) character is not
@@ -28,162 +27,149 @@ ASCII AND UTF-8 DATA
    are not allowed in TXT data if the ~ is used to separate
    records. If there are any bytes with a value of 0x80 or more,
    the data must be UTF-8 encoded Unicode. For example:
+b.example.com. TXT 'This is an example UTF-8 character: I ♥ MaraDNS'
 
- b.example.com. TXT 'This is an example UTF-8 character: I ♥ MaraDNS'
+   (If your font does not have this Unicode symbol, it is a
+   heart)
 
-   (If your font does not have this Unicode symbol, it is a heart)
-
-   The printable ASCII characters not allowed in quotes are the '
-   character, the '|' character, the '~' (tilde) character, and the
-   '#' character. See BACKSLASH ESCAPE SEQUENCES below for
-   information on adding these characters to TXT or RAW fields.
+   The printable ASCII characters not allowed in quotes are the
+   ' character, the '|' character, the '~' (tilde) character,
+   and the '#' character. See BACKSLASH ESCAPE SEQUENCES below
+   for information on adding these characters to TXT or RAW
+   fields.
 
 UNQUOTED DATA
 
-   Note that the record does not have to be quoted. As long as the
-   record only contains ASCII alphanumeric data, and/or the
-   characters '-', '_', '+', '%', '!', '^', and '=', the data can
-   be unquoted as follows:
-
- c.example.com. TXT This_is_100%_unquoted_text_+symbols!
+   Note that the record does not have to be quoted. As long as
+   the record only contains ASCII alphanumeric data, and/or the
+   characters '-', '_', '+', '%', '!', '^', and '=', the data
+   can be unquoted as follows:
+c.example.com. TXT This_is_100%_unquoted_text_+symbols!
 
    It is also possible to mix quoted and unquoted text, such as
    this:
-
- d.example.com. TXT This' is a mix 'of_unquoted' and quoted 'text!
+d.example.com. TXT This' is a mix 'of_unquoted' and quoted 'text!
 
    Which will have its data look like this:
-
- This is a mix of_unquoted and quoted text!
+This is a mix of_unquoted and quoted text!
 
    When mixing quoted and unquoted data, it is important to have
    all whitespace inside quotes.
 
 BACKSLASH ESCAPE SEQUENCES
 
-   In order to accommodate storing non-UTF-8 high bit characters,
-   the single quote character, non-printable ASCII control codes,
-   the '|', '~', and '#' characters, and to permit multi-line
-   TXT/RAW records (with comments allowed mid-record), the TXT/RAW
-   RR allows backslashes. These backslashes only have significance
-   outside of quoted text; if they are placed inside single quotes,
-   they are not interpreted and result in a literal backslash being
-   added to the resource record data.
+   In order to accommodate storing non-UTF-8 high bit
+   characters, the single quote character, non-printable ASCII
+   control codes, the '|', '~', and '#' characters, and to
+   permit multi-line TXT/RAW records (with comments allowed
+   mid-record), the TXT/RAW RR allows backslashes. These
+   backslashes only have significance outside of quoted text; if
+   they are placed inside single quotes, they are not
+   interpreted and result in a literal backslash being added to
+   the resource record data.
 
    The following characters can be backslashed:
 
    '
-           When backslashed, the adds a literal quote to the
-           resource record.
+          When backslashed, the adds a literal quote to the
+          resource record.
 
    whitespace
-           When any whitespace is backslashed (space, newline, cr,
-           and tab), this indicates that the record has not ended,
-           and that more data for this resource will follow. This
-           also allows comments to be placed in TXT and RAW
-           resource records. What happens is that the backslash
-           indicates that any whitespace characters (space, tab,
-           carriage return, and line feed) are to be ignored until
-           the next non-whitespace character that is not a #
-           (hash). If a # is seen, this indicates that we ignore
-           any and all characters until the next carriage return or
-           line feed, and continue to ignore everything until the
-           next non-whitespace character. See the section on
-           multi-line and commented records for examples.
+          When any whitespace is backslashed (space, newline,
+          cr, and tab), this indicates that the record has not
+          ended, and that more data for this resource will
+          follow. This also allows comments to be placed in TXT
+          and RAW resource records. What happens is that the
+          backslash indicates that any whitespace characters
+          (space, tab, carriage return, and line feed) are to be
+          ignored until the next non-whitespace character that
+          is not a # (hash). If a # is seen, this indicates that
+          we ignore any and all characters until the next
+          carriage return or line feed, and continue to ignore
+          everything until the next non-whitespace character.
+          See the section on multi-line and commented records
+          for examples.
 
    0123
-           When a number between 0 and 3 is backslashed, this
-           indicates the beginning of a three-digit octal number.
+          When a number between 0 and 3 is backslashed, this
+          indicates the beginning of a three-digit octal number.
 
    x
-           When an x is backslashed, this indicates the beginning
-           of a two-digit hexadecimal number.
+          When an x is backslashed, this indicates the beginning
+          of a two-digit hexadecimal number.
 
-   Note that, with the exception of the single quote, the backslash
-   character is not used to remove the meta-significance of a given
-   character. In particular, unlike other environments, it is not
-   possible to backslash spaces. Spaces can be represented either
-   as ' ' in quotes, \x20, or as \040.
+   Note that, with the exception of the single quote, the
+   backslash character is not used to remove the
+   meta-significance of a given character. In particular, unlike
+   other environments, it is not possible to backslash spaces.
+   Spaces can be represented either as ' ' in quotes, \x20, or
+   as \040.
 
-   Here are some examples of backslashed data. In this example, we
-   see backslash sequences being used to store non-UTF-8 hi-bit
-   data:
-
- e.example.com. TXT \x80\x81\x82\x83 ~
+   Here are some examples of backslashed data. In this example,
+   we see backslash sequences being used to store non-UTF-8
+   hi-bit data:
+e.example.com. TXT \x80\x81\x82\x83 ~
 
    This same data can also be created as follows:
-
- f.example.com. TXT \200\201\202\203 ~
+f.example.com. TXT \200\201\202\203 ~
 
    Octal and hex information can be mixed:
-
- g.example.com. TXT \200\x81\202\x83 ~
+g.example.com. TXT \200\x81\202\x83 ~
 
    Literal single quotes can be placed in resource records:
-
- h.example.com. TXT 'perl -e '\''print "A Perl of a TXT record!\n"'\' ~
+h.example.com. TXT 'perl -e '\''print "A Perl of a TXT record!\n"'\' ~
 
    The above example produces this record:
-
- perl -e 'print "A Perl of a TXT record!\n"' ~
+perl -e 'print "A Perl of a TXT record!\n"' ~
 
    To render the '~' character, use the escape sequence \x7e
    (outside of quotes). For example:
-
- h1.example.com. TXT 'http://ocf.berkeley.edu/'\x7e'set' ~
+h1.example.com. TXT 'http://ocf.berkeley.edu/'\x7e'set' ~
 
    Produces this record:
-
- http://ocf.berkeley.edu/~set
+http://ocf.berkeley.edu/~set
 
    To render the '|' character, use the escape sequence \x7c:
-
- h2.example.com. TXT 'ls '\x7c' more' ~
+h2.example.com. TXT 'ls '\x7c' more' ~
 
    Produces this record:
-
- ls | more
+ls | more
 
    To render the '#' character, use the escape sequence \x23:
-
- h3.example.com. TXT 'Press '\x23' for customer service' ~
+h3.example.com. TXT 'Press '\x23' for customer service' ~
 
    Produces this record:
-
- Press # for customer service
+Press # for customer service
 
 MULTI-LINE AND COMMENTED RECORDS
 
-   By utilizing backslashes followed by comments, it is possible to
-   have multi-line and commented TXT and RAW records. The following
-   resource record will span more than one line on an 80-column
-   display:
-
- i.example.com. TXT 'Not only did the quick brown fox jump over the lazy dog, but the lazy dog jumped over the cat.' ~
+   By utilizing backslashes followed by comments, it is possible
+   to have multi-line and commented TXT and RAW records. The
+   following resource record will span more than one line on an
+   80-column display:
+i.example.com. TXT 'Not only did the quick brown fox jump over the laz
+y dog, but the lazy dog jumped over the cat.' ~
 
    Without affecting this resource record, the same data can be
    split over multiple lines:
-
- j.example.com. TXT 'Not only did the quick brown fox jump '\
-                    'over the lazy dog, but the lazy dog'\
-                    ' jumped over the cat.' ~
+j.example.com. TXT 'Not only did the quick brown fox jump '\
+                   'over the lazy dog, but the lazy dog'\
+                   ' jumped over the cat.' ~
 
    Some points:
-
      * The backslash must be outsize of the quotes (or a literal
        backslash will be added to the record)
      * The backslash must be present before any unquoted white
        space. Usually, the backslash is placed immediately after
        the quote character.
-     * Unlike other environments, it does not matter whether or not
-       there is invisible whitespace after the backslash.
+     * Unlike other environments, it does not matter whether or
+       not there is invisible whitespace after the backslash.
 
    It is also possible to add comments after such a backslash as
    follows:
-
- k.example.com. TXT 'Not only did the quick brown fox jump '\ # The fox
-                    'over the lazy dog, but the lazy dog'\    # The dog
-                    ' jumped over the cat.' ~                 # The cat
+k.example.com. TXT 'Not only did the quick brown fox jump '\ # The fox
+                   'over the lazy dog, but the lazy dog'\    # The dog
+                   ' jumped over the cat.' ~                 # The cat
 
    Note that, since the third comment is not preceded by a
    backslash, this indicates the end of the resource record.
@@ -191,97 +177,93 @@ MULTI-LINE AND COMMENTED RECORDS
    There can also be multiple lines dedicated to comments (and,
    optionally, even blank lines) in the middle of TXT and RAW
    record data:
+k2.example.com. TXT 'This is some data '\
+# Here we have some comments followed by a blank line
 
- k2.example.com. TXT 'This is some data '\
- # Here we have some comments followed by a blank line
-
- # Now we have some more comments,
- # followed by the rest of the data
-     'and this is the rest of the data' ~
+# Now we have some more comments,
+# followed by the rest of the data
+    'and this is the rest of the data' ~
 
 MULTIPLE TXT CHUNKS
 
-   TXT RRs may be divided up in to multiple "chunks" (RFC1035 calls
-   these "character-string"s). A single chunk can be anywhere from
-   zero to 255 bytes long. The default is to have one chunk, as
-   follows:
-
- o.example.com. TXT 'TXT record with only one chunk' ~
+   TXT RRs may be divided up in to multiple "chunks" (RFC1035
+   calls these "character-string"s). A single chunk can be
+   anywhere from zero to 255 bytes long. The default is to have
+   one chunk, as follows:
+o.example.com. TXT 'TXT record with only one chunk' ~
 
    It is also possible to have a record with multiple chunks.
    Chunks are delimited by an unquoted ';' character:
-
- p.example.com. TXT 'This is chunk one';'This is chunk two' ~
+p.example.com. TXT 'This is chunk one';'This is chunk two' ~
 
    Or:
-
- q.example.com. TXT 'This is chunk one';\   # Our first chunk
-                     This_is_chunk_two;\    # Our second chunk
-                    'This is chunk three' ~ # Our final chunk
+q.example.com. TXT 'This is chunk one';\   # Our first chunk
+                    This_is_chunk_two;\    # Our second chunk
+                   'This is chunk three' ~ # Our final chunk
 
    Quoted ; characters simply add a ; to the record data.
 
    If a single TXT chunk is longer than 255 bytes long, the csv2
-   parser will report an error in the zone file: Single TXT chunk
-   too long
+   parser will report an error in the zone file: Single TXT
+   chunk too long
 
    In order to resolve this, place unquoted ; characters in the
    record data so that each chunk is under 255 octets (bytes or
    characters) in length.
 
    It is possible to have zero length chunks:
+r.example.com. TXT 'chunk one';;'chunk three' ~ # Chunk two zero-lengt
+h
 
- r.example.com. TXT 'chunk one';;'chunk three' ~ # Chunk two zero-length
+   In particular, is is possible to have zero length chunks at
+   the beginning and end of a TXT record:
+s.example.com. TXT ;'chunk two'; ~ # Chunks one and three zero-length
 
-   In particular, is is possible to have zero length chunks at the
-   beginning and end of a TXT record:
-
- s.example.com. TXT ;'chunk two'; ~ # Chunks one and three zero-length
-
-   Do not place semicolons at the beginning nor end of TXT records
-   unless you wish to have these zero-length chunks.
+   Do not place semicolons at the beginning nor end of TXT
+   records unless you wish to have these zero-length chunks.
 
    Chunk support only exists for TXT records. An unquoted ;
    character will cause a syntax error in a RAW record.
 
 RAW RECORDS
 
-   With the exception of no support for chunk delimiters, and the
-   addition of a numeric record type before the record data, the
-   format for RAW records is identical to text records. For
+   With the exception of no support for chunk delimiters, and
+   the addition of a numeric record type before the record data,
+   the format for RAW records is identical to text records. For
    example, if we wish to have a "Kitchen Sink" RR record, which
-   has the 8-bit binary numbers "16", "1", and "2", followed by the
-   ASCII string "Kitchen sink+ data", we can specify this in any of
-   the following manners:
+   has the 8-bit binary numbers "16", "1", and "2", followed by
+   the ASCII string "Kitchen sink+ data", we can specify this in
+   any of the following manners:
+t1.example.com. RAW 40 \x10\x01\x02'Kitchen sink'\x2b' data' ~
 
- t1.example.com. RAW 40 \x10\x01\x02'Kitchen sink'\x2b' data' ~
+t.example.com. RAW 40 \020\001\002Kitchen' sink+ data' ~
 
- t.example.com. RAW 40 \020\001\002Kitchen' sink+ data' ~
+u.example.com. RAW 40 \x10\x01\x02Kitchen\x20sink+\x20data ~
 
- u.example.com. RAW 40 \x10\x01\x02Kitchen\x20sink+\x20data ~
+v.example.com. RAW 40 \x10\001\x02\
+                      'Kitchen sink+ data' ~
 
- v.example.com. RAW 40 \x10\001\x02\
-                       'Kitchen sink+ data' ~
-
- w.example.com. RAW 40 \x10\ # Meaning: 16
-                       \x01\ # Coding: 1
-                       \x02\ # Sub-coding: 2
-                       'Kitchen sink+ data' ~ # Data: 'Kitchen sink+ data'
+w.example.com. RAW 40 \x10\ # Meaning: 16
+                      \x01\ # Coding: 1
+                      \x02\ # Sub-coding: 2
+                      'Kitchen sink+ data' ~ # Data: 'Kitchen sink+ da
+ta'
 
                            LEGAL DISCLAIMER
 
    THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY
    EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
    THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-   PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS
-   OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-   LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-   USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
-   AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
-   IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
-   THE POSSIBILITY OF SUCH DAMAGE.
+   PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+   AUTHORS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+   INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+   GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+   WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+   DAMAGE.
 
                                 AUTHOR
 

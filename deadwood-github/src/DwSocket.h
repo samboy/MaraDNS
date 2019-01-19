@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2017 Sam Trenholme
+/* Copyright (c) 2007-2018 Sam Trenholme
  *
  * TERMS
  *
@@ -288,6 +288,9 @@ void get_remote_udp_packet(int b, SOCKET sock);
 /* Read mararc parameters and set global variables based on those
  * parameters */
 void process_mararc_params();
+
+/* Read and process the ip4 mararc parameter */
+int process_ip4_params();
 
 /* Initialize the inflight hash */
 void init_inflight_hash();
