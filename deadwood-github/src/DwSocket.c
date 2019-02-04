@@ -560,6 +560,51 @@ int process_root_upstream_servers(int param, int is_upstream, char *bad) {
 
 }
 
+/* Given a binary DNS name, an ASCII IPv4 IP, and a TTL (16-bit),
+ * convert it in to a value to add to Deadwood's cache */
+dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
+	dw_str *out = 0;
+	dw_str *ip = 0;
+	out = dw_create(rawname->len + 25);
+	ip = dw_create(18); // 18 to make sure IPv6 isn't buffer overflow
+	ip->len = 4;
+	if(inet_pton(AF_INET, ipv4, ip->str) != 1) { // Convert to raw IP
+		dw_destroy(out);
+		dw_destroy(ip);
+		return 0;
+	}
+	if(out == 0 || ip == 0) {
+		if(out != 0) { dw_destroy(out); }
+		if(ip != 0) { dw_destroy(ip); }
+		return 0;
+	}
+	// Keep TTL 16-bit
+	if(ttl < 0) {
+		ttl = 0;
+	} else if(ttl > 65535) {
+		ttl = 65535;
+	}
+	if(dw_append(rawname, out) == -1 || // Initial name
+	   dw_push_u16(1, out) == -1 || // A record
+	   dw_push_u16(1, out) == -1 || // Internet class
+	   dw_push_u16(0, out) == -1 || // TTL high
+	   dw_push_u16(ttl, out) == -1 || // TTL low
+	   dw_push_u16(4, out) == -1 || // RDlength (length of record)
+	   dw_append(ip, out) == -1 || // Add converted raw IP
+	   dw_push_u16(0, out) == -1 || // First offset: 0
+	   dw_push_u16(rawname->len, out) == 1 || // Length of dname
+	   dw_push_u16(1, out) == -1 || // ANLENGTH (answers): 1
+	   dw_push_u16(0, out) == -1 || // NSLENGTH (NS records): 0
+	   dw_push_u16(0, out) == -1 || // ARLENGTH (AR records): 0
+	   dw_addchar(TYPE_ANSWER,out) == -1) {
+		dw_destroy(out);
+		dw_destroy(ip);
+		return 0;
+	}
+	return out;
+	
+}
+
 /* Read and process the ip4 named IPs */
 int process_ip4_params() {
 	dw_str *lastkey = 0, *key = 0, *value = 0, *rawname = 0;
@@ -578,6 +623,11 @@ int process_ip4_params() {
 			dw_log_dwstr_str(" ",value," is ip4 entry name",0);
 			dw_fatal("Fatal error processing ip4 entry");
 		}
+#ifdef XTRA_STUFF
+		printf("rawname: ");
+		dw_stdout(rawname);
+		printf("\n");
+#endif
 		// CODE HERE: Convert value in to 4-byte IPv4 using
 		// inet_pton
 		out = 1;
