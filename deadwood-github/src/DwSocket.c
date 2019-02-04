@@ -601,6 +601,7 @@ dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
 		dw_destroy(ip);
 		return 0;
 	}
+	dw_destroy(ip);
 	return out;
 	
 }
