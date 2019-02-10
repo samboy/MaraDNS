@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2018 Sam Trenholme
+/* Copyright (c) 2007-2019 Sam Trenholme
  * IPv6 code by Jean-Jacques Sarton
  *
  * TERMS
@@ -645,7 +645,8 @@ int process_ip4_params() {
 		dw_stdout(cache_data);
 		printf("\n");
 #endif
-		// CODE HERE: Put cache_data in to cache with key cache_key
+		// Put cache_data in to cache with key cache_key
+		dwh_add(cache, cache_key, cache_data, 1, 2);
 		out = 1;
                 lastkey = dw_copy(key);
 		// Clean up copied strings
