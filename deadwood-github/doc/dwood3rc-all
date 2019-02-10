@@ -137,6 +137,15 @@ upstream_port = 53
 #upstream_servers = {}
 #upstream_servers["."]="8.8.8.8, 8.8.4.4" 
 
+# We can have given names resolve to bogus IPv4 addresses.  Here, we
+# have the name "maradns.foo" resolve to "10.10.10.10" and "kabah.foo"
+# resolve to "10.11.11.11", regardless of what real values these DNS
+# records may have.  Note that a given name can only resolve to a
+# single IP, and that the records have a fixed TTL of 30 seconds.
+ip4 = {}
+ip4["maradns.foo."] = "10.10.10.10"
+ip4["kabah.foo."] = "10.11.11.11"
+
 # How many messages to log.  Higher means more messages.
 verbose_level = 3
 
