@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Thu Apr  2 21:46:57 2015
+.\" Last updated Sun Feb 10 15:24:23 2019
 .\"
 .TH DEADWOOD 1 "August 2009" DEADWOOD "Deadwood reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -62,6 +62,10 @@ Both DNS-over-UDP and DNS-over-TCP are handled by the same daemon
 .TP 2
 *
 Built-in dnswall functionality
+.TP 2
+*
+The ability to assign names to IPv4 IPs as specified in one\(aqs
+dwood3rc file.
 .PP
 .SH "COMMAND LINE ARGUMENTS"
 .PP
@@ -172,6 +176,9 @@ root_servers (dictionary)
 .TP 2
 *
 upstream_servers (dictionary)
+.TP 2
+*
+ip4 (dictionary)
 .PP
 .SH "SUPPORTED PARAMETERS"
 .PP
@@ -299,6 +306,24 @@ current timestamp. This parameter is only here so older configuration
 files do not break in Deadwood 3.0.
 .PP
 .in -3
+\fBip4\fR
+.PP
+This is a dictionary varibale which allows us to have given names
+resolve
+to bogus IPv4 addresses. Here, we have the name "maradns.foo" resolve
+to "10.10.10.10" and "kabah.foo" resolve to "10.11.11.11", regardless
+of what real values these DNS records may have:
+
+.nf
+ip4 = {}
+ip4["maradns.foo."] = "10.10.10.10"
+ip4["kabah.foo."] = "10.11.11.11"
+.fi
+
+Note that a given name can only resolve to a single IP, and that the
+records have a fixed TTL of 30 seconds.
+.PP
+.in -3
 \fBip_blacklist\fR
 .PP
 This is a list of IPs that we do not allow to be in the answer to a
@@ -366,7 +391,8 @@ The default value is 8.
 \fBmax_ttl\fR
 .PP
 The maximum amount of time we will keep an entry in the cache, in
-seconds.
+seconds
+(also called "Maximum TTL").
 .PP
 This is the longest we will keep an entry cached. The default value for
 this parameter is 86400 (one day); the minimum value is 300 (5 minutes)
@@ -680,7 +706,7 @@ root_servers to use the default ICANN root servers, as follows:
 192.203.230.10  e.root-servers.net (NASA Ames) 
 192.5.5.241     f.root-servers.net (ISC) 
 192.112.36.4    g.root-servers.net (DOD NIC) 
-128.63.2.53     h.root-servers.net (ArmyRU) 
+198.97.190.53   h.root-servers.net (ArmyRU) 
 192.36.148.17   i.root-servers.net (NORDUnet) 
 192.58.128.30   j.root-servers.net (VeriSign) 
 193.0.14.129    k.root-servers.net (Reseaux) 

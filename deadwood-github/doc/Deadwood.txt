@@ -23,6 +23,8 @@
      * Both DNS-over-UDP and DNS-over-TCP are handled by the same
        daemon
      * Built-in dnswall functionality
+     * The ability to assign names to IPv4 IPs as specified in one's
+       dwood3rc file.
 
                         COMMAND LINE ARGUMENTS
 
@@ -95,6 +97,7 @@
      * recursive_acl (string)
      * root_servers (dictionary)
      * upstream_servers (dictionary)
+     * ip4 (dictionary)
 
                          SUPPORTED PARAMETERS
 
@@ -192,6 +195,20 @@ hash_magic_number
    parameter is only here so older configuration files do not break
    in Deadwood 3.0.
 
+ip4
+
+   This is a dictionary varibale which allows us to have given names
+   resolve to bogus IPv4 addresses. Here, we have the name "maradns.foo"
+   resolve to "10.10.10.10" and "kabah.foo" resolve to "10.11.11.11",
+   regardless of what real values these DNS records may have:
+
+ ip4 = {}
+ ip4["maradns.foo."] = "10.10.10.10"
+ ip4["kabah.foo."] = "10.11.11.11"
+
+   Note that a given name can only resolve to a single IP, and that the
+   records have a fixed TTL of 30 seconds.
+
 ip_blacklist
 
    This is a list of IPs that we do not allow to be in the answer
@@ -254,7 +271,7 @@ max_inflights
 max_ttl
 
    The maximum amount of time we will keep an entry in the cache,
-   in seconds.
+   in seconds (also called "Maximum TTL").
 
    This is the longest we will keep an entry cached. The default
    value for this parameter is 86400 (one day); the minimum value
@@ -515,7 +532,7 @@ upstream_servers
  192.203.230.10  e.root-servers.net (NASA Ames)
  192.5.5.241     f.root-servers.net (ISC)
  192.112.36.4    g.root-servers.net (DOD NIC)
- 128.63.2.53     h.root-servers.net (ArmyRU)
+ 198.97.190.53   h.root-servers.net (ArmyRU)
  192.36.148.17   i.root-servers.net (NORDUnet)
  192.58.128.30   j.root-servers.net (VeriSign)
  193.0.14.129    k.root-servers.net (Reseaux)
