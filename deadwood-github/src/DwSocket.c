@@ -653,6 +653,8 @@ int process_ip4_params() {
                 dw_destroy(key);
 		dw_destroy(value);
 		dw_destroy(rawname);
+		dw_destroy(cache_key);
+		dw_destroy(cache_data);
 		free(ip_human);
 	}
         if(a == 20000) {
