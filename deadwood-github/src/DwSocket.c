@@ -565,7 +565,7 @@ int process_root_upstream_servers(int param, int is_upstream, char *bad) {
 dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
 	dw_str *out = 0;
 	dw_str *ip = 0;
-	out = dw_create(rawname->len + 25);
+	out = dw_create(rawname->len + 35);
 	ip = dw_create(18); // 18 to make sure IPv6 isn't buffer overflow
 	ip->len = 4;
 	if(inet_pton(AF_INET, ipv4, ip->str) != 1) { // Convert to raw IP
@@ -608,7 +608,8 @@ dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
 
 /* Read and process the ip4 named IPs */
 int process_ip4_params() {
-	dw_str *lastkey = 0, *key = 0, *value = 0, *rawname = 0;
+	dw_str *lastkey = 0, *key = 0, *value = 0, *rawname = 0,
+		*cache_key = 0, *cache_data = 0;
 	char *ip_human = 0;
 	int a = 0, out = 0;
 	for(a=0;a<20000;a++) {
@@ -620,17 +621,31 @@ int process_ip4_params() {
 		value = dwm_dict_fetch(DWM_D_ip4,key);		
 		rawname = dw_dnsname_convert(key);
 		ip_human = (char *)dw_to_cstr(value);
-		if(value == 0 || rawname == 0 || ip_human == 0) {
+		cache_data = make_synth_ip4(rawname, ip_human, 30);
+		if(value == 0 || rawname == 0 || ip_human == 0 ||
+				cache_data == 0) {
 			dw_log_dwstr_str(" ",value," is ip4 entry name",0);
 			dw_fatal("Fatal error processing ip4 entry");
+		}
+		cache_key = dw_create(rawname->len + 3);
+		if(cache_key == 0 ||
+		   dw_append(rawname, cache_key) == -1 ||
+		   dw_push_u16(1, cache_key) == -1) {
+			dw_log_dwstr_str(" ",value," is ip4 entry name",0);
+			dw_fatal("Fatal error processing ip4 cache_key"); 
 		}
 #ifdef XTRA_STUFF
 		printf("rawname: ");
 		dw_stdout(rawname);
 		printf("\n");
+		printf("cache_key: ");
+		dw_stdout(cache_key);
+		printf("\n");
+		printf("cache_data: ");
+		dw_stdout(cache_data);
+		printf("\n");
 #endif
-		// CODE HERE: Convert value in to 4-byte IPv4 using
-		// inet_pton
+		// CODE HERE: Put cache_data in to cache with key cache_key
 		out = 1;
                 lastkey = dw_copy(key);
 		// Clean up copied strings
