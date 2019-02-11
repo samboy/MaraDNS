@@ -197,7 +197,7 @@ hash_magic_number
 
 ip4
 
-   This is a dictionary varibale which allows us to have given
+   This is a dictionary variable which allows us to have given
    names resolve to bogus IPv4 addresses. Here, we have the name
    "maradns.foo" resolve to "10.10.10.10" and "kabah.foo" resolve
    to "10.11.11.11", regardless of what real values these DNS
