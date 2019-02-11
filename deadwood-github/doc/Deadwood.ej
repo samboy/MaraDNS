@@ -37,6 +37,9 @@ the following features:
 
 <li>Built-in dnswall functionality
 
+<li>The ability to assign names to IPv4 IPs as specified in one's
+    dwood3rc file.
+
 </ul>
 
 <h1>COMMAND LINE ARGUMENTS</h1>
@@ -129,6 +132,7 @@ numeric parameters:
 <li>recursive_acl (string)
 <li>root_servers (dictionary)
 <li>upstream_servers (dictionary)
+<li>ip4 (dictionary)
 </ul>
 
 <H1>SUPPORTED PARAMETERS</H1>
@@ -220,6 +224,21 @@ In Deadwood 3.0, entropy for the hash function is created by looking
 at the contents of /dev/urandom (secret.txt on Windows machines) and the
 current timestamp.  This parameter is only here so older configuration
 files do not break in Deadwood 3.0.
+
+<h2>ip4</h2>
+This is a dictionary varibale which allows us to have given names resolve
+to bogus IPv4 addresses.  Here, we have the name "maradns.foo" resolve
+to "10.10.10.10" and "kabah.foo" resolve to "10.11.11.11", regardless
+of what real values these DNS records may have:
+
+<pre>
+ip4 = {}
+ip4["maradns.foo."] = "10.10.10.10"
+ip4["kabah.foo."] = "10.11.11.11"
+</pre>
+
+Note that a given name can only resolve to a single IP, and that the
+records have a fixed TTL of 30 seconds.
 
 <h2>ip_blacklist</h2>
 This is a list of IPs that we do not allow to be in the answer to a

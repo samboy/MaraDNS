@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2015 Sam Trenholme
+/* Copyright (c) 2007-2019 Sam Trenholme
  * IPv6 code by Jean-Jacques Sarton
  *
  * TERMS
@@ -558,6 +558,109 @@ int process_root_upstream_servers(int param, int is_upstream, char *bad) {
 
         return out;
 
+}
+
+/* Given a binary DNS name, an ASCII IPv4 IP, and a TTL (16-bit),
+ * convert it in to a value to add to Deadwood's cache */
+dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
+	dw_str *out = 0;
+	dw_str *ip = 0;
+	out = dw_create(rawname->len + 35);
+	ip = dw_create(18); // 18 to make sure IPv6 isn't buffer overflow
+	ip->len = 4;
+	if(inet_pton(AF_INET, ipv4, ip->str) != 1) { // Convert to raw IP
+		dw_destroy(out);
+		dw_destroy(ip);
+		return 0;
+	}
+	if(out == 0 || ip == 0) {
+		if(out != 0) { dw_destroy(out); }
+		if(ip != 0) { dw_destroy(ip); }
+		return 0;
+	}
+	// Keep TTL 16-bit
+	if(ttl < 0) {
+		ttl = 0;
+	} else if(ttl > 65535) {
+		ttl = 65535;
+	}
+	if(dw_append(rawname, out) == -1 || // Initial name
+	   dw_push_u16(1, out) == -1 || // A record
+	   dw_push_u16(1, out) == -1 || // Internet class
+	   dw_push_u16(0, out) == -1 || // TTL high
+	   dw_push_u16(ttl, out) == -1 || // TTL low
+	   dw_push_u16(4, out) == -1 || // RDlength (length of record)
+	   dw_append(ip, out) == -1 || // Add converted raw IP
+	   dw_push_u16(0, out) == -1 || // First offset: 0
+	   dw_push_u16(rawname->len, out) == 1 || // Length of dname
+	   dw_push_u16(1, out) == -1 || // ANLENGTH (answers): 1
+	   dw_push_u16(0, out) == -1 || // NSLENGTH (NS records): 0
+	   dw_push_u16(0, out) == -1 || // ARLENGTH (AR records): 0
+	   dw_addchar(TYPE_ANSWER,out) == -1) {
+		dw_destroy(out);
+		dw_destroy(ip);
+		return 0;
+	}
+	dw_destroy(ip);
+	return out;
+	
+}
+
+/* Read and process the ip4 named IPs */
+int process_ip4_params() {
+	dw_str *lastkey = 0, *key = 0, *value = 0, *rawname = 0,
+		*cache_key = 0, *cache_data = 0;
+	char *ip_human = 0;
+	int a = 0, out = 0;
+	for(a=0;a<20000;a++) {
+		key = dwm_dict_nextkey(DWM_D_ip4,lastkey);
+		dw_destroy(lastkey);
+		if(key == 0) { /* End of dictionary */
+			break;
+		}
+		value = dwm_dict_fetch(DWM_D_ip4,key);		
+		rawname = dw_dnsname_convert(key);
+		ip_human = (char *)dw_to_cstr(value);
+		cache_data = make_synth_ip4(rawname, ip_human, 30);
+		if(value == 0 || rawname == 0 || ip_human == 0 ||
+				cache_data == 0) {
+			dw_log_dwstr_str(" ",value," is ip4 entry name",0);
+			dw_fatal("Fatal error processing ip4 entry");
+		}
+		cache_key = dw_create(rawname->len + 3);
+		if(cache_key == 0 ||
+		   dw_append(rawname, cache_key) == -1 ||
+		   dw_push_u16(1, cache_key) == -1) {
+			dw_log_dwstr_str(" ",value," is ip4 entry name",0);
+			dw_fatal("Fatal error processing ip4 cache_key"); 
+		}
+#ifdef XTRA_STUFF
+		printf("rawname: ");
+		dw_stdout(rawname);
+		printf("\n");
+		printf("cache_key: ");
+		dw_stdout(cache_key);
+		printf("\n");
+		printf("cache_data: ");
+		dw_stdout(cache_data);
+		printf("\n");
+#endif
+		// Put cache_data in to cache with key cache_key
+		dwh_add(cache, cache_key, cache_data, 1, 2);
+		out = 1;
+                lastkey = dw_copy(key);
+		// Clean up copied strings
+                dw_destroy(key);
+		dw_destroy(value);
+		dw_destroy(rawname);
+		dw_destroy(cache_key);
+		dw_destroy(cache_data);
+		free(ip_human);
+	}
+        if(a == 20000) {
+                dw_fatal("Too many ip4 entries, limit 20,000");
+        }
+	return out;
 }
 
 /* Process the root_servers and upstream_servers values, using
