@@ -383,16 +383,10 @@ dw_element *dwh_grep(dw_hash *hash, dw_str *key) {
  * give to whoever calls the function.  Should the element not be found,
  * or an error occurs, return 0.  If the element is in the hash but
  * expired, we will return 0 if ignore_expire is 0, and the element if
- * ignore_expire is 1.  It is up to the calling function to free the
- * memory used by the new dw_str object */
+ * ignore_expire is 1. */
 dw_str *dwh_get(dw_hash *hash, dw_str *key, int ignore_expire, int use_fila) {
         dw_element *seek = 0;
         dw_str *out = 0;
-
-#ifdef XTRA_STUFF
-	printf("Calling dwh_get with key ");
-	dw_stdout(key);
-#endif
 
         seek = dwh_grep(hash,key);
         if(seek == 0) { /* Not found */
@@ -417,11 +411,6 @@ dw_str *dwh_get(dw_hash *hash, dw_str *key, int ignore_expire, int use_fila) {
         if(use_fila == 1 && seek->immutable == 0) {
                 dwh_fila_fetch(hash,seek->fila);
         }
-
-#ifdef XTRA_STUFF
-	printf("dwh_get got element with value ");
-	dw_stdout(out);
-#endif
 
         return out;
 
