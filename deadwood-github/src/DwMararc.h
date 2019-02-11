@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2016 Sam Trenholme
+/* Copyright (c) 2007-2018 Sam Trenholme
  *
  * TERMS
  *
@@ -36,6 +36,7 @@
 /* mararc dictionary parameters */
 #define DWM_D_upstream_servers 0
 #define DWM_D_root_servers 1
+#define DWM_D_ip4 2
 
 /* mararc numeric parameters */
 #define DWM_N_maxprocs 0
@@ -72,7 +73,7 @@
 /* Number of string parameters in the mararc file */
 #define KEY_S_COUNT 7
 /* Number of dictionary parameters in the mararc file */
-#define KEY_D_COUNT 2
+#define KEY_D_COUNT 3
 /* Number of numeric parameters in the mararc file */
 #define KEY_N_COUNT 30
 
@@ -101,6 +102,7 @@ char *key_s_names[KEY_S_COUNT + 1] = {
 char *key_d_names[KEY_D_COUNT + 1] = {
         "upstream_servers", /* Recursive upstream DNS servers */
         "root_servers", /* Non-recursive root DNS servers */
+        "ip4",
         0 };
 
 char *key_n_names[KEY_N_COUNT + 1] = {
