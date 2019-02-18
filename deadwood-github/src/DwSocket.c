@@ -601,7 +601,7 @@ dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
 	dw_str *ip = 0;
 	dw_str *out = 0;
 	ip = dw_create(18); // 18 to make sure IPv6 isn't buffer overflow
-	if(ip == 0) {
+	if(ip == 0 || rawname == 0 || ipv4 == 0) {
 		return 0;
 	}
 	ip->len = 4;
@@ -622,7 +622,7 @@ dw_str *make_synth_ip6(dw_str *rawname, dw_str *ipv6, int ttl) {
 	dw_str *out = 0;
 	int a, n, v;
 	ip = dw_create(18);
-	if(ip == 0 || ipv6 == 0 || ipv6->len != 32) {
+	if(ip == 0 || rawname == 0 || ipv6 == 0 || ipv6->len != 32) {
 		if(ip != 0) { dw_destroy(ip); }
 		return 0;
 	}
