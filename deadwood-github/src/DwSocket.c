@@ -560,22 +560,12 @@ int process_root_upstream_servers(int param, int is_upstream, char *bad) {
 
 }
 
-/* Given a binary DNS name, an ASCII IPv4 IP, and a TTL (16-bit),
- * convert it in to a value to add to Deadwood's cache */
-dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
+/* Prepare a synthetic record to put in Deadwood's cache */
+dw_str *make_synth_record(dw_str *rawname, dw_str *record, int type, int ttl) {
         dw_str *out = 0;
-        dw_str *ip = 0;
-        out = dw_create(rawname->len + 35);
-        ip = dw_create(18); // 18 to make sure IPv6 isn't buffer overflow
-        ip->len = 4;
-        if(inet_pton(AF_INET, ipv4, ip->str) != 1) { // Convert to raw IP
-                dw_destroy(out);
-                dw_destroy(ip);
-                return 0;
-        }
-        if(out == 0 || ip == 0) {
+        out = dw_create(rawname->len + record->len + 35);
+        if(out == 0 || record == 0) {
                 if(out != 0) { dw_destroy(out); }
-                if(ip != 0) { dw_destroy(ip); }
                 return 0;
         }
         // Keep TTL 16-bit
@@ -585,12 +575,12 @@ dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
                 ttl = 65535;
         }
         if(dw_append(rawname, out) == -1 || // Initial name
-           dw_push_u16(1, out) == -1 || // A record
+           dw_push_u16(type, out) == -1 || // Record type
            dw_push_u16(1, out) == -1 || // Internet class
            dw_push_u16(0, out) == -1 || // TTL high
            dw_push_u16(ttl, out) == -1 || // TTL low
-           dw_push_u16(4, out) == -1 || // RDlength (length of record)
-           dw_append(ip, out) == -1 || // Add converted raw IP
+           dw_push_u16(record->len, out) == -1 || // RDlength: length of record
+           dw_append(record, out) == -1 || // Add converted raw IP
            dw_push_u16(0, out) == -1 || // First offset: 0
            dw_push_u16(rawname->len, out) == 1 || // Length of dname
            dw_push_u16(1, out) == -1 || // ANLENGTH (answers): 1
@@ -598,12 +588,28 @@ dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
            dw_push_u16(0, out) == -1 || // ARLENGTH (AR records): 0
            dw_addchar(TYPE_ANSWER,out) == -1) {
                 dw_destroy(out);
-                dw_destroy(ip);
                 return 0;
         }
-        dw_destroy(ip);
         return out;
+}
 
+/* Given a binary DNS name, an ASCII IPv4 IP, and a TTL (16-bit),
+ * convert it in to a value to add to Deadwood's cache */
+dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
+	dw_str *ip = 0;
+	dw_str *out = 0;
+	ip = dw_create(18); // 18 to make sure IPv6 isn't buffer overflow
+	if(ip == 0) {
+		return 0;
+	}
+	ip->len = 4;
+	if(inet_pton(AF_INET, ipv4, ip->str) != 1) { // Convert to raw IP
+		dw_destroy(ip);
+		return 0;
+	}	
+	out = make_synth_record(rawname, ip, 1 /* A record */, ttl);
+	dw_destroy(ip);
+	return out;
 }
 
 /* Read and process the ip4 named IPs */
