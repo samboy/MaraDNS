@@ -563,9 +563,11 @@ int process_root_upstream_servers(int param, int is_upstream, char *bad) {
 /* Prepare a synthetic record to put in Deadwood's cache */
 dw_str *make_synth_record(dw_str *rawname, dw_str *record, int type, int ttl) {
         dw_str *out = 0;
+	if(rawname == 0 || record == 0) {
+		return 0;
+	}
         out = dw_create(rawname->len + record->len + 35);
-        if(out == 0 || record == 0) {
-                if(out != 0) { dw_destroy(out); }
+        if(out == 0) {
                 return 0;
         }
         // Keep TTL 16-bit
@@ -612,6 +614,43 @@ dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
 	return out;
 }
 
+/* Given a binary DNS name, a dw_str with a raw 32-byte hex number (like
+ * how those old MD5 sums look), and a 16-bit TTL, convert it in to a
+ * value to add to Deadwood's cache */
+dw_str *make_synth_ip6(dw_str *rawname, dw_str *ipv6, int ttl) {
+	dw_str *ip = 0;
+	dw_str *out = 0;
+	int a, n, v;
+	ip = dw_create(18);
+	if(ip == 0 || ipv6 == 0 || ipv6->len != 32) {
+		if(ip != 0) { dw_destroy(ip); }
+		return 0;
+	}
+	ip->len = 16;
+	for(a = 0; a < 32; a++) {
+		n = *(ipv6->str + a);
+		if(n >= '0' && n <= '9') {	
+			v = n - '0';
+		} else if(n == '_') {
+			v = 0;
+		} else if(n >= 'a' && n <= 'f') {
+			v = 10 + (n - 'a');
+		} else if(n >= 'A' && n <= 'F') {
+			v = 10 + (n - 'A');
+		} else {
+			return 0; /* Syntax error */
+		}
+		if((a & 1) == 0) {
+			v <<= 4;
+			*(ip->str + (a >> 1)) = 0;
+		} 
+		*(ip->str + (a >> 1)) |= v;
+	}
+	out = make_synth_record(rawname, ip, 28, ttl);
+	dw_destroy(ip);
+	return out;
+}
+
 /* Read and process the ip4 named IPs */
 int process_ip4_params() {
         dw_str *lastkey = 0, *key = 0, *value = 0, *rawname = 0,
@@ -640,17 +679,6 @@ int process_ip4_params() {
                         dw_log_dwstr_str(" ",value," is ip4 entry name",0);
                         dw_fatal("Fatal error processing ip4 cache_key");
                 }
-#ifdef XTRA_STUFF
-                printf("rawname: ");
-                dw_stdout(rawname);
-                printf("\n");
-                printf("cache_key: ");
-                dw_stdout(cache_key);
-                printf("\n");
-                printf("cache_data: ");
-                dw_stdout(cache_data);
-                printf("\n");
-#endif
                 // Put cache_data in to cache with key cache_key
                 dwh_add(cache, cache_key, cache_data, 1, 2);
                 out = 1;
