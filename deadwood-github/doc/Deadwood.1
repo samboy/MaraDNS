@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Sun Feb 10 20:04:07 2019
+.\" Last updated Sun Feb 17 22:45:47 2019
 .\"
 .TH DEADWOOD 1 "August 2009" DEADWOOD "Deadwood reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -323,6 +323,22 @@ ip4["kabah.foo."] = "10.11.11.11"
 Note that a given name can only resolve to a single IP, and that the
 records have a fixed TTL of 30 seconds.
 .PP
+.in -3
+\fBip6\fR
+.PP
+Like ip4, ip6 uses a similar syntax to have bogus IPv6 addresses.
+We don\(aqt use standard notation for IPv6 addresses. Instead, we
+we use 32-character hex addresses (case insensitive); to make
+it easier to count long strings of "0"s, the "_" acts like a 0.
+Here is an example:
+
+.nf
+ip6 = {}
+ip6["maradns.foo."] = "fd4d617261444e530000000000001234"
+ip6["kabah.foo."] = "FD4D617261444E53__00__00__002345"
+.fi
+.PP
+
 .in -3
 \fBip_blacklist\fR
 .PP
