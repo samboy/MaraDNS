@@ -146,6 +146,14 @@ ip4 = {}
 ip4["maradns.foo."] = "10.10.10.10"
 ip4["kabah.foo."] = "10.11.11.11"
 
+# We can also use a similar syntax to have bogus IPv6 addresses.
+# We don't use standard notation for IPv6 addresses.  Instead, we
+# we use 32-character hex addresses (case insensitive); to make
+# it easier to count long strings of "0"s, the "_" acts like a 0
+ip6 = {}
+ip6["maradns.foo."] = "fd4d617261444e530000000000001234"
+ip6["kabah.foo."] = "FD4D617261444E53__00__00__002345"
+
 # How many messages to log.  Higher means more messages.
 verbose_level = 3
 

@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2018 Sam Trenholme
+/* Copyright (c) 2007-2019 Sam Trenholme
  *
  * TERMS
  *
@@ -291,6 +291,9 @@ void process_mararc_params();
 
 /* Read and process the ip4 mararc parameter */
 int process_ip4_params();
+
+/* Read and process the ip6 mararc parameter */
+int process_ip6_params();
 
 /* Initialize the inflight hash */
 void init_inflight_hash();

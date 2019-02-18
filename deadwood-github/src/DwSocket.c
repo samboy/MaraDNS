@@ -638,6 +638,7 @@ dw_str *make_synth_ip6(dw_str *rawname, dw_str *ipv6, int ttl) {
 		} else if(n >= 'A' && n <= 'F') {
 			v = 10 + (n - 'A');
 		} else {
+			dw_destroy(ip);
 			return 0; /* Syntax error */
 		}
 		if((a & 1) == 0) {
@@ -693,6 +694,48 @@ int process_ip4_params() {
         }
         if(a == 20000) {
                 dw_fatal("Too many ip4 entries, limit 20,000");
+        }
+        return out;
+}
+
+/* Read and process the ip6 named IPs */
+int process_ip6_params() {
+        dw_str *lastkey = 0, *key = 0, *value = 0, *rawname = 0,
+                *cache_key = 0, *cache_data = 0;
+        int a = 0, out = 0;
+        for(a=0;a<20000;a++) {
+                key = dwm_dict_nextkey(DWM_D_ip6,lastkey);
+                dw_destroy(lastkey);
+                if(key == 0) { /* End of dictionary */
+                        break;
+                }
+                value = dwm_dict_fetch(DWM_D_ip6,key);
+                rawname = dw_dnsname_convert(key);
+                cache_data = make_synth_ip6(rawname, value, 30);
+                if(value == 0 || rawname == 0 || cache_data == 0) {
+                        dw_log_dwstr_str(" ",value," is ip6 entry name",0);
+                        dw_fatal("Fatal error processing ip6 entry");
+                }
+                cache_key = dw_create(rawname->len + 3);
+                if(cache_key == 0 ||
+                   dw_append(rawname, cache_key) == -1 ||
+                   dw_push_u16(28, cache_key) == -1) {
+                        dw_log_dwstr_str(" ",value," is ip6 entry name",0);
+                        dw_fatal("Fatal error processing ip6 cache_key");
+                }
+                // Put cache_data in to cache with key cache_key
+                dwh_add(cache, cache_key, cache_data, 1, 2);
+                out = 1;
+                lastkey = dw_copy(key);
+                // Clean up copied strings
+                dw_destroy(key);
+                dw_destroy(value);
+                dw_destroy(rawname);
+                dw_destroy(cache_key);
+                dw_destroy(cache_data);
+        }
+        if(a == 20000) {
+                dw_fatal("Too many ip6 entries, limit 20,000");
         }
         return out;
 }

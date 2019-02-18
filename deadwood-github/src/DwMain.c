@@ -110,6 +110,7 @@ int dw_udp_main(int argc, char **argv) {
         init_cache();
         process_root_upstream();
         process_ip4_params();
+        process_ip6_params();
         malloc_tcp_pend();
         init_tcp_b_pend();
         init_b_remote();
