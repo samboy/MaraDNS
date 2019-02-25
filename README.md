@@ -1,3 +1,9 @@
+# 2019 Update 
+
+I have added a new feature: `ip4` and `ip6`, which allows Deadwood’s
+`dwood3rc` file specify which IP (either IPv4 and/or IPv6) a given hostname
+has.
+
 # ABOUT
 
    MaraDNS is a small and lightweight cross-platform open-source DNS
