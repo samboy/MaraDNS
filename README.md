@@ -13,13 +13,12 @@ has.
 
    I wrote MaraDNS while I was a college student and a travelling English
    teacher during the first 2000s decade. Now that I’m working as
-   a professional software developer, the program is finished: I only
-   provide bug fixes and other basic maintenance unless I’m getting
-   paid.
+   a professional software developer, I have much less time to devote
+   to MaraDNS.
 
    Since MaraDNS is open source, there is nothing stopping anyone from 
-   forking this repository and implementing new features; I ask such users 
-   to please not call any such forks “MaraDNS”.
+   forking this repository; I ask such users to please not call any such 
+   forks “MaraDNS”.
 
 ## Table of contents
 
@@ -34,14 +33,12 @@ has.
 
 ## Supported OSes
 
-   Just like MaraDNS’s sub-project Deadwood, the only supported OSes are
-   CentOS 6 and Windows 7.  
+   There are no “supported OSes” for MaraDNS.  I currently use CentOS 7
+   to develop MaraDNS, and a Windows XP virtual machine to make the
+   Windows binary.
 
-   Just because MaraDNS is only fully supported in CentOS 6 and Windows 7 
-   doesn’t mean it doesn't run on other platforms.  It just means that, if 
-   you wish to run it on another platform, it’s up to you to make the port. 
-   Feel free to fork the MaraDNS Github repository, but please do not name 
-   any such port “MaraDNS”.
+   Distribution-specific issues should be forwarded to the bug processing
+   system for your distribution.
 
 ## Important note for Windows users
 
