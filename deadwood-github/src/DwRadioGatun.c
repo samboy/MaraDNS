@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2018 Sam Trenholme
+/* Copyright (c) 2007-2019 Sam Trenholme
  *
  * TERMS
  *
@@ -24,7 +24,11 @@
 #include <stdlib.h>
 #include "DwStr.h"
 #include "DwStr_functions.h"
+#ifndef RG64
 #include "DwRadioGatun.h"
+#else /* RG64 */
+#include "DwRadioGatun64.h"
+#endif /* RG64 */
 
 /* This is the mill part of the RadioGatun algorithm */
 void dwr_beltmill(DWR_WORD *a, DWR_WORD *b) {
@@ -163,7 +167,12 @@ dwr_rg *dwr_init_rg(dw_str *obj) {
                                         x = 1; /* Append with single byte
                                                 * w/ value of 1 */
                                 }
+#ifndef RG64
                                 p[r] |= x << q;
+#else /* RG64 */
+                                p[r] |= (uint64_t)x << q;
+#endif /* RG64 */
+
                                 if(done == 1) {
                                         dwr_input_map();
                                         for(c = 0; c < 16; c++) {
@@ -178,21 +187,17 @@ dwr_rg *dwr_init_rg(dw_str *obj) {
         return 0;
 }
 
-/* Given a RadioGatun state, generate a 16-bit psuedo-random number.
- * Note that this only works if DWR_WORD is a 32-bit integer,
- * and DWR_WORDSIZE is 32. */
+/* Given a RadioGatun state, generate a 16-bit psuedo-random number. */
 uint16_t dwr_rng(dwr_rg *in) {
         DWR_WORD *o;
         if(in == 0) {
-                return 0;
-        }
-        if(DWR_WORDSIZE != 32) {
                 return 0;
         }
         o = in->mill + 1;
         if(in->index >= 100000000) {
                 in->index = 0; /* I am considering rekeying here */
         }
+#ifndef RG64
         if(in->index % 4 == 0) {
                 dwr_beltmill(in->mill, in->belt);
                 in->index++;
@@ -211,6 +216,38 @@ uint16_t dwr_rng(dwr_rg *in) {
                                         ((o[1] & 0xff000000) >> 24);
                 }
         }
+#else /* RG64 */
+        if(in->index % 8 == 0) {
+                dwr_beltmill(in->mill, in->belt);
+                in->index++;
+                return ((o[0] & 0xff) << 8) | ((o[0] & 0xff00) >> 8);
+        } else {
+                in->index++;
+                switch(in->index % 8) {
+                        case 2:
+                                return ((o[0] & 0xff0000) >> 8) |
+                                        ((o[0] & 0xff000000) >> 24);
+                        case 3:
+                                return ((o[0] & 0xff00000000ULL) >> 24) |
+                                        ((o[0] & 0xff0000000000ULL) >> 40);
+                        case 4:
+                                return ((o[0] & 0xff000000000000ULL) >> 40) |
+                                        ((o[0] & 0xff00000000000000ULL) >> 56);
+                        case 5:
+                                return ((o[1] & 0xff) << 8) |
+                                        ((o[1] & 0xff00) >> 8);
+                        case 6:
+                                return ((o[1] & 0xff0000) >> 8) |
+                                        ((o[1] & 0xff000000) >> 24);
+                        case 7:
+                                return ((o[1] & 0xff00000000ULL) >> 24) |
+                                        ((o[1] & 0xff0000000000ULL) >> 40);
+                        case 0:
+                                return ((o[1] & 0xff000000000000ULL) >> 40) |
+                                        ((o[1] & 0xff00000000000000ULL) >> 56);
+                }
+        }
+#endif /* RG64 */
         return 0;
 }
 
@@ -227,7 +264,10 @@ int main(int argc, char **argv) {
         q = dw_create(2048);
         dw_qrappend((uint8_t *)argv[1],q,0);
         r = dwr_init_rg(q);
-        for(c = 0; c < 20; c++) {
+#ifdef BENCHMARK
+	for(c = 0; c < 20000000; c++) {dwr_rng(r);}
+#endif /* BENCHMARK */
+        for(c = 0; c < 16; c++) {
                 printf("%04x ",dwr_rng(r));
         }
         printf("\n");

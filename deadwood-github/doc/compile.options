@@ -16,7 +16,7 @@ The reason why one may wish IPv6 is to use Deadwood on an IPv6 network.
 
 ---
 
-Full list of compile flags Deadwood has:
+List of compile flags Deadwood has:
 
 IPV6 (-DIPV6): Adds IPv6 support to Deadwood
 
@@ -32,9 +32,14 @@ MINGW (use the correct Makefile): Used to replace *NIX sockets with Windows
 	Deadwood; instead use the 'Makefile.mingw' file: 
 	make -f Makefile.mingw342
 
-__CYGWIN__ (no flag to set; Cygwin sets this): It is also possible to 
+__CYGWIN__ (no flag to set; Cygwin sets this): It may also be possible to 
 	compile this program using Cygwin, an environment that fully
 	emulates a *NIX development environment in Windows.
+
+RG64: If this is set, Deadwood will use the 64-bit instead of the default
+	32-bit version of Radio Gatun for generating random numbers (used 
+	to generate random query ID and source port to make spoofing more 
+	difficult)
 
 Note: The following compile-time flags will only be of interest to developers
 	debugging Deadwood
@@ -63,6 +68,11 @@ HAVE_MAIN (-DHAVE_MAIN): DwCompress.c, DwHash.c, DwMararc.c, and
 	first argument given to the program.  We use this in the SQA test
 	(sqa_rg32) to ensure that DwRadioGatun.c makes a RadioGatun[32]
 	implementation that passes all official RadioGatun[32] test vectors.
+
+BENCHMARK: DwRadioGatun.c has this to determine how fast Radio Gatun generates
+	random numbers on a given system.  I discovered that, on 32-bit 
+	systems, the 64-bit version of Radio Gatun is faster (albeit using 
+	more code)
 
 HSCK (-DHSCK): Adds some routines to ensure that DwHash.c is correctly
 	creating a doubly linked list hash and queue.  Used with the
