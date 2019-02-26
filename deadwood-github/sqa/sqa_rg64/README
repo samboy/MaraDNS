@@ -1,0 +1,10 @@
+These are all of the official test vectors for RadioGatun[64].  The vectors 
+have had their formatting changed to make running the test more convenient:
+
+fgrep \( RG64-testvectors  | awk '{print $NF}' | grep -v S | tr '[A-Z]' '[a-z]' 
+
+I have also added a UTF-8 test vector, and run the test against both
+clang and gcc at various levels of optimization (mainly because there
+was a bug in the rg32 code which only manifests itself in clang, but
+only at -O2 and -O3).
+
