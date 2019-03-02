@@ -178,6 +178,19 @@ echo RG32 pass
 rm -f output.test 2> /dev/null
 cd .. 
 
+# Let's test RG64
+cd sqa_rg64
+echo running RG64 test
+sh ./do.test > output.test 2> /dev/null
+sleep 2
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+	echo test sqa_rg64 failed
+	exit 1
+fi
+echo RG64 pass
+rm -f output.test 2> /dev/null
+cd .. 
+
 # Let's test hash_magic_number
 cd ../src
 make -f Makefile.sl6 clean > /dev/null 2>&1
