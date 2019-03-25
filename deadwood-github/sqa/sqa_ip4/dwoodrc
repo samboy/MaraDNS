@@ -1,9 +1,9 @@
-bind_address = "127.0.0.2"
+bind_address = "127.0.0.1"
 recursive_acl = "127.0.0.1/8"
 chroot_dir="/etc/"
 maximum_cache_elements = 32
 upstream_servers = {}
-upstream_servers["."] = "127.0.0.1"
+upstream_servers["."] = "127.0.0.2"
 ip4 = {}
 ip4["kabah.foo."] = "10.10.10.10"
 ip6 = {}
