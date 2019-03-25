@@ -1,0 +1,6 @@
+maximum_cache_elements = 32
+upstream_servers = {}
+upstream_servers["."] = "127.0.0.2"
+ip4 = {}
+ip4["kabah.foo."] = "10.10.10.10"
+filter_rfc1918 = 0
