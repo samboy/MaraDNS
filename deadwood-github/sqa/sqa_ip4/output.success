@@ -1,0 +1,257 @@
+Starting Deadwood
+Starting nanodns
+# Querying the server with the IP 127.0.0.1
+# Question: Akabah.foo.
+kabah.foo. +30 a 10.10.10.10
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Ukabah.foo.
+kabah.foo. +30 aaaa fd4d:6172:6144:4e53:0:0:0:1234
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A1.foo.
+1.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A2.foo.
+2.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A3.foo.
+3.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A4.foo.
+4.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A5.foo.
+5.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A6.foo.
+6.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A7.foo.
+7.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A8.foo.
+8.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A9.foo.
+9.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A10.foo.
+10.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A11.foo.
+11.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A12.foo.
+12.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A13.foo.
+13.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A14.foo.
+14.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A15.foo.
+15.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A16.foo.
+16.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A17.foo.
+17.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A18.foo.
+18.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A19.foo.
+19.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A20.foo.
+20.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A21.foo.
+21.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A22.foo.
+22.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A23.foo.
+23.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A24.foo.
+24.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A25.foo.
+25.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A26.foo.
+26.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A27.foo.
+27.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A28.foo.
+28.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A29.foo.
+29.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A30.foo.
+30.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A31.foo.
+31.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A32.foo.
+32.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A33.foo.
+33.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A34.foo.
+34.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A35.foo.
+35.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A36.foo.
+36.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A37.foo.
+37.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A38.foo.
+38.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A39.foo.
+39.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A40.foo.
+40.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A41.foo.
+41.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A42.foo.
+42.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A43.foo.
+43.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A44.foo.
+44.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A45.foo.
+45.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A46.foo.
+46.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: A47.foo.
+47.foo. +60 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Akabah.foo.
+kabah.foo. +30 a 10.10.10.10
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.0.0.1
+# Question: Ukabah.foo.
+kabah.foo. +30 aaaa fd4d:6172:6144:4e53:0:0:0:1234
+# NS replies:
+# AR replies:
