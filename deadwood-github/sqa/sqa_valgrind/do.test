@@ -35,6 +35,10 @@ maximum_cache_elements=32
 cache_file="cache/dw_cache"
 tcp_listen=1
 filter_rfc1918 = 0
+ip4 = {}
+ip4["kabah.foo."] = "10.10.10.10"
+ip6 = {}
+ip6["kabah.foo."] = "fd4d617261444e530000000000001234"
 EOF
 
 # Make the directory to store the cache
@@ -57,10 +61,10 @@ cd $CWD
 # element is still accounted for) that Valgrind sometimes lies about
 # memory being "possibly lost"
 
-valgrind ../../src/Deadwood -f dwood2rc 2>&1 |  egrep '(ERROR|lost:)' | \
-	perl -pe 's/\(.*\)//' | grep -v possibly | awk '{$1="";print}' &
+#valgrind ../../src/Deadwood -f dwood2rc 2>&1 |  egrep '(ERROR|lost:)' | \
+#	perl -pe 's/\(.*\)//' | grep -v possibly | awk '{$1="";print}' &
 
-#valgrind --leak-check=full ../../src/Deadwood -f dwood2rc &
+valgrind --leak-check=full ../../src/Deadwood -f dwood2rc &
 
 sleep 1
 for a in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 \
