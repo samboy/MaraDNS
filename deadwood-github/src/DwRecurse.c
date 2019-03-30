@@ -304,6 +304,9 @@ dns_details *dwx_init_dns_details(dns_string *look) {
         out->an_types = dw_malloc((sizeof(int8_t) * look->ancount) + 1);
         out->ns_types = dw_malloc((sizeof(int8_t) * look->nscount) + 1);
         out->ar_types = dw_malloc((sizeof(int8_t) * look->arcount) + 1);
+	out->an_types[0] = 0;
+	out->ns_types[0] = 0;
+	out->ar_types[0] = 0;
         return out;
 }
 
@@ -1425,6 +1428,7 @@ int dwx_determine_answer_type(dns_details *view, dw_str *query, dw_str *in) {
         int counter = 0;
         int max = 32;
         int index = -1;
+	int number_to_view = 0;
 
         if(query == 0 || view == 0 || view->look == 0) {
                 return TYPE_ERROR;
@@ -1435,10 +1439,14 @@ int dwx_determine_answer_type(dns_details *view, dw_str *query, dw_str *in) {
         }
 
         if(view->look->ancount > 0) { /* Is it an answer */
+		number_to_view = view->look->ancount;
+		if(number_to_view > 7) {
+			number_to_view = 7;
+		}
                 if(view->an_types == 0) {
                         return TYPE_ERROR;
                 }
-                for(index = 0; index < 7; index++ ) {
+                for(index = 0; index < number_to_view; index++ ) {
                         if(view->an_types[index] ==
                                         dwx_rrtype_number(query_type) ||
                                 (query_type == RR_ANY &&
