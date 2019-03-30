@@ -304,6 +304,9 @@ dns_details *dwx_init_dns_details(dns_string *look) {
         out->an_types = dw_malloc((sizeof(int8_t) * look->ancount) + 1);
         out->ns_types = dw_malloc((sizeof(int8_t) * look->nscount) + 1);
         out->ar_types = dw_malloc((sizeof(int8_t) * look->arcount) + 1);
+        if(out->an_types == 0 || out->ns_types == 0 || out->ar_types == 0) {
+                dw_fatal("Fatal: Can not init dns_details types\n");
+        }
         out->an_types[0] = 0;
         out->ns_types[0] = 0;
         out->ar_types[0] = 0;
