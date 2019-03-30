@@ -304,9 +304,9 @@ dns_details *dwx_init_dns_details(dns_string *look) {
         out->an_types = dw_malloc((sizeof(int8_t) * look->ancount) + 1);
         out->ns_types = dw_malloc((sizeof(int8_t) * look->nscount) + 1);
         out->ar_types = dw_malloc((sizeof(int8_t) * look->arcount) + 1);
-	out->an_types[0] = 0;
-	out->ns_types[0] = 0;
-	out->ar_types[0] = 0;
+        out->an_types[0] = 0;
+        out->ns_types[0] = 0;
+        out->ar_types[0] = 0;
         return out;
 }
 
@@ -1428,7 +1428,7 @@ int dwx_determine_answer_type(dns_details *view, dw_str *query, dw_str *in) {
         int counter = 0;
         int max = 32;
         int index = -1;
-	int number_to_view = 0;
+        int number_to_view = 0;
 
         if(query == 0 || view == 0 || view->look == 0) {
                 return TYPE_ERROR;
@@ -1439,10 +1439,10 @@ int dwx_determine_answer_type(dns_details *view, dw_str *query, dw_str *in) {
         }
 
         if(view->look->ancount > 0) { /* Is it an answer */
-		number_to_view = view->look->ancount;
-		if(number_to_view > 7) {
-			number_to_view = 7;
-		}
+                number_to_view = view->look->ancount;
+                if(number_to_view > 7) {
+                        number_to_view = 7;
+                }
                 if(view->an_types == 0) {
                         return TYPE_ERROR;
                 }
@@ -2921,12 +2921,12 @@ void dwx_do_glueless_new(dw_str *query, int32_t conn_number, int type) {
                 if(rem[conn_number].local[0] != 0) {
                         conn_number = rem[conn_number].local[0]->glueless_conn;
                 }
-		if(conn_number == -1) {
-			break;
-		}	
-		if(conn_number < 0 || conn_number > maxprocs) {
-			return;
-		}
+                if(conn_number == -1) {
+                        break;
+                }
+                if(conn_number < 0 || conn_number > maxprocs) {
+                        return;
+                }
                 if(rem[conn_number].recurse_depth > 83) {
                         return;
                 }
