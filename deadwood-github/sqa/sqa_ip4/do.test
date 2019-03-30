@@ -29,3 +29,10 @@ done
 askmara Akabah.foo. 127.0.0.1
 askmara 28:kabah.foo. 127.0.0.1
 
+# Clean up
+sleep 1
+killall Deadwood > /dev/null 2>&1
+killall nanodns > /dev/null 2>&1
+sleep 1
+rm nanodns
+
