@@ -1,3 +1,24 @@
+Deadwood 3.2.14 is a bugfix update. No changes to configuration files
+need to be made for this release.
+
+---
+
+Deadwood 3.2.12 is a security update.  No changes to configuration files
+need to be made for this release.
+
+A couple of minor changes that affect configuration since 3.2.02:
+
+* Deadwood now exits with a fatal error when there are over 20,000
+  upstream/root server entries in dwood3rc (older Deadwood releases would
+  silently not work)
+
+* Default file name for entropy in Windows is now "secret.txt"
+
+* Default maxprocs increased to 1024; maximum maxprocs increased to 
+  8,388,608 
+
+---
+
 Deadwood 3.2.02 is a stable release.  This release has a new parameter:
 max_ttl, which limits how long an entry can stay in the cache; the default
 TTL cap is one day (86400 seconds).  
