@@ -1,3 +1,32 @@
+Deadwood 3.3.03 changes how Deadwood, by default, solves DNS queries.
+Earlier versions of Deadwood would perform a recursive query starting
+with the ICANN root DNS servers.  Deadwood 3.3.03, on the other hand,
+uses the https://quad9.net DNS servers as upstream servers when no
+root nor upstream servers are specified in one's dwood3rc file.
+
+To get the old behavior, add these lines to the dwood3rc file:
+
+root_servers = {}
+root_servers["."]="198.41.0.4, 199.9.14.201, 192.33.4.12, 199.7.91.13,"
+root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
+root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
+root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+
+Note that these IPs may be out of date; please go to 
+https://root-servers.org to get an up to date list.
+
+---
+
+Deadwood 3.3.02 introduces a new parameter: ip6
+No changes to configuration files need to be made for this release.
+
+---
+
+Deadwood 3.3.01 introduces a new parameter: ip4
+No changes to configuration files need to be made for this release.
+
+---
+
 Deadwood 3.2.14 is a bugfix update. No changes to configuration files
 need to be made for this release.
 
