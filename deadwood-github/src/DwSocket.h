@@ -37,6 +37,11 @@
 /* I'm putting some whitespace at the end so it is possible to change the root
  * servers without needing to recompile Deadwood if that is ever needed */
 
+/* https://github.com/samboy/MaraDNS/issues/56 Deadwood 3.3 has transitioned
+ * to using the https://quad9.net/ servers as the default upstream DNS 
+ * servers */
+#define UPSTREAM_SERVERS "9.9.9.9,149.112.112.112                 "
+
 #include "DwStr.h"
 #include "DwMararc.h"
 #include "DwStr_functions.h"

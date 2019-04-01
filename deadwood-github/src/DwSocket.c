@@ -755,12 +755,13 @@ void process_root_upstream() {
                         "Bad dwood3rc line looks like:\nroot_servers[\"");
 
         if(elements_in_cache == 0) { /* Use default root servers */
-                dw_log_3strings("Using default ICANN root servers:"," ",
-                        ROOT_SERVERS,1);
+                dw_log_3strings("Using https://quad9.net upstream servers:",
+			" ",
+                        UPSTREAM_SERVERS,1);
                 s = dw_create(256);
                 q = dw_create(16);
-                dw_qrappend((uint8_t *)ROOT_SERVERS,s,0);
-                ns_refer = dwx_ns_convert(s,0,0);
+                dw_qrappend((uint8_t *)UPSTREAM_SERVERS,s,0);
+                ns_refer = dwx_ns_convert(s,1,0);
                 dw_put_u8(q,0,-1); /* Root server (".") */
                 dw_put_u16(q,65395,-1); /* NS refer private RR */
                 dwh_add(cache,q,ns_refer,1,2);
