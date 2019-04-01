@@ -104,7 +104,7 @@ char *key_d_names[KEY_D_COUNT + 1] = {
         "upstream_servers", /* Recursive upstream DNS servers */
         "root_servers", /* Non-recursive root DNS servers */
         "ip4",
-	"ip6",
+        "ip6",
         0 };
 
 char *key_n_names[KEY_N_COUNT + 1] = {

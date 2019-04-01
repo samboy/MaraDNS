@@ -62,11 +62,11 @@ void dwr_beltmill(DWR_WORD *a, DWR_WORD *b) {
                 r = ((i * (i + 1)) / 2) % DWR_WORDSIZE;
                 x = a[y] ^ (a[ ((y + 1) % DWR_MILLSIZE) ] |
                     (~a[ ((y + 2) % DWR_MILLSIZE) ]));
-		if(r > 0 && r < DWR_WORDSIZE) {
-                	A[i] = (x >> r) | (x << (DWR_WORDSIZE - r));
-		} else {
-			A[i] = x;
-		}
+                if(r > 0 && r < DWR_WORDSIZE) {
+                        A[i] = (x >> r) | (x << (DWR_WORDSIZE - r));
+                } else {
+                        A[i] = x;
+                }
         }
         for(i = 0; i < DWR_MILLSIZE ; i++) {
                 y = i;
@@ -265,7 +265,7 @@ int main(int argc, char **argv) {
         dw_qrappend((uint8_t *)argv[1],q,0);
         r = dwr_init_rg(q);
 #ifdef BENCHMARK
-	for(c = 0; c < 20000000; c++) {dwr_rng(r);}
+        for(c = 0; c < 20000000; c++) {dwr_rng(r);}
 #endif /* BENCHMARK */
         for(c = 0; c < 16; c++) {
                 printf("%04x ",dwr_rng(r));
@@ -273,7 +273,7 @@ int main(int argc, char **argv) {
         printf("\n");
         dw_destroy(q);
         dwr_zap(r);
-	return 0;
+        return 0;
 }
 
 #endif /* HAVE_MAIN */

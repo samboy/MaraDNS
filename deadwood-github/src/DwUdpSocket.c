@@ -404,10 +404,10 @@ int forward_local_udp_packet(SOCKET sock, int32_t local_id,
 #endif /* INFLIGHT_VERBOSE */
         }
 
-	if(rem[b].num_locals == 0) {
-		reset_rem(b);
-		return -1;
-	}	
+        if(rem[b].num_locals == 0) {
+                reset_rem(b);
+                return -1;
+        }
         rem[b].local[rem[b].num_locals - 1] = dw_malloc(sizeof(local_T));
         if(rem[b].local[rem[b].num_locals - 1] != 0) {
                 rem[b].local[rem[b].num_locals - 1]->orig_query = 0;
@@ -553,7 +553,7 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
         }
 #endif
 
-	dwc_lower_case(query);/* https://github.com/samboy/MaraDNS/issues/30 */
+        dwc_lower_case(query);/* https://github.com/samboy/MaraDNS/issues/30 */
         dw_log_dwstr("Looking in cache for query ",query,100);
         type = dw_fetch_u16(query,-1);
         if(type == RR_MX && key_n[DWM_N_reject_mx] != 0) {
