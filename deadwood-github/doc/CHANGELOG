@@ -1,3 +1,11 @@
+3.3.03 (2019-04-07: development branch release):
+
+- Deadwood default changed to use quad9.net upstream servers instead of
+  ICANN root servers.
+- Compile-time option to use RadioGatun[64] instead of RadioGatun[32] added
+- Tests for the ip4 and ip6 parameters added
+- Valgrind-found issues fixed
+
 3.3.02 (2019-02-23; development branch release):
 
 - Add new parameter: ip6
