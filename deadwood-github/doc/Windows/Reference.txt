@@ -19,11 +19,10 @@
      * Dynamic cache that deletes entries not recently used
      * Ability to use expired entries in the cache when it is
        impossible to contact upstream DNS servers.
-     * IPv6 support can be compiled in if desired
      * Both DNS-over-UDP and DNS-over-TCP are handled by the same
        daemon
      * Built-in dnswall functionality
-     * The ability to assign names to IPv4 IPs as specified in
+     * The ability to assign names to IPv4 and IPv6 IPs as specified in
        one's dwood3rc file.
 
                         COMMAND LINE ARGUMENTS
