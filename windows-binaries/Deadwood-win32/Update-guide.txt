@@ -1,7 +1,7 @@
 Deadwood 3.3.03 is updated to use the https://quad9.net upstream DNS
 servers as the default.  If the old behavior of using the ICANN name
 servers as root servers is desired, add the following lines to one's
-dwoodrc file:
+dwood3rc.txt file:
 
 root_servers = {}
 root_servers["."]="198.41.0.4, 199.9.14.201, 192.33.4.12, 199.7.91.13,"
