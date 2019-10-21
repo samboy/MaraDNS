@@ -1,3 +1,53 @@
+Deadwood 3.3.03 is updated to use the https://quad9.net upstream DNS
+servers as the default.  If the old behavior of using the ICANN name
+servers as root servers is desired, add the following lines to one's
+dwood3rc.txt file:
+
+root_servers = {}
+root_servers["."]="198.41.0.4, 199.9.14.201, 192.33.4.12, 199.7.91.13,"
+root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
+root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
+root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+
+PLEASE NOTE: The above list of IPs is current as of 2019-04-07, and
+was last changed in October of 2017.
+
+Please go to https://root-servers.org to get an up-to-date list of root
+servers.
+
+---
+
+Deadwood 3.3.02 introduces a new parameter: ip6
+No changes to configuration files need to be made for this release.
+
+---
+
+Deadwood 3.3.01 introduces a new parameter: ip4
+No changes to configuration files need to be made for this release.
+
+---
+
+Deadwood 3.2.14 is a bugfix update. No changes to configuration files
+need to be made for this release.
+
+---
+
+Deadwood 3.2.12 is a security update.  No changes to configuration files
+need to be made for this release.
+
+A couple of minor changes that affect configuration since 3.2.02:
+
+* Deadwood now exits with a fatal error when there are over 20,000
+  upstream/root server entries in dwood3rc (older Deadwood releases would
+  silently not work)
+
+* Default file name for entropy in Windows is now "secret.txt"
+
+* Default maxprocs increased to 1024; maximum maxprocs increased to 
+  8,388,608 
+
+---
+
 Deadwood 3.2.02 is a stable release.  This release has a new parameter:
 max_ttl, which limits how long an entry can stay in the cache; the default
 TTL cap is one day (86400 seconds).  
