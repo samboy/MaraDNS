@@ -20,7 +20,7 @@ OBJS=DwStr.o \
 	DwRecurse.o \
 	DwDict.o
 
-all:	Deadwood version.h
+all:	version.h Deadwood
 
 # Since some systems may not have /dev/urandom (Windows, *cough* *cough*), we 
 # keep a randomly generated prime around 
