@@ -69,18 +69,21 @@ echo and $MAN8, and documents in $DOCS
 
 # Install the maradns binary
 cd $TOPLEVEL/server
+echo Installing maradns
 if [ -x maradns ] ; then
 	# We remove the file first to avoid the "text file busy" problem
 	if [ -f $SBIN/maradns ] ; then
 		rm $SBIN/maradns
 	fi
 	cp maradns $SBIN
+	echo maradns installed
 elif [ -x maradns.authonly ] ; then
 	# We remove the file first to avoid the "text file busy" problem
 	if [ -f $SBIN/maradns.authonly ] ; then
 		rm $SBIN/maradns.authonly
 	fi
 	cp maradns.authonly $SBIN
+	echo maradns installed as maradns.authonly
 else
 	echo unable to find maradns binary to install
 	echo please make sure program sucessfully compiled
@@ -89,36 +92,47 @@ fi
 
 # Install the Deadwood binary
 cd $TOPLEVEL/deadwood-*/src/
+echo Installing Deadwood
 if [ -x Deadwood ] ; then
 	if [ -f $SBIN/Deadwood ] ; then
 		rm $SBIN/Deadwood
 	fi
 	cp Deadwood $SBIN
+	echo Deadwood installed
 fi
 
 # Install the getzone and fetchzone binaries
 cd $TOPLEVEL/tcp
+echo Installing getzone and fetchzone
 cp getzone fetchzone $BIN
+echo getzone and fetchzone installed
 
 # Install the zoneserver binary
+echo installing zoneserver
 # We remove the file first to avoid the "text file busy" problem
 if [ -f $SBIN/zoneserver ] ; then
 	rm $SBIN/zoneserver
 fi
 cp zoneserver $SBIN
+echo zoneserver installed`
 
 # Install the askmara binary
+echo installing askmara
 cd $TOPLEVEL/tools
 if [ -f $BIN/askmara ] ; then
 	rm $BIN/askmara
 fi
 cp askmara $BIN
+echo askmara installed
+
 # Install the duende tool
 # We remove the file first to avoid the "text file busy" problem
+echo installing duende
 if [ -f $BIN/duende ] ; then
 	rm $BIN/duende
 fi
 cp duende $BIN
+echo duende installed
 
 # Place the man pages in $MAN1, $MAN5, and $MAN8
 if [ -d $TOPLEVEL/doc/$LANGUAGE/man ] ; then
