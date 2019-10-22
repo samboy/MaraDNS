@@ -114,7 +114,7 @@ if [ -f $SBIN/zoneserver ] ; then
 	rm $SBIN/zoneserver
 fi
 cp zoneserver $SBIN
-echo zoneserver installed`
+echo zoneserver installed
 
 # Install the askmara binary
 echo installing askmara
