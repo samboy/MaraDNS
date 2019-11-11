@@ -1,3 +1,7 @@
+Please read the file README.txt first; this file is the reference
+manual for Deadwood and does not describe how to install the Deadwood 
+service.
+
                                  NAME
 
    Deadwood - A fully recursive caching DNS resolver
@@ -621,16 +625,6 @@ verbose_level
    error in the offending file, where "filename" is the file to to
    parsed via execfile.
 
-                             IPV6 support
-
-   This server can also be optionally compiled to have IPv6
-   support. In order to enable IPv6 support, add '-DIPV6' to the
-   compile-time flags. For example, to compile this to make a small
-   binary, and to have IPv6 support:
-
-         export FLAGS='-Os -DIPV6'
-         make
-
                                SECURITY
 
    Deadwood is a program written with security in mind.
@@ -681,72 +675,63 @@ verbose_level
    uses /dev/urandom (secret.txt in Windows) as a hardcoded path to
    get entropy (along with the timestamp) for the hash algorithm.
 
-                            DAEMONIZATION
-
-   Deadwood does not have any built-in daemonization facilities;
-   this is handled by the external program Duende or any other
-   daemonizer.
-
                       Example configuration file
 
    Here is an example dwood3rc configuration file:
 
- # This is an example deadwood rc file
- # Note that comments are started by the hash symbol
+# This is an example deadwood rc file
+# Note that comments are started by the hash symbol
 
- bind_address="127.0.0.1" # IP we bind to
+bind_address="127.0.0.1" # IP we bind to
 
- # The following line is disabled by being commented out
- #bind_address="::1" # We have optional IPv6 support
+# The following line is disabled by being commented out
+#bind_address="::1" # We have optional IPv6 support
 
- # Directory we run program from (not used in Win32)
- chroot_dir = "/etc/deadwood"
+# Directory we run program from (not used in Win32)
+chroot_dir = "/etc/deadwood"
 
- # The following upstream DNS servers are Google's
- # (as of December 2009) public DNS servers.  For
- # more information, see the page at
- # http://code.google.com/speed/public-dns/
- #
- # If neither root_servers nor upstream_servers are set,
- # Deadwood will use the default ICANN root servers.
- #upstream_servers = {}
- #upstream_servers["."]="8.8.8.8, 8.8.4.4"
+# The following upstream DNS servers are Google's
+# (as of December 2009) public DNS servers.  For
+# more information, see the page at
+# http://code.google.com/speed/public-dns/
+#
+# If neither root_servers nor upstream_servers are set,
+# Deadwood will use the default ICANN root servers.
+#upstream_servers = {}
+#upstream_servers["."]="8.8.8.8, 8.8.4.4"
 
- # Who is allowed to use the cache.  This line
- # allows anyone with "127.0" as the first two
- # digits of their IP to use Deadwood
- recursive_acl = "127.0.0.1/16"
+# Who is allowed to use the cache.  This line
+# allows anyone with "127.0" as the first two
+# digits of their IP to use Deadwood
+recursive_acl = "127.0.0.1/16"
 
- # Maximum number of pending requests
- maxprocs = 2048
+# Maximum number of pending requests
+maxprocs = 2048
 
- # Send SERVER FAIL when overloaded
- handle_overload = 1
+# Send SERVER FAIL when overloaded
+handle_overload = 1
 
- maradns_uid = 99 # UID Deadwood runs as
- maradns_gid = 99 # GID Deadwood runs as
+maximum_cache_elements = 60000
 
- maximum_cache_elements = 60000
+# If you want to read and write the cache from disk,
+# make sure chroot_dir above is readable and writable
+# by the maradns_uid/gid above, and uncomment the
+# following line.
+#cache_file = "dw_cache"
 
- # If you want to read and write the cache from disk,
- # make sure chroot_dir above is readable and writable
- # by the maradns_uid/gid above, and uncomment the
- # following line.
- #cache_file = "dw_cache"
+# If your upstream DNS server converts "not there" DNS replies
+# in to IPs, this parameter allows Deadwood to convert any reply
+# with a given IP back in to a "not there" IP.  If any of the IPs
+# listed below are in a DNS answer, Deadwood converts the answer
+# in to a "not there"
+#ip_blacklist = "10.222.33.44, 10.222.3.55"
 
- # If your upstream DNS server converts "not there" DNS replies
- # in to IPs, this parameter allows Deadwood to convert any reply
- # with a given IP back in to a "not there" IP.  If any of the IPs
- # listed below are in a DNS answer, Deadwood converts the answer
- # in to a "not there"
- #ip_blacklist = "10.222.33.44, 10.222.3.55"
-
- # By default, for security reasons, Deadwood does not allow IPs in
- # the 192.168.x.x, 172.[16-31].x.x, 10.x.x.x, 127.x.x.x,
- # 169.254.x.x, 224.x.x.x, or 0.0.x.x range.  If using Deadwood
- # to resolve names on an internal network, uncomment the
- # following line:
- #filter_rfc1918 = 0
+# By default, for security reasons, Deadwood does not allow IPs in
+# the 192.168.x.x, 172.[16-31].x.x, 10.x.x.x, 127.x.x.x,
+# 169.254.x.x, 224.x.x.x, or 0.0.x.x range.  If using Deadwood
+# to resolve names on an internal network, uncomment the
+# following line:
+#filter_rfc1918 = 0
 
                                  BUGS
 
@@ -790,7 +775,7 @@ verbose_level
 
                                AUTHORS
 
-   Sam Trenholme (http://www.samiam.org) is responsible for this
+   Sam Trenholme (https://www.samiam.org) is responsible for this
    program and man page. He appreciates all of Jean-Jacques
    Sarton's help giving this program IPv6 support.
 
