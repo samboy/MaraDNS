@@ -17,7 +17,7 @@ EOF
 #../../../server/maradns -f mararc &
 sleep 1
 echo $LEVEL
-../../../tools/askmara Tversion.maradns. | sed 's/2\.0[0-9\.]*//' | \
+../../../tools/askmara Tversion.maradns. | sed 's/3\.4[0-9\.]*//' | \
 	sed 's/Q[0-9\.]*//'
 ../../../tools/askmara Ttimestamp.maradns. | sed 's/: [0-9][0-9]*//'
 echo
