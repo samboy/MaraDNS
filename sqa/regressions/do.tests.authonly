@@ -27,7 +27,7 @@ cp ../../server/maradns ../../server/maradns.authonly
 # Tests specifically for the authonly version of MaraDNS
 TESTS=""
 TESTS=$TESTS"mararc_n_long_packet_ipv4 "
-TESTS=$TESTS"mararc_n_ipv6_bind_address "
+#TESTS=$TESTS"mararc_n_ipv6_bind_address "
 TESTS=$TESTS"mararc_n_tcp_convert_server "
 
 # Tests to make sure most Mararc parameters work
