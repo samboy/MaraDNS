@@ -22,4 +22,3 @@ context of error: <near beginning of line> ' (closing this file)
 Error: Problem getting rddata
 Error is on line 3 in file db.example.com
 context of error: <near beginning of line> ' (closing this file)
-MaraDNS maximum memory allocation set to 2621440 bytes

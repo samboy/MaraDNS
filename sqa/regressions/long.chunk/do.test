@@ -24,7 +24,7 @@ t1.% TXT
 EOF
 
 # OK, test the server
-../../../server/maradns -f mararc &
+../../../server/maradns -f mararc | grep -v 'maximum memory allocation' &
 sleep 5
 killall maradns > /dev/null 2>&1
 rm mararc
