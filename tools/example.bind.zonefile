@@ -1,0 +1,11 @@
+example.com. 86400 IN SOA ns1.example.com. hostmaster.example.com. (
+			12345 ; serial
+			3600 ; refresh
+			45 ; retry
+			86400 ; expire
+			7200 
+			)
+; example comment
+example.com.      IN  NS     ns1.example.com. 
+ns1    IN  A      10.1.2.1  ;name server definition     
+www    IN  A      10.1.2.2  ;web server definition
