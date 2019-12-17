@@ -1224,8 +1224,8 @@ def process_file(filename):
 		(state, buffer) = process_char(a,oz,state,buffer)
 		if state == "error" or state == "error_paren":
 			print("Error found, no longer processing this file")
-			print("Error is on line " + str(linenum), end=' ')
-			print("of file " + filename)
+			print("Error is on line " + str(linenum) +
+			      "of file " + filename)
 			return ERROR
 		x += 1
 
@@ -1245,8 +1245,8 @@ def process_file(filename):
 
 if len(sys.argv) < 3 or sys.argv[1] != "-c":
 	print("Usage: bind2csv2.py -c {file list}")
-	print("Where {file list} is a list of files you want to make", end=' ')
-        print("csv2 zone files of.")
+	print("Where {file list} is a list of files you want to make " +
+              "csv2 zone files of.")
 	sys.exit()
 
 list = sys.argv[2:]
