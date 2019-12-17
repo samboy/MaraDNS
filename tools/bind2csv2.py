@@ -173,7 +173,7 @@ class buf:
 		elif self.l == "/origin":
 			return "preorigin"
 		else:
-			print "Unknown directive " + self.l
+			print("Unknown directive " + self.l)
 			return "error"
 
 	# Add a current RR to a stream (private method)
@@ -357,7 +357,7 @@ def get_rr_type(rrname):
 		#return "rr_loc" # Complicated RR with variable # of fields
 		return "rr_variargs" # I'll just let the csv2 code parse this
 	else:	
-		print "Error: Unknown RR " + rrname
+		print("Error: Unknown RR " + rrname)
 		return "error"
 
 # Generic handler that handles parenthesis in a zone file
@@ -366,10 +366,10 @@ def handle_paren(a,o,state,buffer):
 	if is_pstate.search(state):
 		paren = "_paren"
 	if paren == "" and is_newline.match(a):
-		print "Error: Premature termination of RR"
+		print("Error: Premature termination of RR")
 		return ("error", "", 1, paren)
 	if paren == "_paren" and a == "(":
-		print "Error: Parens don't nest"
+		print("Error: Parens don't nest")
 		retrun ("error", "", 1, paren)
 	if paren == "" and a == "(":
 		op(o," ")
@@ -413,7 +413,7 @@ def postrr(a,o,state,buffer):
 	(state, buffer, paren, pstr) = handle_paren(a,o,state,buffer)
 	if paren == 1:
 		return (state, buffer)
-	print "Error: Unexpected character after RR " + a
+	print("Error: Unexpected character after RR " + a)
 	return("error","")
 
 # After the first non-escaped newline at the end of a rr in the
@@ -433,7 +433,7 @@ def pre_rr(a,o,state,buffer):
 			o.label_reset()
 			o.label_add(a)
 			return("dlabel",buffer)
-	print "Error: Unexpected character before RR " + a
+	print("Error: Unexpected character before RR " + a)
 	return("error","")
 
 # In the whitespace before a default TTL ("/ttl 12345")
@@ -445,7 +445,7 @@ def prettl(a,o,state,buffer):
 		op(o,a)
 		o.slash_ttl_set(a)
 		return ("sttl", buffer)
-	print "Error: unexpected character before TTL " + a
+	print("Error: unexpected character before TTL " + a)
 	return("error","")
 
 # In a default TTL ("/ttl 12345")
@@ -457,7 +457,7 @@ def sttl(a,o,state,buffer):
 		op(o,a)
 		o.slash_ttl_append(a)
 		return ("sttl", buffer)
-	print "Error: unexpected character in TTL " + a
+	print("Error: unexpected character in TTL " + a)
 	return("error","")
 
 # In the whitespace before an origin ("/origin foo")
@@ -469,7 +469,7 @@ def preorigin(a,o,state,buffer):
 		op(o,a)
 		o.origin_set(a)
 		return ("origin", buffer)
-	print "Error: unexpected character before origin " + a
+	print("Error: unexpected character before origin " + a)
 	return("error","")
 
 # In an origin ("/origin foo")
@@ -481,7 +481,7 @@ def origin(a,o,state,buffer):
 		op(o,a)
 		o.origin_append(a)
 		return ("origin", buffer)
-	print "Error: unexpected character in origin " + a
+	print("Error: unexpected character in origin " + a)
 	return("error","")
 
 # After a space at the beginning of an RR and before a newline
@@ -517,7 +517,7 @@ def ttl(a,o,state,buffer):
 		op(o,a)
 		o.normal_ttl_append(a)
 		return ("ttl" + pstr,buffer)
-	print "Unexpected character in TTL " + a
+	print("Unexpected character in TTL " + a)
 	return("error","")
 
 # Various handlers for the rr types that we may see
@@ -535,7 +535,7 @@ def rr_a(a,o,state,buffer):
 	if is_numdot.match(a):
 		op(o,a)
 		return (state,buffer)	
-	print "Error: Unexpected character in A RR " + a
+	print("Error: Unexpected character in A RR " + a)
 	return("error","")
 
 # AAAA: Ipv6 Internet IP address 
@@ -551,7 +551,7 @@ def rr_aaaa(a,o,state,buffer):
 	if is_hexcolon.match(a):
 		op(o,a)
 		return (state,buffer)	
-	print "Error: Unexpected character in A RR " + a
+	print("Error: Unexpected character in A RR " + a)
 	return("error","")
 
 # Generic handler for NS records or anything else that has a single dlabel
@@ -573,7 +573,7 @@ def rr_1dlabel(a,o,state,buffer):
 	if a == ".":
 		op(o,a)
 		return ("rr_1dlabel_dot" + pstr, buffer)
-	print "Error: Unexpected character in RR " + a
+	print("Error: Unexpected character in RR " + a)
 	return("error","")
 
 # In the dot (".") of a dlabel	
@@ -590,7 +590,7 @@ def rr_1dlabel_dot(a,o,state,buffer):
 	if is_dlabel.match(a):
 		op(o,a)
 		return ("rr_1dlabel" + pstr,buffer)
-	print "Error: Unexpected character in RR " + a
+	print("Error: Unexpected character in RR " + a)
 	return("error","")
 
 # Generic handlers for dlabels and numbers
@@ -608,7 +608,7 @@ def rr_generic_dlabel_dot(a,o,state,buffer,next):
 		if pstr == "_paren":
 			return(state[:-10] + pstr, buffer)
 		return (state[:-4], buffer)
-	print "Error: unexpected character in RR dlabel dot " + a
+	print("Error: unexpected character in RR dlabel dot " + a)
 	return("error","")
 
 # In the whitespace before a dlabel		
@@ -622,7 +622,7 @@ def rr_generic_dlabel_pre(a,o,state,buffer,next):
 	if is_dlabel.match(a):	
 		op(o,a)
 		return (next + pstr, buffer)
-	print "Error: unexpected character before RR dlabel " + a
+	print("Error: unexpected character before RR dlabel " + a)
 	return("error","")
 
 # In a dlabel
@@ -641,7 +641,7 @@ def rr_generic_dlabel(a,o,state,buffer,next):
 		if pstr == "_paren":
 			return(state[:-10] + "_dot" + pstr, buffer)
 		return (state + "_dot", buffer)
-	print "Error: unexpected character in RR dlabel " + a
+	print("Error: unexpected character in RR dlabel " + a)
 	return("error","")
 
 # In the whitespace before a number		
@@ -655,7 +655,7 @@ def rr_generic_number_pre(a,o,state,buffer,next):
 	if is_number.match(a):	
 		op(o,a)
 		return (next + pstr, buffer)
-	print "Error: unexpected character before RR number field " + a
+	print("Error: unexpected character before RR number field " + a)
 	return("error","")
 
 # In a number
@@ -669,7 +669,7 @@ def rr_generic_number(a,o,state,buffer,next):
 	if is_number.match(a):	
 		op(o,a)
 		return (state, buffer)
-	print "Error: unexpected character in numer field of RR " + a
+	print("Error: unexpected character in numer field of RR " + a)
 	return("error","")
 
 # In the whitespace before the SOA minimum field
@@ -684,7 +684,7 @@ def rr_soa_minimum_pre(a,o,state,buffer,next):
 		op(o,a)
 		o.minttl_set(a)
 		return (next + pstr, buffer)
-	print "Error: unexpected character before RR number field " + a
+	print("Error: unexpected character before RR number field " + a)
 	return("error","")
 
 # In SOA minimum field
@@ -699,7 +699,7 @@ def rr_soa_minimum(a,o,state,buffer,next):
 		op(o,a)
 		o.minttl_append(a)
 		return (state, buffer)
-	print "Error: unexpected character in numer field of RR " + a
+	print("Error: unexpected character in numer field of RR " + a)
 	return("error","")
 
 # SOA: Start of authority record (2 dlabels, 5 numbers)
@@ -810,7 +810,7 @@ def rr_txt(a,o,state,buffer):
 		return(state, buffer)
 	if a == "\"":
 		return("rr_txt_4" + pstr,buffer)
-	print "Error: unexpected character ouside of quotes in TXT RR " + a
+	print("Error: unexpected character ouside of quotes in TXT RR " + a)
 	return("error","")
 
 # rr_txt_2: In TXT record between quotes
@@ -822,7 +822,7 @@ def rr_txt_2(a,o,state,buffer):
 	if(len(a) == 1):
 		q = unpack("B",a)[0];
 	else:
-		print "Error: Unexpected char length in TXT RR " + a
+		print("Error: Unexpected char length in TXT RR " + a)
 		return("error","")
 	# If q is printable ASCII and q isn't ["#'|~\]
 	if q >= 32 and q <= 125 and q != 34 and q != 35 \
@@ -848,7 +848,7 @@ def rr_txt_3(a,o,state,buffer):
 	if(len(a) == 1):
 		q = unpack("B",a)[0];
 	else:
-		print "Error: Unexpected char length in TXT RR " + a
+		print("Error: Unexpected char length in TXT RR " + a)
 		return("error","")
 	# If q is printable ASCII and q isn't ["#'|~]
 	if q >= 32 and q <= 125 and q != 34 and q != 35 \
@@ -877,7 +877,7 @@ def rr_txt_4(a,o,state,buffer):
 	if(len(a) == 1):
 		q = unpack("B",a)[0];
 	else:
-		print "Error: Unexpected char length in TXT RR " + a
+		print("Error: Unexpected char length in TXT RR " + a)
 		return("error","")
 	# If q is printable ASCII and q isn't ["#'|~\]
 	if q >= 32 and q <= 125 and q != 34 and q != 35 \
@@ -895,7 +895,7 @@ def rr_txt_4(a,o,state,buffer):
 	else:
 		op(o,"\\x%02x" % q)
 		return("rr_txt_3" + pstr,buffer)
-	print "Unexpected error in rr_txt_4"
+	print("Unexpected error in rr_txt_4")
 	return("error","")
 
 # rr_txt_backslash: Right after a backslash in a TXT record
@@ -910,7 +910,7 @@ def rr_txt_backslash(a,o,state,buffer):
 	if(len(a) == 1):
 		q = unpack("B",a)[0];
 	else:
-		print "Error: Unexpected char length in TXT RR " + a
+		print("Error: Unexpected char length in TXT RR " + a)
 		return("error","")
 	# If q is printable ASCII and q isn't [#'|~]
 	if q >= 32 and q <= 125 and q != 35 \
@@ -933,13 +933,13 @@ def rr_txt_numeric(a,o,state,buffer):
 	if int(x) < 256:
 		op(o,"\'\\x%02x\'" % int(x))
 	else:
-		print "Error: Value of backslashed number " + x + " too high"
+		print("Error: Value of backslashed number " + x + " too high")
 		return("error","")
 	# Otherwise
 	if(len(a) == 1):
 		q = unpack("B",a)[0];
 	else:
-		print "Error: Unexpected char length in TXT RR " + a
+		print("Error: Unexpected char length in TXT RR " + a)
 		return("error","")
 	# If q is printable ASCII and q isn't [#'|~\]
 	if q >= 32 and q <= 125 and q != 35 and q != 34 \
@@ -972,7 +972,7 @@ def rrtype(a,o,state,buffer):
 			return("pdlabel" + pstr, "")
 		op(o,a)
 		return ("prrtype" + pstr, buffer)
-	print "Invalid character in RR type " + a
+	print("Invalid character in RR type " + a)
 	return ("error","")
 
 # After dlabel (name of record we have info for) and before TTL/rrtype
@@ -990,7 +990,7 @@ def pdlabel(a,o,state,buffer):
 		return ("ttl" + pstr,buffer)
 	if is_letter.match(a):
 		return ("rrtype" + pstr,a)	
-	print "Unexpected character after dlabel " + a
+	print("Unexpected character after dlabel " + a)
 	return("error","")
 
 # In a "." character in the dlabel (name of machine we have record for)	
@@ -1002,7 +1002,7 @@ def dlabel_dot(a,o,state,buffer):
 		op(o,a)
 		return ("pdlabel",buffer)
 	else:
-		print "Unexpected chatacter near dlabel " + a
+		print("Unexpected chatacter near dlabel " + a)
 		return ("error","")
 
 # In DCommand (a "slash" command like "/ttl" or "/origin")
@@ -1014,7 +1014,7 @@ def dcommand(a,o,state,buffer):
 		op(o,a)
 		return (o.dcommand_process(),buffer)
 	else:
-		print "Unexpected chatacter in slash command " + a
+		print("Unexpected chatacter in slash command " + a)
 		return ("error","")
 
 # In the dlabel (name of machine we are looking at record for)
@@ -1030,7 +1030,7 @@ def dlabel_s(a,o,state,buffer):
 		o.label_add(a)
 		return ("dlabel_dot",buffer)
 	else:
-		print "Unexpected character in dlabel " + a
+		print("Unexpected character in dlabel " + a)
 		return ("error","")	
 
 # Initial state at beginning of file				
@@ -1047,7 +1047,7 @@ def init_s(a,o,state,buffer):
 			o.label_add(a)
 			return("dlabel",buffer)
 	else:
-		print "Error: Unexpected character at new file start " + a
+		print("Error: Unexpected character at new file start " + a)
 		return("error","")
 		
 # END machine states
@@ -1192,16 +1192,16 @@ def process_char(a,o,state,buffer):
 # BIND zone files at the same time
 def process_file(filename):
 	if os.access(filename,os.R_OK) != 1:
-		print "Can not read " + filename
+		print("Can not read " + filename)
 		return ERROR
 	
 	outf = filename + ".csv2"
 
 	if os.path.isfile(outf) == 1:
-		print "Warning: " + outf + " already exists, overwriting"
+		print("Warning: " + outf + " already exists, overwriting")
 
 	if os.path.isdir(filename) == 1:
-		print "Error: " + outf + " is a directory, skipping"
+		print("Error: " + outf + " is a directory, skipping")
 		return ERROR
 
 	i = file(filename,"rb")
@@ -1223,9 +1223,9 @@ def process_file(filename):
 			linenum += 1
 		(state, buffer) = process_char(a,oz,state,buffer)
 		if state == "error" or state == "error_paren":
-			print "Error found, no longer processing this file"
-			print "Error is on line " + str(linenum) ,
-			print "of file " + filename
+			print("Error found, no longer processing this file")
+			print("Error is on line " + str(linenum), end=' ')
+			print("of file " + filename)
 			return ERROR
 		x += 1
 
@@ -1238,19 +1238,19 @@ def process_file(filename):
 	oz.flush_rr() # Make sure to flush out the last RR we read
 	o.write(oz.read())
 
-	print outf + " written"
+	print(outf + " written")
 
 
 # MAIN
 
 if len(sys.argv) < 3 or sys.argv[1] != "-c":
-	print "Usage: bind2csv2.py -c {file list}"
-	print "Where {file list} is a list of files you want to make",
-        print "csv2 zone files of."
+	print("Usage: bind2csv2.py -c {file list}")
+	print("Where {file list} is a list of files you want to make", end=' ')
+        print("csv2 zone files of.")
 	sys.exit()
 
 list = sys.argv[2:]
 for item in list:
-	print "Processing zone file " + item
+	print("Processing zone file " + item)
 	process_file(item)
 
