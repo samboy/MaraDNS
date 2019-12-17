@@ -282,7 +282,7 @@ def process_comment(i,o):
 	z = 0
 	op(o,"#")
 	while z < 1000:
-		a = i.read(1)
+		a = i.read(1).decode('utf-8')
 		if is_newline.match(a):
 			return a
 		else:
@@ -294,7 +294,7 @@ def process_comment(i,o):
 # in next
 
 def get_rr_type(rrname):
-	rrname = string.lower(rrname)
+	rrname = rrname.lower()
 	if rrname == "in":
 		return "error"
 	elif rrname == "a":
@@ -965,7 +965,7 @@ def rrtype(a,o,state,buffer):
 		# In the case of "IN", we go back to the state of being
                 # after the dlabel, where we look for either a TTL or a 
                 # RRTYPE
-		if string.lower(buffer) != "in":
+		if buffer.lower() != "in":
 			op(o,buffer)
 		else:
 			op(o,a)
@@ -1008,7 +1008,7 @@ def dlabel_dot(a,o,state,buffer):
 # In DCommand (a "slash" command like "/ttl" or "/origin")
 def dcommand(a,o,state,buffer):
 	if is_letter.match(a):
-		o.label_add(string.lower(a))
+		o.label_add(a.lower())
 		return ("dcommand",buffer)
 	elif is_space.match(a):
 		op(o,a)
@@ -1204,8 +1204,8 @@ def process_file(filename):
 		print("Error: " + outf + " is a directory, skipping")
 		return ERROR
 
-	i = file(filename,"rb")
-	o = file(outf,"wb")
+	i = open(filename,"rb")
+	o = open(outf,"w")
 	oz = buf()
 
 	state = "init_state"
@@ -1214,7 +1214,7 @@ def process_file(filename):
 	x = 0
 	linenum = 1
 	while x < 100000:
-		a = i.read(1)
+		a = i.read(1).decode('utf-8')
 		if a == "":
 			break
 		if a == ";":
