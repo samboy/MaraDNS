@@ -1225,7 +1225,7 @@ def process_file(filename):
 		if state == "error" or state == "error_paren":
 			print("Error found, no longer processing this file")
 			print("Error is on line " + str(linenum) +
-			      "of file " + filename)
+			      " of file " + filename)
 			return ERROR
 		x += 1
 
