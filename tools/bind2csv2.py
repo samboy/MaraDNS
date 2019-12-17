@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
-# Copyright (c) 2006-2007 Sam Trenholme
+# Note: As of 2019, this script will run both in python2 and python3
+
+# Copyright (c) 2006-2007,2019 Sam Trenholme
 # 
 # TERMS
 # 
