@@ -1,0 +1,24 @@
+commit 93e39dd34088c3854f11b4aa9e1adf8ed6833ac5
+Author: Sam Trenholme <strenholme.usenet@gmail.com>
+Date:   Fri Sep 25 06:30:51 2015 -0700
+
+    https://github.com/samboy/MaraDNS/issues/21
+    
+    If a connection to an upstream IP fails, the output of malloc()
+    or 0 could be written to an out of bounds memory location.
+
+diff --git a/deadwood-github/src/DwUdpSocket.c b/deadwood-github/src/DwUdpSocket.c
+index 8f61b60..a5b43b7 100644
+--- a/deadwood-github/src/DwUdpSocket.c
++++ b/deadwood-github/src/DwUdpSocket.c
+@@ -404,6 +404,10 @@ int forward_local_udp_packet(SOCKET sock, int32_t local_id,
+ #endif /* INFLIGHT_VERBOSE */
+         }
+ 
++	if(rem[b].num_locals == 0) {
++		reset_rem(b);
++		return -1;
++	}	
+         rem[b].local[rem[b].num_locals - 1] = dw_malloc(sizeof(local_T));
+         if(rem[b].local[rem[b].num_locals - 1] != 0) {
+                 rem[b].local[rem[b].num_locals - 1]->orig_query = 0;

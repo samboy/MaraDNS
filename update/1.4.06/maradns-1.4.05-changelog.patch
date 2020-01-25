@@ -1,0 +1,22 @@
+--- maradns-1.4.05/doc/en/webpage/changelog.embed	2010-07-31 01:17:06.000000000 -0600
++++ maradns-1.4.06/doc/en/webpage/changelog.embed	2011-01-28 18:46:54.000000000 -0700
+@@ -1,9 +1,18 @@
+ <H1>MaraDNS changelog</H1>
+ 
+-<p>maradns-1.4.04:</p>
++<p>maradns-1.4.05:</p>
+ This is the stable branch of MaraDNS.
+ <blockquote>
+ <ul>
++<li>Fix for CVE-2011-0520
++<li>Deadwood updated to 3.0.02
++</ul>
++(2011.01.28)
++</blockquote>
++
++<p>maradns-1.4.04:</p>
++This is the stable branch of MaraDNS.
++<blockquote>
+ <ul>
+ <li>Bugfix: NAPTR records now work when ~ is used to separate records
+ <li>NAPTR records now documented

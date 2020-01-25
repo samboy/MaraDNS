@@ -1,0 +1,66 @@
+--- maradns-2.0.03/parse/Csv2_parse.c	2011-08-05 06:59:48.000000000 -0500
++++ maradns-2.0.04/parse/Csv2_parse.c	2011-10-09 06:31:06.243103043 -0500
+@@ -1404,8 +1404,8 @@
+                         return -1;
+                 }
+ 
+-                /* Process the slash commands (currently only '/origin' and
+-                 * '/ttl') */
++                /* Process the slash commands (/origin, /ttl, /opush, /opop,
++                 * and /read) */
+                 if(csv2_justread(stream) == '/') {
+                         int32 look, cmd;
+                         slash_command = 1;
+@@ -1587,6 +1587,7 @@
+                                 js_dealloc(o);
+                         } else if(cmd == 5 && look == 'd') {
+                                 js_string *filename;
++				int rc = 0, fc = 0;
+                                 look = csv2_read_unicode(stream);
+                                 if(!csv2_is_delimiter(look)) {
+                                         csv2_error(stream,
+@@ -1594,6 +1595,15 @@
+                                         return -1;
+                                 }
+                                 filename = csv2_get_filename(stream);
++				/* Hack: Ignore everything until the
++				 * next ~ or \n */
++				csv2_allow_tilde(stream);
++				for(rc = 0; rc < 10000; rc++) {
++					fc = csv2_readchar(stream);
++					if(fc == '~' || fc == '\n') {
++						break;
++					}
++				}	
+                                 csv2_push_file(stream,filename);
+                                 js_destroy(filename);
+                         } else {
+--- maradns-2.0.03/parse/Csv2_read.c	2011-08-05 06:59:48.000000000 -0500
++++ maradns-2.0.04/parse/Csv2_read.c	2011-10-09 06:33:58.901109161 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004-2006,2008 Sam Trenholme
++/* Copyright (c) 2004-2006,2008,2011 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -163,7 +163,11 @@
+                                 return out;
+                         }
+                 }
+-        }
++        } else if(file->mnum == 2) { /* Bogus '\n' hack */
++		file->justread = '\n';
++		file->mnum = 0;
++		return '\n';
++	}
+ 
+         /* If we are not inside a macro, we just read from the file */
+         if(file->mnum == 0) {
+@@ -350,6 +354,7 @@
+         file->filename = nf;
+         file->reading = nfd;
+         file->stack_height++;
++	file->mnum = 2; /* '\n' hack */
+ 
+         return JS_SUCCESS;
+ 

@@ -1,0 +1,54 @@
+--- maradns-2.0.12/doc/en/source/changelog.embed	2015-01-24 09:13:55.000000000 -0800
++++ maradns-2.0.13/doc/en/source/changelog.embed	2015-09-25 22:28:33.401627697 -0700
+@@ -1,5 +1,51 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-2.0.13:</p>
++This is the stable release of MaraDNS.
++<blockquote>
++<ul>
++<li>Two non-critical buffer overflows from ParseMaraRc fixed.  One can never be 
++    exploited; the other one can only be exploted by the (usually)
++    root user by writing to the system mararc file.
++<li>Deadwood updated to <a href=/deadwood/doc/CHANGELOG>3.2.09</a>
++</ul>
++(2015-09-25)
++</blockquote>
++
++<p>maradns-2.0.12:</p>
++This is the stable release of MaraDNS.
++<blockquote>
++<ul>
++<li>Security fix for improper free() in zoneserver
++<li>Deadwood updated to <a href=/deadwood/doc/CHANGELOG>3.2.08</a>
++<li>Zone transfers now work with newer versions of dig
++<li>Documentation updates
++</ul>
++(2015.08.19)
++</blockquote>
++
++<p>maradns-2.0.11:</p>
++This is the stable release of MaraDNS.
++<blockquote>
++<ul>
++<li>Deadwood updated to <A href=/deadwood/doc/CHANGELOG>3.2.07</A>
++</ul>
++(2015.01.30)
++</blockquote>
++
++<p>maradns-1.4.16:</p>
++<i>This is the final MaraDNS 1 release.  Please be aware that
++MaraDNS 1 has at least one unpatched security hole</i><p>
++
++This is the legacy branch of MaraDNS. Please upgrade to MaraDNS 2.
++All MaraDNS 1 support ends on June 21, 2015.
++<blockquote>
++<ul>
++<li>Deadwood updated to <A href=/deadwood/doc/CHANGELOG>3.2.07</A>
++</ul>
++(2015.01.30)
++</blockquote>
++
+ <p>maradns-2.0.10:</p>
+ This is the stable release of MaraDNS.
+ <blockquote>

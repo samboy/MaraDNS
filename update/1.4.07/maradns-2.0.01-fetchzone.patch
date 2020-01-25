@@ -1,0 +1,11 @@
+--- maradns-2.0.01/tcp/fetchzone.c	2010-08-28 16:37:11.000000000 -0600
++++ maradns-2.0.02/tcp/fetchzone.c	2011-02-05 12:34:19.000000000 -0700
+@@ -344,7 +344,7 @@
+                     rr.name->string--;
+                     rr.name->unit_count++;
+                     p = (unsigned short *)get->string;
+-                    printf(" +%u aaaa %x:%x:%x:%x%x:%x:%x:%x: ~ \n",rr.ttl,
++                    printf(" +%u aaaa %x:%x:%x:%x:%x:%x:%x:%x: ~ \n",rr.ttl,
+                            htons(*(p)), htons(*(p + 1)),htons(*(p + 2)), htons(*(p + 3)),
+                            htons(*(p + 4)), htons(*(p + 5)), htons(*(p + 6)), htons(*(p +7)));
+                     }

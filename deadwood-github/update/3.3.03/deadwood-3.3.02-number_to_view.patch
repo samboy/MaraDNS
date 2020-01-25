@@ -1,0 +1,52 @@
+This fixes an issue Valgrind saw when I was testing ip4 and ip6
+
+--- deadwood-3.3.02/src/DwRecurse.c	2019-02-22 22:26:12.000000000 -0800
++++ deadwood-3.3.03/src/DwRecurse.c	2019-03-30 11:04:10.413658239 -0700
+@@ -304,6 +304,9 @@
+         out->an_types = dw_malloc((sizeof(int8_t) * look->ancount) + 1);
+         out->ns_types = dw_malloc((sizeof(int8_t) * look->nscount) + 1);
+         out->ar_types = dw_malloc((sizeof(int8_t) * look->arcount) + 1);
++        out->an_types[0] = 0;
++        out->ns_types[0] = 0;
++        out->ar_types[0] = 0;
+         return out;
+ }
+ 
+@@ -1425,6 +1428,7 @@
+         int counter = 0;
+         int max = 32;
+         int index = -1;
++        int number_to_view = 0;
+ 
+         if(query == 0 || view == 0 || view->look == 0) {
+                 return TYPE_ERROR;
+@@ -1435,10 +1439,14 @@
+         }
+ 
+         if(view->look->ancount > 0) { /* Is it an answer */
++                number_to_view = view->look->ancount;
++                if(number_to_view > 7) {
++                        number_to_view = 7;
++                }
+                 if(view->an_types == 0) {
+                         return TYPE_ERROR;
+                 }
+-                for(index = 0; index < 7; index++ ) {
++                for(index = 0; index < number_to_view; index++ ) {
+                         if(view->an_types[index] ==
+                                         dwx_rrtype_number(query_type) ||
+                                 (query_type == RR_ANY &&
+--- deadwood-github/src/DwRecurse.c
++++ deadwood-github/src/DwRecurse.c
+@@ -304,6 +304,9 @@ dns_details *dwx_init_dns_details(dns_string *look) {
+         out->an_types = dw_malloc((sizeof(int8_t) * look->ancount) + 1);
+         out->ns_types = dw_malloc((sizeof(int8_t) * look->nscount) + 1);
+         out->ar_types = dw_malloc((sizeof(int8_t) * look->arcount) + 1);
++        if(out->an_types == 0 || out->ns_types == 0 || out->ar_types == 0) {
++                dw_fatal("Fatal: Can not init dns_details types\n");
++        }
+         out->an_types[0] = 0;
+         out->ns_types[0] = 0;
+         out->ar_types[0] = 0;
+
+

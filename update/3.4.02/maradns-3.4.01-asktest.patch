@@ -1,0 +1,25 @@
+commit 1bba44b33922a410ca07523b6f9bde070e6c0ed8
+Author: Sam Trenholme <strenholme.usenet@gmail.com>
+Date:   Tue Nov 19 11:04:08 2019 -0800
+
+    Fix https://github.com/samboy/MaraDNS/issues/64
+
+diff --git a/sqa/asktest.c b/sqa/asktest.c
+index 0e92872..714a7ff 100644
+--- a/sqa/asktest.c
++++ b/sqa/asktest.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002,2003 Sam Trenholme
++/* Copyright (c) 2002-2019 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -60,7 +60,7 @@ u_int16_t gen_id(char *hostname) {
+     /* Make the first 16 characters of the hostname the key (padded by the
+        z character) */
+     strncpy(crypto_key,hostname,16);
+-    /* Set the plaintext block to 'zzzzzzzzz...' /
++    /* Set the plaintext block to 'zzzzzzzzz...' */
+     memset(r_inBlock,'z',16);
+     /* If the hostname is longer than 16 characters, make the plaintext
+        the longer part of the hostname */

@@ -1,0 +1,88 @@
+commit 2cfcd2397cb8168d4aa4594839fabe88420d03c3
+Author: Sam Trenholme <strenholme.usenet@gmail.com>
+Date:   Tue Feb 11 03:00:06 2014 -0800
+
+    Adding some more validation to make sure we handle bad packets in a
+    reasonably sane manner (Abort!)
+
+diff --git a/deadwood-github/src/DwCompress.c b/deadwood-github/src/DwCompress.c
+index 614b4b7..f193a2e 100644
+--- a/deadwood-github/src/DwCompress.c
++++ b/deadwood-github/src/DwCompress.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2009-2013 Sam Trenholme
++/* Copyright (c) 2009-2014 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -226,6 +226,9 @@ int32_t dwc_decomp_rddata(int16_t desc, int32_t offset, dw_str *in,
+         offset += 10;
+         rdo = out->len - 2; /* Where RDLENGTH is in string */
+         if(lead > 0) {
++		if(in->len < offset + lead) { /* No truncated packets */
++                        goto catch_dwc_decomp_rddata;
++                }
+                 tmp = dw_substr(in,offset,lead,1);
+                 if(dw_append(tmp,out) == -1) {
+                         goto catch_dwc_decomp_rddata;
+@@ -247,6 +250,9 @@ int32_t dwc_decomp_rddata(int16_t desc, int32_t offset, dw_str *in,
+                 ndnames--;
+         }
+         if(tail > 0) {
++		if(in->len < offset + tail) { /* No truncated packets */
++                        goto catch_dwc_decomp_rddata;
++                }
+                 tmp = dw_substr(in,offset,tail,1);
+                 dw_append(tmp,out);
+                 dw_destroy(tmp);
+@@ -306,6 +312,9 @@ int32_t dwc_decomp_rr(dw_str *in, dw_str *out, dw_str *q, dw_str *stack,
+ 
+         val = dw_fetch_u16(in,offset + 8); /* RDLENGTH */
+         if(desc == 0) { /* No compression pointers */
++		if(in->len < offset + 10 + val) { /* No truncated packets */
++			goto catch_dwc_decomp_rr;
++		}
+                 tmp = dw_substr(in,offset + 10,val,1);
+                 dw_append(tmp,out);
+                 dw_destroy(tmp);
+diff --git a/deadwood-github/src/DwRecurse.c b/deadwood-github/src/DwRecurse.c
+index f5b5fa4..12f646f 100644
+--- a/deadwood-github/src/DwRecurse.c
++++ b/deadwood-github/src/DwRecurse.c
+@@ -2236,6 +2236,7 @@ catch_dwx_handle_cname_refer:
+  * Input: Pointer to the cache, the query used, the reply upstream, the
+  *      desired TTL for this reply
+  * Output: The "type" of reply we got upstream, as follows:
++ *      -1: Error
+  *      Type  0: Positive answer
+  *      Type  1: NXDOMAIN negative reply
+  *      Type  2: Non-NXDOMAIN negative reply
+@@ -2250,10 +2251,12 @@ int dwx_cache_reply(dw_hash *cache, dw_str *query, dw_str *in, int32_t ttl,
+         int ret = 0;
+ 
+         if(query == 0 || in == 0) {
++		ret = -1;
+                 goto catch_dwx_cache_reply;
+         }
+ 
+         if(rem[connection_number].ns == 0) {
++		ret = -1;
+                 goto catch_dwx_cache_reply;
+         }
+ 
+@@ -2266,10 +2269,15 @@ int dwx_cache_reply(dw_hash *cache, dw_str *query, dw_str *in, int32_t ttl,
+ 
+         bailiwick = dw_get_dname(rem[connection_number].ns->str, 0, 260);
+         if(bailiwick == 0 || bailiwick->len > 256) {
++		ret = -1;
+                 goto catch_dwx_cache_reply;
+         }
+ 
+         action = dwx_dissect_packet(in,query,bailiwick);
++	if(action == 0) {
++		ret = -1;
++                goto catch_dwx_cache_reply;
++        }
+         type = dw_fetch_u8(action,-1);
+ 
+         if(type == TYPE_ANSWER || type == TYPE_NXDOMAIN ||

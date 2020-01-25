@@ -1,0 +1,10 @@
+--- maradns-1.3.07.13/libs/MaraHash.c	2011-12-30 16:12:15.000000000 -0600
++++ maradns-1.3.07.14/libs/MaraHash.c	2012-01-13 13:26:33.407557972 -0600
+@@ -104,6 +104,7 @@
+     while(point < max) {
+         ret += (mhash_offset)(*point << shift);
+         ret += mhash_secret_add_constant;
++	ret *= 45737;
+         shift += 7;
+         shift %= hash_bits;
+         point++;

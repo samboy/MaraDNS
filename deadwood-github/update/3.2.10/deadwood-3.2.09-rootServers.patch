@@ -1,0 +1,190 @@
+commit 4d7cefb9a93bcb0cd90291de4a20db85aea2a010
+Author: Sam Trenholme <strenholme.usenet {} gmail ~ com>
+Date:   Mon Dec 5 21:56:40 2016 -0800
+
+    https://github.com/samboy/MaraDNS/issues/34 h.root-servers.net 2015 move
+
+diff --git a/deadwood-github/doc/Deadwood-HOWTO b/deadwood-github/doc/Deadwood-HOWTO
+index 57db0bf..8a962cb 100644
+--- a/deadwood-github/doc/Deadwood-HOWTO
++++ b/deadwood-github/doc/Deadwood-HOWTO
+@@ -23,9 +23,9 @@ recursive_acl = "127.0.0.1/16, 192.168.1.1/24"
+ chroot_dir = "/etc/maradns"
+ root_servers = {}
+ root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
+-root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, 128.63.2.53, "
+-root_servers["."]+="192.36.148.17, 192.58.128.30, 193.0.14.129, 199.7.83.42, "
+-root_servers["."]+="202.12.27.33"
++root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
++root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
++root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+ root_servers["local."]="192.168.1.111"
+ filter_rfc1918 = 0
+ 
+diff --git a/deadwood-github/doc/Deadwood.ej b/deadwood-github/doc/Deadwood.ej
+index 927c9fd..039f134 100644
+--- a/deadwood-github/doc/Deadwood.ej
++++ b/deadwood-github/doc/Deadwood.ej
+@@ -545,7 +545,7 @@ root_servers to use the default ICANN root servers, as follows:
+ 192.203.230.10  e.root-servers.net (NASA Ames) 
+ 192.5.5.241     f.root-servers.net (ISC) 
+ 192.112.36.4    g.root-servers.net (DOD NIC) 
+-128.63.2.53     h.root-servers.net (ArmyRU) 
++198.97.190.53   h.root-servers.net (ArmyRU) 
+ 192.36.148.17   i.root-servers.net (NORDUnet) 
+ 192.58.128.30   j.root-servers.net (VeriSign) 
+ 193.0.14.129    k.root-servers.net (Reseaux) 
+@@ -553,8 +553,8 @@ root_servers to use the default ICANN root servers, as follows:
+ 202.12.27.33    m.root-servers.net (WIDE) 
+ </pre>
+ 
+-This list is current as of February 9, 2015, and was last changed on
+-January 3, 2013.
++This list is current as of December 5, 2016, and was last changed on
++December 1, 2015.
+ 
+ <p>
+ 
+diff --git a/deadwood-github/doc/Windows/Deadwood-HOWTO.txt b/deadwood-github/doc/Windows/Deadwood-HOWTO.txt
+index 4e59166..212c60c 100644
+--- a/deadwood-github/doc/Windows/Deadwood-HOWTO.txt
++++ b/deadwood-github/doc/Windows/Deadwood-HOWTO.txt
+@@ -23,9 +23,9 @@ recursive_acl = "127.0.0.1/16, 192.168.1.1/24"
+ chroot_dir = "/etc/maradns"
+ root_servers = {}
+ root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
+-root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, 128.63.2.53, "
+-root_servers["."]+="192.36.148.17, 192.58.128.30, 193.0.14.129, 199.7.83.42, "
+-root_servers["."]+="202.12.27.33"
++root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
++root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
++root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+ root_servers["local."]="192.168.1.111"
+ filter_rfc1918 = 0
+ 
+diff --git a/deadwood-github/doc/Windows/Reference.txt b/deadwood-github/doc/Windows/Reference.txt
+index 0286f26..c756399 100644
+--- a/deadwood-github/doc/Windows/Reference.txt
++++ b/deadwood-github/doc/Windows/Reference.txt
+@@ -408,7 +408,7 @@ upstream_servers
+  192.203.230.10  e.root-servers.net (NASA Ames)
+  192.5.5.241     f.root-servers.net (ISC)
+  192.112.36.4    g.root-servers.net (DOD NIC)
+- 128.63.2.53     h.root-servers.net (ArmyRU)
++ 198.97.190.53   h.root-servers.net (ArmyRU)
+  192.36.148.17   i.root-servers.net (NORDUnet)
+  192.58.128.30   j.root-servers.net (VeriSign)
+  193.0.14.129    k.root-servers.net (Reseaux)
+diff --git a/deadwood-github/doc/Windows/dwood3rc.txt b/deadwood-github/doc/Windows/dwood3rc.txt
+index d496774..b6cfc36 100644
+--- a/deadwood-github/doc/Windows/dwood3rc.txt
++++ b/deadwood-github/doc/Windows/dwood3rc.txt
+@@ -16,10 +16,10 @@
+ #root_servers = {}
+ # ICANN DNS root servers (Deadwood default if both root_servers and 
+ # upstream_servers are not defined)
+-#root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13, "
+-#root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, 128.63.2.53, "
+-#root_servers["."]+="192.36.148.17, 192.58.128.30, 193.0.14.129, 199.7.83.42, "
+-#root_servers["."]+="202.12.27.33"
++#root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
++#root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
++#root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
++#root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+ #root_servers["phish.example.com."]="10.254.254.254"
+ # Please note that each root_servers entry takes up space in Deadwood's
+ # cache and that maximum_cache_elements will need to be increased to store
+diff --git a/deadwood-github/doc/dwood3rc b/deadwood-github/doc/dwood3rc
+index 1208ec3..8b89f4d 100644
+--- a/deadwood-github/doc/dwood3rc
++++ b/deadwood-github/doc/dwood3rc
+@@ -31,9 +31,9 @@ chroot_dir = "/etc/deadwood" # Directory we run program from (not used in Win32)
+ # ICANN DNS root servers (Deadwood default if both root_servers and
+ # upstream_servers are not defined)
+ #root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
+-#root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, 128.63.2.53, "
+-#root_servers["."]+="192.36.148.17, 192.58.128.30, 193.0.14.129, 199.7.83.42, "
+-#root_servers["."]+="202.12.27.33"
++#root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
++#root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
++#root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+ #root_servers["phish.example.com."]="10.254.254.254"
+ # Please note that each root_servers entry takes up space in Deadwood's
+ # cache and that maximum_cache_elements will need to be increased to store
+diff --git a/deadwood-github/doc/dwood3rc-all b/deadwood-github/doc/dwood3rc-all
+index 2812613..031216c 100644
+--- a/deadwood-github/doc/dwood3rc-all
++++ b/deadwood-github/doc/dwood3rc-all
+@@ -107,9 +107,9 @@ resurrections = 1
+ # a large number of these entries.
+ #root_servers = {}
+ #root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
+-#root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, 128.63.2.53, "
+-#root_servers["."]+="192.36.148.17, 192.58.128.30, 193.0.14.129, 199.7.83.42, "
+-#root_servers["."]+="202.12.27.33"
++#root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
++#root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
++#root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+ #root_servers["phish.example.com."]="10.254.254.254"
+ 
+ # Should we have DNS-over-TCP?  Usually, no.
+diff --git a/deadwood-github/doc/execfile-HOWTO.html b/deadwood-github/doc/execfile-HOWTO.html
+index de9b530..750bcb2 100644
+--- a/deadwood-github/doc/execfile-HOWTO.html
++++ b/deadwood-github/doc/execfile-HOWTO.html
+@@ -33,9 +33,9 @@ recursive_acl = "127.0.0.0/16,192.168.42.0/24"
+ chroot_dir = "/etc/deadwood"
+ root_servers = {}
+ root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
+-root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, 128.63.2.53, "
+-root_servers["."]+="192.36.148.17, 192.58.128.30, 193.0.14.129, 199.7.83.42, "
+-root_servers["."]+="202.12.27.33"
++root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
++root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
++root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+ upstream_servers = {}
+ </pre><p>
+ 
+@@ -78,9 +78,9 @@ recursive_acl = "127.0.0.0/16,192.168.42.0/24"
+ chroot_dir = "/etc/deadwood"
+ root_servers = {}
+ root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
+-root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, 128.63.2.53, "
+-root_servers["."]+="192.36.148.17, 192.58.128.30, 193.0.14.129, 199.7.83.42, "
+-root_servers["."]+="202.12.27.33"
++root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
++root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
++root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+ upstream_servers = {}
+ <b>execfile("opennicproject")</b>
+ </pre>
+diff --git a/deadwood-github/src/DwSocket.h b/deadwood-github/src/DwSocket.h
+index ecfbc0b..d0fcc51 100644
+--- a/deadwood-github/src/DwSocket.h
++++ b/deadwood-github/src/DwSocket.h
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2013 Sam Trenholme
++/* Copyright (c) 2007-2016 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -19,8 +19,8 @@
+ #ifndef __DW_SOCKET_DEFINED__
+ #define __DW_SOCKET_DEFINED__
+ 
+-/* This is the root server list as of 2013/11/19; the IPv4 root servers were
+- * last changed 2013/01/03 */
++/* This is the root server list as of 2016/12/05; the IPv4 root servers were
++ * last changed 2015/12/01 */
+ #define ROOT_SERVERS "198.41.0.4"       /* a.root-servers.net (VeriSign) */ \
+                      ",192.228.79.201"  /* b.root-servers.net (ISI) */ \
+                      ",192.33.4.12"     /* c.root-servers.net (Cogent) */ \
+@@ -28,7 +28,7 @@
+                      ",192.203.230.10"  /* e.root-servers.net (NASA Ames) */ \
+                      ",192.5.5.241"     /* f.root-servers.net (ISC) */ \
+                      ",192.112.36.4"    /* g.root-servers.net (DOD NIC) */ \
+-                     ",128.63.2.53"     /* h.root-servers.net (ArmyRU) */ \
++                     ",198.97.190.53"   /* h.root-servers.net (ArmyRU) */ \
+                      ",192.36.148.17"   /* i.root-servers.net (NORDUnet) */ \
+                      ",192.58.128.30"   /* j.root-servers.net (VeriSign) */ \
+                      ",193.0.14.129"    /* k.root-servers.net (Reseaux) */ \

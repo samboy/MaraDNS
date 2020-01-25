@@ -1,0 +1,276 @@
+This feature starts an unstable/development branch of Deadwood.  New
+feature: ip4, which allows names to resolve to IPv4 addresses we
+specify in one's dwood3rc file.
+
+diff -ur deadwood-3.2.14/doc/Deadwood.ej deadwood-3.3.01/doc/Deadwood.ej
+--- deadwood-3.2.14/doc/Deadwood.ej	2018-01-10 15:35:06.000000000 -0800
++++ deadwood-3.3.01/doc/Deadwood.ej	2019-02-10 19:35:12.258296753 -0800
+@@ -37,6 +37,9 @@
+ 
+ <li>Built-in dnswall functionality
+ 
++<li>The ability to assign names to IPv4 IPs as specified in one's
++    dwood3rc file.
++
+ </ul>
+ 
+ <h1>COMMAND LINE ARGUMENTS</h1>
+@@ -129,6 +132,7 @@
+ <li>recursive_acl (string)
+ <li>root_servers (dictionary)
+ <li>upstream_servers (dictionary)
++<li>ip4 (dictionary)
+ </ul>
+ 
+ <H1>SUPPORTED PARAMETERS</H1>
+@@ -221,6 +225,21 @@
+ current timestamp.  This parameter is only here so older configuration
+ files do not break in Deadwood 3.0.
+ 
++<h2>ip4</h2>
++This is a dictionary varibale which allows us to have given names resolve
++to bogus IPv4 addresses.  Here, we have the name "maradns.foo" resolve
++to "10.10.10.10" and "kabah.foo" resolve to "10.11.11.11", regardless
++of what real values these DNS records may have:
++
++<pre>
++ip4 = {}
++ip4["maradns.foo."] = "10.10.10.10"
++ip4["kabah.foo."] = "10.11.11.11"
++</pre>
++
++Note that a given name can only resolve to a single IP, and that the
++records have a fixed TTL of 30 seconds.
++
+ <h2>ip_blacklist</h2>
+ This is a list of IPs that we do not allow to be in the answer to a
+ DNS request.  The reason for this is to counteract the practice some
+diff -ur deadwood-3.2.14/src/DwHash.c deadwood-3.3.01/src/DwHash.c
+--- deadwood-3.2.14/src/DwHash.c	2019-01-19 06:22:53.000000000 -0800
++++ deadwood-3.3.01/src/DwHash.c	2019-02-10 19:35:47.674501144 -0800
+@@ -383,11 +383,17 @@
+  * give to whoever calls the function.  Should the element not be found,
+  * or an error occurs, return 0.  If the element is in the hash but
+  * expired, we will return 0 if ignore_expire is 0, and the element if
+- * ignore_expire is 1. */
++ * ignore_expire is 1.  It is up to the calling function to free the
++ * memory used by the new dw_str object */
+ dw_str *dwh_get(dw_hash *hash, dw_str *key, int ignore_expire, int use_fila) {
+         dw_element *seek = 0;
+         dw_str *out = 0;
+ 
++#ifdef XTRA_STUFF
++	printf("Calling dwh_get with key ");
++	dw_stdout(key);
++#endif
++
+         seek = dwh_grep(hash,key);
+         if(seek == 0) { /* Not found */
+                 return 0;
+@@ -412,6 +418,11 @@
+                 dwh_fila_fetch(hash,seek->fila);
+         }
+ 
++#ifdef XTRA_STUFF
++	printf("dwh_get got element with value ");
++	dw_stdout(out);
++#endif
++
+         return out;
+ 
+ }
+diff -ur deadwood-3.2.14/src/DwMain.c deadwood-3.3.01/src/DwMain.c
+--- deadwood-3.2.14/src/DwMain.c	2019-01-19 06:22:53.000000000 -0800
++++ deadwood-3.3.01/src/DwMain.c	2019-02-10 19:35:55.040543652 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2010 Sam Trenholme
++/* Copyright (c) 2007-2018 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -109,6 +109,7 @@
+         sandbox();
+         init_cache();
+         process_root_upstream();
++	process_ip4_params();
+         malloc_tcp_pend();
+         init_tcp_b_pend();
+         init_b_remote();
+diff -ur deadwood-3.2.14/src/DwMararc.h deadwood-3.3.01/src/DwMararc.h
+--- deadwood-3.2.14/src/DwMararc.h	2019-01-19 06:22:53.000000000 -0800
++++ deadwood-3.3.01/src/DwMararc.h	2019-02-10 19:36:38.229792902 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2016 Sam Trenholme
++/* Copyright (c) 2007-2018 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -36,6 +36,7 @@
+ /* mararc dictionary parameters */
+ #define DWM_D_upstream_servers 0
+ #define DWM_D_root_servers 1
++#define DWM_D_ip4 2
+ 
+ /* mararc numeric parameters */
+ #define DWM_N_maxprocs 0
+@@ -72,7 +73,7 @@
+ /* Number of string parameters in the mararc file */
+ #define KEY_S_COUNT 7
+ /* Number of dictionary parameters in the mararc file */
+-#define KEY_D_COUNT 2
++#define KEY_D_COUNT 3
+ /* Number of numeric parameters in the mararc file */
+ #define KEY_N_COUNT 30
+ 
+@@ -101,6 +102,7 @@
+ char *key_d_names[KEY_D_COUNT + 1] = {
+         "upstream_servers", /* Recursive upstream DNS servers */
+         "root_servers", /* Non-recursive root DNS servers */
++	"ip4", 
+         0 };
+ 
+ char *key_n_names[KEY_N_COUNT + 1] = {
+diff -ur deadwood-3.2.14/src/DwSocket.c deadwood-3.3.01/src/DwSocket.c
+--- deadwood-3.2.14/src/DwSocket.c	2019-01-19 06:22:53.000000000 -0800
++++ deadwood-3.3.01/src/DwSocket.c	2019-02-10 19:36:03.509592529 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2012 Sam Trenholme
++/* Copyright (c) 2007-2019 Sam Trenholme
+  * IPv6 code by Jean-Jacques Sarton
+  *
+  * TERMS
+@@ -560,6 +560,109 @@
+ 
+ }
+ 
++/* Given a binary DNS name, an ASCII IPv4 IP, and a TTL (16-bit),
++ * convert it in to a value to add to Deadwood's cache */
++dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
++	dw_str *out = 0;
++	dw_str *ip = 0;
++	out = dw_create(rawname->len + 35);
++	ip = dw_create(18); // 18 to make sure IPv6 isn't buffer overflow
++	ip->len = 4;
++	if(inet_pton(AF_INET, ipv4, ip->str) != 1) { // Convert to raw IP
++		dw_destroy(out);
++		dw_destroy(ip);
++		return 0;
++	}
++	if(out == 0 || ip == 0) {
++		if(out != 0) { dw_destroy(out); }
++		if(ip != 0) { dw_destroy(ip); }
++		return 0;
++	}
++	// Keep TTL 16-bit
++	if(ttl < 0) {
++		ttl = 0;
++	} else if(ttl > 65535) {
++		ttl = 65535;
++	}
++	if(dw_append(rawname, out) == -1 || // Initial name
++	   dw_push_u16(1, out) == -1 || // A record
++	   dw_push_u16(1, out) == -1 || // Internet class
++	   dw_push_u16(0, out) == -1 || // TTL high
++	   dw_push_u16(ttl, out) == -1 || // TTL low
++	   dw_push_u16(4, out) == -1 || // RDlength (length of record)
++	   dw_append(ip, out) == -1 || // Add converted raw IP
++	   dw_push_u16(0, out) == -1 || // First offset: 0
++	   dw_push_u16(rawname->len, out) == 1 || // Length of dname
++	   dw_push_u16(1, out) == -1 || // ANLENGTH (answers): 1
++	   dw_push_u16(0, out) == -1 || // NSLENGTH (NS records): 0
++	   dw_push_u16(0, out) == -1 || // ARLENGTH (AR records): 0
++	   dw_addchar(TYPE_ANSWER,out) == -1) {
++		dw_destroy(out);
++		dw_destroy(ip);
++		return 0;
++	}
++	dw_destroy(ip);
++	return out;
++	
++}
++
++/* Read and process the ip4 named IPs */
++int process_ip4_params() {
++	dw_str *lastkey = 0, *key = 0, *value = 0, *rawname = 0,
++		*cache_key = 0, *cache_data = 0;
++	char *ip_human = 0;
++	int a = 0, out = 0;
++	for(a=0;a<20000;a++) {
++		key = dwm_dict_nextkey(DWM_D_ip4,lastkey);
++		dw_destroy(lastkey);
++		if(key == 0) { /* End of dictionary */
++			break;
++		}
++		value = dwm_dict_fetch(DWM_D_ip4,key);		
++		rawname = dw_dnsname_convert(key);
++		ip_human = (char *)dw_to_cstr(value);
++		cache_data = make_synth_ip4(rawname, ip_human, 30);
++		if(value == 0 || rawname == 0 || ip_human == 0 ||
++				cache_data == 0) {
++			dw_log_dwstr_str(" ",value," is ip4 entry name",0);
++			dw_fatal("Fatal error processing ip4 entry");
++		}
++		cache_key = dw_create(rawname->len + 3);
++		if(cache_key == 0 ||
++		   dw_append(rawname, cache_key) == -1 ||
++		   dw_push_u16(1, cache_key) == -1) {
++			dw_log_dwstr_str(" ",value," is ip4 entry name",0);
++			dw_fatal("Fatal error processing ip4 cache_key"); 
++		}
++#ifdef XTRA_STUFF
++		printf("rawname: ");
++		dw_stdout(rawname);
++		printf("\n");
++		printf("cache_key: ");
++		dw_stdout(cache_key);
++		printf("\n");
++		printf("cache_data: ");
++		dw_stdout(cache_data);
++		printf("\n");
++#endif
++		// Put cache_data in to cache with key cache_key
++		dwh_add(cache, cache_key, cache_data, 1, 2);
++		out = 1;
++                lastkey = dw_copy(key);
++		// Clean up copied strings
++                dw_destroy(key);
++		dw_destroy(value);
++		dw_destroy(rawname);
++		dw_destroy(cache_key);
++		dw_destroy(cache_data);
++		free(ip_human);
++	}
++        if(a == 20000) {
++                dw_fatal("Too many ip4 entries, limit 20,000");
++        }
++	return out;
++}
++
+ /* Process the root_servers and upstream_servers values, using
+  * default root servers if needed
+  */
+diff -ur deadwood-3.2.14/src/version.h deadwood-3.3.01/src/version.h
+--- deadwood-3.2.14/src/version.h	2019-01-19 06:22:53.000000000 -0800
++++ deadwood-3.3.01/src/version.h	2019-02-10 19:34:40.539113700 -0800
+@@ -1 +1 @@
+-#define VERSION "3.2.14"
++#define VERSION "3.3.01"
+Only in deadwood-3.3.01/update: 3.3.01
+--- deadwood-3.2.14/src/DwSocket.h	2019-01-19 06:22:53.000000000 -0800
++++ deadwood-3.3.01/src/DwSocket.h	2019-02-10 20:02:26.919785407 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2017 Sam Trenholme
++/* Copyright (c) 2007-2018 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -289,6 +289,9 @@
+  * parameters */
+ void process_mararc_params();
+ 
++/* Read and process the ip4 mararc parameter */
++int process_ip4_params();
++
+ /* Initialize the inflight hash */
+ void init_inflight_hash();
+ 

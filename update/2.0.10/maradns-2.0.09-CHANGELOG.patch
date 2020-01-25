@@ -1,0 +1,32 @@
+--- maradns-2.0.09/doc/en/source/changelog.embed	2014-02-12 00:16:53.000000000 -0800
++++ maradns-2.0.10/doc/en/source/changelog.embed	2015-01-24 09:12:21.679392350 -0800
+@@ -1,5 +1,29 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-2.0.10:</p>
++This is the stable release of MaraDNS.
++<blockquote>
++<ul>
++<li>Deadwood updated to <A href=/deadwood/doc/CHANGELOG>3.2.06</A>
++<li>Zoneserver now compiles and runs in Cygwin (so Windows users can
++    have DNS-over-TCP support).
++</ul>
++(2015.01.24)
++</blockquote>
++
++<p>maradns-1.4.15:</p>
++This is the legacy branch of MaraDNS. Please upgrade to MaraDNS 2.
++This will probably be the final MaraDNS 1 release; all MaraDNS
++1 support ends on June 21, 2015.
++<blockquote>
++<ul>
++<li>Deadwood updated to <A href=/deadwood/doc/CHANGELOG>3.2.06</A>
++<li>CERT vulnerability VU#264212 update: max_glueless_level now defaults
++    to 4 instead of 10
++</ul>
++(2015.01.24)
++</blockquote>
++
+ <p>maradns-2.0.09:</p>
+ This is the stable release of MaraDNS.
+ <blockquote>

@@ -1,0 +1,70 @@
+--- maradns-1.4.05/doc/en/webpage/download.embed	2010-09-25 08:14:03.000000000 -0600
++++ maradns-1.4.06/doc/en/webpage/download.embed	2011-01-28 18:44:28.000000000 -0700
+@@ -4,7 +4,7 @@
+ 
+ <h2>Stable release</h2>
+ <p>This is the current stable release of MaraDNS, MaraDNS 1.4.05,
+-released September 25, 2010.
++released January 28, 2011.
+ <p>This release is available both at <A 
+ href="http://sourceforge.net/project/showfiles.php?group_id=24033">sourceforge.net</A>
+ and on this page.
+@@ -12,17 +12,17 @@
+ 
+ <table><tr><td>
+ <A 
+-href="download/1.4/1.4.05/maradns-1.4.05.tar.bz2"><!--
+-                       -->maradns-1.4.05.tar.bz2</A>
++href="download/1.4/1.4.06/maradns-1.4.06.tar.bz2"><!--
++                       -->maradns-1.4.06.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.4/1.4.05/maradns-1.4.05.tar.bz2.asc">sig</A>
++href="download/1.4/1.4.06/maradns-1.4.06.tar.bz2.asc">sig</A>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.4/1.4.05/maradns-1.4.05.tar.gz"><!--
+-                       -->maradns-1.4.05.tar.gz</A>
++href="download/1.4/1.4.06/maradns-1.4.06.tar.gz"><!--
++                       -->maradns-1.4.06.tar.gz</A>
+ </td><td>
+ <A 
+ href="download/1.4/1.4.05/maradns-1.4.05.tar.gz.asc">sig</A>
+@@ -43,7 +43,7 @@
+                        -->maradns-1-4-05-win32.7z</A>
+ </td><td>
+ <A 
+-href="download/1.4/1.4.05/maradns-1-4-05-win32.7z.asc">sig</A>
++href="download/1.4/1.4.06/maradns-1-4-06-win32.7z.asc">sig</A>
+ </td><td>
+ <A href="#7z">info</A>
+ </td></tr></table>
+@@ -60,20 +60,20 @@
+ 
+ <table><tr><td>
+ <A 
+-href="deadwood/stable/deadwood-3.0.01.tar.bz2"><!--
+-                   -->deadwood-3.0.01.tar.bz2</A>
++href="deadwood/stable/deadwood-3.0.02.tar.bz2"><!--
++                   -->deadwood-3.0.02.tar.bz2</A>
+ </td><td>
+ <A 
+-href="deadwood/testing/deadwood-3.0.01.tar.bz2.asc">sig</A>
++href="deadwood/testing/deadwood-3.0.02.tar.bz2.asc">sig</A>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="deadwood/stable/Deadwood-3-0-01-win32.zip"><!--
+-                   -->Deadwood-3-0-01-win32.zip</A>
++href="deadwood/stable/Deadwood-3-0-02-win32.zip"><!--
++                   -->Deadwood-3-0-02-win32.zip</A>
+ </td><td>
+ <A 
+-href="deadwood/stable/Deadwood-3-0-01-win32.zip.asc">sig</A>
++href="deadwood/stable/Deadwood-3-0-02-win32.zip.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ </td></tr></table>

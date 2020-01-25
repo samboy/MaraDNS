@@ -1,0 +1,18 @@
+Deadwood now ignores the CD and AD bits as defined in RFC2535 section 6.1
+
+diff --git a/deadwood-github/src/DwSys.c b/deadwood-github/src/DwSys.c
+index 8fd9836..346fe41 100644
+--- a/deadwood-github/src/DwSys.c
++++ b/deadwood-github/src/DwSys.c
+@@ -763,8 +763,8 @@ int32_t get_dns_qid(unsigned char *a, int len, int roy_arends_check) {
+         if(roy_arends_check == 2 && (
+            /* a[2]: QR, Opcode (4 bits), AA, TC, and RD */
+            ((a[2] & 0xf9)) != 0x01 ||
+-           /* a[3]: RA, Z (3 bits), RCODE (4 bits) */
+-           ((a[3] & 0x7f)) != 0x00 ||
++           /* a[3]: RA, Z (1 bit), AD & CD (2 bits, RFC2535), RCODE (4 bits) */
++           ((a[3] & 0x4f)) != 0x00 ||
+            /* a[4] and a[5]: QDCOUNT */
+            a[4] != 0 || a[5] != 1 ||
+            /* a[6], a[7]: ANCOUNT */
+

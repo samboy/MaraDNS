@@ -1,0 +1,155 @@
+Update Deadwood to default to, instead of using the ICANN servers as
+root servers, use the https://quad9.net/ DNS server as an upstream server.
+
+--- deadwood-3.3.02/src/DwSocket.h	2019-02-22 22:26:12.000000000 -0800
++++ deadwood-3.3.03/src/DwSocket.h	2019-03-31 17:28:32.149207277 -0700
+@@ -37,6 +37,11 @@
+ /* I'm putting some whitespace at the end so it is possible to change the root
+  * servers without needing to recompile Deadwood if that is ever needed */
+ 
++/* https://github.com/samboy/MaraDNS/issues/56 Deadwood 3.3 has transitioned
++ * to using the https://quad9.net/ servers as the default upstream DNS 
++ * servers */
++#define UPSTREAM_SERVERS "9.9.9.9,149.112.112.112                 "
++
+ #include "DwStr.h"
+ #include "DwMararc.h"
+ #include "DwStr_functions.h"
+--- deadwood-3.3.02/src/DwSocket.c	2019-02-22 22:26:12.000000000 -0800
++++ deadwood-3.3.03/src/DwSocket.c	2019-03-31 17:28:17.137994916 -0700
+@@ -563,9 +563,9 @@
+ /* Prepare a synthetic record to put in Deadwood's cache */
+ dw_str *make_synth_record(dw_str *rawname, dw_str *record, int type, int ttl) {
+         dw_str *out = 0;
+-        if(rawname == 0 || record == 0) {
+-                return 0;
+-        }
++	if(rawname == 0 || record == 0) {
++		return 0;
++	}
+         out = dw_create(rawname->len + record->len + 35);
+         if(out == 0) {
+                 return 0;
+@@ -598,58 +598,58 @@
+ /* Given a binary DNS name, an ASCII IPv4 IP, and a TTL (16-bit),
+  * convert it in to a value to add to Deadwood's cache */
+ dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
+-        dw_str *ip = 0;
+-        dw_str *out = 0;
+-        ip = dw_create(18); // 18 to make sure IPv6 isn't buffer overflow
+-        if(ip == 0 || rawname == 0 || ipv4 == 0) {
+-                return 0;
+-        }
+-        ip->len = 4;
+-        if(inet_pton(AF_INET, ipv4, ip->str) != 1) { // Convert to raw IP
+-                dw_destroy(ip);
+-                return 0;
+-        }
+-        out = make_synth_record(rawname, ip, 1 /* A record */, ttl);
+-        dw_destroy(ip);
+-        return out;
++	dw_str *ip = 0;
++	dw_str *out = 0;
++	ip = dw_create(18); // 18 to make sure IPv6 isn't buffer overflow
++	if(ip == 0 || rawname == 0 || ipv4 == 0) {
++		return 0;
++	}
++	ip->len = 4;
++	if(inet_pton(AF_INET, ipv4, ip->str) != 1) { // Convert to raw IP
++		dw_destroy(ip);
++		return 0;
++	}	
++	out = make_synth_record(rawname, ip, 1 /* A record */, ttl);
++	dw_destroy(ip);
++	return out;
+ }
+ 
+ /* Given a binary DNS name, a dw_str with a raw 32-byte hex number (like
+  * how those old MD5 sums look), and a 16-bit TTL, convert it in to a
+  * value to add to Deadwood's cache */
+ dw_str *make_synth_ip6(dw_str *rawname, dw_str *ipv6, int ttl) {
+-        dw_str *ip = 0;
+-        dw_str *out = 0;
+-        int a, n, v;
+-        ip = dw_create(18);
+-        if(ip == 0 || rawname == 0 || ipv6 == 0 || ipv6->len != 32) {
+-                if(ip != 0) { dw_destroy(ip); }
+-                return 0;
+-        }
+-        ip->len = 16;
+-        for(a = 0; a < 32; a++) {
+-                n = *(ipv6->str + a);
+-                if(n >= '0' && n <= '9') {
+-                        v = n - '0';
+-                } else if(n == '_') {
+-                        v = 0;
+-                } else if(n >= 'a' && n <= 'f') {
+-                        v = 10 + (n - 'a');
+-                } else if(n >= 'A' && n <= 'F') {
+-                        v = 10 + (n - 'A');
+-                } else {
+-                        dw_destroy(ip);
+-                        return 0; /* Syntax error */
+-                }
+-                if((a & 1) == 0) {
+-                        v <<= 4;
+-                        *(ip->str + (a >> 1)) = 0;
+-                }
+-                *(ip->str + (a >> 1)) |= v;
+-        }
+-        out = make_synth_record(rawname, ip, 28, ttl);
+-        dw_destroy(ip);
+-        return out;
++	dw_str *ip = 0;
++	dw_str *out = 0;
++	int a, n, v;
++	ip = dw_create(18);
++	if(ip == 0 || rawname == 0 || ipv6 == 0 || ipv6->len != 32) {
++		if(ip != 0) { dw_destroy(ip); }
++		return 0;
++	}
++	ip->len = 16;
++	for(a = 0; a < 32; a++) {
++		n = *(ipv6->str + a);
++		if(n >= '0' && n <= '9') {	
++			v = n - '0';
++		} else if(n == '_') {
++			v = 0;
++		} else if(n >= 'a' && n <= 'f') {
++			v = 10 + (n - 'a');
++		} else if(n >= 'A' && n <= 'F') {
++			v = 10 + (n - 'A');
++		} else {
++			dw_destroy(ip);
++			return 0; /* Syntax error */
++		}
++		if((a & 1) == 0) {
++			v <<= 4;
++			*(ip->str + (a >> 1)) = 0;
++		} 
++		*(ip->str + (a >> 1)) |= v;
++	}
++	out = make_synth_record(rawname, ip, 28, ttl);
++	dw_destroy(ip);
++	return out;
+ }
+ 
+ /* Read and process the ip4 named IPs */
+@@ -755,12 +755,13 @@
+                         "Bad dwood3rc line looks like:\nroot_servers[\"");
+ 
+         if(elements_in_cache == 0) { /* Use default root servers */
+-                dw_log_3strings("Using default ICANN root servers:"," ",
+-                        ROOT_SERVERS,1);
++                dw_log_3strings("Using https://quad9.net upstream servers:",
++			" ",
++                        UPSTREAM_SERVERS,1);
+                 s = dw_create(256);
+                 q = dw_create(16);
+-                dw_qrappend((uint8_t *)ROOT_SERVERS,s,0);
+-                ns_refer = dwx_ns_convert(s,0,0);
++                dw_qrappend((uint8_t *)UPSTREAM_SERVERS,s,0);
++                ns_refer = dwx_ns_convert(s,1,0);
+                 dw_put_u8(q,0,-1); /* Root server (".") */
+                 dw_put_u16(q,65395,-1); /* NS refer private RR */
+                 dwh_add(cache,q,ns_refer,1,2);

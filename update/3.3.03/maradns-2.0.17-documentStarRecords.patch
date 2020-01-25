@@ -1,0 +1,55 @@
+commit 703eb194fa6525e6cd2b33ef09821589439d59b9
+Author: Sam Trenholme <strenholme.usenet@gmail.com>
+Date:   Fri Mar 22 18:56:40 2019 -0700
+
+    https://github.com/samboy/MaraDNS/issues/55 Document update:
+    Document star records and the percent symbol
+
+diff --git a/doc/en/source/csv2.ej b/doc/en/source/csv2.ej
+index 89b6147..a100063 100644
+--- a/doc/en/source/csv2.ej
++++ b/doc/en/source/csv2.ej
+@@ -547,6 +547,43 @@ Example:
+ example.net. LOC 19 31 2.123 N 98 3 4 W 2000m 2m 4m 567m ~
+ </pre>
+ 
++<h1>STAR RECORDS</h1>
++
++MaraDNS has support for star records in zone files:
++
++<pre>
++*.example.net.  A		10.11.12.13 ~
++</pre>
++
++In this example, anything.example.net will have the IP 10.11.12.13.
++Note that this does not set the ip for "example.net", which needs a
++separate record:
++
++<pre>
++example.net.  A                 10.11.12.13 ~
++</pre>
++
++Note also that stars must be at the beginining of a name; to have
++stars at the end of a name, use the csv2_default_zonefile feature
++as described in the mararc man page.
++
++<h1>PERCENT SYMBOL</h1>
++
++Placing the percent symbol at the end of a record indicates that
++the percent should be replaced with the domain name for the zone.
++
++<p>
++
++For example, in the zone for example.net. (e.g. one's mararc file
++has csv2["example.net."] = "db.example.net", and we are editing the
++"db.example.net" file):
++
++<pre>
++www.%	A	10.10.10.10 ~
++</pre>
++
++This will cause "www.example.net" to have the ip 10.10.10.10.
++
+ <h1>SLASH COMMANDS</h1>
+ 
+ In addition to being able to have resource records and comments, csv2

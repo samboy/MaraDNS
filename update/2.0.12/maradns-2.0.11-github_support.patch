@@ -1,0 +1,140 @@
+--- maradns-2.0.11/README.Debian	2010-01-08 08:07:40.000000000 -0800
++++ maradns-2.0.12/README.Debian	2015-02-07 08:33:44.492523748 -0800
+@@ -1,71 +1,49 @@
+ A note for Debian users
+ 
+-   First of all, I would like to point out that I really appreciate
+-   Debian making a MaraDNS package available. This package has
+-   increased the number of MaraDNS users, and the Debian developers
+-   have given me feedback that has improved MaraDNS.
+-
+-   However, because of Debian's policies, their "Stable" version of
+-   MaraDNS is usually an outdated version of MaraDNS that contains
+-   bugs that I have since fixed. I do not support these outdated
+-   versions of MaraDNS, and request that Debian users upgrade to
+-   the current stable version of MaraDNS before sending the mailing
+-   list bug reports or asking for technical support. Here is my
+-   guide for Debian users, telling them how to upgrade the outdated
+-   version of MaraDNS Debian comes with:
+-
+-     * MaraDNS 1.4 is a "bugfix only" branch, and no new features
+-       have been added to this version of MaraDNS.
+-
+-     * Updating from previous versions of MaraDNS up to MaraDNS 1.4
+-       is trivial and fully documented
+-
+-     * It is very easy to update the buggy version of MaraDNS that
+-       the Debian package comes with an updated MaraDNS.
+-
+-     * First, download the most recent stable version of MaraDNS
+-       from the MaraDNS download page or from the Sourceforge
+-       page.
+-
+-     * Next, unpack the MaraDNS tarball. For example, if you
+-       downloaded the file "maradns-1.4.01.tar.bz2" (please only
+-       download MaraDNS-1.4.01 if it is the current stable version,
+-       which it is at time of writing this document), type in this
+-       command:
+-
+-         tar xvjf maradns-1.4.01.tar.bz2
+-
+-     * Enter the maradns-1.4.version directory, where version is
+-       the bugfix revision number of the most current 1.4 release
+-       of MaraDNS.
+-
+-     * Compile MaraDNS 1.4version with the following commands:
+-
+-         ./configure; make
++   It looks like the Debian MaraDNS package is being put on
++   the back burner (it's only in "unstable" and was pulled from "testing")
++   because of lack of maintenance. People who wish to continue using
++   MaraDNS really should get it here or at
++   https://github.com/Samboy/MaraDNS/
++
++   Debian’s “Stable” version of MaraDNS is usually an outdated version of
++   MaraDNS that contains bugs that I have since fixed, or introduces new
++   bugs. I do not support the Debian package for MaraDNS, and request that
++   Debian users upgrade to the current stable version of MaraDNS before
++   asking for technical support.
++
++   If using a 1.x version of MaraDNS, please read the update guide.
++     * First, download the most recent stable version of MaraDNS from the
++       MaraDNS download page or from the Sourceforge page.
++     * Next, unpack the MaraDNS tarball. For example, if you downloaded
++       the file "maradns-2.0.11.tar.bz2" (please only download
++       MaraDNS-2.0.11 if it is the current stable version, which it is at
++       time of writing this document), type in this command:
++
++     tar xvjf maradns-2.0.11.tar.bz2
++     * Enter the maradns-2.0.version directory, where version is the
++       bugfix revision number of the most current 2.0 release of MaraDNS.
++     * Compile MaraDNS 2.0.version with the following commands:
+ 
++     ./configure; make
+      * If the above fails, you may need to install the "gcc" and
+        "libc6-dev" packages before being able to compile programs:
+ 
+-         sudo apt-get install gcc
+-         sudo apt-get install libc6-dev
+-
+-     * Once MaraDNS is compiled, make sure to stop the MaraDNS
+-       daemon:
+-
+-         /etc/init.d/maradns stop
+-
+-     * Now, replace the outdated MaraDNS program that comes with
+-       Debian. From the maradns-1.4.version directory, type in the
+-       following command:
+-
+-         sudo cp server/maradns /usr/sbin/
++     sudo apt-get install gcc
++     sudo apt-get install libc6-dev
++     * Once MaraDNS is compiled, make sure to stop the MaraDNS daemon:
++
++     /etc/init.d/maradns stop
++     * Now, replace the outdated MaraDNS program that comes with Debian.
++       From the maradns-2.0.version directory, type in the following
++       command:
+ 
++     sudo cp server/maradns /usr/sbin/
+      * Restart the MaraDNS daemon:
+ 
+-         /etc/init.d/maradns start
+-
+-   At this point, your MaraDNS daemon is now the fully supported
+-   version of MaraDNS. If you continue to have the bug or concern
+-   after upgrading to the latest 1.4 release, please let us know on
+-   the mailing list so we can begin to resolve the issue.
++     /etc/init.d/maradns start
+ 
++   At this point, your MaraDNS daemon is now the fully supported version
++   of MaraDNS. If you continue to have the bug or concern after upgrading
++   to the latest 2.0 release, please let us know on the support forum so
++   we can begin to resolve the issue.
+--- maradns-2.0.11/SUPPORT	2015-02-07 08:36:04.104922789 -0800
++++ maradns-2.0.12/SUPPORT	2015-02-07 08:36:06.289553473 -0800
+@@ -0,0 +1,4 @@
++MaraDNS support can be obtained by filing a Github issue:
++
++	https://github.com/samboy/MaraDNS/issues
++
+--- maradns-2.0.11/configure	2014-01-14 13:46:25.000000000 -0800
++++ maradns-2.0.12/configure	2015-02-07 08:33:44.493523579 -0800
+@@ -116,12 +116,14 @@
+ 	echo This is an unknown platform.  MaraDNS may or may not compile
+ 	echo on this platform.  If you are able to sucessfully compile
+ 	echo and install MaraDNS on this platform, please let me know
+-	echo by contacting the mailing list. 
++	echo by filing a Github issue. 
+ 	echo
+-	echo I encourage you to make an official port of MaraDNS for this
+-	echo platform so other users of MaraDNS do not see this obnoxious
++	echo I encourage you to make a fork of MaraDNS for this
++	echo platform so other users may not see this obnoxious
+ 	echo warning.
+ 	echo
++	echo I ask that any fork of MaraDNS not be called \"MaraDNS\"
++	echo
+ 	echo You might be able to compile MaraDNS by typing \"make\"
+ 	echo \(if you typed in \"make\" before, just type it again\)
+ 	echo

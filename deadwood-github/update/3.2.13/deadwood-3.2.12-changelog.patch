@@ -1,0 +1,10 @@
+--- deadwood-3.2.12/doc/CHANGELOG	2018-08-15 12:01:28.000000000 -0700
++++ deadwood-3.2.13/doc/CHANGELOG	2018-11-11 22:56:44.227389752 -0800
+@@ -1,3 +1,7 @@
++3.2.13 (2018-11-11):
++
++- SQA tests updated to run and pass again in 2018
++
+ 3.2.12 (2018-08-15):
+ 
+ - Security fix: There was a theoretical issue with the cryptographic

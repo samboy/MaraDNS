@@ -1,0 +1,100 @@
+diff -ur maradns-1.4.14/doc/en/examples/example_full_mararc maradns-1.4-snap/doc/en/examples/example_full_mararc
+--- maradns-1.4.14/doc/en/examples/example_full_mararc	2008-03-24 08:52:33.000000000 -0700
++++ maradns-1.4-snap/doc/en/examples/example_full_mararc	2014-12-17 05:59:11.131027982 -0800
+@@ -194,8 +194,8 @@
+ 
+ # It is also possible to change the maximum number of times MaraDNS will
+ # follow a CNAME record or a NS record with a glue A record.  The default
+-# value for this is ten.
+-#max_glueless_level = 10
++# value for this is four.
++#max_glueless_level = 4
+ # In addition, one can change the maximum number of total queries that
+ # MaraDNS will perform to look up a host name.  The default value is 32.
+ #max_queries_total = 32
+diff -ur maradns-1.4.14/doc/en/man/mararc.5 maradns-1.4-snap/doc/en/man/mararc.5
+--- maradns-1.4.14/doc/en/man/mararc.5	2010-02-02 09:12:52.000000000 -0800
++++ maradns-1.4-snap/doc/en/man/mararc.5	2014-12-17 05:59:35.413027565 -0800
+@@ -1402,8 +1402,8 @@
+ 
+ # It is also possible to change the maximum number of times MaraDNS will
+ # follow a CNAME record or a NS record with a glue A record.  The default
+-# value for this is ten.
+-#max_glueless_level = 10
++# value for this is four.
++#max_glueless_level = 4
+ # In addition, one can change the maximum number of total queries that
+ # MaraDNS will perform to look up a host name.  The default value is 32.
+ #max_queries_total = 32
+diff -ur maradns-1.4.14/doc/en/source/example_full_mararc maradns-1.4-snap/doc/en/source/example_full_mararc
+--- maradns-1.4.14/doc/en/source/example_full_mararc	2008-03-24 08:52:27.000000000 -0700
++++ maradns-1.4-snap/doc/en/source/example_full_mararc	2014-12-17 05:55:53.190027748 -0800
+@@ -195,7 +195,7 @@
+ # It is also possible to change the maximum number of times MaraDNS will
+ # follow a CNAME record or a NS record with a glue A record.  The default
+ # value for this is ten.
+-#max_glueless_level = 10
++#max_glueless_level = 4
+ # In addition, one can change the maximum number of total queries that
+ # MaraDNS will perform to look up a host name.  The default value is 32.
+ #max_queries_total = 32
+diff -ur maradns-1.4.14/doc/en/text/man.mararc.txt maradns-1.4-snap/doc/en/text/man.mararc.txt
+--- maradns-1.4.14/doc/en/text/man.mararc.txt	2010-02-02 09:12:53.000000000 -0800
++++ maradns-1.4-snap/doc/en/text/man.mararc.txt	2014-12-17 05:59:59.525027502 -0800
+@@ -1187,8 +1187,8 @@
+ 
+  # It is also possible to change the maximum number of times MaraDNS will
+  # follow a CNAME record or a NS record with a glue A record.  The default
+- # value for this is ten.
+- #max_glueless_level = 10
++ # value for this is four.
++ #max_glueless_level = 4
+  # In addition, one can change the maximum number of total queries that
+  # MaraDNS will perform to look up a host name.  The default value is 32.
+  #max_queries_total = 32
+diff -ur maradns-1.4.14/server/MaraDNS.c maradns-1.4-snap/server/MaraDNS.c
+--- maradns-1.4.14/server/MaraDNS.c	2012-01-13 11:39:01.000000000 -0800
++++ maradns-1.4-snap/server/MaraDNS.c	2014-12-17 05:54:26.163027907 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2011 Sam Trenholme
++/* Copyright (c) 2002-2015 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -4285,7 +4285,7 @@
+             harderror(L_ACL_LIST_RECURSE); /* "Could not make ip ACL list" */
+ 
+         /* Determine what the maximum glueless level is */
+-        max_glueless = read_numeric_kvar("max_glueless_level",10);
++        max_glueless = read_numeric_kvar("max_glueless_level",4);
+         if(max_glueless == 0)
+             harderror(L_INVALID_MAXGLUE); /* max_glueless_level needs to be a number, and be greater than zero */
+ 
+diff -ur maradns-1.4.14/server/recursive.c maradns-1.4-snap/server/recursive.c
+--- maradns-1.4.14/server/recursive.c	2012-03-17 08:52:27.000000000 -0700
++++ maradns-1.4-snap/server/recursive.c	2014-12-17 05:55:14.649027774 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2008 Sam Trenholme
++/* Copyright (c) 2002-2015 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -74,7 +74,7 @@
+ 
+ 
+ /* The maximum allowed glueless level */
+-int max_glueless_level = 10;
++int max_glueless_level = 4;
+ /* Maximum allowed number of queries */
+ int max_queries_total = 32;
+ /* Maximum time to wait for a DNS server to respond */
+@@ -4428,7 +4428,7 @@
+     verbose_query = verbose_query_value;
+ 
+     /* Set the maximum glueless level */
+-    max_glueless_level = 10;
++    max_glueless_level = 4;
+     if(max_glueless > 0)
+         max_glueless_level = max_glueless;
+ 
+Sólo en maradns-1.4-snap/update: 1.4.15

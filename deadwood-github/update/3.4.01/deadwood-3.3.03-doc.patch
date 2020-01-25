@@ -1,0 +1,46 @@
+diff -ur deadwood-3.3.03/doc/CHANGELOG deadwood-3.4.01/doc/CHANGELOG
+--- deadwood-3.3.03/doc/CHANGELOG	2019-04-07 19:27:57.000000000 -0700
++++ deadwood-3.4.01/doc/CHANGELOG	2019-10-18 17:56:33.334548556 -0700
+@@ -1,3 +1,16 @@
++3.4.01 (2019-10-18; stable release)
++
++- No changes to code made from 3.3.03; all SQA regressions pass.
++  Declaring stable.
++
++3.3.03 (2019-04-07: development branch release):
++
++- Deadwood default changed to use quad9.net upstream servers instead of
++  ICANN root servers.
++- Compile-time option to use RadioGatun[64] instead of RadioGatun[32] added
++- Tests for the ip4 and ip6 parameters added
++- Valgrind-found issues fixed
++
+ 3.3.02 (2019-02-23; development branch release):
+ 
+ - Add new parameter: ip6
+diff -ur deadwood-3.3.03/doc/Windows/Update-guide.txt deadwood-3.4.01/doc/Windows/Update-guide.txt
+--- deadwood-3.3.03/doc/Windows/Update-guide.txt	2012-02-28 23:59:53.000000000 -0800
++++ deadwood-3.4.01/doc/Windows/Update-guide.txt	2019-10-18 17:58:13.619324652 -0700
+@@ -1,3 +1,22 @@
++Deadwood 3.3.03 is updated to use the https://quad9.net upstream DNS
++servers as the default.  If the old behavior of using the ICANN name
++servers as root servers is desired, add the following lines to one's
++dwood3rc.txt file:
++
++root_servers = {}
++root_servers["."]="198.41.0.4, 199.9.14.201, 192.33.4.12, 199.7.91.13,"
++root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
++root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
++root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
++
++PLEASE NOTE: The above list of IPs is current as of 2019-04-07, and
++was last changed in October of 2017.
++
++Please go to https://root-servers.org to get an up-to-date list of root
++servers.
++
++---
++
+ Deadwood 3.2.02 is a stable release.  This release has a new parameter:
+ max_ttl, which limits how long an entry can stay in the cache; the default
+ TTL cap is one day (86400 seconds).  

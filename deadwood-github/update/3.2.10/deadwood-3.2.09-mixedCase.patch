@@ -1,0 +1,16 @@
+--- deadwood-3.2.09/src/DwUdpSocket.c	2015-09-25 21:25:57.000000000 -0700
++++ deadwood-3.2.10/src/DwUdpSocket.c	2016-07-23 04:51:05.725440882 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2015 Sam Trenholme and others
++/* Copyright (c) 2007-2016 Sam Trenholme and others
+  *
+  * TERMS
+  *
+@@ -553,6 +553,7 @@
+         }
+ #endif
+ 
++	dwc_lower_case(query);/* https://github.com/samboy/MaraDNS/issues/30 */
+         dw_log_dwstr("Looking in cache for query ",query,100);
+         type = dw_fetch_u16(query,-1);
+         if(type == RR_MX && key_n[DWM_N_reject_mx] != 0) {

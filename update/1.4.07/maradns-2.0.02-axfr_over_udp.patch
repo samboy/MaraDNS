@@ -1,0 +1,68 @@
+--- maradns-2.0.03/server/MaraDNS.c.orig	2011-04-15 13:21:53.000000000 -0500
++++ maradns-2.0.03/server/MaraDNS.c	2011-04-15 13:33:19.000000000 -0500
+@@ -505,6 +505,8 @@
+           the reason for the error, the minimim log_level to log this
+           error (with reason) with
+    output: JS_ERROR on error, JS_SUCCESS on success
++
++   If error is -111, this means "truncated" (magic number)
+ */
+ 
+ int udperror(int sock,js_string *raw, struct sockaddr_in *from,
+@@ -546,11 +548,20 @@
+     header.opcode = 0;
+     header.aa = 0; /* Errors are never authoritative (unless they are
+                       NXDOMAINS, which this is not) */
+-    header.tc = 0;
++   
++    if(error != -111) {
++        header.tc = 0;
++    } else {
++        header.tc = 1;
++    }
+     header.rd = rd_val; /* RDBUG udperror */
+     header.ra = 0;
+     header.z = 0;
+-    header.rcode = error;
++    if(error != -111) {
++        header.rcode = error;
++    } else {
++        header.rcode = 0;
++    }
+     if(question == 0)
+         header.qdcount = 0;
+     else
+@@ -2459,6 +2470,7 @@
+     struct sockaddr_in *z; /* Makes certain ugly declarations readable */
+     int always_not_there = 0;
+     int rd_val = 0;
++    int not_impl_datatype = NOT_IMPLEMENTED;
+ 
+ 
+     /* Sanity checks */
+@@ -2589,10 +2601,15 @@
+             return JS_SUCCESS;
+     }
+ 
+-    if(qtype >= 250 && qtype <= 254) { /* IXFR, AXFR, and 2 more */
++    if(qtype == 253 || qtype == 254 || qtype == 250) { /* MAILB, MAILA, TSIG */
+         goto not_impl;
+         }
+ 
++    if(qtype == 251 || qtype == 252) { /* IXFR, AXFR */
++	not_impl_datatype = -111;
++	goto not_impl;
++	}
++
+     /* Set 'ip' to have the ip they are using MaraDNS from */
+     z = (struct sockaddr_in *)ect->d;
+     ip = htonl((z->sin_addr).s_addr);
+@@ -3332,7 +3349,7 @@
+         js_destroy(origq);
+         js_destroy(lc);
+         if(no_fingerprint != 1)
+-            udperror(sock,raw,0,lookfor,NOT_IMPLEMENTED,
++            udperror(sock,raw,0,lookfor,not_impl_datatype,
+                      "not_impl in proc_query",2,desires_recursion,ect,1);
+         js_destroy(lookfor);
+         return JS_ERROR;

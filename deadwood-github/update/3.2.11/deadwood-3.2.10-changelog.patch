@@ -1,0 +1,20 @@
+--- deadwood-3.2.10/doc/CHANGELOG	2015-09-25 21:25:57.000000000 -0700
++++ deadwood-3.2.11/doc/CHANGELOG	2018-01-10 15:33:47.247743692 -0800
+@@ -1,3 +1,17 @@
++3.2.11 (2018-01-10):
++
++- b.root-servers.net IP updated
++
++3.2.10 (2017-06-10):
++
++- h.root-servers.net IP updated
++
++- Slow down issue with mixed case queries fixed
++
++- We allow names to start with an underscore
++
++- Documentation updates
++
+ 3.2.09 (2015-09-25):
+ 
+ - Security fix: Deadwood would crash if it was unable to make a UDP

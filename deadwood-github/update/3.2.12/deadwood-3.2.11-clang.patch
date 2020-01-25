@@ -1,0 +1,56 @@
+commit 928f89d0d3015efe369e2a980419d1f34f280252
+Author: Sam Trenholme <strenholme.usenet@gmail.com>
+Date:   Mon Aug 13 17:45:01 2018 -0700
+
+    DwRadioGatun.c: Make sure rotation is within bounds.
+    
+    While my own testing with clang doesn’t show any problems, there is an
+    issue with other C-language implementations of RadioGatún I have made
+    where this expressions acts funny in Clang when compiling with "-O2"
+    or "-O3":
+    
+    rotate = 0;
+    foo = (bar >> rotate) | (bar << WORDSIZE - rotate);
+    
+    Where foo and bar are 32-bit unsigned ints (uint32_t) and WORDSIZE is 32.
+
+diff --git a/deadwood-github/src/DwRadioGatun.c b/deadwood-github/src/DwRadioGatun.c
+index 3299a46..d55eafc 100644
+--- a/deadwood-github/src/DwRadioGatun.c
++++ b/deadwood-github/src/DwRadioGatun.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2012 Sam Trenholme
++/* Copyright (c) 2007-2018 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -58,7 +58,11 @@ void dwr_beltmill(DWR_WORD *a, DWR_WORD *b) {
+                 r = ((i * (i + 1)) / 2) % DWR_WORDSIZE;
+                 x = a[y] ^ (a[ ((y + 1) % DWR_MILLSIZE) ] |
+                     (~a[ ((y + 2) % DWR_MILLSIZE) ]));
+-                A[i] = (x >> r) | (x << (DWR_WORDSIZE - r));
++		if(r > 0 && r < DWR_WORDSIZE) {
++                	A[i] = (x >> r) | (x << (DWR_WORDSIZE - r));
++		} else {
++			A[i] = x;
++		}
+         }
+         for(i = 0; i < DWR_MILLSIZE ; i++) {
+                 y = i;
+@@ -212,7 +216,7 @@ uint16_t dwr_rng(dwr_rg *in) {
+ 
+ #ifdef HAVE_MAIN
+ 
+-main(int argc, char **argv) {
++int main(int argc, char **argv) {
+         dw_str *q = 0;
+         dwr_rg *r = 0;
+         int c = 0;
+@@ -229,6 +233,7 @@ main(int argc, char **argv) {
+         printf("\n");
+         dw_destroy(q);
+         dwr_zap(r);
++	return 0;
+ }
+ 
+ #endif /* HAVE_MAIN */

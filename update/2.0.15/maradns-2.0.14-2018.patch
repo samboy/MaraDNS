@@ -1,0 +1,8 @@
+--- maradns-2.0.14/COPYING	2017-06-10 13:35:29.000000000 -0700
++++ maradns-2.0.15/COPYING	2018-01-11 12:03:12.967809917 -0800
+@@ -1,4 +1,4 @@
+-Copyright (c) 2002-2017 Sam Trenholme and others
++Copyright (c) 2002-2018 Sam Trenholme and others
+ 
+ TERMS
+ 

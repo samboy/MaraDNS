@@ -1,0 +1,632 @@
+diff -ur deadwood-3.4.01/doc/Windows/Copying.txt deadwood-3.4.02/doc/Windows/Copying.txt
+--- deadwood-3.4.01/doc/Windows/Copying.txt	2010-09-24 18:45:11.000000000 -0700
++++ deadwood-3.4.02/doc/Windows/Copying.txt	2019-11-11 15:27:43.526928957 -0800
+@@ -1,4 +1,4 @@
+-Copyright (c) 2007-2010 Sam Trenholme and others
++Copyright (c) 2007-2019 Sam Trenholme and others
+ 
+ TERMS
+ 
+diff -ur deadwood-3.4.01/doc/Windows/dwood3rc.txt deadwood-3.4.02/doc/Windows/dwood3rc.txt
+--- deadwood-3.4.01/doc/Windows/dwood3rc.txt	2018-01-10 15:35:06.000000000 -0800
++++ deadwood-3.4.02/doc/Windows/dwood3rc.txt	2019-11-11 15:27:43.526928957 -0800
+@@ -47,3 +47,20 @@
+ # on an internal network, uncomment the following line:
+ #filter_rfc1918 = 0
+ 
++# We can have given names resolve to bogus IPv4 addresses.  Here, we
++# have the name "maradns.foo" resolve to "10.10.10.10" and "kabah.foo"
++# resolve to "10.11.11.11", regardless of what real values these DNS
++# records may have.  Note that a given name can only resolve to a
++# single IP, and that the records have a fixed TTL of 30 seconds.
++ip4 = {}
++ip4["maradns.foo."] = "10.10.10.10"
++ip4["kabah.foo."] = "10.11.11.11"
++
++# We can also use a similar syntax to have bogus IPv6 addresses.
++# We don't use standard notation for IPv6 addresses.  Instead, we
++# we use 32-character hex addresses (case insensitive); to make
++# it easier to count long strings of "0"s, the "_" acts like a 0
++ip6 = {}
++ip6["maradns.foo."] = "fd4d617261444e530000000000001234"
++ip6["kabah.foo."] = "FD4D617261444E53__00__00__002345"
++
+diff -ur deadwood-3.4.01/doc/Windows/Reference.txt deadwood-3.4.02/doc/Windows/Reference.txt
+--- deadwood-3.4.01/doc/Windows/Reference.txt	2018-01-10 15:35:06.000000000 -0800
++++ deadwood-3.4.02/doc/Windows/Reference.txt	2019-11-11 15:27:43.526928957 -0800
+@@ -11,22 +11,37 @@
+    Deadwood is a fully recursive DNS cache. This is a DNS server
+    with the following features:
+ 
+-     * Full support for both DNS recursion and DNS forwarding
++     * Full support for both DNS recursion and DNS forwarding
+        caching
+-     * Small size and memory footprint suitable for embedded
++     * Small size and memory footprint suitable for embedded
+        systems
+-     * Simple and clean codebase
+-     * Secure design
+-     * Spoof protection: Strong cryptography used to determine the
++     * Simple and clean codebase
++     * Secure design
++     * Spoof protection: Strong cryptography used to determine the
+        Query ID and source port
+-     * Ability to read and write the cache to a file
+-     * Dynamic cache that deletes entries not recently used
+-     * Ability to use expired entries in the cache when it is
++     * Ability to read and write the cache to a file
++     * Dynamic cache that deletes entries not recently used
++     * Ability to use expired entries in the cache when it is
+        impossible to contact upstream DNS servers.
+-     * Ipv6 support can be compiled in if desired
+-     * Both DNS-over-UDP and DNS-over-TCP are handled by the same
++     * Both DNS-over-UDP and DNS-over-TCP are handled by the same
+        daemon
+-     * Built-in dnswall functionality
++     * Built-in dnswall functionality
++     * The ability to assign names to IPv4 and IPv6 IPs as specified in
++       one's dwood3rc file.
++
++                        COMMAND LINE ARGUMENTS
++
++   Deadwood has a single optional command line argument: The
++   location of the configuration file that Deadwood uses, specified
++   with the "-f" flag. If this is not defined, Deadwood uses the
++   file "/etc/dwood3rc" as the configuration file.
++
++   In other words, invoking Deadwood as Deadwood will cause
++   Deadwood to use /etc/dwood3rc as the configuration file;
++   invoking Deadwood as Deadwood -f foobar will cause Deadwood to
++   use the file "foobar" in the current working directory (the
++   directory one is in when starting Deadwood) as the configuration
++   file.
+ 
+                       CONFIGURATION FILE FORMAT
+ 
+@@ -40,7 +55,7 @@
+    must be in the leftmost column with no leading whitespace. This
+    is a valid line (as long as there are no spaces to its left):
+ 
+-recursive_acl = "127.0.0.1/16"
++ recursive_acl = "127.0.0.1/16"
+ 
+    The following line, however, will raise a parse error:
+ 
+@@ -60,7 +75,6 @@
+ 
+        If a numeric parameter is surrounded by quotes, the error
+        message "Unknown dwood3rc string parameter" will appear.
+-
+      * String parameters. String parameters must be surrounded by
+        quotes, such as in this example:
+ 
+@@ -86,10 +100,11 @@
+      * recursive_acl (string)
+      * root_servers (dictionary)
+      * upstream_servers (dictionary)
++     * ip4 (dictionary)
+ 
+                          SUPPORTED PARAMETERS
+ 
+-   The Deadwood configuration file, dwood3rc.txt, supports the following
++   The Deadwood configuration file supports the following
+    parameters:
+ 
+ bind_address
+@@ -103,6 +118,8 @@
+    '-' symbol, the '_' symbol, and the '/' symbol (for putting the
+    cache in a subdirectory). All other symbols become a '_' symbol.
+ 
++   This file is read and written as the user Deadwood runs as.
++
+ chroot_dir
+ 
+    This is the directory the program will run from.
+@@ -121,9 +138,32 @@
+ 
+ filter_rfc1918
+ 
+-   When this is set to 1, RFC1918 (private) IP addresses are not
+-   allowed to be in DNS replies. See http://crypto.stanford.edu/dns/ 
+-   for why this improves security.
++   When this has a value of 1, a number of different IP ranges are
++   not allowed to be in DNS A replies:
++
++     * 192.168.x.x
++     * 172.[16-31].x.x
++     * 10.x.x.x
++     * 127.x.x.x
++     * 169.254.x.x
++     * 224.x.x.x
++     * 0.0.x.x
++
++   If one of the above IPs is detected in a DNS reply, and
++   filter_rfc1918 has a value of 1, Deadwood will return a
++   synthetic "this host does not reply" response (a SOA record in
++   the NS section) instead of the A record.
++
++   The reason for this is to provide a "dnswall" that protects
++   users for some kinds of attacks, as described at
++   http://crypto.stanford.edu/dns/
++
++   Please note that Deadwood only provides IPv4 "dnswall"
++   functionality and does not help protect against IPv6 answers. If
++   protection against certain IPv6 AAAA records is needed, either
++   disable all AAAA answers by setting reject_aaaa to have a value
++   of 1, or use an external program to filter undesired IPv4
++   answers (such as the dnswall program).
+ 
+    The default value for this is 1
+ 
+@@ -158,6 +198,33 @@
+    parameter is only here so older configuration files do not break
+    in Deadwood 3.0.
+ 
++ip4
++
++   This is a dictionary varibale which allows us to have given
++   names resolve to bogus IPv4 addresses. Here, we have the name
++   "maradns.foo" resolve to "10.10.10.10" and "kabah.foo" resolve
++   to "10.11.11.11", regardless of what real values these DNS
++   records may have:
++
++ ip4 = {}
++ ip4["maradns.foo."] = "10.10.10.10"
++ ip4["kabah.foo."] = "10.11.11.11"
++
++   Note that a given name can only resolve to a single IP, and that
++   the records have a fixed TTL of 30 seconds.
++
++ip6
++
++   Like ip4, ip6 uses a similar syntax to have bogus IPv6
++   addresses. We don't use standard notation for IPv6 addresses.
++   Instead, we we use 32-character hex addresses (case
++   insensitive); to make it easier to count long strings of "0"s,
++   the "_" acts like a 0. Here is an example:
++
++ ip6 = {}
++ ip6["maradns.foo."] = "fd4d617261444e530000000000001234"
++ ip6["kabah.foo."] = "FD4D617261444E53__00__00__002345"
++
+ ip_blacklist
+ 
+    This is a list of IPs that we do not allow to be in the answer
+@@ -169,16 +236,28 @@
+    This parameter only accepts individual IPs, and does not use
+    netmasks.
+ 
++maradns_uid
++
++   The user-id Deadwood runs as. This can be any number between 10
++   and 65535; the default value is 99 (nobody on RedHat-derived
++   Linux distributions). This value is not used on Windows systems.
++
++maradns_gid
++
++   The group-id Deadwood runs as. This can be any number between 10
++   and 65535; the default value is 99. This value is not used on
++   Windows systems.
++
+ max_ar_chain
+ 
+-   Whether resource record rotation is enabled. If this has a
+-   value of 1, resource record rotation is enabled, otherwise
+-   resource record rotation is disabled.
++   Whether resource record rotation is enabled. If this has a value
++   of 1, resource record rotation is enabled, otherwise resource
++   record rotation is disabled.
+ 
+    Resource record rotation is usually desirable, since it allows
+    DNS to act like a crude load balancer. However, on heavily
+-   loaded systems it may be desirable to disable it to
+-   reduce CPU usage.
++   loaded systems it may be desirable to disable it to reduce CPU
++   usage.
+ 
+    The reason for the unusual name for this variable is to retain
+    compatibility with MaraDNS mararc files.
+@@ -187,10 +266,10 @@
+ 
+ max_inflights
+ 
+-   The maximum number of simultanious clients we process at the
++   The maximum number of simultaneous clients we process at the
+    same time for the same query.
+ 
+-   If, while processone a query for, say, "example.com.", another
++   If, while processing a query for, say, "example.com.", another
+    DNS client sends to Deadwood another query for example.com,
+    instead of creating a new query to process example.com, Deadwood
+    will attach the new client to the same query that is already "in
+@@ -205,6 +284,20 @@
+ 
+    The default value is 8.
+ 
++max_ttl
++
++   The maximum amount of time we will keep an entry in the cache,
++   in seconds (also called "Maximum TTL").
++
++   This is the longest we will keep an entry cached. The default
++   value for this parameter is 86400 (one day); the minimum value
++   is 300 (5 minutes) and the maximum value this can have is
++   7776000 (90 days).
++
++   The reason why this parameter is here is to protect Deadwood
++   from attacks which exploit there being stale data in the cache,
++   such as the "Ghost Domain Names" attack.
++
+ maximum_cache_elements
+ 
+    The maximum number of elements our cache is allowed to have.
+@@ -213,7 +306,21 @@
+    reading the cache from disk, higher values of this will slow
+    down cache reading/writing.
+ 
+-   Each cache entry uses approximately four kilobytes of memory.
++   The amount of memory each cache entry uses is variable depending
++   on the operating system used and the size of memory allocation
++   pages assigned. In Windows XP, for example, each entry uses
++   approximately four kilobytes of memory and Deadwood has an
++   overhead of approximately 512 kilobytes. So, if there are 512
++   cache elements, Deadwood uses approximately 2.5 megabytes of
++   memory, and if there are 1024 cache elements, Deadwood uses
++   approximately 4.5 megabytes of memory. Again, these numbers are
++   for Windows XP and other operating systems will have different
++   memory allocation numbers.
++
++   Please note that each root_servers and upstream_servers entry
++   takes up space in Deadwood's cache and that
++   maximum_cache_elements will need to be increased to store a
++   large number of these entries.
+ 
+ maxprocs
+ 
+@@ -229,8 +336,20 @@
+ 
+    The number of times we retry to send a query upstream before
+    giving up. If this is 0, we only try once; if this is 1, we try
+-   twice, and so on, up to 8 retries. Note that each retry takes
+-   timeout_seconds seconds before we retry again. Default value: 2
++   twice, and so on, up to 32 retries. Note that each retry takes
++   timeout_seconds seconds before we retry again. Default value: 5
++
++ns_glueless_type
++
++   The RR type we send to resolve glueless records. This should be
++   1 (A) when mainly using IPv4 to resolve records. If glueless NS
++   records have AAAA but not A records, and IPv6 is enabled, it may
++   make sense to give this a value of 255 (ANY). If IPv4 ever stops
++   being used on a large scale, it may eventually become possible
++   to make this have a value of 28 (AAAA).
++
++   The default value is 1: An A (IPv4 IP) record. This parameter
++   has not been tested; use at your own risk.
+ 
+ random_seed_file
+ 
+@@ -262,9 +381,10 @@
+ 
+ recursive_acl
+ 
+-   This is a list of who is allowed to use Deadwood, in
+-   "ip/mask" format. Mask must be a number between 0 and 32. 
+-   For example, "127.0.0.1/8" allows local connections.
++   This is a list of who is allowed to use Deadwood to perform DNS
++   recursion, in "ip/mask" format. Mask must be a number between 0
++   and 32 (for IPv6, between 0 and 128). For example, "127.0.0.1/8"
++   allows local connections.
+ 
+ reject_aaaa
+ 
+@@ -306,6 +426,21 @@
+    record lookup) and not for mail delivery (extensive MX record
+    lookup).
+ 
++reject_ptr
++
++   If this has a value of 1, a bogus SOA "not there" reply is sent
++   whenever a PTR query is sent to Deadwood. In other words, every
++   time a program asks Deadwood for "reverse DNS lookup" -- the
++   hostname for a given IP address -- instead of trying to process
++   the request, when this is set to 1, Deadwood pretends the IP
++   address in question does not have a hostname.
++
++   This is useful for people who are getting slow DNS timeouts when
++   trying to perform a reverse DNS lookups on IPs.
++
++   This has a default value of 0. In other words, PTR queries are
++   processed normally unless this is set.
++
+ resurrections
+ 
+    If this is set to 1, Deadwood will try to send an expired record
+@@ -321,6 +456,10 @@
+    which DNS servers to connect to to get an answer closer to our
+    desired answer.
+ 
++   Please note that each root_servers entry takes up space in
++   Deadwood's cache and that maximum_cache_elements will need to be
++   increased to store a large number of these entries.
++
+ tcp_listen
+ 
+    In order to enable DNS-over-TCP, this variable must be set and
+@@ -330,7 +469,8 @@
+ 
+    This is how long Deadwood will wait before giving up and
+    discarding a pending UDP DNS reply. The default value for this
+-   is 2, as in 2 seconds.
++   is 1, as in 1 second, unless Deadwood was compiled with
++   FALLBACK_TIME enabled.
+ 
+ timeout_seconds_tcp
+ 
+@@ -393,30 +533,17 @@
+  upstream_servers["example.com"] = "192.168.42.1"
+ 
+    The reason for this is because BIND engages in unexpected
+-   behavior when a host name deoesn't end in a dot, and by forcing
+-   a dot at the end of a hostname, Deadwood doesn't have to guess
++   behavior when a host name doesn't end in a dot, and by forcing a
++   dot at the end of a hostname, Deadwood doesn't have to guess
+    whether the user wants BIND's behavior or the "normal" behavior.
+ 
+    If neither root_servers nor upstream_servers are set, Deadwood
+-   sets root_servers to use the default ICANN root servers, as
+-   follows:
+-
+- 198.41.0.4      a.root-servers.net (VeriSign)
+- 199.9.14.201    b.root-servers.net (ISI)
+- 192.33.4.12     c.root-servers.net (Cogent)
+- 199.7.91.13     d.root-servers.net (UMaryland)
+- 192.203.230.10  e.root-servers.net (NASA Ames)
+- 192.5.5.241     f.root-servers.net (ISC)
+- 192.112.36.4    g.root-servers.net (DOD NIC)
+- 198.97.190.53   h.root-servers.net (ArmyRU)
+- 192.36.148.17   i.root-servers.net (NORDUnet)
+- 192.58.128.30   j.root-servers.net (VeriSign)
+- 193.0.14.129    k.root-servers.net (Reseaux)
+- 199.7.83.42     l.root-servers.net (IANA)
+- 202.12.27.33    m.root-servers.net (WIDE)
++   sets root_servers to use the https://quad9.net upstream servers, 
++   9.9.9.9 and 149.112.112.112.
+ 
+-   This list is current as of May 3, 2010, and was last changed on
+-   November 1, 2007.
++   Please note that each upstream_servers entry takes up space in
++   Deadwood's cache and that maximum_cache_elements will need to be
++   increased to store a large number of these entries.
+ 
+ verbose_level
+ 
+@@ -426,13 +553,14 @@
+ 
+                         ip/mask format of IPs
+ 
+-   Deadwood uses a standard ip/netmask formats to specify IPs.
+-   An ip is in dotted-decimal format, e.g. "10.1.2.3" (or in ipv6
+-   format when ipv6 support is compiled in).
+-
+-   The netmask is used to specify a range of IPs. The netmask is
+-   a single number between 1 and 32, which indicates the number of
+-   leading "1" bits in the netmask.
++   Deadwood uses a standard ip/netmask formats to specify IPs. An
++   ip is in dotted-decimal format, e.g. "10.1.2.3" (or in IPv6
++   format when IPv6 support is compiled in).
++
++   The netmask is used to specify a range of IPs. The netmask is a
++   single number between 1 and 32 (128 when IPv6 support is
++   compiled in), which indicates the number of leading "1" bits in
++   the netmask.
+ 
+    10.1.1.1/24 indicates that any ip from 10.1.1.0 to 10.1.1.255
+    will match.
+@@ -448,15 +576,26 @@
+ 
+                              DNS over TCP
+ 
++   DNS-over-TCP needs to be explicitly enabled by setting
++   tcp_listen to 1.
++
++   Deadwood extracts useful information from UDP DNS packets marked
++   truncated which almost always removes the need to have
++   DNS-over-TCP. However, Deadwood does not cache DNS packets
++   larger than 512 bytes in size that need to be sent using TCP. In
++   addition, DNS-over-TCP packets which are "incomplete" DNS
++   replies (replies which a stub resolver can not use, which can be
++   either a NS referral or an incomplete CNAME reply) are not
++   handled correctly by Deadwood.
++
+    Deadwood has support for both DNS-over-UDP and DNS-over-TCP; the
+    same daemon listens on both the UDP and TCP DNS port.
+-   DNS-over-TCP must be explicitly enabled by setting tcp_listen to
+-   1.
+ 
+    Only UDP DNS queries are cached. Deadwood does not support
+-   caching over TCP; it handles TCP to resolve the occasional
+-   truncated reply or handle the occasional non-RFC-compliant
+-   TCP-only DNS resolver.
++   caching over TCP; it handles TCP to resolve the rare truncated
++   reply without any useful information or to work with very
++   uncommon non-RFC-compliant TCP-only DNS resolvers. In the real
++   world, DNS-over-TCP is almost never used.
+ 
+                          Parsing other files
+ 
+@@ -472,15 +611,19 @@
+    Where path/to/filename is the path to the file to be parsed like
+    a dwood3rc file.
+ 
+-   All files must be in or under the directory Deadwood is run from.
+-   Filenames can only have lower-case letters and the underscore 
+-   character ("_"). Absolute paths are not allowed as the argument 
+-   to execfile; the filename can not start with a slash ("/") 
+-   character.
++   All files must be in or under the directory
++   /etc/deadwood/execfile. Filenames can only have lower-case
++   letters and the underscore character ("_"). Absolute paths are
++   not allowed as the argument to execfile; the filename can not
++   start with a slash ("/") character.
+ 
+    If there is a parse error in the file pointed to by execfile,
+    Deadwood will report the error as being on the line with the
+-   execfile command in the main dwood3rc file. 
++   execfile command in the main dwood3rc file. To find where a
++   parse error is in the sub-file, use something like
++   "Deadwood -f /etc/deadwood/execfile/filename" to find the parse
++   error in the offending file, where "filename" is the file to to
++   parsed via execfile.
+ 
+                                SECURITY
+ 
+@@ -563,14 +706,11 @@
+ recursive_acl = "127.0.0.1/16"
+ 
+ # Maximum number of pending requests
+-maxprocs = 8
++maxprocs = 2048
+ 
+ # Send SERVER FAIL when overloaded
+ handle_overload = 1
+ 
+-maradns_uid = 99 # UID Deadwood runs as
+-maradns_gid = 99 # GID Deadwood runs as
+-
+ maximum_cache_elements = 60000
+ 
+ # If you want to read and write the cache from disk,
+@@ -586,16 +726,20 @@
+ # in to a "not there"
+ #ip_blacklist = "10.222.33.44, 10.222.3.55"
+ 
++# By default, for security reasons, Deadwood does not allow IPs in
++# the 192.168.x.x, 172.[16-31].x.x, 10.x.x.x, 127.x.x.x,
++# 169.254.x.x, 224.x.x.x, or 0.0.x.x range.  If using Deadwood
++# to resolve names on an internal network, uncomment the
++# following line:
++#filter_rfc1918 = 0
++
+                                  BUGS
+ 
+-   DNS-over-TCP needs to be explicitly enabled. Note that
+-   DNS-over-TCP is almost never used. Also, Deadwood does not cache
+-   DNS packets larger than 512 bytes in size that need to be sent
+-   using TCP. In addition, DNS-over-TCP packets which are
+-   "incomplete" DNS replies (replies which a stub resolver can not
+-   use, namely either a NS referral or an incomplete CNAME reply)
+-   are not handled correctly by Deadwood. Again, DNS-over-TCP is
+-   very rare.
++   Deadwood does not follow RFC2181's advice to ignore DNS
++   responses with the TC (truncated) bit set, but instead extracts
++   the first RR. If this is not desired, set the undocumented
++   parameter truncation_hack to 0 (but read the DNS over TCP
++   section of this man page).
+ 
+    Deadwood can not process DNS resource record types with numbers
+    between 65392 and 65407. These RR types are marked by the IANA
+@@ -609,6 +753,11 @@
+    allow ASCII control characters (bytes with a value less then 32)
+    in DNS names. Other characters (UTF-8, etc.) are allowed.
+ 
++   Combining a CNAME record with other records is prohibited in
++   RFC1034 section 3.6.2 and RFC1912 section 2.4; it makes an
++   answer ambiguous. Deadwood handles this ambiguity differently
++   than some other DNS servers.
++
+                            LEGAL DISCLAIMER
+ 
+    THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY
+@@ -626,6 +775,7 @@
+ 
+                                AUTHORS
+ 
+-   Sam Trenholme (http://www.samiam.org) is responsible for this
+-   program and reference.
++   Sam Trenholme (https://www.samiam.org) is responsible for this
++   program and man page. He appreciates all of Jean-Jacques
++   Sarton's help giving this program IPv6 support.
+ 
+diff -ur deadwood-3.4.01/doc/Windows/Update-guide.txt deadwood-3.4.02/doc/Windows/Update-guide.txt
+--- deadwood-3.4.01/doc/Windows/Update-guide.txt	2019-10-18 18:09:27.000000000 -0700
++++ deadwood-3.4.02/doc/Windows/Update-guide.txt	2019-11-11 15:27:43.526928957 -0800
+@@ -17,6 +17,37 @@
+ 
+ ---
+ 
++Deadwood 3.3.02 introduces a new parameter: ip6
++No changes to configuration files need to be made for this release.
++
++---
++
++Deadwood 3.3.01 introduces a new parameter: ip4
++No changes to configuration files need to be made for this release.
++
++---
++
++Deadwood 3.2.14 is a bugfix update. No changes to configuration files
++need to be made for this release.
++
++---
++
++Deadwood 3.2.12 is a security update.  No changes to configuration files
++need to be made for this release.
++
++A couple of minor changes that affect configuration since 3.2.02:
++
++* Deadwood now exits with a fatal error when there are over 20,000
++  upstream/root server entries in dwood3rc (older Deadwood releases would
++  silently not work)
++
++* Default file name for entropy in Windows is now "secret.txt"
++
++* Default maxprocs increased to 1024; maximum maxprocs increased to 
++  8,388,608 
++
++---
++
+ Deadwood 3.2.02 is a stable release.  This release has a new parameter:
+ max_ttl, which limits how long an entry can stay in the cache; the default
+ TTL cap is one day (86400 seconds).  
+diff -ur deadwood-3.4.01/doc/Windows/Vista.txt deadwood-3.4.02/doc/Windows/Vista.txt
+--- deadwood-3.4.01/doc/Windows/Vista.txt	2010-09-24 18:45:11.000000000 -0700
++++ deadwood-3.4.02/doc/Windows/Vista.txt	2019-11-11 15:27:59.895049676 -0800
+@@ -1,12 +1,16 @@
+-One way to get Deadwood to work in Vista or Windows 7 is to use a cmd 
++One way to get Deadwood to work in Windows 10 is to use a cmd 
+ prompt with administrator privileges.
+ 
++==Getting an admin cmd prompt==
++
+ To open up an admin cmd prompt:
+ 
+ * Go to the start menu and search for "cmd"
+ 
+ * When found, right click on it and run "cmd" as an administrator
+ 
++==Installing Deadwood as an administrator==
++
+ Once this administrative "cmd" prompt is opened, it is necessary to
+ install Deadwood:
+ 
+@@ -20,3 +24,19 @@
+   where Deadwood is locted; otherwise the service manager may have problems
+   finding the Deadwood service.
+ 
++==Troubleshooting Deadwood==
++
++Note that, should there be an issue which causes Deadwood to not start,
++no error messages will be visible in Windows 10.  To view any errors
++when starting up Deadwood, it may be necessary to invoke Deadwood as
++the non-Administrator as follows from this directory:
++
++	Deadwood.exe --nodaemon dwood3rc.txt
++
++If there are no issues starting up Deadwood, the process will hang and need
++to be terminated with the task manager.  If there are issues starting
++up Deadwood, the process will quickly terminate and a logfile with the
++relevant information will be in this file:
++
++	dwlog.txt
++

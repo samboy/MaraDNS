@@ -1,0 +1,40 @@
+diff -ur maradns-1.4.08/libs/functions_MaraHash.h maradns-1.4.09/libs/functions_MaraHash.h
+--- maradns-1.4.08/libs/functions_MaraHash.h	2011-12-29 12:17:11.000000000 -0600
++++ maradns-1.4.09/libs/functions_MaraHash.h	2011-12-30 16:19:22.616165809 -0600
+@@ -39,3 +39,5 @@
+ */
+ void *mhash_undef(mhash *hash, js_string *key);
+ 
++/* Read four bytes from a filename and use that as a secret add constant */
++int mhash_set_add_constant(char *filename);
+diff -ur maradns-1.4.08/libs/MaraHash.c maradns-1.4.09/libs/MaraHash.c
+--- maradns-1.4.08/libs/MaraHash.c	2011-12-29 12:17:12.000000000 -0600
++++ maradns-1.4.09/libs/MaraHash.c	2011-12-30 16:19:27.467163968 -0600
+@@ -103,7 +103,8 @@
+     /* Simple enough hash */
+     while(point < max) {
+         ret += (mhash_offset)(*point << shift);
+-        shift += mhash_secret_add_constant;
++        ret += mhash_secret_add_constant;
++        shift += 7;
+         shift %= hash_bits;
+         point++;
+         }
+@@ -687,7 +688,7 @@
+     return tuple->tuple_list[element];
+     }
+ 
+-/* Read three bytes from a filename and use that as a secret add constant */
++/* Read four bytes from a filename and use that as a secret add constant */
+ int mhash_set_add_constant(char *filename) {
+         FILE *read = 0;
+ 
+@@ -701,6 +702,8 @@
+         mhash_secret_add_constant ^= getc(read);
+         mhash_secret_add_constant <<= 8;
+         mhash_secret_add_constant ^= getc(read);
++        mhash_secret_add_constant <<= 7;
++        mhash_secret_add_constant ^= getc(read);
+         fclose(read);
+         return 1;
+ }

@@ -1,0 +1,134 @@
+If there was a glueless NS record, Deadwood started processing the NS
+referral, but sent a server fail to the DNS thingy (instead of sending
+nothing until the NS record is worked out).
+
+This patch fixes that.
+
+diff --git a/deadwood-github/src/DwSocket.h b/deadwood-github/src/DwSocket.h
+index f07f150..4722361 100644
+--- a/deadwood-github/src/DwSocket.h
++++ b/deadwood-github/src/DwSocket.h
+@@ -317,7 +317,7 @@ dw_str *make_dns_packet(dw_str *question, dw_str *answer, int32_t id);
+ 
+ /* Given a remote number, a C-string with the packet to send them, and
+  * the length of that string, make a connection to a remote server */
+-void make_remote_connection(int32_t n, unsigned char *packet, int len,
++int make_remote_connection(int32_t n, unsigned char *packet, int len,
+         dw_str *query, SOCKET x_socket_num);
+ 
+ /* Forward a remote reply back to the client */
+diff --git a/deadwood-github/src/DwUdpSocket.c b/deadwood-github/src/DwUdpSocket.c
+index 16f3242..d11f5d6 100644
+--- a/deadwood-github/src/DwUdpSocket.c
++++ b/deadwood-github/src/DwUdpSocket.c
+@@ -176,7 +176,7 @@ SOCKET setup_server(sockaddr_all_T *server, ip_addr_T *addr) {
+ 
+ /* Given a remote number, a C-string with the packet to send them, and
+  * the length of that string, make a connection to a remote server */
+-void make_remote_connection(int32_t n, unsigned char *packet, int len,
++int make_remote_connection(int32_t n, unsigned char *packet, int len,
+      dw_str *query, SOCKET x_socket_num) {
+         sockaddr_all_T server;
+         SOCKET s = 0;
+@@ -187,13 +187,13 @@ void make_remote_connection(int32_t n, unsigned char *packet, int len,
+ 
+         if(rem[n].socket != x_socket_num || /* Already used (sanity check) */
+            rem[n].recurse_depth > 32) { /* Infinite recursion protection */
+-                return;
++                return -1;
+         }
+ 
+         /* Get a random query ID to send to the remote server */
+         rnum = set_dns_qid(packet,len,dwr_rng(rng_seed));
+         if(rnum == -1) {
+-                return;
++                return -1;
+         }
+ 
+         /* Get IP of remote server and open a socket to them */
+@@ -211,15 +211,15 @@ void make_remote_connection(int32_t n, unsigned char *packet, int len,
+         }
+         dw_log_ip("Making connection to IP",&addr,128);
+         if(addr.len == 0) { /* Failed to get upstream IP */
+-                return;
++                return -1;
+         } else if(addr.len == 4 || addr.len == 16) { /* IPv4/IPv6 IP */
+                 s = setup_server(&server,&addr);
+         } else if(addr.glueless != 0) { /* Glueless NS referral */
+                 dwx_do_ns_glueless(addr,n);
+-                return;
++                return 2;
+         }
+         if(s == INVALID_SOCKET) { /* Failed to make socket */
+-                return;
++                return -1;
+         }
+ 
+ #ifdef IPV6
+@@ -234,7 +234,7 @@ void make_remote_connection(int32_t n, unsigned char *packet, int len,
+             (connect(s, (struct sockaddr *)&server, inet_len) == -1) ||
+             (send(s,packet,len,0) < 0)) {
+                 closesocket(s);
+-                return;
++                return -1;
+         }
+ 
+         /* OK, now note the pending connection */
+@@ -244,6 +244,7 @@ void make_remote_connection(int32_t n, unsigned char *packet, int len,
+         }
+         rem[n].socket = s;
+         rem[n].remote_id = rnum;
++	return 1;
+ }
+ 
+ /* Send a server failure back to the client when the server is overloaded.
+@@ -324,21 +325,24 @@ void zap_inflight(dw_str *query) {
+ }
+ 
+ /* Make a new UDP connection on remote pending connection b */
+-void make_new_udp_connect(int b, unsigned char *a, int len, int num_alloc) {
++int make_new_udp_connect(int b, unsigned char *a, int len, int num_alloc) {
+         dw_str *answer = 0, *check = 0;
+-        int counter = 0;
++        int counter = 0, z = 0;
+ 
+         /* Make a new remote connection */
+         if(rem[b].socket != INVALID_SOCKET) { /* Sanity check */
+-                return;
++                return -1;
+         }
+         rem[b].query = dw_get_dname_type(a,12,len);
+         dwc_lower_case(rem[b].query);
+         rem[b].local = dw_malloc(num_alloc * sizeof(local_T *));
+         if(rem[b].local == 0) {
+-                return;
++                return -1;
+         }
+-        make_remote_connection(b,a,len,rem[b].query,INVALID_SOCKET);
++        z = make_remote_connection(b,a,len,rem[b].query,INVALID_SOCKET);
++	if(z != 1) {
++		return z;
++	}
+ 
+         for(counter = 0; counter < num_alloc; counter++) {
+                 rem[b].local[counter] = 0;
+@@ -355,6 +359,7 @@ void make_new_udp_connect(int b, unsigned char *a, int len, int num_alloc) {
+                 }
+                 dw_destroy(answer);
+         }
++	return 1;
+ }
+ 
+ /* Send a local DNS request to the upstream (remote) server; this
+@@ -382,7 +387,9 @@ int forward_local_udp_packet(SOCKET sock, int32_t local_id,
+                         return -1;
+                 } else { /* Create new connection */
+                         reset_rem(b);
+-                        make_new_udp_connect(b,a,len,num_alloc);
++                        if(make_new_udp_connect(b,a,len,num_alloc) == 2) {
++				return 0;
++			}
+                 }
+         } else { /* Add new local to already inflight connection */
+                 if(rem[b].num_locals >= num_alloc - 2) {
+

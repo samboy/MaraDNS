@@ -1,0 +1,263 @@
+This patch updates Deadwood for 2017's renumbering of b.root-servers.net
+
+The following files needed to be changed:
+
+* doc/deadwood.ej and its derivatives: deadwood.html, deadwood.1, and 
+  deadwood.txt
+* doc/Windows/Reference.txt
+* doc/Windows/Deadwood-HOWTO.txt
+* doc/Windows/dwood3rc.txt
+* doc/Deadwood-HOWTO
+* doc/dwood3rc
+* doc/dwood3rc-all
+* doc/execfile-HOWTO.html
+* src/DwSocket.h
+
+On October 24, 2017, the IPv4 IP for b.root-servers.net was changed.
+I have updated Deadwood with the new IP.  In addition, for anyone using
+a dwood3rc file with the root servers set in it, the IP 192.228.79.201
+needs to be replaced with 199.9.14.201.
+
+A dwood3rc file for Deadwood sometimes has a section looking like this:
+
+root_servers = {}
+root_servers["."]="198.41.0.4, 199.9.14.201, 192.33.4.12, 199.7.91.13,"
+root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
+root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
+root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+
+If so, make sure the out of date 192.228.79.201 IP is replaced, like it
+is above.
+
+The deadwood configuration file is usually located at /etc/dwood3rc
+
+I have updated the Deadwood source to use the updated IP, and have
+updated the list of root servers everywhere the out of date IP was
+in the documentation.
+
+I plan on making a release of MaraDNS in 2018 with this update.  Until
+then, both the GitHub repo at https://github.com/samboy/MaraDNS and
+the Deadwood snapshot at http://maradns.samiam.org/deadwood/snap have
+this change.
+
+diff -ur deadwood-3.2.10/doc/Deadwood.1 deadwood-3.2.11/doc/Deadwood.1
+--- deadwood-3.2.10/doc/Deadwood.1	2017-06-10 13:10:00.000000000 -0700
++++ deadwood-3.2.11/doc/Deadwood.1	2017-11-09 21:42:48.668082304 -0800
+@@ -675,7 +675,7 @@
+ 
+ .nf
+ 198.41.0.4      a.root-servers.net (VeriSign) 
+-192.228.79.201  b.root-servers.net (ISI) 
++199.9.14.201    b.root-servers.net (ISI) 
+ 192.33.4.12     c.root-servers.net (Cogent) 
+ 199.7.91.13     d.root-servers.net (UMaryland) 
+ 192.203.230.10  e.root-servers.net (NASA Ames) 
+Only in deadwood-3.2.11/doc/: Deadwood.1.orig
+diff -ur deadwood-3.2.10/doc/Deadwood.ej deadwood-3.2.11/doc/Deadwood.ej
+--- deadwood-3.2.10/doc/Deadwood.ej	2017-06-10 13:09:59.000000000 -0700
++++ deadwood-3.2.11/doc/Deadwood.ej	2017-11-09 21:42:48.668082304 -0800
+@@ -539,7 +539,7 @@
+ 
+ <pre>
+ 198.41.0.4      a.root-servers.net (VeriSign) 
+-192.228.79.201  b.root-servers.net (ISI) 
++199.9.14.201    b.root-servers.net (ISI) 
+ 192.33.4.12     c.root-servers.net (Cogent) 
+ 199.7.91.13     d.root-servers.net (UMaryland) 
+ 192.203.230.10  e.root-servers.net (NASA Ames) 
+diff -ur deadwood-3.2.10/doc/Deadwood-HOWTO deadwood-3.2.11/doc/Deadwood-HOWTO
+--- deadwood-3.2.10/doc/Deadwood-HOWTO	2017-06-10 13:09:59.000000000 -0700
++++ deadwood-3.2.11/doc/Deadwood-HOWTO	2017-11-09 21:42:45.971538381 -0800
+@@ -22,7 +22,7 @@
+ recursive_acl = "127.0.0.1/16, 192.168.1.1/24"
+ chroot_dir = "/etc/maradns"
+ root_servers = {}
+-root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
++root_servers["."]="198.41.0.4, 199.9.14.201, 192.33.4.12, 199.7.91.13,"
+ root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
+ root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
+ root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+diff -ur deadwood-3.2.10/doc/Deadwood.html deadwood-3.2.11/doc/Deadwood.html
+--- deadwood-3.2.10/doc/Deadwood.html	2017-06-10 13:10:00.000000000 -0700
++++ deadwood-3.2.11/doc/Deadwood.html	2017-11-09 21:42:48.668082304 -0800
+@@ -544,7 +544,7 @@
+ 
+ <pre>
+ 198.41.0.4      a.root-servers.net (VeriSign) 
+-192.228.79.201  b.root-servers.net (ISI) 
++199.9.14.201    b.root-servers.net (ISI) 
+ 192.33.4.12     c.root-servers.net (Cogent) 
+ 199.7.91.13     d.root-servers.net (UMaryland) 
+ 192.203.230.10  e.root-servers.net (NASA Ames) 
+Only in deadwood-3.2.11/doc/: Deadwood.html.orig
+diff -ur deadwood-3.2.10/doc/Deadwood.txt deadwood-3.2.11/doc/Deadwood.txt
+--- deadwood-3.2.10/doc/Deadwood.txt	2017-06-10 13:10:00.000000000 -0700
++++ deadwood-3.2.11/doc/Deadwood.txt	2017-11-09 21:42:48.670081964 -0800
+@@ -509,7 +509,7 @@
+    follows:
+ 
+  198.41.0.4      a.root-servers.net (VeriSign)
+- 192.228.79.201  b.root-servers.net (ISI)
++ 199.9.14.201    b.root-servers.net (ISI)
+  192.33.4.12     c.root-servers.net (Cogent)
+  199.7.91.13     d.root-servers.net (UMaryland)
+  192.203.230.10  e.root-servers.net (NASA Ames)
+diff -ur deadwood-3.2.10/doc/dwood3rc deadwood-3.2.11/doc/dwood3rc
+--- deadwood-3.2.10/doc/dwood3rc	2017-06-10 13:09:59.000000000 -0700
++++ deadwood-3.2.11/doc/dwood3rc	2017-11-09 21:42:45.973538043 -0800
+@@ -30,7 +30,7 @@
+ #root_servers = {}
+ # ICANN DNS root servers (Deadwood default if both root_servers and
+ # upstream_servers are not defined)
+-#root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
++#root_servers["."]="198.41.0.4, 199.9.14.201, 192.33.4.12, 199.7.91.13,"
+ #root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
+ #root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
+ #root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+diff -ur deadwood-3.2.10/doc/dwood3rc-all deadwood-3.2.11/doc/dwood3rc-all
+--- deadwood-3.2.10/doc/dwood3rc-all	2017-06-10 13:09:59.000000000 -0700
++++ deadwood-3.2.11/doc/dwood3rc-all	2017-11-09 21:42:45.974537874 -0800
+@@ -106,7 +106,7 @@
+ # cache and that maximum_cache_elements will need to be increased to store
+ # a large number of these entries.
+ #root_servers = {}
+-#root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
++#root_servers["."]="198.41.0.4, 199.9.14.201, 192.33.4.12, 199.7.91.13,"
+ #root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
+ #root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
+ #root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+diff -ur deadwood-3.2.10/doc/execfile-HOWTO.html deadwood-3.2.11/doc/execfile-HOWTO.html
+--- deadwood-3.2.10/doc/execfile-HOWTO.html	2017-06-10 13:09:59.000000000 -0700
++++ deadwood-3.2.11/doc/execfile-HOWTO.html	2017-11-09 21:42:45.974537874 -0800
+@@ -32,7 +32,7 @@
+ recursive_acl = "127.0.0.0/16,192.168.42.0/24"
+ chroot_dir = "/etc/deadwood"
+ root_servers = {}
+-root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
++root_servers["."]="198.41.0.4, 199.9.14.201, 192.33.4.12, 199.7.91.13,"
+ root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
+ root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
+ root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+@@ -77,7 +77,7 @@
+ recursive_acl = "127.0.0.0/16,192.168.42.0/24"
+ chroot_dir = "/etc/deadwood"
+ root_servers = {}
+-root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
++root_servers["."]="198.41.0.4, 199.9.14.201, 192.33.4.12, 199.7.91.13,"
+ root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
+ root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
+ root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+diff -ur deadwood-3.2.10/doc/Windows/Deadwood-HOWTO.txt deadwood-3.2.11/doc/Windows/Deadwood-HOWTO.txt
+--- deadwood-3.2.10/doc/Windows/Deadwood-HOWTO.txt	2017-06-10 13:09:59.000000000 -0700
++++ deadwood-3.2.11/doc/Windows/Deadwood-HOWTO.txt	2017-11-09 21:42:45.973538043 -0800
+@@ -22,7 +22,7 @@
+ recursive_acl = "127.0.0.1/16, 192.168.1.1/24"
+ chroot_dir = "/etc/maradns"
+ root_servers = {}
+-root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
++root_servers["."]="198.41.0.4, 199.9.14.201, 192.33.4.12, 199.7.91.13,"
+ root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
+ root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
+ root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+diff -ur deadwood-3.2.10/doc/Windows/dwood3rc.txt deadwood-3.2.11/doc/Windows/dwood3rc.txt
+--- deadwood-3.2.10/doc/Windows/dwood3rc.txt	2017-06-10 13:09:59.000000000 -0700
++++ deadwood-3.2.11/doc/Windows/dwood3rc.txt	2017-11-09 21:42:45.973538043 -0800
+@@ -16,7 +16,7 @@
+ #root_servers = {}
+ # ICANN DNS root servers (Deadwood default if both root_servers and 
+ # upstream_servers are not defined)
+-#root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 199.7.91.13,"
++#root_servers["."]="198.41.0.4, 199.9.14.201, 192.33.4.12, 199.7.91.13,"
+ #root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
+ #root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
+ #root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
+diff -ur deadwood-3.2.10/doc/Windows/Reference.txt deadwood-3.2.11/doc/Windows/Reference.txt
+--- deadwood-3.2.10/doc/Windows/Reference.txt	2017-06-10 13:09:59.000000000 -0700
++++ deadwood-3.2.11/doc/Windows/Reference.txt	2017-11-09 21:42:48.670081964 -0800
+@@ -402,7 +402,7 @@
+    follows:
+ 
+  198.41.0.4      a.root-servers.net (VeriSign)
+- 192.228.79.201  b.root-servers.net (ISI)
++ 199.9.14.201    b.root-servers.net (ISI)
+  192.33.4.12     c.root-servers.net (Cogent)
+  199.7.91.13     d.root-servers.net (UMaryland)
+  192.203.230.10  e.root-servers.net (NASA Ames)
+diff -ur deadwood-S-2017-11-09-1/doc/Deadwood.1 deadwood-S-2017-11-09-2/doc/Deadwood.1
+--- deadwood-S-2017-11-09-1/doc/Deadwood.1	2017-11-09 21:44:02.000000000 -0800
++++ deadwood-S-2017-11-09-2/doc/Deadwood.1	2017-11-09 21:55:34.719282200 -0800
+@@ -689,8 +689,8 @@
+ 202.12.27.33    m.root-servers.net (WIDE) 
+ .fi
+ 
+-This list is current as of December 5, 2016, and was last changed on
+-December 1, 2015.
++This list is current as of November 9, 2017, and was last changed in
++October of 2017.
+ .PP
+ Please note that each upstream_servers entry takes up space in
+ Deadwood\(aqs
+diff -ur deadwood-S-2017-11-09-1/doc/Deadwood.ej deadwood-S-2017-11-09-2/doc/Deadwood.ej
+--- deadwood-S-2017-11-09-1/doc/Deadwood.ej	2017-11-09 21:44:01.000000000 -0800
++++ deadwood-S-2017-11-09-2/doc/Deadwood.ej	2017-11-09 21:55:45.532928100 -0800
+@@ -553,8 +553,8 @@
+ 202.12.27.33    m.root-servers.net (WIDE) 
+ </pre>
+ 
+-This list is current as of December 5, 2016, and was last changed on
+-December 1, 2015.
++This list is current as of November 9, 2017, and was last changed in
++October of 2017.
+ 
+ <p>
+ 
+diff -ur deadwood-S-2017-11-09-1/doc/Deadwood.html deadwood-S-2017-11-09-2/doc/Deadwood.html
+--- deadwood-S-2017-11-09-1/doc/Deadwood.html	2017-11-09 21:44:01.000000000 -0800
++++ deadwood-S-2017-11-09-2/doc/Deadwood.html	2017-11-09 21:55:55.049554300 -0800
+@@ -558,8 +558,8 @@
+ 202.12.27.33    m.root-servers.net (WIDE) 
+ </pre>
+ 
+-This list is current as of December 5, 2016, and was last changed on
+-December 1, 2015.
++This list is current as of November 9, 2017, and was last changed in
++October of 2017.
+ 
+ <p>
+ 
+diff -ur deadwood-S-2017-11-09-1/doc/Deadwood.txt deadwood-S-2017-11-09-2/doc/Deadwood.txt
+--- deadwood-S-2017-11-09-1/doc/Deadwood.txt	2017-11-09 21:44:01.000000000 -0800
++++ deadwood-S-2017-11-09-2/doc/Deadwood.txt	2017-11-09 21:56:28.303249000 -0800
+@@ -522,8 +522,8 @@
+  199.7.83.42     l.root-servers.net (IANA)
+  202.12.27.33    m.root-servers.net (WIDE)
+ 
+-   This list is current as of December 5, 2016, and was last
+-   changed on December 1, 2015.
++   This list is current as of November 9, 2017, and was last changed
++   in October of 2017.
+ 
+    Please note that each upstream_servers entry takes up space in
+    Deadwood's cache and that maximum_cache_elements will need to be
+--- deadwood-3.2.10/src/DwSocket.h	2017-06-10 13:10:00.000000000 -0700
++++ deadwood-3.2.11/src/DwSocket.h	2017-11-11 10:12:15.832234106 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2016 Sam Trenholme
++/* Copyright (c) 2007-2017 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -19,10 +19,10 @@
+ #ifndef __DW_SOCKET_DEFINED__
+ #define __DW_SOCKET_DEFINED__
+ 
+-/* This is the root server list as of 2016/12/05; the IPv4 root servers were
+- * last changed 2015/12/01 */
++/* This is the root server list as of 2017-11-11; the IPv4 root servers were
++ * last changed 2017-10 */
+ #define ROOT_SERVERS "198.41.0.4"       /* a.root-servers.net (VeriSign) */ \
+-                     ",192.228.79.201"  /* b.root-servers.net (ISI) */ \
++                     ",199.9.14.201"    /* b.root-servers.net (ISI) */ \
+                      ",192.33.4.12"     /* c.root-servers.net (Cogent) */ \
+                      ",199.7.91.13"     /* d.root-servers.net (UMaryland) */ \
+                      ",192.203.230.10"  /* e.root-servers.net (NASA Ames) */ \

@@ -4,7 +4,7 @@
 # the revision number can be incremented so as to minimize confusion
 # This is only done when more than one snapshop is uploaded to the
 # maradns.org server in a given day.  Here at the top to be easy to change.
-REVISION=2
+REVISION=1
 
 # This script updates Deadwood 3.0
 
@@ -52,40 +52,24 @@ cd ..
 
 # BEGIN Release-specific fixes and changes go here
 
-echo applying patches
+# Update CHANGELOG
+patch -p1 < update/$NEXT/deadwood-3.2.08-CHANGELOG.patch
 
-# Patch: Update make.version.h to work with YYYY-MM-DD-V datestamps
-patch -p1 < update/3.2.05/deadwood-3.2.04-make.version.h.patch
+# We no longer have a Makefile.centos5 ; we moved up to CentOS 6 in 2012 and
+# early 2013
+patch -p2 < update/$NEXT/deadwood-3.2.08-no-centos5-Makefile.patch
 
-# Patch: Fix cppcheck warnings and errors (none of these is a security
-# problem)
-patch -p1 < update/3.2.05/deadwood-3.2.04-cppcheck.patch
+# Fix a possible remote denial of service by making sure we don’t write
+# to rem[b].local[-1] with the output of malloc()
+patch -p2 < update/$NEXT/deadwood-3.2.08-num_locals.patch
 
-# Patch: In the Windows build of Deadwood, we usually get entropy from
-# secret.txt, so make the default Windows source of entropy secret.txt
-# instead of /dev/urandom (which doesn't exist in Windows)
-# (Note: These "git log -1 -p" generated patches need to use "-p2" because
-#  the git tree also has MaraDNS' source code)
-patch -p2 < update/3.2.05/deadwood-3.2.04-secret.txt.patch
+# Update SQA tests
+patch -p1 < update/$NEXT/deadwood-3.2.08-SQA.patch
 
-# Patch: This patch fixes a pretty nasty bug which has been around since
-# 2007 where the bounds checking with dw_substr() was broken
-patch -p2 < update/3.2.05/deadwood-3.2.04-dw_substr.patch
-
-# Patch: More validation of DNS packets sent to Deadwood
-patch -p2 < update/3.2.05/deadwood-3.2.04-more_validation.patch
-
-# Patch: Allow names like root_servers["-foo.example."]="192.168.254.254"
-# to parse
-patch -p2 < update/3.2.05/deadwood-3.2.04-dash-start.patch
-
-# Patch: update CHANGELOG
-patch -p1 < update/$NEXT/deadwood-3.2.04-CHANGELOG.patch
+# END Release-specific fixes/changes
 
 # We're getting .orig files when patching :(
 rm -f src/*.orig
-
-# END Release-specific fixes/changes
 
 # This script with the "orig" argument can used if making a release 
 # that is making changes to an already-patched version of Deadwood

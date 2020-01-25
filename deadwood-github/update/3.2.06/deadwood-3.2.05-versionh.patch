@@ -1,0 +1,29 @@
+The MacOS and Linux Makefiles now should make version.h correctly
+
+diff --git a/deadwood-github/src/Makefile b/deadwood-github/src/Makefile
+index fc143af..9d56b73 100755
+--- a/deadwood-github/src/Makefile
++++ b/deadwood-github/src/Makefile
+@@ -64,7 +64,7 @@ DwUdpSocket.o:	DwUdpSocket.c DwStr.h DwSocket.h
+ DwSocket.o:	DwSocket.c DwStr.h DwSocket.h
+ 	$(CC) $(FLAGS) -Wall -c -o DwSocket.o DwSocket.c
+ 
+-DwSys.o:	DwSys.c DwStr.h
++DwSys.o:	DwSys.c DwStr.h version.h
+ 	$(CC) $(FLAGS) -Wall -c -o DwSys.o DwSys.c
+ 
+ RandomPrime:	RandomPrime.c
+diff --git a/deadwood-github/src/Makefile.fallback b/deadwood-github/src/Makefile.fallback
+index d89f11c..bf5e94d 100644
+--- a/deadwood-github/src/Makefile.fallback
++++ b/deadwood-github/src/Makefile.fallback
+@@ -64,7 +64,7 @@ DwUdpSocket.o:	DwUdpSocket.c DwStr.h DwSocket.h
+ DwSocket.o:	DwSocket.c DwStr.h DwSocket.h
+ 	$(CC) $(FLAGS) -DFALLBACK_TIME -Wall -c -o DwSocket.o DwSocket.c
+ 
+-DwSys.o:	DwSys.c DwStr.h
++DwSys.o:	DwSys.c DwStr.h version.h
+ 	$(CC) $(FLAGS) -DFALLBACK_TIME -Wall -c -o DwSys.o DwSys.c
+ 
+ RandomPrime:	RandomPrime.c
+

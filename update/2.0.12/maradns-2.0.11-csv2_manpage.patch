@@ -1,0 +1,25 @@
+--- maradns-2.0.11/doc/en/source/csv2.ej	2011-02-05 18:21:31.000000000 -0800
++++ maradns-2.0.12/doc/en/source/csv2.ej	2015-06-06 09:18:38.606450514 -0700
+@@ -224,7 +224,21 @@
+ 
+ A SPF record is, with the exception of the numeric rtype, identical to
+ a TXT record.  SPF records are designed to make it more difficult to
+-forge email.  More information about SPF records can be found in 
++forge email.  
++
++Here is one example SPF record:
++
++<pre>
++example.com. SPF 'v=spf1 +mx a:colo.example.com/28 -all'
++</pre>
++
++Use '\x7e' to put a tilde ("~" character) in a SPF record:
++
++<pre>
++example.com. SPF 'v=spf1 +mx a:colo.example.com/28 '\x7e'all'
++</pre>
++
++More information about SPF records can be found in 
+ RFC4408, or by performing a web search for 'sender policy framework'.
+ 
+ <h2>RAW</h2>

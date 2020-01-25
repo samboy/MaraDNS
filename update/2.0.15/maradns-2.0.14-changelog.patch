@@ -1,0 +1,24 @@
+--- maradns-2.0.14/doc/en/changelog.txt	2015-09-25 22:35:19.000000000 -0700
++++ maradns-2.0.15/doc/en/changelog.txt	2018-01-11 12:05:17.052399512 -0800
+@@ -1,5 +1,21 @@
+                           MaraDNS changelog
+ 
++   maradns-2.0.15:
++   This is the stable release of MaraDNS. No security updates were done in
++   this release.
++
++     * Deadwood updated to 3.2.11
++
++     (2018-02-05)
++
++   maradns-2.0.14:
++   This is the stable release of MaraDNS. No security updates were done in
++   this release.
++
++     * Deadwood updated to 3.2.10
++
++     (2017-06-10)
++
+    maradns-2.0.13:
+    This is the stable release of MaraDNS.
+ 

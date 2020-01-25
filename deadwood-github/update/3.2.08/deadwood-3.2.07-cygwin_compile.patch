@@ -1,0 +1,19 @@
+commit 37f865a00857b4a33405dd78c25a0f4882728a66
+Author: Sam Trenholme <strenholme.usenet@gmail.com>
+Date:   Sun Apr 26 15:34:46 2015 -0700
+
+    Fix declaration so this compiles in Cygwin
+
+diff --git a/deadwood-github/src/DwSocket.h b/deadwood-github/src/DwSocket.h
+index 4722361..ecfbc0b 100644
+--- a/deadwood-github/src/DwSocket.h
++++ b/deadwood-github/src/DwSocket.h
+@@ -273,7 +273,7 @@ SOCKET do_bind(ip_addr_T *ip,int type);
+ ip_addr_T get_upstream_ip();
+ 
+ /* Find a free remote pending connection */
+-int32_t find_free_remote();
++int_fast32_t find_free_remote();
+ 
+ /* In DwUdpSocket.c */
+ /* Get and process a local DNS request */

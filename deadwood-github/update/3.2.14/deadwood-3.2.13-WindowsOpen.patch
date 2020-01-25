@@ -1,0 +1,27 @@
+If secret.txt has a Ctrl-Z in its first 16 bytes, the file would be 
+truncated in Windows.  This is not a security problem because Deadwood
+refuses to run if it does not have a safe level of entropy (128 bits
+or more).
+
+diff --git a/deadwood-github/src/DwSys.c b/deadwood-github/src/DwSys.c
+index 08fb6be..06db448 100644
+--- a/deadwood-github/src/DwSys.c
++++ b/deadwood-github/src/DwSys.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2015 Sam Trenholme
++/* Copyright (c) 2007-2019 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -618,7 +618,11 @@ void get_entropy_from_seedfile(uint8_t *noise,int len) {
+                 zap = 1;
+         }
+ 
++#ifdef MINGW
++        seed = open(filename, O_RDONLY|O_BINARY);
++#else /* MINGW */
+         seed = open(filename, O_RDONLY);
++#endif /* MINGW */
+         if(seed == -1) {
+                 dw_log_3strings("Fatal error opening random seed file ",
+                        filename,"",1);

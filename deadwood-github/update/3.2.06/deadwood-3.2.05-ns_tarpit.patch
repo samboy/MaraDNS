@@ -1,0 +1,86 @@
+--- src-orig/DwRecurse.c	2014-12-24 02:00:24.522027262 -0800
++++ src/DwRecurse.c	2014-12-24 01:58:55.098027345 -0800
+@@ -2831,11 +2831,14 @@
+ int dwx_do_glueless_inflight(int32_t conn_number, int already, int type) {
+         int max = 0, num_alloc = 0;
+ 
+-        if(already == conn_number || rem[conn_number].recurse_depth >= 32 ||
+-           rem[already].recurse_depth >= 32) {
++        if(already == conn_number || rem[conn_number].recurse_depth >= 83 ||
++           rem[already].recurse_depth >= 83) {
+                 return -1;
+         }
+ 
++	rem[conn_number].recurse_depth++;
++	rem[already].recurse_depth++;
++
+         num_alloc = key_n[DWM_N_max_inflights];
+         if(num_alloc < 1) {
+                 num_alloc = 1;
+@@ -2884,6 +2887,7 @@
+ void dwx_do_glueless_new(dw_str *query, int32_t conn_number, int type) {
+         int32_t new_conn_num = 0;
+         int num_alloc = 0;
++	int depth = 0;
+         dw_str *packet = 0;
+ 
+         num_alloc = key_n[DWM_N_max_inflights];
+@@ -2893,9 +2897,28 @@
+                 num_alloc = 32000;
+         }
+         num_alloc++; /* Stop off-by-one attacks */
+-        if(rem[conn_number].recurse_depth > 32) {
++        if(rem[conn_number].recurse_depth >= 83) {
+                 return;
+         }
++	rem[conn_number].recurse_depth++;
++
++	/* Make sure we "bubble up" the fact we have made a new query */
++	new_conn_num = conn_number;
++	depth = 0;
++	while(rem[conn_number].num_locals > 0 && 
++	      rem[conn_number].local != 0 && 
++	      depth < 120) {	
++		if(rem[conn_number].local[0] != 0) {
++			conn_number = rem[conn_number].local[0]->glueless_conn;
++		}
++        	if(rem[conn_number].recurse_depth > 83) {
++                	return;
++        	}
++		rem[conn_number].recurse_depth++;
++		depth++;
++	}
++	conn_number = new_conn_num;
++
+ 
+         new_conn_num = find_free_remote();
+         if(new_conn_num == -1) { /* No more remote pending connections */
+@@ -3005,6 +3028,11 @@
+         SOCKET s = INVALID_SOCKET;
+         socklen_t inet_len = sizeof(struct sockaddr_in);
+ 
++	if(rem[conn_num].recurse_depth > 83) {
++		return;
++	}
++	rem[conn_num].recurse_depth++;
++
+         /* Get answer from cache */
+         answer = dwh_get(cache,query,0,1);
+         if(answer == 0) {
+diff -ur src-orig/DwUdpSocket.c src/DwUdpSocket.c
+--- src-orig/DwUdpSocket.c	2014-12-24 02:00:24.550027262 -0800
++++ src/DwUdpSocket.c	2014-12-24 01:58:30.135027358 -0800
+@@ -186,10 +186,12 @@
+         socklen_t inet_len = sizeof(struct sockaddr_in);
+ 
+         if(rem[n].socket != x_socket_num || /* Already used (sanity check) */
+-           rem[n].recurse_depth > 32) { /* Infinite recursion protection */
++           rem[n].recurse_depth > 83) { /* Infinite recursion protection */
+                 return -1;
+         }
+ 
++	rem[n].recurse_depth++;
++
+         /* Get a random query ID to send to the remote server */
+         rnum = set_dns_qid(packet,len,dwr_rng(rng_seed));
+         if(rnum == -1) {

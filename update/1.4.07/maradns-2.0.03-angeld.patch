@@ -1,0 +1,21 @@
+--- maradns-2.0.03/parse/Csv2_database.c	2011-08-05 06:59:48.000000000 -0500
++++ maradns-2.0.04/parse/Csv2_database.c	2011-10-05 18:23:59.012736913 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004-2006 Sam Trenholme
++/* Copyright (c) 2004-2011 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -840,10 +840,10 @@
+         }
+         point = state->buffer;
+ 
+-        /* We only allow 30 things in the buffer because it gets slower and
++        /* We only allow 64 things in the buffer because it gets slower and
+          * slower to add things to the end */
+         if(state->buffer != new) {
+-                for(x = 0; x < 30 ; x++) {
++                for(x = 0; x < 64 ; x++) {
+                         if(point->next == 0) {
+                                 break;
+                         }

@@ -1,0 +1,19 @@
+commit f015495d221f1c2b2f10db38e87cecf3839d6093
+Author: Sam Trenholme <sam.trenholme@gmail.com>
+Date:   Tue Feb 11 00:51:31 2014 -0800
+
+    Fix bounds testing bug in dw_substr()
+
+diff --git a/deadwood-github/src/DwStr.c b/deadwood-github/src/DwStr.c
+index 1bd2bf8..16fd1e8 100644
+--- a/deadwood-github/src/DwStr.c
++++ b/deadwood-github/src/DwStr.c
+@@ -290,7 +290,7 @@ dw_str *dw_substr(dw_str *obj, int32_t begin, int32_t amount, int32_t max) {
+         /* Do the actual copying */
+         for(c = 0; c < amount; c++) {
+                 /* Bounds checking */
+-                if(c > begin + obj->len || c >= copy->max) {
++                if(c + begin > obj->len || c >= copy->max) {
+                         break;
+                 }
+                 *(copy->str + c) = *(obj->str + begin + c);

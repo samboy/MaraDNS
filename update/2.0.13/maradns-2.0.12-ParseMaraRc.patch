@@ -1,0 +1,59 @@
+Two buffer overflows patched.  One is non-exploitable.  The other can
+only be exploited if you control the mararc file (a file almost always
+only edited by root).
+
+I checked, and, yes, MaraDNS 1.0.00 from 2002 has this particular
+bug. Most of the things like this people are finding these days come
+from the 2001-2002 codebase; I wrote too much code too quickly because
+there was a hurry to have an open-source DNS server that wasn’t BIND
+at the time.
+
+Another thing: The one exploit is actually very limited. You can’t write
+to any memory with these bugs; you can only force MaraDNS to read from a
+memory location she should not read from.
+
+See https://github.com/samboy/MaraDNS/issues/19 and
+https://github.com/samboy/MaraDNS/issues/20 for discussion.
+
+--- maradns-2.0.12/parse/ParseMaraRc.c	2015-08-18 21:44:49.000000000 -0700
++++ maradns-2.0.13/parse/ParseMaraRc.c	2015-09-02 06:33:44.611896236 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2009 Sam Trenholme
++/* Copyright (c) 2002-2009, 2015 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -353,8 +353,14 @@
+    ouput: pointer to mhash object on success, 0 on failure
+ */
+ 
++/*
++ * See https://github.com/samboy/MaraDNS/issues/19
++ * Non-exploitable buffer overflow
++ * (non-expoitable because index is always, in MaraDNS code, set
++ *  by code which never makes index be DKEYCOUNT)
++ */
+ mhash *dvar_raw(int index) {
+-    if(index < 0 || index > DKEYCOUNT)
++    if(index < 0 || index >= DKEYCOUNT)
+         return 0;
+     return dvar[index];
+     }
+@@ -448,7 +454,7 @@
+ int new_dvar(js_string *name) {
+     int num;
+     num = dkeyword2num(name);
+-    if(dvar[num] != 0 || num < 0 || num > DKEYCOUNT)
++    if(num < 0 || num >= DKEYCOUNT || dvar[num] != 0)
+         return JS_ERROR;
+     if((dvar[num] = mhash_create(7)) == 0)
+         return JS_ERROR;
+@@ -1097,7 +1103,7 @@
+             js_qstr2js(errorstr,L_FILEMAKE_FATAL); /* "Fatal error creating file" */
+             return JS_ERROR;
+             }
+-        file->buffer = 0;
++	file->buffer = 0;
+     }
+ 
+     /* Initialize values */

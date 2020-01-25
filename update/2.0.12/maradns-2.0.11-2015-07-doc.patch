@@ -1,0 +1,219 @@
+--- doc/en/source/csv2.ej.orig	2015-07-26 02:05:49.044401545 -0700
++++ doc/en/source/csv2.ej	2015-07-26 02:06:27.406706207 -0700
+@@ -215,10 +215,11 @@
+ for full details.  
+ <p>
+ 
+-If tildes are used to separate records, a TXT record can not contain a
+-'|' (pipe) character, a '#' character, nor any ASCII control character;
+-these characters can be added to a TXT record via the use of escape
+-sequences; read the csv2_txt man page for details.
++If tildes are used to separate records, a TXT record can not contain
++a literal '|' (pipe) character, a '#' literal, a '~' literal, nor any
++ASCII control literal; these characters can be added to a TXT record
++via the use of escape sequences; read the 
++<A href="man.csv2_txt.html">csv2_txt man page</A> for details.
+ 
+ <h2>SPF</h2>
+ 
+--- doc/en/source/faq.embed.orig	2015-07-26 02:06:00.386308997 -0700
++++ doc/en/source/faq.embed	2015-07-26 02:06:27.406706207 -0700
+@@ -152,9 +152,6 @@
+ 
+ <p>60. <A href="#tld">Does MaraDNS support newer top level domains?</A>
+ 
+-<p>61. <A href="#mobile">Why isn't MaraDNS' web design more small screen
+-       compatible?</A>
+-
+ </BLOCKQUOTE>
+ <H2>ANSWERS</H2>
+ 
+@@ -419,7 +416,7 @@
+ 
+ A recursive DNS server is a DNS server that is able to contact other DNS
+ servers in order to resolve a given domain name label.  This is the kind 
+-of DNS server one points to in <tt>/etc/resolve.conf</tt>.  MaraDNS uses
++of DNS server one points to in <tt>/etc/resolv.conf</tt>.  MaraDNS uses
+ the Deadwood daemon to process recursive DNS queries.
+ 
+ <p>
+@@ -1081,8 +1078,8 @@
+ <i>Please note that the mailing list is no longer used to handle
+ MaraDNS support requests. Please file a Github issue at
+ <A href=https://github.com/samboy/MaraDNS/issues
+->https://github.com/samboy/MaraDNS/issues</A> to get MaraDNS
+-support.</i>
++>https://github.com/samboy/MaraDNS/issues</A> to file a MaraDNS bug
++report.</i>
+ 
+ <p> The procedure for subscribing to the mailing list is as follows:
+ 
+@@ -1102,8 +1099,9 @@
+ 
+ <li>Note that the mailing list is moderated and only relevant MaraDNS
+    	announcements are approved.  People who need help should 
+-	<A href=https://github.com/samboy/MaraDNS/issues>file a 
+-	Github issue</A>.
++	<A href=http://maradns.samiam.org/notes.html>read the manuals</A>
++	or <A href=http://maradns.samiam.org/search.html>search the MaraDNS
++	webpage</A> for support.
+ 
+ </ul>
+ 
+@@ -1123,27 +1121,15 @@
+ <a name=edns> </a>
+ <h2>51. How does MaraDNS respond to EDNS (RFC2671) packets?</h2>
+ 
+-MaraDNS 1.4 responds to EDNS packets by ignoring the OPT record and acting
+-as if it the packet did not have an OPT record.
+-
+-<p>
+-
+-<A href=http://maradns.samiam.org/deadwood>Deadwood</A> (the recursive resolver 
+-for Deadwood 2.0, available in the deadwood-#.#.## directory of any 1.4
+-MaraDNS release), up through Deadwood
+-2.9.02 responds to EDNS packets by discarding the packet and not
+-responding.  This was changed in Deadwood 2.9.03: Deadwood, as
+-per RFC2671 section 5.3, now responds to EDNS queries by replying with 
+-the NOTIMPL ("not implemented") error code instead of answering the query.  
+-This was changed again in Deadwood 2.9.04: Deadwood now, like MaraDNS 1
+-(as well as DJBdns), handles a EDNS packet as if the OPT record did not
+-exist.
++MaraDNS 2 (both the authoritative maradns server and the recursive
++Deadwood server) responds to EDNS packets by ignoring the OPT record
++and acting as if it the packet did not have an OPT record.
+ 
+ <p>
+ 
+ <A href=http://samiam.org/software/microdns.html>MicroDNS</A> (available
+-in the <tt>tools/misc</tt> directory of any 1.4 MaraDNS release), as of
+-MaraDNS 1.4.05, responds to EDNS queries the same way Deadwood 2.9.03 did:
++in the <tt>tools/misc</tt> directory of any MaraDNS 2 release) 
++responds to EDNS queries the same way Deadwood 2.9.03 did:
+ By giving back "NOTIMPL" instead of answering the query with the
+ default IP.  <A 
+ href=http://maradns.blogspot.com/search/label/NanoDNS>NanoDNS</A>, in the 
+@@ -1317,8 +1303,8 @@
+ 
+ When I say that Windows 7 and CentOS 6 are the only supported operating
+ systems for MaraDNS, this does not mean that MaraDNS will not compile and
+-run on other systems; it merely means that I can not provide hand-holding
+-support when answering <A href=https://github.com/samboy/MaraDNS/issues>Github
++run on other systems; it merely means that I can not provide 
++support for <A href=https://github.com/samboy/MaraDNS/issues>Github
+ bug reports</A> for people who want to run MaraDNS in Minix, one of
+ the open-source BSD variants, or what not.
+ 
+@@ -1360,19 +1346,3 @@
+ using the domain name “ñ.com.”, it needs to be in the form
+ “xn--ida.com.” in MaraDNS’ mararc and zone files.
+ 
+-<A name="mobile"> </A>
+-
+-<h2>Why isn't MaraDNS' web design more small screen compatible?</h2>
+-
+-MaraDNS is a project from the first 2000s decade (oughts) and much of
+-its development, including its website design, was done before the
+-iPhone existed, in an era when getting a site to look good in Internet
+-Explorer 6 mattered a lot more than making it adaptable to different
+-screen sizes.
+-
+-<p>
+-
+-It would be nice if I somehow became independently wealthy and could 
+-retire young, which would give me enough free time to update MaraDNS'
+-web site design for the 2010s.
+-
+--- doc/en/source/maradns.ej.orig	2015-07-26 02:06:14.051992616 -0700
++++ doc/en/source/maradns.ej	2015-07-26 02:06:27.407706111 -0700
+@@ -60,8 +60,8 @@
+ <b>maradns --version</b>
+ 
+ <H1>USAGE</H1>
+-If MaraDNS is functioning only as a recursive nameserver, just one file 
+-needs to be set up: The mararc file.
++MaraDNS consists of two programs: maradns, an authoritative-only nameserver,
++and Deadwood, a recursive name server.  Deadwood has its own man page.
+ <p>
+ In order for MaraDNS to function as an authoritative nameserver, two
+ or more files need to be set up: the mararc file and one or more "csv2"
+@@ -79,31 +79,30 @@
+ 
+ <h1>FIREWALL CONFIGURATION</h1>
+ 
+-If MaraDNS is being used as an authoritative nameserver, allow UDP 
++When using the maradns authoritative nameserver, allow UDP 
+ connections from all hosts on the internet to UDP port 53 for the IP
+ that the authoritative nameserver uses.
+ <p>
+-If MaraDNS is being used as a recursive nameserver, the firewall needs
+-to allow the following packets to go to and from the IP the recursive
+-nameserver uses:
++When using the Deadwood recursive nameserver:
+ <ul>
+ <li>
+-Allow UDP connections from the MaraDNS-running server to any
++Allow UDP connections from the Deadwood server to any
+ machine on the internet where the UDP destination port is 53
+ <li>
+ Allow UDP connections from any machine on the internet to the IP of the
+ recursive server, where the source port from the remote server is 53, and the 
+ destination port is between 15000 and 19095 (inclusive)
+ <li>
+-Allow UDP connections from IPs that use MaraDNS as a recursive DNS server 
+-to port 53 of the MaraDNS server
++Allow UDP connections from IPs that use Deadwood as a recursive DNS server 
++to port 53 
+ </ul>
+-MaraDNS uses a strong secure RNG for both the query (16 bits of entropy) 
+-and the source port of the query (12 bits of entropy).  This makes spoofing 
+-replies to a MaraDNS server more difficult, since the attacker has only a 
+-one in 250 million chance that a given spoofed reply will be considered 
+-valid.
++Deadwood uses a strong secure RNG (RadioGatun[32]) for both the query (16
++bits of entropy) and the source port of the query (12 bits of entropy).
++This makes spoofing replies to a Deadwood recursive server more difficult,
++since the attacker has only a one in 250 million chance that a given
++spoofed reply will be considered valid.
+ <p>
++
+ <include "../source/faq.embed">
+ <p>
+ <h1>BUGS</h1>
+@@ -136,15 +135,6 @@
+ Star records (what RFC1034 calls "wildcards") can not be attached to
+ NS records.
+ <p>
+-MaraDNS recursive resolver treats any TTL shorter than min_ttl seconds 
+-(min_ttl_cname seconds when the record is a CNAME record)
+-as if the TTL in question was min_ttl (or min_ttl_cname) seconds long when
+-determining when to expire a record from MaraDNS' cache.
+-<p>
+-TTLs which are shorter than 20 seconds long are given a TTL of 20
+-seconds; TTLs which are more than 63072000 (2 years) long are given
+-a TTL of 2 years.
+-<p>
+ MaraDNS, like every other known DNS implementation, only supports a 
+ QDCOUNT of 0 or 1.
+ <h1>UNIMPLEMENTED FEATURES</h1>
+--- README.Debian.orig	2015-07-26 02:06:22.102217167 -0700
++++ README.Debian	2015-07-26 02:06:27.407706111 -0700
+@@ -14,7 +14,7 @@
+ 
+    If using a 1.x version of MaraDNS, please read the update guide.
+      * First, download the most recent stable version of MaraDNS from the
+-       MaraDNS download page or from the Sourceforge page.
++       MaraDNS download page.
+      * Next, unpack the MaraDNS tarball. For example, if you downloaded
+        the file "maradns-2.0.11.tar.bz2" (please only download
+        MaraDNS-2.0.11 if it is the current stable version, which it is at
+@@ -44,6 +44,6 @@
+      /etc/init.d/maradns start
+ 
+    At this point, your MaraDNS daemon is now the fully supported version
+-   of MaraDNS. If you continue to have the bug or concern after upgrading
+-   to the latest 2.0 release, please let us know on the support forum so
+-   we can begin to resolve the issue.
++   of MaraDNS. If you continue to have the bug after upgrading to the 
++   latest 2.0 release, please file a GitHub issue so we can begin to 
++   resolve it.

@@ -1,0 +1,54 @@
+commit 6db3deb8a3df970f07d2de57b825d88c549dbf6c
+Author: Sam Trenholme <strenholme.usenet@gmail.com>
+Date:   Tue Aug 18 06:23:13 2015 -0700
+
+    https://github.com/samboy/MaraDNS/issues/18
+    
+    Making sure js_file.buffer is always set to 0, so we don’t try to
+    free an uninitialized memory location pointer
+
+diff --git a/parse/ParseMaraRc.c b/parse/ParseMaraRc.c
+index f906530..e6acd1c 100644
+--- a/parse/ParseMaraRc.c
++++ b/parse/ParseMaraRc.c
+@@ -1092,11 +1092,13 @@ int read_mararc(js_string *fileloc,js_string *errorstr,int *errorret) {
+             js_qstr2js(errorstr,L_JSCREATE_FATAL); /* "Fatal error creating js_string" */
+             return JS_ERROR;
+             }
+-    if(file == 0)
++    if(file == 0) {
+         if((file = js_alloc(1,sizeof(js_file))) == 0) {
+             js_qstr2js(errorstr,L_FILEMAKE_FATAL); /* "Fatal error creating file" */
+             return JS_ERROR;
+             }
++	file->buffer = 0;
++    }
+ 
+     /* Initialize values */
+     js_qstr2js(errorstr,"");
+diff --git a/server/MaraBigHash.c b/server/MaraBigHash.c
+index 9f50c58..9f7111d 100644
+--- a/server/MaraBigHash.c
++++ b/server/MaraBigHash.c
+@@ -717,6 +717,8 @@ int parse_csv1s(mhash *maintable, js_string *error, int recursive) {
+         return JS_ERROR;
+         }
+ 
++    desc->buffer = 0;
++
+     /* Pass 1: fill up the hash with the AN and NS answers */
+ 
+     /* Get all of the keys in the csv1 hash */
+diff --git a/tcp/zoneserver.c b/tcp/zoneserver.c
+index de7b3bf..38739b4 100644
+--- a/tcp/zoneserver.c
++++ b/tcp/zoneserver.c
+@@ -606,6 +606,8 @@ int serve_zone(int connect, int perms) {
+     int counter;
+     uint32 ttl;
+ 
++    desc.buffer = 0;
++
+     /* 30-second idle timeout */
+     alarm(30);
+ 

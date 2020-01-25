@@ -1,0 +1,86 @@
+--- deadwood-3.2.06/src/DwDnsStr.c.orig	2015-01-11 08:02:58.628125344 -0800
++++ deadwood-3.2.06/src/DwDnsStr.c	2015-01-11 08:03:38.561345353 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2009-2014 Sam Trenholme
++/* Copyright (c) 2009-2015 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -596,6 +596,9 @@
+                         ip = dw_substr(answer,
+                                 look->an[(counter * 2) + 1] + 10,4,1);
+                         if(dwc_check_ip(blacklist_hash,ip) != 0) {
++				dw_log_dwstrip(
++"IP blocked. Check filter_rfc1918 or ip_blacklist to allow IP ",
++						ip,10);
+                                 dwc_zap_dns_str(look);
+                                 dw_destroy(ip);
+                                 return 1;
+--- deadwood-3.2.05/src/DwSys.h	2014-02-11 15:08:55.000000000 -0800
++++ deadwood-3.2.06/src/DwSys.h	2015-01-11 08:18:37.401818995 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2010 Sam Trenholme
++/* Copyright (c) 2007-2015 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -57,6 +57,10 @@
+ /* Log a string followed by the contents of a DwStr object */
+ void dw_log_dwstr(char *s1, dw_str *s2, int min_log_level);
+ 
++/* Log a string followed by the contents of a DwStr object as a series of
++ *  * decimal integers separated by dots (so IPs in strings look normal) */
++void dw_log_dwstrip(char *s1, dw_str *s2, int min_log_level);
++
+ /* Log a string followed by the contents of a DwStr object followed by
+  * another string */
+ void dw_log_dwstr_str(char *s1, dw_str *s2, char *s3, int min_log_level);
+--- deadwood-3.2.06/src/DwSys.c.orig	2015-01-11 08:24:11.238138225 -0800
++++ deadwood-3.2.06/src/DwSys.c	2015-01-11 08:25:11.305928601 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2014 Sam Trenholme
++/* Copyright (c) 2007-2015 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -224,6 +224,40 @@
+ #endif /* MINGW */
+ }
+ 
++/* Log a string followed by the contents of a DwStr object as a series of
++ * decimal integers separated by dots (so IPs in strings look normal) */
++void dw_log_dwstrip(char *s1, dw_str *s2, int min_log_level) {
++        int32_t ll = key_n[DWM_N_verbose_level];
++	int a;
++        if(ll <= 0 || ll < min_log_level) {
++                return;
++        }
++
++#ifndef MINGW
++        printf("%s",s1);
++#else /* MINGW */
++        fprintf(LOG,"%s",s1);
++#endif /* MINGW */
++
++	if(s2 != 0 && s2->str != 0) {
++		for(a=0;a<s2->len;a++) {
++#ifndef MINGW
++        		printf("%d.",*(s2->str + a));
++#else /* MINGW */
++        		fprintf(LOG,"%d.",*(s2->str + a));
++#endif /* MINGW */
++		}
++	}
++
++        /* OK, add a newline */
++
++#ifndef MINGW
++        printf("%s","\n");
++#else /* MINGW */
++        fprintf(LOG,"%s","\n");
++#endif /* MINGW */
++}
++
+ /* Log a string followed by the contents of a DwStr object followed by
+  * another string */
+ void dw_log_dwstr_str(char *s1, dw_str *s2, char *s3, int min_log_level) {

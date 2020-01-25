@@ -1,0 +1,314 @@
+diff -ur deadwood-3.3.01/doc/Deadwood.ej deadwood-3.3.02/doc/Deadwood.ej
+--- deadwood-3.3.01/doc/Deadwood.ej	2019-02-10 20:04:07.000000000 -0800
++++ deadwood-3.3.02/doc/Deadwood.ej	2019-02-22 22:19:43.921527874 -0800
+@@ -226,7 +226,7 @@
+ files do not break in Deadwood 3.0.
+ 
+ <h2>ip4</h2>
+-This is a dictionary varibale which allows us to have given names resolve
++This is a dictionary variable which allows us to have given names resolve
+ to bogus IPv4 addresses.  Here, we have the name "maradns.foo" resolve
+ to "10.10.10.10" and "kabah.foo" resolve to "10.11.11.11", regardless
+ of what real values these DNS records may have:
+@@ -240,6 +240,19 @@
+ Note that a given name can only resolve to a single IP, and that the
+ records have a fixed TTL of 30 seconds.
+ 
++<h2>ip6</h2>
++Like ip4, ip6 uses a similar syntax to have bogus IPv6 addresses.
++We don't use standard notation for IPv6 addresses.  Instead, we
++we use 32-character hex addresses (case insensitive); to make
++it easier to count long strings of "0"s, the "_" acts like a 0.
++Here is an example:
++
++<pre>
++ip6 = {}
++ip6["maradns.foo."] = "fd4d617261444e530000000000001234"
++ip6["kabah.foo."] = "FD4D617261444E53__00__00__002345"
++</pre>
++
+ <h2>ip_blacklist</h2>
+ This is a list of IPs that we do not allow to be in the answer to a
+ DNS request.  The reason for this is to counteract the practice some
+diff -ur deadwood-3.3.01/doc/dwood3rc-all deadwood-3.3.02/doc/dwood3rc-all
+--- deadwood-3.3.01/doc/dwood3rc-all	2018-01-10 15:35:06.000000000 -0800
++++ deadwood-3.3.02/doc/dwood3rc-all	2019-02-22 22:20:11.369311102 -0800
+@@ -137,6 +137,23 @@
+ #upstream_servers = {}
+ #upstream_servers["."]="8.8.8.8, 8.8.4.4" 
+ 
++# We can have given names resolve to bogus IPv4 addresses.  Here, we
++# have the name "maradns.foo" resolve to "10.10.10.10" and "kabah.foo"
++# resolve to "10.11.11.11", regardless of what real values these DNS
++# records may have.  Note that a given name can only resolve to a
++# single IP, and that the records have a fixed TTL of 30 seconds.
++ip4 = {}
++ip4["maradns.foo."] = "10.10.10.10"
++ip4["kabah.foo."] = "10.11.11.11"
++
++# We can also use a similar syntax to have bogus IPv6 addresses.
++# We don't use standard notation for IPv6 addresses.  Instead, we
++# we use 32-character hex addresses (case insensitive); to make
++# it easier to count long strings of "0"s, the "_" acts like a 0
++ip6 = {}
++ip6["maradns.foo."] = "fd4d617261444e530000000000001234"
++ip6["kabah.foo."] = "FD4D617261444E53__00__00__002345"
++
+ # How many messages to log.  Higher means more messages.
+ verbose_level = 3
+ 
+diff -ur deadwood-3.3.01/src/DwMain.c deadwood-3.3.02/src/DwMain.c
+--- deadwood-3.3.01/src/DwMain.c	2019-02-10 20:04:07.000000000 -0800
++++ deadwood-3.3.02/src/DwMain.c	2019-02-22 22:20:29.597532680 -0800
+@@ -110,6 +110,7 @@
+         init_cache();
+         process_root_upstream();
+         process_ip4_params();
++        process_ip6_params();
+         malloc_tcp_pend();
+         init_tcp_b_pend();
+         init_b_remote();
+diff -ur deadwood-3.3.01/src/DwMararc.h deadwood-3.3.02/src/DwMararc.h
+--- deadwood-3.3.01/src/DwMararc.h	2019-02-10 20:04:07.000000000 -0800
++++ deadwood-3.3.02/src/DwMararc.h	2019-02-22 22:21:01.656922786 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2018 Sam Trenholme
++/* Copyright (c) 2007-2019 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -37,6 +37,7 @@
+ #define DWM_D_upstream_servers 0
+ #define DWM_D_root_servers 1
+ #define DWM_D_ip4 2
++#define DWM_D_ip6 3
+ 
+ /* mararc numeric parameters */
+ #define DWM_N_maxprocs 0
+@@ -73,7 +74,7 @@
+ /* Number of string parameters in the mararc file */
+ #define KEY_S_COUNT 7
+ /* Number of dictionary parameters in the mararc file */
+-#define KEY_D_COUNT 3
++#define KEY_D_COUNT 4
+ /* Number of numeric parameters in the mararc file */
+ #define KEY_N_COUNT 30
+ 
+@@ -103,6 +104,7 @@
+         "upstream_servers", /* Recursive upstream DNS servers */
+         "root_servers", /* Non-recursive root DNS servers */
+         "ip4",
++	"ip6",
+         0 };
+ 
+ char *key_n_names[KEY_N_COUNT + 1] = {
+diff -ur deadwood-3.3.01/src/DwSocket.c deadwood-3.3.02/src/DwSocket.c
+--- deadwood-3.3.01/src/DwSocket.c	2019-02-10 20:04:07.000000000 -0800
++++ deadwood-3.3.02/src/DwSocket.c	2019-02-22 22:19:13.228017504 -0800
+@@ -560,22 +560,14 @@
+ 
+ }
+ 
+-/* Given a binary DNS name, an ASCII IPv4 IP, and a TTL (16-bit),
+- * convert it in to a value to add to Deadwood's cache */
+-dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
++/* Prepare a synthetic record to put in Deadwood's cache */
++dw_str *make_synth_record(dw_str *rawname, dw_str *record, int type, int ttl) {
+         dw_str *out = 0;
+-        dw_str *ip = 0;
+-        out = dw_create(rawname->len + 35);
+-        ip = dw_create(18); // 18 to make sure IPv6 isn't buffer overflow
+-        ip->len = 4;
+-        if(inet_pton(AF_INET, ipv4, ip->str) != 1) { // Convert to raw IP
+-                dw_destroy(out);
+-                dw_destroy(ip);
+-                return 0;
+-        }
+-        if(out == 0 || ip == 0) {
+-                if(out != 0) { dw_destroy(out); }
+-                if(ip != 0) { dw_destroy(ip); }
++	if(rawname == 0 || record == 0) {
++		return 0;
++	}
++        out = dw_create(rawname->len + record->len + 35);
++        if(out == 0) {
+                 return 0;
+         }
+         // Keep TTL 16-bit
+@@ -585,12 +577,12 @@
+                 ttl = 65535;
+         }
+         if(dw_append(rawname, out) == -1 || // Initial name
+-           dw_push_u16(1, out) == -1 || // A record
++           dw_push_u16(type, out) == -1 || // Record type
+            dw_push_u16(1, out) == -1 || // Internet class
+            dw_push_u16(0, out) == -1 || // TTL high
+            dw_push_u16(ttl, out) == -1 || // TTL low
+-           dw_push_u16(4, out) == -1 || // RDlength (length of record)
+-           dw_append(ip, out) == -1 || // Add converted raw IP
++           dw_push_u16(record->len, out) == -1 || // RDlength: length of record
++           dw_append(record, out) == -1 || // Add converted raw IP
+            dw_push_u16(0, out) == -1 || // First offset: 0
+            dw_push_u16(rawname->len, out) == 1 || // Length of dname
+            dw_push_u16(1, out) == -1 || // ANLENGTH (answers): 1
+@@ -598,12 +590,66 @@
+            dw_push_u16(0, out) == -1 || // ARLENGTH (AR records): 0
+            dw_addchar(TYPE_ANSWER,out) == -1) {
+                 dw_destroy(out);
+-                dw_destroy(ip);
+                 return 0;
+         }
+-        dw_destroy(ip);
+         return out;
++}
+ 
++/* Given a binary DNS name, an ASCII IPv4 IP, and a TTL (16-bit),
++ * convert it in to a value to add to Deadwood's cache */
++dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
++	dw_str *ip = 0;
++	dw_str *out = 0;
++	ip = dw_create(18); // 18 to make sure IPv6 isn't buffer overflow
++	if(ip == 0 || rawname == 0 || ipv4 == 0) {
++		return 0;
++	}
++	ip->len = 4;
++	if(inet_pton(AF_INET, ipv4, ip->str) != 1) { // Convert to raw IP
++		dw_destroy(ip);
++		return 0;
++	}	
++	out = make_synth_record(rawname, ip, 1 /* A record */, ttl);
++	dw_destroy(ip);
++	return out;
++}
++
++/* Given a binary DNS name, a dw_str with a raw 32-byte hex number (like
++ * how those old MD5 sums look), and a 16-bit TTL, convert it in to a
++ * value to add to Deadwood's cache */
++dw_str *make_synth_ip6(dw_str *rawname, dw_str *ipv6, int ttl) {
++	dw_str *ip = 0;
++	dw_str *out = 0;
++	int a, n, v;
++	ip = dw_create(18);
++	if(ip == 0 || rawname == 0 || ipv6 == 0 || ipv6->len != 32) {
++		if(ip != 0) { dw_destroy(ip); }
++		return 0;
++	}
++	ip->len = 16;
++	for(a = 0; a < 32; a++) {
++		n = *(ipv6->str + a);
++		if(n >= '0' && n <= '9') {	
++			v = n - '0';
++		} else if(n == '_') {
++			v = 0;
++		} else if(n >= 'a' && n <= 'f') {
++			v = 10 + (n - 'a');
++		} else if(n >= 'A' && n <= 'F') {
++			v = 10 + (n - 'A');
++		} else {
++			dw_destroy(ip);
++			return 0; /* Syntax error */
++		}
++		if((a & 1) == 0) {
++			v <<= 4;
++			*(ip->str + (a >> 1)) = 0;
++		} 
++		*(ip->str + (a >> 1)) |= v;
++	}
++	out = make_synth_record(rawname, ip, 28, ttl);
++	dw_destroy(ip);
++	return out;
+ }
+ 
+ /* Read and process the ip4 named IPs */
+@@ -634,17 +680,6 @@
+                         dw_log_dwstr_str(" ",value," is ip4 entry name",0);
+                         dw_fatal("Fatal error processing ip4 cache_key");
+                 }
+-#ifdef XTRA_STUFF
+-                printf("rawname: ");
+-                dw_stdout(rawname);
+-                printf("\n");
+-                printf("cache_key: ");
+-                dw_stdout(cache_key);
+-                printf("\n");
+-                printf("cache_data: ");
+-                dw_stdout(cache_data);
+-                printf("\n");
+-#endif
+                 // Put cache_data in to cache with key cache_key
+                 dwh_add(cache, cache_key, cache_data, 1, 2);
+                 out = 1;
+@@ -662,6 +697,48 @@
+         }
+         return out;
+ }
++
++/* Read and process the ip6 named IPs */
++int process_ip6_params() {
++        dw_str *lastkey = 0, *key = 0, *value = 0, *rawname = 0,
++                *cache_key = 0, *cache_data = 0;
++        int a = 0, out = 0;
++        for(a=0;a<20000;a++) {
++                key = dwm_dict_nextkey(DWM_D_ip6,lastkey);
++                dw_destroy(lastkey);
++                if(key == 0) { /* End of dictionary */
++                        break;
++                }
++                value = dwm_dict_fetch(DWM_D_ip6,key);
++                rawname = dw_dnsname_convert(key);
++                cache_data = make_synth_ip6(rawname, value, 30);
++                if(value == 0 || rawname == 0 || cache_data == 0) {
++                        dw_log_dwstr_str(" ",value," is ip6 entry name",0);
++                        dw_fatal("Fatal error processing ip6 entry");
++                }
++                cache_key = dw_create(rawname->len + 3);
++                if(cache_key == 0 ||
++                   dw_append(rawname, cache_key) == -1 ||
++                   dw_push_u16(28, cache_key) == -1) {
++                        dw_log_dwstr_str(" ",value," is ip6 entry name",0);
++                        dw_fatal("Fatal error processing ip6 cache_key");
++                }
++                // Put cache_data in to cache with key cache_key
++                dwh_add(cache, cache_key, cache_data, 1, 2);
++                out = 1;
++                lastkey = dw_copy(key);
++                // Clean up copied strings
++                dw_destroy(key);
++                dw_destroy(value);
++                dw_destroy(rawname);
++                dw_destroy(cache_key);
++                dw_destroy(cache_data);
++        }
++        if(a == 20000) {
++                dw_fatal("Too many ip6 entries, limit 20,000");
++        }
++        return out;
++}
+ 
+ /* Process the root_servers and upstream_servers values, using
+  * default root servers if needed
+diff -ur deadwood-3.3.01/src/DwSocket.h deadwood-3.3.02/src/DwSocket.h
+--- deadwood-3.3.01/src/DwSocket.h	2019-02-10 20:04:07.000000000 -0800
++++ deadwood-3.3.02/src/DwSocket.h	2019-02-22 22:20:44.225710499 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2018 Sam Trenholme
++/* Copyright (c) 2007-2019 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -292,6 +292,9 @@
+ /* Read and process the ip4 mararc parameter */
+ int process_ip4_params();
+ 
++/* Read and process the ip6 mararc parameter */
++int process_ip6_params();
++
+ /* Initialize the inflight hash */
+ void init_inflight_hash();
+ 
+diff -ur deadwood-3.3.01/src/version.h deadwood-3.3.02/src/version.h
+--- deadwood-3.3.01/src/version.h	2019-02-10 20:04:07.000000000 -0800
++++ deadwood-3.3.02/src/version.h	2019-02-22 22:18:26.300994165 -0800
+@@ -1 +1 @@
+-#define VERSION "3.3.01"
++#define VERSION "3.3.02"

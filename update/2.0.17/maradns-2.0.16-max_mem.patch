@@ -1,0 +1,83 @@
+On some systems, MaraDNS's default value for max_mem is too
+small.  Double it.
+
+See https://github.com/samboy/MaraDNS/issues/52 for discussion.
+
+diff --git a/parse/ParseMaraRc.c b/parse/ParseMaraRc.c
+index 487794e..fbca106 100644
+--- a/parse/ParseMaraRc.c
++++ b/parse/ParseMaraRc.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2009, 2015 Sam Trenholme
++/* Copyright (c) 2002-2019 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -139,7 +139,7 @@ char *keywords[KEYCOUNT] = {
+         "recurse_number_ports", /* The number of ports the recursive resolver
+                                  * is allowed to bind to */
+         "max_mem", /* The maximum amount of memory we allow MaraDNS to
+-                    * allocate, in kilobytes */
++                    * allocate, in bytes */
+         "notthere_ip", /* The IP to give users when they try to recursively
+                         * query a host that is not there or isn't responding
+                         */
+diff --git a/libs/JsStrOS.c b/libs/JsStrOS.c
+index b5a6beb..f9ba2f9 100644
+--- a/libs/JsStrOS.c
++++ b/libs/JsStrOS.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2006 Sam Trenholme
++/* Copyright (c) 2002-2019 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -119,7 +119,7 @@ void *js_alloc(int unit_count, int unit_size) {
+         /* Securty: In a situtation where we can not allocate memory,
+            the subsequent behavior of the program is undefined.  Hence,
+            the best thing to do is exit then and there */
+-        printf("Aieeeeee, can not allocate memory!");
++        printf("Aieeeeee, can not allocate memory (increase max_mem maybe?)!");
+         exit(64);
+         return (void *)0;
+         }
+diff --git a/server/MaraDNS.c b/server/MaraDNS.c
+index 82eb77e..dc644ad 100644
+--- a/server/MaraDNS.c
++++ b/server/MaraDNS.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2011 Sam Trenholme
++/* Copyright (c) 2002-2019 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -4446,8 +4446,8 @@ int main(int argc, char **argv) {
+     /* Limit the maximum amount of memory we can allocate, in
+      * bytes */
+     maxprocs = read_numeric_kvar("max_mem",
+-               1048576 + thread_overhead +
+-               ((cache_size + dns_records_served) * 1536));
++               2097072 + thread_overhead +
++               ((cache_size + dns_records_served) * 3072));
+     if(maxprocs < 262144 && maxprocs > 0) { maxprocs = 262144; }
+     if(maxprocs > 0) {
+       rlim.rlim_cur = rlim.rlim_max = maxprocs;
+diff --git a/doc/en/source/mararc.ej b/doc/en/source/mararc.ej
+index b8a3b97..dad30e5 100644
+--- a/doc/en/source/mararc.ej
++++ b/doc/en/source/mararc.ej
+@@ -557,10 +557,10 @@ available in a DNS reply.
+ <h2>max_mem</h2>
+ 
+ max_mem is the maximum amount of memory we allow MaraDNS to allocate,
+-in bytes. <p>
++in bytes.<p>
+ 
+-The default value of this is to allocate 1 megabyte for MaraDNS' general
+-use, and in addition, to allocate 1536 bytes for each element we
++The default value of this is to allocate 2 megabytes for MaraDNS' general
++use, and in addition, to allocate 3072 bytes for each element we
+ can have in the cache or DNS record that we are authoritatively serving.  
+ 
+ <h2>min_visible_ttl</h2>
+

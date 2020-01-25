@@ -1,0 +1,100 @@
+--- maradns-2.0.09/MaraDns.h	2014-02-12 00:17:18.000000000 -0800
++++ maradns-2.0.10/MaraDns.h	2014-04-26 21:11:48.831114726 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2013 Sam Trenholme
++/* Copyright (c) 2002-2014 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -29,12 +29,6 @@
+ 
+ #include <stdint.h>
+ 
+-/* Gerrit P. Haase's suggested the following for compiling this on
+-   Cygwin */
+-#ifdef __CYGWIN__
+-#define MSG_WAITALL 0x40
+-#endif /* __CYGWIN__ */
+-
+ /* This is the root server list as of 2007/11/15; the root servers were
+  * last changed 2007/11/01 */
+ #define ROOT_SERVERS "198.41.0.4"       /* a.root-servers.net (VeriSign) */ \
+--- maradns-2.0.09/tcp/zoneserver.c	2014-02-12 00:16:54.000000000 -0800
++++ maradns-2.0.10/tcp/zoneserver.c	2014-04-26 21:24:38.061370012 -0700
+@@ -1,4 +1,7 @@
+-/* Copyright (c) 2002-2010 Sam Trenholme and Albert Lee
++/* Copyright (c) 2002-2014 Sam Trenholme 
++ * Contributions made by Albert Lee (He made a valuable 1-line fix
++ * back in 2005 to work around a kernel bug which was making MaraDNS
++ * freeze up)
+  *
+  * TERMS
+  *
+@@ -1146,7 +1149,12 @@
+         verbose = js_atoi(verbstr,0);
+ 
+     /* Determine if we are root */
+-    if(geteuid() == 0) {
++#ifndef __CYGWIN__
++    if(geteuid() == 0) 
++#else
++    if(1==1) 
++#endif /* CYGWIN doesn't have root */
++    {
+         /* Change the root directory */
+         if(js_qstr2js(kvar_query,"chroot_dir") == JS_ERROR)
+             harderror(L_MAKE_KQ); /* "Could not create kvar_query" */
+@@ -1208,7 +1216,7 @@
+                      * stdout/stderr */
+                     if(pipe(stream1) != 0)
+                             harderror("Pipe()'s broken");
+-                    /* if((child[bind_address_iterate] = fork())) { * Parent */
++                    /* if((child[bind_address_iterate] = fork())) * Parent */
+                     if((pid = fork())) { /* Parent or error */
+                     if(pid < 0)
+                         harderror("Could not fork");
+@@ -1236,9 +1244,12 @@
+                     char buf[1024];
+                     ssize_t readed;
+                     setgid(gid);
++#ifndef __CYGWIN__
+                     if(setuid(uid) != 0) {
++			    /* This is an ancient Linux kernel bug */
+                             harderror("Parent couldn't drop UID\n");
+                     }
++#endif
+                     FD_ZERO(&child_set);
+                     /* Add all child fds */
+                     for(counter = 3;
+@@ -1282,18 +1293,21 @@
+             }
+ 
+         /* Drop the elevated privileges */
++#ifndef __CYGWIN__
+         setgid(gid);
+         if(setuid(uid) != 0)
+             harderror(L_NODROP); /* "Could not drop root uid" */
+         if(setuid(0) == 0)
+             harderror(L_STILL_ROOT);  /* "We seem to still be root" */
++#endif
+ 
+         if(inetd != 1) /* If we are not called from inetd */
+             mlog(L_DROP_SUCCESS); /* "Root privileges dropped" */
+ 
+         }
+     else {
+-        harderror("inetd is not zero; this is a fatal error.  Complain loudly on the MaraDNS\nmailing list.\n");
++        harderror("inetd is not zero; this is a fatal error.\n"
++		  "Make sure to be the root user.\n");
+         }
+ 
+     /* Make a database of IPs permitted to transfer zone file */
+@@ -1305,7 +1319,7 @@
+     if(read_kvar(kvar_query,kvar_str) == JS_ERROR)
+         harderror(L_NO_ACL); /* "Could not read zone_transfer_acl data" */
+     if(inetd == 1) {
+-        harderror("inetd is set.  This is a fatal error.  You should not be seeing this\nComplain loudly on the MaraDNS mailing list.");
++        harderror("inetd is set.  This is a fatal error.  You should not be seeing this\n");
+         }
+     else {
+         if(make_ip_acl(kvar_str,zonetransfer_acl,500,0) == JS_ERROR) {
