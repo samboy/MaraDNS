@@ -5,6 +5,11 @@
 
 killall DwMain > /dev/null 2>&1
 killall Deadwood > /dev/null 2>&1
+# Sometimes, other junk is listening on port 53
+PROCS="$(netstat -nap | grep :53 | awk '{print $NF}' | cut -f1 -d/ )"
+if [ ! -z "$PROCS" ] ; then
+	kill $PROCS
+fi
 sleep 30
 
 cat > dwood2rc << EOF
