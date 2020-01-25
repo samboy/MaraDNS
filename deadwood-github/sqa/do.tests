@@ -231,30 +231,31 @@ else
 fi
 
 # Now, let's test IPv6
-cd $SQADIR
-cd ../..
-make clean > /dev/null 2>&1 # MaraDNS
-./configure --ipv6 > /dev/null 2>&1
-make > /dev/null 2>&1 # MaraDNS
-cd $SQADIR
-cd ../src
-make -f Makefile.sl6 clean > /dev/null 2>&1
-export FLAGS='-O3 -DIPV6'
-make -f Makefile.sl6 > /dev/null 2>&1
-cd $SQADIR
-cd basic_ipv6_test
-sh ./do.test > output.test 2> /dev/null
-sleep 2
-if ! cmp output.success output.test > /dev/null 2>&1 ; then
-	echo test basic_ipv6_test failed
-	exit 1
-else
-	echo test basic_ipv6_test succeeded
-fi
-rm output.test
+#cd $SQADIR
+#cd ../..
+#make clean > /dev/null 2>&1 # MaraDNS
+#./configure --ipv6 > /dev/null 2>&1
+#make > /dev/null 2>&1 # MaraDNS
+#cd $SQADIR
+#cd ../src
+#make -f Makefile.sl6 clean > /dev/null 2>&1
+#export FLAGS='-O3 -DIPV6'
+#make -f Makefile.sl6 > /dev/null 2>&1
+#cd $SQADIR
+#cd basic_ipv6_test
+#sh ./do.test > output.test 2> /dev/null
+#sleep 2
+#if ! cmp output.success output.test > /dev/null 2>&1 ; then
+#	echo test basic_ipv6_test failed
+#	exit 1
+#else
+#	echo test basic_ipv6_test succeeded
+#fi
+#rm output.test
 
 # dwood2rc_s_ip_blacklist
-cd ../dwood2rc_s_ip_blacklist
+cd $SQADIR
+cd dwood2rc_s_ip_blacklist
 sh ./do.test > output.test 2> /dev/null
 sleep 2
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
