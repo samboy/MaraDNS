@@ -1,0 +1,18 @@
+#!/bin/bash -e
+
+git clone https://github.com/samboy/MaraDNS/
+cd MaraDNS
+
+# MaraDNS tests
+./configure --ipv6
+make
+cd sqa/regressions
+sh ./do.tests.authonly
+
+# Deadwood tests
+cd ../../deadwood-github/sqa/
+./do.tests
+
+echo -n $( git log -1 | head -1 )' '
+echo passes all tests
+exit 0
