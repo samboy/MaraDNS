@@ -20,7 +20,7 @@ EOF
 sleep 1
 askmara -t 1 Awww.google.com. > /dev/null
 sleep 1
-netstat -nap | grep Dea | grep ESTABLISHED | awk '{print $4}
+netstat -nap | grep src/De | grep ESTABLISHED | awk '{print $4}
 	' | awk -F: '{print $2 - ($2 % 256)}'
 sleep 11
 killall Deadwood
