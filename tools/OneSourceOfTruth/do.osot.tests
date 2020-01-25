@@ -1,7 +1,17 @@
 #!/bin/bash -e
 
 git clone https://github.com/samboy/MaraDNS/
-cd MaraDNS
+# Some tests assume the old version number dir name, so we set up a bogus 
+# number for the tests
+rm -fr maradns-3.4.99/
+mv MaraDNS maradns-3.4.99/
+cd maradns-3.4.99/
+VERSION="$( git log -1 | head -1 )"
+cd ..
+rm -fr maradns-3.4.99/.git
+mv maradns-3.4.99/deadwood-github maradns-3.4.99/deadwood-3.4.99
+
+cd maradns-3.4.99
 
 # MaraDNS tests
 ./configure --ipv6
@@ -10,9 +20,8 @@ cd sqa/regressions
 sh ./do.tests.authonly
 
 # Deadwood tests
-cd ../../deadwood-github/sqa/
+cd ../../deadwood-3.4.99/sqa/
 ./do.tests
 
-echo -n $( git log -1 | head -1 )' '
-echo passes all tests
+echo $VERSION passes all tests
 exit 0
