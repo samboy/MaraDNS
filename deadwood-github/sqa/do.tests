@@ -133,6 +133,7 @@ if [ ! -z "$*" ] ; then
 	TESTS="$*"
 fi
 
+FAILS=""
 for PAIR in $TESTS ; do
 	TEST=$( echo $PAIR | cut -f1 -d, )
 	TRIES="$( echo $PAIR | cut -f2 -d, -s )"
@@ -152,8 +153,9 @@ for PAIR in $TESTS ; do
 			echo test $test failed
 			TRY=$(( $TRY + 1 ))
 			if [ $TRY -ge $TRIES ] ; then
-				exit 1
+				# exit 1
 				echo TEST FAILURE
+				FAILS="$TEST $FAILS"
 			else
 				echo trying again
 			fi
@@ -290,7 +292,12 @@ cd $SQADIR
 cd ../../
 make clean > /dev/null 2>&1
 
-echo All tests successful
+if [ -z "$FAILS" ] ; then
+	echo All tests successful
+else
+	echo Test failures: $FAILS	
+	exit 1
+fi
 
 cd ..
 
