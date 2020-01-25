@@ -254,17 +254,17 @@ fi
 #rm output.test
 
 # dwood2rc_s_ip_blacklist
-cd $SQADIR
-cd dwood2rc_s_ip_blacklist
-sh ./do.test > output.test 2> /dev/null
-sleep 2
-if ! cmp output.success output.test > /dev/null 2>&1 ; then
-	echo test dwood2rc_s_ip_blacklist failed
-	exit 1
-else
-	echo test dwood2rc_s_ip_blacklist succeeded
-fi
-rm output.test
+#cd $SQADIR
+#cd dwood2rc_s_ip_blacklist
+#sh ./do.test > output.test 2> /dev/null
+#sleep 2
+#if ! cmp output.success output.test > /dev/null 2>&1 ; then
+#	echo test dwood2rc_s_ip_blacklist failed
+#	exit 1
+#else
+#	echo test dwood2rc_s_ip_blacklist succeeded
+#fi
+#rm output.test
 
 # No warnings when compiled with gcc44
 cd $SQADIR
