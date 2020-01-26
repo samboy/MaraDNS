@@ -1,3 +1,8 @@
+3.5.0001 (2020-01-25; stable release)
+
+- Use Git version of files for all releases
+- Update tests in Git to pass in CentOS 7
+
 3.4.02 (2020-01-14; stable release)
 
 - Issue building Deadwood from the GitHub tree in CentOS8 fixed
