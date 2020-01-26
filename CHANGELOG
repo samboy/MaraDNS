@@ -1,5 +1,81 @@
 MaraDNS changelog
 
+   maradns-3.5.0001:
+   This is a stable release of MaraDNS:
+
+     * bind2csv2.py updated to run in Python3.
+     * This is the first “One Source of Truth” release of MaraDNS: All
+       files in the release are derived directly from the Git version of
+       MaraDNS.
+     * Github history going back to 2014 is now included as part of the
+       source code tarball.
+     * Scripts to test the Git version of MaraDNS, to make the Windows
+       binaries, and to convert the Git version in to a tarball and
+       Windows zipfile added.
+
+     (2020-01-25)
+
+   maradns-3.4.02:
+   This is a stable release of MaraDNS:
+
+     * Tests updated to run and pass in CentOS 7
+     * Fix typo in asktest.c.
+     * Deadwood: Issue building Deadwood from the GitHub tree in CentOS8
+       fixed
+     * Deadwood: Update Windows documents in Deadwood source code tarball
+
+     (2020-01-16)
+
+   maradns-3.4.01:
+   This is a stable release of MaraDNS:
+
+     * Deadwood updated to 3.4.01
+
+     (2019-10-24)
+
+   Important: Deadwood 3.4.01 is updated to use the Quad9 upstream DNS
+   servers as the default. If the old behavior of using the ICANN name
+   servers as root servers is desired, add the following lines to one’s
+   dwood3rc file:
+root_servers = {}
+root_servers["."]="198.41.0.4,"
+root_servers["."]+="199.9.14.201,"
+root_servers["."]+="192.33.4.12,"
+root_servers["."]+="199.7.91.13,"
+root_servers["."]+="192.203.230.10,"
+root_servers["."]+="192.5.5.241,"
+root_servers["."]+="192.112.36.4,"
+root_servers["."]+="198.97.190.53,"
+root_servers["."]+="192.36.148.17,"
+root_servers["."]+="192.58.128.30,"
+root_servers["."]+="193.0.14.129,"
+root_servers["."]+="199.7.83.42,"
+root_servers["."]+="202.12.27.33"
+
+   Please note: The above list of IPs is current as of 2019-04-07, and was
+   last changed in October of 2017.
+
+   Please go to root-servers.org to get an up-to-date list of root
+   servers.
+
+   maradns-3.3.03:
+   This is a development release of MaraDNS.
+
+     * Updated numbering system to give MaraDNS the same version number as
+       Deadwood.
+     * Deadwood updated to 3.3.03.
+     * Document how star records work.
+
+     (2019-09-28)
+
+   maradns-2.0.17:
+   This is the stable release of MaraDNS. No security updates were made.
+
+     * Deadwood updated to 3.2.14
+     * Default max_mem value doubled as discussed in GitHub issue #52.
+
+     (2019-01-20)
+
    maradns-2.0.16:
    This is the stable release of MaraDNS. A very minor security update was
    made.
@@ -81,9 +157,3 @@ MaraDNS changelog
        defaults to 4 instead of 10
 
      (2015.01.24)
-
-To see pre-2015 changes, go here:
-
-	http://maradns.samiam.org/changelog-2009-2014.html
-
-
