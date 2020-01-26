@@ -1,0 +1,27 @@
+#!/bin/bash -e
+
+VERSION="$1"
+
+if [ -z "$VERSION" ] ; then
+        echo Usage $0 version-number
+        echo Where version number is a 4-digit number like 0012
+        exit 1
+fi
+
+git clone https://github.com/samboy/MaraDNS/
+mv MaraDNS/maradns-win32/Deadwood-win32 \
+	MaraDNS/maradns-win32/Deadwood-3-5-${VERSION}-win32/
+mv MaraDNS/maradns-win32 \
+	MaraDNS/maradns-3-5-${VERSION}-win32/
+mv MaraDNS maradns-3.5.${VERSION}/
+mv maradns-3.5.${VERSION}/deadwood-github \
+        maradns-3.5.${VERSION}/deadwood-3.5.${VERSION}
+tar cvJf maradns-3.5.${VERSION}.tar.xz maradns-3.5.${VERSION}
+cd maradns-3.5.${VERSION}/
+zip -r maradns-3-5-${VERSION}-win32.zip maradns-3-5-${VERSION}-win32/
+
+# advzip is part of advancecomp
+# See https://github.com/amadvance/advancecomp
+advzip -z -4 maradns-3-5-${VERSION}-win32.zip
+
+mv maradns-3-5-${VERSION}-win32.zip ..
