@@ -1,20 +1,14 @@
-To get MaraDNS' SQA regressions to work, MaraDNS needs to be compiled
-with IPv6 support, as well as debugging symbols (Valgrind incorrectly reports
-a leak when MaraDNS is compiled with '-O2').  
+The testing is done with a shell script.
 
-Some packages are needed to run the tests:
+Required: Git, valgrind, gcc, make, etc.
 
-	yum -y install bind-utils
-	yum -y install valgrind
+Testing platfor: CentOS 7
 
-Once we have these packages, from the maradns-2.0.XX directory:
+To test:
 
-	./configure --ipv6
-	vi Makefile # Replace '-O2' with '-g'
-	make
-	cd sqa/regressions
-	su
-	sh ./do.tests 2> /dev/null
-
-Have a cup of coffee or two while the tests are running; they can take a 
-while.
+```
+cp tools/OneSourceOfTruth/do.osot.tests ~/tmp
+cd ~/tmp
+su
+./do.osot.tests
+```
