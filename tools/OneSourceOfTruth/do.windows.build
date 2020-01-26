@@ -1,0 +1,25 @@
+#!/bin/bash -e
+
+VERSION="$1"
+
+if [ -z "$VERSION" ] ; then
+	echo Usage $0 version-number
+	echo Where version number is a 4-digit number like 0012
+	exit 1
+fi
+
+git clone git@github.com:samboy/MaraDNS.git
+mv MaraDNS maradns-3.5.${VERSION}/
+mv maradns-3.5.${VERSION}/deadwood-github \
+	maradns-3.5.${VERSION}/deadwood-3.5.${VERSION}
+cd maradns-3.5.${VERSION}
+mv .git .notgit
+echo Please compile MaraDNS using mingw + msys
+echo Please do not forget to strip the binaries
+echo Type in enter when done
+read foo
+cp server/maradns.exe maradns-win32/
+cp deadwood-3.5.${VERSION} maradns-win32/deadwood-win32/
+mv .notgit .git
+git commit -a -m "MaraDNS release 3.5-${VERSION}"
+git push origin master
