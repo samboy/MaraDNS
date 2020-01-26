@@ -13,6 +13,8 @@ mv MaraDNS maradns-3.5.${VERSION}/
 mv maradns-3.5.${VERSION}/deadwood-github \
 	maradns-3.5.${VERSION}/deadwood-3.5.${VERSION}
 cd maradns-3.5.${VERSION}
+echo '#define VERSION "3.5.'${VERSION}'"' > \
+	deadwood-3.5.${VERSION}/src/version.h
 mv .git .notgit
 echo Please compile MaraDNS using mingw + msys
 echo Please do not forget to strip the binaries
