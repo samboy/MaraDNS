@@ -1,3 +1,8 @@
+Deadwood 3.4.01 and Deadwood 3.4.02 do not change any Deadwood code 
+relative to Deadwood 3.3.03.
+
+---
+
 Deadwood 3.3.03 is updated to use the https://quad9.net upstream DNS
 servers as the default.  If the old behavior of using the ICANN name
 servers as root servers is desired, add the following lines to one's
