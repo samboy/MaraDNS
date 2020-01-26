@@ -16,6 +16,7 @@ cd maradns-3.5.${VERSION}
 echo '#define VERSION "3.5.'${VERSION}'"' > \
 	deadwood-3.5.${VERSION}/src/version.h
 mv .git .notgit
+echo '12345678901234567890' > secret.txt # So MaraDNS will start
 echo Please compile MaraDNS using mingw + msys
 echo Please do not forget to strip the binaries
 echo Type in enter when done
@@ -24,5 +25,5 @@ cp server/maradns.exe maradns-win32/
 cp deadwood-3.5.${VERSION}/src/Deadwood.exe maradns-win32/deadwood-win32/
 mv deadwood-3.5.${VERSION} deadwood-github
 mv .notgit .git
-git commit -a -m "MaraDNS release 3.5-${VERSION}"
+git commit -a -m "MaraDNS release 3.5.${VERSION}"
 git push origin master
