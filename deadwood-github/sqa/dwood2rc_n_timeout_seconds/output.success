@@ -1,9 +1,0 @@
-timeout 1
-# Querying the server with the IP 127.0.0.1
-# Hard Error: Timeout
-timeout 20
-# Querying the server with the IP 127.0.0.1
-# Remote server said: SERVER FAILURE
-# Question: Awww.example.com.
-# NS replies:
-# AR replies:

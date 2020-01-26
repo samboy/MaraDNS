@@ -1,6 +1,0 @@
-bind_address="127.0.0.1"
-recursive_acl="127.0.0.1/8"
-chroot_dir="/etc/deadwood"
-root_servers = {}
-root_servers["."] = "127.0.0.2"
-filter_rfc1918 = 0

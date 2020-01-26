@@ -1,9 +1,0 @@
---- deadwood-3.2.02/src/Makefile.ipv6	2010-09-03 09:03:38.000000000 -0500
-+++ deadwood-3.2.03/src/Makefile.ipv6	2012-04-23 13:03:20.000000000 -0500
-@@ -86,5 +86,5 @@
- 	$(CC) $(FLAGS) -Wall -o Test Test.c $(OBJS)
- 
- Deadwood:	DwMain.c $(OBJS) DwStr_functions.h version.h
--	$(CC) $(FLAGS) -DIPV6 -Wall -o Deadwood DwMain.c $(OBJS) 
-+	$(CC) $(FLAGS) -DIPV6 -Wall -o Deadwood DwMain.c $(OBJS) -lrt
- 

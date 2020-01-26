@@ -1,7 +1,0 @@
-# Querying the server with the IP 127.0.0.1
-# Question: Acname1.example.com.
-cname1.example.com.  cname cname.example.net.
-#cname.example.net.  cname www.example.org.
-#www.example.org.  a 127.10.1.3
-# NS replies:
-# AR replies:

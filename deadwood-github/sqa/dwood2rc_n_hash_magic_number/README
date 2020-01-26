@@ -1,8 +1,0 @@
-To run this test, you must compile Deadwood with "HASH_DEBUG" defined.
-
-e.g. in the src directory, do this to compile Deadwood:
-
-	export FLAGS='-O3 -DHASH_DEBUG'
-	make clean
-	make
-

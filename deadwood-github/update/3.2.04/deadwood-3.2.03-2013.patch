@@ -1,8 +1,0 @@
---- deadwood-3.2.04/src/DwRecurse.c.orig	2013-07-13 18:02:29.554055204 -0700
-+++ deadwood-3.2.04/src/DwRecurse.c	2013-07-13 18:02:36.636055471 -0700
-@@ -1,4 +1,4 @@
--/* Copyright (c) 2009-2012 Sam Trenholme
-+/* Copyright (c) 2009-2013 Sam Trenholme
-  *
-  * TERMS
-  *
