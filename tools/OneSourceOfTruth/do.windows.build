@@ -18,7 +18,7 @@ echo '#define VERSION "3.5.'${VERSION}'"' > \
 mv .git .notgit
 echo '12345678901234567890' > secret.txt # So MaraDNS will start
 echo Please compile MaraDNS using mingw + msys
-echo Please do not forget to strip the binaries
+echo Do this with ./configure then make
 echo Type in enter when done
 read foo
 cp server/maradns.exe maradns-win32/
