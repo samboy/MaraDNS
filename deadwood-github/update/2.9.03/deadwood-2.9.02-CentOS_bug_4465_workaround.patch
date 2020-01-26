@@ -1,0 +1,61 @@
+diff -ur deadwood-2.9.02/sqa/dwood2rc_n_timeout_seconds/do.test deadwood-2.9.03/sqa/dwood2rc_n_timeout_seconds/do.test
+--- deadwood-2.9.02/sqa/dwood2rc_n_timeout_seconds/do.test	2010-07-06 10:52:33.000000000 -0700
++++ deadwood-2.9.03/sqa/dwood2rc_n_timeout_seconds/do.test	2010-07-29 15:16:25.000000000 -0700
+@@ -19,7 +19,7 @@
+ 
+ ../../src/Deadwood -f dwood2rc > /dev/null &
+ sleep 1
+-echo
++echo timeout $VALUE
+ askmara -t 1 Awww.example.com. > /dev/null &
+ askmara -t 1 Awww.example.com. > /dev/null &
+ askmara -t 1 Awww.example.com. > /dev/null &
+@@ -30,8 +30,8 @@
+ askmara -t 1 Awww.example.com. > /dev/null &
+ askmara -t 1 Awww.example.com. > /dev/null &
+ askmara -t 1 Awww.example.com. > /dev/null &
+-sleep 10
+-askmara -t 3 Awww.example.com. 
++sleep 15
++askmara -t 1 Awww.example.com. 
+ sleep 1
+ killall Deadwood > /dev/null 2>&1
+ sleep 1
+diff -ur deadwood-2.9.02/sqa/dwood2rc_n_timeout_seconds/output.success deadwood-2.9.03/sqa/dwood2rc_n_timeout_seconds/output.success
+--- deadwood-2.9.02/sqa/dwood2rc_n_timeout_seconds/output.success	2007-11-07 02:39:53.000000000 -0800
++++ deadwood-2.9.03/sqa/dwood2rc_n_timeout_seconds/output.success	2010-07-29 15:17:49.000000000 -0700
+@@ -1,7 +1,7 @@
+-
++timeout 1
+ # Querying the server with the IP 127.0.0.1
+ # Hard Error: Timeout
+-
++timeout 20
+ # Querying the server with the IP 127.0.0.1
+ # Remote server said: SERVER FAILURE
+ # Question: Awww.example.com.
+Only in deadwood-2.9.02/sqa/dwood2rc_n_timeout_seconds/: output.test
+--- deadwood-2.9.02/sqa/do.tests	2010-07-15 20:10:53.000000000 -0700
++++ deadwood-2.9.03/sqa/do.tests	2010-07-30 06:41:43.000000000 -0700
+@@ -72,11 +72,16 @@
+ TESTS=$TESTS"dwood2rc_s_recursive_acl "
+ TESTS=$TESTS"dwood2rc_n_resurrections "
+ 
+-# Something broke this test in CentOS 5.5; it's a bug caused by the
+-# CentOS 5.5 OS and not in Deadwood since:
+-# 1) Deadwood 2.6.03 fails this test in CentOS 5.5
+-# 2) Deadwood 2.6.04 passes this test in CentOS 5.4
+-#TESTS=$TESTS"dwood2rc_n_timeout_seconds "
++# CentOS 5.5's select() timeout broke this test; it's a bug caused because
++# CentOS 5.5's select() doubles the timeout (e.g. you ask for a one second 
++# timeout but CentOS 5.5 select() doesn't time out for two seconds)
++#
++# I updated the test to work around CentOS 5.5's broken select(), and
++# submitted a bug for both CentOS and RedHat:
++#
++# http://bugs.centos.org/view.php?id=4465
++# https://bugzilla.redhat.com/show_bug.cgi?id=619664 
++TESTS=$TESTS"dwood2rc_n_timeout_seconds "
+ 
+ TESTS=$TESTS"dwood2rc_n_ttl_age "
+ TESTS=$TESTS"dwood2rc_n_upstream_port "

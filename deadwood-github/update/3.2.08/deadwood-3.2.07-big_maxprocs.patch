@@ -1,0 +1,223 @@
+commit 537342210d43b61374e8a6652a029ddfd3bc0189
+Author: Sam Trenholme <strenholme.usenet@gmail.com>
+Date:   Thu Apr 2 21:45:48 2015 -0700
+
+    maxprocs is too low for modern browsers which very aggressively pre-fetch
+    queries. Increasing default maxprocs to 1024; max maxprocs to 8388608
+
+diff --git a/deadwood-github/doc/Deadwood.ej b/deadwood-github/doc/Deadwood.ej
+index 6752ea2..b9aaf8e 100644
+--- a/deadwood-github/doc/Deadwood.ej
++++ b/deadwood-github/doc/Deadwood.ej
+@@ -323,7 +323,7 @@ will need to be increased to store a large number of these entries.
+ 
+ <h2>maxprocs</h2>
+ This is the maximum number of pending remote UDP connections
+-Deadwood can have.  The default value for this is 32.  
++Deadwood can have.  The default value for this is 1024.  
+ 
+ <h2>max_tcp_procs</h2>
+ This is the number of allowed open TCP connections.  Default value: 8
+@@ -751,7 +751,7 @@ chroot_dir = "/etc/deadwood"
+ recursive_acl = "127.0.0.1/16" 
+ 
+ # Maximum number of pending requests
+-maxprocs = 8 
++maxprocs = 2048
+ 
+ # Send SERVER FAIL when overloaded
+ handle_overload = 1 
+diff --git a/deadwood-github/doc/Windows/Reference.txt b/deadwood-github/doc/Windows/Reference.txt
+index 54daae3..0286f26 100644
+--- a/deadwood-github/doc/Windows/Reference.txt
++++ b/deadwood-github/doc/Windows/Reference.txt
+@@ -218,7 +218,7 @@ maximum_cache_elements
+ maxprocs
+ 
+    This is the maximum number of pending remote UDP connections
+-   Deadwood can have. The default value for this is 32.
++   Deadwood can have. The default value for this is 1024.
+ 
+ max_tcp_procs
+ 
+diff --git a/deadwood-github/doc/dwood3rc b/deadwood-github/doc/dwood3rc
+index 7a2c3e9..1208ec3 100644
+--- a/deadwood-github/doc/dwood3rc
++++ b/deadwood-github/doc/dwood3rc
+@@ -41,7 +41,7 @@ chroot_dir = "/etc/deadwood" # Directory we run program from (not used in Win32)
+ 
+ recursive_acl = "127.0.0.1/16" # Who is allowed to use the cache
+ 
+-maxprocs = 8 # Maximum number of pending requests
++maxprocs = 2048 # Maximum number of pending requests
+ handle_overload = 1 # Send SERVER FAIL when overloaded
+ 
+ maradns_uid = 99 # UID Deadwood runs as
+diff --git a/deadwood-github/doc/dwood3rc-all b/deadwood-github/doc/dwood3rc-all
+index 7d1f044..2812613 100644
+--- a/deadwood-github/doc/dwood3rc-all
++++ b/deadwood-github/doc/dwood3rc-all
+@@ -57,7 +57,7 @@ maximum_cache_elements = 1024
+ 
+ # Maximum number of pending connections.  
+ # Increase this for an enterprise
+-maxprocs = 32
++maxprocs = 2048
+ 
+ # Maximum number of TCP connections.  tcp_listen also must be set.
+ max_tcp_procs = 8
+diff --git a/deadwood-github/src/DwMararc.c b/deadwood-github/src/DwMararc.c
+index ba9c1eb..dd42496 100644
+--- a/deadwood-github/src/DwMararc.c
++++ b/deadwood-github/src/DwMararc.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2012 Sam Trenholme
++/* Copyright (c) 2007-2015 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -367,7 +367,7 @@ void dwm_init_mararc() {
+         }
+         dwm_dict_init();
+         /* Numeric mararc variables have default values.  */
+-        key_n[DWM_N_maxprocs] = 32;
++        key_n[DWM_N_maxprocs] = 1024;
+ #ifndef FALLBACK_TIME
+         key_n[DWM_N_timeout_seconds] = 1;
+ #else /* FALLBACK_TIME */
+diff --git a/deadwood-github/src/DwRecurse.c b/deadwood-github/src/DwRecurse.c
+index 30ce7d7..fbad6e4 100644
+--- a/deadwood-github/src/DwRecurse.c
++++ b/deadwood-github/src/DwRecurse.c
+@@ -52,7 +52,7 @@ extern u_long dont_block;
+ /* Numeric mararc parameters */
+ extern int32_t max_ttl;
+ /* Maximum number of remote connections */
+-extern int maxprocs;
++extern int_fast32_t maxprocs;
+ 
+ #ifdef OTHER_STUFF
+ /* Show a single character on the standard output, escaping the
+diff --git a/deadwood-github/src/DwSocket.c b/deadwood-github/src/DwSocket.c
+index 9f69d15..73b1eb7 100644
+--- a/deadwood-github/src/DwSocket.c
++++ b/deadwood-github/src/DwSocket.c
+@@ -53,7 +53,7 @@ remote_T *rem;
+ extern dw_hash *cache;
+ 
+ /* Some dwood3rc parameters */
+-int maxprocs = 32;
++int_fast32_t maxprocs = 1024;
+ int max_tcp_procs = 8;
+ #ifndef FALLBACK_TIME
+ int timeout_seconds = 1;
+@@ -62,16 +62,16 @@ int timeout_seconds_tcp = 4;
+ int timeout_seconds = 2;
+ int timeout_seconds_tcp = 4;
+ #endif /* FALLBACK_TIME */
+-int dns_port = 53;
+-int upstream_port = 53;
++int_fast32_t dns_port = 53;
++int_fast32_t upstream_port = 53;
+ int handle_overload = 1;
+ int handle_noreply = 1;
+ int resurrections = 1;
+-int32_t min_bind = 15000;
+-int32_t num_ports = 4096;
+-int32_t maradns_uid = 99;
+-int32_t maradns_gid = 99;
+-int32_t max_ttl = 86400;
++int_fast32_t min_bind = 15000;
++int_fast32_t num_ports = 4096;
++int_fast32_t maradns_uid = 99;
++int_fast32_t maradns_gid = 99;
++int_fast32_t max_ttl = 86400;
+ int num_retries = 5;
+ dwd_dict *blacklist_dict = 0;
+ 
+@@ -482,7 +482,7 @@ int check_ip_acl(ip_addr_T *ip) {
+  * in dwm_init_mararc() in the file DwMararc.c */
+ void process_numeric_mararc_params() {
+ 
+-        maxprocs =        get_key_n(DWM_N_maxprocs,       8,16384,-1);
++        maxprocs =        get_key_n(DWM_N_maxprocs,       8,8388608,-1);
+         max_tcp_procs =   get_key_n(DWM_N_max_tcp_procs,  4,1024,-1);
+ #ifndef FALLBACK_TIME
+         timeout_seconds = get_key_n(DWM_N_timeout_seconds,1,300,-1);
+@@ -656,7 +656,7 @@ void process_mararc_params() {
+ 
+ /* Initialize the list of pending remote replies */
+ void init_b_remote() {
+-        int a = 0;
++        int_fast32_t a = 0;
+         for(a = 0; a < maxprocs; a++) {
+                 b_remote[a] = INVALID_SOCKET;
+                 rem[a].socket = INVALID_SOCKET;
+@@ -669,8 +669,8 @@ void init_b_remote() {
+ }
+ 
+ /* Search for the highest socket number in a list of sockets */
+-SOCKET find_max(int *list, int max) {
+-        int a = 0;
++SOCKET find_max(int *list, int_fast32_t max) {
++        int_fast32_t a = 0;
+         int ret = -1;
+         for(a = 0; a < max ; a++) {
+                 if(list[a] > ret) {
+@@ -710,7 +710,7 @@ SOCKET get_max() {
+ 
+ /* Set the rx_fd list (A list used by select() ) */
+ void set_rx_fd(fd_set *rx_fd) {
+-        int a = 0;
++        int_fast32_t a = 0;
+         FD_ZERO(rx_fd);
+ 
+         /* UDP */
+@@ -737,8 +737,8 @@ void set_rx_fd(fd_set *rx_fd) {
+ }
+ 
+ /* Find a free remote pending connection */
+-int32_t find_free_remote() {
+-        int32_t a = 0;
++int_fast32_t find_free_remote() {
++        int_fast32_t a = 0;
+         for(a = 0; a < maxprocs; a++) {
+                 if(rem[a].socket == INVALID_SOCKET &&
+                                 rem[a].local == 0) { /* Available for use */
+@@ -812,7 +812,7 @@ ip_addr_T get_upstream_ip(dw_str *query, int b) {
+ 
+ /* If we have a pending connection, process the pending connection */
+ void process_results(int a, fd_set *rx_fd) {
+-        int b = 0, z = 0;
++        int_fast32_t b = 0, z = 0;
+ 
+         /* Find the pending connection */
+         while(a > 0 && z < 50000) {
+@@ -951,7 +951,7 @@ catch_handle_expired:
+ 
+ /* Kill any pending remote connections that have timed out */
+ void kill_expired() {
+-        int a = 0;
++        int_fast32_t a = 0;
+         for(a = 0; a < maxprocs; a++) {
+                 if(rem[a].die > 0 && rem[a].die < get_time()) {
+                         if(handle_expired(a) == 1) {
+diff --git a/deadwood-github/src/DwUdpSocket.c b/deadwood-github/src/DwUdpSocket.c
+index 319e14c..8f61b60 100644
+--- a/deadwood-github/src/DwUdpSocket.c
++++ b/deadwood-github/src/DwUdpSocket.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2014 Sam Trenholme and others
++/* Copyright (c) 2007-2015 Sam Trenholme and others
+  *
+  * TERMS
+  *
+@@ -47,7 +47,7 @@ extern remote_T *rem;
+ dw_hash *inflight;
+ 
+ /* The numeric mararc parameters */
+-extern int maxprocs;
++extern int_fast32_t maxprocs;
+ extern int timeout_seconds;
+ extern int dns_port;
+ extern int upstream_port;

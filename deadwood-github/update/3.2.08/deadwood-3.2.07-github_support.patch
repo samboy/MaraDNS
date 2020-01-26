@@ -1,0 +1,62 @@
+commit 7b2e3eddf0f2c49d6deefc96ac8d87432b8d444a
+Author: Sam Trenholme <strenholme.usenet@gmail.com>
+Date:   Sat Feb 7 08:25:44 2015 -0800
+
+    Update Deadwood docs to refer to Github, *not* mailing list
+
+diff --git a/deadwood-github/INSTALL.txt b/deadwood-github/INSTALL.txt
+index ea3579f..a3994a8 100644
+--- a/deadwood-github/INSTALL.txt
++++ b/deadwood-github/INSTALL.txt
+@@ -99,11 +99,8 @@ Then, you will want to have this script be run at system boot time:
+ Note that system startup is variable between distributions and the above
+ steps may not work if you're not using Scientific Linux 6.  If you wish
+ help with using Deadwood with another version of Linux or *NIX, you are
+-on your own, but check on the mailing list to see if someone else has
+-worked on it.  Information on subscribing to and posting to the MaraDNS
+-mailing list is here:
+-
+-	http://maradns.org/faq.html#subscribe
++on your own.  Feel free to fork the MaraDNS Github repository, but
++please do not name any such ports "MaraDNS".
+ 
+ It is possible to compile Deadwood with IPv6 support.  See the file 
+ doc/compile.options for details
+@@ -192,10 +189,8 @@ If one wishes to uninstall Deadwood.
+ Just because Deadwood is only fully supported in Scientific Linux 6
+ and Windows 7 doesn't mean Deadwood doesn't run on other platforms.
+ It just means that, if you wish to run Deadwood on another platform,
+-it's up to you to make the port; then again, before doing so, check
+-on the mailing list to make sure no one has done so before:
+-
+-	http://maradns.org/faq.html#subscribe
++it's up to you to make the port. Feel free to fork the MaraDNS Github
++repository, but please do not name any such ports "MaraDNS".
+ 
+ I have made the code portable; there should not be any endian issues
+ (this has not been tested since I don't have access to a big-endian
+@@ -224,8 +219,8 @@ this in a while, I once verified that Deadwood 2.4 compiles in Cygwin
+ without problem.  This may even make it possible to have a version of
+ Deadwood in Windows with IPv6 support; I believe Cygwin 1.7 and later
+ have IPv6 and it might be possible to compile in IPv6 this way.  Again,
+-if this is something you're interested in, feel free to send patches to
+-the MaraDNS mailing list.
++if this is something you're interested in, feel free to fork the MaraDNS
++Github repository, but please do not name any such ports "MaraDNS".
+ 
+ Please note that Deadwood's behavior is undefined should malloc()
+ fail.  If using Deadwood in an environment where malloc() may return
+@@ -239,8 +234,8 @@ allocating then freeing a lot of small blocks of memory.
+ 
+ ==SUPPORT==
+ 
+-The channels of support for Deadwood are the same as for MaraDNS: Post it
+-to the MaraDNS mailing list:
+-
+-	http://maradns.org/faq.html#subscribe
++The channels of support for Deadwood are the same as for MaraDNS: Post an
++issue on Github:
++	
++	https://github.com/samboy/MaraDNS/issues
+ 
+

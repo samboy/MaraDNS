@@ -1,0 +1,30 @@
+--- deadwood-3.2.01/doc/Makefile	2012-02-11 14:15:43.000000000 -0600
++++ deadwood-3.2.02/doc/Makefile	2012-02-12 23:20:15.000000000 -0600
+@@ -1,5 +1,5 @@
+ all: Duende.1 Duende.txt Deadwood.1 Deadwood.txt FAQ.txt FAQ.html \
+-	Deadwood.html
++	Deadwood.html Recursive-algorithm.txt
+ 
+ clean:
+ 	rm -f Duende.1 Duende.txt Deadwood.1 Deadwood.txt FAQ.txt
+@@ -30,3 +30,9 @@
+ 
+ FAQ.html: FAQ.ej
+ 	../tools/ej/ej2html FAQ.ej > FAQ.html
++
++Recursive-algorithm.txt: Recursive-algorithm.ej
++	../tools/ej/ej2txt Recursive-algorithm.ej > Recursive-algorithm.txt ;\
++	echo >> Recursive-algorithm.txt ;\
++	unix2dos Recursive-algorithm.txt
++
+--- deadwood-3.2.01/tools/ej/ej2txt	2010-09-24 20:45:11.000000000 -0500
++++ deadwood-3.2.02/tools/ej/ej2txt	2012-02-12 23:28:11.000000000 -0600
+@@ -25,7 +25,6 @@
+ fi
+ 
+ $CMD $1 > $TMP/$$.html
+-$LINKS -dump-width 70 -dump -no-references $TMP/$$.html | awk '
+-	{gsub(/\[[0-9]+\]/,"");print}' 
++$LINKS -dump-width 70 -dump -no-references -no-numbering $TMP/$$.html 
+ rm $TMP/$$.html
+ 

@@ -1,0 +1,37 @@
+The issue was this: Deadwood copies the packet, changes its ID and RD bits,
+then sends it upstream. When sending a SERVER FAIL to the client, it
+gives them the packet with the changed ID and changed RD bit.
+
+This patch preserves the original ID and RD bit.
+
+diff --git a/deadwood-github/src/DwUdpSocket.c b/deadwood-github/src/DwUdpSocket.c
+index 0845d5b..16f3242 100644
+--- a/deadwood-github/src/DwUdpSocket.c
++++ b/deadwood-github/src/DwUdpSocket.c
+@@ -613,6 +613,15 @@ void try_forward_local_udp_packet(SOCKET sock, int32_t local_id,
+      int len, sockaddr_all_T *client,dw_str *query, int tcp_num,
+      dw_str *orig_query) {
+ 
++	unsigned char p0 = 0, p1 = 0, p2 = 0;
++
++	if(packet == 0 || len < 12) { /* Sanity check */
++		return;
++	}
++	p0 = packet[0];
++	p1 = packet[1];
++	p2 = packet[2];
++
+         /* If not cached, get a reply that we will cache and send back to
+          * the client */
+         if(forward_local_udp_packet(sock,local_id,from_ip,from_port,
+@@ -630,6 +639,9 @@ void try_forward_local_udp_packet(SOCKET sock, int32_t local_id,
+         }
+ 
+         if(handle_overload == 1) {
++		packet[0] = p0;
++		packet[1] = p1;
++		packet[2] = p2;
+                 send_server_fail(client,packet,len,sock,tcp_num);
+         }
+ }
+

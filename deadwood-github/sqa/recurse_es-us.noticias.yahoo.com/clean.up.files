@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Clean up files created by setup.maradns
+rm mararc2
+rm mararc3
+rm mararc4
+rm db.root
+rm db.example.com
+rm db.example.net
+

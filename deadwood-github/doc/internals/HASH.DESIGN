@@ -1,0 +1,154 @@
+OK, here is a look at the old hash and where it can be improved:
+
+1) The old hash had an ad-hoc way of converting a string in to a number, 
+   which changed whenever the hash was resized.  
+
+2) The old hash could store any kind of data with a (void *) pointer.
+
+3) There was a hack that allowed you to point directly to the string the
+   hash used as an index.  The recursive code ended up allocating and
+   deallocating memory based on this hack, making it impossible to 
+   remove this hack.
+
+The new hash uses an ad-hoc way of converting the string in to a 
+32-bit unsigned number; this number can then be masked with "and" to 
+make a hash of a given size.  My ad-hoc hasher is:
+
+1) Start with an initial value of 0 for the hash
+
+2) Take four bytes from the string and make those bytes a 32-bit word.
+   Should the string not have four bytes left, pad with 0s.
+
+3) Exclusive or the current value of the hash by the number made from 
+   bytes in the string
+
+4) Take the current value of the hash and multiply it by a large prime
+   number (a randomly generated 31-bit prime being the default, for 
+   security reasons), then do a circular rotate 19 bits to the right with 
+   the current hash value.
+
+5) Go back to step 2 until the hash has no bytes left
+
+6) Now, take the current hash value and exclusive-or it by the number
+   of bytes in the string (a 32-bit unsigned value)
+
+7) Do a final multiply and rotate
+
+I have made the large prime number user-settable, to give people 
+protection from DOS attacks where people try to slow down Deadwood by 
+giving a large number of queries that hash to the same value.  I have
+also allowed people to hardcode this number in to the code, for people
+who need that extra 8% of speed.  In addition, for security reasons, 
+each release of Deadwood-2 uses a different default prime number.
+
+I considered optionally allow people to do a full RadioGatun hash to get a 
+hash value; however, while I feel RadioGatun has been in the wild long 
+enough (as PANAMA) to be a usable stream cipher, since it's been only 
+around for about three years, I'm not sure it's a safe hash function.  
+The Radio Gatun inventors feel the same way; they have a "for research 
+purposed only" disclaimer on their web site.  Indeed, they greatly modified
+RadioGatun to make the Keccak hash; there have also been some interesting
+analysis of RadioGatun but nothing (knock on wood) that breaks its security 
+claim (512-bit hashes with the 32-bit version; 1024-bit hashes with the 
+64-bit version).
+
+Radio Gatun, even if it is secure (and I feel it can very well be), is 
+not designed to hash small values quickly; I may be better off using 
+something like SHA-256 or SHA-512 for values this small.  Indeed, the
+quick and dirty hash above is between 750 and 1400 times faster than Radio 
+Gatun.
+
+The new hash only allows you to store DwString obejcts.  Not 
+numbers, not anything else.  This makes things simpler--it makes it far 
+easier to make a destructor for a hash object.  I think it will be 
+easier to keep the recursive code readable if I just use functions that 
+manipulate DNS data in DwStr objects instead of trying to use structures 
+and what not for storing DNS data.  
+
+This means TTL aging is slower, but I agree with DJB here: Secure 
+is far more important than fast.  Should an ISP find their name server 
+is overloaded, the Deadwood-2.3 load balancer can be used to scale things 
+up.  I allow people to disable TTL aging.
+
+It also means that RR rotation is also slower.  Again, secure is more 
+important, and, again, use Deadwood-2.3 as a load balancer.
+
+---
+
+The old recursive code allowed you to "append" to an already existing 
+hash element.  The new hash will not allow this; any write to an already 
+existing hash element will destroy the old element before putting in the 
+new element.
+
+Like the old hash, there is a "fila", or circular linked list, that is 
+used to destroy old entries.  This hash is, from the ground up, a 
+caching hash.  Should I rewrite the authoritative code, I will write 
+another hash that isn't a caching hash. (This has already been done so 
+Deadwood can support Dictionary entries; it's just the caching hash with 
+autogrow support and the old element zapper disabled)
+
+The hash has a fixed maximum size, which is determined when the hash is 
+made.  Again, the authoritative hash will use different code.  (Done; the
+dictionary hash has autogrow support)
+
+The circular linked list works like this: Whenever we access a hash 
+element, that element is put at the top of the linked list; seven 
+pointers (top; last->next; next->last; bottom->next; second->last; last; 
+and next) are modified to make this change.
+
+When the hash is full, we remove an element whenever we create a new 
+element.  The element at the bottom of the list is removed.
+
+Removing an element requires changing two or three fila pointers 
+(last->next; next->last; and sometimes top)
+
+Adding a new element to the hash puts the new element at the top of the 
+fila; this requires modifying three fila pointers (top; bottom->next; 
+and second->last).
+
+Each element in the hash has an expire time; when we put an element in 
+the hash, we also tell the hash how long the element will live in the 
+hash.  We can actually access expired entires; when we access an entry, 
+we tell the hash whether we want to get the entry even if it is expired.  
+This allows us to, in the case of a remote DNS server working before but 
+currently down, still get entries from the cache and still be able to, 
+for example, browse web sites we've been to recently.
+
+---
+
+The hash can be written to and read from disk.  The file format uses the 
+following data primitives:
+
+* A 32-bit big endian number whose value must be positive (the first
+  bit must have a 0 value)
+
+* A 64-bit big endian number whose value must be positive (as above)
+
+* A variable-length string of binary data.
+
+A hash, when stored to disk, has the following format:
+
+* The 32-bit number 0x00445733 ('\0'DW3)
+
+* A 32-bit number set to the value of zero.  This number is ignored.
+
+* Each hash entry is now read; more important hash entries (entries less
+  likely to be deleted when the hash fills up) are placed after less
+  important entries.
+
+* Each hash entry has the following format:
+
+	1) A 32-bit number with the length of the key for an entry
+
+	2) A binary string of that length with the actual key
+
+	3) A 32-bit number with the length of the value for the entry
+
+	4) A binary string of that length with the value
+
+	5) A 64-bit number, in Deadwood timestamp format, of the time
+           when this entry should expire (we don't actually delete
+           expired entries, since we may need to use them if the name
+           servers for a domain have died)
+
+

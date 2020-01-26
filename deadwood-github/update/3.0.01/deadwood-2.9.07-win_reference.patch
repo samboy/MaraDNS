@@ -1,0 +1,211 @@
+--- deadwood-2.9.08/doc/Windows/Reference.txt.orig	2010-09-10 10:00:04.000000000 -0700
++++ deadwood-2.9.08/doc/Windows/Reference.txt	2010-09-10 10:09:04.000000000 -0700
+@@ -28,23 +28,9 @@
+        daemon
+      * Built-in dnswall functionality
+ 
+-                        COMMAND LINE ARGUMENTS
+-
+-   Deadwood has a single optional command line argument: The
+-   location of the configuration file that Deadwood uses specified
+-   with the "-f" flag. If this is not defined, Deadwood uses the
+-   file "/etc/dwood3rc" as the configuration file.
+-
+-   In other words, invoking Deadwood as Deadwood will cause
+-   Deadwood to use /etc/dwood3rc as the configuration file;
+-   invoking Deadwood as Deadwood -f foobar will cause Deadwood to
+-   use the file "foobar" in the current working directory (the
+-   directory one is in when starting Deadwood) as the configuration
+-   file.
+-
+                       CONFIGURATION FILE FORMAT
+ 
+-   The Deadwood configuration file supports the following
++   The Deadwood configuration file, dwood3rc.txt, supports the following
+    parameters:
+ 
+ bind_address
+@@ -77,8 +63,8 @@
+ filter_rfc1918
+ 
+    When this is set to 1, RFC1918 (private) IP addresses are not
+-   allowed to be in DNS replies. See
+-   http://crypto.stanford.edu/dns/ for why this improves security.
++   allowed to be in DNS replies. See http://crypto.stanford.edu/dns/ 
++   for why this improves security.
+ 
+    The default value for this is 1
+ 
+@@ -124,27 +110,15 @@
+    This parameter only accepts individual IPs, and does not use
+    netmasks.
+ 
+-maradns_uid
+-
+-   The user-id Deadwood runs as. This can be any number between 10
+-   and 65535; the default value is 99 (nobody on RedHat-derived
+-   Linux distributions). This value is not used on Windows systems.
+-
+-maradns_gid
+-
+-   The group-id Deadwood runs as. This can be any number between 10
+-   and 65535; the default value is 99. This value is not used on
+-   Windows systems.
+-
+ max_ar_chain
+ 
+-   Whether resource record rotation is enabled. This this has a
++   Whether resource record rotation is enabled. If this has a
+    value of 1, resource record rotation is enabled, otherwise
+    resource record rotation is disabled.
+ 
+    Resource record rotation is usually desirable, since it allows
+    DNS to act like a crude load balancer. However, on heavily
+-   loaded systems it may be desirable to disable to disbale it to
++   loaded systems it may be desirable to disable it to
+    reduce CPU usage.
+ 
+    The reason for the unusual name for this variable is to retain
+@@ -180,6 +154,8 @@
+    reading the cache from disk, higher values of this will slow
+    down cache reading/writing.
+ 
++   Each cache entry uses approximately four kilobytes of memory.
++
+ maxprocs
+ 
+    This is the maximum number of pending remote UDP connections
+@@ -197,17 +173,6 @@
+    twice, and so on, up to 8 retries. Note that each retry takes
+    timeout_seconds seconds before we retry again. Default value: 2
+ 
+-ns_glueless_type
+-
+-   The RR type we send to resolve glueless records. This should be
+-   1 (A) when mainly using IPv4 to resolve records. If glueless NS
+-   records have AAAA but not A records, and IPv6 is enabled, it may
+-   make sense to give this a value of 255 (ANY). If IPv4 ever stops
+-   being used on a large scale, it may eventually become possible
+-   to make this have a value of 28 (AAAA).
+-
+-   The default value is 1: An A (IPv4 IP) record.
+-
+ random_seed_file
+ 
+    This is a file that contains random numbers, and is used as a
+@@ -238,10 +203,9 @@
+ 
+ recursive_acl
+ 
+-   This is a list of who is allowed to use the load balancer, in
+-   "ip/mask" format. Mask must be a number between 0 and 32 (for
+-   IPv6, between 0 and 128). For example, "127.0.0.1/8" allows
+-   local connections.
++   This is a list of who is allowed to use Deadwood, in
++   "ip/mask" format. Mask must be a number between 0 and 32. 
++   For example, "127.0.0.1/8" allows local connections.
+ 
+ reject_aaaa
+ 
+@@ -326,7 +290,7 @@
+ upstream_port
+ 
+    This is the port Deadwood uses to connect or send packets to the
+-   upstream server. The default value for this is 53; the standard
++   upstream servers. The default value for this is 53; the standard
+    DNS port.
+ 
+ upstream_servers
+@@ -403,31 +367,23 @@
+ 
+                         ip/mask format of IPs
+ 
+-   Deadwood uses both standard ip/netmask formats to specify IPs.
++   Deadwood uses a standard ip/netmask formats to specify IPs.
+    An ip is in dotted-decimal format, e.g. "10.1.2.3" (or in ipv6
+    format when ipv6 support is compiled in).
+ 
+-   The netmask is used to specify a range of IPs. The netmask can
+-   be in one of two formats: A single number between 1 and 32 (128
+-   when ipv6 support is compiled in), which indicates the number of
+-   leading "1" bits in the netmask, or a 4-digit dotted-decimal
+-   netmask.
++   The netmask is used to specify a range of IPs. The netmask is
++   a single number between 1 and 32, which indicates the number of
++   leading "1" bits in the netmask.
+ 
+    10.1.1.1/24 indicates that any ip from 10.1.1.0 to 10.1.1.255
+    will match.
+ 
+-   10.1.1.1/255.255.255.0 is identical to 10.1.1.1/24
+-
+    10.2.3.4/16 indicates that any ip from 10.2.0.0 to 10.2.255.255
+    will match.
+ 
+-   10.2.3.4/255.255.0.0 is identical to 10.2.3.4/16
+-
+    127.0.0.0/8 indicates that any ip with "127" as the first octet
+    (number) will match.
+ 
+-   127.0.0.0/255.0.0.0 is identical to 127.0.0.0/8
+-
+    The netmask is optional, and, if not present, indicates that
+    only a single IP will match.
+ 
+@@ -457,29 +413,15 @@
+    Where path/to/filename is the path to the file to be parsed like
+    a dwood3rc file.
+ 
+-   All files must be in or under the directory
+-   /etc/deadwood/execfile. Filenames can only have lower-case
+-   letters and the underscore character ("_"). Absolute paths are
+-   not allowed as the argument to execfile; the filename can not
+-   start with a slash ("/") character.
++   All files must be in or under the directory Deadwood is run from.
++   Filenames can only have lower-case letters and the underscore 
++   character ("_"). Absolute paths are not allowed as the argument 
++   to execfile; the filename can not start with a slash ("/") 
++   character.
+ 
+    If there is a parse error in the file pointed to by execfile,
+    Deadwood will report the error as being on the line with the
+-   execfile command in the main dwood3rc file. To find where a
+-   parse error is in the sub-file, use something like
+-   "Deadwood -f /etc/deadwood/execfile/filename" to find the parse
+-   error in the offending file, where "filename" is the file to to
+-   parsed via execfile.
+-
+-                             IPV6 support
+-
+-   This server can also be optionally compiled to have IPv6
+-   support. In order to enable IPv6 support, add '-DIPV6' to the
+-   compile-time flags. For example, to compile this to make a small
+-   binary, and to have ipv6 support:
+-
+-         export FLAGS='-Os -DIPV6'
+-         make
++   execfile command in the main dwood3rc file. 
+ 
+                                SECURITY
+ 
+@@ -531,12 +473,6 @@
+    uses /dev/urandom (secret.txt in Windows) as a hardcoded path to
+    get entropy (along with the timestamp) for the hash algorithm.
+ 
+-                            DAEMONIZATION
+-
+-   Deadwood does not have any built-in daemonization facilities;
+-   this is handled by the external program Duende or any other
+-   daemonizer.
+-
+                       Example configuration file
+ 
+    Here is an example dwood3rc configuration file:
+@@ -632,6 +568,5 @@
+                                AUTHORS
+ 
+    Sam Trenholme (http://www.samiam.org) is responsible for this
+-   program and man page. He appreciates all of Jean-Jacques
+-   Sarton's help giving this program Ipv6 support.
++   program and reference.
+ 

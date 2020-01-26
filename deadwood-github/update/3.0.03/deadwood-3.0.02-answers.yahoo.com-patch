@@ -1,0 +1,150 @@
+--- deadwood-3.0.03/src/DwRecurse.c.orig	2011-07-22 14:38:25.702549703 -0500
++++ deadwood-3.0.03/src/DwRecurse.c	2011-07-22 14:38:26.196914504 -0500
+@@ -1562,6 +1562,10 @@
+         int type = 0;
+ 	int_fast32_t qtype = 0;
+ 
++	if(in == 0 || query == 0 || bailiwick == 0) {
++		return 0;
++	}
++
+ 	qtype = dw_fetch_u16(query,-1);
+ 
+ 	if(qtype == -1) {
+@@ -2135,6 +2139,10 @@
+         int type;
+         int ret = 0;
+ 
++	if(query == 0 || in == 0) {
++		goto catch_dwx_cache_reply;
++	}
++
+         if(rem[connection_number].ns == 0) {
+                 goto catch_dwx_cache_reply;
+         }
+--- deadwood-3.0.03/src/DwUdpSocket.c.orig	2011-07-22 14:38:25.957680458 -0500
++++ deadwood-3.0.03/src/DwUdpSocket.c	2011-07-22 14:39:11.460977357 -0500
+@@ -1024,6 +1024,7 @@
+                 int b, SOCKET sock, int l) {
+ 
+         int cache_dns_reply_return_value = -1;
++	int z = 0, y = 0, x = 0;
+ 
+         if(count < 12) {
+                 return -1; /* Not a DNS packet at all */
+@@ -1033,6 +1034,66 @@
+                 return -1;
+         }
+ 
++	/* answers.yahoo.com hack: A truncated reply upstream with
++	 * answers will be treated as if it has only one answer */
++	if((a[2] & 0x02) != 0x00 && a[7] > 0 &&
++			key_n[DWM_N_truncation_hack] == 1) {
++		a[6] = 0;
++		a[7] = 1;
++		/* Cut off answer after first reply */
++		for(z=12;z<count;z++) {
++			if(y == 0) { /* Question Length label */
++				y = 1;
++				x = a[z];			
++				if(x > 63) {
++					return -1; /* funny packet */
++				}
++				if(x == 0) {
++					x = 4;
++					y = 7;
++				}
++			} else if(y == 1) { /* In question label */
++				x--;
++				if(x == 0) {
++					y = 0;
++				}
++			} else if(y == 7) { /* Type/class of question */
++				x--;
++				if(x == 0) {
++					y = 2;
++				}
++			} else if(y == 2) { /* First part of name */
++				if(a[z] != 0xc0) {
++					return -1; /* funny packet */
++				}
++				y = 3;
++			} else if(y == 3) { /* Second part of name */
++				if(a[z] != 0x0c) {
++					return -1; /* funny packet */
++				}
++				y = 4;
++				x = 8;
++			} else if(y == 4) { /* Answer Type, class, or TTL */
++				x--;
++				if(x == 0) {
++					y = 5;
++				}
++			} else if(y == 5) {
++				if(a[z] != 0) {
++					return -1; /* RDLENGTH too long */
++				}
++				y = 6;
++			} else if(y == 6) {
++				if(z + a[z] + 1> count) {
++					return -1; /* shouldn't happen */
++				}
++				count = z + a[z] + 1;
++				y = 8; /* We're done */
++			}
++		}	
++		a[2] &= 0xfd;
++	}
++
+         if((a[2] & 0x02) == 0x00) { /* If not truncated */
+                 fflush(stdout);
+                 cache_dns_reply_return_value = cache_dns_reply(a,count,b,0);
+--- deadwood-3.0.03/src/DwMararc.h.orig	2011-07-22 14:38:26.032096919 -0500
++++ deadwood-3.0.03/src/DwMararc.h	2011-07-22 14:38:26.242120757 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2010 Sam Trenholme
++/* Copyright (c) 2007-2011 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -64,13 +64,14 @@
+ #define DWM_N_ns_glueless_type 23
+ #define DWM_N_reject_aaaa 24
+ #define DWM_N_reject_mx 25
++#define DWM_N_truncation_hack 26
+ 
+ /* Number of string parameters in the mararc file */
+ #define KEY_S_COUNT 7
+ /* Number of dictionary parameters in the mararc file */
+ #define KEY_D_COUNT 2
+ /* Number of numeric parameters in the mararc file */
+-#define KEY_N_COUNT 26
++#define KEY_N_COUNT 27
+ 
+ #ifndef MINGW
+ /* Location of files we read when we run execfile("foo") */
+@@ -138,6 +139,8 @@
+                         * synthetic "not there" reply */
+         "reject_mx", /* Whether to reject MX queries with no reply and
+                       * logging the query (to help find spam zombies) */
++	"truncation_hack", /* Whether to use 1st answer in truncated UDP
++			    * replies (if present) */
+         0 };
+ 
+ #endif /* MARARC_C */
+--- deadwood-3.0.03/src/DwMararc.c.orig	2011-07-22 14:38:26.106915345 -0500
++++ deadwood-3.0.03/src/DwMararc.c	2011-07-22 14:38:26.257060257 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2010 Sam Trenholme
++/* Copyright (c) 2007-2011 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -393,6 +393,7 @@
+         key_n[DWM_N_ns_glueless_type] = 1;
+         key_n[DWM_N_reject_aaaa] = 0;
+         key_n[DWM_N_reject_mx] = 1;
++	key_n[DWM_N_truncation_hack] = 1;
+ }
+ 
+ /* Look for a Mararc parameter; -1 if not found/error; 0-n if found

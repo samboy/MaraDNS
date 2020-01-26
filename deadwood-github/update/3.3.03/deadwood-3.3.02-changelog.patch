@@ -1,0 +1,14 @@
+--- deadwood-3.3.02/doc/CHANGELOG	2019-01-19 06:22:53.000000000 -0800
++++ deadwood-3.3.03/doc/CHANGELOG	2019-03-03 07:44:16.912941313 -0800
+@@ -1,3 +1,11 @@
++3.3.02 (2019-02-23; development branch release):
++
++- Add new parameter: ip6
++
++3.3.01 (2019-02-10; development branch release):
++
++- Add new parameter: ip4
++
+ 3.2.14 (2019-01-16):
+ 
+ - Windows-only fix: Windows open() API is not 100% comatible with UNIX API;

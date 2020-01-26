@@ -1,0 +1,36 @@
+There was an issue building Deadwood from the GitHub tree in CentOS8
+which this patch fixes.
+
+--- deadwood-3.4.01/src/Makefile	2015-01-24 00:09:04.000000000 -0800
++++ deadwood-3.4.02/src/Makefile	2019-10-22 13:30:24.697853609 -0700
+@@ -20,7 +20,7 @@
+ 	DwRecurse.o \
+ 	DwDict.o
+ 
+-all:	Deadwood version.h
++all:	version.h Deadwood
+ 
+ # Since some systems may not have /dev/urandom (Windows, *cough* *cough*), we 
+ # keep a randomly generated prime around 
+--- deadwood-3.4.01/src/Makefile.fallback	2015-01-24 00:09:04.000000000 -0800
++++ deadwood-3.4.02/src/Makefile.fallback	2019-10-22 13:31:18.821354621 -0700
+@@ -20,7 +20,7 @@
+ 	DwRecurse.o \
+ 	DwDict.o
+ 
+-all:	Deadwood version.h
++all:	version.h Deadwood
+ 
+ # Since some systems may not have /dev/urandom (Windows, *cough* *cough*), we 
+ # keep a randomly generated prime around 
+--- deadwood-3.4.01/src/Makefile.sl6	2011-12-21 11:44:37.000000000 -0800
++++ deadwood-3.4.02/src/Makefile.sl6	2019-10-22 13:31:59.299670053 -0700
+@@ -20,7 +20,7 @@
+ 	DwRecurse.o \
+ 	DwDict.o
+ 
+-all:	Deadwood version.h
++all:	version.h Deadwood
+ 
+ # Since some systems may not have /dev/urandom (Windows, *cough* *cough*), we 
+ # keep a randomly generated prime around 

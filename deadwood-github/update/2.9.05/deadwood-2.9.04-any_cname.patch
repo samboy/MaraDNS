@@ -1,0 +1,57 @@
+--- deadwood-2.9.05/src/DwRecurse.c.orig	2010-08-19 14:43:19.000000000 -0700
++++ deadwood-2.9.05/src/DwRecurse.c	2010-08-19 14:50:27.000000000 -0700
+@@ -386,17 +386,19 @@
+ 
+         for(counter = 0; counter < view->look->ancount * 2; counter +=2) {
+                 if(dwx_dname_issame_2dw(query,0,
+-                                in,view->look->an[counter]) == 1) {
++                                in,view->look->an[counter]) == 1 &&
++				dw_fetch_u16(in,view->look->an[counter + 1]) !=
++				RR_CNAME) {
+                                 /* Direct answer for our query */
+                         use_cname = 0; /* No CNAMEs after direct answer */
+-                } else if(cname_chain == 0 && qtype != RR_CNAME &&
++                } else if(cname_chain == 0 &&
+                                 (counter >> 1) == cname_chain && use_cname == 1
+                                 && dwx_dname_issame_2dw(query,0,in,
+                                 view->look->an[counter]) == 1 &&
+                                 dw_fetch_u16(in,view->look->an[counter + 1]) ==
+                                 RR_CNAME) { /* First answer a CNAME */
+                         cname_chain++;
+-                } else if(cname_chain > 0 && qtype != RR_CNAME &&
++                } else if(cname_chain > 0 &&
+                                 (counter >> 1) == cname_chain && use_cname == 1
+                                 && dwx_dname_issame_dw(in,
+                                 view->look->an[((cname_chain - 1) * 2) + 1]
+@@ -405,11 +407,13 @@
+                                 dw_fetch_u16(in,view->look->an[counter + 1]) ==
+                                 RR_CNAME) { /* CNAME chain member */
+                         cname_chain++;
+-                } else if(cname_chain > 0 && qtype != RR_CNAME &&
++                } else if(cname_chain > 0 &&
+                                 dwx_dname_issame_dw(in,
+                                 view->look->an[((cname_chain - 1) * 2) + 1]
+                                 + 10 /* 10: TYPE, CLASS, TTL, RDLENGTH */,
+-                                view->look->an[counter]) == 1) {
++                                view->look->an[counter]) == 1 &&
++				dw_fetch_u16(in,view->look->an[counter + 1]) !=
++				RR_CNAME) {
+                         /* Answer after CNAME chain */
+                         use_cname = 0; /* Answer found; no more CNAMEs */
+                 } else { /* Not an answer to our query nor a CNAME chain */
+@@ -1423,12 +1427,11 @@
+                 if(view->an_types == 0) {
+                         return TYPE_ERROR;
+                 }
+-                if(query_type == RR_ANY) {
+-                        return TYPE_ANSWER;
+-                }
+                 for(index = 0; index < 7; index++ ) {
+                         if(view->an_types[index] ==
+-                                        dwx_rrtype_number(query_type)) {
++                                        dwx_rrtype_number(query_type) ||
++                                (query_type == RR_ANY && 
++					view->an_types[index] != RR_CNAME)) {
+                                 return TYPE_ANSWER;
+                         }
+                         if(view->an_types[index] == RR_CNAME) { /* CNAMEs */

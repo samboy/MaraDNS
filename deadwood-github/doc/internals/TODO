@@ -1,0 +1,62 @@
+OK, we have basic UDP-only caching (with the ability to read and write
+the cache to disk).  Let's improve that:
+
+* If the server sends us "truncated", just give the user this reply
+  without caching it. (DONE; caching disabled for tuncated replies)
+  Make sure we fully validate a truncated packet.  (No, we just tell them
+  it's truncated and they can use DNS-over-TCP if enabled)
+
+* Bugfix: The Google problem.  Google.com's DNS reply is in the form
+  "Cache for one day: Google.com is a CNAME for www.l.google.com;
+   Cache for one hour: www.l.google.com has the ip 192.168.1.55"
+  Deadwood 2 only looks at the first TTL for a DNS packet and use that
+  to determine how long to cache a reply; Deadwood 2 should look at the
+  first 2 (or first N) TTLs and cache the entire reply for the minimum 
+  TTL Deadwood sees (right now Deadwood 2 caches Google.com for one week
+  when it really should only cache it for one hour) (DONE)
+
+* RFC compliance: Records with a TTL of 0 should not be cached. (DONE
+  by Neeo; undone by myself because recursive Deadwood needs to put
+  items in the cache before giving them to the user)
+
+* Safe cache writing: Write to a temporary file and rename the file to 
+  the name of the cache file when the write is done. (Never done)
+
+* Timed cache writing: Allow Deadwood to write to the cache every N minutes;
+  this will allow Windows users to have cachefiles. (The Windows port just
+  writes the cache when the service is stopped, so Never done)
+
+* Windows support: (Windows is important because MaraDNS is the only 
+  open source DNS server I know of, besides BIND, to run on Windows)
+  How does Windows do signals, so writing the cache to a file works
+  in Windows? (DONE; Deadwood now Windows service)
+
+* OK, once all of that is done, another wishlist item: Handle DNS-over-TCP
+  correctly.  Instead of having TCP connections handled by a separate
+  non-caching daemon, have the main daemon get TCP connections, 
+  convert them in to UDP connections.  Also, should we get a truncated 
+  UDP packet, try again using TCP. (DONE)
+
+* OK, another wishlist item: Synthetic replies.   If they ask for an A
+  record, and we can't talk to upstream -or- upstream gives us a 
+  not there/NXDOMAIN, we give them a synthetic A record.  Think "You're
+  not logged on to our network" pages. (I've done the opposite: If you 
+  have an ISP with an annoying page with ads when you mistype a domain 
+  name, Deadwood can make the DNS reply "not there" instead).
+
+* Wishlist item: TTL aging.  Not really sure how I'll pull this off
+  (give each hash entry an "atime" entry?; make it so each entry has the
+   same TTL for all DNS entries?) (DONE)
+
+Some thoughts about the cache design.
+
+* The code that retries may end up trying to contact the same dead upstream
+  server again.  We should change this; when making a connection upstream,
+  we should note which server we tried to contact, and have it so we don't
+  contact that server the next time we try to make a connection.  Maybe even
+  have an array of the number of times we have failed to connect to a given
+  upstream server, and have the code use a heuristic to try less connections
+  with an unreliable server. (DONE; we round-robin rotate if we can't connect
+  to an upstream NS server)
+
+

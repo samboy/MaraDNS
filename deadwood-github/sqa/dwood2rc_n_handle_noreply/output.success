@@ -1,0 +1,9 @@
+handle_noreply=0
+# Querying the server with the IP 127.0.0.1
+# Hard Error: Timeout
+handle_noreply=1
+# Querying the server with the IP 127.0.0.1
+# Remote server said: SERVER FAILURE
+# Question: Awww.example.com.
+# NS replies:
+# AR replies:

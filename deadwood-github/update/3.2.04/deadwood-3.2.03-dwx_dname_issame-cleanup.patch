@@ -1,0 +1,30 @@
+--- deadwood-3.2.04/src/DwRecurse.c.orig	2013-11-28 06:22:55.000000000 -0500
++++ deadwood-3.2.04/src/DwRecurse.c	2013-11-28 06:26:44.000000000 -0500
+@@ -172,11 +172,11 @@
+         int len = 0, counter = 0;
+ 	uint8_t lc1, lc2; /* Lower case */
+ 
+-        if(*p1 != *p2) {
+-                return 0;
+-        }
+-
+         for(counter = 0; counter < 260; counter++) {
++        	if(*p1 != *p2) { /* Both labels must be the same length */
++                	return 0;
++        	}
++
+                 len = *p1;
+                 if(len > 63 || len < 0) {
+                         return -1; /* Invalid length */
+@@ -189,9 +189,11 @@
+                         p1++;
+                         p2++;
+                         counter++;
++			/* Make sure we do not go out of bounds */
+                         if(p1 > pmax1 || p2 > pmax2) {
+                                 return -1;
+                         }
++			/* lc1/2 used to make label compare case insensitive */
+ 			lc1 = *p1;
+ 			lc2 = *p2;
+ 			if(lc1 >= 'A' && lc1 <= 'Z') { lc1 += 32; }

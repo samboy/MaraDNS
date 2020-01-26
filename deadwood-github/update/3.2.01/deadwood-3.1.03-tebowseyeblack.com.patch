@@ -1,0 +1,43 @@
+--- deadwood-3.2.01/src/DwHash.c.orig	2012-01-24 04:45:49.000000000 -0600
++++ deadwood-3.2.01/src/DwHash.c	2012-01-24 04:47:07.000000000 -0600
+@@ -393,7 +393,7 @@
+          * records can appear far in the future, so records which expire
+          * in over three years are considered already expired */
+         if(use_fila == 1 && ignore_expire != 1 && (get_time() > seek->expire 
+-			|| (get_time() + 94608000) < seek->expire)
++			|| (get_time() + 24219648000LL) < seek->expire)
+                         && seek->expire != 0) {
+                 return 0;
+         }
+@@ -516,7 +516,7 @@
+ 	} else { /* Special case: Retain TTL */
+         	seek = dwh_grep(hash,key);
+         	if(seek == 0) { /* Not found; use a short TTL */
+-			new->expire = get_time() + 30;
++			new->expire = get_time() + 7680;
+ 		} else { /* Do not change TTL */
+ 			new->expire = seek->expire;
+ 		}
+--- deadwood-3.1.03/src/DwRecurse.c	2011-12-21 13:44:38.000000000 -0600
++++ deadwood-3.2.01/src/DwRecurse.c	2012-01-24 05:29:00.000000000 -0600
+@@ -1996,6 +1996,7 @@
+         dw_str *uncomp = 0, *reply = 0, *comp = 0;
+         int ret = -1, c = 0; /* c is for counter */
+         int_fast32_t ttl = 3600;
++	int ancount = 0;
+ 
+         if(depth > 32) {
+                  goto catch_dwx_make_cname_reply;
+@@ -2005,7 +2006,11 @@
+                 goto catch_dwx_make_cname_reply;
+         }
+ 
+-        ttl = dw_get_a_dnsttl(answer,0,31536000,1);
++	ancount = dw_fetch_u16(answer,-7);
++	if(ancount < 1) {
++                goto catch_dwx_make_cname_reply;
++        }
++        ttl = dw_get_a_dnsttl(answer,0,31536000,ancount);
+         if(ttl < 0) {
+                 dw_log_dwstr("Invalid TTL in answer ",answer,100);
+                 ttl = 3600;

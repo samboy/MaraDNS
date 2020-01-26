@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Convert an ej document to a manpage document; which we then make a 
+# postscript document from
+
+# Note that this code needs a specialially modified form of the
+# groff tmac.an macro set called tmac.anps; this macro set can be
+# obtained from the download page at http://www.maradns.org/
+
+if which ej2man > /dev/null 2>&1 ; then
+	CMD=ej2man
+elif [ -e ../../tools/ej/ej2man ] ; then
+	CMD=../../tools/ej/ej2man
+elif [ -e ../../../tools/ej/ej2man ] ; then
+	CMD=../../../tools/ej/ej2man
+else
+	echo Sorry\, can not find ej2man
+	exit 1
+fi
+	
+$CMD $1 | groff -mannp -rS12 -Tps 
+#$CMD $1 | groff -man -rS12 -Tps 
+

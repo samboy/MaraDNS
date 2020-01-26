@@ -1,0 +1,121 @@
+--- deadwood-3.2.01/doc/FAQ.ej	2012-02-11 14:15:43.000000000 -0600
++++ deadwood-3.2.02/doc/FAQ.ej	2012-02-28 09:15:50.000000000 -0600
+@@ -146,6 +146,9 @@
+ 
+ Deadwood uses a hash to store these blacklisted domains, and should be able
+ to store thousands of such domains without significant slowdown.
++Please note that each root_servers and upstream_servers
++entry takes up space in Deadwood's cache and that maximum_cache_elements
++will need to be increased to store a large number of blacklisted domains.
+ <p>
+ 
+ If it is more convenient to store the domains in separate files, this can be
+--- deadwood-3.2.02/doc/Deadwood.ej.orig	2012-02-28 09:16:12.000000000 -0600
++++ deadwood-3.2.02/doc/Deadwood.ej	2012-02-28 09:18:44.000000000 -0600
+@@ -266,6 +266,12 @@
+ Windows XP and other operating systems will have different memory allocation
+ numbers.
+ 
++<p>
++
++Please note that each root_servers and upstream_servers
++entry takes up space in Deadwood's cache and that maximum_cache_elements
++will need to be increased to store a large number of these entries.
++
+ <h2>maxprocs</h2>
+ This is the maximum number of pending remote UDP connections
+ Deadwood can have.  The default value for this is 32.  
+@@ -390,6 +396,12 @@
+ us which DNS servers to connect to to get an answer closer to
+ our desired answer.
+ 
++<p>
++
++Please note that each root_servers entry takes up space in Deadwood's
++cache and that maximum_cache_elements will need to be increased to store
++a large number of these entries.
++
+ <h2>tcp_listen</h2>
+ In order to enable DNS-over-TCP, this variable must be set and have
+ a value of 1.  Default value: 0
+@@ -494,6 +506,12 @@
+ This list is current as of May 3, 2010, and was last changed on
+ November 1, 2007.
+ 
++<p>
++
++Please note that each upstream_servers entry takes up space in Deadwood's
++cache and that maximum_cache_elements will need to be increased to store
++a large number of these entries.
++
+ <h2>verbose_level</h2>
+ This determines how many messages are logged on standard output; larger
+ values log more messages.  The default value for this is 3.
+--- deadwood-3.2.02/doc/dwood3rc-all.orig	2012-02-28 09:19:04.000000000 -0600
++++ deadwood-3.2.02/doc/dwood3rc-all	2012-02-28 09:20:32.000000000 -0600
+@@ -100,6 +100,9 @@
+ 
+ # ICANN DNS root servers (Deadwood default if both root_servers and
+ # upstream_servers are not defined)
++# Please note that each root_servers entry takes up space in Deadwood's
++# cache and that maximum_cache_elements will need to be increased to store
++# a large number of these entries.
+ #root_servers = {}
+ #root_servers["."]="198.41.0.4, 192.228.79.201, 192.33.4.12, 128.8.10.90,"
+ #root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, 128.63.2.53, "
+@@ -126,6 +129,9 @@
+ upstream_port = 53
+ 
+ # Servers we connect to that themselves recursively solve DNS records
++# Please note that each upstream_servers entry takes up space in Deadwood's
++# cache and that maximum_cache_elements will need to be increased to store
++# a large number of these entries.
+ #upstream_servers = {}
+ #upstream_servers["."]="8.8.8.8, 8.8.4.4" 
+ 
+--- deadwood-3.2.01/doc/dwood3rc	2011-11-01 10:25:23.000000000 -0600
++++ deadwood-3.2.02/doc/dwood3rc	2012-02-28 09:25:59.000000000 -0600
+@@ -17,6 +17,10 @@
+ #
+ # These are commented out; if upstream_servers is not set, Deadwood will
+ # act as a recursive DNS server
++#
++# Please note that each upstream_servers entry takes up space in Deadwood's
++# cache and that maximum_cache_elements will need to be increased to store
++# a large number of these entries.
+ #upstream_servers = {}
+ #upstream_servers["."]="8.8.8.8, 8.8.4.4" # Servers we connect to
+ 
+@@ -31,6 +35,9 @@
+ #root_servers["."]+="192.36.148.17, 192.58.128.30, 193.0.14.129, 199.7.83.42, "
+ #root_servers["."]+="202.12.27.33"
+ #root_servers["phish.example.com."]="10.254.254.254"
++# Please note that each root_servers entry takes up space in Deadwood's
++# cache and that maximum_cache_elements will need to be increased to store
++# a large number of these entries.
+ 
+ recursive_acl = "127.0.0.1/16" # Who is allowed to use the cache
+ 
+--- deadwood-3.2.01/doc/Windows/dwood3rc.txt	2011-11-01 10:25:23.000000000 -0600
++++ deadwood-3.2.02/doc/Windows/dwood3rc.txt	2012-02-28 09:27:47.000000000 -0600
+@@ -3,6 +3,10 @@
+ 
+ # If you wish to use this program to cache from other recursive servers
+ # instead of doing its own recursion, uncomment the following lines
++#
++# Please note that each upstream_servers entry takes up space in Deadwood's
++# cache and that maximum_cache_elements will need to be increased to store
++# a large number of these entries.
+ #upstream_servers = {}
+ #upstream_servers["."]="8.8.8.8, 8.8.4.4" # Servers we connect to
+ 
+@@ -17,6 +21,9 @@
+ #root_servers["."]+="192.36.148.17, 192.58.128.30, 193.0.14.129, 199.7.83.42, "
+ #root_servers["."]+="202.12.27.33"
+ #root_servers["phish.example.com."]="10.254.254.254"
++# Please note that each root_servers entry takes up space in Deadwood's
++# cache and that maximum_cache_elements will need to be increased to store
++# a large number of these entries.
+ 
+ # The IP this program has 
+ bind_address="127.0.0.1"

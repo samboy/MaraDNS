@@ -1,0 +1,29 @@
+--- deadwood-2.9.02/doc/CHANGELOG	2010-07-29 10:39:09.000000000 -0700
++++ deadwood-2.9.03/doc/CHANGELOG	2010-08-06 07:07:03.000000000 -0700
+@@ -1,3 +1,26 @@
++2.9.03 (20100806):
++
++* Updated dwood2rc_n_timeout_seconds SQA test to work around CentOS bug
++  (reported: http://bugs.centos.org/view.php?id=4465 )
++
++* Got packets too big to fit in dns-over-udp to work when running
++  Deadwood as a recursive nameserver
++
++* Fix IPs in ACLs without netmasks
++
++* Increase timeout when a child query is spawned
++
++* Add new compile-time define: XTRA_STUFF for routines only used while
++  debugging.
++
++* Deadwood can now handle a DNS reply with a DNAME in it
++
++* Retries and remote IPs we connect to are are now logged at verbose_level
++  128 or higher
++
++* Deadwood now sends NOTIMPL in reply to EDNS packets instead of dropping 
++  them
++
+ 2.9.02 (20100729):
+ 
+ * Script to apply patches against one version of Deadwood to make the

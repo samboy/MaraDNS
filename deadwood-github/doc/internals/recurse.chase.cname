@@ -1,0 +1,76 @@
+The Deadwood code that chases incomplete CNAMEs is in DwRecurse.c:
+
+dwx_handle_cname_refer: 
+
+* Caches the CNAME version of the referral
+
+* Sees if answer CNAME points to is in cache 
+
+* If present, go to dwx_make_cname_reply
+
+* If not present, go to dwx_do_cname_glueless
+
+* Query type 65394 is used for CNAME referrals in the cache
+
+dwx_do_cname_glueless:
+
+* Wrapper for dwx_do_glueless_new (has commented code to also do it with
+  in-flight, but disabled so the code is easier to maintain)
+
+dwx_do_glueless_new:
+
+* Creates new remote connection to send upstream to find answer corresponding
+  to CNAME record.
+
+* Should be modified to not have a parent ID, but resolve an incomplete
+  CNAME where the incomplete CNAME is already in the cache.
+
+* Input: query: DNS query that the CNAME points to (example.com CNAME
+  hell.1.2.3.akamai.net; query is "hell.1.2.3.akamai.net" with original
+  qtype at end) ; conn_number is the outgoing connection number this
+  CNAME query will become a child of ; type is "2" for CNAME resolve)
+
+--
+
+Once the CNAME answer is resolved:
+
+send_reply_from_cache() sees that the original request was a request to 
+answer an incomplete CNAME query, and calls dwx_incomplete_cname_done
+with 1) The query this in an answer for 2) The remote query the answer was
+on and 3) The local number to send the answer to (???)
+
+dwx_incomplete_cname_done() grabs the answer with the CNAME referral as
+well as the answer (now in the cache, presumably) for what the CNAME
+referral points to, and calls dwx_make_cname_reply to make a CNAME
+answer to send to the client.
+
+dwx_make_cname_reply() makes the actual final answer by stitching together 
+the incomplete cname referral and the query the cname referral points to.
+
+--
+
+So, general plan:
+
+* If dwx_handle_cname_refer is called with a connection_number of -1, this
+  means that the incomplete CNAME refer was found from the cache but what 
+  the CNAME refer points to is no longer in the cache.
+
+* Likewise, when dwx_do_glueless_new is called with a conn_number under 0,
+  this means that it's an incomplete CNAME with the referral already in
+  the cache.
+
+---
+
+The changes to solve incomplete CNAMEs already cached:
+
+* Deadwood now looks at the TTL of IPs pointed to by a CNAME to determine
+  how long to cache the record.
+
+* There is a new string in the "local" part of an upstream request: 
+  "action", which will store the incomplete CNAME refer information.
+
+* orig_query in the local part of an upstream request will no longer just be
+  the case-preserved version of their original query; it will now also be 
+  used to preserve the original query when giving back the packet to 
+  the querier.
+

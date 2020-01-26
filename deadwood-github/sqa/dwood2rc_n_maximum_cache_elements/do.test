@@ -1,0 +1,66 @@
+#!/bin/sh
+
+# This is a basic Deadwood test to make sure it works
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+sleep 2
+
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.2"
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+EOF
+
+cat > db.example.com << EOF
+*.% A 10.1.2.3
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+#../../../server/maradns -f mararc &
+sleep 1
+
+# Now, make sure Deadwood works
+
+for ELEMENTS in 32 1024 ; do
+cat > dwood2rc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+upstream_servers = {}
+upstream_servers["."]="127.0.0.2"
+recursive_acl="127.0.0.1/16"
+maximum_cache_elements=${ELEMENTS}
+cache_file="cache/dw_cache"
+filter_rfc1918 = 0
+EOF
+
+# Make the directory to store the cache
+mkdir cache
+chown nobody:nobody cache # You're using CentOS 5 to test this, of course.
+
+# Run the resolver
+../../src/Deadwood -f dwood2rc > /dev/null &
+#../../src/Deadwood -f dwood2rc & # DEBUG
+sleep 1
+for a in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 \
+         22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 ; do
+
+	#askmara -t 1 Acelement${a}.example.com. 127.0.0.1 # DEBUG
+	askmara -t 1 Acelement${a}.example.com. 127.0.0.1 > /dev/null
+done
+
+sleep 1
+killall Deadwood
+sleep 3
+ls -l cache/dw_cache | awk '{print $5}' # Again, CentOS 5
+#strings cache/dw_cache | grep celement # DEBUG
+rm -fr cache
+
+done
+
+
+killall maradns
+rm mararc
+rm db.example.com
+rm dwood2rc

@@ -1,0 +1,114 @@
+--- deadwood-3.2.02/INSTALL.txt	2012-02-29 01:59:53.000000000 -0600
++++ deadwood-3.2.03/INSTALL.txt	2012-09-22 10:32:11.191945240 -0500
+@@ -1,23 +1,20 @@
+ Deadwood is a recursive DNS program that is supported for two platforms:
+-Windows (via MinGW) and Scientific Linux version 6.  This program
+-may or may not work on other platforms; it is not supported on other
+-platforms in the sense that I am not able to effectively answer any
+-questions about running Deadwood on said platform (but see "Other
+-platforms" below).
+-
+-This document targets Windows XP but Deadwood runs fine on Windows 7.  
+-There is a supplied document (doc\Windows\Vista.txt) that describes one way
+-to get Deadwood to run in Vista and Windows 7.
++Windows 7 (via MinGW) and any RHEL6 clone (Scientific Linux 6; CentOS
++6; and Oracle Linux 6).  This program may or may not work on other
++platforms; it is not supported on other platforms in the sense that I
++am not able to effectively answer any questions about running Deadwood
++on said platform (but see "Other platforms" below).
+ 
+ The rest of this document deals with how to compile this code in Scientific
+-Linux 6, followed by a section on how to compile this code in Windows XP.
++Linux 6, followed by a section on how to compile this code in Windows 7.
+ 
+ ==SCIENTIFIC LINUX 6==
+ 
+-To compile this program in Scientific Linux 6, first set the environmental
+-variable FLAGS to the flags you wish to give the compiler.  For example,
+-with gcc, you probably want to make the compile-time flags "-O3" unless
+-you are making this as small as possible for an embedded system.
++To compile this program in Scientific Linux 6 (or any other RHEL6 clone),
++first set the environmental variable FLAGS to the flags you wish to
++give the compiler.  For example, with gcc, you probably want to make
++the compile-time flags "-O3" unless you are making this as small as
++possible for an embedded system.
+ 
+ To set the flags to be "-O3" using a POSIX-compliant shell (Bash, ash, etc.):
+ 
+@@ -111,14 +108,14 @@
+ It is possible to compile Deadwood with IPv6 support.  See the file 
+ doc/compile.options for details
+ 
+-==WINDOWS XP==
++==WINDOWS 7==
+ 
+-The simplest way to run this program in Windows XP is to use the
++The simplest way to run this program in Windows 7 is to use the
+ prebuilt binary (.exe file) which should be in the same place as
+ the place where you obtained this source code, with a name like
+ "Deadwood-3-1-XX-win32.zip".
+ 
+-The way I compile this program in Windows XP is with MinGW-3.4.2 and
++The way I compile this program in Windows 7 is with MinGW-3.4.2 and
+ MSYS-1.0.10.  These programs are available at the following locations:
+ 
+ 	ftp://ftp.trolltech.com/misc/ (MinGW 3.4.2)
+@@ -135,13 +132,22 @@
+ a Windows service.  First, find a suitable directory on your file system
+ to install Deadwood, such as "c:\Program Files\Deadwood\"
+ 
+-Once Deadwood.exe is placed in this directory, install the service:
++At this point, one needs to use a cmd prompt with administrator privileges.
++
++To open up an admin cmd prompt:
++
++* Go to the start menu and search for "cmd"
++
++* When found, right click on it and run "cmd" as an administrator
++
++Once this administrative "cmd" prompt is opened, it is necessary to
++install Deadwood.  Here is how to install the service:
+ 
+ 	Deadwood --install
+ 
+ Before you can run the service, you will need a file named "dwood3rc.txt"
+-for Deadwood to read its parameters from in the same directory
+-Deadwood.exe was placed.  An example file is in doc\Windows\dwood3rc.txt
++for Deadwood to read its parameters from.  An example file is in 
++doc\Windows\dwood3rc.txt
+ 
+ You need to make a file with random text in it called secret.txt.
+ 
+@@ -181,14 +187,10 @@
+ 
+ If one wishes to uninstall Deadwood.
+ 
+-This document targets Windows XP but Deadwood runs fine on Windows 7.
+-There is a supplied document (doc\Windows\Vista.txt) that describes one
+-way to get Deadwood to run in Vista and Windows 7.
+-
+ ==OTHER PLATFORMS==
+ 
+ Just because Deadwood is only fully supported in Scientific Linux 6
+-and Windows XP doesn't mean Deadwood doesn't run on other platforms.
++and Windows 7 doesn't mean Deadwood doesn't run on other platforms.
+ It just means that, if you wish to run Deadwood on another platform,
+ it's up to you to make the port; then again, before doing so, check
+ on the mailing list to make sure no one has done so before:
+@@ -225,6 +227,16 @@
+ if this is something you're interested in, feel free to send patches to
+ the MaraDNS mailing list.
+ 
++Please note that Deadwood's behavior is undefined should malloc()
++fail.  If using Deadwood in an environment where malloc() may return
++NULL, please replace the dw_malloc() macro with a function that can
++properly handle a malloc() failure.
++
++Also note that Deadwood performs a large number of malloc()s and free()s
++during its operation, and may have issues in embedded environments with
++simplistic malloc() implementations which can not handle a program 
++allocating then freeing a lot of small blocks of memory.
++
+ ==SUPPORT==
+ 
+ The channels of support for Deadwood are the same as for MaraDNS: Post it

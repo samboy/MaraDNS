@@ -1,0 +1,25 @@
+--- deadwood-2.9.04/src/DwRecurse.h	2010-08-13 01:48:00.000000000 -0700
++++ deadwood-2.9.05/src/DwRecurse.h	2010-08-19 15:52:09.000000000 -0700
+@@ -98,7 +98,7 @@
+ #define TYPE_FLOAT128 47 /* IEEE 754 quad-percision float base-2 */
+ 
+ #ifdef XTRA_STUFF
+-#define dw_p printf
++#define dw_px printf
+ #endif /* XTRA_STUFF */
+ 
+ /* Called from cache_dns_reply this determines whether the answer is
+--- deadwood-2.9.05/src/DwRecurse.c.orig	2010-08-19 15:46:01.000000000 -0700
++++ deadwood-2.9.05/src/DwRecurse.c	2010-08-19 16:04:26.000000000 -0700
+@@ -1441,7 +1441,10 @@
+                                 for(counter = index + 1 ; counter < max ;
+                                                 counter++) {
+                                         if(view->an_types[counter] ==
+-                                           dwx_rrtype_number(query_type)) {
++                                           dwx_rrtype_number(query_type) ||
++					   (query_type == RR_ANY &&
++					   view->an_types[counter] != RR_CNAME)
++					   ) {
+                                                 return TYPE_ANSWER;
+                                         }
+                                         if(view->an_types[counter] != RR_CNAME

@@ -1,0 +1,47 @@
+commit c4316b9f7960b92382364c365c34c6be957152fb
+Author: Sam Trenholme <sam.trenholme@gmail.com>
+Date:   Tue Feb 11 09:18:12 2014 -0800
+
+    The '-' character can now be used at the beginning of a DNS name
+
+diff --git a/deadwood-github/doc/internals/MARARC.parser b/deadwood-github/doc/internals/MARARC.parser
+index 7c0166b..744fb28 100644
+--- a/deadwood-github/doc/internals/MARARC.parser
++++ b/deadwood-github/doc/internals/MARARC.parser
+@@ -25,6 +25,8 @@ S dname_start: The letters A-Z, a-z, and the numbers 0-9
+ 
+ + plus: The + symbol
+ 
++- minus: The - symbol
++
+ = equals: The = symbol
+ 
+ N number: The numbers 0-9
+@@ -107,7 +109,7 @@ Numeric mararc parameter:            h: N4h Wk Hb Rxp T;
+ Quote beginning mararc parameter:    i: I3m
+ End of line:                         k: Wk Hb Rxp T;
+ In mararc parameter:                 m: I3m Qk
+-Quote beginning dictionary index:    n: .2o S2p
++Quote beginning dictionary index:    n: .2o S2p -2p
+ Dot as dictionary index:             o: Qq
+ Dictionary index:                    p: D2p Qq 
+ Quote at end of dictionary index:    q: Wq ]r
+diff --git a/deadwood-github/src/DwMararc.h b/deadwood-github/src/DwMararc.h
+index 6bb6003..bb8be14 100644
+--- a/deadwood-github/src/DwMararc.h
++++ b/deadwood-github/src/DwMararc.h
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2012 Sam Trenholme
++/* Copyright (c) 2007-2014 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -207,7 +207,7 @@ char *key_n_names[KEY_N_COUNT + 1] = {
+                     "i I3m\n" \
+                     "k Wk Hb Rxp T;\n" \
+                     "m I3m Qk\n" \
+-                    "n .2o S2p\n" \
++                    "n .2o S2p -2p\n" \
+                     "o Qq\n" \
+                     "p D2p Qq\n" \
+                     "q Wq ]r\n" \

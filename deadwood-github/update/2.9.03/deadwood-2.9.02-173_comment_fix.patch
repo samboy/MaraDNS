@@ -1,0 +1,11 @@
+--- deadwood-2.9.03/src/DwRecurse.c.orig	2010-08-02 22:11:32.000000000 -0700
++++ deadwood-2.9.03/src/DwRecurse.c	2010-08-02 22:33:50.000000000 -0700
+@@ -2453,7 +2453,7 @@
+          * how many name servers we jump past for a given number
+          * of name servers.  I like 173 because it has the following jumps:
+          * Number of name servers:  2  3  4  5  6  7  8  9 10 11 12 13 14
+-         * Jump for this number:    1 -1  1 -2 -1 -2  2  2  3 -3  5  4  5
++         * Jump for this number:    1 -1  1 -2 -1 -2 -3  2  3 -3  5  4  5
+          *
+          * The jump is not 1 or -1 for all small numbers (16 or less) where
+          * it's possible to have a non 1/-1 relatively prime sequence; this

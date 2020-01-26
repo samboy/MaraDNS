@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Make sure Deadwood works
+# NOTE: No startup of MaraDNS because 127.0.0.2 is *supposed* to be
+#       non-responsive
+
+for NAME in badid.dns badquestion.dns ; do
+
+cc -o ${NAME} ${NAME}.c > /dev/null 2>&1
+
+#./${NAME} &
+./${NAME} > /dev/null 2>&1 &
+
+cat > dwood2rc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.2"
+upstream_servers = {}
+upstream_servers["."]="127.0.0.1"
+recursive_acl="127.0.0.1/16"
+maxprocs=8
+timeout_seconds=1
+filter_rfc1918 = 0
+EOF
+
+../../src/Deadwood -f dwood2rc > /dev/null &
+sleep 1
+echo testing $NAME
+askmara -t 10 Awww.example.com. 127.0.0.2
+sleep 1
+killall Deadwood > /dev/null 2>&1
+sleep 1
+
+killall ${NAME}
+sleep 10
+
+rm dwood2rc
+sleep 1
+rm ${NAME}
+
+done
+

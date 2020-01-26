@@ -1,0 +1,8 @@
+These are all of the official test vectors for RadioGatun[32].  The vectors 
+have had their formatting changed to make running the test more convenient.
+
+I have also added a UTF-8 test vector, and run the test against both
+clang and gcc at various levels of optimization (mainly because there
+was a bug in the rg32 code which only manifests itself in clang, but
+only at -O2 and -O3).
+

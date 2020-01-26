@@ -1,0 +1,50 @@
+#!/bin/sh
+
+# This is a basic Deadwood test to make sure it works
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+sleep 2
+
+cat > db.example.com << EOF
+*.% A 10.1.2.3
+EOF
+
+# Now, make sure Deadwood works
+
+for PORT in 53 5300 ; do
+
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.2"
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+dns_port=${PORT}
+EOF
+
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+sleep
+
+cat > dwood2rc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+upstream_servers = {}
+upstream_servers["."]="127.0.0.2"
+recursive_acl="127.0.0.1/16"
+upstream_port=${PORT}
+filter_rfc1918 = 0
+EOF
+
+../../src/Deadwood -f dwood2rc > /dev/null &
+sleep 1
+askmara Awww.example.com.
+
+sleep 1
+killall Deadwood
+killall maradns
+sleep 1
+
+done
+
+rm mararc
+rm db.example.com
+rm dwood2rc

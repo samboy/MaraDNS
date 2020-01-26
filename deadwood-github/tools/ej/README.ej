@@ -1,0 +1,96 @@
+Deadwood, since it's essentially an offshoot of MaraDNS, will use
+the same document format MaraDNS uses.
+
+---
+
+EJ is the document system that MaraDNS uses; this is in response to my 
+translators asking for a single unified document format which can be 
+converted in to HTML; man pages; text documents; etc.
+
+EJ is an XML-like format (without a DTD, alas) which has the following 
+tags.
+
+Comments:
+
+Comments begin with <!-- and end with -->; these comments are removed
+before an ej doc is translated in to any other format
+
+Tags to put in the header of the document:
+
+HEAD: Marks the beginning of the header; terminated by /HEAD
+
+TH: Placed in the HEAD of the document; this is the arguments to give TH 
+when translated to a web page; terminated by /TH; only applies when 
+converting ej documents to man page sources
+
+DTWIDTH: How wide to make DT entries when translating to the man page
+         format
+
+TITLE: The title of the document when the document is translated to HTML
+
+BODYFLAGS: Flags given to the BODY tag when this document is translated
+           to HTML
+
+meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=XXX": Mandatory;
+XXX is the character set this document is encoded in
+
+Tags to put in the body of the document:
+
+BODY: Marks the beginning of the body; terminated by /BODY
+
+H1: Same as in HTML; becomes .SH when translated in to a man page; placed 
+in BODY of message; terminated by /H1
+
+H2: Heading level 2; becomes a fairly complex series of roff code when
+    translated to man page format
+
+B: Bold text; terminated by /B
+
+I: Italic text; terminated by /I
+
+UL: Start a bulleted list; terminated by /UL
+
+LI: Bulleted list item 
+
+PRE: Unformatted text follows; this tag is terminated by /PRE
+
+NB: The next word should not be broken if there is a hyphen in the word
+    (Not currently supported; to do)
+
+INCLUDE "filename": Embed the listed filename as the next section of the doc
+
+HINCLUDE "filename": Embed the listed filename as the next section of the doc
+                     if this document is being translated to HTML
+
+BLOCKQUOTE: Move the following text over; terminated by /BLOCKQUOTE
+
+P: Indicates a new paragraph
+
+A: Indicates an anchor; same as a HTML anchor; terminated with /A
+
+TT: Indicates fix-point text
+
+TABLE: Signifies the beginning of a basic three-column table; terminated
+       with /TABLE
+
+TD: Signifies the start of a single table cell
+
+TR: Signifies the start of a new row with the table
+
+BR: Line break
+
+DL: Start a definition list
+
+DT: Start to describe the item to define; can be closed by /DT
+    (to work around a bug in the Konqueror web browser)
+
+DD: Start to define the item just declared with the DL tag; can be closed
+    by /DD (to work around Konqueror bug)
+
+HR: This is used to split up sections of the document
+
+HIBIT: This is a special tag used to indicate a section that needs
+       hi-bit (non-ASCII Unicode) characters.  This tag will be removed 
+       in HTML documents and the whole section will be removed in 
+       man pages.
+

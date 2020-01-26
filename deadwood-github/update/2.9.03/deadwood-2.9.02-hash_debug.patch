@@ -1,0 +1,22 @@
+--- deadwood-2.9.03/sqa/do.tests.orig	2010-08-06 07:25:32.000000000 -0700
++++ deadwood-2.9.03/sqa/do.tests	2010-08-06 07:25:47.000000000 -0700
+@@ -144,7 +144,7 @@
+ # Let's test hash_magic_number
+ cd ../src
+ make -f Makefile.centos5 clean > /dev/null 2>&1
+-export FLAGS='-O3 -DHASH_DEBUG'
++export FLAGS='-O3 -DHASH_DEBUG -DXTRA_STUFF'
+ make -f Makefile.centos5 > /dev/null 2>&1
+ cd $SQADIR
+ cd dwood2rc_n_hash_magic_number
+--- deadwood-2.9.02/sqa/do.tests.CentOS-5.3	2010-07-06 12:21:57.000000000 -0700
++++ deadwood-2.9.03/sqa/do.tests.CentOS-5.3	2010-08-06 09:40:21.000000000 -0700
+@@ -131,7 +131,7 @@
+ # Let's test hash_magic_number
+ cd ../src
+ make -f Makefile.centos5 clean > /dev/null 2>&1
+-export FLAGS='-O3 -DHASH_DEBUG'
++export FLAGS='-O3 -DHASH_DEBUG -DXTRA_STUFF'
+ make -f Makefile.centos5 > /dev/null 2>&1
+ cd $SQADIR
+ cd dwood2rc_n_hash_magic_number

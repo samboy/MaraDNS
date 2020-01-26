@@ -1,0 +1,367 @@
+--- deadwood-3.0.02/sqa/do.tests	2011-01-29 14:55:08.000000000 -0600
++++ deadwood-3.0.03/sqa/do.tests	2011-07-08 16:38:12.788774386 -0500
+@@ -28,9 +28,9 @@
+ cd ../src
+ export FLAGS='-O3'
+ echo compiling Deadwood...
+-make -f Makefile.centos5 clean > /dev/null 2>&1 
+-make -f Makefile.centos5 > /dev/null 2>&1 
+-#make -f Makefile.centos5
++make -f Makefile.sl6 clean > /dev/null 2>&1 
++make -f Makefile.sl6 > /dev/null 2>&1 
++#make -f Makefile.sl6
+ 
+ # Now, back to the SQA directory to run the tests
+ cd $SQADIR
+@@ -150,9 +150,9 @@
+ 
+ # Let's test hash_magic_number
+ cd ../src
+-make -f Makefile.centos5 clean > /dev/null 2>&1
++make -f Makefile.sl6 clean > /dev/null 2>&1
+ export FLAGS='-O3 -DHASH_DEBUG -DXTRA_STUFF'
+-make -f Makefile.centos5 > /dev/null 2>&1
++make -f Makefile.sl6 > /dev/null 2>&1
+ cd $SQADIR
+ cd dwood2rc_n_hash_magic_number
+ sh ./do.test > output.test 2> /dev/null
+@@ -169,10 +169,10 @@
+ # Inflight test
+ cd $SQADIR
+ cd ../src
+-make -f Makefile.centos5 clean > /dev/null 2>&1
++make -f Makefile.sl6 clean > /dev/null 2>&1
+ export FLAGS='-O3 -DINFLIGHT_VERBOSE -DVALGRIND_NOERRORS'
+ #export FLAGS='-g -DINFLIGHT_VERBOSE -DVALGRIND_NOERRORS'
+-make -f Makefile.centos5 > /dev/null 2>&1
++make -f Makefile.sl6 > /dev/null 2>&1
+ cd $SQADIR
+ cd dwood2rc_n_max_inflights
+ sh ./do.test > output.test 2> /dev/null
+@@ -188,13 +188,13 @@
+ cd $SQADIR
+ cd ../..
+ make clean > /dev/null 2>&1 # MaraDNS
+-./configure --authonly > /dev/null 2>&1
++./configure --ipv6 > /dev/null 2>&1
+ make > /dev/null 2>&1 # MaraDNS
+ cd $SQADIR
+ cd ../src
+-make -f Makefile.centos5 clean > /dev/null 2>&1
++make -f Makefile.sl6 clean > /dev/null 2>&1
+ export FLAGS='-O3 -DIPV6'
+-make -f Makefile.centos5 > /dev/null 2>&1
++make -f Makefile.sl6 > /dev/null 2>&1
+ cd $SQADIR
+ cd basic_ipv6_test
+ sh ./do.test > output.test 2> /dev/null
+@@ -222,12 +222,13 @@
+ # No warnings when compiled with gcc44
+ cd $SQADIR
+ cd ../src
+-make -f Makefile.centos5 clean > /dev/null 2>&1
++make -f Makefile.sl6 clean > /dev/null 2>&1
+ export FLAGS='-O3'
+ #export CC='gcc43' # For CentOS 5.3
+-export CC='gcc44'
++#export CC='gcc44'
++export CC='gcc' # Scientific Linux 6's normal gcc is GCC 4.4.4
+ rm -f foo1 foo2 > /dev/null 2>&1
+-make -f Makefile.centos5 > /dev/null 2> foo1
++make -f Makefile.sl6 > /dev/null 2> foo1
+ touch foo2
+ if ! cmp foo1 foo2 > /dev/null 2>&1 ; then
+ 	echo test gcc44 compile failed
+@@ -240,7 +241,7 @@
+ # OK, clean up
+ cd $SQADIR
+ cd ../src
+-make -f Makefile.centos5 clean > /dev/null 2>&1
++make -f Makefile.sl6 clean > /dev/null 2>&1
+ cd $SQADIR
+ cd ../../
+ make clean > /dev/null 2>&1
+--- deadwood-3.0.02/sqa/dwood2rc_n_handle_noreply_tcp/do.test	2010-01-19 10:26:27.000000000 -0600
++++ deadwood-3.0.03/sqa/dwood2rc_n_handle_noreply_tcp/do.test	2011-07-08 16:38:12.788774386 -0500
+@@ -23,7 +23,8 @@
+ sleep 1
+ echo handle_noreply=$VALUE
+ dig +tcp @127.0.0.1 www.example.com | \
+-        grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER
++        grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
++	grep -v 'global options'
+ sleep 1
+ killall Deadwood > /dev/null 2>&1
+ sleep 1
+--- deadwood-3.0.02/sqa/dwood2rc_n_handle_noreply_tcp/output.success	2009-04-28 08:58:38.000000000 -0500
++++ deadwood-3.0.03/sqa/dwood2rc_n_handle_noreply_tcp/output.success	2011-07-08 16:38:12.788774386 -0500
+@@ -3,7 +3,6 @@
+ handle_noreply=1
+ 
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+ ;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 0
+ 
+--- deadwood-3.0.02/sqa/basic_tcp_test/do.test	2010-01-19 10:23:45.000000000 -0600
++++ deadwood-3.0.03/sqa/basic_tcp_test/do.test	2011-07-08 16:38:12.788774386 -0500
+@@ -36,7 +36,8 @@
+ 
+ sleep 3
+ dig +tcp @127.0.0.1 www.example.com | \
+-	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER
++	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
++	grep -v 'global options' | grep -v 'WARNING'
+ killall maradns > /dev/null 2>&1
+ killall zoneserver > /dev/null 2>&1
+ killall Deadwood
+--- deadwood-3.0.02/sqa/basic_tcp_test/output.success	2010-05-24 15:02:35.000000000 -0500
++++ deadwood-3.0.03/sqa/basic_tcp_test/output.success	2011-07-08 16:38:12.788774386 -0500
+@@ -1,6 +1,5 @@
+ 
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+ ;; flags: qr aa rd; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 1
+ 
+--- deadwood-3.0.02/sqa/dwood2rc_n_dns_port/do.test	2010-06-26 17:14:37.000000000 -0500
++++ deadwood-3.0.03/sqa/dwood2rc_n_dns_port/do.test	2011-07-08 16:38:12.803672045 -0500
+@@ -38,7 +38,8 @@
+ ../../src/Deadwood -f dwood2rc > /dev/null &
+ #../../src/Deadwood -f dwood2rc &
+ sleep 1
+-dig @127.0.0.1 -p ${PORT} www1.example.com. | perl -pe 's/>>.*<<//;
++dig @127.0.0.1 -p ${PORT} www1.example.com. | \
++	grep -v 'global options' | perl -pe 's/>>.*<<//;
+ s/id:.*//;
+ s/time:.*//;
+ s/WHEN:.*//;' | awk '/example.com/ {gsub(/86[0-9][0-9][0-9]/,"")} {print}'
+--- deadwood-3.0.02/sqa/dwood2rc_n_dns_port/output.success	2010-06-26 17:14:57.000000000 -0500
++++ deadwood-3.0.03/sqa/dwood2rc_n_dns_port/output.success	2011-07-08 16:38:12.803672045 -0500
+@@ -1,7 +1,6 @@
+ 
+ ; <<>> @127.0.0.1 -p 53 www1.example.com.
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+ ;; -- opcode: QUERY, status: NOERROR, 
+ ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+@@ -20,7 +19,6 @@
+ 
+ ; <<>> @127.0.0.1 -p 5300 www1.example.com.
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+ ;; -- opcode: QUERY, status: NOERROR, 
+ ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+--- deadwood-3.0.02/sqa/sqa_bigpacket/do.test	2010-01-19 10:31:55.000000000 -0600
++++ deadwood-3.0.03/sqa/sqa_bigpacket/do.test	2011-07-08 16:38:12.818458935 -0500
+@@ -21,7 +21,8 @@
+ sleep 3
+ 
+ dig +tcp @127.0.0.2 txt.example.com TXT | \
+-	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER
++	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
++	grep -v 'global options'
+ 
+ killall Deadwood
+ killall show_packet_stdout
+--- deadwood-3.0.02/sqa/sqa_bigpacket/output.success	2010-05-24 15:06:34.000000000 -0500
++++ deadwood-3.0.03/sqa/sqa_bigpacket/output.success	2011-07-08 16:38:12.818458935 -0500
+@@ -1,6 +1,5 @@
+ 
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+ ;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 1
+ 
+--- deadwood-3.0.02/sqa/sqa_tcp_buffering/do.test	2010-01-19 10:32:58.000000000 -0600
++++ deadwood-3.0.03/sqa/sqa_tcp_buffering/do.test	2011-07-08 16:38:12.833772279 -0500
+@@ -25,7 +25,8 @@
+ sleep 3
+ 
+ dig +tcp @127.0.0.2 txt.example.com TXT | \
+-	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER
++	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
++	grep -v 'global options'
+ #./send_packet_stdin 127.0.0.2 < dns.query.txt.example.com | fmt -w 60
+ 
+ killall Deadwood
+--- deadwood-3.0.02/sqa/sqa_tcp_buffering/output.success	2010-05-24 15:06:57.000000000 -0500
++++ deadwood-3.0.03/sqa/sqa_tcp_buffering/output.success	2011-07-08 16:38:12.848458670 -0500
+@@ -1,6 +1,5 @@
+ 
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+ ;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 1
+ 
+--- deadwood-3.0.02/sqa/dwood2rc_s_ip_blacklist/do.test	2010-06-26 11:20:13.000000000 -0500
++++ deadwood-3.0.03/sqa/dwood2rc_s_ip_blacklist/do.test	2011-07-08 17:20:05.720655880 -0500
+@@ -28,8 +28,8 @@
+ EOF
+ 
+ # OK, test the server
+-../../../server/maradns.authonly -f mararc-IPv6 > /dev/null 2>&1 &
+-#../../../server/maradns.authonly -f mararc-IPv6 &
++../../../server/maradns -f mararc-IPv6 > /dev/null 2>&1 &
++#../../../server/maradns -f mararc-IPv6 &
+ sleep 1
+ 
+ # Now, make sure Deadwood's ip_blacklist works
+@@ -54,22 +54,26 @@
+ echo
+ dig @fd4d:6172:6144:4e53::1 www.example.com A | \
+         grep -v DiG | grep -v WHEN | grep -v time | \
+-	grep -v HEADER | awk '
++	grep -v 'recursion requested but not available' | \
++	grep -v HEADER | grep -v 'global options' | awk '
+                 /example.com/ {gsub(/86[0-9][0-9][0-9]/,"")} {print}'
+ echo
+ dig @fd4d:6172:6144:4e53::1 black4.example.com A | \
+         grep -v DiG | grep -v WHEN | grep -v time | \
+-	grep -v HEADER | awk '
++	grep -v 'recursion requested but not available' | \
++	grep -v HEADER | grep -v 'global options' | awk '
+                 /example.com/ {gsub(/86[0-9][0-9][0-9]/,"")} {print}'
+ echo
+ dig @fd4d:6172:6144:4e53::1 black6.example.com AAAA | \
+         grep -v DiG | grep -v WHEN | grep -v time | \
+-	grep -v HEADER | awk '
++	grep -v 'recursion requested but not available' | \
++	grep -v HEADER | grep -v 'global options' | awk '
+                 /example.com/ {gsub(/86[0-9][0-9][0-9]/,"")} {print}'
+ echo
+ dig @fd4d:6172:6144:4e53::1 good.example.com AAAA | \
+         grep -v DiG | grep -v WHEN | grep -v time | \
+-	grep -v HEADER | awk '
++	grep -v 'recursion requested but not available' | \
++	grep -v HEADER | grep -v 'global options' | awk '
+                 /example.com/ {gsub(/86[0-9][0-9][0-9]/,"")} {print}'
+ echo
+ 
+--- deadwood-3.0.02/sqa/dwood2rc_s_ip_blacklist/output.success	2010-06-25 14:49:28.000000000 -0500
++++ deadwood-3.0.03/sqa/dwood2rc_s_ip_blacklist/output.success	2011-07-08 17:20:05.720655880 -0500
+@@ -2,7 +2,6 @@
+ 
+ 
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+ ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+ 
+@@ -18,7 +17,6 @@
+ 
+ 
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+ ;; flags: qr aa rd; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 0
+ 
+@@ -29,12 +27,11 @@
+ black4.example.com.	0	IN	SOA	z.black4.example.com. y.black4.example.com. 1 1 1 1 1
+ 
+ ;; SERVER: fd4d:6172:6144:4e53::1#53(fd4d:6172:6144:4e53::1)
+-;; MSG SIZE  rcvd: 140
++;; MSG SIZE  rcvd: 76
+ 
+ 
+ 
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+ ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+ 
+@@ -50,7 +47,6 @@
+ 
+ 
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+ ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+ 
+@@ -71,7 +67,6 @@
+ 
+ 
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+ ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+ 
+@@ -87,7 +82,6 @@
+ 
+ 
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+ ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+ 
+@@ -103,7 +97,6 @@
+ 
+ 
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+ ;; flags: qr aa rd; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 0
+ 
+@@ -114,12 +107,11 @@
+ black6.example.com.	0	IN	SOA	z.black6.example.com. y.black6.example.com. 1 1 1 1 1
+ 
+ ;; SERVER: fd4d:6172:6144:4e53::1#53(fd4d:6172:6144:4e53::1)
+-;; MSG SIZE  rcvd: 152
++;; MSG SIZE  rcvd: 76
+ 
+ 
+ 
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+ ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+ 
+--- deadwood-3.0.02/sqa/basic_ipv6_test/do.test	2010-07-06 14:56:57.000000000 -0500
++++ deadwood-3.0.03/sqa/basic_ipv6_test/do.test	2011-07-08 16:38:12.848458670 -0500
+@@ -45,7 +45,8 @@
+ sleep 3
+ 
+ dig @fd4d:6172:6144:4e53::1 www.example.com | \
+-        grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | awk '
++        grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
++	grep -v 'global options' | awk '
+ 		/www.example.com/ {gsub(/86[0-9][0-9][0-9]/,"")} {print}'
+ 
+ killall maradns.authonly
+--- deadwood-3.0.02/sqa/basic_ipv6_test/output.success	2010-06-25 14:07:56.000000000 -0500
++++ deadwood-3.0.03/sqa/basic_ipv6_test/output.success	2011-07-08 16:38:12.848458670 -0500
+@@ -1,17 +1,13 @@
+ 
+ ; (1 server found)
+-;; global options:  printcmd
+ ;; Got answer:
+-;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
++;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 0
+ 
+ ;; QUESTION SECTION:
+ ;www.example.com.		IN	A
+ 
+-;; ANSWER SECTION:
+-www.example.com.		IN	A	10.1.2.3
+-
+ ;; SERVER: fd4d:6172:6144:4e53::1#53(fd4d:6172:6144:4e53::1)
+-;; MSG SIZE  rcvd: 49
++;; MSG SIZE  rcvd: 33
+ 
+ Deadwood: A DNS UDP non-recursive cache (IPv6 supported)
+ We bound to 1 addresses
+--- deadwood-3.0.02/sqa/sqa_valgrind/do.test	2011-01-29 14:55:08.000000000 -0600
++++ deadwood-3.0.03/sqa/sqa_valgrind/do.test	2011-07-08 16:38:12.878458379 -0500
+@@ -46,8 +46,8 @@
+ CWD=$( pwd )
+ cd ../../src
+ export FLAGS="-g -DVALGRIND_NOERRORS"
+-make -f Makefile.centos5 clean > /dev/null 2>&1
+-make -f Makefile.centos5 > /dev/null 2>&1
++make -f Makefile.sl6 clean > /dev/null 2>&1
++make -f Makefile.sl6 > /dev/null 2>&1
+ cd $CWD
+ 
+ # Run the resolver 

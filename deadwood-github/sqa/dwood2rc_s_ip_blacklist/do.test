@@ -1,0 +1,90 @@
+#!/bin/sh
+
+# Give localhost the fd4d:6172:6144:4e53::1 + fd4d:6172:6144:4e53::2 addresses;
+# addresses come from RFC4193
+ifconfig lo add fd4d:6172:6144:4e53::1
+ifconfig lo add fd4d:6172:6144:4e53::2
+sleep 2
+
+# This is a basic Deadwood test to make sure it works
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+sleep 2
+
+cat > mararc-IPv6 << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.2"
+ipv6_bind_address="fd4d:6172:6144:4e53::2"
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+EOF
+
+
+cat > db.example.com << EOF
+www.% A 10.1.2.3
+black4.% A 10.222.33.44
+black6.% AAAA fd4d:6172:6144:4e53::3
+good.% AAAA fd4d:6172:6144:4e53::2
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc-IPv6 > /dev/null 2>&1 &
+#../../../server/maradns -f mararc-IPv6 &
+sleep 1
+
+# Now, make sure Deadwood's ip_blacklist works
+
+for BLACKLIST in 10.222.33.44 fd4d:6172:6144:4e53::3 ; do
+
+cat > dwood2rc << EOF
+chroot_dir="$( pwd )"
+bind_address="fd4d:6172:6144:4e53::1"
+upstream_servers = {}
+upstream_servers["."]="fd4d:6172:6144:4e53::2"
+recursive_acl="::1/128, fd4d:6172:6144:4e53::0/32"
+ip_blacklist="${BLACKLIST}"
+filter_rfc1918 = 0
+EOF
+
+../../src/Deadwood -f dwood2rc | grep -v version | sed 's/forwarder/cache/' &
+sleep 3
+
+echo Blacklist: ${BLACKLIST}
+
+echo
+dig @fd4d:6172:6144:4e53::1 www.example.com A | \
+        grep -v DiG | grep -v WHEN | grep -v time | \
+	grep -v 'recursion requested but not available' | \
+	grep -v HEADER | grep -v 'global options' | awk '
+                /example.com/ {gsub(/86[0-9][0-9][0-9]/,"")} {print}'
+echo
+dig @fd4d:6172:6144:4e53::1 black4.example.com A | \
+        grep -v DiG | grep -v WHEN | grep -v time | \
+	grep -v 'recursion requested but not available' | \
+	grep -v HEADER | grep -v 'global options' | awk '
+                /example.com/ {gsub(/86[0-9][0-9][0-9]/,"")} {print}'
+echo
+dig @fd4d:6172:6144:4e53::1 black6.example.com AAAA | \
+        grep -v DiG | grep -v WHEN | grep -v time | \
+	grep -v 'recursion requested but not available' | \
+	grep -v HEADER | grep -v 'global options' | awk '
+                /example.com/ {gsub(/86[0-9][0-9][0-9]/,"")} {print}'
+echo
+dig @fd4d:6172:6144:4e53::1 good.example.com AAAA | \
+        grep -v DiG | grep -v WHEN | grep -v time | \
+	grep -v 'recursion requested but not available' | \
+	grep -v HEADER | grep -v 'global options' | awk '
+                /example.com/ {gsub(/86[0-9][0-9][0-9]/,"")} {print}'
+echo
+
+killall Deadwood
+sleep 2
+
+done
+
+killall maradns.authonly
+rm mararc-*
+rm db.example.com
+rm dwood2rc
+ifconfig lo del fd4d:6172:6144:4e53::1
+ifconfig lo del fd4d:6172:6144:4e53::2

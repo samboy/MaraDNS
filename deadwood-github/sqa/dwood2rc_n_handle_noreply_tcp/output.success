@@ -1,0 +1,8 @@
+handle_noreply=0
+# Querying the server with the IP 127.0.0.1
+# Hard Error: Length of reply not same as stated length
+handle_noreply=1
+# Querying the server with the IP 127.0.0.1
+# Question: Awww.example.com.
+# NS replies:
+# AR replies:

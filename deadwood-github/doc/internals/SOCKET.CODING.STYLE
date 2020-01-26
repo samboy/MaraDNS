@@ -1,0 +1,37 @@
+Deadwood's sockets are a mixture of *NIX and Windows sockets in the code,
+with macros in DwSocket.h changing the code to look like the appropriate
+*NIX or Win32 code.  Here is the general coding style:
+
+* Sockets are declared as a SOCKET, not as an int.  Instead of
+  "int some_socket;", use "SOCKET some_socket;".  The macros make
+  SOCKET an int in the *NIX compile of the code.
+
+* An invalid socket has the value INVALID_SOCKET, not -1.  Instead
+  of "foo = socket(AF_INET,SOCK_STREAM,0); if(foo == -1)...", do
+  "foo = socket(yadda yadda yadda); if(foo == INVALID_SOCKET)..."
+  The macros make INVALID_SOCKET -1 for the *NIX code.
+
+* Don't use errno to find out what a given error is; use the macro
+  SCKT_ERR instead.  The only error macro you can count on working
+  is EINPROGRESS.
+
+* Winsock doesn't have fcntl.  I have a macro that does either the
+  *NIX or Windows version of "fcntl(foo,F_SETFL,O_NONBLOCK)" that
+  looks like "make_socket_nonblock(foo)", and needs, in the Windows
+  code, a u_long variable called dont_block (this is declared in
+  DwSocket.c, and as an external in DwTcpSocket.c and DwUdpSocket.c)
+
+* Don't do "close(socket)"; do "closesocket(socket)" instead.  I 
+  have a macro for the *NIX code that simply makes this close().
+
+* Don't read() or write() on a socket; *always* recv() or send() on
+  a socket, otherwise the code won't work in Windows.  
+
+* inet_pton() doesn't exist in Winsock, so I have written a wrapper 
+  function that uses inet_addr() and looks like inet_pton().  Make
+  sure any usage of inet_pton() is compatible with this wrapper 
+  function.
+
+* The build environment I am using in Windows, MinGW, doesn't have IPv6 
+  support.  Make sure any IPv6 code is inside "#ifdef IPV6" conditionals.
+

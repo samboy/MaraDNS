@@ -1,0 +1,23 @@
+--- deadwood-3.3.02/sqa/do.tests	2018-11-11 22:57:18.000000000 -0800
++++ deadwood-3.3.03/sqa/do.tests	2019-03-30 11:01:37.815074142 -0700
+@@ -76,6 +76,7 @@
+ TESTS=$TESTS"basic_test basic_tcp_test "
+ TESTS=$TESTS"sqa_server_fail "
+ TESTS=$TESTS"sqa_root_upstream "
++TESTS=$TESTS"sqa_ip4 "
+ TESTS=$TESTS"dwood2rc_s_bind_address "
+ TESTS=$TESTS"dwood2rc_n_dns_port,3 "
+ TESTS=$TESTS"dwood2rc_n_filter_rfc1918 "
+--- deadwood-3.3.02/sqa/sqa_valgrind/do.test	2011-07-22 13:41:19.000000000 -0700
++++ deadwood-3.3.03/sqa/sqa_valgrind/do.test	2019-03-30 11:01:49.103191319 -0700
+@@ -35,6 +35,10 @@
+ cache_file="cache/dw_cache"
+ tcp_listen=1
+ filter_rfc1918 = 0
++ip4 = {}
++ip4["kabah.foo."] = "10.10.10.10"
++ip6 = {}
++ip6["kabah.foo."] = "fd4d617261444e530000000000001234"
+ EOF
+ 
+ # Make the directory to store the cache

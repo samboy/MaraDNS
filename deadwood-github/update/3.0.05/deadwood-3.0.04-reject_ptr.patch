@@ -1,0 +1,11 @@
+--- deadwood-3.0.04/src/DwMararc.h.orig	2011-11-01 11:10:18.000000000 -0600
++++ deadwood-3.0.04/src/DwMararc.h	2011-11-01 11:11:02.000000000 -0600
+@@ -142,6 +142,8 @@
+                       * logging the query (to help find spam zombies) */
+         "truncation_hack", /* Whether to use 1st answer in truncated UDP
+                             * replies (if present) */
++	"reject_ptr", /* Whether to reject PTR queries and send out a 
++			 synthetic "not there" reply */
+         0 };
+ 
+ #endif /* MARARC_C */

@@ -1,0 +1,62 @@
+We no longer use the deliver_all parameter; this parameter was originally
+submitted by Jakob Blomer at CERN labs (yes, *that* CERN labs).
+
+What this parameter did was change how Deadwood 2 handled blank DNS packets;
+because of issues I had with our ISP's upstream servers in 2008, I tuned 
+Deadwood to discard empty packets.  However, in some cases letting them
+through as-is without caching speeds up resolution of names.
+
+Deadwood 3's codebase has fine-tuneds the handling of these invalid DNS
+packets; empty DNS packets are now treated like low-TTL "this hostname
+is not here" packets (chase.com's buggy handling of AAAA packets) unless
+the RCODE is "server fail" (in.com's broken DNS server), at which point
+we act like as though we didn't get the packet.
+
+--- deadwood-2.9.05/src/DwSocket.c	2010-08-20 00:54:13.000000000 -0700
++++ deadwood-2.9.06/src/DwSocket.c	2010-09-01 10:44:46.000000000 -0700
+@@ -67,7 +67,6 @@
+ int32_t maradns_gid = 99;
+ int num_retries = 2;
+ dwd_dict *blacklist_dict = 0;
+-int deliver_all = 0;
+ 
+ #ifdef MINGW
+ u_long dont_block = 0;
+@@ -449,7 +448,6 @@
+         maradns_gid = get_key_n(DWM_N_maradns_gid,10,65535,99);
+         resurrections = get_key_n(DWM_N_resurrections,0,1,1);
+         num_retries = get_key_n(DWM_N_num_retries,0,8,2);
+-        deliver_all = get_key_n(DWM_N_deliver_all,0,1,1);
+ 
+         if((num_ports & (num_ports - 1)) != 0) {
+                 dw_fatal("num_ports must be a power of 2");
+--- deadwood-2.9.05/src/DwUdpSocket.c	2010-08-20 00:54:13.000000000 -0700
++++ deadwood-2.9.06/src/DwUdpSocket.c	2010-09-01 10:44:54.000000000 -0700
+@@ -56,7 +56,6 @@
+ extern int min_bind;
+ extern int num_ports;
+ extern int num_retries;
+-extern int deliver_all;
+ 
+ /* Other mararc parameters */
+ extern dwd_dict *blacklist_dict;
+--- deadwood-2.9.06/doc/Deadwood.ej.orig	2010-09-01 10:45:54.000000000 -0700
++++ deadwood-2.9.06/doc/Deadwood.ej	2010-09-01 10:46:48.000000000 -0700
+@@ -72,15 +72,8 @@
+ This is the directory the program will run from.
+ 
+ <h2>deliver_all</h2>
+-Some upstream DNS servers violate the RFCs and send "name error"
+-DNS packets without a SOA record in the NS section of the reply.
+-Deadwood used to discard such packets; Deadwood now passes such
+-packets on to the client without caching them.
+-<p>
+-Should the old behavior of discarding these packets is desired,
+-set this to 0 with "deliver_all=0" in the dwood3rc file.
+-<p>
+-The default value for this is 1
++This affects behavior in Deadwood 2.3, but has no effect in Deadwood 3.
++This variable is only here so Deadwood 2 rc files can run in Deadwood 3.
+ 
+ <h2>dns_port</h2>
+ This is the port Deadwood binds to and listens on for

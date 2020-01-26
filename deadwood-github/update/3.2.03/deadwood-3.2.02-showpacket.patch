@@ -1,0 +1,20 @@
+--- deadwood-3.2.03/src/DwUdpSocket.c.orig	2012-09-22 10:36:05.831347289 -0500
++++ deadwood-3.2.03/src/DwUdpSocket.c	2012-09-22 10:45:16.324735565 -0500
+@@ -1217,6 +1217,17 @@
+         }
+         a[2] |= 0x80; /* Flag this as an answer (just in case they didn't) */
+ 
++#ifdef SHOWPACKET
++	dw_str *hack = 0;
++	hack = dw_malloc(sizeof(dw_str));
++	hack->max = count + 1;
++	hack->len = count;
++	hack->str = (uint8_t *)a;
++	hack->sane = 114;
++	dw_log_dwstr("Packet received ",hack,0);
++	free(hack);
++#endif /* SHOWPACKET */
++
+         /* Make reasonably sure this is the reply to their question */
+         if(verify_dns_packet(b,a,count) != 1) {
+                 return;

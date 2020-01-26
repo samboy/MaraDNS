@@ -1,0 +1,13 @@
+Deadwood: A DNS UDP non-recursive cache 
+We bound to 1 addresses
+Unable to get 128 bits of entropy; file /dev/null must be
+ at least 16 bytes  long
+
+Deadwood: A DNS UDP non-recursive cache 
+We bound to 1 addresses
+Fatal error opening random seed file /does/not/exist
+
+
+Deadwood: A DNS UDP non-recursive cache 
+We bound to 1 addresses
+Got signal 1 to process...

@@ -1,0 +1,65 @@
+#!/bin/sh
+
+# Set up the mararc files so that we have a miniature set of servers
+# simulating the internet for our recursive tests
+
+# 127.0.0.2: Root server
+cat > mararc2 << EOF
+ipv4_bind_addresses = "127.0.0.2"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["."] = "db.root"
+EOF
+
+# Zone file
+cat > db.root << EOF
+com. NS ns.example.com.
+ns.example.com. 127.0.0.3
+net. NS ns.example.net.
+ns.example.net. 127.0.0.4
+EOF
+
+# 127.0.0.3: example.com server
+cat > mararc3 << EOF
+ipv4_bind_addresses = "127.0.0.3"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["com."] = "db.example.com"
+EOF
+
+# Zone file .com
+cat > db.example.com << EOF
+example.com. NS ns.example.com.
+ns.example.com. 127.0.0.3
+es-us.noticias.yahoo.com. +300 cname fd-geoycpi-uno-deluxe.gycpi.b.yahoodns.net.
+ds-any-ycpi-uno.aycpi.b.yahoodns.com. +300 a 98.136.145.152
+ds-any-ycpi-uno.aycpi.b.yahoodns.com. +300 a 98.136.145.155
+ds-any-ycpi-uno.aycpi.b.yahoodns.com. +300 a 98.136.145.154
+ds-any-ycpi-uno.aycpi.b.yahoodns.com. +300 a 98.136.145.157
+ds-any-ycpi-uno.aycpi.b.yahoodns.com. +300 a 98.136.145.156
+ds-any-ycpi-uno.aycpi.b.yahoodns.com. +300 a 98.136.145.153
+ds-any-ycpi-uno.aycpi.b.yahoodns.com. +300 a 216.115.101.179
+ds-any-ycpi-uno.aycpi.b.yahoodns.com. +300 a 216.115.101.178
+EOF
+
+# 127.0.0.4: .net server
+cat > mararc4 << EOF
+ipv4_bind_addresses = "127.0.0.4"
+verbose_level=0
+chroot_dir = "$( pwd )"
+csv2 = {}
+csv2["net."] = "db.example.net"
+EOF
+
+# Zone file
+cat > db.example.net << EOF
+example.net. NS ns.example.com.
+ns.example.net. 127.0.0.4
+www.example.net. 127.10.1.2
+fd-geoycpi-uno-deluxe.gycpi.b.yahoodns.net. +300 cname ds-geoycpi-uno-deluxe.gycpi.b.yahoodns.net.
+ds-geoycpi-uno-deluxe.gycpi.b.yahoodns.net. +300 cname ds-geoycpi-uno.gycpi.b.yahoodns.net.
+ds-geoycpi-uno.gycpi.b.yahoodns.net. +300 cname ds-any-ycpi-uno.aycpi.b.yahoodns.com.
+EOF
+

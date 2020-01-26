@@ -1,0 +1,1420 @@
+diff -ur deadwood-3.2.12/sqa/basic_tcp_test/do.test deadwood-3.2.13/sqa/basic_tcp_test/do.test
+--- deadwood-3.2.12/sqa/basic_tcp_test/do.test	2011-07-22 13:41:18.000000000 -0700
++++ deadwood-3.2.13/sqa/basic_tcp_test/do.test	2018-11-11 19:59:13.000000000 -0800
+@@ -35,9 +35,7 @@
+ ../../src/Deadwood -f dwood2rc | grep -v version | sed 's/[(].*[)]//' &
+ 
+ sleep 3
+-dig +tcp @127.0.0.1 www.example.com | \
+-	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
+-	grep -v 'global options' | grep -v 'WARNING'
++askmara-tcp Awww.example.com. 127.0.0.1 | awk -F\| '{print $1}'
+ killall maradns > /dev/null 2>&1
+ killall zoneserver > /dev/null 2>&1
+ killall Deadwood
+diff -ur deadwood-3.2.12/sqa/basic_tcp_test/output.success deadwood-3.2.13/sqa/basic_tcp_test/output.success
+--- deadwood-3.2.12/sqa/basic_tcp_test/output.success	2011-07-22 13:41:18.000000000 -0700
++++ deadwood-3.2.13/sqa/basic_tcp_test/output.success	2018-11-11 19:59:22.000000000 -0800
+@@ -1,23 +1,10 @@
+-
+-; (1 server found)
+-;; Got answer:
+-;; flags: qr aa rd; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 1
+-
+-;; QUESTION SECTION:
+-;www.example.com.		IN	A
+-
+-;; ANSWER SECTION:
+-www.example.com.	86400	IN	A	10.1.1.1
+-
+-;; AUTHORITY SECTION:
+-example.com.		86400	IN	NS	synth-ip-7f000002.example.com.
+-
+-;; ADDITIONAL SECTION:
+-synth-ip-7f000002.example.com. 86400 IN	A	127.0.0.2
+-
+-;; SERVER: 127.0.0.1#53(127.0.0.1)
+-;; MSG SIZE  rcvd: 97
+-
++# Querying the server with the IP 127.0.0.1
++# Question: Awww.example.com.
++Awww.example.com.
++# NS replies:
++#Nexample.com.
++# AR replies:
++#Asynth-ip-7f000002.example.com.
+ Deadwood: A DNS UDP non-recursive cache 
+ We bound to 1 addresses
+ Got signal 1 to process...
+diff -ur deadwood-3.2.12/sqa/do.tests deadwood-3.2.13/sqa/do.tests
+--- deadwood-3.2.12/sqa/do.tests	2012-12-20 10:30:37.000000000 -0800
++++ deadwood-3.2.13/sqa/do.tests	2018-11-11 21:59:37.000000000 -0800
+@@ -7,6 +7,24 @@
+ # inside the MaraDNS source tree, and it needs to be run with the
+ # current working directory the directory this test is in
+ 
++# Before running this test, be sure to have no processes which bind
++# to either UDP or TCP port 53 on the system running the tests
++
++if ! command -v askmara > /dev/null 2>&1 ; then
++	echo askmara must be in path to run tests
++	exit 1
++fi
++
++if ! command -v askmara-tcp > /dev/null 2>&1 ; then
++	echo askmara-tcp must be in path to run tests
++	exit 1
++fi
++
++if ! id | grep root > /dev/null 2>&1 ; then
++	echo the tests must be run as a root user
++	exit 1
++fi
++
+ SQADIR=$(pwd)
+ export CC=gcc
+ 
+@@ -94,7 +112,7 @@
+ TESTS=$TESTS"recurse_es-us.noticias.yahoo.com "
+ TESTS=$TESTS"sqa_badid_question "
+ TESTS=$TESTS"sqa_bigpacket " # Needs BIND to run
+-TESTS=$TESTS"sqa_cname_chain "
++TESTS=$TESTS"sqa_cname_chain,3 "
+ TESTS=$TESTS"sqa_roy_arends "
+ TESTS=$TESTS"sqa_tcp_buffering "
+ TESTS=$TESTS"sqa_ttl_expire "
+@@ -108,6 +126,12 @@
+ TESTS=$TESTS"sqa_valgrind "
+ TESTS=$TESTS"sqa_valgrind "
+ 
++# Allow it to be possible to specify tests on the command line
++# e.g. ./do.tests sqa_rg32
++if [ ! -z "$*" ] ; then
++	TESTS="$*"
++fi
++
+ for PAIR in $TESTS ; do
+ 	TEST=$( echo $PAIR | cut -f1 -d, )
+ 	TRIES="$( echo $PAIR | cut -f2 -d, -s )"
+@@ -127,7 +151,8 @@
+ 			echo test $test failed
+ 			TRY=$(( $TRY + 1 ))
+ 			if [ $TRY -ge $TRIES ] ; then
+-				exit 1
++				#exit 1
++				echo TEST FAILURE
+ 			else
+ 				echo trying again
+ 			fi
+diff -ur deadwood-3.2.12/sqa/dwood2rc_n_handle_noreply_tcp/do.test deadwood-3.2.13/sqa/dwood2rc_n_handle_noreply_tcp/do.test
+--- deadwood-3.2.12/sqa/dwood2rc_n_handle_noreply_tcp/do.test	2011-07-22 13:41:18.000000000 -0700
++++ deadwood-3.2.13/sqa/dwood2rc_n_handle_noreply_tcp/do.test	2018-11-11 20:12:52.000000000 -0800
+@@ -22,9 +22,7 @@
+ ../../src/Deadwood -f dwood2rc > /dev/null &
+ sleep 1
+ echo handle_noreply=$VALUE
+-dig +tcp @127.0.0.1 www.example.com | \
+-        grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
+-	grep -v 'global options'
++askmara-tcp Awww.example.com. 127.0.0.1 | awk -F\| '{print $1}'
+ sleep 1
+ killall Deadwood > /dev/null 2>&1
+ sleep 1
+diff -ur deadwood-3.2.12/sqa/dwood2rc_n_handle_noreply_tcp/output.success deadwood-3.2.13/sqa/dwood2rc_n_handle_noreply_tcp/output.success
+--- deadwood-3.2.12/sqa/dwood2rc_n_handle_noreply_tcp/output.success	2011-07-22 13:41:18.000000000 -0700
++++ deadwood-3.2.13/sqa/dwood2rc_n_handle_noreply_tcp/output.success	2018-11-11 20:13:42.000000000 -0800
+@@ -1,14 +1,8 @@
+ handle_noreply=0
+-;; communications error to 127.0.0.1#53: end of file
++# Querying the server with the IP 127.0.0.1
++# Hard Error: Length of reply not same as stated length
+ handle_noreply=1
+-
+-; (1 server found)
+-;; Got answer:
+-;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 0
+-
+-;; QUESTION SECTION:
+-;www.example.com.		IN	A
+-
+-;; SERVER: 127.0.0.1#53(127.0.0.1)
+-;; MSG SIZE  rcvd: 33
+-
++# Querying the server with the IP 127.0.0.1
++# Question: Awww.example.com.
++# NS replies:
++# AR replies:
+diff -ur deadwood-3.2.12/sqa/dwood2rc_n_hash_magic_number/dwood2rc deadwood-3.2.13/sqa/dwood2rc_n_hash_magic_number/dwood2rc
+--- deadwood-3.2.12/sqa/dwood2rc_n_hash_magic_number/dwood2rc	2010-07-17 09:48:15.000000000 -0700
++++ deadwood-3.2.13/sqa/dwood2rc_n_hash_magic_number/dwood2rc	2018-11-11 22:43:47.000000000 -0800
+@@ -1,4 +1,4 @@
+-chroot_dir="/home/set/maradns/maradns-1.4.03/deadwood-2.6.05p2/sqa/dwood2rc_n_hash_magic_number"
++chroot_dir="/home/set/maradns/MaraDNS-github/deadwood-github/sqa/dwood2rc_n_hash_magic_number"
+ ipv4_bind_addresses="127.0.0.1"
+ upstream_servers = {}
+ upstream_servers["."]="127.0.0.2"
+diff -ur deadwood-3.2.12/sqa/recurse_2link_cname/dwood3rc deadwood-3.2.13/sqa/recurse_2link_cname/dwood3rc
+--- deadwood-3.2.12/sqa/recurse_2link_cname/dwood3rc	2010-07-17 09:36:56.000000000 -0700
++++ deadwood-3.2.13/sqa/recurse_2link_cname/dwood3rc	2018-11-11 22:25:39.000000000 -0800
+@@ -3,3 +3,4 @@
+ chroot_dir="/etc/deadwood"
+ root_servers = {}
+ root_servers["."] = "127.0.0.2"
++filter_rfc1918 = 0
+Only in deadwood-3.2.13/sqa/: run.alexa.top.500
+diff -ur deadwood-3.2.12/sqa/sqa_bigpacket/do.test deadwood-3.2.13/sqa/sqa_bigpacket/do.test
+--- deadwood-3.2.12/sqa/sqa_bigpacket/do.test	2011-07-22 13:41:19.000000000 -0700
++++ deadwood-3.2.13/sqa/sqa_bigpacket/do.test	2018-11-11 20:27:39.000000000 -0800
+@@ -20,9 +20,7 @@
+ 
+ sleep 3
+ 
+-dig +tcp @127.0.0.2 txt.example.com TXT | \
+-	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
+-	grep -v 'global options'
++askmara-tcp Atxt.example.com. 127.0.0.2
+ 
+ killall Deadwood
+ killall show_packet_stdout
+diff -ur deadwood-3.2.12/sqa/sqa_bigpacket/output.success deadwood-3.2.13/sqa/sqa_bigpacket/output.success
+--- deadwood-3.2.12/sqa/sqa_bigpacket/output.success	2011-07-22 13:41:19.000000000 -0700
++++ deadwood-3.2.13/sqa/sqa_bigpacket/output.success	2018-11-11 20:32:16.000000000 -0800
+@@ -1,23 +1,5 @@
+-
+-; (1 server found)
+-;; Got answer:
+-;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 1
+-
+-;; QUESTION SECTION:
+-;txt.example.com.		IN	TXT
+-
+-;; ANSWER SECTION:
+-txt.example.com.	18000	IN	TXT	"1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+-
+-;; AUTHORITY SECTION:
+-example.com.		18000	IN	NS	ns.example.com.
+-
+-;; ADDITIONAL SECTION:
+-ns.example.com.		18000	IN	A	10.1.2.3
+-
+-;; SERVER: 127.0.0.2#53(127.0.0.2)
+-;; MSG SIZE  rcvd: 722
+-
++# Querying the server with the IP 127.0.0.2
++# Hard Error: Problem converting inheader
+ Deadwood: A DNS UDP non-recursive cache 
+ We bound to 1 addresses
+ Got signal 1 to process...
+Only in deadwood-3.2.13/sqa/: sqa_dig_tcp
+diff -ur deadwood-3.2.12/sqa/sqa_rg32/do.test deadwood-3.2.13/sqa/sqa_rg32/do.test
+--- deadwood-3.2.12/sqa/sqa_rg32/do.test	2018-08-15 12:01:28.000000000 -0700
++++ deadwood-3.2.13/sqa/sqa_rg32/do.test	2018-11-11 19:05:11.000000000 -0800
+@@ -6,7 +6,6 @@
+ # and all flags
+ 
+ gcc -O3 -o rg32hash rg32hash.c 2> /dev/null
+-rm -f output.test
+ 
+ for cc in gcc clang ; do
+     for opt in '-g' '' '-Os' '-O1' '-O2' '-O3' ; do
+diff -ur deadwood-3.2.12/sqa/sqa_rg32/rg32hash.c deadwood-3.2.13/sqa/sqa_rg32/rg32hash.c
+--- deadwood-3.2.12/sqa/sqa_rg32/rg32hash.c	2018-08-15 12:01:28.000000000 -0700
++++ deadwood-3.2.13/sqa/sqa_rg32/rg32hash.c	2018-11-11 09:05:02.000000000 -0800
+@@ -9,13 +9,13 @@
+  *
+  * Note that there are a couple of differences between the specification and
+  * the reference code:
+- *
++ * 
+  * 1) In the spec, the input mapping is b[0,i] = p[i] and a[i + 16] = p[i]
+  *    In the reference code, this is b[0,i] ^= p[i] and a[i + 16] ^= p[i]
+  *
+  * 2) In the spec, the input is padded with "single bit with a value of 1
+- *    and zeroes until the length of the result is a multiple of the input
+- *    block length".
++ *    and zeroes until the length of the result is a multiple of the input 
++ *    block length".  
+  *    In the reference code, the padding is actually seven zero bits, followed
+  *    by a single bit with a value of one, followed by zeroes until we have
+  *    a multiple of the input block length.
+@@ -36,537 +36,537 @@
+ /* Fileprint: Print a filename, escaping control characters */
+ void fileprint(char *filename) {
+         printf(" ");
+-        while(*filename != '\0') {
+-                if((*filename < 32 && *filename >= 0)
++	while(*filename != '\0') {
++		if((*filename < 32 && *filename >= 0) 
+                    || *filename == '~' || *filename == 127) {
+-                        printf("~%02x",*filename);
+-                } else {
+-                        printf("%c",*filename);
+-                }
+-                filename++;
+-        }
+-        printf("\n");
+-        fflush(stdout);
++			printf("~%02x",*filename);
++		} else {
++			printf("%c",*filename);	
++		}
++		filename++;
++	}
++	printf("\n");
++	fflush(stdout);
+ }
+ 
+ void mill(u_int32_t *a) {
+-        u_int32_t A[19];
+-        u_int32_t x;
+-        /* The following is the output of the awk script
+-         * "make.mill.core" */
+-        x = a[0] ^ (a[1] | (~a[2]));
+-        A[0] = x;
+-        x = a[7] ^ (a[8] | (~a[9]));
+-        A[1] = (x >> 1) | (x << 31);
+-        x = a[14] ^ (a[15] | (~a[16]));
+-        A[2] = (x >> 3) | (x << 29);
+-        x = a[2] ^ (a[3] | (~a[4]));
+-        A[3] = (x >> 6) | (x << 26);
+-        x = a[9] ^ (a[10] | (~a[11]));
+-        A[4] = (x >> 10) | (x << 22);
+-        x = a[16] ^ (a[17] | (~a[18]));
+-        A[5] = (x >> 15) | (x << 17);
+-        x = a[4] ^ (a[5] | (~a[6]));
+-        A[6] = (x >> 21) | (x << 11);
+-        x = a[11] ^ (a[12] | (~a[13]));
+-        A[7] = (x >> 28) | (x << 4);
+-        x = a[18] ^ (a[0] | (~a[1]));
+-        A[8] = (x >> 4) | (x << 28);
+-        x = a[6] ^ (a[7] | (~a[8]));
+-        A[9] = (x >> 13) | (x << 19);
+-        x = a[13] ^ (a[14] | (~a[15]));
+-        A[10] = (x >> 23) | (x << 9);
+-        x = a[1] ^ (a[2] | (~a[3]));
+-        A[11] = (x >> 2) | (x << 30);
+-        x = a[8] ^ (a[9] | (~a[10]));
+-        A[12] = (x >> 14) | (x << 18);
+-        x = a[15] ^ (a[16] | (~a[17]));
+-        A[13] = (x >> 27) | (x << 5);
+-        x = a[3] ^ (a[4] | (~a[5]));
+-        A[14] = (x >> 9) | (x << 23);
+-        x = a[10] ^ (a[11] | (~a[12]));
+-        A[15] = (x >> 24) | (x << 8);
+-        x = a[17] ^ (a[18] | (~a[0]));
+-        A[16] = (x >> 8) | (x << 24);
+-        x = a[5] ^ (a[6] | (~a[7]));
+-        A[17] = (x >> 25) | (x << 7);
+-        x = a[12] ^ (a[13] | (~a[14]));
+-        A[18] = (x >> 11) | (x << 21);
+-        a[0] = A[0] ^ A[1] ^ A[4];
+-        a[1] = A[1] ^ A[2] ^ A[5];
+-        a[2] = A[2] ^ A[3] ^ A[6];
+-        a[3] = A[3] ^ A[4] ^ A[7];
+-        a[4] = A[4] ^ A[5] ^ A[8];
+-        a[5] = A[5] ^ A[6] ^ A[9];
+-        a[6] = A[6] ^ A[7] ^ A[10];
+-        a[7] = A[7] ^ A[8] ^ A[11];
+-        a[8] = A[8] ^ A[9] ^ A[12];
+-        a[9] = A[9] ^ A[10] ^ A[13];
+-        a[10] = A[10] ^ A[11] ^ A[14];
+-        a[11] = A[11] ^ A[12] ^ A[15];
+-        a[12] = A[12] ^ A[13] ^ A[16];
+-        a[13] = A[13] ^ A[14] ^ A[17];
+-        a[14] = A[14] ^ A[15] ^ A[18];
+-        a[15] = A[15] ^ A[16] ^ A[0];
+-        a[16] = A[16] ^ A[17] ^ A[1];
+-        a[17] = A[17] ^ A[18] ^ A[2];
+-        a[18] = A[18] ^ A[0] ^ A[3];
+-        a[0] ^= 1;
++	u_int32_t A[19];
++	u_int32_t x;
++ 	/* The following is the output of the awk script 
++         * "make.mill.core" */	
++	x = a[0] ^ (a[1] | (~a[2]));
++	A[0] = x;
++	x = a[7] ^ (a[8] | (~a[9]));
++	A[1] = (x >> 1) | (x << 31);
++	x = a[14] ^ (a[15] | (~a[16]));
++	A[2] = (x >> 3) | (x << 29);
++	x = a[2] ^ (a[3] | (~a[4]));
++	A[3] = (x >> 6) | (x << 26);
++	x = a[9] ^ (a[10] | (~a[11]));
++	A[4] = (x >> 10) | (x << 22);
++	x = a[16] ^ (a[17] | (~a[18]));
++	A[5] = (x >> 15) | (x << 17);
++	x = a[4] ^ (a[5] | (~a[6]));
++	A[6] = (x >> 21) | (x << 11);
++	x = a[11] ^ (a[12] | (~a[13]));
++	A[7] = (x >> 28) | (x << 4);
++	x = a[18] ^ (a[0] | (~a[1]));
++	A[8] = (x >> 4) | (x << 28);
++	x = a[6] ^ (a[7] | (~a[8]));
++	A[9] = (x >> 13) | (x << 19);
++	x = a[13] ^ (a[14] | (~a[15]));
++	A[10] = (x >> 23) | (x << 9);
++	x = a[1] ^ (a[2] | (~a[3]));
++	A[11] = (x >> 2) | (x << 30);
++	x = a[8] ^ (a[9] | (~a[10]));
++	A[12] = (x >> 14) | (x << 18);
++	x = a[15] ^ (a[16] | (~a[17]));
++	A[13] = (x >> 27) | (x << 5);
++	x = a[3] ^ (a[4] | (~a[5]));
++	A[14] = (x >> 9) | (x << 23);
++	x = a[10] ^ (a[11] | (~a[12]));
++	A[15] = (x >> 24) | (x << 8);
++	x = a[17] ^ (a[18] | (~a[0]));
++	A[16] = (x >> 8) | (x << 24);
++	x = a[5] ^ (a[6] | (~a[7]));
++	A[17] = (x >> 25) | (x << 7);
++	x = a[12] ^ (a[13] | (~a[14]));
++	A[18] = (x >> 11) | (x << 21);
++	a[0] = A[0] ^ A[1] ^ A[4];
++	a[1] = A[1] ^ A[2] ^ A[5];
++	a[2] = A[2] ^ A[3] ^ A[6];
++	a[3] = A[3] ^ A[4] ^ A[7];
++	a[4] = A[4] ^ A[5] ^ A[8];
++	a[5] = A[5] ^ A[6] ^ A[9];
++	a[6] = A[6] ^ A[7] ^ A[10];
++	a[7] = A[7] ^ A[8] ^ A[11];
++	a[8] = A[8] ^ A[9] ^ A[12];
++	a[9] = A[9] ^ A[10] ^ A[13];
++	a[10] = A[10] ^ A[11] ^ A[14];
++	a[11] = A[11] ^ A[12] ^ A[15];
++	a[12] = A[12] ^ A[13] ^ A[16];
++	a[13] = A[13] ^ A[14] ^ A[17];
++	a[14] = A[14] ^ A[15] ^ A[18];
++	a[15] = A[15] ^ A[16] ^ A[0];
++	a[16] = A[16] ^ A[17] ^ A[1];
++	a[17] = A[17] ^ A[18] ^ A[2];
++	a[18] = A[18] ^ A[0] ^ A[3];
++	a[0] ^= 1;
+ }
+ 
+ /* The following is the output of "make.belt.core" */
+ belt_00(u_int32_t *a, u_int32_t *b) {
+-        u_int32_t q0, q1, q2;
+-        q0 = b[12];
+-        q1 = b[25];
+-        q2 = b[38];
+-        b[0] ^= a[1];
+-        b[14] ^= a[2];
+-        b[28] ^= a[3];
+-        b[3] ^= a[4];
+-        b[17] ^= a[5];
+-        b[31] ^= a[6];
+-        b[6] ^= a[7];
+-        b[20] ^= a[8];
+-        b[34] ^= a[9];
+-        b[9] ^= a[10];
+-        b[23] ^= a[11];
+-        b[37] ^= a[12];
+-        mill(a);
+-        a[13] ^= q0;
+-        a[14] ^= q1;
+-        a[15] ^= q2;
++	u_int32_t q0, q1, q2;
++	q0 = b[12];
++	q1 = b[25];
++	q2 = b[38];
++	b[0] ^= a[1];
++	b[14] ^= a[2];
++	b[28] ^= a[3];
++	b[3] ^= a[4];
++	b[17] ^= a[5];
++	b[31] ^= a[6];
++	b[6] ^= a[7];
++	b[20] ^= a[8];
++	b[34] ^= a[9];
++	b[9] ^= a[10];
++	b[23] ^= a[11];
++	b[37] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
+ }
+ 
+ belt_01(u_int32_t *a, u_int32_t *b) {
+-        u_int32_t q0, q1, q2;
+-        q0 = b[11];
+-        q1 = b[24];
+-        q2 = b[37];
+-        b[12] ^= a[1];
+-        b[13] ^= a[2];
+-        b[27] ^= a[3];
+-        b[2] ^= a[4];
+-        b[16] ^= a[5];
+-        b[30] ^= a[6];
+-        b[5] ^= a[7];
+-        b[19] ^= a[8];
+-        b[33] ^= a[9];
+-        b[8] ^= a[10];
+-        b[22] ^= a[11];
+-        b[36] ^= a[12];
+-        mill(a);
+-        a[13] ^= q0;
+-        a[14] ^= q1;
+-        a[15] ^= q2;
++	u_int32_t q0, q1, q2;
++	q0 = b[11];
++	q1 = b[24];
++	q2 = b[37];
++	b[12] ^= a[1];
++	b[13] ^= a[2];
++	b[27] ^= a[3];
++	b[2] ^= a[4];
++	b[16] ^= a[5];
++	b[30] ^= a[6];
++	b[5] ^= a[7];
++	b[19] ^= a[8];
++	b[33] ^= a[9];
++	b[8] ^= a[10];
++	b[22] ^= a[11];
++	b[36] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
+ }
+ 
+ belt_02(u_int32_t *a, u_int32_t *b) {
+-        u_int32_t q0, q1, q2;
+-        q0 = b[10];
+-        q1 = b[23];
+-        q2 = b[36];
+-        b[11] ^= a[1];
+-        b[25] ^= a[2];
+-        b[26] ^= a[3];
+-        b[1] ^= a[4];
+-        b[15] ^= a[5];
+-        b[29] ^= a[6];
+-        b[4] ^= a[7];
+-        b[18] ^= a[8];
+-        b[32] ^= a[9];
+-        b[7] ^= a[10];
+-        b[21] ^= a[11];
+-        b[35] ^= a[12];
+-        mill(a);
+-        a[13] ^= q0;
+-        a[14] ^= q1;
+-        a[15] ^= q2;
++	u_int32_t q0, q1, q2;
++	q0 = b[10];
++	q1 = b[23];
++	q2 = b[36];
++	b[11] ^= a[1];
++	b[25] ^= a[2];
++	b[26] ^= a[3];
++	b[1] ^= a[4];
++	b[15] ^= a[5];
++	b[29] ^= a[6];
++	b[4] ^= a[7];
++	b[18] ^= a[8];
++	b[32] ^= a[9];
++	b[7] ^= a[10];
++	b[21] ^= a[11];
++	b[35] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
+ }
+ 
+ belt_03(u_int32_t *a, u_int32_t *b) {
+-        u_int32_t q0, q1, q2;
+-        q0 = b[9];
+-        q1 = b[22];
+-        q2 = b[35];
+-        b[10] ^= a[1];
+-        b[24] ^= a[2];
+-        b[38] ^= a[3];
+-        b[0] ^= a[4];
+-        b[14] ^= a[5];
+-        b[28] ^= a[6];
+-        b[3] ^= a[7];
+-        b[17] ^= a[8];
+-        b[31] ^= a[9];
+-        b[6] ^= a[10];
+-        b[20] ^= a[11];
+-        b[34] ^= a[12];
+-        mill(a);
+-        a[13] ^= q0;
+-        a[14] ^= q1;
+-        a[15] ^= q2;
++	u_int32_t q0, q1, q2;
++	q0 = b[9];
++	q1 = b[22];
++	q2 = b[35];
++	b[10] ^= a[1];
++	b[24] ^= a[2];
++	b[38] ^= a[3];
++	b[0] ^= a[4];
++	b[14] ^= a[5];
++	b[28] ^= a[6];
++	b[3] ^= a[7];
++	b[17] ^= a[8];
++	b[31] ^= a[9];
++	b[6] ^= a[10];
++	b[20] ^= a[11];
++	b[34] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
+ }
+ 
+ belt_04(u_int32_t *a, u_int32_t *b) {
+-        u_int32_t q0, q1, q2;
+-        q0 = b[8];
+-        q1 = b[21];
+-        q2 = b[34];
+-        b[9] ^= a[1];
+-        b[23] ^= a[2];
+-        b[37] ^= a[3];
+-        b[12] ^= a[4];
+-        b[13] ^= a[5];
+-        b[27] ^= a[6];
+-        b[2] ^= a[7];
+-        b[16] ^= a[8];
+-        b[30] ^= a[9];
+-        b[5] ^= a[10];
+-        b[19] ^= a[11];
+-        b[33] ^= a[12];
+-        mill(a);
+-        a[13] ^= q0;
+-        a[14] ^= q1;
+-        a[15] ^= q2;
++	u_int32_t q0, q1, q2;
++	q0 = b[8];
++	q1 = b[21];
++	q2 = b[34];
++	b[9] ^= a[1];
++	b[23] ^= a[2];
++	b[37] ^= a[3];
++	b[12] ^= a[4];
++	b[13] ^= a[5];
++	b[27] ^= a[6];
++	b[2] ^= a[7];
++	b[16] ^= a[8];
++	b[30] ^= a[9];
++	b[5] ^= a[10];
++	b[19] ^= a[11];
++	b[33] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
+ }
+ 
+ belt_05(u_int32_t *a, u_int32_t *b) {
+-        u_int32_t q0, q1, q2;
+-        q0 = b[7];
+-        q1 = b[20];
+-        q2 = b[33];
+-        b[8] ^= a[1];
+-        b[22] ^= a[2];
+-        b[36] ^= a[3];
+-        b[11] ^= a[4];
+-        b[25] ^= a[5];
+-        b[26] ^= a[6];
+-        b[1] ^= a[7];
+-        b[15] ^= a[8];
+-        b[29] ^= a[9];
+-        b[4] ^= a[10];
+-        b[18] ^= a[11];
+-        b[32] ^= a[12];
+-        mill(a);
+-        a[13] ^= q0;
+-        a[14] ^= q1;
+-        a[15] ^= q2;
++	u_int32_t q0, q1, q2;
++	q0 = b[7];
++	q1 = b[20];
++	q2 = b[33];
++	b[8] ^= a[1];
++	b[22] ^= a[2];
++	b[36] ^= a[3];
++	b[11] ^= a[4];
++	b[25] ^= a[5];
++	b[26] ^= a[6];
++	b[1] ^= a[7];
++	b[15] ^= a[8];
++	b[29] ^= a[9];
++	b[4] ^= a[10];
++	b[18] ^= a[11];
++	b[32] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
+ }
+ 
+ belt_06(u_int32_t *a, u_int32_t *b) {
+-        u_int32_t q0, q1, q2;
+-        q0 = b[6];
+-        q1 = b[19];
+-        q2 = b[32];
+-        b[7] ^= a[1];
+-        b[21] ^= a[2];
+-        b[35] ^= a[3];
+-        b[10] ^= a[4];
+-        b[24] ^= a[5];
+-        b[38] ^= a[6];
+-        b[0] ^= a[7];
+-        b[14] ^= a[8];
+-        b[28] ^= a[9];
+-        b[3] ^= a[10];
+-        b[17] ^= a[11];
+-        b[31] ^= a[12];
+-        mill(a);
+-        a[13] ^= q0;
+-        a[14] ^= q1;
+-        a[15] ^= q2;
++	u_int32_t q0, q1, q2;
++	q0 = b[6];
++	q1 = b[19];
++	q2 = b[32];
++	b[7] ^= a[1];
++	b[21] ^= a[2];
++	b[35] ^= a[3];
++	b[10] ^= a[4];
++	b[24] ^= a[5];
++	b[38] ^= a[6];
++	b[0] ^= a[7];
++	b[14] ^= a[8];
++	b[28] ^= a[9];
++	b[3] ^= a[10];
++	b[17] ^= a[11];
++	b[31] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
+ }
+ 
+ belt_07(u_int32_t *a, u_int32_t *b) {
+-        u_int32_t q0, q1, q2;
+-        q0 = b[5];
+-        q1 = b[18];
+-        q2 = b[31];
+-        b[6] ^= a[1];
+-        b[20] ^= a[2];
+-        b[34] ^= a[3];
+-        b[9] ^= a[4];
+-        b[23] ^= a[5];
+-        b[37] ^= a[6];
+-        b[12] ^= a[7];
+-        b[13] ^= a[8];
+-        b[27] ^= a[9];
+-        b[2] ^= a[10];
+-        b[16] ^= a[11];
+-        b[30] ^= a[12];
+-        mill(a);
+-        a[13] ^= q0;
+-        a[14] ^= q1;
+-        a[15] ^= q2;
++	u_int32_t q0, q1, q2;
++	q0 = b[5];
++	q1 = b[18];
++	q2 = b[31];
++	b[6] ^= a[1];
++	b[20] ^= a[2];
++	b[34] ^= a[3];
++	b[9] ^= a[4];
++	b[23] ^= a[5];
++	b[37] ^= a[6];
++	b[12] ^= a[7];
++	b[13] ^= a[8];
++	b[27] ^= a[9];
++	b[2] ^= a[10];
++	b[16] ^= a[11];
++	b[30] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
+ }
+ 
+ belt_08(u_int32_t *a, u_int32_t *b) {
+-        u_int32_t q0, q1, q2;
+-        q0 = b[4];
+-        q1 = b[17];
+-        q2 = b[30];
+-        b[5] ^= a[1];
+-        b[19] ^= a[2];
+-        b[33] ^= a[3];
+-        b[8] ^= a[4];
+-        b[22] ^= a[5];
+-        b[36] ^= a[6];
+-        b[11] ^= a[7];
+-        b[25] ^= a[8];
+-        b[26] ^= a[9];
+-        b[1] ^= a[10];
+-        b[15] ^= a[11];
+-        b[29] ^= a[12];
+-        mill(a);
+-        a[13] ^= q0;
+-        a[14] ^= q1;
+-        a[15] ^= q2;
++	u_int32_t q0, q1, q2;
++	q0 = b[4];
++	q1 = b[17];
++	q2 = b[30];
++	b[5] ^= a[1];
++	b[19] ^= a[2];
++	b[33] ^= a[3];
++	b[8] ^= a[4];
++	b[22] ^= a[5];
++	b[36] ^= a[6];
++	b[11] ^= a[7];
++	b[25] ^= a[8];
++	b[26] ^= a[9];
++	b[1] ^= a[10];
++	b[15] ^= a[11];
++	b[29] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
+ }
+ 
+ belt_09(u_int32_t *a, u_int32_t *b) {
+-        u_int32_t q0, q1, q2;
+-        q0 = b[3];
+-        q1 = b[16];
+-        q2 = b[29];
+-        b[4] ^= a[1];
+-        b[18] ^= a[2];
+-        b[32] ^= a[3];
+-        b[7] ^= a[4];
+-        b[21] ^= a[5];
+-        b[35] ^= a[6];
+-        b[10] ^= a[7];
+-        b[24] ^= a[8];
+-        b[38] ^= a[9];
+-        b[0] ^= a[10];
+-        b[14] ^= a[11];
+-        b[28] ^= a[12];
+-        mill(a);
+-        a[13] ^= q0;
+-        a[14] ^= q1;
+-        a[15] ^= q2;
++	u_int32_t q0, q1, q2;
++	q0 = b[3];
++	q1 = b[16];
++	q2 = b[29];
++	b[4] ^= a[1];
++	b[18] ^= a[2];
++	b[32] ^= a[3];
++	b[7] ^= a[4];
++	b[21] ^= a[5];
++	b[35] ^= a[6];
++	b[10] ^= a[7];
++	b[24] ^= a[8];
++	b[38] ^= a[9];
++	b[0] ^= a[10];
++	b[14] ^= a[11];
++	b[28] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
+ }
+ 
+ belt_10(u_int32_t *a, u_int32_t *b) {
+-        u_int32_t q0, q1, q2;
+-        q0 = b[2];
+-        q1 = b[15];
+-        q2 = b[28];
+-        b[3] ^= a[1];
+-        b[17] ^= a[2];
+-        b[31] ^= a[3];
+-        b[6] ^= a[4];
+-        b[20] ^= a[5];
+-        b[34] ^= a[6];
+-        b[9] ^= a[7];
+-        b[23] ^= a[8];
+-        b[37] ^= a[9];
+-        b[12] ^= a[10];
+-        b[13] ^= a[11];
+-        b[27] ^= a[12];
+-        mill(a);
+-        a[13] ^= q0;
+-        a[14] ^= q1;
+-        a[15] ^= q2;
++	u_int32_t q0, q1, q2;
++	q0 = b[2];
++	q1 = b[15];
++	q2 = b[28];
++	b[3] ^= a[1];
++	b[17] ^= a[2];
++	b[31] ^= a[3];
++	b[6] ^= a[4];
++	b[20] ^= a[5];
++	b[34] ^= a[6];
++	b[9] ^= a[7];
++	b[23] ^= a[8];
++	b[37] ^= a[9];
++	b[12] ^= a[10];
++	b[13] ^= a[11];
++	b[27] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
+ }
+ 
+ belt_11(u_int32_t *a, u_int32_t *b) {
+-        u_int32_t q0, q1, q2;
+-        q0 = b[1];
+-        q1 = b[14];
+-        q2 = b[27];
+-        b[2] ^= a[1];
+-        b[16] ^= a[2];
+-        b[30] ^= a[3];
+-        b[5] ^= a[4];
+-        b[19] ^= a[5];
+-        b[33] ^= a[6];
+-        b[8] ^= a[7];
+-        b[22] ^= a[8];
+-        b[36] ^= a[9];
+-        b[11] ^= a[10];
+-        b[25] ^= a[11];
+-        b[26] ^= a[12];
+-        mill(a);
+-        a[13] ^= q0;
+-        a[14] ^= q1;
+-        a[15] ^= q2;
++	u_int32_t q0, q1, q2;
++	q0 = b[1];
++	q1 = b[14];
++	q2 = b[27];
++	b[2] ^= a[1];
++	b[16] ^= a[2];
++	b[30] ^= a[3];
++	b[5] ^= a[4];
++	b[19] ^= a[5];
++	b[33] ^= a[6];
++	b[8] ^= a[7];
++	b[22] ^= a[8];
++	b[36] ^= a[9];
++	b[11] ^= a[10];
++	b[25] ^= a[11];
++	b[26] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
+ }
+ 
+ belt_12(u_int32_t *a, u_int32_t *b) {
+-        u_int32_t q0, q1, q2;
+-        q0 = b[0];
+-        q1 = b[13];
+-        q2 = b[26];
+-        b[1] ^= a[1];
+-        b[15] ^= a[2];
+-        b[29] ^= a[3];
+-        b[4] ^= a[4];
+-        b[18] ^= a[5];
+-        b[32] ^= a[6];
+-        b[7] ^= a[7];
+-        b[21] ^= a[8];
+-        b[35] ^= a[9];
+-        b[10] ^= a[10];
+-        b[24] ^= a[11];
+-        b[38] ^= a[12];
+-        mill(a);
+-        a[13] ^= q0;
+-        a[14] ^= q1;
+-        a[15] ^= q2;
++	u_int32_t q0, q1, q2;
++	q0 = b[0];
++	q1 = b[13];
++	q2 = b[26];
++	b[1] ^= a[1];
++	b[15] ^= a[2];
++	b[29] ^= a[3];
++	b[4] ^= a[4];
++	b[18] ^= a[5];
++	b[32] ^= a[6];
++	b[7] ^= a[7];
++	b[21] ^= a[8];
++	b[35] ^= a[9];
++	b[10] ^= a[10];
++	b[24] ^= a[11];
++	b[38] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
+ }
+ 
+ void round(u_int32_t *a, u_int32_t *b, int offset) {
+-        switch(offset) {
+-                case 0:
+-                        belt_00(a,b);
+-                        return;
+-                case 1:
+-                        belt_01(a,b);
+-                        return;
+-                case 2:
+-                        belt_02(a,b);
+-                        return;
+-                case 3:
+-                        belt_03(a,b);
+-                        return;
+-                case 4:
+-                        belt_04(a,b);
+-                        return;
+-                case 5:
+-                        belt_05(a,b);
+-                        return;
+-                case 6:
+-                        belt_06(a,b);
+-                        return;
+-                case 7:
+-                        belt_07(a,b);
+-                        return;
+-                case 8:
+-                        belt_08(a,b);
+-                        return;
+-                case 9:
+-                        belt_09(a,b);
+-                        return;
+-                case 10:
+-                        belt_10(a,b);
+-                        return;
+-                case 11:
+-                        belt_11(a,b);
+-                        return;
+-                case 12:
+-                        belt_12(a,b);
+-                        return;
+-        }
++	switch(offset) {
++		case 0:
++			belt_00(a,b);
++			return;
++		case 1:
++			belt_01(a,b);
++			return;
++		case 2:
++			belt_02(a,b);
++			return;
++		case 3:
++			belt_03(a,b);
++			return;
++		case 4:
++			belt_04(a,b);
++			return;
++		case 5:
++			belt_05(a,b);
++			return;
++		case 6:
++			belt_06(a,b);
++			return;
++		case 7:
++			belt_07(a,b);
++			return;
++		case 8:
++			belt_08(a,b);
++			return;
++		case 9:
++			belt_09(a,b);
++			return;
++		case 10:
++			belt_10(a,b);
++			return;
++		case 11:
++			belt_11(a,b);
++			return;
++		case 12:
++			belt_12(a,b);
++			return;
++	}
+ }
+ 
+ /* Specification says we directly assign values from the input in to the belt
+  * and mill; reference code, however XORs the input with the values already
+  * in the belt and mill */
+ int input_map(u_int32_t *a, u_int32_t *b, char *filename, int *o)  {
+-        u_int32_t p[3];
+-        int q, c, r, w;
+-        int done = 0;
+-        int readed = 0, counter;
+-        char v[12];
+-        FILE *desc;
+-
+-        /* Open the file */
+-        if((desc = fopen(filename,"rb")) == NULL) {
+-                return 1;
+-        }
+-
+-        for(;;) {
+-                int offset = 0;
+-                readed = fread(v,1,12,desc);
+-                p[0] = p[1] = p[2] = 0;
+-                offset = 0;
+-                for(r = 0; r < 3; r++) {
+-                        for(q = 0; q < 4; q++) {
+-                                int x;
+-                                x = (int)*(v + offset);
+-                                x = x & 0xff;
+-                                if(offset >= readed) {
+-                                        done = 1;
+-                                        /* Spec says this should have a value
++	u_int32_t p[3];
++	int q, c, r, w;
++	int done = 0;
++	int readed = 0, counter;
++	char v[12];
++	FILE *desc;
++	
++	/* Open the file */
++	if((desc = fopen(filename,"rb")) == NULL) {
++		return 1;
++	}
++
++	for(;;) {	
++		int offset = 0;
++		readed = fread(v,1,12,desc);
++		p[0] = p[1] = p[2] = 0;
++		offset = 0;
++		for(r = 0; r < 3; r++) {
++			for(q = 0; q < 4; q++) {
++				int x;
++				x = (int)*(v + offset);
++				x = x & 0xff;
++				if(offset >= readed) {
++					done = 1;
++					/* Spec says this should have a value
+                                          * of 0x80; reference code gives this
+                                          * a value of 1.  This is IMHO a bug
+                                          * in the reference code. */
+-                                        x = 1;
+-                                }
+-                                offset++;
+-                                p[r] |= x << (q * 8);
+-                                if(done == 1) {
+-                                        for(c = 0; c < 3; c++) {
+-                                                w = 13 - *o;
+-                                                if(w == 13) {w=0;}
+-                                                b[w + c * 13] ^= p[c];
+-                                                a[16 + c] ^= p[c];
+-                                        }
+-                                        round(a,b,*o);
+-                                        *o += 1;
+-                                        if(*o == 13) {*o = 0;}
+-                                        fclose(desc);
+-                                        return 0;
+-                                }
+-                        }
+-                }
+-                for(c = 0; c < 3; c++) {
+-                        w = 13 - *o;
+-                        if(w == 13) {w = 0;}
+-                        b[w + c * 13] ^= p[c];
+-                        a[16 + c] ^= p[c];
+-                }
+-                round(a,b,*o);
+-                *o += 1;
+-                if(*o == 13) {*o = 0;}
+-        }
+-        fclose(desc);
+-
++					x = 1;
++				}
++				offset++;
++				p[r] |= x << (q * 8);
++				if(done == 1) {
++					for(c = 0; c < 3; c++) {
++						w = 13 - *o;
++						if(w == 13) {w=0;}
++						b[w + c * 13] ^= p[c];	
++						a[16 + c] ^= p[c];
++					}
++					round(a,b,*o);
++					*o += 1;
++					if(*o == 13) {*o = 0;}
++					fclose(desc);
++					return 0;
++				}
++			}
++		}
++		for(c = 0; c < 3; c++) {
++			w = 13 - *o;
++			if(w == 13) {w = 0;}
++			b[w + c * 13] ^= p[c];	
++			a[16 + c] ^= p[c];
++		}
++		round(a,b,*o);
++		*o += 1;
++		if(*o == 13) {*o = 0;}
++	}	
++	fclose(desc);
++			
+ }
+ /* Hashfile: Hash a single file */
+ 
+ void hashfile(char *filename) {
+-        u_int32_t a[19], b[39];
+-        int c;
+-        int o = 0;
+-        /* Initialize the mill */
+-        for(c = 0 ; c < 19 ; c++) {
+-                a[c] = 0;
+-        }
+-        /* Initialize the belt */
+-        for(c = 0; c < 39; c++) {
+-                b[c] = 0;
+-        }
+-        /* Input mapping */
+-        if(input_map(a,b,filename,&o) == 1) {
+-                printf("[[UNABLE TO OPEN FILE]]");
+-                for(c=0;c<41;c++) {printf(" ");}
+-                fileprint(filename);
+-                return;
+-        }
+-        /* End injection */
+-        for(c = 0; c < 16; c++) {
+-                round(a,b,o);
+-                o++;
+-                if(o > 12){o=0;}
+-        }
+-        /* End mangling */
+-        for(c = 0; c < 4; c++) {
+-                unsigned char d,e,f,g;
+-                round(a,b,o);
+-                o++;
+-                if(o > 12){o=0;}
+-                d = a[1] & 0xff;
+-                e = (a[1] >> 8) & 0xff;
+-                f = (a[1] >> 16) & 0xff;
+-                g = (a[1] >> 24) & 0xff;
+-                printf("%02x%02x%02x%02x",d,e,f,g);
+-                d = a[2] & 0xff;
+-                e = (a[2] >> 8) & 0xff;
+-                f = (a[2] >> 16) & 0xff;
+-                g = (a[2] >> 24) & 0xff;
+-                printf("%02x%02x%02x%02x",d,e,f,g);
+-        }
+-        fileprint(filename);
++	u_int32_t a[19], b[39];
++	int c;
++	int o = 0;
++	/* Initialize the mill */
++	for(c = 0 ; c < 19 ; c++) {
++		a[c] = 0;
++	}
++	/* Initialize the belt */
++	for(c = 0; c < 39; c++) {
++		b[c] = 0;
++	}
++	/* Input mapping */
++	if(input_map(a,b,filename,&o) == 1) {
++		printf("[[UNABLE TO OPEN FILE]]");
++		for(c=0;c<41;c++) {printf(" ");}
++		fileprint(filename);
++		return;
++	}
++	/* End injection */
++	for(c = 0; c < 16; c++) {
++		round(a,b,o);
++		o++;
++		if(o > 12){o=0;}
++	}
++	/* End mangling */
++	for(c = 0; c < 4; c++) {
++		unsigned char d,e,f,g;
++		round(a,b,o);
++		o++;
++		if(o > 12){o=0;}
++		d = a[1] & 0xff;
++		e = (a[1] >> 8) & 0xff;
++		f = (a[1] >> 16) & 0xff;
++		g = (a[1] >> 24) & 0xff;
++		printf("%02x%02x%02x%02x",d,e,f,g);
++		d = a[2] & 0xff;
++		e = (a[2] >> 8) & 0xff;
++		f = (a[2] >> 16) & 0xff;
++		g = (a[2] >> 24) & 0xff;
++		printf("%02x%02x%02x%02x",d,e,f,g);
++	}
++	fileprint(filename);
+ }
+ 
+ /* The routine that handles directories */
+@@ -577,9 +577,9 @@
+     struct stat s;
+     wd = opendir(dir);
+     if(wd == NULL) {
+-         int c;
+-         printf("[[UNABLE TO OPEN DIRECTORY]]");
+-         for(c=0;c<36;c++) {printf(" ");}
++	 int c;
++	 printf("[[UNABLE TO OPEN DIRECTORY]]");
++	 for(c=0;c<36;c++) {printf(" ");}
+          fileprint(dir);
+          return;
+          }
+@@ -587,19 +587,19 @@
+     while(f != NULL) {
+         strncpy(path,dir,PATH_MAX - 10);
+         strncat(path,"/",1);
+-        if((strlen(path) + 10 + strlen(f->d_name)) >= PATH_MAX) {
+-                return;
+-        }
+-        if(strcmp(f->d_name,".") != 0 &&
++	if((strlen(path) + 10 + strlen(f->d_name)) >= PATH_MAX) {
++		return;
++	}
++	if(strcmp(f->d_name,".") != 0 &&
+            strcmp(f->d_name,"..") != 0) {
+-            strcat(path,f->d_name);
++	    strcat(path,f->d_name);
+             lstat(path,&s);
+-            /* We don't follow links to directories, in order to avoid
++	    /* We don't follow links to directories, in order to avoid
+              * circular chains */
+-            if(S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode)) {
+-                dirhandle(path);
+-            } else if(S_ISREG(s.st_mode)) {
+-                hashfile(path);
++	    if(S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode)) {
++		dirhandle(path);
++	    } else if(S_ISREG(s.st_mode)) {
++    		hashfile(path);
+             }
+         }
+         f = readdir(wd);
+@@ -607,7 +607,7 @@
+     closedir(wd);
+     }
+ 
+-/* The main routine.  This reads files/directories specified on the
++/* The main routine.  This reads files/directories specified on the 
+    command line, then makes a hash out of that file. */
+ 
+ main(int argc, char **argv) {
+@@ -617,19 +617,19 @@
+     if(argc < 2) {
+         if(argc >= 1) {
+             printf("Usage: %s {filename}\n",argv[0]);
+-            exit(1);
+-            }
++	    exit(1);
++	    }
+         else {
+-            printf("Usage: <this program> {filename}\n");
+-            exit(2);
+-            }
++	    printf("Usage: <this program> {filename}\n");
++	    exit(2);
++	    }
+         }
+-    for(counter = 1; counter < argc; counter++) {
++    for(counter = 1; counter < argc; counter++) {	
+         lstat(argv[counter],&s);
+-        if(S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode)) {
+-                dirhandle(argv[counter]);
+-        } else if(S_ISREG(s.st_mode)) {
+-                hashfile(argv[counter]);
++	if(S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode)) {
++		dirhandle(argv[counter]);
++	} else if(S_ISREG(s.st_mode)) {
++    		hashfile(argv[counter]);
+         }
+     }
+ }
+Only in deadwood-3.2.13/sqa/sqa_rg32: test.output
+diff -ur deadwood-3.2.12/sqa/sqa_tcp/do.test deadwood-3.2.13/sqa/sqa_tcp/do.test
+--- deadwood-3.2.12/sqa/sqa_tcp/do.test	2017-06-10 13:09:59.000000000 -0700
++++ deadwood-3.2.13/sqa/sqa_tcp/do.test	2018-11-11 19:48:03.000000000 -0800
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ # This tests to make sure tcp on the real internet works
+ # This test will need to be updated whenever the servers for the
+@@ -20,13 +20,10 @@
+ 
+ #../../src/Deadwood -f dwood2rc | grep -v version | sed 's/[(].*[)]//' &
+ ../../src/Deadwood -f dwood2rc > /dev/null 2>&1 &
++#../../src/Deadwood -f dwood2rc &
+ 
+ sleep 3
+-dig +tcp @127.0.0.1 www.example.com | \
+-	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
+-	grep -v 'WARNING: recursion requested but not available' | \
+-	grep -v 'MSG SIZE' | perl -pe 's/(\d)+\s*IN/IN/' | \
+-	grep -v 'global options' | grep -v NS
++askmara-tcp Awww.example.com. 127.0.0.1 | awk -F\| '{print $1}'
+ killall maradns > /dev/null 2>&1
+ killall zoneserver > /dev/null 2>&1
+ killall Deadwood
+diff -ur deadwood-3.2.12/sqa/sqa_tcp/output.success deadwood-3.2.13/sqa/sqa_tcp/output.success
+--- deadwood-3.2.12/sqa/sqa_tcp/output.success	2017-06-10 13:09:59.000000000 -0700
++++ deadwood-3.2.13/sqa/sqa_tcp/output.success	2018-11-11 19:48:41.000000000 -0800
+@@ -1,11 +1,5 @@
+-
+-; (1 server found)
+-;; Got answer:
+-
+-;; QUESTION SECTION:
+-;www.example.com.		IN	A
+-
+-www.example.com.	IN	A	93.184.216.34
+-
+-;; SERVER: 127.0.0.1#53(127.0.0.1)
+-
++# Querying the server with the IP 127.0.0.1
++# Question: Awww.example.com.
++Awww.example.com.
++# NS replies:
++# AR replies:
+diff -ur deadwood-3.2.12/sqa/sqa_tcp_buffering/do.test deadwood-3.2.13/sqa/sqa_tcp_buffering/do.test
+--- deadwood-3.2.12/sqa/sqa_tcp_buffering/do.test	2011-07-22 13:41:19.000000000 -0700
++++ deadwood-3.2.13/sqa/sqa_tcp_buffering/do.test	2018-11-11 21:21:58.000000000 -0800
+@@ -24,9 +24,8 @@
+ 
+ sleep 3
+ 
+-dig +tcp @127.0.0.2 txt.example.com TXT | \
+-	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
+-	grep -v 'global options'
++askmara-tcp Atxt.example.com. 127.0.0.2
++
+ #./send_packet_stdin 127.0.0.2 < dns.query.txt.example.com | fmt -w 60
+ 
+ killall Deadwood
+diff -ur deadwood-3.2.12/sqa/sqa_tcp_buffering/output.success deadwood-3.2.13/sqa/sqa_tcp_buffering/output.success
+--- deadwood-3.2.12/sqa/sqa_tcp_buffering/output.success	2011-07-22 13:41:19.000000000 -0700
++++ deadwood-3.2.13/sqa/sqa_tcp_buffering/output.success	2018-11-11 21:24:47.000000000 -0800
+@@ -1,23 +1,5 @@
+-
+-; (1 server found)
+-;; Got answer:
+-;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 1
+-
+-;; QUESTION SECTION:
+-;txt.example.com.		IN	TXT
+-
+-;; ANSWER SECTION:
+-txt.example.com.	18000	IN	TXT	"12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789@1234567890123456789012345678901234567890" "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012S45678901234567890123456g890123456789012345678901234567890" "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567x90" "12345678901234567890123456789012345678901234567890123456789012345678)0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+-
+-;; AUTHORITY SECTION:
+-example.com.		18000	IN	NS	ns.example.com.
+-
+-;; ADDITIONAL SECTION:
+-ns.example.com.		18000	IN	A	10.1.2.3
+-
+-;; SERVER: 127.0.0.2#53(127.0.0.2)
+-;; MSG SIZE  rcvd: 722
+-
++# Querying the server with the IP 127.0.0.2
++# Hard Error: Problem converting inheader
+ Deadwood: A DNS UDP non-recursive cache 
+ We bound to 1 addresses
+ Got signal 1 to process...

@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# Lets make sure Deadwood can write the cache to a file
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+sleep 2
+
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.2"
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+EOF
+
+cat > db.example.com << EOF
+*.% A 10.1.2.3
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+#../../../server/maradns -f mararc &
+sleep 1
+
+# Now, make sure Deadwood works
+
+cat > dwood2rc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+upstream_servers = {}
+upstream_servers["."]="127.0.0.2"
+recursive_acl="127.0.0.1/16"
+cache_file="cache/dw_cache"
+filter_rfc1918 = 0
+EOF
+
+mkdir cache
+chown nobody:nobody cache # You're using CentOS 5 to test this, of course.
+../../src/Deadwood -f dwood2rc > /dev/null &
+#../../src/Deadwood -f dwood2rc &
+sleep 1
+askmara Awww1.example.com. 127.0.0.1 > /dev/null
+#askmara Awww1.example.com. 127.0.0.1 
+sleep 1
+killall maradns
+killall Deadwood
+sleep 1
+rm mararc
+rm db.example.com
+rm dwood2rc
+ls cache
+rm -fr cache

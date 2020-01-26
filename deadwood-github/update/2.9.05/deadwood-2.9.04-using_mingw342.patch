@@ -1,0 +1,48 @@
+--- deadwood-2.9.04/INSTALL.txt	2010-07-29 10:39:09.000000000 -0700
++++ deadwood-2.9.05/INSTALL.txt	2010-08-16 07:42:30.000000000 -0700
+@@ -121,17 +121,18 @@
+ (http://7.zip.org) or another program that can understand .7z files such
+ as WinRAR in order to decompress.
+ 
+-The way I compile this program in Windows XP is with MinGW-3.1.0-1 and
+-MSYS-1.0.10.  I have a blog entry about obtaining and installing this 
+-software here:
++The way I compile this program in Windows XP is with MinGW-3.4.2 and
++MSYS-1.0.10.  These programs are available at the following locations:
+ 
+-http://maradns.blogspot.com/2009/03/mingw-310-1-last-real-mingw-release.html
++	ftp://ftp.trolltech.com/misc/ (MinGW 3.4.2)
++	http://prdownloads.sourceforge.net/mingw/MSYS-1.0.10.exe?download
++	http://samiam.org/software (both)
+ 
+ Once MinGW is set up, to compile the Deadwood service, enter the "src/"
+ directory and run the following commands:
+ 
+ 	export FLAGS=-O3
+-	make -f Makefile.mingw310
++	make -f Makefile.mingw342
+ 
+ Once this is done, there will be a file called Deadwood.exe, which is
+ a Windows service.  First, find a suitable directory on your file system
+@@ -191,17 +192,18 @@
+ has not been tested since I don't have access to a big-endian computer) nor 
+ non-standard libraries needed to compile this; I ensure Deadwood compiles 
+ with no warnings when compiled with -Wall in GCC 3, GCC 4.3, and GCC 4.4.  
++
+ Note that Deadwood uses stdint.h, which some non-standards-compilant 
+-proprietary compilers (Microsoft, *cough* *cough*) don't have.  If you wish 
++proprietary compilers (Microsoft, *cough* *cough*) may not have.  If you wish 
+ to compile Deadwood with one of these compilers, please find a version of 
+-stdint.h for your compiler; I know there's a pstdint.h out there that 
++stdint.h for your compiler; I know there is a pstdint.h out there that 
+ works with most Microsoft and Borland compilers.
+ 
+ The CentOS 5 Makefile should work on other Linux variants, as well as other 
+ *NIX clones, but no guarantees.  For example, there is a Cygwin Makefile 
+ included in the "src/" directory; I have verified that Deadwood 2.4 compiles 
+ in Cygwin without problem.  This may make it possible to have a version of 
+-Deadwood in Windows with IPv6 support; the upcoming Cygwin 1.7 will have 
++Deadwood in Windows with IPv6 support; Cygwin 1.7 and later should have 
+ IPv6 and it might be possible to compile in IPv6 this way.  Again, if this 
+ is something you're interested in, feel free to send patches to the MaraDNS 
+ mailing list, or offer to pay me.

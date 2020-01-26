@@ -1,0 +1,19 @@
+commit 56e54be5937d2ba4ad3d134821562fb7dff7633a
+Author: Sam Trenholme <strenholme.usenet@gmail.com>
+Date:   Wed Aug 15 11:33:38 2018 -0700
+
+    Fix clang warning when compiling DwRadioGatun.c
+
+diff --git a/deadwood-github/src/DwRadioGatun.c b/deadwood-github/src/DwRadioGatun.c
+index d55eafc..6717cf4 100644
+--- a/deadwood-github/src/DwRadioGatun.c
++++ b/deadwood-github/src/DwRadioGatun.c
+@@ -225,7 +225,7 @@ int main(int argc, char **argv) {
+                 exit(1);
+         }
+         q = dw_create(2048);
+-        dw_qrappend(argv[1],q,0);
++        dw_qrappend((uint8_t *)argv[1],q,0);
+         r = dwr_init_rg(q);
+         for(c = 0; c < 20; c++) {
+                 printf("%04x ",dwr_rng(r));

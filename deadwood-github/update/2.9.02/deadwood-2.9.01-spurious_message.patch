@@ -1,0 +1,10 @@
+--- deadwood-2.9.01/src/DwRecurse.c	2010-07-22 01:17:51.000000000 -0700
++++ deadwood-2.9.02/src/DwRecurse.c	2010-07-25 22:24:48.000000000 -0700
+@@ -1938,7 +1938,6 @@
+ 	}
+ 
+ 	reset_rem(conn_num); /* Close finished query */
+-	printf("reset_rem DwRecurse 1941 %d\n",conn_num);
+ 	closesocket(b_remote[conn_num]);
+ 	b_remote[conn_num] = INVALID_SOCKET; /* Make remote available */
+ 	reply = 0;

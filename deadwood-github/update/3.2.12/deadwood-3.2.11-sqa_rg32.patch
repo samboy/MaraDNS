@@ -1,0 +1,841 @@
+commit 1465f961f4cbb3c98dd49755979bad6a4f01a0ed
+Author: Sam Trenholme <strenholme.usenet@gmail.com>
+Date:   Wed Aug 15 11:28:23 2018 -0700
+
+    sqa_rg32 make test run against multiple compilers and compile flags
+
+diff --git a/deadwood-github/sqa/sqa_rg32/README b/deadwood-github/sqa/sqa_rg32/README
+index d4616ac..ec6ac49 100644
+--- a/deadwood-github/sqa/sqa_rg32/README
++++ b/deadwood-github/sqa/sqa_rg32/README
+@@ -1,3 +1,8 @@
+ These are all of the official test vectors for RadioGatun[32].  The vectors 
+ have had their formatting changed to make running the test more convenient.
+ 
++I have also added a UTF-8 test vector, and run the test against both
++clang and gcc at various levels of optimization (mainly because there
++was a bug in the rg32 code which only manifests itself in clang, but
++only at -O2 and -O3).
++
+diff --git a/deadwood-github/sqa/sqa_rg32/do.test b/deadwood-github/sqa/sqa_rg32/do.test
+index 7b9e92e..523d82c 100755
+--- a/deadwood-github/sqa/sqa_rg32/do.test
++++ b/deadwood-github/sqa/sqa_rg32/do.test
+@@ -1,25 +1,20 @@
+ #!/bin/bash
+ 
+-# Make the rg32 binary
+-cd ../../src
+-gcc -g -DSTANDALONE -c -o DwStr.o DwStr.c
+-gcc -g -o rg32 -DHAVE_MAIN DwRadioGatun.c DwStr.o
++# Since there was a bug in another rg32 implementation which only showed 
++# up with "clang -O2" and "clang -O3" (it passed with all gcc and tcc 
++# options), we now have a test to make sure rg32 works with all compilers 
++# and all flags
+ 
+-# Copy the rg32 binary here
+-cp rg32 ~-
++gcc -O3 -o rg32hash rg32hash.c 2> /dev/null
++rm -f output.test
+ 
+-# Clean up
+-rm rg32 DwStr.o
+-make clean > /dev/null 2>&1
++for cc in gcc clang ; do
++    for opt in '-g' '' '-Os' '-O1' '-O2' '-O3' ; do
++	export COMPILER="$cc"
++	export FLAGS="$opt"
++       	./one.test > test.output
++	echo $( rg32hash test.output ) $COMPILER $FLAGS 
++    done
++done
+ 
+-# OK, come back here to run the test
+-cd ~-
+-
+-# The test
+-cat Input | awk '
+-	{print "./rg32 '\''" $0 "'\'' | \\"; 
+-	 print "awk '\''{$17=$18=$19=$20=\"\" ; print $0}'\'' | tr -d \" \" "}
+-' | sh
+-
+-# Clean up here
+-rm rg32 
++rm rg32hash
+diff --git a/deadwood-github/sqa/sqa_rg32/one.test b/deadwood-github/sqa/sqa_rg32/one.test
+new file mode 100755
+index 0000000..ff1f034
+--- /dev/null
++++ b/deadwood-github/sqa/sqa_rg32/one.test
+@@ -0,0 +1,26 @@
++#!/bin/bash
++
++# Make the rg32 binary
++cd ../../src
++rm -f rg32 DwStr.o
++$COMPILER $FLAGS -DSTANDALONE -c -o DwStr.o DwStr.c
++$COMPILER $FLAGS -o rg32 -DHAVE_MAIN DwRadioGatun.c DwStr.o
++
++# Copy the rg32 binary here
++cp rg32 ~-
++
++# Clean up
++rm rg32 DwStr.o
++make clean > /dev/null 2>&1
++
++# OK, come back here to run the test
++cd ~-
++
++# The test
++cat Input | awk '
++	{print "./rg32 '\''" $0 "'\'' | \\"; 
++	 print "awk '\''{$17=$18=$19=$20=\"\" ; print $0}'\'' | tr -d \" \" "}
++' | sh
++
++# Clean up here
++rm rg32 
+diff --git a/deadwood-github/sqa/sqa_rg32/output.good b/deadwood-github/sqa/sqa_rg32/output.good
+new file mode 100644
+index 0000000..19e2ffc
+--- /dev/null
++++ b/deadwood-github/sqa/sqa_rg32/output.good
+@@ -0,0 +1,40 @@
++f30028b54afab6b3e55355d277711109a19beda7091067e9a492fb5ed9f20117
++af0d3f51b98e90eeebae86dd0b304a4003ac5f755fa2cac2b6866a0a91c5c752
++896c580ef77a68c36b040dcd5a650c09b8b5d915ece298ad0210a21ed5811c95
++070182313ab302cfc82459786f4a30ec66260c6676495ce86e72b3be7c60f7ad
++e1d20a1b67028a7c102cf77b444e0f4d8489f95506c76e4f27ce43d4958810ad
++2d438e83a3d99929f44a1b0ab5a994eb4abdfe11f9e72d62de925bf120cafccd
++8c3c9529c6cc4d266760670f38c7470d6aba5a0905170a3692ae87e4abf291fb
++904573304a5bc7ba040f8def9eeca4138f7ddd7da30e4b8fb97b7f6e06076bed
++e7195ed9189c0169c90affeefcf8810627db1607f394fb13c7b43d06c74b1d4b
++54e7013e72d94b31324d4878f91ae19a7085f20efe9daab96a1fe559c78ae825
++d4d08f6612f8eb58a855b2f5aabfc504e2972ba829da94edd960193d18bad8d1
++a7fdb34fd5d85d564a62c0b1b1b60cfa3d7a0c778231c95cdcd9bd293cca16c6
++57364d849286c7b3e98f3fc898094f7dc1675ba881a620b75d70f39631a4aa5b
++9ebdd24f469993796c4aac6a821735a65a3cdef8a359944ce71f34e7a08e1182
++b333c8413087fa49882bbd4f76a9223c4aa633a252514852c3f7c0c5f8f4d87b
++862b75d2e8e7f08f93812168502af97bce530c66688d4372a08eea0951b5024a
++90b7061a244ce7fba80f9813787cb90ec3fbb3398aee740af1c0d44bc5282b73
++e69e29ba139c20846116d8ad406e6197f1701d8243cc53bb86f2b72c62320a39
++d77629174f56d8451f73cbe80ec7a20ef2dd65c46a1480cd004cbaa96f3fa1fd
++4f88759143cd9d11f6de8da4d3724c36c745223a5cfb7ad0e74da87c80a43326
++5fc6c16c29cdd2ef78ee4f3c864c1942a052c110fd5a9711fe9bcf953a2d2d5b
++15eda58156ca398af49cbe9c9e62bf036a66b303acb0043fb57ecadf9e9c8eda
++99f13e01dbf89e6bbf60c87e99f4f18c851d3385d9b5a1678c705e8f31f70b84
++0ac434523b00f5c3d1d2aeedbae851d3eeaf3d76963cfd70a8b1d875638c8cd4
++0ec6eae7879543772b64f320bc5056c81ace91aea20f360cefa57272e2c07197
++59612324f3f42d3096e69125d2733b86143ae668ae9ed561ad785e0eac8dba25
++d52161b6bb583955b1abb5781d2044be8f4174904241533973c66b87880edb53
++e42ea26b8b696541cfea557c47886ed41440a04ef8ccc055ceb6583f6acf6015
++687bdec54f854303e48300a52c9099e3153f481ce34e12cdc178d841c0926b51
++8bd3d5953ed234f7a0051a993776630a9722978d06240eecc66e05a0b2cb60c7
++381957046bec1dfc08eaa0b2818d9fa07bcf78386c43aa41c069b5cf33e4f9ab
++f769558af4fb0acb6643b893d3595c2e5b110c60256d1ceb672eb33999ef0887
++4cae588c3f3c08df85564379332309ea5f73a51405cd4408c9dbfff1615ef297
++4884daccbda87f1e02814152f0224dab291b49ffd86516a30ea6c9d546730ecf
++5dd047238dd574b45621dfedafadd6bcb4594b6e0551e78ca2b62bcbd975d429
++277c1598e324185706f8f3ea72b7dc8fbe361ea02dbb0a35afc7f0e088acf2f5
++041666388ef9655d48996a66dada1193d6646012a7b25a24fb10e6075cf0fc54
++4311d3cdc46efe38fdb5c3023a160c3069b26a2af0ce0ccaaffa3f3c61629ad6
++849e6159d45ac1e99bc0d613d71c9e2da639580ccfdc8013ee81d4e32aad9c25
++89c92f4d5c20af24f02ec270f8becd065024abba1dfef6c7f0b621d24d79d559
+diff --git a/deadwood-github/sqa/sqa_rg32/output.success b/deadwood-github/sqa/sqa_rg32/output.success
+index 19e2ffc..986a17f 100644
+--- a/deadwood-github/sqa/sqa_rg32/output.success
++++ b/deadwood-github/sqa/sqa_rg32/output.success
+@@ -1,40 +1,12 @@
+-f30028b54afab6b3e55355d277711109a19beda7091067e9a492fb5ed9f20117
+-af0d3f51b98e90eeebae86dd0b304a4003ac5f755fa2cac2b6866a0a91c5c752
+-896c580ef77a68c36b040dcd5a650c09b8b5d915ece298ad0210a21ed5811c95
+-070182313ab302cfc82459786f4a30ec66260c6676495ce86e72b3be7c60f7ad
+-e1d20a1b67028a7c102cf77b444e0f4d8489f95506c76e4f27ce43d4958810ad
+-2d438e83a3d99929f44a1b0ab5a994eb4abdfe11f9e72d62de925bf120cafccd
+-8c3c9529c6cc4d266760670f38c7470d6aba5a0905170a3692ae87e4abf291fb
+-904573304a5bc7ba040f8def9eeca4138f7ddd7da30e4b8fb97b7f6e06076bed
+-e7195ed9189c0169c90affeefcf8810627db1607f394fb13c7b43d06c74b1d4b
+-54e7013e72d94b31324d4878f91ae19a7085f20efe9daab96a1fe559c78ae825
+-d4d08f6612f8eb58a855b2f5aabfc504e2972ba829da94edd960193d18bad8d1
+-a7fdb34fd5d85d564a62c0b1b1b60cfa3d7a0c778231c95cdcd9bd293cca16c6
+-57364d849286c7b3e98f3fc898094f7dc1675ba881a620b75d70f39631a4aa5b
+-9ebdd24f469993796c4aac6a821735a65a3cdef8a359944ce71f34e7a08e1182
+-b333c8413087fa49882bbd4f76a9223c4aa633a252514852c3f7c0c5f8f4d87b
+-862b75d2e8e7f08f93812168502af97bce530c66688d4372a08eea0951b5024a
+-90b7061a244ce7fba80f9813787cb90ec3fbb3398aee740af1c0d44bc5282b73
+-e69e29ba139c20846116d8ad406e6197f1701d8243cc53bb86f2b72c62320a39
+-d77629174f56d8451f73cbe80ec7a20ef2dd65c46a1480cd004cbaa96f3fa1fd
+-4f88759143cd9d11f6de8da4d3724c36c745223a5cfb7ad0e74da87c80a43326
+-5fc6c16c29cdd2ef78ee4f3c864c1942a052c110fd5a9711fe9bcf953a2d2d5b
+-15eda58156ca398af49cbe9c9e62bf036a66b303acb0043fb57ecadf9e9c8eda
+-99f13e01dbf89e6bbf60c87e99f4f18c851d3385d9b5a1678c705e8f31f70b84
+-0ac434523b00f5c3d1d2aeedbae851d3eeaf3d76963cfd70a8b1d875638c8cd4
+-0ec6eae7879543772b64f320bc5056c81ace91aea20f360cefa57272e2c07197
+-59612324f3f42d3096e69125d2733b86143ae668ae9ed561ad785e0eac8dba25
+-d52161b6bb583955b1abb5781d2044be8f4174904241533973c66b87880edb53
+-e42ea26b8b696541cfea557c47886ed41440a04ef8ccc055ceb6583f6acf6015
+-687bdec54f854303e48300a52c9099e3153f481ce34e12cdc178d841c0926b51
+-8bd3d5953ed234f7a0051a993776630a9722978d06240eecc66e05a0b2cb60c7
+-381957046bec1dfc08eaa0b2818d9fa07bcf78386c43aa41c069b5cf33e4f9ab
+-f769558af4fb0acb6643b893d3595c2e5b110c60256d1ceb672eb33999ef0887
+-4cae588c3f3c08df85564379332309ea5f73a51405cd4408c9dbfff1615ef297
+-4884daccbda87f1e02814152f0224dab291b49ffd86516a30ea6c9d546730ecf
+-5dd047238dd574b45621dfedafadd6bcb4594b6e0551e78ca2b62bcbd975d429
+-277c1598e324185706f8f3ea72b7dc8fbe361ea02dbb0a35afc7f0e088acf2f5
+-041666388ef9655d48996a66dada1193d6646012a7b25a24fb10e6075cf0fc54
+-4311d3cdc46efe38fdb5c3023a160c3069b26a2af0ce0ccaaffa3f3c61629ad6
+-849e6159d45ac1e99bc0d613d71c9e2da639580ccfdc8013ee81d4e32aad9c25
+-89c92f4d5c20af24f02ec270f8becd065024abba1dfef6c7f0b621d24d79d559
++6e3d10efd30442cec0699cfcd40fd33065fc7321179a119fddd4e0d32899f0ef test.output gcc -g
++6e3d10efd30442cec0699cfcd40fd33065fc7321179a119fddd4e0d32899f0ef test.output gcc
++6e3d10efd30442cec0699cfcd40fd33065fc7321179a119fddd4e0d32899f0ef test.output gcc -Os
++6e3d10efd30442cec0699cfcd40fd33065fc7321179a119fddd4e0d32899f0ef test.output gcc -O1
++6e3d10efd30442cec0699cfcd40fd33065fc7321179a119fddd4e0d32899f0ef test.output gcc -O2
++6e3d10efd30442cec0699cfcd40fd33065fc7321179a119fddd4e0d32899f0ef test.output gcc -O3
++6e3d10efd30442cec0699cfcd40fd33065fc7321179a119fddd4e0d32899f0ef test.output clang -g
++6e3d10efd30442cec0699cfcd40fd33065fc7321179a119fddd4e0d32899f0ef test.output clang
++6e3d10efd30442cec0699cfcd40fd33065fc7321179a119fddd4e0d32899f0ef test.output clang -Os
++6e3d10efd30442cec0699cfcd40fd33065fc7321179a119fddd4e0d32899f0ef test.output clang -O1
++6e3d10efd30442cec0699cfcd40fd33065fc7321179a119fddd4e0d32899f0ef test.output clang -O2
++6e3d10efd30442cec0699cfcd40fd33065fc7321179a119fddd4e0d32899f0ef test.output clang -O3
+diff --git a/deadwood-github/sqa/sqa_rg32/rg32hash.c b/deadwood-github/sqa/sqa_rg32/rg32hash.c
+new file mode 100644
+index 0000000..615cec5
+--- /dev/null
++++ b/deadwood-github/sqa/sqa_rg32/rg32hash.c
+@@ -0,0 +1,636 @@
++/* Donated to the public domain 2007 by Sam Trenholme
++ *
++ * This software is provided 'as is' with no guarantees of correctness or
++ * fitness for purpose.
++ */
++
++/* This implements RadioGatun[32] (RadioGatun for machines with 32-bit
++ * words).
++ *
++ * Note that there are a couple of differences between the specification and
++ * the reference code:
++ * 
++ * 1) In the spec, the input mapping is b[0,i] = p[i] and a[i + 16] = p[i]
++ *    In the reference code, this is b[0,i] ^= p[i] and a[i + 16] ^= p[i]
++ *
++ * 2) In the spec, the input is padded with "single bit with a value of 1
++ *    and zeroes until the length of the result is a multiple of the input 
++ *    block length".  
++ *    In the reference code, the padding is actually seven zero bits, followed
++ *    by a single bit with a value of one, followed by zeroes until we have
++ *    a multiple of the input block length.
++ *
++ * This code is as per the reference code
++ */
++
++/* Longest path name */
++#define PATH_MAX 32768
++
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <dirent.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <stdio.h>
++
++/* Fileprint: Print a filename, escaping control characters */
++void fileprint(char *filename) {
++        printf(" ");
++	while(*filename != '\0') {
++		if((*filename < 32 && *filename >= 0) 
++                   || *filename == '~' || *filename == 127) {
++			printf("~%02x",*filename);
++		} else {
++			printf("%c",*filename);	
++		}
++		filename++;
++	}
++	printf("\n");
++	fflush(stdout);
++}
++
++void mill(u_int32_t *a) {
++	u_int32_t A[19];
++	u_int32_t x;
++ 	/* The following is the output of the awk script 
++         * "make.mill.core" */	
++	x = a[0] ^ (a[1] | (~a[2]));
++	A[0] = x;
++	x = a[7] ^ (a[8] | (~a[9]));
++	A[1] = (x >> 1) | (x << 31);
++	x = a[14] ^ (a[15] | (~a[16]));
++	A[2] = (x >> 3) | (x << 29);
++	x = a[2] ^ (a[3] | (~a[4]));
++	A[3] = (x >> 6) | (x << 26);
++	x = a[9] ^ (a[10] | (~a[11]));
++	A[4] = (x >> 10) | (x << 22);
++	x = a[16] ^ (a[17] | (~a[18]));
++	A[5] = (x >> 15) | (x << 17);
++	x = a[4] ^ (a[5] | (~a[6]));
++	A[6] = (x >> 21) | (x << 11);
++	x = a[11] ^ (a[12] | (~a[13]));
++	A[7] = (x >> 28) | (x << 4);
++	x = a[18] ^ (a[0] | (~a[1]));
++	A[8] = (x >> 4) | (x << 28);
++	x = a[6] ^ (a[7] | (~a[8]));
++	A[9] = (x >> 13) | (x << 19);
++	x = a[13] ^ (a[14] | (~a[15]));
++	A[10] = (x >> 23) | (x << 9);
++	x = a[1] ^ (a[2] | (~a[3]));
++	A[11] = (x >> 2) | (x << 30);
++	x = a[8] ^ (a[9] | (~a[10]));
++	A[12] = (x >> 14) | (x << 18);
++	x = a[15] ^ (a[16] | (~a[17]));
++	A[13] = (x >> 27) | (x << 5);
++	x = a[3] ^ (a[4] | (~a[5]));
++	A[14] = (x >> 9) | (x << 23);
++	x = a[10] ^ (a[11] | (~a[12]));
++	A[15] = (x >> 24) | (x << 8);
++	x = a[17] ^ (a[18] | (~a[0]));
++	A[16] = (x >> 8) | (x << 24);
++	x = a[5] ^ (a[6] | (~a[7]));
++	A[17] = (x >> 25) | (x << 7);
++	x = a[12] ^ (a[13] | (~a[14]));
++	A[18] = (x >> 11) | (x << 21);
++	a[0] = A[0] ^ A[1] ^ A[4];
++	a[1] = A[1] ^ A[2] ^ A[5];
++	a[2] = A[2] ^ A[3] ^ A[6];
++	a[3] = A[3] ^ A[4] ^ A[7];
++	a[4] = A[4] ^ A[5] ^ A[8];
++	a[5] = A[5] ^ A[6] ^ A[9];
++	a[6] = A[6] ^ A[7] ^ A[10];
++	a[7] = A[7] ^ A[8] ^ A[11];
++	a[8] = A[8] ^ A[9] ^ A[12];
++	a[9] = A[9] ^ A[10] ^ A[13];
++	a[10] = A[10] ^ A[11] ^ A[14];
++	a[11] = A[11] ^ A[12] ^ A[15];
++	a[12] = A[12] ^ A[13] ^ A[16];
++	a[13] = A[13] ^ A[14] ^ A[17];
++	a[14] = A[14] ^ A[15] ^ A[18];
++	a[15] = A[15] ^ A[16] ^ A[0];
++	a[16] = A[16] ^ A[17] ^ A[1];
++	a[17] = A[17] ^ A[18] ^ A[2];
++	a[18] = A[18] ^ A[0] ^ A[3];
++	a[0] ^= 1;
++}
++
++/* The following is the output of "make.belt.core" */
++belt_00(u_int32_t *a, u_int32_t *b) {
++	u_int32_t q0, q1, q2;
++	q0 = b[12];
++	q1 = b[25];
++	q2 = b[38];
++	b[0] ^= a[1];
++	b[14] ^= a[2];
++	b[28] ^= a[3];
++	b[3] ^= a[4];
++	b[17] ^= a[5];
++	b[31] ^= a[6];
++	b[6] ^= a[7];
++	b[20] ^= a[8];
++	b[34] ^= a[9];
++	b[9] ^= a[10];
++	b[23] ^= a[11];
++	b[37] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
++}
++
++belt_01(u_int32_t *a, u_int32_t *b) {
++	u_int32_t q0, q1, q2;
++	q0 = b[11];
++	q1 = b[24];
++	q2 = b[37];
++	b[12] ^= a[1];
++	b[13] ^= a[2];
++	b[27] ^= a[3];
++	b[2] ^= a[4];
++	b[16] ^= a[5];
++	b[30] ^= a[6];
++	b[5] ^= a[7];
++	b[19] ^= a[8];
++	b[33] ^= a[9];
++	b[8] ^= a[10];
++	b[22] ^= a[11];
++	b[36] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
++}
++
++belt_02(u_int32_t *a, u_int32_t *b) {
++	u_int32_t q0, q1, q2;
++	q0 = b[10];
++	q1 = b[23];
++	q2 = b[36];
++	b[11] ^= a[1];
++	b[25] ^= a[2];
++	b[26] ^= a[3];
++	b[1] ^= a[4];
++	b[15] ^= a[5];
++	b[29] ^= a[6];
++	b[4] ^= a[7];
++	b[18] ^= a[8];
++	b[32] ^= a[9];
++	b[7] ^= a[10];
++	b[21] ^= a[11];
++	b[35] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
++}
++
++belt_03(u_int32_t *a, u_int32_t *b) {
++	u_int32_t q0, q1, q2;
++	q0 = b[9];
++	q1 = b[22];
++	q2 = b[35];
++	b[10] ^= a[1];
++	b[24] ^= a[2];
++	b[38] ^= a[3];
++	b[0] ^= a[4];
++	b[14] ^= a[5];
++	b[28] ^= a[6];
++	b[3] ^= a[7];
++	b[17] ^= a[8];
++	b[31] ^= a[9];
++	b[6] ^= a[10];
++	b[20] ^= a[11];
++	b[34] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
++}
++
++belt_04(u_int32_t *a, u_int32_t *b) {
++	u_int32_t q0, q1, q2;
++	q0 = b[8];
++	q1 = b[21];
++	q2 = b[34];
++	b[9] ^= a[1];
++	b[23] ^= a[2];
++	b[37] ^= a[3];
++	b[12] ^= a[4];
++	b[13] ^= a[5];
++	b[27] ^= a[6];
++	b[2] ^= a[7];
++	b[16] ^= a[8];
++	b[30] ^= a[9];
++	b[5] ^= a[10];
++	b[19] ^= a[11];
++	b[33] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
++}
++
++belt_05(u_int32_t *a, u_int32_t *b) {
++	u_int32_t q0, q1, q2;
++	q0 = b[7];
++	q1 = b[20];
++	q2 = b[33];
++	b[8] ^= a[1];
++	b[22] ^= a[2];
++	b[36] ^= a[3];
++	b[11] ^= a[4];
++	b[25] ^= a[5];
++	b[26] ^= a[6];
++	b[1] ^= a[7];
++	b[15] ^= a[8];
++	b[29] ^= a[9];
++	b[4] ^= a[10];
++	b[18] ^= a[11];
++	b[32] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
++}
++
++belt_06(u_int32_t *a, u_int32_t *b) {
++	u_int32_t q0, q1, q2;
++	q0 = b[6];
++	q1 = b[19];
++	q2 = b[32];
++	b[7] ^= a[1];
++	b[21] ^= a[2];
++	b[35] ^= a[3];
++	b[10] ^= a[4];
++	b[24] ^= a[5];
++	b[38] ^= a[6];
++	b[0] ^= a[7];
++	b[14] ^= a[8];
++	b[28] ^= a[9];
++	b[3] ^= a[10];
++	b[17] ^= a[11];
++	b[31] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
++}
++
++belt_07(u_int32_t *a, u_int32_t *b) {
++	u_int32_t q0, q1, q2;
++	q0 = b[5];
++	q1 = b[18];
++	q2 = b[31];
++	b[6] ^= a[1];
++	b[20] ^= a[2];
++	b[34] ^= a[3];
++	b[9] ^= a[4];
++	b[23] ^= a[5];
++	b[37] ^= a[6];
++	b[12] ^= a[7];
++	b[13] ^= a[8];
++	b[27] ^= a[9];
++	b[2] ^= a[10];
++	b[16] ^= a[11];
++	b[30] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
++}
++
++belt_08(u_int32_t *a, u_int32_t *b) {
++	u_int32_t q0, q1, q2;
++	q0 = b[4];
++	q1 = b[17];
++	q2 = b[30];
++	b[5] ^= a[1];
++	b[19] ^= a[2];
++	b[33] ^= a[3];
++	b[8] ^= a[4];
++	b[22] ^= a[5];
++	b[36] ^= a[6];
++	b[11] ^= a[7];
++	b[25] ^= a[8];
++	b[26] ^= a[9];
++	b[1] ^= a[10];
++	b[15] ^= a[11];
++	b[29] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
++}
++
++belt_09(u_int32_t *a, u_int32_t *b) {
++	u_int32_t q0, q1, q2;
++	q0 = b[3];
++	q1 = b[16];
++	q2 = b[29];
++	b[4] ^= a[1];
++	b[18] ^= a[2];
++	b[32] ^= a[3];
++	b[7] ^= a[4];
++	b[21] ^= a[5];
++	b[35] ^= a[6];
++	b[10] ^= a[7];
++	b[24] ^= a[8];
++	b[38] ^= a[9];
++	b[0] ^= a[10];
++	b[14] ^= a[11];
++	b[28] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
++}
++
++belt_10(u_int32_t *a, u_int32_t *b) {
++	u_int32_t q0, q1, q2;
++	q0 = b[2];
++	q1 = b[15];
++	q2 = b[28];
++	b[3] ^= a[1];
++	b[17] ^= a[2];
++	b[31] ^= a[3];
++	b[6] ^= a[4];
++	b[20] ^= a[5];
++	b[34] ^= a[6];
++	b[9] ^= a[7];
++	b[23] ^= a[8];
++	b[37] ^= a[9];
++	b[12] ^= a[10];
++	b[13] ^= a[11];
++	b[27] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
++}
++
++belt_11(u_int32_t *a, u_int32_t *b) {
++	u_int32_t q0, q1, q2;
++	q0 = b[1];
++	q1 = b[14];
++	q2 = b[27];
++	b[2] ^= a[1];
++	b[16] ^= a[2];
++	b[30] ^= a[3];
++	b[5] ^= a[4];
++	b[19] ^= a[5];
++	b[33] ^= a[6];
++	b[8] ^= a[7];
++	b[22] ^= a[8];
++	b[36] ^= a[9];
++	b[11] ^= a[10];
++	b[25] ^= a[11];
++	b[26] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
++}
++
++belt_12(u_int32_t *a, u_int32_t *b) {
++	u_int32_t q0, q1, q2;
++	q0 = b[0];
++	q1 = b[13];
++	q2 = b[26];
++	b[1] ^= a[1];
++	b[15] ^= a[2];
++	b[29] ^= a[3];
++	b[4] ^= a[4];
++	b[18] ^= a[5];
++	b[32] ^= a[6];
++	b[7] ^= a[7];
++	b[21] ^= a[8];
++	b[35] ^= a[9];
++	b[10] ^= a[10];
++	b[24] ^= a[11];
++	b[38] ^= a[12];
++	mill(a);
++	a[13] ^= q0;
++	a[14] ^= q1;
++	a[15] ^= q2;
++}
++
++void round(u_int32_t *a, u_int32_t *b, int offset) {
++	switch(offset) {
++		case 0:
++			belt_00(a,b);
++			return;
++		case 1:
++			belt_01(a,b);
++			return;
++		case 2:
++			belt_02(a,b);
++			return;
++		case 3:
++			belt_03(a,b);
++			return;
++		case 4:
++			belt_04(a,b);
++			return;
++		case 5:
++			belt_05(a,b);
++			return;
++		case 6:
++			belt_06(a,b);
++			return;
++		case 7:
++			belt_07(a,b);
++			return;
++		case 8:
++			belt_08(a,b);
++			return;
++		case 9:
++			belt_09(a,b);
++			return;
++		case 10:
++			belt_10(a,b);
++			return;
++		case 11:
++			belt_11(a,b);
++			return;
++		case 12:
++			belt_12(a,b);
++			return;
++	}
++}
++
++/* Specification says we directly assign values from the input in to the belt
++ * and mill; reference code, however XORs the input with the values already
++ * in the belt and mill */
++int input_map(u_int32_t *a, u_int32_t *b, char *filename, int *o)  {
++	u_int32_t p[3];
++	int q, c, r, w;
++	int done = 0;
++	int readed = 0, counter;
++	char v[12];
++	FILE *desc;
++	
++	/* Open the file */
++	if((desc = fopen(filename,"rb")) == NULL) {
++		return 1;
++	}
++
++	for(;;) {	
++		int offset = 0;
++		readed = fread(v,1,12,desc);
++		p[0] = p[1] = p[2] = 0;
++		offset = 0;
++		for(r = 0; r < 3; r++) {
++			for(q = 0; q < 4; q++) {
++				int x;
++				x = (int)*(v + offset);
++				x = x & 0xff;
++				if(offset >= readed) {
++					done = 1;
++					/* Spec says this should have a value
++                                         * of 0x80; reference code gives this
++                                         * a value of 1.  This is IMHO a bug
++                                         * in the reference code. */
++					x = 1;
++				}
++				offset++;
++				p[r] |= x << (q * 8);
++				if(done == 1) {
++					for(c = 0; c < 3; c++) {
++						w = 13 - *o;
++						if(w == 13) {w=0;}
++						b[w + c * 13] ^= p[c];	
++						a[16 + c] ^= p[c];
++					}
++					round(a,b,*o);
++					*o += 1;
++					if(*o == 13) {*o = 0;}
++					fclose(desc);
++					return 0;
++				}
++			}
++		}
++		for(c = 0; c < 3; c++) {
++			w = 13 - *o;
++			if(w == 13) {w = 0;}
++			b[w + c * 13] ^= p[c];	
++			a[16 + c] ^= p[c];
++		}
++		round(a,b,*o);
++		*o += 1;
++		if(*o == 13) {*o = 0;}
++	}	
++	fclose(desc);
++			
++}
++/* Hashfile: Hash a single file */
++
++void hashfile(char *filename) {
++	u_int32_t a[19], b[39];
++	int c;
++	int o = 0;
++	/* Initialize the mill */
++	for(c = 0 ; c < 19 ; c++) {
++		a[c] = 0;
++	}
++	/* Initialize the belt */
++	for(c = 0; c < 39; c++) {
++		b[c] = 0;
++	}
++	/* Input mapping */
++	if(input_map(a,b,filename,&o) == 1) {
++		printf("[[UNABLE TO OPEN FILE]]");
++		for(c=0;c<41;c++) {printf(" ");}
++		fileprint(filename);
++		return;
++	}
++	/* End injection */
++	for(c = 0; c < 16; c++) {
++		round(a,b,o);
++		o++;
++		if(o > 12){o=0;}
++	}
++	/* End mangling */
++	for(c = 0; c < 4; c++) {
++		unsigned char d,e,f,g;
++		round(a,b,o);
++		o++;
++		if(o > 12){o=0;}
++		d = a[1] & 0xff;
++		e = (a[1] >> 8) & 0xff;
++		f = (a[1] >> 16) & 0xff;
++		g = (a[1] >> 24) & 0xff;
++		printf("%02x%02x%02x%02x",d,e,f,g);
++		d = a[2] & 0xff;
++		e = (a[2] >> 8) & 0xff;
++		f = (a[2] >> 16) & 0xff;
++		g = (a[2] >> 24) & 0xff;
++		printf("%02x%02x%02x%02x",d,e,f,g);
++	}
++	fileprint(filename);
++}
++
++/* The routine that handles directories */
++void dirhandle(char *dir) {
++    char path[PATH_MAX];
++    DIR *wd;
++    struct dirent *f;
++    struct stat s;
++    wd = opendir(dir);
++    if(wd == NULL) {
++	 int c;
++	 printf("[[UNABLE TO OPEN DIRECTORY]]");
++	 for(c=0;c<36;c++) {printf(" ");}
++         fileprint(dir);
++         return;
++         }
++    f = readdir(wd);
++    while(f != NULL) {
++        strncpy(path,dir,PATH_MAX - 10);
++        strncat(path,"/",1);
++	if((strlen(path) + 10 + strlen(f->d_name)) >= PATH_MAX) {
++		return;
++	}
++	if(strcmp(f->d_name,".") != 0 &&
++           strcmp(f->d_name,"..") != 0) {
++	    strcat(path,f->d_name);
++            lstat(path,&s);
++	    /* We don't follow links to directories, in order to avoid
++             * circular chains */
++	    if(S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode)) {
++		dirhandle(path);
++	    } else if(S_ISREG(s.st_mode)) {
++    		hashfile(path);
++            }
++        }
++        f = readdir(wd);
++        }
++    closedir(wd);
++    }
++
++/* The main routine.  This reads files/directories specified on the 
++   command line, then makes a hash out of that file. */
++
++main(int argc, char **argv) {
++    int counter, q;
++    struct stat s;
++    /* Check the command line argument */
++    if(argc < 2) {
++        if(argc >= 1) {
++            printf("Usage: %s {filename}\n",argv[0]);
++	    exit(1);
++	    }
++        else {
++	    printf("Usage: <this program> {filename}\n");
++	    exit(2);
++	    }
++        }
++    for(counter = 1; counter < argc; counter++) {	
++        lstat(argv[counter],&s);
++	if(S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode)) {
++		dirhandle(argv[counter]);
++	} else if(S_ISREG(s.st_mode)) {
++    		hashfile(argv[counter]);
++        }
++    }
++}
++

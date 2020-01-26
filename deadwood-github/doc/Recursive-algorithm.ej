@@ -1,0 +1,276 @@
+<HEAD>
+<TH>DEADWOOD 1 "August 2009" DEADWOOD "Deadwood reference"</TH>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+</HEAD>
+<BODY>
+
+<b>Overview</b>
+
+<p>
+
+Deadwood is immune to many DNS spoofing attacks because it uses a 
+different method to resolve domains than what most other DNS servers 
+use.  While more complicated, and sometimes a little slower, this is 
+more than compensated for by having better security.
+
+<p>
+
+The information here assumes some knowledge of DNS, which I will 
+briefly summarize. 
+
+<p>
+
+<b>How DNS works</b>
+
+<p>
+
+A DNS reply contains multiple DNS answers.  It has an answer section, 
+which has the answer to a DNS question made.  For example, if one 
+requests the A (IPv4 IP) record for, say, www.example.com [<A 
+href=#footnote1>1</A>], they may get an answer like "www.example.com's 
+A record is the IP 10.1.2.3" [<A href=#footnote2>2</A>] [<A 
+href=#footnote3>3</A>].
+
+<p>
+
+DNS replies can have multiple DNS records which can be in one of
+three sections:
+
+<ol>
+<li>The "answer" section, which is for direct answers to DNS questions.
+<li>The "authority records" (or "name server") section, which is for 
+    nameserver referrals.
+<li>The "additional records" or "glue" section, which has any other DNS 
+    records which may be of interest.
+</ol>
+
+<p>
+
+These are some typical answers we can get for our "www.example.com"
+query above:
+
+<ul>
+<li>A direct answer to their question in the answer section, such as
+    "www.example.com has the IP 10.1.2.3"
+<li>What I call an "incomplete CNAME answer"; this is an answer 
+    like "www.example.com has the CNAME www.example.net".  CNAME is
+    a DNS record used for aliases; if, say, www.example.com has the CNAME
+    www.example.net, this means that www.example.com's IP is whatever
+    www.example.net's IP is.
+<li>What I call an "incomplete NS referral"; this is an answer which
+    has no records in the answer section, but has referrals to other
+    DNS name servers in the "authority records" section, and, ideally,
+    IPs for those name servers in the "additional records" section.
+<li>What is sometimes called a "NXDOMAIN" answer.  This is an answer which
+    means "this name does not exist".  Its format is no records in
+    the answer section, and a record type called a "SOA" record in
+    the "authority records" section. 
+</ul>
+
+Note that NS referrals are done by name, not IP.  DNS gives out a name 
+like "www.example.net" for an answer instead of an IP like "10.4.2.1". 
+[<A href=#footnote4>4</A>] A DNS answer may, or may not, have the IPs 
+for the NS referrals in the "additional records" section of the answer.  
+If if does have the corresponding IPs for the NS records, it is called 
+a "glued NS referral".  If it does not have the corresponding IPs, it 
+is a "glueless NS referral".
+
+<p>
+
+<b>How Deadwood resolves a name</b>
+
+<p>
+
+A simplified version of the method Deadwood uses to resolve a domain
+via recursion is as follows:
+
+<ol>
+<li>Deadwood gets a request to resolve a given domain from a stub resolver
+<li>Deadwood requests a domain from a root server.
+<li>Deadwood gets an answer from that server.  
+<li>Deadwood looks at the answer.
+<li>There are three types of answers Deadwood can get:
+	<ol>
+	<li>A complete answer that answers the DNS question.
+	<li>An incomplete NS referral, which can either have glue or
+	    be glueless.
+	<li>An incomplete CNAME referral
+	</ol>
+<li>If the answer is a complete answer, Deadwood sends the answer 
+    back to the stub resolver.
+<li>If the answer is an incomplete answer, Deadwood must send more queries
+    to get a complete answer.  I will detail this process below.
+</ol>
+
+<p>
+
+<b>How Deadwood stops blind spoofing attacks</b>
+
+<p>
+
+Deadwood's recursive resolver is written with the following philosophy: 
+The only answers that Deadwood will place in the cache while resolving 
+a name are either pointers to incomplete NS referrals, or the direct 
+answer to the question originally given to Deadwood.
+
+<p>
+
+For example, if someone asks Deadwood "what is the IP for 
+www.paypal.com", Deadwood will only add the following records to the 
+cache while resolving www.paypal.com:
+
+<ul>
+<li>The IPs of the name servers for anything ending ".com" that 
+    doesn't otherwise have a name server.  These IPs can only be set
+    by the root server IPs (which are either the default ICANN root 
+    servers built-in to Deadwood or specified in ones dwood3rc file).
+<li>The IPs of the name servers for anything ending in "paypal.com"
+    can be added by either the root name servers or the name servers 
+    delegated by the root servers as being the name servers for ".com".
+    No other servers are allowed to assign names to "paypal.com".
+<li>A name server delegation must be part of the domain asked for.  If 
+    someone asks for "random-name-00000001.com", any answers received 
+    will only affect ".com" (if they come from the root servers) or 
+    "random-name-00000001.com" (but only if they come from the .com
+    servers).  See dwx_string_bailiwick_query() in <A 
+    href=http://maradns.org/deadwood/browse-source/stable/src/DwRecurse.c
+    >DwRecurse.c</A>
+<li>The IP for "www.paypal.com".  
+</ul>
+
+<p>
+
+The information about what name servers to use for a given domain, say
+"example.com", can only come from one of the following two sources:
+
+<ul>
+<li>The root name servers
+<li>The name servers designated to serve ".com" domains.
+</ul>
+
+Information given by example.com's own name servers only affect names
+ending in "example.com"; they do not affect the name servers for 
+example.com [<A href=#footnote5>5</A>].
+
+<p>
+
+<b>Handling "incomplete" answers</b>
+
+<p>
+
+Deadwood does not store name server referrals as NS records nor 
+incomplete CNAME referrals as CNAME records.  Deadwood uses special 
+records for storing these incomplete records.
+
+<p>
+
+In the case of either a glueness NS referral or an incomplete CNAME 
+answer, Deadwood will create a sub-query to answer the query in 
+question.  This query is a new query that starts at the root to resolve 
+a given name.
+
+<p>
+
+<b>Choosing what to cache</b>
+
+<p>
+
+Unlike other DNS resolvers, Deadwood does <i>not</i> indiscriminately 
+add records to the cache that are seen in the additional records 
+section of a DNS answer, even if the answers are "in bailiwick".  This 
+protects Deadwood from the Kaminsky DNS attack where someone can try 
+and get "www.paypal.com" to point to a phishing page by sending queries 
+like "0000001.paypal.com", "0000002.paypal.com", and so on, along with 
+spoofed answers which have a very small chance of being accepted.  The 
+spoofed answers to the query have, in the additional records section, 
+the DNS record "www.paypal.com has the IP 10.6.6.6" and "10.6.6.6" 
+points to a phishing page.  If someone tries this attack on Deadwood, 
+a successful spoof will only affect meaningless records like 
+"62f8ec94.paypal.com".
+
+<p>
+
+<b>Linking names to IPs</b>
+
+<p>
+
+In order to avoid needing to indiscriminately store records in the 
+"additional records" section, Deadwood, when getting an incomplete NS 
+referral, will look to see if any of the names in the authority records 
+section have a corresponding IP for the name in the additional records 
+section.  If they do, said names are converted and stored in Deadwood's 
+cache as IPs.  If not, they are stored as glueless names.
+
+<p>
+
+For example, let us suppose we have an answer like this when we ask for
+www.example.com:
+
+<ul>
+<li>Authority section: A name server for example.com is ns1.example.com
+<li>Authority section: A name server for example.com is ns2.example.com
+<li>Authority section: A name server for example.com is ns.example.net
+<li>Additional section: ns1.example.com has the IP 10.2.2.1
+<li>Additional section: ns2.example.com has the IP 10.2.2.2
+</ul>
+
+Deadwood converts this answer to look like this:
+
+<ul>
+<li>This record contains name servers for example.com
+<li>10.2.2.1 is a glued name server
+<li>10.2.2.2 is a glued name server
+<li>ns.example.net is a glueless name server
+</ul>
+
+See dwx_make_ns_refer() in <A
+href=http://maradns.org/deadwood/browse-source/stable/src/DwRecurse.c 
+>DwRecurse.c</A> for more details.
+
+<p>
+
+<b>Conclusion</b>
+
+<p>
+
+While more complicated, Deadwood's recursion algorithm provides, short of 
+DNSSEC, the best DNS spoof protection.
+
+<p>
+
+<b>Footnotes</b>
+
+<p>
+
+<A name=footnote1>[1]</A> Note that "example.com" is always used for
+examples and is reserved when examples are needed in documents about DNS.
+example.net and example.org are other example domains.
+
+<p>
+
+<A name=footnote2>[2]</A> These are not real-world numbers; IPv4 IP
+numbers that begin in "10" are only used in internal networks and can
+not be reached from the Internet at large.
+
+<p>
+
+<A name=footnote3>[3]</A> The format of DNS queries is somewhat 
+different; I am translating them in to English.  It's like translating
+conversations from Spanish in to English.  The binary format is
+described in <A href=http://www.ietf.org/rfc/rfc1035.txt>RFC 1035</A>.
+
+<p>
+
+<A name=footnote4>[4]</A> I agree with <A href=http://cr.yp.to>DJB</A>
+that having NS referrals done by name instead of IP was a mistake in
+the design of DNS.
+
+<p>
+<A name=footnote5>[5]</A> example.com's name servers can also 
+sub-delegate domain names to other name servers.  For example, the 
+example.com name servers can say "all names that end in 
+'sub.example.com' are handled by the name servers at 10.3.2.1"
+
+<p>
+
+</BODY>

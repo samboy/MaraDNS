@@ -1,0 +1,76 @@
+Deadwood-3: A full DNS recursive resolver. Target date: Done; undergoing
+beta-testing.
+
+Plan for recursive design:
+
+* When looking at a packet, we need to know two facts:
+
+  1) The name and record type of the hostname we are seeking
+
+  2) The permitted bailiwick for any NS referrals we get
+
+* When we get a packet from the remote nameserver, we need to determine
+  if the packet is a complete packet.  A complete packet is a packet where
+  either one of the following are true:
+
+  1) We look for CNAME referrals in the AN section of the packet.  We make
+     the question we had a CNAME, and see if that CNAME is in the packet.
+     If it is, we change the question to the name the CNAME points to,
+     and see if *that* CNAME is in the AN section of the packet.  If it
+     is, we see that the CNAME points to and see if the corresponding CNAME
+     is in the packet, and so on.  
+
+     Eventually, we won't find a CNAME record.  Once we don't find the
+     appropriate CNAME record, we change the name we are looking for to
+     the name the last found CNAME pointed to, but keep the same record
+     type.  Looking for a CNAME is a special case; we're done once we
+     find the CNAME and the packet is complete.
+
+     If we never found a CNAME, we just preserve the original host name.
+
+     Once we know the name we're looking for by chasing down CNAME referrals,
+     we look for that record in the AN section.  If we find it, we're gold
+     and the packet is complete; we're done with our hostname search. 
+
+     If we found CNAME records but did not find the ultimate hostname we
+     looked for, this is an incomplete CNAME referral.
+
+  2) There is a single SOA record in the NS section
+
+  3) If there are NS records in the NS section and possibly the AR section, 
+     but no records in the AN section, this is an incomplete NS referral.  
+
+* If a packet is an incomplete CNAME referral, we do the following with 
+  the packet:
+
+  1) We find the last CNAME referral valid for the hostname we originally
+     looked for.
+
+  2) We store the record in the cache as something along the lines of 
+     "hostname whatever.example.com. is a CNAME record which points to 
+     realname.example.net."  This is stored as a CNAME record.
+
+  3) We increase the depth level and look for the hostname the CNAME
+     points to, such as looking for the A record for "realname.example.net."
+
+* If the packet is an incomplete NS referral, we do the following with the
+  packet:
+
+  1) We remove any packets which are out-of-bailiwick; for a packet to be 
+     in-bailiwick it has to be a NS referral for a hostname *longer* than
+     the current bailiwick, and with the same ending as the current
+     bailiwick.  For example, if the bailiwick is .com, we must have
+     a NS referral for example.com; another NS referral for .com will be
+     discarded.
+
+  2) Should, after removing all out-of-bailiwick records, we have no NS
+     referrals left, the packet is a "dead end"; we backtrack and try another
+     NS record for this hostname until a given limit is hit.
+
+  3) Once we remove all OOB records, we connect NS records to A and AAAA
+     records in the AR section.  For example, if the packet has in the NS
+     section "example.com NS ns1.example.com" and the AR section has 
+     "ns1.example.com A 192.168.78.32", we make the packet "example.com NS
+     192.168.78.32" and store it in the cache.
+
+(All of this has now been implemented)

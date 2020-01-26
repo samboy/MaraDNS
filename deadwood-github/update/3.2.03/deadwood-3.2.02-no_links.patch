@@ -1,0 +1,14 @@
+--- deadwood-3.2.02/tools/ej/ej2txt	2012-02-28 23:59:53.000000000 -0800
++++ deadwood-3.2.03/tools/ej/ej2txt	2012-10-28 01:49:51.509325232 -0700
+@@ -6,7 +6,10 @@
+ TMP=$HOME/tmp
+ LINKS=$( which elinks )
+ if [ -z "$LINKS" ] ; then
+-	LINKS=links
++	LINKS=$( which links)
++	if [ -z "$LINKS" ] ; then
++		LINKS=lynx
++	fi
+ fi
+ 
+ if which ej2html > /dev/null 2>&1 ; then

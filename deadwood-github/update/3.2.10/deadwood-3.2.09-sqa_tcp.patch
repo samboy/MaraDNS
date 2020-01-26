@@ -1,0 +1,33 @@
+--- deadwood-3.2.09/sqa/sqa_tcp/do.test	2011-11-01 09:25:23.000000000 -0700
++++ deadwood-3.2.10/sqa/sqa_tcp/do.test	2017-06-10 12:25:37.185034060 -0700
+@@ -11,7 +11,7 @@
+ # real www.example.com auth server; change this if www.example.com's DNS
+ # moves
+ upstream_servers = {}
+-upstream_servers["."]="199.43.132.53"
++upstream_servers["."]="8.8.8.8"
+ recursive_acl="127.0.0.1/16"
+ tcp_listen = 1
+ timeout_seconds_tcp = 10
+@@ -25,6 +25,7 @@
+ dig +tcp @127.0.0.1 www.example.com | \
+ 	grep -v DiG | grep -v WHEN | grep -v time | grep -v HEADER | \
+ 	grep -v 'WARNING: recursion requested but not available' | \
++	grep -v 'MSG SIZE' | perl -pe 's/(\d)+\s*IN/IN/' | \
+ 	grep -v 'global options' | grep -v NS
+ killall maradns > /dev/null 2>&1
+ killall zoneserver > /dev/null 2>&1
+--- deadwood-3.2.09/sqa/sqa_tcp/output.success	2015-09-25 21:25:57.000000000 -0700
++++ deadwood-3.2.10/sqa/sqa_tcp/output.success	2017-06-10 12:25:42.301552021 -0700
+@@ -5,10 +5,7 @@
+ ;; QUESTION SECTION:
+ ;www.example.com.		IN	A
+ 
+-www.example.com.	86400	IN	A	93.184.216.34
+-
+-;; AUTHORITY SECTION:
++www.example.com.	IN	A	93.184.216.34
+ 
+ ;; SERVER: 127.0.0.1#53(127.0.0.1)
+-;; MSG SIZE  rcvd: 97
+ 

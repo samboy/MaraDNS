@@ -1,0 +1,11 @@
+bind_address = "127.0.0.1"
+recursive_acl = "127.0.0.1/8"
+chroot_dir="/etc/"
+maximum_cache_elements = 32
+upstream_servers = {}
+upstream_servers["."] = "127.0.0.2"
+ip4 = {}
+ip4["kabah.foo."] = "10.10.10.10"
+ip6 = {}
+ip6["kabah.foo."] = "fd4d617261444e530000000000001234"
+filter_rfc1918 = 0

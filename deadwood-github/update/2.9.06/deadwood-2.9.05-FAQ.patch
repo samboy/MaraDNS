@@ -1,0 +1,27 @@
+--- deadwood-2.9.05/doc/FAQ.ej	2010-07-29 10:39:09.000000000 -0700
++++ deadwood-2.9.06/doc/FAQ.ej	2010-08-21 12:37:30.000000000 -0700
+@@ -58,4 +58,24 @@
+ 
+ </ul> 
+ 
++<h2>I changed a configuration parameter but it has not affected Deadwood</h2>
++
++Be sure to delete the cache file when making any changes to Deadwood's
++configuration.  In Windows, the cache file is called dw_cache_bin (unless
++the dwood3rc.txt file is edited); in CentOS, with the default dwood3rc file,
++the file is called dw_cache.
++
++<h2>Deadwood sends out a lot of queries</h2>
++
++Deadwood will do this on a slow network, since the default parameters are
++tuned to get a fast reply on a broadband internet connection.  On a slow
++(dialup, saturated broadband, etc) connection, timeout_seconds should
++have a value of 7 and num_retries should have a value of 1.  This is
++done by adding the following lines to the dwood3rc file:
++
++<pre>
++timeout_seconds = 7
++num_retries = 1
++</pre>
++
+ </BODY>

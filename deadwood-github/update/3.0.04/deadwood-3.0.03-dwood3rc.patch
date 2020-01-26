@@ -1,0 +1,45 @@
+--- deadwood-3.0.03/doc/dwood3rc	2011-07-22 15:41:20.000000000 -0500
++++ deadwood-3.0.04/doc/dwood3rc	2011-10-08 13:30:39.711571539 -0500
+@@ -46,4 +46,14 @@
+ # above is readable and writable by the maradns_uid/gid above, and 
+ # uncomment the following line
+ cache_file = "dw_cache"
++
++# The following line tells deadwood to fetch an expired record if it's 
++# impossible to connect to any nameservers
+ resurrections = 1
++
++# By default, for security reasons, Deadwood does not allow IPs in the
++# 192.168.x.x, 172.[16-31].x.x, 10.x.x.x, 127.x.x.x, 169.254.x.x,
++# 224.x.x.x, or 0.0.x.x range.  If using Deadwood to resolve names
++# on an internal network, uncomment the following line:
++#filter_rfc1918 = 0
++
+--- deadwood-3.0.03/doc/Windows/dwood3rc.txt	2011-07-22 15:41:20.000000000 -0500
++++ deadwood-3.0.04/doc/Windows/dwood3rc.txt	2011-10-08 13:31:09.973573258 -0500
+@@ -34,3 +34,9 @@
+ # the reply in to a "not there" answer.  
+ #ip_blacklist = "10.222.33.44, 10.222.3.55"
+ 
++# By default, for security reasons, Deadwood does not allow IPs in the
++# 192.168.x.x, 172.[16-31].x.x, 10.x.x.x, 127.x.x.x, 169.254.x.x,
++# 224.x.x.x, or 0.0.x.x range.  If using Deadwood to resolve names
++# on an internal network, uncomment the following line:
++#filter_rfc1918 = 0
++
+--- deadwood-3.0.04/doc/Deadwood.ej.orig	2011-10-08 13:38:49.408848245 -0500
++++ deadwood-3.0.04/doc/Deadwood.ej	2011-10-08 13:39:45.651575024 -0500
+@@ -661,6 +661,13 @@
+ # listed below are in a DNS answer, Deadwood converts the answer
+ # in to a "not there"
+ #ip_blacklist = "10.222.33.44, 10.222.3.55"
++
++# By default, for security reasons, Deadwood does not allow IPs in 
++# the 192.168.x.x, 172.[16-31].x.x, 10.x.x.x, 127.x.x.x, 
++# 169.254.x.x, 224.x.x.x, or 0.0.x.x range.  If using Deadwood 
++# to resolve names on an internal network, uncomment the 
++# following line:
++#filter_rfc1918 = 0
+ </pre>
+ 
+ <h1>BUGS</h1>

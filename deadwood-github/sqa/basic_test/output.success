@@ -1,0 +1,20 @@
+# Querying the server with the IP 127.0.0.1
+# Question: Awww1.example.com.
+www1.example.com. +86400 a 10.1.2.3
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Question: Awww2.example.com.
+www2.example.com. +86400 a 10.1.2.3
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.0.0.1
+# Question: Awww1.example.com.
+www1.example.com. +86400 a 10.1.2.3
+# NS replies:
+# AR replies:
+Deadwood: A DNS UDP non-recursive cache 
+We bound to 1 addresses
+Got signal 1 to process...

@@ -1,0 +1,42 @@
+One way to get Deadwood to work in Windows 10 is to use a cmd 
+prompt with administrator privileges.
+
+==Getting an admin cmd prompt==
+
+To open up an admin cmd prompt:
+
+* Go to the start menu and search for "cmd"
+
+* When found, right click on it and run "cmd" as an administrator
+
+==Installing Deadwood as an administrator==
+
+Once this administrative "cmd" prompt is opened, it is necessary to
+install Deadwood:
+
+* At the cmd prompt, use the "cd" command to find and enter the directory
+  where Deadwood is unpacked (where this file is located)
+
+* Invoke the "install.bat" script from this directory (by simply typing in
+  "install.bat" without the quotes)
+
+* Once Deadwood is installed, it is important not to change the directory
+  where Deadwood is locted; otherwise the service manager may have problems
+  finding the Deadwood service.
+
+==Troubleshooting Deadwood==
+
+Note that, should there be an issue which causes Deadwood to not start,
+no error messages will be visible in Windows 10.  To view any errors
+when starting up Deadwood, it may be necessary to invoke Deadwood as
+the non-Administrator as follows from this directory:
+
+	Deadwood.exe --nodaemon dwood3rc.txt
+
+If there are no issues starting up Deadwood, the process will hang and need
+to be terminated with the task manager.  If there are issues starting
+up Deadwood, the process will quickly terminate and a logfile with the
+relevant information will be in this file:
+
+	dwlog.txt
+

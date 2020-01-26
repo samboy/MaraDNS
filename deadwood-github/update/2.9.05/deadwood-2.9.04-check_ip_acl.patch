@@ -1,0 +1,12 @@
+--- deadwood-2.9.05/src/DwSocket.c.orig	2010-08-18 09:01:31.000000000 -0700
++++ deadwood-2.9.05/src/DwSocket.c	2010-08-18 09:02:14.000000000 -0700
+@@ -408,6 +408,9 @@
+         uint8_t m;
+ 
+         for(a = 0; a < DW_MAXIPS; a++) {
++		if(recursive_acl[a].len == 0) {
++			return 0;
++		}
+                 if(ip->len != recursive_acl[a].len) {
+                         continue;
+                 }

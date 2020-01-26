@@ -1,0 +1,20 @@
+--- deadwood-2.9.06/src/DwRecurse.c	2010-09-03 07:03:38.000000000 -0700
++++ deadwood-2.9.07/src/DwRecurse.c	2010-09-07 10:58:42.000000000 -0700
+@@ -2784,6 +2784,7 @@
+         */
+ 
+         /* If not, then we make a new query */
++	dwc_lower_case(addr.glueless);
+         dwx_do_glueless_new(addr.glueless, conn_number,1);
+ 
+ clean_dwx_do_ns_glueless:
+--- deadwood-2.9.07/src/DwUdpSocket.c.orig	2010-09-07 11:02:11.000000000 -0700
++++ deadwood-2.9.07/src/DwUdpSocket.c	2010-09-07 11:04:02.000000000 -0700
+@@ -752,6 +752,7 @@
+         int ret = -1, qtype = -1;
+ 
+         question = dw_get_dname_type(packet,12,count);
++	dwc_lower_case(question);
+         qtype = dw_fetch_u16(question,-1);
+         dw_log_dwstr("Caching a reply for query ",question,1000);
+         if((packet[3] & 0x0f) == 2) { /* Server FAIL */

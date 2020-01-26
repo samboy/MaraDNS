@@ -22,6 +22,7 @@ echo Type in enter when done
 read foo
 cp server/maradns.exe maradns-win32/
 cp deadwood-3.5.${VERSION}/src/Deadwood.exe maradns-win32/deadwood-win32/
+mv deadwood-3.5.${VERSION} deadwood-github
 mv .notgit .git
 git commit -a -m "MaraDNS release 3.5-${VERSION}"
 git push origin master

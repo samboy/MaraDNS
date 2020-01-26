@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Bash, because we need job control
+
+HERE=$(/bin/pwd)
+cd ../../src
+make clean > /dev/null 2>&1
+make -f Makefile.sl6 > /dev/null 2>&1
+./Deadwood -f $HERE/dwoodrc > /dev/null 2>&1 &
+echo Starting Deadwood
+sleep 1
+cd $HERE
+gcc -Os -o nanodns nanodns.c
+./nanodns 10.1.1.1 &
+echo Starting nanodns
+sleep 1
+
+askmara Akabah.foo. 127.0.0.1
+askmara 28:kabah.foo. 127.0.0.1
+
+A=1
+# Run a bunch of queries to make sure the ip4 entry does not get pushed
+# out of the cache
+while [ $A -lt 48 ] ; do
+	askmara A${A}.foo. 127.0.0.1
+	A=$( expr $A + 1 )
+done
+
+askmara Akabah.foo. 127.0.0.1
+askmara 28:kabah.foo. 127.0.0.1
+
+# Clean up
+sleep 1
+killall Deadwood > /dev/null 2>&1
+killall nanodns > /dev/null 2>&1
+sleep 1
+rm nanodns
+

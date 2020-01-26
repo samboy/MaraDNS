@@ -1,0 +1,214 @@
+# DISABLED: This code is not needed.  Even though RG64 *is* faster,
+# even on 32-bit systems, it uses more code on 32-bit systems (breaking
+# Deadwood's ability to fit in 65,536 bytes on Windows).
+# Also: This code does not have a test for it.  RG32 is good enough; if
+# I'm going to update Deadwood's crypto, do it right: add SipHash, add Keccak, 
+# add maybe another stream cipher.  
+
+--- deadwood-3.2.03/src/DwRadioGatun64.h	2013-11-18 18:56:07.000000000 -0500
++++ deadwood-3.2.04/src/DwRadioGatun64.h	2013-11-18 18:55:03.000000000 -0500
+@@ -0,0 +1,56 @@
++/* Copyright (c) 2007-2013 Sam Trenholme
++ *
++ * TERMS
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ *
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ *
++ * This software is provided 'as is' with no guarantees of correctness or
++ * fitness for purpose.
++ */
++
++#ifndef __DWRADIOGATUN64_H_DEFINED__
++#define __DWRADIOGATUN64_H_DEFINED__
++
++/* This is a tiny implementation of the Radio Gatun hash function/
++ * stream cipher */
++
++/* This determines the word size we use for this particular Radio Gatun
++ * implementation; DWR_WORDSIZE needs to be a multiple of 8.  Note also
++ * that dwr_rng() needs to be rewritten if these values are changed. */
++#define DWR_WORD uint64_t
++#define DWR_WORDSIZE 64
++
++/* These are hard coded in the Radio Gatun specification */
++#define DWR_MILLSIZE 19
++#define DWR_BELTROWS 3
++#define DWR_BELTCOL 13
++#define DWR_BELTFEED 12
++
++/* A structure contining a RadioGatun state */
++typedef struct {
++        DWR_WORD *mill;
++        DWR_WORD *belt;
++        int32_t index;
++} dwr_rg;
++
++/* The three public functions in this routine */
++
++/* Destroy an already created RadioGatun state */
++void dwr_zap(dwr_rg *tozap);
++
++/* Create a Radio Gatun state, using the contents of a dw_str object
++ * as the key */
++dwr_rg *dwr_init_rg(dw_str *obj);
++
++/* Given a RadioGatun state, generate a 16-bit psuedo-random number. */
++uint16_t dwr_rng(dwr_rg *in);
++
++#endif /* __DWRADIOGATUN_H_DEFINED__ */
+--- deadwood-3.2.03/src/DwRadioGatun.c	2012-12-20 13:30:37.000000000 -0500
++++ deadwood-3.2.04/src/DwRadioGatun.c	2013-11-18 18:54:57.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2012 Sam Trenholme
++/* Copyright (c) 2007-2013 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -24,7 +24,11 @@
+ #include <stdlib.h>
+ #include "DwStr.h"
+ #include "DwStr_functions.h"
++#ifndef RG64
+ #include "DwRadioGatun.h"
++#else /* RG64 */
++#include "DwRadioGatun64.h"
++#endif /* RG64 */
+ 
+ /* This is the mill part of the RadioGatun algorithm */
+ void dwr_beltmill(DWR_WORD *a, DWR_WORD *b) {
+@@ -159,7 +163,12 @@
+                                         x = 1; /* Append with single byte
+                                                 * w/ value of 1 */
+                                 }
++#ifndef RG64
+                                 p[r] |= x << q;
++#else /* RG64 */
++                                p[r] |= (uint64_t)x << q;
++#endif /* RG64 */
++
+                                 if(done == 1) {
+                                         dwr_input_map();
+                                         for(c = 0; c < 16; c++) {
+@@ -174,21 +183,17 @@
+         return 0;
+ }
+ 
+-/* Given a RadioGatun state, generate a 16-bit psuedo-random number.
+- * Note that this only works if DWR_WORD is a 32-bit integer,
+- * and DWR_WORDSIZE is 32. */
++/* Given a RadioGatun state, generate a 16-bit psuedo-random number. */
+ uint16_t dwr_rng(dwr_rg *in) {
+         DWR_WORD *o;
+         if(in == 0) {
+                 return 0;
+         }
+-        if(DWR_WORDSIZE != 32) {
+-                return 0;
+-        }
+         o = in->mill + 1;
+         if(in->index >= 100000000) {
+                 in->index = 0; /* I am considering rekeying here */
+         }
++#ifndef RG64
+         if(in->index % 4 == 0) {
+                 dwr_beltmill(in->mill, in->belt);
+                 in->index++;
+@@ -207,6 +212,38 @@
+                                         ((o[1] & 0xff000000) >> 24);
+                 }
+         }
++#else /* RG64 */
++        if(in->index % 8 == 0) {
++                dwr_beltmill(in->mill, in->belt);
++                in->index++;
++                return ((o[0] & 0xff) << 8) | ((o[0] & 0xff00) >> 8);
++        } else {
++                in->index++;
++                switch(in->index % 8) {
++                        case 2:
++                                return ((o[0] & 0xff0000) >> 8) |
++                                        ((o[0] & 0xff000000) >> 24);
++                        case 3:
++                                return ((o[0] & 0xff00000000ULL) >> 24) |
++                                        ((o[0] & 0xff0000000000ULL) >> 40);
++                        case 4:
++                                return ((o[0] & 0xff000000000000ULL) >> 40) |
++                                        ((o[0] & 0xff00000000000000ULL) >> 56);
++                        case 5:
++                                return ((o[1] & 0xff) << 8) |
++                                        ((o[1] & 0xff00) >> 8);
++                        case 6:
++                                return ((o[1] & 0xff0000) >> 8) |
++                                        ((o[1] & 0xff000000) >> 24);
++                        case 7:
++                                return ((o[1] & 0xff00000000ULL) >> 24) |
++                                        ((o[1] & 0xff0000000000ULL) >> 40);
++                        case 0:
++                                return ((o[1] & 0xff000000000000ULL) >> 40) |
++                                        ((o[1] & 0xff00000000000000ULL) >> 56);
++                }
++        }
++#endif /* RG64 */
+         return 0;
+ }
+ 
+@@ -223,7 +260,10 @@
+         q = dw_create(2048);
+         dw_qrappend(argv[1],q,0);
+         r = dwr_init_rg(q);
+-        for(c = 0; c < 20; c++) {
++#ifdef BENCHMARK
++	for(c = 0; c < 20000000; c++) {dwr_rng(r);}
++#endif /* BENCHMARK */
++        for(c = 0; c < 16; c++) {
+                 printf("%04x ",dwr_rng(r));
+         }
+         printf("\n");
+--- deadwood-3.2.03/doc/compile.options	2010-09-03 10:03:38.000000000 -0400
++++ deadwood-3.2.04/doc/compile.options	2013-11-18 19:02:03.000000000 -0500
+@@ -16,7 +16,7 @@
+ 
+ ---
+ 
+-Full list of compile flags Deadwood has:
++List of compile flags Deadwood has:
+ 
+ IPV6 (-DIPV6): Adds IPv6 support to Deadwood
+ 
+@@ -32,10 +32,15 @@
+ 	Deadwood; instead use the 'Makefile.mingw' file: 
+ 	make -f Makefile.mingw342
+ 
+-__CYGWIN__ (no flag to set; Cygwin sets this): It is also possible to 
++__CYGWIN__ (no flag to set; Cygwin sets this): It may also be possible to 
+ 	compile this program using Cygwin, an environment that fully
+ 	emulates a *NIX development environment in Windows.
+ 
++RG64: If this is set, Deadwood will use the 64-bit instead of the default
++	32-bit version of Radio Gatun for generating random numbers (used 
++	to generate random query ID and source port to make spoofing more 
++	difficult)
++
+ Note: The following compile-time flags will only be of interest to developers
+ 	debugging Deadwood
+ 
+@@ -64,6 +69,11 @@
+ 	(sqa_rg32) to ensure that DwRadioGatun.c makes a RadioGatun[32]
+ 	implementation that passes all official RadioGatun[32] test vectors.
+ 
++BENCHMARK: DwRadioGatun.c has this to determine how fast Radio Gatun generates
++	random numbers on a given system.  I discovered that, on 32-bit 
++	systems, the 64-bit version of Radio Gatun is faster (albeit using 
++	more code)
++
+ HSCK (-DHSCK): Adds some routines to ensure that DwHash.c is correctly
+ 	creating a doubly linked list hash and queue.  Used with the
+ 	debug-only Makefile.hsck make file.

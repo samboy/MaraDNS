@@ -1,0 +1,19 @@
+--- deadwood-2.9.06/doc/FAQ.ej	2010-09-03 07:03:38.000000000 -0700
++++ deadwood-2.9.07/doc/FAQ.ej	2010-09-08 11:36:28.000000000 -0700
+@@ -78,4 +78,16 @@
+ num_retries = 1
+ </pre>
+ 
++<h2>Steve Gibson's DNS benchmark reports that Deadwood is dropping a lot of 
++    DNS packets</h2>
++
++After running this tool and carefully looking at Deadwood's replies to 
++Gibson's DNS benchmark tool, I can safely conclude that Gibson's tool is
++buggy and that Deadwood is not dropping the packets being sent to it.
++<p>
++
++A much better tool to use is Namebench, which correctly shows that Deadwood
++drops very few (if any) DNS packets sent to it.  Namebench is available at
++available at http://code.google.com/p/namebench/
++
+ </BODY>

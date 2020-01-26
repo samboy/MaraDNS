@@ -1,0 +1,82 @@
+--- deadwood-3.2.09/doc/Windows/README.txt	2010-09-24 18:45:11.000000000 -0700
++++ deadwood-3.2.10/doc/Windows/README.txt	2016-07-21 21:50:34.450990873 -0700
+@@ -11,7 +11,7 @@
+ Otherwise, Windows may not be able to find the Deadwood service.
+ 
+ Once 'install.bat' is run, Deadwood should automatically start whenever 
+-the system is booted.  
++the system is booted.  This needs to be run as an administrator.
+ 
+ The file dwood3rc.txt can be edited to change a number of options that are 
+ described in Reference.txt.  People should not use dwood3rc.txt files from 
+@@ -45,6 +45,8 @@
+ Be sure to reset the DNS servers used before uninstalling Deadwood, 
+ otherwise it won't be possible to use the internet.
+ 
++There is no need to stop Windows "DNS client" service.
++
+ LEGAL DISCLAIMER
+ 
+ THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY
+--- deadwood-3.2.09/bug.reporting.policy	2011-07-22 13:41:19.000000000 -0700
++++ deadwood-3.2.10/bug.reporting.policy	2016-07-21 21:51:26.410632497 -0700
+@@ -1,18 +1,43 @@
+-Deadwood is open for general testing.  Pretty much any bug can and should be
+-reported.  Some notes:
++Deadwood is a released and stable program.  The only bugs I am fixing 
++right now are security bugs and simple typo bugs.  Some notes:
+ 
+ * Valgrind-reported memory leaks can always be reported.  Valgrind-reported
+ 	errors are only valid if Deadwood is compiled with -DVALGRIND_NOERRORS
+ 
+-* The only officially supported OSes are Windows XP and Scientific Linux 6.
++* The only officially supported OSes are Windows 7 and CentOS 6.
+ 	OS-specific issues such as startup, daemonizing, sysloggin, and 
+ 	/etc/resolv.conf setup are only supported on these two OSes.
+ 
+-* Bugs need to be reported to the MaraDNS list, not to my email account nor
++* Bugs need to be reported in GitHub, not to my email account nor
+ 	as blog comments.  
+ 
+-* Bugs reporting Deadwood crashes will be marked "unreproducible" unless
+-	either a stack trace (or core dump if the program was compiled with
+-	'-g' to enable debugging symbols) or a recipe to reproduce the
+-	crash is provided.
++* Bugs reporting Deadwood crashes will probably be marked "unreproducible" 
++	unless either a stack trace (or core dump if the program was 
++	compiled with '-g' to enable debugging symbols) or a recipe to 
++	reproduce the crash is provided.
+ 
++* Bugs involving Deadwood recursively resolving a name different than
++	other DNS servers when the domain is misconfigured will probably
++	not be fixed. 
++
++* Bugs involving RFCs with a date more recent than July of 2010 will 
++	probably not be fixed. If the RFC number is higher then 5900 or so, 
++	or has a date in the top of the RFC more recent than July 2010,
++	I will probably ignore it.
++
++Welcome to the world of open source economics: The code is free, but
++there is no guarantee of support, since there is no money on the table
++compelling one to support the program.
++
++Here are some bugs I will not fix:
++
++https://github.com/samboy/MaraDNS/issues/8
++https://github.com/samboy/MaraDNS/issues/12
++https://github.com/samboy/MaraDNS/issues/14
++https://github.com/samboy/MaraDNS/issues/26 
++
++I mark bugs claiming that various parameters do not always work as
++expected as “WORKSFORME” unless one includes a script to reproduce
++the issue in the bug report; I do run automated tests to make sure pretty
++much all Deadwood parameters work correctly every time I make a Deadwood
++release.
+--- deadwood-3.2.09/Copying.txt	2012-02-28 23:59:53.000000000 -0800
++++ deadwood-3.2.10/Copying.txt	2016-07-21 21:53:04.797805981 -0700
+@@ -1,4 +1,4 @@
+-Copyright (c) 2007-2012 Sam Trenholme and others
++Copyright (c) 2007-2016 Sam Trenholme and others
+ 
+ TERMS
+ 

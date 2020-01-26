@@ -1,0 +1,19 @@
+--- deadwood-3.2.13/doc/CHANGELOG	2018-11-11 22:57:18.000000000 -0800
++++ deadwood-3.2.14/doc/CHANGELOG	2019-01-16 20:33:08.186504300 -0800
+@@ -1,3 +1,8 @@
++3.2.14 (2019-01-16):
++
++- Windows-only fix: Windows open() API is not 100% comatible with UNIX API;
++  It needs to have non-UNIX O_BINARY flag set to act the same way.
++
+ 3.2.13 (2018-11-11):
+ 
+ - SQA tests updated to run and pass again in 2018
+--- deadwood-3.2.13/Copying.txt	2017-06-10 13:09:59.000000000 -0700
++++ deadwood-3.2.14/Copying.txt	2019-01-16 20:33:24.766592061 -0800
+@@ -1,4 +1,4 @@
+-Copyright (c) 2007-2017 Sam Trenholme and others
++Copyright (c) 2007-2019 Sam Trenholme and others
+ 
+ TERMS
+ 

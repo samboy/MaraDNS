@@ -1,0 +1,111 @@
+--- deadwood-2.9.01/doc/Deadwood.ej	2010-07-18 12:11:58.000000000 -0700
++++ deadwood-2.9.02/doc/Deadwood.ej	2010-07-25 22:38:15.000000000 -0700
+@@ -255,7 +255,11 @@
+ 
+ <h2>root_servers</h2>
+ This is a list of root servers; its syntax is identical to 
+-upstream_servers (see below).
++upstream_servers (see below).  This is the type of DNS service
++ICANN, for example, runs.  These are servers used that do
++not give us complete answers to DNS questions, but merely tell
++us which DNS servers to connect to to get an answer closer to
++our desired answer.
+ 
+ <h2>tcp_listen</h2>
+ In order to enable DNS-over-TCP, this variable must be set and have
+@@ -335,6 +339,30 @@
+ when a host name deoesn't end in a dot, and by forcing a dot at the end
+ of a hostname, Deadwood doesn't have to guess whether the user wants
+ BIND's behavior or the "normal" behavior.
++<p>
++
++If neither root_servers nor upstream_servers are set, Deadwood sets
++root_servers to use the default ICANN root servers, as follows:
++<p>
++
++<pre>
++198.41.0.4      a.root-servers.net (VeriSign) 
++192.228.79.201  b.root-servers.net (ISI) 
++192.33.4.12     c.root-servers.net (Cogent) 
++128.8.10.90     d.root-servers.net (UMaryland) 
++192.203.230.10  e.root-servers.net (NASA Ames) 
++192.5.5.241     f.root-servers.net (ISC) 
++192.112.36.4    g.root-servers.net (DOD NIC) 
++128.63.2.53     h.root-servers.net (ArmyRU) 
++192.36.148.17   i.root-servers.net (NORDUnet) 
++192.58.128.30   j.root-servers.net (VeriSign) 
++193.0.14.129    k.root-servers.net (Reseaux) 
++199.7.83.42     l.root-servers.net (IANA)
++202.12.27.33    m.root-servers.net (WIDE) 
++</pre>
++
++This list is current as of May 3, 2010, and was last changed on
++November 1, 2007.
+ 
+ <h2>verbose_level</h2>
+ This determines how many messages are logged on standard output; larger
+--- deadwood-2.9.01/doc/FAQ.ej	2010-07-22 09:16:50.000000000 -0700
++++ deadwood-2.9.02/doc/FAQ.ej	2010-07-25 22:54:03.000000000 -0700
+@@ -29,4 +29,33 @@
+ In the fall of 2007, I finally started making the code; the code
+ became feature complete in the summer of 2010.
+ 
++<h2>How do I use Deadwood?</h2>
++
++Create a configuration file, <tt>/etc/dwood3rc</tt>, that looks like this:
++
++<pre>
++bind_address="127.0.0.1"
++recursive_acl="127.0.0.1/8"
++chroot_dir="/etc/deadwood"
++</pre>
++
++Now, create an empty directory owned by root called <tt>/etc/deadwood</tt>.  
++Once this is done, compile Deadwood (as per INSTALL.txt), and see if it runs.  
++The above configuration file will only allow connections using the loopback
++interface on the same machine to resolve domains with Deadwood.
++
++<h2>How do I convert a MaraDNS mararc file in to a Deadwood dwood3rc file?</h2>
++
++While some effort has been made to have Deadwood use the same syntax and 
++variables as MaraDNS, there are some differences to keep in mind:
++
++<ul>
++
++<li>Deadwood does not have a "ipv4_alias" parameter.  
++
++<li>Deadwood handles "verbose_level" differently; to get fully verbose
++    messages, "verbose_level" has to be 100 (as opposed to MaraDNS' 10)
++
++</ul> 
++
+ </BODY>
+--- deadwood-2.9.01/doc/CHANGELOG	2010-07-22 10:08:49.000000000 -0700
++++ deadwood-2.9.02/doc/CHANGELOG	2010-07-29 02:15:20.000000000 -0700
+@@ -1,3 +1,26 @@
++2.9.02 (20100729):
++
++* Script to apply patches against one version of Deadwood to make the
++	next Deadwood release made (based on similar MaraDNS script)
++
++* INSTALL.txt updated to not mention DwMain (Deadwood's older name)
++
++* DW_MAXIPS increased to 128
++
++* Spurious debug message removed
++
++* Documentation updates (root_servers more fully described in man page;
++	more questions and answers added to FAQ)
++
++* Bug reporting policy update (you better have a stack trace or be able 
++	to reproduce a crash; otherwise I can't use the bug report)
++
++* Issue getting "SERVER FAIL" when AAAA query points to non-existent
++	AAAA fixed.
++
++* Issue when we get a "a.kabah.foo CNAME b.kabah.foo ; c.kabah.foo A 10.2.3.4"
++	packet (where "b.kabah.foo" is a CNAME for "c.kabah.foo") fixed.
++
+ 2.9.01 (20100722): 
+ 
+ FAQ added.

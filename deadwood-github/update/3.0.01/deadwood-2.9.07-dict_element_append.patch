@@ -1,0 +1,116 @@
+--- deadwood-2.9.07/src/DwMararc.c	2010-09-08 21:54:52.000000000 -0700
++++ deadwood-3.0.01/src/DwMararc.c	2010-09-22 09:55:13.000000000 -0700
+@@ -243,7 +243,7 @@
+ 
+ /* Fatal error while parsing Mararc file */
+ void dwm_fatal(char *why) {
+-        dw_alog_number("Fatal error in dwood2rc file on line ",dwm_linenum,
++        dw_alog_number("Fatal error in dwood3rc file on line ",dwm_linenum,
+                 why);
+         exit(1);
+ }
+@@ -503,9 +503,13 @@
+  */
+ 
+ int dwm_set_todo(dw_str **actions) {
+-        if(actions[1] == 0 || actions[6] != 0) { /* Do nothing */
++        if(actions[1] == 0) { /* Do nothing */
+                 return 0;
+         }
++	if(actions[6] != 0 && actions[1] != 0 && actions[2] == 0) { 
++		/* Init dictionary variable */
++		return 6;
++	}
+         if(actions[7] != 0) { /* Read and parse other file */
+                 dwm_execfile(actions[1],actions[7]);
+                 return 0;
+@@ -547,17 +551,41 @@
+  *
+  * Global variables modified: key_d
+  */
+-void dwm_dict_add(int num, dw_str *key, dw_str *value) {
+-        if(num >= KEY_D_COUNT) { /* Sanity check */
+-                return;
++void dwm_dict_add(int num, dw_str *key, dw_str *value, int todo) {
++        dw_str *temp = 0;
++
++        if(num >= KEY_D_COUNT || num < 0) { /* Sanity check */
++		dwm_fatal("Unknown dictionary variable");
+         }
+ 
+-        /* Initialize element if needed*/
+-        if(key_d[num] == 0) {
++	if(todo == 6 && (key != 0 || value != 0)) {
++		dwm_fatal("Illegal dictionary initialization");
++	}
++
++        /* Initialize dictionary if needed*/
++        if(key_d[num] == 0 && todo == 6) { /* Initialized with {} */
+                 key_d[num] = dwd_init();
++		return;
++        } else if(key_d[num] == 0) {
++		dwm_fatal("Uninitialized dictionary variable");
++	}
++
++        if(todo != 4) { /* =, create new dictionary element */
++                key_d[num] = dwd_add(key_d[num],key,value);
++                return;
+         }
+ 
+-        key_d[num] = dwd_add(key_d[num],key,value);
++        /* OK, += so we append an already existing element */
++        temp = dwd_fetch(key_d[num],key);
++        if(temp == 0) {
++                dwm_fatal("Appending unset dictionary index");
++        }
++
++        dw_append(value,temp);
++
++        dwd_add(key_d[num],key,temp);
++
++        dw_destroy(temp);
+ 
+ }
+ 
+@@ -598,9 +626,12 @@
+         if(todo == 1 || todo == 2) { /* Normal variable */
+                 num = dwm_grep_params(actions[1],key_s_names,KEY_S_COUNT);
+                 list = key_s;
+-        } else if(todo == 3 || todo == 4) { /* Dictionary variable */
++        } else if(todo == 3 || todo == 4 || todo == 6) { /* Dict. variable */
+                 num = dwm_grep_params(actions[1],key_d_names,KEY_D_COUNT);
+-                dwm_dict_add(num, actions[2], actions[3]);
++                if(num < 0) { /* Make sure the parameter is a legal one */
++                        dwm_fatal("Unknown dwood3rc dictionary parameter");
++                }
++                dwm_dict_add(num, actions[2], actions[3], todo);
+                 return;
+         } else if(todo == 5) { /* Numeric variable */
+                 int32_t val;
+@@ -610,7 +641,7 @@
+                         dwm_fatal("Invalid numeric value");
+                 }
+                 if(num < 0) { /* Make sure the parameter is a legal one */
+-                        dwm_fatal("Unknown deadwoodrc parameter");
++                        dwm_fatal("Unknown dwood3rc numeric parameter");
+                 }
+                 key_n[num] = val;
+                 return;
+@@ -619,14 +650,14 @@
+         }
+ 
+         if(list == 0) { /* Sanity check */
+-                dwm_fatal("Unknown deadwoodrc action");
++                dwm_fatal("Unknown dwood3rc action");
+         }
+         if(num < 0) { /* Make sure the parameter is a legal one */
+-                dwm_fatal("Unknown deadwoodrc parameter");
++                dwm_fatal("Unknown dwood3rc string parameter");
+         }
+ 
+         if(list[num] == 0 && (todo & 1) == 0) {
+-                dwm_fatal("Appending to unset parameter");
++                dwm_fatal("Appending to unset string parameter");
+         } else if(list[num] != 0 && (todo & 1) == 0 /* append */) {
+                 dw_append(actions[3],list[num]);
+                 return;

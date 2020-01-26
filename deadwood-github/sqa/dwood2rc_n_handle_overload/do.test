@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# Make sure Deadwood works
+# NOTE: No startup of MaraDNS because 127.0.0.2 is *supposed* to be
+#       non-responsive
+
+for VALUE in 0 1 ; do
+
+cat > dwood2rc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+upstream_servers = {}
+upstream_servers["."]="127.0.0.2"
+recursive_acl="127.0.0.1/16"
+maxprocs=8
+timeout_seconds=20
+handle_overload=${VALUE}
+filter_rfc1918 = 0
+EOF
+
+../../src/Deadwood -f dwood2rc > /dev/null &
+sleep 1
+echo
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+askmara -t 1 Awww.example.com. > /dev/null &
+sleep 5
+askmara -t 3 Awww.example.com. 
+sleep 1
+killall Deadwood > /dev/null 2>&1
+sleep 1
+
+done
+
+rm dwood2rc

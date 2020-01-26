@@ -1,0 +1,115 @@
+--- deadwood-2.9.03/src/DwRecurse.c.orig	2010-08-04 09:40:06.000000000 -0700
++++ deadwood-2.9.03/src/DwRecurse.c	2010-08-04 09:46:03.000000000 -0700
+@@ -50,6 +50,7 @@
+ extern u_long dont_block;
+ #endif /* MINGW */
+ 
++#ifdef XTRA_STUFF
+ /* Show a single character on the standard output, escaping the
+  * character if it's not printable ASCII */
+ 
+@@ -157,6 +158,8 @@
+         }
+ }
+ 
++#endif /* XTRA_STUFF */
++
+ /* See if two strings pointing to dname objects are the
+  * same.  p1: pointer to the first string; p2: pointer to the second
+  * string; pmax: Maximum possible value for either string
+@@ -293,6 +296,7 @@
+         return out;
+ }
+ 
++#ifdef XTRA_STUFF
+ /* Show a dns_details string on the standard output; used for debugging
+  * purposes */
+ 
+@@ -319,6 +323,7 @@
+                                 view->ar_types[counter]);
+         }
+ }
++#endif /* XTRA_STUFF */
+ 
+ /* Take a DNS packet and pull out the queries.  We want to know the record
+  * type for each response in the packet, and whether a given response has the
+@@ -540,6 +545,7 @@
+         return 1;
+ }
+ 
++#ifdef XTRA_STUFF
+ /* This is scaffolding during the development cycle: Create a
+  * "\0" string (DNS root) to use as a bailiwick */
+ 
+@@ -570,6 +576,7 @@
+         *(out->str + 4) = 0;
+         return out;
+ }
++#endif /* XTRA_STUFF */
+ 
+ /* Given a string with a domain name we are inspecting, the offset in
+  * the string with the beginning of the domain name, the baliwick, and our
+--- deadwood-2.9.02/src/Makefile.xcygwin	2009-11-11 10:06:14.000000000 -0800
++++ deadwood-2.9.03/src/Makefile.xcygwin	2010-08-04 09:54:02.000000000 -0700
+@@ -19,7 +19,7 @@
+ 	DwRecurse.o \
+ 	DwDict.o
+ 
+-all:	Deadwood Test version.h
++all:	Deadwood version.h
+ 
+ # Since some systems may not have /dev/urandom (Windows, *cough* *cough*), we 
+ # keep a randomly generated prime around 
+--- deadwood-2.9.02/src/Makefile.centos5	2010-07-14 17:26:57.000000000 -0700
++++ deadwood-2.9.03/src/Makefile.centos5	2010-08-04 09:53:53.000000000 -0700
+@@ -20,7 +20,7 @@
+ 	DwRecurse.o \
+ 	DwDict.o
+ 
+-all:	Deadwood Test version.h
++all:	Deadwood version.h
+ 
+ # Since some systems may not have /dev/urandom (Windows, *cough* *cough*), we 
+ # keep a randomly generated prime around 
+--- deadwood-2.9.02/src/Makefile	2010-07-20 19:40:56.000000000 -0700
++++ deadwood-2.9.03/src/Makefile	2010-08-04 09:53:46.000000000 -0700
+@@ -20,7 +20,7 @@
+ 	DwRecurse.o \
+ 	DwDict.o
+ 
+-all:	Deadwood Test version.h
++all:	Deadwood version.h
+ 
+ # Since some systems may not have /dev/urandom (Windows, *cough* *cough*), we 
+ # keep a randomly generated prime around 
+--- deadwood-2.9.03/src/DwStr.c.orig	2010-08-04 10:02:48.000000000 -0700
++++ deadwood-2.9.03/src/DwStr.c	2010-08-04 10:03:14.000000000 -0700
+@@ -196,6 +196,7 @@
+         return 0;
+ }
+ 
++#ifdef XTRA_STUFF
+ /* For debug purposes: Output a dw_str object on the standard output. */
+ void dw_stdout(dw_str *object) {
+         uint8_t *look = 0, q = 0;
+@@ -222,6 +223,7 @@
+         printf("\n");
+         return;
+ }
++#endif /* XTRA_STUFF */
+ 
+ /* Take some of, or all, of a dw_str, and copy it in to a new dw_str object.
+  * return 0 (NULL) if there is an error copying the string.  The parameters
+--- deadwood-2.9.03/src/DwRecurse.h.orig	2010-08-04 21:21:39.000000000 -0700
++++ deadwood-2.9.03/src/DwRecurse.h	2010-08-04 21:22:46.000000000 -0700
+@@ -97,6 +97,10 @@
+ #define TYPE_FLOAT64 46 /* IEEE 754 double-percision float base-2 */
+ #define TYPE_FLOAT128 47 /* IEEE 754 quad-percision float base-2 */
+ 
++#ifdef XTRA_STUFF
++#define dw_p printf
++#endif /* XTRA_STUFF */
++
+ /* Called from cache_dns_reply this determines whether the answer is
+  * complete or not; if it's complete, we put it in the cache as-is; if
+  * not, we put in the cache an incomplete DNS reply (NS referral),

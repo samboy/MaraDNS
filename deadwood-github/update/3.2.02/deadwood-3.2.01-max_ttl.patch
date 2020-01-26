@@ -1,0 +1,193 @@
+--- deadwood-3.2.01/src/DwUdpSocket.c	2012-02-11 14:15:43.000000000 -0600
++++ deadwood-3.2.02/src/DwUdpSocket.c	2012-02-12 12:38:07.000000000 -0600
+@@ -56,6 +56,7 @@
+ extern int min_bind;
+ extern int num_ports;
+ extern int num_retries;
++extern int32_t max_ttl;
+ 
+ /* Other mararc parameters */
+ extern dwd_dict *blacklist_dict;
+@@ -813,6 +814,9 @@
+         } else {
+                 answer = dw_packet_to_cache(packet,count,is_nxdomain);
+                 decomp = dwc_decompress(question,answer);
++		if(decomp == 0) {
++                        goto catch_cache_dns_reply;
++                }
+                 if(dwc_has_bad_ip(decomp,blacklist_dict)) {
+                         ret = -2; /* Tell caller we need synth "not there" */
+                         goto catch_cache_dns_reply;
+@@ -836,6 +840,9 @@
+                 if(ttl < 30) {
+                         ttl = 30;
+                 }
++		if(ttl > max_ttl) {
++			ttl = max_ttl;
++		}
+ 
+                 /* Routines in DwRecurse.c process the packet and let us know
+                  * what kind of packet we got upstream (so we know how to
+--- deadwood-3.2.01/src/DwMararc.h	2012-02-11 14:15:43.000000000 -0600
++++ deadwood-3.2.02/src/DwMararc.h	2012-02-12 12:34:20.000000000 -0600
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2011 Sam Trenholme
++/* Copyright (c) 2007-2012 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -67,13 +67,14 @@
+ #define DWM_N_truncation_hack 26
+ #define DWM_N_reject_ptr 27
+ #define DWM_N_min_ttl_incomplete_cname 28
++#define DWM_N_max_ttl 29
+ 
+ /* Number of string parameters in the mararc file */
+ #define KEY_S_COUNT 7
+ /* Number of dictionary parameters in the mararc file */
+ #define KEY_D_COUNT 2
+ /* Number of numeric parameters in the mararc file */
+-#define KEY_N_COUNT 29
++#define KEY_N_COUNT 30
+ 
+ #ifndef MINGW
+ /* Location of files we read when we run execfile("foo") */
+@@ -147,6 +148,7 @@
+                          synthetic "not there" reply */
+         "min_ttl_incomplete_cname", /* How long to store incomplete CNAME
+                                      * records in the cache, in seconds */
++	"max_ttl", /* Maximum allowed TTL */
+         0 };
+ 
+ #endif /* MARARC_C */
+--- deadwood-3.2.01/src/DwRecurse.c	2012-02-11 14:15:43.000000000 -0600
++++ deadwood-3.2.02/src/DwRecurse.c	2012-02-12 12:36:27.000000000 -0600
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2009-2011 Sam Trenholme
++/* Copyright (c) 2009-2012 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -49,6 +49,8 @@
+ #ifdef MINGW
+ extern u_long dont_block;
+ #endif /* MINGW */
++/* Numeric mararc parameters */
++extern int32_t max_ttl;
+ 
+ #ifdef OTHER_STUFF
+ /* Show a single character on the standard output, escaping the
+@@ -1658,6 +1660,9 @@
+                           * an hour for security reasons */
+                 ttl = 3600;
+         }
++	if(ttl > max_ttl) {
++		ttl = max_ttl;
++	}
+         dw_put_u16(place, 65395, -1); /* Add "NS refer" private RR type */
+         dwh_add(cache,place,action,ttl,1);
+ 
+@@ -2018,6 +2023,9 @@
+         if(ttl < 60) {
+                 ttl = 60;
+         }
++	if(ttl > max_ttl) {
++		ttl = max_ttl;
++	}
+         /*ttl = 30; // DEBUG*/
+         uncomp = dwx_create_cname_reply(query, action, answer, ttl);
+         comp = dwc_compress(query, uncomp);
+@@ -2088,6 +2096,12 @@
+         if(ttl < key_n[DWM_N_min_ttl_incomplete_cname]) {
+                 ttl = key_n[DWM_N_min_ttl_incomplete_cname];
+         }
++	if(ttl < 30) {
++		ttl = 30;
++	}
++	if(ttl > max_ttl) {
++		ttl = max_ttl;
++	}
+         cname_cache=dw_copy(query);
+         if(cname_cache == 0 || cname_cache->len < 3 ||
+                         dw_put_u16(cname_cache, 65394, -3) == -1) {
+@@ -2164,6 +2178,13 @@
+                 goto catch_dwx_cache_reply;
+         }
+ 
++	if(ttl < 30) {
++		ttl = 30;
++	}
++	if(ttl > max_ttl) {
++		ttl = max_ttl;
++	}
++
+         bailiwick = dw_get_dname(rem[connection_number].ns->str, 0, 260);
+         if(bailiwick == 0 || bailiwick->len > 256) {
+                 goto catch_dwx_cache_reply;
+--- deadwood-3.2.01/src/DwMararc.c	2012-02-11 14:15:43.000000000 -0600
++++ deadwood-3.2.02/src/DwMararc.c	2012-02-12 12:34:20.000000000 -0600
+@@ -400,6 +400,7 @@
+         key_n[DWM_N_truncation_hack] = 1;
+         key_n[DWM_N_reject_ptr] = 0;
+         key_n[DWM_N_min_ttl_incomplete_cname] = 3600;
++        key_n[DWM_N_max_ttl] = 86400;
+ }
+ 
+ /* Look for a Mararc parameter; -1 if not found/error; 0-n if found
+--- deadwood-3.2.01/src/DwSocket.c	2012-02-11 14:15:43.000000000 -0600
++++ deadwood-3.2.02/src/DwSocket.c	2012-02-12 12:34:20.000000000 -0600
+@@ -71,6 +71,7 @@
+ int32_t num_ports = 4096;
+ int32_t maradns_uid = 99;
+ int32_t maradns_gid = 99;
++int32_t max_ttl = 86400;
+ int num_retries = 5;
+ dwd_dict *blacklist_dict = 0;
+ 
+@@ -500,6 +501,10 @@
+         maradns_gid = get_key_n(DWM_N_maradns_gid,10,65535,99);
+         resurrections = get_key_n(DWM_N_resurrections,0,1,1);
+         num_retries = get_key_n(DWM_N_num_retries,0,32,5);
++	max_ttl = get_key_n(DWM_N_max_ttl,
++		300 /* 5 minutes */,
++		7776000 /* 90 days */,
++		86400 /* One day */);
+ 
+         if((num_ports & (num_ports - 1)) != 0) {
+                 dw_fatal("num_ports must be a power of 2");
+--- deadwood-3.2.01/doc/Deadwood.ej	2012-02-11 14:15:43.000000000 -0600
++++ deadwood-3.2.02/doc/Deadwood.ej	2012-02-12 12:34:20.000000000 -0600
+@@ -232,6 +232,21 @@
+ 
+ The default value is 8.
+ 
++<h2>max_ttl</h2>
++The maximum amount of time we will keep an entry in the cache, in seconds.
++
++<p>
++
++This is the longest we will keep an entry cached.  The default value for
++this parameter is 86400 (one day); the minimum value is 300 (5 minutes) and
++the maximum value this can have is 7776000 (90 days).
++
++<p>
++
++The reason why this parameter is here is to protect Deadwood from attacks
++which exploit there being stale data in the cache, such as the 
++"Ghost Domain Names" attack.
++
+ <h2>maximum_cache_elements</h2>  
+ The maximum number of elements our cache 
+ is allowed to have.  This is a number between 32 and 16,777,216; 
+--- deadwood-3.2.01/doc/dwood3rc-all	2012-02-11 14:15:43.000000000 -0600
++++ deadwood-3.2.02/doc/dwood3rc-all	2012-02-12 12:34:20.000000000 -0600
+@@ -62,6 +62,9 @@
+ # Maximum number of TCP connections.  tcp_listen also must be set.
+ max_tcp_procs = 8
+ 
++# Maximum time an entry will stay in the cache, in seconds (86400 = one day)
++max_ttl = 86400
++
+ # The number of times we retry to send a query upstream before giving up.
+ num_retries = 2
+ 

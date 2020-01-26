@@ -1,0 +1,25 @@
+commit cc13665076d2f7ffdb411b5695ee8df0738cb815
+Author: Sam Trenholme <strenholme.usenet@gmail.com>
+Date:   Sun Feb 15 16:00:53 2015 -0800
+
+    Deadwood handles RFC violating packets where a CNAME shares a name with
+    other data differently then other DNS servers
+
+diff --git a/deadwood-github/doc/Deadwood.ej b/deadwood-github/doc/Deadwood.ej
+index e58416a..552f48e 100644
+--- a/deadwood-github/doc/Deadwood.ej
++++ b/deadwood-github/doc/Deadwood.ej
+@@ -802,6 +802,13 @@ in DNS names.  Even if they were, Deadwood does not allow ASCII
+ control characters (bytes with a value less then 32) in DNS names.
+ Other characters (UTF-8, etc.) are allowed.
+ 
++<p>
++
++Combining a CNAME record with other records is prohibited in
++RFC1034 section 3.6.2 and RFC1912 section 2.4; it makes an
++answer ambiguous.  Deadwood handles this ambiguity differently
++than some other DNS servers.
++
+ <h1>LEGAL DISCLAIMER</h1>
+ THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
+ OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 

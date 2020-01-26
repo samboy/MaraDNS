@@ -1,0 +1,22 @@
+--- deadwood-3.0.02/doc/CHANGELOG	2011-01-29 14:55:07.000000000 -0600
++++ deadwood-3.0.03/doc/CHANGELOG	2011-07-08 17:58:20.422788695 -0500
+@@ -1,3 +1,19 @@
++3.0.03 (20110???):
++
++* Bugfix: Domains where one of the nameservers give a "QUERY REFUSED"
++	correctly handled unless we are asking for an AAAA IPv6 IP
++	(since some broken DNS servers respond to AAAA requests with
++	 "QUERY REFUSED")
++
++* Bugfix: RA is no longer set when sending recursive queries 
++
++* Bugfix: Synthetic "not there" replies are now correctly formed
++  DNS packets.
++
++* SQA tests updated for new example.com data and for Scientific Linux 6
++
++* Example dwood3rc file updated to show how to blacklist domains
++
+ 3.0.02 (20110128):
+ 
+ * Bugfix: "www.urbandictionary.com" resolves again

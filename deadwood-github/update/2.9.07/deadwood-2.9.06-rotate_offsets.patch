@@ -1,0 +1,96 @@
+--- deadwood-2.9.06/src/DwStr.c	2010-09-03 07:03:38.000000000 -0700
++++ deadwood-2.9.07/src/DwStr.c	2010-09-03 19:50:40.000000000 -0700
+@@ -1251,7 +1251,7 @@
+ int dw_rotate(dw_str *in, int32_t start, int32_t pivot, int32_t end) {
+         dw_str *part1 = 0, *part2 = 0, *part3 = 0;
+ 
+-        if(start >= pivot || pivot >= end || end >= in->len) {
++        if(in == 0 || start >= pivot || pivot >= end || end >= in->len) {
+                 return -1;
+         }
+ 
+--- deadwood-2.9.06/src/DwDnsStr.c	2010-09-03 07:03:38.000000000 -0700
++++ deadwood-2.9.07/src/DwDnsStr.c	2010-09-03 21:54:46.000000000 -0700
+@@ -273,6 +273,57 @@
+         return rr;
+ }
+ 
++/* When rotating the resource records, it's also important to update
++ * the offsets to the records.  While this doesn't matter when all of
++ * the records are A or AAAA records (the only RR type we look up when
++ * surfing the web), it does matter for variable-length records like
++ * MX records.
++ */
++
++int dwc_rotate_offsets(dw_str *in, int end, int first_rr, int last_rr) {
++	int_fast32_t start = 0, start_b = 0, last_rr_len = 0, 
++	             this_rr = 0, next_rr = 0, next_rr_b = 0, start_len = 0;
++	
++	if(in == 0 || first_rr >= last_rr || first_rr < 0) {
++		return -1;
++	}
++
++	if(first_rr == last_rr - 1) { /* One RR so nothing to do */
++		return 1;
++	}
++
++	last_rr_len = end + (last_rr * 4);
++
++	if(last_rr_len > in->len - 7) { /* 7: type + an/ns/arcount */
++		return -1;
++	} else if(last_rr_len == in->len - 7) { /* End of RR offsets */
++		last_rr_len = end;
++	} else { /* This is a case I can't test; would be commented out code */
++		return -1; /* last_rr_len = dw_fetch_u16(in, last_rr_len); */
++		/* When this fails, everything's OK; we just don't rotate */
++	}
++
++	start = dw_fetch_u16(in, end + (first_rr * 4));
++	start_b = dw_fetch_u16(in, end + 2 + (first_rr * 4));
++
++	for(this_rr = first_rr; this_rr < last_rr - 1; this_rr++) {
++		next_rr = dw_fetch_u16(in, end + ((this_rr + 1) * 4));
++		next_rr_b = dw_fetch_u16(in, end + 2 + ((this_rr + 1) * 4));
++		if(this_rr == first_rr) {
++			start_len = next_rr - start;
++		}
++		dw_put_u16(in, next_rr - start_len, end + (this_rr * 4));
++		dw_put_u16(in, next_rr_b - start_len, end + 2 + (this_rr * 4));
++	}
++	
++	dw_put_u16(in, last_rr_len - start_len, end + (this_rr * 4));
++	dw_put_u16(in, last_rr_len - start_len + (start_b - start),
++		   end + 2 + (this_rr * 4));
++
++	return 1;
++	
++}
++
+ /* This function can do one of two things:
+  *
+  * 1) Rotate DNS records in a string with a DNS answer packet
+@@ -335,6 +386,11 @@
+                 if(dw_rotate(in,start,pivot,end) == -1) {
+                         goto catch_dwc_rr_rotate;
+                 }
++		if(dwc_rotate_offsets(in, in->len - 7 - ((look->ancount +
++			look->nscount + look->arcount) * 4), rr, 
++			look->ancount) == -1) {
++			goto catch_dwc_rr_rotate;
++		}
+         } else { /* This way, we can use this function to extract an answer
+                   * to add to the end of a CNAME chain */
+                 *out_start = start;
+--- deadwood-2.9.06/src/DwUdpSocket.c	2010-09-03 07:03:38.000000000 -0700
++++ deadwood-2.9.07/src/DwUdpSocket.c	2010-09-03 21:58:29.000000000 -0700
+@@ -518,9 +518,7 @@
+ 
+         dw_log_dwstr("Sending reply for query ",query,100);
+         type = dw_fetch_u16(query,-1);
+-        if(type != 255) { /* RR_ANY; dwc_process munges ANY replies */
+-                dwc_process(cache,query,3); /* RR rotation, TTL aging, etc. */
+-        }
++        dwc_process(cache,query,3); /* RR rotation, TTL aging, etc. */
+         value = dwh_get(cache,query,resurrect,1);
+         cache_type = dw_fetch_u8(value,-1);
+         if(cache_type != TYPE_TRUNCATED &&

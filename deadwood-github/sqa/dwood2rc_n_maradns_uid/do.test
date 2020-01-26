@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# Lets make sure Deadwood can write the cache to a file
+
+killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+sleep 2
+
+cat > mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.2"
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+EOF
+
+cat > db.example.com << EOF
+*.% A 10.1.2.3
+EOF
+
+# OK, test the server
+../../../server/maradns -f mararc > /dev/null 2>&1 &
+#../../../server/maradns -f mararc &
+sleep 1
+
+# Now, make sure Deadwood works
+
+cat > dwood2rc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.0.0.1"
+upstream_servers = {}
+upstream_servers["."]="127.0.0.2"
+recursive_acl="127.0.0.1/16"
+maradns_uid=3011
+filter_rfc1918 = 0
+EOF
+
+../../src/Deadwood -f dwood2rc > /dev/null &
+sleep 1
+ps -eo '%c %U' | grep Deadwood
+sleep 1
+killall maradns
+killall Deadwood
+rm mararc
+rm db.example.com
+rm dwood2rc

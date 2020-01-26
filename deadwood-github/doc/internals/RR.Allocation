@@ -1,0 +1,12 @@
+As per the Deadwood man page, record types beterrn 65392 (0xff70) and 
+65407 (0xff7f) are reserved for Deadwood internal use.
+
+65392 was used to indicate an upstream dns server entry in the cache (but
+	not any longer; we can use this again if we ever need to)
+
+65393 indicates an error when we ask for a rr type
+
+65394 (0xff72) is used for CNAME referrals
+
+65395 (0xff73) is used for NS referrals
+

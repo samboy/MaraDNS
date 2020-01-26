@@ -1,0 +1,46 @@
+--- deadwood-3.2.04/doc/FAQ.ej.orig	2013-10-16 00:31:13.806097513 -0700
++++ deadwood-3.2.04/doc/FAQ.ej	2013-10-16 00:41:44.011096881 -0700
+@@ -23,6 +23,8 @@
+ 		 parameter"</A><p>
+ 11. <A href="#11">Internal IPs (198.168.x.x, 10.x.x.x, 172.16.x.x, 
+ 	127.x.x.x) do not resolve in Deadwood</A><p>
++12. <A href="#12">I get the error message "Uninitialized dictionary 
++	variable"</A><p>
+ </BLOCKQUOTE>
+ 
+ <A name="01"> </A>
+@@ -244,5 +246,34 @@
+ <A href="http://serverfault.com/questions/513608/maradns-does-not-respond-to-a-record-queries-of-locally-connected-rfc1918-addres/516464#516464">had
+ this problem</A>.
+ 
++<A name="12"> </A>
++<h2>I get the error message "Uninitialized dictionary variable"</h2>
++
++When setting either upstream_servers or root_servers, be sure to
++precede it with a line like this:
++
++<pre>
++upstream_servers = {}
++</pre>
++
++or
++
++<pre>
++root_servers = {}
++</pre>
++
++For example, if a line like this causes the uninitialized dictionary variable
++error:
++
++<pre>
++upstream_servers["."]="8.8.8.8, 8.8.4.4"
++</pre>
++
++Add a line so it looks like this:
++
++<pre>
++upstream_servers = {}
++upstream_servers["."]="8.8.8.8, 8.8.4.4"
++</pre>
+ 
+ </BODY>

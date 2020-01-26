@@ -1,0 +1,12 @@
+--- deadwood-3.4.01/doc/CHANGELOG	2019-10-18 18:09:27.000000000 -0700
++++ deadwood-3.4.02/doc/CHANGELOG	2020-01-14 06:44:52.443938900 -0800
+@@ -1,3 +1,9 @@
++3.4.02 (2020-01-14; stable release)
++
++- Issue building Deadwood from the GitHub tree in CentOS8 fixed
++- Update Windows documents in Deadwood source code tarball
++- All SQA regressions pass
++
+ 3.4.01 (2019-10-18; stable release)
+ 
+ - No changes to code made from 3.3.03; all SQA regressions pass.

@@ -1,0 +1,26 @@
+--- deadwood-3.2.01/doc/Windows/Update-guide.txt	2011-11-01 10:25:23.000000000 -0600
++++ deadwood-3.2.02/doc/Windows/Update-guide.txt	2012-02-28 23:03:39.000000000 -0600
+@@ -1,3 +1,23 @@
++Deadwood 3.2.02 is a stable release.  This release has a new parameter:
++max_ttl, which limits how long an entry can stay in the cache; the default
++TTL cap is one day (86400 seconds).  
++
++---
++
++Deadwood 3.2.01 is a stable release.  The default timeout has been decreased
++from 2 to 1 second.  This will make resolution faster for the majority of
++users; for users on slow connections with problems resolving domains,
++add the following line to a dwood3rc file:
++
++timeout_seconds = 3
++
++num_retries now has a default value of 5 instead of 2.  To restore the
++old value, add this to the dwood3rc file:
++
++num_retries = 2
++
++---
++
+ Deadwood 3.0.04, in addition to fixing a number of bugs, has added some
+ features.  In particular:
+ 

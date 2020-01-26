@@ -1,0 +1,110 @@
+--- deadwood-3.0.05/src/DwSocket.h	2011-11-10 11:46:56.000000000 -0600
++++ deadwood-3.1.01/src/DwSocket.h	2011-11-19 17:09:42.375915964 -0600
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2010 Sam Trenholme
++/* Copyright (c) 2007-2011 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -233,42 +233,6 @@
+ /* Function for removing inflight data about a connection */
+ void zap_inflight(dw_str *query);
+ 
+-/* Make this also look like a function; this resets a given remote
+- * UDP connection */
+-
+-#define reset_rem(a) if(rem[a].socket != INVALID_SOCKET) { \
+-                        closesocket(rem[a].socket); \
+-                        rem[a].socket = INVALID_SOCKET; } \
+-                     rem[a].die = 0; \
+-                     rem[a].remote_id = 0; \
+-                     rem[a].retries = num_retries; \
+-                     if(rem[a].ns != 0) { \
+-                        dw_destroy(rem[a].ns); \
+-                        rem[a].ns = 0; } \
+-                     rem[a].is_upstream = 0; \
+-                     if(rem[a].query != 0) { \
+-                        zap_inflight(rem[a].query); \
+-                        dw_destroy(rem[a].query); \
+-                        rem[a].query = 0; } \
+-                     rem[a].recurse_depth = 0; \
+-                     rem[a].current_ns = -1; \
+-                     rem[a].child_id = -1; \
+-                     if(rem[a].glueless != 0) { \
+-                        dw_destroy(rem[a].glueless); \
+-                        rem[a].glueless = 0; } \
+-                     if(rem[a].local != 0) { \
+-                        int qq; \
+-                        for(qq = 0; qq < rem[a].num_locals; qq++) { \
+-                                if(rem[a].local[qq] != 0) { \
+-                                        dw_destroy(rem[a].local[qq]-> \
+-                                                orig_query); \
+-                                        free(rem[a].local[qq]); \
+-                                        rem[a].local[qq] = 0; } \
+-                                } \
+-                        free(rem[a].local); } \
+-                     rem[a].local = 0; \
+-                     rem[a].num_locals = 0;
+-
+ #define tcp_remote2local(a,b,c) tcp_local2remote(a,b,c)
+ 
+ /* Function parameters */
+@@ -278,6 +242,9 @@
+ 
+ /* In DwSocket.c */
+ 
++/* Reset the values for a remote connection */
++void reset_rem(int_fast32_t a);
++
+ /* Given a "client" that recvfrom/accept gave us (which has the IP and port
+  * number hidden in it), extract the IP and port from that "client", put the
+  * IP information in from_ip, and return a 16-bit number that has the port
+--- deadwood-3.1.01/src/DwSocket.c.orig	2011-11-19 16:24:28.886280114 -0600
++++ deadwood-3.1.01/src/DwSocket.c	2011-11-19 17:09:53.302958916 -0600
+@@ -95,6 +95,46 @@
+ }
+ #endif /* NO_INET_PTON */
+ 
++/* Reset the values for a remote connection */
++void reset_rem(int_fast32_t a) {
++	if(rem[a].socket != INVALID_SOCKET) { 
++		closesocket(rem[a].socket); 
++		rem[a].socket = INVALID_SOCKET; 
++	} 
++	rem[a].die = 0; 
++	rem[a].remote_id = 0; 
++	rem[a].retries = num_retries; 
++	if(rem[a].ns != 0) { 
++		dw_destroy(rem[a].ns); 
++		rem[a].ns = 0; 
++	} 
++	rem[a].is_upstream = 0; 
++	if(rem[a].query != 0) { 
++		zap_inflight(rem[a].query); 
++		dw_destroy(rem[a].query); 
++		rem[a].query = 0; 
++	} 
++	rem[a].recurse_depth = 0; 
++	rem[a].current_ns = -1; 
++	rem[a].child_id = -1; 
++	if(rem[a].glueless != 0) { 
++		dw_destroy(rem[a].glueless); 
++		rem[a].glueless = 0; 
++	} 
++	if(rem[a].local != 0) { 
++		int qq; 
++		for(qq = 0; qq < rem[a].num_locals; qq++) { 
++			if(rem[a].local[qq] != 0) { 
++				dw_destroy(rem[a].local[qq]->orig_query); 
++				free(rem[a].local[qq]); 
++				rem[a].local[qq] = 0; } 
++		} 
++		free(rem[a].local); 
++	} 
++	rem[a].local = 0; 
++	rem[a].num_locals = 0;
++}
++
+ /* Configure the dns_do local bind structure.  Given an IP we
+  * want to bind to, fill up the dns_udp structure with that IP
+  * and set things up to bind to the dns_port port (normally 53, DNS).

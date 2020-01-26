@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Since there was a bug in another rg32 implementation which only showed 
+# up with "clang -O2" and "clang -O3" (it passed with all gcc and tcc 
+# options), we now have a test to make sure rg32 works with all compilers 
+# and all flags
+
+gcc -O3 -o rg32hash rg32hash.c 2> /dev/null
+
+for cc in gcc clang ; do
+    for opt in '-g' '' '-Os' '-O1' '-O2' '-O3' ; do
+	export COMPILER="$cc"
+	export FLAGS="$opt"
+       	./one.test > test.output
+	echo $( rg32hash test.output ) $COMPILER $FLAGS 
+    done
+done
+
+rm rg32hash

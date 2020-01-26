@@ -1,0 +1,394 @@
+--- deadwood-3.1.01/src/DwRecurse.c.orig	2011-11-27 11:52:27.535830692 -0600
++++ deadwood-3.1.01/src/DwRecurse.c	2011-11-27 11:54:39.375803735 -0600
+@@ -1530,7 +1530,6 @@
+         dw_str *hack, *out;
+         int l = 20;
+ 
+-        /*dw_px("Empty reply, making synth nothere\n");*//*DEBUG*/
+         hack = malloc(sizeof(dw_str));
+         if(hack == 0) {
+                 return 0;
+@@ -1996,6 +1995,7 @@
+                 dw_str *action, dw_str *answer, int depth) {
+         dw_str *uncomp = 0, *reply = 0, *comp = 0;
+         int ret = -1, c = 0; /* c is for counter */
++	int_fast32_t ttl = 3600;
+ 
+         if(depth > 32) {
+                  goto catch_dwx_make_cname_reply;
+@@ -2014,9 +2014,17 @@
+                 goto catch_dwx_make_cname_reply;
+         }
+ 
+-        /* Put answer in cache as full answer; ttl is hard-wired to be
+-         * one hour (3600 seconds) */
+-        dwh_add(cache, query, uncomp, 3600, 1);
++        /* Put answer in cache as full answer */
++	ttl = dw_get_a_dnsttl(answer,0,31536000,1);
++	if(ttl < 0) {
++		dw_log_dwstr("Invalid TTL in answer ",answer,100);	
++		ttl = 3600;
++	}
++	if(ttl < 60) {
++		ttl = 60;
++	}
++	/*ttl = 30; // DEBUG*/
++        dwh_add(cache, query, uncomp, ttl, 1);
+ 
+         /* Send answer from cache */
+         for(c = 0; c < rem[conn_num].num_locals; c++) {
+@@ -2032,6 +2040,10 @@
+                         /* To do: Glueless NS */
+                         continue;
+                 }
++                if(rem[conn_num].local[c]->glueless_type == 3) {
++			dwx_cached_cname_done(query,conn_num,c,depth);
++			continue;
++                }
+                 reply = make_dns_packet(query, comp,
+                                 rem[conn_num].local[c]->local_id);
+                 if(reply == 0) {
+@@ -2068,8 +2080,8 @@
+         int ret = -1;
+ 
+         /* Cache this CNAME referral */
+-        if(ttl < 3600) {
+-                ttl = 3600;
++        if(ttl < key_n[DWM_N_min_ttl_incomplete_cname]) {
++                ttl = key_n[DWM_N_min_ttl_incomplete_cname];
+         }
+         cname_cache=dw_copy(query);
+         if(cname_cache == 0 || cname_cache->len < 3 ||
+@@ -2692,8 +2704,10 @@
+         rem[conn_number].local[local_number]->from_socket = INVALID_SOCKET;
+         rem[conn_number].local[local_number]->port = 0;
+         rem[conn_number].local[local_number]->tcp_num = -1;
++	rem[conn_number].local[local_number]->action = 0;
+ }
+ 
++#ifdef XTRA_STUFF
+ /* Given an "address" with a NS referral (addr), a connection which needs to
+  * process the glueless referral (conn_number), and an already existing
+  * connection which we will attach to (already), connect our query to the
+@@ -2743,6 +2757,7 @@
+         return 1; /* Success */
+ 
+ }
++#endif /* XTRA_STUFF */
+ 
+ /* Create a new outgoing query to process a glueless request (NS or CNAME);
+  * similiar to forward_local_udp_packet() and make_new_udp_connect()
+@@ -2990,3 +3005,140 @@
+         }
+ }
+ 
++/* See if a CNAME referral is already cached; if so, chase the CNAME
++ * Input:
++ * orig_query: case-preserved version of query from client
++ * query: lower-case version of query from client
++ * client: Structure for sending info to client
++ * from_ip: IP of client
++ * local_id: Query ID of DNS query from client
++ * sock: Socket ID of local client
++ */
++int dwx_cname_in_cache(dw_str *orig_query, dw_str *query,
++        	sockaddr_all_T *client, ip_addr_T *from_ip, int32_t local_id,
++		SOCKET sock, uint16_t from_port) {
++	dw_str *cname_cache = 0, *action = 0, *real_query = 0, *packet = 0;
++	int ret = 0;
++	int_fast32_t b = 0, offset = 0, num_alloc = 1, qtype = 0;
++
++	num_alloc = key_n[DWM_N_max_inflights];
++	if(num_alloc < 1) {
++		num_alloc = 1;
++	}
++	if(num_alloc > 32000) {
++		num_alloc = 32000;
++	}
++
++	if(orig_query == 0 || query == 0 || client == 0 || from_ip == 0) {
++		return 0; /* Failed */
++	}
++	/* Look for CNAME of query */		
++	cname_cache=dw_copy(query);
++	if(cname_cache == 0 || cname_cache->len < 3 ||
++			dw_put_u16(cname_cache, 65394, -3) == -1) {
++		goto catch_dwx_cname_in_cache;
++	}
++	action = dwh_get(cache, cname_cache, 0, 1);
++	if(action == 0) {
++		goto catch_dwx_cname_in_cache;
++	}
++	dw_log_dwstr("Cached CNAME refer found for ",query,100);
++
++	/* Create new remote for solving incomplete CNAME */
++	offset = dw_fetch_u16(action, -2);
++	offset += 2; /* Go past two-byte length */
++	real_query = dw_get_dname(action->str, offset, 260);
++	dwc_lower_case(real_query);
++	if(real_query == 0) {
++		goto catch_dwx_cname_in_cache;
++	}
++	qtype = dw_fetch_u16(query,-1);
++	if(qtype == -1 || dw_put_u16(real_query, qtype, -1) == -1) {
++		goto catch_dwx_cname_in_cache;
++	}
++	
++	b = find_free_remote();
++	if(b == -1) { /* We're overloaded */
++		goto catch_dwx_cname_in_cache;
++	}
++	reset_rem(b);
++	rem[b].query = dw_copy(real_query);
++	rem[b].remote_id = dwr_rng(rng_seed);
++	rem[b].local = malloc(num_alloc * sizeof(local_T *));
++	if(rem[b].local == 0) {
++		goto catch_dwx_cname_in_cache;
++	}
++	rem[b].local[0] = malloc(sizeof(local_T));
++	rem[b].num_locals = 0;
++	if(rem[b].local[0] == 0) {
++		reset_rem(b);
++		goto catch_dwx_cname_in_cache;
++	}
++	rem[b].num_locals = 1;
++	rem[b].die = get_time() + ((int64_t)timeout_seconds << 12);
++	rem[b].local[0]->orig_query = dw_copy(orig_query);
++	rem[b].local[0]->action = dw_copy(action);
++	rem[b].local[0]->from_socket = sock;
++	rem[b].local[0]->tcp_num = INVALID_SOCKET;
++	rem[b].local[0]->port = from_port;
++	rem[b].local[0]->local_id = local_id;
++	rem[b].local[0]->glueless_type = 3;
++	rem[b].local[0]->glueless_conn = -1;
++	rem[b].local[0]->ip = *from_ip;
++
++	/* Make packet to send upstream */
++	packet = make_dns_header(rem[b].remote_id,0x0000,0,0,0);
++	if(packet == 0 || dw_append(rem[b].query,packet) == -1 ||
++                        dw_put_u16(packet,1,-1) == -1 /* QCLASS: 1 */) {
++		reset_rem(b);
++		goto catch_dwx_cname_in_cache;
++	}
++	/* Send packet upstream */
++	make_remote_connection(b,(unsigned char *)packet->str,
++                        packet->len,rem[b].query,INVALID_SOCKET);
++
++	ret = 1;
++
++catch_dwx_cname_in_cache:
++	if(cname_cache != 0) {
++		dw_destroy(cname_cache);
++	}
++	if(action != 0) {
++		dw_destroy(action);
++	}
++	if(real_query != 0) {
++		dw_destroy(real_query);
++	}
++	if(packet != 0) {
++		dw_destroy(packet);
++	}
++	return ret;
++}
++
++void dwx_cached_cname_done(dw_str *query, int b, int l, int depth) {
++
++	dw_str *answer = 0, *oquery = 0, *action = 0;
++
++	if(rem[b].local == 0 || rem[b].local[l] == 0 || depth > 32) {
++		return;
++	}
++
++	oquery = dw_copy(rem[b].local[l]->orig_query);
++	dwc_lower_case(oquery);
++	action = dw_copy(rem[b].local[l]->action);
++	answer = dwh_get(cache, query, 0, 1);
++
++	rem[b].local[l]->glueless_type = 0; /* For dwx_make_cname_reply */
++
++	if(answer == 0 || oquery == 0 || action == 0) {
++		goto catch_dwx_cached_cname_done;
++	}
++
++	dwx_make_cname_reply(b,oquery,action,answer,depth + 1);
++
++catch_dwx_cached_cname_done:
++	dw_destroy(answer);
++	dw_destroy(oquery);
++	dw_destroy(action);
++}
++
+--- deadwood-3.1.01/src/DwRecurse.h.orig	2011-11-27 11:52:27.645826668 -0600
++++ deadwood-3.1.01/src/DwRecurse.h	2011-11-27 11:52:27.713807449 -0600
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2009-2010 Sam Trenholme
++/* Copyright (c) 2009-2011 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -167,6 +167,14 @@
+ /* Handle having an incomplete CNAME query finished */
+ void dwx_incomplete_cname_done(dw_str *query, int child, int l);
+ 
++/* Handle cache incomplete CNAME being solved */
++void dwx_cached_cname_done(dw_str *query, int b, int l, int depth);
++
++/* See if a CNAME referral is already cached; if so, chase the CNAME */
++int dwx_cname_in_cache(dw_str *orig_query, dw_str *query, 
++	sockaddr_all_T *client, ip_addr_T *from_ip, int32_t local_id,
++	SOCKET sock, uint16_t from_port);
++
+ /* This is used for completing incomplete CNAME referrals.
+  * What this does is create a reply to give to the user, then
+  * send that reply out.  This is a private method; it's only here
+--- deadwood-3.1.01/src/DwUdpSocket.c.orig	2011-11-27 11:52:27.571807038 -0600
++++ deadwood-3.1.01/src/DwUdpSocket.c	2011-11-27 11:52:27.718809442 -0600
+@@ -364,6 +364,7 @@
+      int len, int tcp_num, dw_str *orig_query) {
+         int32_t b = 0;
+         int num_alloc = 0;
++	ip_addr_T null_addr = {0,{0,0},0,0};
+ 
+         num_alloc = key_n[DWM_N_max_inflights];
+         if(num_alloc < 1) {
+@@ -394,17 +395,20 @@
+         }
+ 
+         rem[b].local[rem[b].num_locals - 1] = malloc(sizeof(local_T));
+-        rem[b].local[rem[b].num_locals - 1]->orig_query = 0;
+         if(rem[b].socket == INVALID_SOCKET ||
+            rem[b].local[rem[b].num_locals - 1] == 0) {
+                 reset_rem(b);
+                 return -1;
+         }
++        rem[b].local[rem[b].num_locals - 1]->orig_query = 0;
++        rem[b].local[rem[b].num_locals - 1]->action = 0;
+         rem[b].local[rem[b].num_locals - 1]->from_socket = sock;
+         rem[b].local[rem[b].num_locals - 1]->tcp_num = tcp_num;
+         if(from_ip != 0) {
+                 rem[b].local[rem[b].num_locals - 1]->ip = *from_ip;
+-        }
++        } else {
++		rem[b].local[rem[b].num_locals - 1]->ip = null_addr;
++	}
+         rem[b].local[rem[b].num_locals - 1]->port = from_port;
+         rem[b].local[rem[b].num_locals - 1]->local_id = local_id;
+         rem[b].local[rem[b].num_locals - 1]->glueless_type = 0;
+@@ -710,9 +714,13 @@
+                 goto catch_get_local_udp_packet;
+         }
+         if(get_reply_from_cache(query, &client, sock, local_id, 0, -1,
+-                        orig_query, &from_ip) == 1) {
++                        orig_query, &from_ip) == 1) { /* Is answer in cache */
+                 goto catch_get_local_udp_packet; /* In cache; we're done */
+         }
++	if(dwx_cname_in_cache(orig_query, query, &client, &from_ip, local_id,
++			sock, from_port) == 1) { /* CNAME refer in cache? */
++                goto catch_get_local_udp_packet; 
++        }
+ 
+         /* Nothing in cache; lets try sending the packet upstream */
+         try_forward_local_udp_packet(sock,local_id,&from_ip,from_port,
+@@ -1019,7 +1027,10 @@
+                 } else if(rem[b].local[l]->glueless_type == 2) { /* CNAME */
+                         dwx_incomplete_cname_done(query, b, l);
+                         ret = 4; /* End connection */
+-                }
++                } else if(rem[b].local[l]->glueless_type == 3) {/* Saw CNAME */
++			dwx_cached_cname_done(query, b, l, 0);
++			ret = 4; /* End connection */
++		}
+                 goto catch_send_reply_from_cache;
+         } else if (rem[b].local[l]->ip.len == 4) {
+                 client.V4.sin_family = AF_INET;
+--- deadwood-3.1.01/src/DwMararc.c.orig	2011-11-27 11:52:27.521827490 -0600
++++ deadwood-3.1.01/src/DwMararc.c	2011-11-27 11:52:27.720805209 -0600
+@@ -395,6 +395,7 @@
+         key_n[DWM_N_reject_mx] = 1;
+         key_n[DWM_N_truncation_hack] = 1;
+         key_n[DWM_N_reject_ptr] = 0;
++        key_n[DWM_N_min_ttl_incomplete_cname] = 3600;
+ }
+ 
+ /* Look for a Mararc parameter; -1 if not found/error; 0-n if found
+--- deadwood-3.1.01/src/DwMararc.h.orig	2011-11-27 11:52:27.625806757 -0600
++++ deadwood-3.1.01/src/DwMararc.h	2011-11-27 11:52:27.722807192 -0600
+@@ -66,13 +66,14 @@
+ #define DWM_N_reject_mx 25
+ #define DWM_N_truncation_hack 26
+ #define DWM_N_reject_ptr 27
++#define DWM_N_min_ttl_incomplete_cname 28
+ 
+ /* Number of string parameters in the mararc file */
+ #define KEY_S_COUNT 7
+ /* Number of dictionary parameters in the mararc file */
+ #define KEY_D_COUNT 2
+ /* Number of numeric parameters in the mararc file */
+-#define KEY_N_COUNT 28
++#define KEY_N_COUNT 29
+ 
+ #ifndef MINGW
+ /* Location of files we read when we run execfile("foo") */
+@@ -144,6 +145,8 @@
+                             * replies (if present) */
+         "reject_ptr", /* Whether to reject PTR queries and send out a
+                          synthetic "not there" reply */
++	"min_ttl_incomplete_cname", /* How long to store incomplete CNAME
++                                     * records in the cache, in seconds */
+         0 };
+ 
+ #endif /* MARARC_C */
+--- deadwood-3.1.01/src/DwSocket.h.orig	2011-11-27 11:52:27.652807455 -0600
++++ deadwood-3.1.01/src/DwSocket.h	2011-11-27 11:52:27.723807591 -0600
+@@ -19,7 +19,7 @@
+ #ifndef __DW_SOCKET_DEFINED__
+ #define __DW_SOCKET_DEFINED__
+ 
+-/* This is the root server list as of 2010/05/03; the IPv4 root servers were
++/* This is the root server list as of 2011/11/24; the IPv4 root servers were
+  * last changed 2007/11/01 */
+ #define ROOT_SERVERS "198.41.0.4"       /* a.root-servers.net (VeriSign) */ \
+                      ",192.228.79.201"  /* b.root-servers.net (ISI) */ \
+@@ -147,6 +147,7 @@
+         uint8_t glueless_type;
+         int glueless_conn; /* Remote connection number needing glueless */
+         dw_str *orig_query; /* Case-preserved form of query */
++	dw_str *action; /* Used for (cached) incomplete CNAMEs */
+ } local_T;
+ 
+ /* A pending remote connection */
+--- deadwood-3.1.01/src/DwSocket.c.orig	2011-11-27 11:52:27.542804566 -0600
++++ deadwood-3.1.01/src/DwSocket.c	2011-11-27 11:52:27.726809833 -0600
+@@ -126,6 +126,7 @@
+ 		for(qq = 0; qq < rem[a].num_locals; qq++) { 
+ 			if(rem[a].local[qq] != 0) { 
+ 				dw_destroy(rem[a].local[qq]->orig_query); 
++				dw_destroy(rem[a].local[qq]->action); 
+ 				free(rem[a].local[qq]); 
+ 				rem[a].local[qq] = 0; } 
+ 		} 
+--- deadwood-3.1.01/sqa/recurse_2link_cname/do.test.orig	2011-11-27 14:40:14.763163439 -0600
++++ deadwood-3.1.01/sqa/recurse_2link_cname/do.test	2011-11-27 14:40:55.684145600 -0600
+@@ -27,7 +27,7 @@
+ ../../src/Deadwood -f dwood3rc > /dev/null 2>&1 &
+ sleep 1
+ 
+-askmara Acname1.example.com.
++askmara Acname1.example.com. | perl -pe 's/\+[0-9]+//'
+ 
+ # Clean up
+ kill $( ps auxw | grep maradns | grep -v grep | awk '{print $2}' )
+--- deadwood-3.1.01/sqa/recurse_2link_cname/output.success.orig	2011-11-27 14:41:11.109164856 -0600
++++ deadwood-3.1.01/sqa/recurse_2link_cname/output.success	2011-11-27 14:41:20.501916282 -0600
+@@ -1,7 +1,7 @@
+ # Querying the server with the IP 127.0.0.1
+ # Question: Acname1.example.com.
+-cname1.example.com. +3600 cname cname.example.net.
+-#cname.example.net. +3600 cname www.example.org.
+-#www.example.org. +3600 a 127.10.1.3
++cname1.example.com.  cname cname.example.net.
++#cname.example.net.  cname www.example.org.
++#www.example.org.  a 127.10.1.3
+ # NS replies:
+ # AR replies:

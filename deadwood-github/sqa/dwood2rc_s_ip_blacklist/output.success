@@ -1,0 +1,130 @@
+Blacklist: 10.222.33.44
+
+
+; (1 server found)
+;; Got answer:
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;www.example.com.		IN	A
+
+;; ANSWER SECTION:
+www.example.com.		IN	A	10.1.2.3
+
+;; SERVER: fd4d:6172:6144:4e53::1#53(fd4d:6172:6144:4e53::1)
+;; MSG SIZE  rcvd: 49
+
+
+
+; (1 server found)
+;; Got answer:
+;; flags: qr aa rd; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;black4.example.com.		IN	A
+
+;; AUTHORITY SECTION:
+black4.example.com.	0	IN	SOA	z.black4.example.com. y.black4.example.com. 1 1 1 1 1
+
+;; SERVER: fd4d:6172:6144:4e53::1#53(fd4d:6172:6144:4e53::1)
+;; MSG SIZE  rcvd: 76
+
+
+
+; (1 server found)
+;; Got answer:
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;black6.example.com.		IN	AAAA
+
+;; ANSWER SECTION:
+black6.example.com.		IN	AAAA	fd4d:6172:6144:4e53::3
+
+;; SERVER: fd4d:6172:6144:4e53::1#53(fd4d:6172:6144:4e53::1)
+;; MSG SIZE  rcvd: 64
+
+
+
+; (1 server found)
+;; Got answer:
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;good.example.com.		IN	AAAA
+
+;; ANSWER SECTION:
+good.example.com.		IN	AAAA	fd4d:6172:6144:4e53::2
+
+;; SERVER: fd4d:6172:6144:4e53::1#53(fd4d:6172:6144:4e53::1)
+;; MSG SIZE  rcvd: 62
+
+
+Deadwood: A DNS UDP non-recursive cache (IPv6 supported)
+We bound to 1 addresses
+Got signal 1 to process...
+Blacklist: fd4d:6172:6144:4e53::3
+
+
+; (1 server found)
+;; Got answer:
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;www.example.com.		IN	A
+
+;; ANSWER SECTION:
+www.example.com.		IN	A	10.1.2.3
+
+;; SERVER: fd4d:6172:6144:4e53::1#53(fd4d:6172:6144:4e53::1)
+;; MSG SIZE  rcvd: 49
+
+
+
+; (1 server found)
+;; Got answer:
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;black4.example.com.		IN	A
+
+;; ANSWER SECTION:
+black4.example.com.		IN	A	10.222.33.44
+
+;; SERVER: fd4d:6172:6144:4e53::1#53(fd4d:6172:6144:4e53::1)
+;; MSG SIZE  rcvd: 52
+
+
+
+; (1 server found)
+;; Got answer:
+;; flags: qr aa rd; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;black6.example.com.		IN	AAAA
+
+;; AUTHORITY SECTION:
+black6.example.com.	0	IN	SOA	z.black6.example.com. y.black6.example.com. 1 1 1 1 1
+
+;; SERVER: fd4d:6172:6144:4e53::1#53(fd4d:6172:6144:4e53::1)
+;; MSG SIZE  rcvd: 76
+
+
+
+; (1 server found)
+;; Got answer:
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;good.example.com.		IN	AAAA
+
+;; ANSWER SECTION:
+good.example.com.		IN	AAAA	fd4d:6172:6144:4e53::2
+
+;; SERVER: fd4d:6172:6144:4e53::1#53(fd4d:6172:6144:4e53::1)
+;; MSG SIZE  rcvd: 62
+
+
+Deadwood: A DNS UDP non-recursive cache (IPv6 supported)
+We bound to 1 addresses
+Got signal 1 to process...

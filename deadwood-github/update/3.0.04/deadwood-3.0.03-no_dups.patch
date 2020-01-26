@@ -1,0 +1,56 @@
+--- deadwood-3.0.03/src/DwSocket.c	2011-07-22 15:41:25.000000000 -0500
++++ deadwood-3.0.04/src/DwSocket.c	2011-09-12 00:00:23.887499923 -0500
+@@ -1,4 +1,5 @@
+-/* Copyright (c) 2007-2010 Sam Trenholme and Jean-Jacques Sarton
++/* Copyright (c) 2007-2011 Sam Trenholme 
++ * IPv6 code by Jean-Jacques Sarton
+  *
+  * TERMS
+  *
+@@ -458,7 +459,7 @@
+ 
+ /* Read and handle the upstream_servers dictionary variable */
+ int process_root_upstream_servers(int param, int is_upstream, char *bad) {
+-        dw_str *q = 0, *r = 0, *s = 0, *ns_refer = 0;
++        dw_str *q = 0, *r = 0, *s = 0, *ns_refer = 0, *check = 0;
+         int a = 0, out = 0;
+ 
+         q = 0;
+@@ -473,11 +474,19 @@
+                 s = dwm_dict_fetch(param,r);
+                 q = dw_dnsname_convert(r);
+                 ns_refer = dwx_ns_convert(s,is_upstream,q);
+-                if(q == 0) {
++                if(q == 0 || ns_refer == 0 || ns_refer->len < 4) {
+                         dw_log_dwstr_str(bad,r,"\"]",0);
+                         dw_fatal("Please fix this line");
+                 }
+                 dw_put_u16(q, 65395, -1); /* NS refer private RR */
++		/* Forbid duplicate lines to minimize chance of user
++		 * confusion */
++		check = dwh_get(cache,q,1,1);
++		if(check != 0) {
++                        dw_log_dwstr_str(bad,r,
++		     "\"] (used in both root_servers and upstream_servers)",0);
++			dw_fatal("Same entry can not be in both");
++			}
+                 dwh_add(cache,q,ns_refer,1,2);
+                 dw_destroy(q);
+                 dw_destroy(s);
+--- deadwood-3.0.03/src/DwSys.c	2011-07-22 15:41:21.000000000 -0500
++++ deadwood-3.0.04/src/DwSys.c	2011-09-11 23:52:09.353382734 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2010 Sam Trenholme
++/* Copyright (c) 2007-2011 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -110,7 +110,7 @@
+ 
+         for(ll = 0 ; ll < s2->len ; ll++) {
+                 q = *(s2->str + ll);
+-                if(q >= '@' && q <= '~' /* Last ASCII char */) {
++                if(q >= '.' && q <= '~' /* Last ASCII char */ && q != '\\') {
+ #ifndef MINGW
+                         printf("%c",q);
+ #else /* MINGW */

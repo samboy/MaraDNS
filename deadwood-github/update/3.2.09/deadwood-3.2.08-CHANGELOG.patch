@@ -1,0 +1,29 @@
+--- deadwood-3.2.08/doc/CHANGELOG	2015-01-29 21:39:09.000000000 -0800
++++ deadwood-3.2.09/doc/CHANGELOG	2015-09-25 21:25:37.513725269 -0700
+@@ -1,3 +1,26 @@
++3.2.09 (2015-09-25):
++
++- Security fix: Deadwood would crash if it was unable to make a UDP
++  connection to a given IP (usually caused when a system did not have
++  a default route).  
++
++3.2.08 (2015-08-18):
++
++- Default maxprocs increased to 1024; maximum maxprocs increased to 
++  8,388,608
++
++- Added hi-bit non-ASCII string to RadioGatún[32] test vectors
++
++- Documentation updates
++
++- Deadwood should compile in cygwin again (unsupported platform)
++
++- Example.com changed its record.  Again.
++
++- Added note to not share a CNAME record with another record (forbidden
++  in the RFCs), and that Deadwood handles these illegal DNS entries
++  differently than other DNS servers.
++
+ 3.2.07 (2015-01-29):
+ 
+ - HOTFIX: NS tarpit fix would sometimes go out of bounds; fixed

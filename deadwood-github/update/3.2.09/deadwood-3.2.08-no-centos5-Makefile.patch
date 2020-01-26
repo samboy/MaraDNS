@@ -1,0 +1,38 @@
+commit 8f586a01781d9e0bd07275f21f4eca3f4c7774f7
+Author: Sam Trenholme <strenholme.usenet@gmail.com>
+Date:   Sat Aug 22 11:52:55 2015 -0700
+
+    Deadwood SQA update
+    
+    Removing references to no longer existing Makefile.centos5
+
+diff --git a/deadwood-github/sqa/do.just.inflights.test b/deadwood-github/sqa/do.just.inflights.test
+index d3b2da9..a497dd8 100755
+--- a/deadwood-github/sqa/do.just.inflights.test
++++ b/deadwood-github/sqa/do.just.inflights.test
+@@ -13,10 +13,10 @@ export CC=gcc
+ # Inflight test
+ cd $SQADIR
+ cd ../src
+-make -f Makefile.centos5 clean > /dev/null 2>&1
++make clean > /dev/null 2>&1
+ export FLAGS='-O3 -DINFLIGHT_VERBOSE -DVALGRIND_NOERRORS'
+ #export FLAGS='-g -DINFLIGHT_VERBOSE -DVALGRIND_NOERRORS'
+-make -f Makefile.centos5 > /dev/null 2>&1
++make > /dev/null 2>&1
+ cd $SQADIR
+ cd dwood2rc_n_max_inflights
+ sh ./do.test > output.test 2> /dev/null
+diff --git a/deadwood-github/sqa/sqa_rg32/do.test b/deadwood-github/sqa/sqa_rg32/do.test
+index 9e67222..7b9e92e 100755
+--- a/deadwood-github/sqa/sqa_rg32/do.test
++++ b/deadwood-github/sqa/sqa_rg32/do.test
+@@ -10,7 +10,7 @@ cp rg32 ~-
+ 
+ # Clean up
+ rm rg32 DwStr.o
+-make -f Makefile.centos5 clean > /dev/null 2>&1
++make clean > /dev/null 2>&1
+ 
+ # OK, come back here to run the test
+ cd ~-

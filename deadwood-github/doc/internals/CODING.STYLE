@@ -1,0 +1,157 @@
+Here are some coding style guidelines for the Deadwood code base:
+
+* Use the dw_str library for all string operations.  This protects
+  us from buffer overflows.
+
+* Functions that create a string object should have an error catcher at
+  the end that destroys any strings created inside the function.  *Do not*
+  use "return foo;" in a function with an error cather, instead use
+  "ret = foo; goto catch_function_name;".  This ensures that any allocated
+  strings are destroyed.
+
+  There are certain cases where the string destructor is not so simple.  For
+  example, a string may be declared in one function, and allocated in another
+  function called by the first function.  If this is done, when the
+  string is allocated in the sub-function, make a note of where the 
+  destructor for the string is, and make sure the string is destroyed.
+
+  I understand that goto is considered bad style in some circles.  It is
+  necessary here to make up for C's lack of error catching (if only C had
+  try/catch/throw).
+
+* Whenever a string is to be destroyed, make sure the string has a non-0
+  value.  Once a string is destoryed, set the string to have a 0 value.  
+  This stops double-free()s and freeing of null pointers.
+
+* Any indexed writes, such as a[b] = c or *(a + b) = c need to have
+  some kind of bounds checking.  This protects us from buffer overflows.
+
+* Arrays and strings should always be at least one character longer than
+  you think you will need for the array.  This protects us from off-by-one
+  errors.
+
+* Any resource created: File pointers, sockets, etc. needs a destructor.  
+  File pointers are usually destroyed after reading the file, or if there
+  is an error reading a file.  Sockets are destroyed after using the 
+  socket (or never in case of the sockets that bind to ports).  Etc.
+
+* A single function should not, unless there is a compelling reason, be
+  longer than 52 lines.  The thinking is this: If we keep individual 
+  functions small, then the code will be easier to follow and debug.
+
+  Should a function be 52 lines or longer, please state why in the comments
+  before the function.  The size of a function does not include any comments
+  before the function describing the function.
+
+  (When finishing up the recursion, I started ignoring this particular 
+  rule.  Functions are still fairly short and should be easy to follow.)
+
+* All functions should be documented with at least a brief comment.  If you
+  are not a native English speaker, please let me know, and I will correct
+  any grammatical errors in your comments.
+
+* Code should be written using an environment where each tab stop is eight
+  spaces long.  A single line of code should never be wider than 80 columns
+  (yes, this is a throwback to ancient history when there existed text
+  terminals with 80 columns per line).  If you find yourself nesting more
+  deeply, consider putting the deeply nested code in a sub-function.
+
+* All variables should be decalred at the beginning of a function.  All
+  variables should have some initial value, usually 0.  This is not true for
+  all variable types; complicated structures do not need to be initialized
+  in the variable declaration at the top.  However, all integers and pointers
+  must be initalized; pointers must be initialized with a value of 0.
+
+* Complicated data structures should be initialized with either a small
+  function, or a #define init_structure(a) a.element1 = 0; a.element2=0;
+  form.  This way, if we add a new element to the structure, we only need
+  to change the one initalizer.
+
+* All "for"s, "if"s, "while"s, etc. should use bracing, even if we are
+  only looking at one statement.
+
+* condition ? true : false constructs should not be used unless there is
+  a compelling reason to use them.  Please state the compelling reason to 
+  use the x?t:f form in the comments around the code in question.
+
+* When using code that needs an integer with a given size, it is best to 
+  use the C99 forms supported in the <stdint.h> header file:
+
+	uint8_t for unsigned 8-bit numbers
+	int8_t for signed 8-bit numbers
+	uint16_t for unsigned 16-bit numbers
+	int16_t for signed 16-bit numbers
+	uint32_t for unsigned 32-bit numbers
+	int32_t for signed 32-bit numbers
+	uint64_t for unsigned 64-bit numbers
+	int64_t for signed 64-bit numbers
+
+* Likewise, an "int" without a size specified should still work if a given
+  compiler's "int" is a 16-bit number (-32768 to 32767)
+
+* malloc() system calls (and dw_new() calls) must have their return value
+  checked.  If the return value is 0, do something appropriate, like telling
+  the user the program could not allocate memory and exiting.
+
+* All code that uses sockets needs to be written in a manner that works in
+  both Windows and *NIX.  See the SOCKET.CODING.STYLE document for all
+  of the details.
+
+* All variables used inside a function must be declared at the beginning
+  of the function.  Since we have a "functions are 52 lines or shorter"
+  rule, this should not be too difficult to do.  The reason for this:
+  It makes code audits easier.
+
+* All code needs to be written in an endian-neutral manner.  For example,
+  instead of:
+	
+	uint16_t foo;
+	foo = (uint16_t *)(some_string);
+
+  Use something like:
+
+	uint16_t foo;
+	if(some_string_size + 1 > some_string_maximum_size) {
+		ret = -1;
+		goto catch_this_functions_name;
+	}
+	foo = (*(some_string + 1) & 0xff) | ((*some_string & 0xff00) >> 16);
+
+* Bracing looks like this:
+
+int foo() {
+	int a = 0;
+	for(a = 0; a < 100; a++) {
+		if(a < 50) {
+			printf("A is only %d\n",a);
+		} else if(a < 75) {
+			printf("A is %d\n",a);
+		} else {
+			printf("A is now %d\n",a);
+		}
+	}
+}
+
+* #ifdef and other conditional compiling macros must, in the corresponding
+  #endif, have, in comments, the name of the "define" needed to compile the
+  code in question.  For example:
+
+#ifdef FOO
+	foo_bug_workaround();
+#endif /* FOO */
+
+* There are not to be potential infinite loops.  while(1) and for(;;)
+  constructs are not allowed, unless it is the program's main loop.
+
+  In DwSocket.c and DwTcpSocket.c, the for(;;) is the program's main loop
+
+  while(1) constructs are not used; always use for(;;) for the program's main
+  loop
+
+  while loops must be written in such a way that a counter increments and
+  the while loop will eventually terminate if the counter goes over a 
+  reasonable value.  
+
+  This is to stop bugs like the bug that caused some Microsoft Zunes to
+  freeze on December 31, 2008
+

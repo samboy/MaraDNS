@@ -1,0 +1,47 @@
+--- deadwood-2.9.07/doc/CHANGELOG	2010-09-03 07:03:38.000000000 -0700
++++ deadwood-3.0.01/doc/CHANGELOG	2010-09-22 10:26:59.000000000 -0700
+@@ -1,3 +1,44 @@
++3.0.01 (201010??):
++
++* dwood3rc parser fixes: Dictionary elements now must be initialized; 
++  referring non-existent dictionary elements is a fatal parse error; 
++  dictionary elements can not be appended without being first set; the
++  += operator correctly works with dictionary elements in Deadwood.
++
++* ej tools updated to run without warnings with newer versions of Perl and
++  to use elinks if "links" is not a symlink to elinks
++
++* "install.bat" and "uninstall.bat" files to give Deadwood a one-click
++  (un)install in Windows XP and a simpler install in Windows Vista/7
++
++* Documentation and FAQ updates
++
++2.9.07 (20100909):
++
++* Hash core updated to get entropy from /dev/urandom (secret.txt in Windows)
++  in order to have the hash compression function generate different hash 
++  compression values every time Deadwood is run.
++
++* Two bugs slowing down Deadwood's performance have been fixed: 1) Deadwood
++  no longer stalls timeout_seconds if an error getting an upstream address
++  occurs; 2) Deadwood no longer stalls timeout_seconds if it gets a reply
++  upstream that has upper-case letters in its name.
++
++* A long standing bug that caused Deadwood to be unable to resolve MX
++  queries has been fixed (I fixed it as soon as I found out about the 
++  bug).
++
++* Likewise, MX queries are now disabled in Deadwood unless explicitly
++  enabled (Deadwood has worked fine for over a year with MX records broken,
++  and they are the type of query only mail hubs and spam zombies will 
++  make)
++
++* Slight tweaking of log messages to be more accurate and informative.
++
++* Documentation updates: FAQ added to point out Gibson's dnsbench tool is 
++  buggy and does not accurately reflect Deadwood's performance; man page
++  updated to reflect changes to dwood3rc parameters
++
+ 2.9.06 (20100903):
+ 
+ * Documentation updates
