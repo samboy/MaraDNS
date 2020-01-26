@@ -1,3 +1,14 @@
+3.4.02 (2020-01-14; stable release)
+
+- Issue building Deadwood from the GitHub tree in CentOS8 fixed
+- Update Windows documents in Deadwood source code tarball
+- All SQA regressions pass
+
+3.4.01 (2019-10-18; stable release)
+
+- No changes to code made from 3.3.03; all SQA regressions pass.
+  Declaring stable.
+
 3.3.03 (2019-04-07: development branch release):
 
 - Deadwood default changed to use quad9.net upstream servers instead of
