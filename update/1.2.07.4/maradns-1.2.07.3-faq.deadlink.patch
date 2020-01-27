@@ -1,0 +1,12 @@
+--- maradns-1.2.07.4/doc/en/webpage/faq.embed.orig	2006-05-20 20:29:18.000000000 -0700
++++ maradns-1.2.07.4/doc/en/webpage/faq.embed	2006-05-20 20:29:33.000000000 -0700
+@@ -281,7 +281,8 @@
+ 
+ <p>MaraDNS uses its own string library, which is called the "js_string"
+ library.  Man pages for most of the functions in the js_string library
+-are in the folder <tt>doc/man</tt> of the <A href="download.html">MaraDNS
++are in the folder <tt>doc/man</tt> of the <A 
++href="http://www.maradns.org/download.html">MaraDNS
+ distribution</A>
+ 
+ <A name=whythreads>

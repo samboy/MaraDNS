@@ -1,0 +1,81 @@
+--- maradns-Q.20060528.1/server/MaraDNS.c	2006-05-28 01:39:43.000000000 -0700
++++ maradns-1.2.07.5/server/MaraDNS.c	2006-05-29 00:28:21.000000000 -0700
+@@ -1282,6 +1282,7 @@
+     rr *where = 0;
+     rr_list *answer = 0;
+     mhash_e spot_data;
++    int counter;
+ 
+     q_header header;
+     /* Initialize the js_string objects */
+@@ -1329,7 +1330,6 @@
+     spot_data = mhash_get(bighash,query);
+     /* If found, use this list for all of the answers */
+     if(spot_data.value != 0 && spot_data.datatype == MARA_DNS_LIST) {
+-	int counter;
+ 	answer = (rr_list *)spot_data.value;
+ 	found = 1;
+ 	for(counter = 0; counter < 100; counter++) {
+@@ -1360,8 +1360,8 @@
+ 
+     spot_data = mhash_get(bighash,starwhitis);
+     if(spot_data.value != 0 && spot_data.datatype == MARA_DNS_LIST) {
+-	int counter;
+         int rtype_save;
++starwhitis_any_found:
+ 	answer = (rr_list *)spot_data.value;
+ 	found = 1;
+ 	for(counter = 0; counter < 100; counter++) {
+@@ -1384,11 +1384,52 @@
+             js_destroy(starwhitis);
+ 	    goto giveerror;
+             }
++        js_destroy(starwhitis);
++        goto old_udpany_code_disabled;
+         }    
+ 
++    counter = 0;
++    while(bobbit_starlabel(starwhitis) == JS_SUCCESS) {
++        spot_data = mhash_get(bighash,starwhitis);
++        if(spot_data.value != 0 && spot_data.datatype == MARA_DNS_LIST) {
++            goto starwhitis_any_found;
++            }
++        counter++;
++        if(counter > 100) {
++            break;
++            }
++        }
++
++    /* Look for ANY records in a possible csv2_default_zonefile */
++    if(default_zonefile_enabled == 1) {
++        int labels;
++        /* Restore original query, since we are now chopping it up at
++           the end instead of the beginning of the record. */
++        if(js_copy(query,starwhitis) == JS_ERROR) {
++            js_destroy(starwhitis);
++            goto giveerror;
++            }
++        counter = 0; 
++        while((labels = bobbit_starlabel_end(starwhitis)) > 0) {
++            /* limit the number of labels */
++            if(labels > 120) {
++                continue;
++                }
++            spot_data = mhash_get(bighash,starwhitis);
++            if(spot_data.value != 0 && spot_data.datatype == MARA_DNS_LIST) {
++                goto starwhitis_any_found;
++                }
++            counter++;
++            if(counter > 120) {
++                break;
++                }
++            }
++        }
++
+     js_destroy(starwhitis);
+     goto old_udpany_code_disabled;
+ 
++
+ use_old_udpany_code:
+ 
+     /* The old udpany code is still used by the recursive half of

@@ -1,0 +1,114 @@
+--- maradns-1.2.07.4/server/MaraDNS.c	2006-05-22 23:13:13.000000000 -0700
++++ maradns-1.2.07.5/server/MaraDNS.c	2006-05-28 01:36:28.000000000 -0700
+@@ -1273,6 +1273,8 @@
+ 	   called_from_recursive) {
+     js_string *most, *ns, *ar; /* The answers, the ns records, the ar records*/
+ 
++    js_string *starwhitis;
++
+     int length_save;
+     int len_inet = sizeof(struct sockaddr);
+     int found = 0;
+@@ -1340,8 +1342,51 @@
+ 	    if(answer == 0) 
+ 		    break;
+ 	    }
++        goto old_udpany_code_disabled;
++        }    
++
++    /* OK, no record found, so look for a star record */
++    if((starwhitis = js_create(256,1)) == 0) {
++        goto giveerror;
++        }
++    if(js_copy(query,starwhitis) == JS_ERROR) {
++        js_destroy(starwhitis);
++        goto giveerror;
++	}
++    if(make_starlabel(starwhitis) == JS_ERROR) {
++        js_destroy(starwhitis);
++        goto giveerror;
++	}
++
++    spot_data = mhash_get(bighash,starwhitis);
++    if(spot_data.value != 0 && spot_data.datatype == MARA_DNS_LIST) {
++	int counter;
++        int rtype_save;
++	answer = (rr_list *)spot_data.value;
++	found = 1;
++	for(counter = 0; counter < 100; counter++) {
++            rtype_save = get_rtype(query);
++            if(change_rtype(query,answer->data->rr_type) == JS_ERROR) {
++                js_destroy(starwhitis);
++		goto giveerror;
++                }
++            if(add_answer(answer->data,most,ns,ar,&(header.ancount),
++                   &(header.nscount),&(header.arcount),1,
++                   spot_data.point,query,2) == JS_ERROR) {
++                js_destroy(starwhitis);
++		goto giveerror;
++	        }
++	    answer = answer->next;
++	    if(answer == 0) 
++		    break;
++	    }
++        if(change_rtype(query,rtype_save) == JS_ERROR) {
++            js_destroy(starwhitis);
++	    goto giveerror;
++            }
+         }    
+ 
++    js_destroy(starwhitis);
+     goto old_udpany_code_disabled;
+ 
+ use_old_udpany_code:
+@@ -3016,8 +3061,7 @@
+     }
+ 
+     /* Handle the case of RR_ANY */
+-    if(qtype == RR_ANY) { /* &&
+-       (desires_recursion == 0 || has_recursive_authority == 0)) { */
++    if(qtype == RR_ANY) { 
+         result_code = udpany(header.id,sock,0,origq,rrany_set,bighash,
+ 			desires_recursion,ect,0);
+         if(result_code == JS_SUCCESS) {
+--- maradns-1.2.07.4/server/functions_server.h	2006-03-10 01:59:46.000000000 -0800
++++ maradns-1.2.07.5/server/functions_server.h	2006-05-29 00:34:02.000000000 -0700
+@@ -279,4 +279,38 @@
+ void log_unlock();
+ #endif /* AUTHONLY */
+ 
++/* Given a domain-label without a star record ('_'), change the first
++   domain label in to a star record ('_') Eg. "\003www\007example\003com\000"
++   becomes "_\007example\003com\000"
++   input: A pointer to the js_string object in question
++   output: JS_ERROR on error, JS_SUCCESS on success, 0 if the label is
++           a star record already
++*/
++
++int make_starlabel(js_string *js);
++
++/* Given a domain-label ending with (or without) a star record ('_'),
++   change the label
++   in-place so that the first domain label before the star record is lopped
++   off of it.  Eg. "\003name\007example\003com\000\000\001" becomes
++   "\003name\007example\003com_\000\001", and 
++   "\003name\007example\003com_\000\001" becomes "\003name\007example_\000\001"
++   input: A pointer to the js_string object in question
++   output: JS_ERROR on error, 0 if the label is
++           zero-length already, number of labels including star otherwise
++           (130 if we don't know how many labels there are)
++*/
++
++int bobbit_starlabel_end(js_string *js);
++
++/* Given a domain-label starting with a star record ('_') change this label
++   in-place so that the first domain label after the star record is lopped
++   off of it.  Eg. '_\003sub\007example\003com\000" becomes
++   "_\007example\003com\000"
++   input: A pointer to the js_string object in question
++   output: JS_ERROR on error, JS_SUCCESS on success, 0 if the label is
++           zero-length already
++*/
++
++int bobbit_starlabel(js_string *js);
+ 

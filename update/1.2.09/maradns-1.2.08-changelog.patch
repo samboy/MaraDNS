@@ -1,0 +1,18 @@
+--- maradns-1.2.08/doc/en/source/changelog.embed	2006-06-11 00:16:32.000000000 -0700
++++ maradns-1.2.09/doc/en/source/changelog.embed	2006-06-14 03:17:00.000000000 -0700
+@@ -1,5 +1,15 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.09:
++<blockquote>
++<ul>
++<li>Recursive resolver patched to be able to process the bizarre packets
++    that Microsoft.com's DNS server makes.
++<li>Some minor documentation cleanup.
++</ul>
++(2006.06.14)
++</blockquote>
++
+ <p>maradns-1.2.08:
+ <blockquote>
+ <ul>

@@ -1,0 +1,21 @@
+--- maradns-1.2.07.5/tools/ej/ej2man	2005-12-20 23:35:49.000000000 -0800
++++ maradns-1.2.07.6/tools/ej/ej2man	2006-05-30 03:09:31.000000000 -0700
+@@ -21,6 +21,8 @@
+ # Input: First argument or standard input
+ # Output: Standard output
+ 
++use utf8;
++
+ # Tmp dir (used for running iconv on non-8859-1 pages)
+ $TMP = $ENV{'HOME'} . "/tmp";
+ # Make this just /tmp at your own risk.  You have been warned.
+@@ -217,6 +219,9 @@
+ 	       $parts[$hack] =~ s/\\/\\\\/g;
+    	       # Make single quotes literal single quotes ('\(aq' in troff)
+ 	       $parts[$hack] =~ s/\'/\\\(aq/g;
++               # Handle the á character (Debian's lint complains if the 
++               # man page has raw hi-bit characters)
++               $parts[$hack] =~ s|á|\\\(\'a|g;
+ 	       $body .= $parts[$hack];
+ 	       $body .= ".fi\n";
+ 	       }

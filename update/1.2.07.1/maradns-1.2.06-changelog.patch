@@ -1,0 +1,29 @@
+--- maradns-1.2.06/doc/en/source/changelog.embed	2006-03-10 01:59:46.000000000 -0800
++++ maradns-1.2.07.1/doc/en/source/changelog.embed	2006-03-21 23:48:42.000000000 -0800
+@@ -1,5 +1,26 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.07.1:
++<blockquote>
++<ul>
++<li><tt>duende</tt> now always logs a message before exiting
++<li>zone names are now case-insensitive.
++<li>Programs in <tt>sqa/</tt> directory can compile again.
++<li>Dictionary variables now must be initialized to work.
++<li>Documentation updated.
++</ul>
++(2006.03.22)
++</blockquote>
++
++<p>maradns-1.2.03.5:
++<blockquote>
++<ul>
++<li><tt>duende</tt> tool always logs something before exiting
++<li>"Using default ICANN servers" message now has newline
++<li>Broken <tt>upstream_servers</tt> example in docs fixed
++</ul>
++(2006.03.21)
++
+ <p>maradns-1.2.06:
+ This is a testing (possibly unstable) release of MaraDNS.
+ <blockquote>

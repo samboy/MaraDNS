@@ -1,0 +1,13 @@
+--- maradns-1.2.07.4/doc/en/source/csv2.ej.orig	2006-05-21 23:18:32.000000000 -0700
++++ maradns-1.2.07.4/doc/en/source/csv2.ej	2006-05-21 23:20:27.000000000 -0700
+@@ -218,7 +218,9 @@
+ 
+ <p>
+ 
+-FQDN4 records are not permitted in a csv2_default_zonefile.
++FQDN4 records are not permitted in a csv2_default_zonefile.  If you
++do not know what a csv2_default_zonefile is, you do not have to worry 
++about this limitation.
+ 
+ <h2>CNAME</h2>
+ 

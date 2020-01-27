@@ -1,0 +1,363 @@
+diff -ur maradns-1.2.11/parse/Csv2_parse.c maradns-wks/parse/Csv2_parse.c
+--- maradns-1.2.11/parse/Csv2_parse.c	2006-07-13 00:01:51.000000000 -0500
++++ maradns-wks/parse/Csv2_parse.c	2006-07-13 00:00:27.000000000 -0500
+@@ -899,6 +899,9 @@
+         if(js_qissame("hinfo",text_rtype) == 1) {
+                 return RR_HINFO;
+         }
++	if(js_qissame("wks",text_rtype) == 1) {
++		return RR_WKS;
++	}
+ 	if(js_qissame("fqdn4",text_rtype) == 1) {
+ 		return 65765;
+ 	}
+@@ -1199,6 +1202,9 @@
+                 case RR_HINFO:
+ 			rddata = csv2_get_txt(stream,2);
+                         break;
++		case RR_WKS:
++			rddata = csv2_get_wks(stream);
++			break;
+ 		case RR_NS:
+ 		case RR_CNAME:
+ 		case RR_PTR:
+@@ -1214,6 +1220,7 @@
+ 			rddata = csv2_get_a(stream);
+ 			break;
+ 		default:
++			/* RAW rtype */
+ 			if(rtype >= 100000 && rtype <= 165535) {
+ 				rtype -= 100000;
+ 				if(rtype == RR_ANY) {
+@@ -1225,6 +1232,9 @@
+                                 } else if(rtype == 252) {
+ 					csv2_error(stream,
+ 				  "AXFR (252) record type isn't for data");
++				} else if(rtype == RR_A6) {
++					csv2_error(stream,
++				  "MaraDNS doesn't allow A6 records");
+                                 } else {
+ 				    rddata = csv2_get_raw(stream);
+ 				}
+diff -ur maradns-1.2.11/parse/Makefile maradns-wks/parse/Makefile
+--- maradns-1.2.11/parse/Makefile	2006-01-02 10:59:33.000000000 -0600
++++ maradns-wks/parse/Makefile	2006-07-12 22:54:10.000000000 -0500
+@@ -1,6 +1,6 @@
+ JOBJS=../libs/JsStr.o ../libs/JsStrOS.o ../libs/JsStrCP.o 
+ MHOBJS=../libs/MaraHash.o
+-POBJ3=Csv2_rr_soa.o Csv2_database.o Csv2_rr_txt.o
++POBJ3=Csv2_rr_soa.o Csv2_database.o Csv2_rr_txt.o Csv2_rr_wks.o
+ POBJ2=Csv2_read.o Csv2_main.o Csv2_parse.o Csv2_rr_a.o Csv2_rr_aaaa.o $(POBJ3)
+ OUTOBJ=Csv2_esc_txt.o
+ POBJECTS=ParseMaraRc.o ParseCsv1.o ParseIpAcl.o Parse_ipv6.o $(POBJ2)
+@@ -46,6 +46,9 @@
+ Csv2_rr_aaaa.o: Csv2_rr_aaaa.c ../libs/JsStr.h Csv2_read.h
+ 	$(CC) -c $(FLAGS) -o Csv2_rr_aaaa.o Csv2_rr_aaaa.c
+ 
++Csv2_rr_wks.o: Csv2_rr_wks.c ../libs/JsStr.h Csv2_read.h
++	$(CC) -c $(FLAGS) -o Csv2_rr_wks.o Csv2_rr_wks.c
++
+ Csv2_rr_a.o: Csv2_rr_a.c ../libs/JsStr.h Csv2_read.h
+ 	$(CC) -c $(FLAGS) -o Csv2_rr_a.o Csv2_rr_a.c
+ 
+--- maradns-1.2.11/server/Makefile.authonly	2006-01-21 23:22:01.000000000 -0600
++++ maradns-wks/server/Makefile.authonly	2006-07-13 00:11:43.000000000 -0500
+@@ -2,10 +2,11 @@
+ JOBJS=../libs/JsStr.o ../libs/JsStrOS.o ../libs/JsStrCP.o 
+ MHOBJS=../libs/MaraHash.o
+ MJOBJS=../qual/qual_timestamp.o
++POBJ6=../parse/Csv2_rr_wks.o
+ POBJ5=../parse/Csv2_database.o ../parse/Csv2_rr_txt.o ../parse/Csv2_esc_txt.o
+ POBJ3=../parse/Csv2_rr_soa.o ../parse/Csv2_rr_aaaa.o ../parse/Csv2_rr_a.o
+ POBJ2=../parse/Csv2_read.o ../parse/Csv2_main.o ../parse/Csv2_parse.o $(POBJ3)
+-POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2)
++POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2) $(POBJ6)
+ POBJECTS=../parse/ParseMaraRc.o ../parse/ParseCsv1.o $(POBJ4) $(POBJ5)
+ DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o ../dns/Decompress.o
+ ROBJECTS=../rng/rng-api-fst.o ../rng/rng-alg-fst.o
+--- maradns-1.2.11/server/Makefile.recursive	2006-01-02 10:59:33.000000000 -0600
++++ maradns-wks/server/Makefile.recursive	2006-07-13 00:12:16.000000000 -0500
+@@ -2,10 +2,11 @@
+ JOBJS=../libs/JsStr.o ../libs/JsStrOS.o ../libs/JsStrCP.o 
+ MHOBJS=../libs/MaraHash.o
+ MJOBJS=../qual/qual_timestamp.o
++POBJ6=../parse/Csv2_rr_wks.o
+ POBJ5=../parse/Csv2_database.o ../parse/Csv2_rr_txt.o ../parse/Csv2_esc_txt.o
+ POBJ3=../parse/Csv2_rr_soa.o ../parse/Csv2_rr_aaaa.o ../parse/Csv2_rr_a.o
+ POBJ2=../parse/Csv2_read.o ../parse/Csv2_main.o ../parse/Csv2_parse.o $(POBJ3)
+-POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2)
++POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2) $(POBJ6)
+ POBJECTS=../parse/ParseMaraRc.o ../parse/ParseCsv1.o $(POBJ4) $(POBJ5)
+ DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o ../dns/Decompress.o
+ ROBJECTS=../rng/rng-api-fst.o ../rng/rng-alg-fst.o
+--- maradns-1.2.11/server/Makefile.mingw32	2005-12-05 15:33:49.000000000 -0600
++++ maradns-wks/server/Makefile.mingw32	2006-07-13 00:12:45.000000000 -0500
+@@ -2,10 +2,11 @@
+ JOBJS=../libs/JsStr.o ../libs/JsStrOS.o ../libs/JsStrCP.o 
+ MHOBJS=../libs/MaraHash.o
+ MJOBJS=../qual/qual_timestamp.o
++POBJ6=../parse/Csv2_rr_wks.o
+ POBJ5=../parse/Csv2_database.o ../parse/Csv2_rr_txt.o ../parse/Csv2_esc_txt.o
+ POBJ3=../parse/Csv2_rr_soa.o ../parse/Csv2_rr_aaaa.o ../parse/Csv2_rr_a.o
+ POBJ2=../parse/Csv2_read.o ../parse/Csv2_main.o ../parse/Csv2_parse.o $(POBJ3)
+-POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2)
++POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2) $(POBJ6)
+ POBJECTS=../parse/ParseMaraRc.o ../parse/ParseCsv1.o $(POBJ4) $(POBJ5)
+ DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o ../dns/Decompress.o
+ ROBJECTS=../rng/rng-api-fst.o ../rng/rng-alg-fst.o
+--- maradns-1.2.11/tcp/Makefile.authonly	2006-01-21 23:22:01.000000000 -0600
++++ maradns-wks/tcp/Makefile.authonly	2006-07-13 00:13:14.000000000 -0500
+@@ -2,10 +2,11 @@
+ MJOBJS=../qual/qual_timestamp.o
+ MHOBJS=../libs/MaraHash.o
+ DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o ../dns/Decompress.o
++POBJ6=../parse/Csv2_rr_wks.o
+ POBJ5=../parse/Csv2_database.o ../parse/Csv2_rr_txt.o ../parse/Csv2_esc_txt.o
+ POBJ3=../parse/Csv2_rr_soa.o ../parse/Csv2_rr_aaaa.o ../parse/Csv2_rr_a.o
+ POBJ2=../parse/Csv2_read.o ../parse/Csv2_main.o ../parse/Csv2_parse.o $(POBJ3)
+-POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2)
++POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2) $(POBJ6)
+ POBJECTS=../parse/ParseMaraRc.o ../parse/ParseCsv1.o $(POBJ4) $(POBJ5)
+ OBJECTS=../parse/ParseCsv1.o ../parse/ParseMaraRc.o ../parse/ParseIpAcl.o
+ SOBJECTS=../server/timestamp.o ../server/MaraBigHash.o ../server/read_kvars.o \
+--- maradns-1.2.11/tcp/Makefile.recursive	2006-01-02 10:59:33.000000000 -0600
++++ maradns-wks/tcp/Makefile.recursive	2006-07-13 00:13:35.000000000 -0500
+@@ -2,10 +2,11 @@
+ MJOBJS=../qual/qual_timestamp.o
+ MHOBJS=../libs/MaraHash.o
+ DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o ../dns/Decompress.o
++POBJ6=../parse/Csv2_rr_wks.o
+ POBJ5=../parse/Csv2_database.o ../parse/Csv2_rr_txt.o ../parse/Csv2_esc_txt.o
+ POBJ3=../parse/Csv2_rr_soa.o ../parse/Csv2_rr_aaaa.o ../parse/Csv2_rr_a.o
+ POBJ2=../parse/Csv2_read.o ../parse/Csv2_main.o ../parse/Csv2_parse.o $(POBJ3)
+-POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2)
++POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2) $(POBJ6)
+ POBJECTS=../parse/ParseMaraRc.o ../parse/ParseCsv1.o $(POBJ4) $(POBJ5)
+ OBJECTS=../parse/ParseCsv1.o ../parse/ParseMaraRc.o ../parse/ParseIpAcl.o
+ SOBJECTS=../server/timestamp.o ../server/MaraBigHash.o ../server/read_kvars.o \
+--- maradns-1.2.11/parse/Csv2_rr_wks.c	2006-07-13 00:41:38.000000000 -0500
++++ maradns-wks/parse/Csv2_rr_wks.c	2006-07-13 00:52:06.000000000 -0500
+@@ -0,0 +1,195 @@
++/* Copyright (c) 2004-2006 Sam Trenholme
++ *
++ * TERMS
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ *
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ *
++ * This software is provided 'as is' with no guarantees of correctness or
++ * fitness for purpose.
++ */
++
++#include "../libs/JsStr.h"
++#include "../libs/MaraHash.h"
++#include "../MaraDns.h"
++#include "Csv2_database.h"
++#include "Csv2_read.h"
++#include "Csv2_functions.h"
++#include "functions_parse.h"
++
++/* Some limits on the contents of a WKS record */
++/* The maximum number of open ports we may have */
++#define CSV2_WKS_PORTS_MAX 10
++/* The highest port number we allow */
++#define CSV2_WKS_HIGHPORT 1024
++
++/* Functions specifically designed to parse A records */
++
++/* This function is designed to tell us if the character in question is
++ * a wks delimiter (comma, tab, or space) */
++int csv2_is_wks(int32 in) {
++	return (in == ',' || in == '\t' || in == ' ');
++}
++
++/* Get an WKS record from the stream (ignoring any leading whitespace) and
++ * return a js_string object with the raw rddata for the A record */
++js_string *csv2_get_wks(csv2_read *stream) {
++	js_string *ddip; /* The 32-bit IP address */
++	js_string *out;
++        int protocol;
++	int ports[CSV2_WKS_PORTS_MAX + 3];
++        int portindex = 0;
++ 	int hiport = 0;
++	int32 look;
++	int x, num;
++
++	if(csv2_get_1st(stream,csv2_is_number,0) != JS_SUCCESS) {
++		return 0;
++	}
++
++	/* Address */
++	if((ddip = process_ipv4_ddip(stream)) == 0) {
++		return 0;
++	}
++
++	/* Protocol */
++	protocol = csv2_get_num(stream);
++	if(protocol < 0) {
++		js_destroy(ddip);
++		return 0;
++	}
++
++        if(csv2_get_1st(stream,csv2_is_number,0) != JS_SUCCESS) {
++		js_destroy(ddip);
++		return 0;
++	}
++
++	/* Read the port numbers, putting them in the ports
++	 * array */
++	look = csv2_justread(stream);
++	num = 0;
++	for(x = 0; x < 100; x++) {
++		/* This is one of the few places where we treat a newline
++		 * differently than a space or tab; a newline (or EOF) ends
++		 * the WKS list of ports */
++		if(look == -2 || look == '\n') {
++			break;
++		}
++		/* Comments also end the WKS list of ports */
++		else if(csv2_is_hash(look)) {
++			process_comment(stream);
++			break;
++		}
++		/* Numbers are processed one byte at a time */
++		else if(csv2_is_number(look)) {
++			num *= 10; /* Decimal */
++			num += look - '0'; /* Random thought: It would have
++                                            * made hexadecimal processing
++					    * easier if the ASCII code after
++					    * '9' was 'A' (or 'a') */
++			/* Bounds checking; TCP only has 16-bit port numbers */
++			if(num > 100000) {
++				js_destroy(ddip);
++				return 0;
++			}
++		}
++		/* If it's a space, tab, or comma... */
++		else if(csv2_is_wks(look)) {
++			/* Take the number we've been processing and add it
++			 * to the list of ports */
++			if(portindex >= CSV2_WKS_PORTS_MAX) {
++				js_destroy(ddip);
++				return 0;
++			}
++			ports[portindex] = num;
++			portindex++;
++			if(num > hiport) {
++				hiport = num;
++			}
++			if(num > CSV2_WKS_HIGHPORT) {
++				js_destroy(ddip);
++				return 0;
++			}
++			num = 0;
++		}
++		/* Any other character is an error */
++		else {
++			js_destroy(ddip);
++			return 0;
++		}
++		look = csv2_read_unicode(stream);
++	}	
++
++	/* Convert the last number we read in to a port number to put
++  	 * in the ports array, if needed.  Note that this code doesn't
++	 * allow the last port number to be zero.  This is a feature.
++	 * (no one uses WKS anymore so I don't think it's worth the bother
++	 * to fix) */
++	if(num > 0 && num < CSV2_WKS_HIGHPORT) { 
++		if(portindex >= CSV2_WKS_PORTS_MAX) {
++			js_destroy(ddip);
++			return 0;
++		}
++		ports[portindex] = num;
++		if(num > hiport) {
++			hiport = num;
++		}
++	}
++
++	/* Create the string with the raw binary WKS data */
++	if((out = js_create((hiport >> 3) + 6,1)) == 0) {
++		js_destroy(ddip);
++		return 0;
++	}
++
++	/* Zero out the string */
++	for(x = 0; x < (hiport >> 3) + 6; x++) {
++		*(out->string + x) = 0;
++	}
++
++	/* Make the first four bytes of the string the IP given by the
++	 * user */
++	if(ddip_2_ip(ddip,out,0) == JS_ERROR) {
++		js_destroy(ddip);
++		js_destroy(out);
++		return 0;
++	}
++
++	/* Set the length of the string as needed */
++	out->unit_count = 6 + (hiport >> 3);
++
++	/* Bounds checking, as needed in C (ugh) */	
++	if(out->max_count < out->unit_count) {
++		js_destroy(ddip);
++		js_destroy(out);
++		return 0;
++	}
++
++	/* Set the protocol number */
++	*(out->string + 4) = protocol & 0xff;
++
++	/* And set the port numbers */
++	for(x = 0; x < portindex; x++) {
++		int pn, q, mask;
++		pn = ports[x];	
++		q = pn >> 3;
++		mask = 128 >> (pn % 8);
++		if(q >= out->unit_count) {
++			js_destroy(ddip);
++			js_destroy(out);
++			return 0;
++		}
++		*(out->string + q + 5) |= mask;
++	}
++		
++	js_destroy(ddip);
++	return out;
++}
++
+--- maradns-1.2.11/doc/en/source/csv2.ej	2006-07-13 00:40:58.000000000 -0500
++++ maradns-wks/doc/en/source/csv2.ej	2006-07-13 01:00:45.000000000 -0500
+@@ -271,6 +271,25 @@
+ has a list of CPUs and OSes that this record is supposed to have.  However,
+ this list has not been updated since 2002.
+ 
++<h2>WKS</h2>
++
++WKS records are historical records which have been superseded by SRV
++records.  The format of the record is an IP, followed by a protocol
++number (6 means TCP), followed by a list of ports that a given server
++has available for services.
++
++<p>
++
++For example, to advertise that example.net has the IP 10.1.2.3, and has a
++SSH, HTTP (web), and NNTP server:
++
++<pre>
++example.net. WKS 10.1.2.3 6 22,80,119
++</pre>
++
++Note that MaraDNS only allows up to 10 different port numbers in a WKS record,
++and that the listed port numbers can not be higher than 1023.
++
+ <h1>EXAMPLE ZONE FILE</h1>
+ 
+ <pre>

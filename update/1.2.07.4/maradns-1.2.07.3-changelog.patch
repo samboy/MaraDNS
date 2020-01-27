@@ -1,0 +1,67 @@
+--- maradns-1.2.07.3/doc/en/source/changelog.embed	2006-05-15 16:28:36.000000000 -0700
++++ maradns-1.2.07.4/doc/en/source/changelog.embed	2006-05-22 22:40:07.000000000 -0700
+@@ -1,5 +1,15 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.07.4:
++<blockquote>
++<ul>
++<li>Delegation NS records fixed
++<li>Some minor mararc parsing bugs fixed
++<li>Documentation tweaks (the webpage now validates, etc.)
++</ul>
++(2006.05.23)
++</blockquote>
++
+ <p>maradns-1.2.07.3:
+ <blockquote>
+ <ul>
+@@ -16,6 +26,27 @@
+ (2006.05.15)
+ </blockquote>
+ 
++<p>maradns-1.0.37:
++<blockquote>
++This is an update for the 1.0 legacy branch of MaraDNS
++<ul>
++<li>Removed all example mararc files which allow any IP on the internet
++    to perform recursive queries (these can be used for denial of service
++    attacks)
++</ul>
++(2006.04.07)
++</blockquote>
++
++<p>maradns-1.2.03.6:
++<blockquote>
++Unless there is demand from MaraDNS' users, this will be the last release
++for the legacy 1.2.03 branch of MaraDNS.
++<ul>
++<li>Backport of zoneserver startup fix from the 1.2.07 branch.
++</ul>
++(2006.04.07)
++</blockquote>
++
+ <p>maradns-1.2.07.2:
+ <blockquote>
+ <ul>
+@@ -297,9 +328,9 @@
+ <li>Document minor updates: default value of <tt>timestamp_type</tt> is
+     now five (this was changed in 1.1.60); Clarify that maradns needs to
+     be restarted to reload zones in <A 
+-    href=http://www.maradns.org/tutorial/1.2/dnsslave.html>DNSslave</A> 
++    href="http://www.maradns.org/tutorial/1.2/dnsslave.html">DNSslave</A> 
+     document; corrected misspelled words and minor grammatical errors
+-    in <A href=http://www.maradns.org/tutorial/1.2/quick_start.html>the
++    in <A href="http://www.maradns.org/tutorial/1.2/quick_start.html">the
+     Quick Start guide</A>
+ <li>Mac OS X port: MaraDNS sucessfully compiles on Mac OS X (Darwin) again;
+     all compile-time warnings removed.
+@@ -383,7 +414,7 @@
+ <ul>
+ <li>SECURITY FIX: Made the RNG algorithm resistant to cache sniffing 
+     attacks.  See <A 
+-href=http://www.maradns.org/download/patches/maradns-1.0.34-rng.patch>this 
++href="http://www.maradns.org/download/patches/maradns-1.0.34-rng.patch">this 
+     page</A> for a full description of this security issue.
+ <li>Modified configure script to not compile on unsupported systems.
+ </ul>

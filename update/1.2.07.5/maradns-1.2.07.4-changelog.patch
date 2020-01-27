@@ -1,0 +1,17 @@
+--- maradns-1.2.07.4/doc/en/source/changelog.embed	2006-05-22 23:13:13.000000000 -0700
++++ maradns-1.2.07.5/doc/en/source/changelog.embed	2006-05-29 00:46:54.000000000 -0700
+@@ -1,5 +1,14 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.07.5:
++<blockquote>
++<ul>
++<li>Bugfix: ANY queries point to star records now works
++<li>pdf file problems should be fixed
++</ul>
++(2006.05.29)
++</blockquote>
++
+ <p>maradns-1.2.07.4:
+ <blockquote>
+ <ul>

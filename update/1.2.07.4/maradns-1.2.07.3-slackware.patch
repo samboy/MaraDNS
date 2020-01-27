@@ -1,0 +1,15 @@
+--- maradns-1.2.07.4/doc/en/webpage/download.embed.orig	2006-05-21 23:10:23.000000000 -0700
++++ maradns-1.2.07.4/doc/en/webpage/download.embed	2006-05-21 23:10:38.000000000 -0700
+@@ -73,6 +73,12 @@
+ href="download/1.2/1.2.07.3/maradns-1-2-07-3-win32.zip.rmd.asc">GPG signature
+ using RIPEMD160 as the digest algorithm</A><p>
+ 
++<h3>Slackware Package</h3>
++
++Daniel Zilli has made a Slackware package of maradns, which can be
++downloaded <A
++href="download/1.2/3rd_party/maradns-1.2.07.3-i486-2.tgz">here</A>.<p>
++
+ <hr>
+ 
+ <h2>Legacy release</h2>

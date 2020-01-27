@@ -1,0 +1,222 @@
+diff -ur maradns-orig/parse/Csv2_parse.c maradns-1.2.11/parse/Csv2_parse.c
+--- maradns-orig/parse/Csv2_parse.c	2006-07-14 23:22:57.000000000 -0500
++++ maradns-1.2.11/parse/Csv2_parse.c	2006-07-15 16:41:20.000000000 -0500
+@@ -941,6 +941,13 @@
+ 	if(js_qissame("rt",text_rtype) == 1) {
+ 		return RR_RT;
+ 	}
++	/* Obscure RFC1706 RRs follow */
++	if(js_qissame("nsap",text_rtype) == 1) {
++		return RR_NSAP;
++	}
++	if(js_qissame("nsap-ptr",text_rtype) == 1) {
++		return RR_NSAP_PTR;
++	}
+ 	return -1;
+ }
+ 
+@@ -1254,6 +1261,7 @@
+ 		case RR_NS:
+ 		case RR_CNAME:
+ 		case RR_PTR:
++		case RR_NSAP_PTR:
+ 		case RR_MB:
+ 			if(csv2_get_1st(stream,csv2_is_dchar,0) != 
+ 					JS_SUCCESS) {
+@@ -1285,6 +1293,9 @@
+ 			rddata = csv2_get_mx(stream,zone,10);
+ 			rtype = RR_MX;
+ 			break;
++		case RR_NSAP:
++			rddata = csv2_get_hex(stream);
++			break;
+ 		default:
+ 			/* RAW rtype */
+ 			if(rtype >= 100000 && rtype <= 165535) {
+@@ -1292,15 +1303,27 @@
+ 				if(rtype == RR_ANY) {
+ 					csv2_error(stream,
+ 				  "ANY (255) record type isn't for data");
+-                                } else if(rtype == 251) {
++                                } else if(rtype == RR_IXFR) {
+ 					csv2_error(stream,
+ 				  "IXFR (251) record type isn't for data");
+-                                } else if(rtype == 252) {
++                                } else if(rtype == RR_AXFR) {
+ 					csv2_error(stream,
+ 				  "AXFR (252) record type isn't for data");
++                                } else if(rtype == RR_MAILB) {
++					csv2_error(stream,
++				  "MAILB record type isn't for data");
++                                } else if(rtype == RR_MAILA) {
++					csv2_error(stream,
++				  "MAILA record type isn't for data");
+ 				} else if(rtype == RR_A6) {
+ 					csv2_error(stream,
+ 				  "MaraDNS doesn't allow A6 records");
++				} else if(rtype == RR_DNAME) {
++					csv2_error(stream,
++				  "MaraDNS doesn't allow DNAME records");
++				} else if(rtype == RR_OPT) {
++					csv2_error(stream,
++				  "OPT record type isn't for zone files");
+                                 } else {
+ 				    rddata = csv2_get_raw(stream);
+ 				}
+diff -ur maradns-orig/parse/Csv2_rr_wks.c maradns-1.2.11/parse/Csv2_rr_wks.c
+--- maradns-orig/parse/Csv2_rr_wks.c	2006-07-14 23:22:57.000000000 -0500
++++ maradns-1.2.11/parse/Csv2_rr_wks.c	2006-07-15 16:37:58.000000000 -0500
+@@ -33,7 +33,7 @@
+ /* The highest port number we allow */
+ #define CSV2_WKS_HIGHPORT 1024
+ 
+-/* Functions specifically designed to parse A records */
++/* Functions specifically designed to parse obscure records */
+ 
+ /* This function is designed to tell us if the character in question is
+  * a wks delimiter (comma, tab, or space) */
+@@ -47,7 +47,7 @@
+ }
+ 
+ /* Get an WKS record from the stream (ignoring any leading whitespace) and
+- * return a js_string object with the raw rddata for the A record */
++ * return a js_string object with the raw rddata for the WKS record */
+ js_string *csv2_get_wks(csv2_read *stream) {
+ 	js_string *ddip; /* The 32-bit IP address */
+ 	js_string *out;
+@@ -243,3 +243,97 @@
+ 	return out;
+ }
+ 
++/* This processes RRs that use hexadecimal numbers (NSAP, possibly others) */
++
++js_string *csv2_get_hex(csv2_read *stream) {
++	js_string *out;
++	int32 look;
++	int place;
++
++	/* Get the two-byte "0x" prefix; return an error if this prefix
++         * is not present */
++        if(csv2_get_1st(stream,csv2_is_number,0) != JS_SUCCESS) {
++		return 0;
++	}
++	if(csv2_justread(stream) != '0') {
++		return 0;
++	}
++	if(csv2_read_unicode(stream) != 'x') {
++		return 0;
++	}	
++
++	look = -1;
++	place = 0;
++
++	out = js_create(256,1);
++	if(out == 0) {
++		return 0;
++	}
++
++	while(look != -2 && !csv2_is_delimiter(look)) {
++		int lnybble, rnybble, chr;
++		int x;
++
++		look = csv2_read_unicode(stream);
++		x = 0;
++		/* Get the left nybble */				
++		while(look == '.' && x < 10000) {
++			look = csv2_read_unicode(stream);
++			x++;
++		}
++		if(look >= '0' && look <= '9') {
++			lnybble = look - '0';
++		}
++		else if(look >= 'a' && look <= 'f') {
++			lnybble = look - 'a';
++		}
++		else if(look >= 'A' && look <= 'F') {
++			lnybble = look - 'A';
++		}
++		else if(look == -2 || csv2_is_delimiter(look)) {
++			break;
++		}
++		else {
++			csv2_error(stream,"Unexpected char");
++			js_destroy(out);
++			return 0;
++		}
++		look = csv2_read_unicode(stream);
++		/* Get the right nybble */				
++		if(look == '.') {
++			csv2_error(stream,"Dot not at byte boundary");
++			js_destroy(out);
++			return 0;
++		}
++		if(look >= '0' && look <= '9') {
++			rnybble = look - '0';
++		}
++		else if(look >= 'a' && look <= 'f') {
++			rnybble = look - 'a';
++		}
++		else if(look >= 'A' && look <= 'F') {
++			rnybble = look - 'A';
++		}
++		else if(look == -2 || csv2_is_delimiter(look)) {
++			csv2_error(stream,"Record must end on byte boundary");
++			js_destroy(out);
++			return 0;
++		}
++		else {
++			csv2_error(stream,"Unexpected char");
++			js_destroy(out);
++			return 0;
++		}
++		chr = (((lnybble & 0xf) << 4) | (rnybble & 0xf)) & 0xff;
++		if(place + 7 > out->max_count) {
++			js_destroy(out);
++			return 0;
++		}
++		out->unit_count = place + 1;
++		*(out->string + place) = chr;
++		place++;
++	}
++
++	return out;
++}
++
+--- maradns-orig/doc/en/source/csv2.ej	2006-07-14 23:22:57.000000000 -0500
++++ maradns-1.2.11/doc/en/source/csv2.ej	2006-07-15 16:47:22.000000000 -0500
+@@ -358,6 +358,27 @@
+ example.net. RT 10 relay.example.net.
+ </pre>
+ 
++<h2>NSAP and NSAP-PTR</h2>
++
++NSAP and NSAP-PTR records were proposed in RFC1706.  A NSAP record is
++a hexadecimal number preceeded by the string "0x" and with optional dots
++between bytes.  This hexadecimal number is converted in to a binary number
++by MaraDNS.  A NSAP-PTR record is idenical to a PTR record, but has a 
++different RTYPE.
++
++<p>
++
++More information about these records can be obtained from RFC1706.
++
++<p>
++
++If used, here is how the records would look in a csv2 zone file:
++
++<pre>
++example.net. NSAP 0x47.0005.80.005a00.0000.0001.e133.ffffff000162.00
++example.net. NSAP-PTR nsap.example.net.
++</pre>
++
+ <h1>EXAMPLE ZONE FILE</h1>
+ 
+ <pre>
+--- maradns-1.2.11/parse/Csv2_functions.h.orig	2006-07-15 16:56:08.000000000 -0500
++++ maradns-1.2.11/parse/Csv2_functions.h	2006-07-15 16:56:36.000000000 -0500
+@@ -276,3 +276,5 @@
+ int csv2_is_alphanum_ordot(int32 in);
+ js_string *csv2_get_wks(csv2_read *stream);
+ js_string *csv2_get_mbox(csv2_read *stream, js_string *zone, int count);
++js_string *csv2_get_hex(csv2_read *stream);
++

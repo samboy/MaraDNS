@@ -1,0 +1,351 @@
+diff -ur maradns-1.2.11/parse/Csv2_functions.h maradns-loc/parse/Csv2_functions.h
+--- maradns-1.2.11/parse/Csv2_functions.h	2006-07-17 22:27:37.000000000 -0500
++++ maradns-loc/parse/Csv2_functions.h	2006-07-17 22:25:21.000000000 -0500
+@@ -277,4 +277,5 @@
+ js_string *csv2_get_wks(csv2_read *stream);
+ js_string *csv2_get_mbox(csv2_read *stream, js_string *zone, int count);
+ js_string *csv2_get_hex(csv2_read *stream);
++js_string *csv2_get_loc(csv2_read *stream);
+ 
+diff -ur maradns-1.2.11/parse/Csv2_parse.c maradns-loc/parse/Csv2_parse.c
+--- maradns-1.2.11/parse/Csv2_parse.c	2006-07-17 22:27:37.000000000 -0500
++++ maradns-loc/parse/Csv2_parse.c	2006-07-17 17:06:48.000000000 -0500
+@@ -956,6 +956,10 @@
+ 	if(js_qissame("gpos",text_rtype) == 1) {
+ 		return RR_GPOS;
+ 	}
++	/* Almost obscure RFC1876 RR */
++	if(js_qissame("loc",text_rtype) == 1) {
++		return RR_LOC;
++	}
+ 	return -1;
+ }
+ 
+@@ -1322,6 +1326,9 @@
+ 		case RR_GPOS:
+ 			rddata = csv2_get_txt(stream,3);
+ 			break;
++		case RR_LOC:
++			rddata = csv2_get_loc(stream);
++			break;
+ 		default:
+ 			/* RAW rtype */
+ 			if(rtype >= 100000 && rtype <= 165535) {
+diff -ur maradns-1.2.11/parse/Csv2_rr_wks.c maradns-loc/parse/Csv2_rr_wks.c
+--- maradns-1.2.11/parse/Csv2_rr_wks.c	2006-07-17 22:27:37.000000000 -0500
++++ maradns-loc/parse/Csv2_rr_wks.c	2006-07-17 22:18:59.000000000 -0500
+@@ -46,6 +46,11 @@
+         return (csv2_is_alphanum(in) || in == '.');
+ }
+ 
++/* Match on [0-9\-] */
++int csv2_is_signed_num(int32 in) {
++	return ((in >= '0' && in <= '9') || in == '-');
++}
++
+ /* Get an WKS record from the stream (ignoring any leading whitespace) and
+  * return a js_string object with the raw rddata for the WKS record */
+ js_string *csv2_get_wks(csv2_read *stream) {
+@@ -87,7 +92,7 @@
+ 		/* This is one of the few places where we treat a newline
+ 		 * differently than a space or tab; a newline (or EOF) ends
+ 		 * the WKS list of ports */
+-		if(look == -2 || look == '\n') {
++		if(look == -2 || look == '\n' || look == '\r') {
+ 			break;
+ 		}
+ 		/* Comments also end the WKS list of ports */
+@@ -337,3 +342,253 @@
+ 	return out;
+ }
+ 
++/* This gets an integer from the data stream; we use the multiply factor to
++ * allow semi-decimal fractions; If the multiply factor is 0, then the number
++ * is a standard integer.  If the factor is 1, we can have precisely one 
++ * number after the decimal; 1.1 becomes "11" and 32.6 becomes "326".  If the
++ * factor is two 1.23 becomes "123" */
++
++int32 csv2_get_int(csv2_read *stream, int mulfactor) {
++	int out = 0;
++	int32 look;
++	int x;
++	int decimal = 0;
++	int sign = 1;
++
++	if(mulfactor == 3) {
++		mulfactor = 1000;
++	} else if(mulfactor == 2) {
++		mulfactor = 100;
++	} else if(mulfactor == 1) {
++		mulfactor = 10;
++	} else if(mulfactor == 0) {
++		mulfactor = 1;
++	} else {
++		return 0;
++	}
++
++	look = csv2_justread(stream);
++	if(look == '-') {
++		sign = -1;
++		look = csv2_read_unicode(stream);
++	}
++
++	for(x = 0; x < 100; x++) {
++		if(!csv2_is_number_or_dot(look)) {
++			return out * mulfactor * sign;
++		}
++		else if(csv2_is_number(look)) {
++			out *= 10;
++			out += look - '0';
++		}
++		else if(look == '.') {
++			decimal = 0;
++			out *= mulfactor;
++			look = csv2_read_unicode(stream);
++			while(csv2_is_number(look) && mulfactor > 1) {
++				mulfactor /= 10;
++				decimal += (look - '0') * mulfactor;
++				look = csv2_read_unicode(stream);
++			}
++			return (out + decimal) * sign;
++		}
++		look = csv2_read_unicode(stream);
++	}
++	return 0;
++		
++}
++
++/* This processes the latitude and longitude in a LOC RR */
++uint32 csv2_get_lon_lat(csv2_read *stream, char r1, char r2, char r3, 
++			char r4) {
++	uint32 out;
++	int degrees = 0;
++	int mins = 0;
++	int secs = 0;
++	int32 look;
++	
++	if(csv2_get_1st(stream,csv2_is_number,0) != JS_SUCCESS) {
++		return 0;
++	}
++
++	degrees = csv2_get_int(stream,0);
++	
++	if(csv2_get_1st(stream,csv2_is_alphanum,0) != JS_SUCCESS) {
++		return 0;
++	}
++
++	look = csv2_justread(stream);
++	if(look == r1 || look == r2 || look == r3 || look == r4) {
++		goto process;
++	} else if(csv2_is_number(look)) {
++		mins = csv2_get_int(stream,0);
++	} else {
++		return 0;
++	}
++
++	if(csv2_get_1st(stream,csv2_is_alphanum,0) != JS_SUCCESS) {
++		return 0;
++	}
++
++	look = csv2_justread(stream);
++	if(look == r1 || look == r2 || look == r3 || look == r4) {
++		goto process;
++	} else if(csv2_is_number(look)) {
++		secs = csv2_get_int(stream,3);
++	} else {
++		return 0;
++	}
++
++	if(csv2_get_1st(stream,csv2_is_alphanum,0) != JS_SUCCESS) {
++		return 0;
++	}
++	look = csv2_justread(stream);
++	
++process:
++
++	if(look != r1 && look != r2 && look != r3 && look != r4) {
++		return 0;
++	}
++
++	out = 2147483648U;
++	
++	if(look == r1 || look == r2) {
++		out += (degrees * 3600000 + mins * 60000 + secs);
++	} else {
++		out -= (degrees * 3600000 + mins * 60000 + secs);
++	}
++
++	/* Advance the ticker, otherwise the next csv2_get_1st will think
++         * we're on the N/S/E/W character */
++	csv2_read_unicode(stream);
++
++	return out;
++
++}
++
++/* This processes the rather complicated LOC RR */
++js_string *csv2_get_loc(csv2_read *stream) {
++	uint32 lat = 0;
++	uint32 lon = 0;
++	uint32 alt = 0;
++	int size = -1;
++	int hpre = -1;
++	int vpre = -1;
++	int32 look;
++	int32 get;
++	int x;
++
++	js_string *out;
++
++	/* Get the latitude and longitude */
++	lat = csv2_get_lon_lat(stream,'N','n','S','s');
++	lon = csv2_get_lon_lat(stream,'E','e','W','w');
++
++	/* Get the altitude */
++	if(csv2_get_1st(stream,csv2_is_signed_num,0) == 0) {
++		return 0;
++	}
++	get = csv2_get_int(stream,2);
++	get += 10000000;
++	if(get < 0) {
++		return 0;
++	}
++	alt = get;
++	look = csv2_read_unicode(stream);
++	if(look == 'm') {
++		look = csv2_read_unicode(stream);
++	}
++
++	/* (optionally) get the size, horizontal precision, and vertical 
++         * precision */	
++	get = -2;
++	for(x = 0; x < 100; x++) {
++		if(csv2_is_wks(look) || look == '\r' || look == '\n' ||
++                   look == -2 || csv2_is_hash(look)) {
++			int q = 1;
++			int v = 0;
++			if(get != -2) {
++				if(get == -1) {
++					get = 1;
++				}
++				while(get > 10 && q < 10) {
++					q++;
++					get /= 10;
++				}
++				q++;
++				v = (get & 0xf) << 4;
++				v |= q & 0xf;
++				if(size == -1) {
++					size = v;
++				}
++				else if(hpre == -1) {
++					hpre = v;
++				}
++				else if(vpre == -1) {
++					vpre = v;
++				}
++				else {
++					printf("here\n");
++					return 0;
++				}
++				get = -2;
++			}
++		}
++		if(look == -2 || look == '\n' || look == '\r') {
++			break;
++		}
++		else if(csv2_is_hash(look)) {
++			process_comment(stream);
++			break;
++		}
++		else if(csv2_is_number(look)) {
++			if(get < 0) {
++				get = 0;
++			}
++			get *= 10;
++			get += look - '0';
++		}
++		else if(!csv2_is_wks(look) && look != 'm') {
++			return 0;
++		}
++		look = csv2_read_unicode(stream);
++	}	
++
++	if(size == -1) {
++		size = 0x12;
++	}
++	if(hpre == -1) {
++		hpre = 0x16;
++	}
++	if(vpre == -1) {
++		vpre = 0x13;
++	}
++			
++	if((out = js_create(18,1)) == 0) {
++		return 0;
++	}
++	*(out->string) = 0;
++	/* Placeholder: Make size and both precisions 0x11 */
++	*(out->string + 1) = size & 0xff;	
++	*(out->string + 2) = hpre & 0xff;	
++	*(out->string + 3) = vpre & 0xff;	
++	/* Latitude */
++	*(out->string + 4) = (lat >> 24) & 0xff;
++	*(out->string + 5) = (lat >> 16) & 0xff;
++	*(out->string + 6) = (lat >>  8) & 0xff;
++	*(out->string + 7) = lat & 0xff;
++	/* Longitude */
++	*(out->string + 8) = (lon >> 24) & 0xff;
++	*(out->string + 9) = (lon >> 16) & 0xff;
++	*(out->string + 10) = (lon >>  8) & 0xff;
++	*(out->string + 11) = lon & 0xff;
++	/* Altitude */
++	*(out->string + 12) = (alt >> 24) & 0xff;
++	*(out->string + 13) = (alt >> 16) & 0xff;
++	*(out->string + 14) = (alt >>  8) & 0xff;
++	*(out->string + 15) = alt & 0xff;
++	out->unit_count = 16;
++	return out;
++	
++}
++	
+--- maradns-1.2.11/doc/en/source/csv2.ej	2006-07-17 22:27:37.000000000 -0500
++++ maradns-loc/doc/en/source/csv2.ej	2006-07-17 22:40:03.000000000 -0500
+@@ -404,7 +404,7 @@
+ Example:
+ 
+ <pre>
+-example.net. GPOS '19.283';'-98.6502';'7034'
++example.net. GPOS '-98.6502';'19.283';'2134'
+ </pre>
+ 
+ More information about this record can be found in RFC1712.
+@@ -414,6 +414,28 @@
+ This resource record is not actively used; for the relatively few people
+ who encode their position in DNS, the LOC record is far more common.
+ 
++<h2>LOC</h2>
++
++The LOC recource record is an uncommonly used resource record that 
++describes the position of a given server.  LOC records are described
++in RFC1876.  
++
++<p>
++
++Note that MaraDNS' LOC parser assumes that the altitude,
++size, horizontal, and vertical precision numbers are always expressed
++in meters.  Also note that that sub-meter values for size, horizontal, and 
++vertical precision are not allowed.  Additionally, the altitude can not 
++be greater than 21374836.47 meters.
++
++<p>
++
++Example:
++
++<pre>
++example.net. LOC 19 31 2.123 N 98 3 4 W 2000m 2m 4m 567m
++</pre>
++
+ <h1>EXAMPLE ZONE FILE</h1>
+ 
+ <pre>

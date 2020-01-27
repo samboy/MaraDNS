@@ -1,0 +1,61 @@
+--- maradns-1.2.07.3/doc/en/source/example_csv2	2005-06-11 15:26:52.000000000 -0700
++++ maradns-1.2.07.2/doc/en/source/example_csv2	2006-05-15 16:12:48.000000000 -0700
+@@ -19,6 +19,10 @@
+ # common field, the zone file format allows a compact representation
+ # of it.
+ a.example.net. 	10.10.10.10
++# Here, you can see that a single name, "b.example.net." has multiple IPs
++# This can be used as a primitive form of load balancing; MaraDNS will
++# rotate the IPs so that first IP seen by a DNS client changes every time
++# a query for "b.example.net." is made
+ b.example.net.  10.10.10.11
+ b.example.net.  10.10.10.12
+ 
+--- maradns-1.2.07.3/doc/en/source/authoritative.ej	2005-12-13 14:31:59.000000000 -0800
++++ maradns-1.2.07.2/doc/en/source/authoritative.ej	2006-05-15 16:21:16.000000000 -0700
+@@ -4,7 +4,7 @@
+ 
+ </HEAD><BODY>
+ 
+-<!-- Copyright 2005 Sam Trenholme
++<!-- Copyright 2005, 2006 Sam Trenholme
+ 
+     TERMS
+ 
+@@ -28,6 +28,7 @@
+ <li><A href=#marazone>Setting up a domain with MaraDNS</A>
+ <li><A href=#zonesetup>Setting up a domain zone file</A>
+ <li><A href=#format>The format of a Domain Zone file</A>
++<li><A href=#multiple>A single name can have multiple records</A>
+ <li><A href=#percent>The % character shortcut</A>
+ <li><A href=#register>Getting connected to the root name servers</A>
+ <li><A href=#2ips>Getting two IPs</A>
+@@ -268,6 +269,28 @@
+ the number of problems one will encounter, should one need to change their
+ IPs at a later time.
+ 
++<A name=multiple>
++<H2>A single name can have multiple records</H2></A>
++
++A single name can have multiple records.  This is useful when one wishes
++to have, for example, multiple machines processing requests for 
++<tt>www.example.com</tt>.  
++
++<p>
++
++For example:
++
++<pre>
++www.example.com.	10.10.10.10
++www.example.com.	10.10.10.11
++www.example.com.	10.10.10.12
++</pre>
++
++In this example, a query to <tt>www.example.com</tt> will return a list of
++three IPs.  MaraDNS rotates the records so that the first IP given to 
++a client changes each time a query for <tt>www.example.com</tt> is made.  
++This can be used as a primitive kind of load balancing.
++
+ <A name=percent>
+ <H2>The % character shortcut</H2></A>
+ 

@@ -1,0 +1,85 @@
+The MaraDNS resolver used to reject any DNS packet with an answer which 
+was not a direct (or direct-made-CNAME) answer to our question.  Alas,
+akadns.net, microsoft.com's nameservers, send out several answers which
+are not the answer to our question in the answer section of their reply.
+
+These packets are rather unusual and break the behavior which MaraDNS
+has had for over three years.  Since Microsoft.com is such a popular
+site, I need to change my code to conform to Microsoft's unusual
+interpretation of the standards.
+
+This patch changes MaraDNS' resolver.  Instead of rejecting the entire
+packet with the unwanted answer, we now skip past any answers which are
+not direct replies (or replies with the RR type changed to CNAME) to
+the question we asked.
+
+This fixes the microsoft.com problems.
+
+- Sam
+
+--- maradns-1.2.08/server/recursive.c	2006-06-11 00:16:32.000000000 -0700
++++ maradns-1.2.09/server/recursive.c	2006-06-14 00:33:43.000000000 -0700
+@@ -1922,14 +1922,61 @@
+                         }
+                     goto cleanup;
+ 		    }
++                /* Check to see if this is the CNAME form of the answer.
++                 * If not... */
+                 if(substring_issame_case(uindata,offset,len,query) != 1) {
++                    int rdlength;
++                    /* We look at the next answer given and discard this 
++                     * one; we used to discard the entire DNS packet
++                     * at this point but that, alas, breaks microsoft.com */
+                     if(rlog_level >= 4) {
+                         log_lock();
+                         show_timestamp();
+-                        printf("substring_issame_case problem\n");
++                        printf("substring_issame_case is skipping answer\n");
+                         log_unlock();
+                         }
+-                    goto minus2;
++                    /* Jump past CLASS and TTL */
++                    offset += len + 6;
++                    /* Bounds checking, as always */
++                    if(offset + 2 > uindata->unit_count) {
++                        if(rlog_level >= 4) {
++                            log_lock();
++                            show_timestamp();
++                            printf("uindata string truncated\n");
++                            log_unlock();
++                            }
++                        goto minus2;
++                        }
++                    /* Find out how long this answer is */
++                    rdlength = ((*(uindata->string + offset ) & 0xff) << 8) 
++                               + *(uindata->string + offset + 1);
++                    /* And jump past this answer */
++                    offset += rdlength + 2;
++                    /* Again, bounds checking */
++                    if(offset >= uindata->unit_count) {
++                        if(rlog_level >= 4) {
++                            log_lock();
++                            show_timestamp();
++                            printf("uindata string ended\n");
++                            log_unlock();
++                            }
++                        goto minus2;
++                        }
++                    /* And now let's reset some stuff so we can inspect 
++                     * the next answer the remote server gave us */
++                    counter--;
++                    is_arpa_address = 0;
++                    if(change_rtype(query,cname_original_record) == JS_ERROR) {
++                        if(rlog_level >= 4) {
++                            log_lock();
++                            show_timestamp();
++                            printf("change_rtype restore problem\n");
++                            log_unlock();
++                            }
++                        goto cleanup;
++                        }
++                    /* And jump back to the beginning of this do { loop */
++                    continue;
+ 		    }
+                 /* If it is a CNAME answer, DNS servers have this way
+                    of politely also giving us the IP the CNAME points to

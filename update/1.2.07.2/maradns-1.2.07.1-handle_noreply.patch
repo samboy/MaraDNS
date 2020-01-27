@@ -1,0 +1,33 @@
+diff -ur maradns-1.2.07.1/doc/en/source/mararc.ej maradns-1.2.07.2/doc/en/source/mararc.ej
+--- maradns-1.2.07.1/doc/en/source/mararc.ej	2006-03-22 00:00:24.000000000 -0800
++++ maradns-1.2.07.2/doc/en/source/mararc.ej	2006-04-05 00:24:38.000000000 -0700
+@@ -459,7 +459,7 @@
+ If this is set to 2, a "this host does not exist" message will be sent
+ to the DNS client.
+ 
+-The default value for this is 2.
++The default value for this is 1.
+ 
+ <h2>hide_disclaimer</h2>
+ If this is set to "YES", MaraDNS will not display the legal disclaimer when
+diff -ur maradns-1.2.07.1/server/MaraDNS.c maradns-1.2.07.2/server/MaraDNS.c
+--- maradns-1.2.07.1/server/MaraDNS.c	2006-03-10 01:59:46.000000000 -0800
++++ maradns-1.2.07.2/server/MaraDNS.c	2006-04-05 00:24:00.000000000 -0700
+@@ -4009,7 +4009,7 @@
+     int max_q_total; /* Maximum total queries in attempt to resolve hostname */
+     int timeout; /* Maximum time to wait for a remote server when performing
+                     a recursive query */
+-    int handle_noreply = 2; /* How tohandle a recursive query when you don't 
++    int handle_noreply = 1; /* How tohandle a recursive query when you don't 
+                              * get a remote reply at all */
+ #else
+ /* Cygwin doesn't have ipv6 support yet */
+@@ -4193,7 +4193,7 @@
+         min_visible_ttl = 5;
+ 
+ #ifndef AUTHONLY
+-    handle_noreply = read_numeric_kvar("handle_noreply",2);
++    handle_noreply = read_numeric_kvar("handle_noreply",1);
+     if(handle_noreply < 0 || handle_noreply > 2) {
+         harderror("handle_noreply must have a value between 0 and 2");
+     }

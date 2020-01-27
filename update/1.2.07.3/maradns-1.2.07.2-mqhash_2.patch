@@ -1,0 +1,13 @@
+--- maradns-Q.20060505.1/tools/misc/mqhash.c	2006-05-05 12:40:07.000000000 -0700
++++ maradns-1.2.07.3/tools/misc/mqhash.c	2006-05-08 09:11:56.000000000 -0700
+@@ -128,8 +128,8 @@
+ 	    }
+     else if(argc == 5) {
+             n = atoi(argv[2]);
+-            if(n < 1 || n > 9) {
+-                printf("n must be between 1 and 9\n");
++            if(n < 2 || n > 9) {
++                printf("n must be between 2 and 9\n");
+                 exit(4);
+                 }
+             } 

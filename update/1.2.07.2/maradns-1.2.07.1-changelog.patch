@@ -1,0 +1,31 @@
+--- maradns-1.2.07.1/doc/en/source/changelog.embed	2006-03-22 00:00:24.000000000 -0800
++++ maradns-1.2.07.2/doc/en/source/changelog.embed	2006-04-05 01:30:19.000000000 -0700
+@@ -1,5 +1,20 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.07.2:
++<blockquote>
++<ul>
++<li>Location of Duende in the zoneserver startup script was broken.  Fixed.
++    Thanks to Daniel Zilli for finding this.
++<li>Have the server return "server fail" instead of "format error" when no
++    nameservers can be contacted when trying to resolve a given host name.
++<li>Make the default behavior for the above case be to send out that "server
++    fail" message.
++<li>Added Danial Zilli's wonderful Brazilian Portuguese translation of Mara's
++    documents and status messages.
++</ul>
++(2006.04.05)
++</blockquote>
++
+ <p>maradns-1.2.07.1:
+ <blockquote>
+ <ul>
+@@ -20,6 +35,7 @@
+ <li>Broken <tt>upstream_servers</tt> example in docs fixed
+ </ul>
+ (2006.03.21)
++</blockquote>
+ 
+ <p>maradns-1.2.06:
+ This is a testing (possibly unstable) release of MaraDNS.

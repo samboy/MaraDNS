@@ -1,0 +1,116 @@
+--- maradns-1.2.09/server/timestamp.h	2005-03-24 12:27:55.000000000 -0800
++++ maradns-1.2.10/server/timestamp.h	2006-06-19 02:48:28.000000000 -0700
+@@ -20,6 +20,12 @@
+    Input:  The type of timestamp they want.
+            0: "Timestamp: " followed by UNIX timestemp
+            1: Just the UNIX timestamp
++           2: A GMT timestamp in the Spanish language
++           3: A local timestamp in the Spanish language
++           4: A timestamp using asctime(gmtime()); usually in the English language
++           5: No timestamp whatsoever is shown
++           6: ISO GMT timestamp is shown
++           7: ISO local timestamp is shown
+    Output: JS_SUCCESS on success; JS_ERROR on error
+ */
+ 
+@@ -28,7 +34,7 @@
+ /* Display the timestamp based on the timestamp type above
+    Input: None
+    Output: JS_ERROR on error, JS_SUCCESS on success
+-   Outputs to standard output timestamp w/o carraige return
++   Outputs to standard output timestamp w/o carriage return
+ */
+ 
+ int show_timestamp();
+--- maradns-1.2.09/server/timestamp.c	2005-02-26 09:45:09.000000000 -0800
++++ maradns-1.2.10/server/timestamp.c	2006-06-19 02:49:04.000000000 -0700
+@@ -32,6 +32,12 @@
+    Input:  The type of timestamp they want.
+            0: "Timestamp: " followed by UNIX timestemp
+            1: Just the UNIX timestamp
++           2: A GMT timestamp in the Spanish language
++           3: A local timestamp in the Spanish language
++           4: A timestamp using asctime(gmtime()); usually in the English language
++           5: No timestamp whatsoever is shown
++           6: ISO GMT timestamp is shown
++           7: ISO local timestamp is shown
+    Output: JS_SUCCESS on success; JS_ERROR on error
+ */
+ 
+@@ -46,10 +52,9 @@
+ /* Display the timestamp based on the timestamp type above
+    Input: None
+    Output: JS_ERROR on error, JS_SUCCESS on success
+-   Outputs to standard output timestamp w/o carraige return
++   Outputs to standard output timestamp w/o carriage return
+ */
+ 
+-
+ int show_timestamp() {
+     fflush(stdout);
+     if(timestamp_type == 0) { /* Timestamp: <unix timestamp> */
+@@ -84,9 +89,11 @@
+              "Noviembre",
+              "Diciembre" };
+         now = time(0);
+-        /* For some reason, gmtime and locatime are giving the same
+-           value; I don't think this is important enough to persue */
+-        htime = gmtime(&now);
++        if(timestamp_type == 2) { /* GMT timestamp */
++            htime = gmtime(&now);
++        } else { /* local timestamp */
++            htime = localtime(&now);
++        }
+         /* Bounds check */
+         if(htime->tm_mon < 0 || htime->tm_mon > 11)
+             return JS_ERROR;
+@@ -96,7 +103,8 @@
+         printf("%s, %d de %s, a %02d:%02d:%02d ",dow[htime->tm_wday],
+             htime->tm_mday,moy[htime->tm_mon],htime->tm_hour,
+             htime->tm_min,htime->tm_sec);
+-        printf("(UTC) ");
++        if(timestamp_type == 2) /* GMT timestamp */
++            printf("(UTC) ");
+         }
+     else if(timestamp_type == 4) { /* asctime(gmtime(t)) time */
+         char ct[256];
+@@ -114,6 +122,19 @@
+         }
+     else if(timestamp_type == 5) { /* No timestamp whatsoever */
+         }
++    else if(timestamp_type == 6 || timestamp_type == 7) { /* ISO timestamp yyyy-mm-dd hh:mm:ss */
++        struct tm *htime;
++        time_t now;
++        now = time(0);
++        if(timestamp_type == 6) { /* GMT timestamp */
++            htime = gmtime(&now);
++        } else { /* local timestamp */
++            htime = localtime(&now);
++        }
++        printf("%d-%02d-%02d %02d:%02d:%02d ",htime->tm_year+1900,
++            htime->tm_mon+1,htime->tm_mday,htime->tm_hour,htime->tm_min,
++            htime->tm_sec);
++        }
+     /* Feel free to add other timestamp formats here.  The
+        code which gets the number for the timestamp format will
+        accept any numeric value. */
+--- maradns-1.2.09/doc/en/source/mararc.ej	2006-06-11 00:16:32.000000000 -0700
++++ maradns-1.2.10/doc/en/source/mararc.ej	2006-06-19 02:48:29.000000000 -0700
+@@ -818,12 +818,16 @@
+ <dt>2
+ <dd>A GMT timestamp in the Spanish language
+ <dt>3
+-<dd>A GMT timestamp in the Spanish language
++<dd>A (hopefully) local timestamp in the Spanish language
+ <dt>4
+ <dd>A timestamp using asctime(gmtime()); usually in the English language
+ <dt>5
+ <dd>No timestamp whatsoever is shown (this is the best option when
+     maradns is invoked with the <tt>duende</tt> tool).
++<dt>6
++<dd>ISO GMT timestamp is shown
++<dt>7
++<dd>ISO local timestamp is shown
+ </dl>
+ 
+ <p> The default value for this variable is 5.

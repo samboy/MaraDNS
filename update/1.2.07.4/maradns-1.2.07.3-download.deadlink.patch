@@ -1,0 +1,11 @@
+--- maradns-1.2.07.4/doc/en/webpage/download.embed.orig	2006-05-20 20:42:19.000000000 -0700
++++ maradns-1.2.07.4/doc/en/webpage/download.embed	2006-05-20 20:42:45.000000000 -0700
+@@ -30,7 +30,7 @@
+ <p><A 
+ href="download/1.2/1.2.07.3/maradns-1.2.07.3.tar.lzma.sha1.asc">GPG signature</A><p>
+ <p><A 
+-href="download/1.2/1.2.07.3/maradns-1.2.03.3.tar.lzma.rmd.asc">GPG signature
++href="download/1.2/1.2.07.3/maradns-1.2.07.3.tar.lzma.rmd.asc">GPG signature
+ using RIPEMD160 as the digest algorithm</A><p>
+ 
+ <p>

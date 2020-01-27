@@ -1,0 +1,27 @@
+--- maradns-1.2.09/build/mara.startup	2005-10-19 01:45:18.000000000 -0700
++++ maradns-1.2.10/build/mara.startup	2006-06-21 01:58:50.000000000 -0700
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ 
+-# Copyright 2005 Sam Trenholme
++# Copyright 2005-2006 Sam Trenholme
+ 
+ # TERMS
+ 
+@@ -79,6 +79,9 @@
+     ps -e | awk '{print $1":"$NF}' | grep maradns | grep -v $$ | \
+       cut -f1 -d: | xargs kill -9 > /dev/null 2>&1
+     echo MaraDNS should have been stopped
++    if [ $1 = "stop" ] ; then
++    	exit 0
++    fi
+ fi
+ 
+ # If invoked as start or restart, start the MaraDNS processes
+@@ -89,5 +92,6 @@
+ 	# Duende syslogs MaraDNS' output messages and daemonizes MaraDNS
+         $DUENDE $MARADNS -f $a
+     done
++    exit 0
+ fi
+ 

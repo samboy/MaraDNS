@@ -1,0 +1,36 @@
+--- maradns-1.2.09/doc/en/source/changelog.embed	2006-06-14 03:17:28.000000000 -0700
++++ maradns-1.2.10/doc/en/source/changelog.embed	2006-06-21 01:30:04.000000000 -0700
+@@ -1,5 +1,33 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.10:
++<blockquote>
++<ul>
++<li>Issues with á in man pages finally fixed; Perl is such a pain sometimes
++<li>More timestamp types added as per Remmy's patch
++<li>Information about dangling CNAME entries added to FAQ (see Debian
++    bug #373781)
++<li>Explicit <tt>exit 0</tt> added to MaraDNS start/stop script (see Debian
++    bug #374655)
++</ul>
++(2006.06.21)
++</blockquote>
++
++<p>maradns-1.2.07.6:
++<blockquote>
++<ul>
++<li>Backport of MaraDNS 1.2.09 Microsoft.com fix to stable branch
++<li>Backport of MaraDNS 1.2.08 ej2man fix to stable branch
++</ul>
++(2006.06.16)
++</blockquote>
++
++<p>maradns-1.0.38:
++<blockquote>
++Backport of MaraDNS 1.2.09 Microsoft.com fix to legacy 1.0 branch<p>
++(2006.06.16)
++</blockquote>
++
+ <p>maradns-1.2.09:
+ <blockquote>
+ <ul>

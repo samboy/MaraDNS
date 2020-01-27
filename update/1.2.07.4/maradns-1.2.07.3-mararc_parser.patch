@@ -1,0 +1,43 @@
+--- maradns-1.2.07.3/parse/ParseMaraRc.c	2006-03-22 00:00:24.000000000 -0800
++++ maradns-1.2.07.4/parse/ParseMaraRc.c	2006-05-22 22:23:49.000000000 -0700
+@@ -884,11 +884,15 @@
+         valend = quote2 - 1;
+         /* We need to make sure there are no bare words between varend and
+            the first quote, allowing 'foo bar = "baz"' to return an error */
+-        if(ret != 2 && /* Always matches in key["foo"] = "bar" cases */
+-           js_match_offset(alphanumeric,line,varend + 1) < quote1) {
+-            js_qstr2js(var,"ERROR");
+-            js_qstr2js(value,L_2ND_WORD); /* "Second bare word found before quotes" */
+-            return JS_SUCCESS;
++        if(ret != 2) {
++            int q;
++            /* Always matches in key["foo"] = "bar" cases */
++            q = js_match_offset(alphanumeric,line,varend + 1);
++            if(q < quote1 && q != -2) {
++                js_qstr2js(var,"ERROR");
++                js_qstr2js(value,L_2ND_WORD); /* "Second bare word found before quotes" */
++                return JS_SUCCESS;
++                }
+             }
+         }
+     /* If the value is unquoted, then look for bare numbers after = */
+@@ -1157,7 +1161,18 @@
+             }
+         else if(command == 1 && !error) { /* Add element to string object */
+             tnum = keyword2num(var);
+-	    if(tnum == -2 && var->unit_count > 0) {
++            if(tnum == -2) {
++                /* If an error happened parsing the line... */
++                js_qstr2js(tstr,"ERROR");
++                if(js_issame(tstr,var)) {
++                    if(!error) {
++                        error = linenum;
++                        *errorret = error;
++                        js_copy(value,errorstr);
++                        }
++                    }
++                }
++	    if(tnum == -2 && var->unit_count > 0 && !error) {
+ 		printf("FATAL ERROR: Unknown mararc variable ");
+ 		show_esc_stdout(var);
+ 		printf("\nPlease look for the uncommented string \"");

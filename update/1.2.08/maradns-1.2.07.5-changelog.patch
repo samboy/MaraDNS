@@ -1,0 +1,21 @@
+--- maradns-1.2.07.5/doc/en/source/changelog.embed	2006-05-29 00:53:04.000000000 -0700
++++ maradns-1.2.08/doc/en/source/changelog.embed	2006-06-10 00:33:36.000000000 -0700
+@@ -1,5 +1,18 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.08:
++<blockquote>
++<ul>
++<li>Added support for RFC4408 SPF record type
++<li>Added new mararc variable <tt>retry_cycles</tt>.  This allows us to
++    contact all of the DNS servers to resolve a name before giving up.
++<li>Updated ej2man to not put a literal á in man page nroff sources 
++    (Debian's lint doesn't like this).
++<li>Askmara updated to inform user of error from remote DNS server.
++</ul>
++(2006.06.11)
++</blockquote>
++
+ <p>maradns-1.2.07.5:
+ <blockquote>
+ <ul>

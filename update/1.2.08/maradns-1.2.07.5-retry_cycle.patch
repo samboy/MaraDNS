@@ -1,0 +1,141 @@
+--- maradns-1.2.07.5/parse/ParseMaraRc.c	2006-05-22 23:13:13.000000000 -0700
++++ maradns-1.2.08/parse/ParseMaraRc.c	2006-06-09 19:55:05.000000000 -0700
+@@ -31,7 +31,7 @@
+ 
+ /* Keywords that are non-dictionary strings in Mara's rc file */
+ 
+-#define KEYCOUNT 46
++#define KEYCOUNT 47
+ 
+ char *keywords[KEYCOUNT] = {
+         "bind_address", /* IPv4 Addresses to bind to (old name) */
+@@ -123,6 +123,8 @@
+                          * set while MaraDNS is running */
+         "handle_noreply", /* How to handle the case of none of the remote
+                            * servers replying at all */
++        "retry_cycles", /* The number of times we try to contact all of
++                         * the remote DNS servers to resolve a given name */
+         "zone_transfer_acl" /* ACL of IPs allowed to perform zone transfers */
+         };
+ 
+--- maradns-1.2.07.5/server/recursive.c	2006-04-05 02:11:48.000000000 -0700
++++ maradns-1.2.08/server/recursive.c	2006-06-10 00:08:22.000000000 -0700
+@@ -100,13 +100,16 @@
+ /* The amount of logging that the end user desires; this does not
+    output anything in the recursive code unless it is four or
+    higher */
+-
+ int rlog_level = 1;
+ 
+ /* How to handle the case of getting no reply at all from any of the
+  * remote servers */
+ int handle_noreply = 2;
+ 
++/* The number of times we try contacting all of the DNS servers to try
++ * and resolve a name */
++int retry_cycles = 2;
++
+ typedef struct {
+     int id;
+     int sock;
+@@ -2620,6 +2623,7 @@
+     uint32 *i32_copy;
+     js_string *jstr_copy, *glueless_query, *lower;
+     rr *lookatrr;
++    int current_retry_cycle = 0;
+ 
+     /* Make sure we haven't overloaded the recursion depth or maximum glueless
+        level */
+@@ -3030,8 +3034,10 @@
+             result = 0;
+             /* Go through all of the NS servers we have an IP for.  Since
+                we are using a circular linked list, this code is a little
+-               tricky. */
++               tricky.  Do this retry_cycles number of times. */
++            current_retry_cycle = 0;
+             do {
++             do {
+                 if(local_c->datatype == RR_A) {
+                     nsip = *(uint32 *)(local_c->data);
+                     /* Query the nameserver for the answer */
+@@ -3101,6 +3107,8 @@
+                         local_c = local_c_head;
+                     } while(result <= 0 && local_c != local_c_save);
+                 }
++            current_retry_cycle++;
++            } while(result <= 0 && current_retry_cycle < retry_cycles);
+             js_destroy(copy);
+             js_destroy(lower);
+             /* Since we are done with our local copy of the data, we can
+@@ -3117,8 +3125,8 @@
+                 }
+ 	    /* We couldn't contact any nameservers */
+             /* Return a bogus SOA record */
+-	    /* CODE HERE: Return either bogus "not here", "server fail", or
+-                          nothing based on user's preferences */
++	    /* Return either bogus "not here", "server fail", or
++             * nothing based on user's preferences */
+             
+             if(ipret == NULL && ptrret == NULL) { /* If we send a UDP packet
+                                      as an answer */
+@@ -4474,3 +4482,12 @@
+     return JS_SUCCESS;
+     }
+ 
++/* Set the numer of times we try contacting all of the nameservers in the
++ * process of resolving a name */
++int init_retry_cycles(int in) {
++    if(in >= 1 && in <= 31) {
++         retry_cycles = in;
++         }
++    return JS_SUCCESS;
++    }
++
+--- maradns-1.2.07.5/server/MaraDNS.c	2006-05-29 00:53:04.000000000 -0700
++++ maradns-1.2.08/server/MaraDNS.c	2006-06-10 00:17:48.000000000 -0700
+@@ -4103,6 +4103,8 @@
+                     a recursive query */
+     int handle_noreply = 1; /* How tohandle a recursive query when you don't 
+                              * get a remote reply at all */
++    int retry_cycles = 2; /* Number of times to try and contact all of the
++                           * name servers for a given domain */
+ #else
+ /* Cygwin doesn't have ipv6 support yet */
+ #ifndef __CYGWIN__
+@@ -4290,6 +4292,12 @@
+         harderror("handle_noreply must have a value between 0 and 2");
+     }
+     init_handle_noreply(handle_noreply);
++
++    retry_cycles = read_numeric_kvar("retry_cycles",2);
++    if(retry_cycles < 1 || retry_cycles > 31) {
++        harderror("retry_cycles must have a value between 1 and 31");
++        }
++    init_retry_cycles(retry_cycles);
+ #endif /* AUTHONLY */
+ 
+     /* Set the values */
+--- maradns-1.2.07.5/doc/en/source/mararc.ej	2006-04-05 02:11:48.000000000 -0700
++++ maradns-1.2.08/doc/en/source/mararc.ej	2006-06-10 00:22:42.000000000 -0700
+@@ -696,6 +696,11 @@
+ resolving, then decreasing <tt>verbose_level</tt> so as to minimize
+ the size of MaraDNS' log.
+ 
++<h2>retry_cycles</h2>
++retry_cycles: The number of times the recursive resolver will try to contact 
++all of the DNS servers to resolve a given name before giving up.  This 
++feature was added to MaraDNS 1.2.08, and has a default value of 2.
++
+ <h2>spammers</h2>
+ spammers: A list of DNS servers which the recursive resolver will
+ not query.
+--- maradns-1.2.07.5/server/functions_server.h	2006-05-29 00:53:04.000000000 -0700
++++ maradns-1.2.08/server/functions_server.h	2006-06-11 00:08:31.000000000 -0700
+@@ -314,3 +314,7 @@
+ 
+ int bobbit_starlabel(js_string *js);
+ 
++#ifndef AUTHONLY
++int init_retry_cycles(int in);
++#endif /* AUTHONLY */
++

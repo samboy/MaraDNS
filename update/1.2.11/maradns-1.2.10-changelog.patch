@@ -1,0 +1,28 @@
+--- maradns-1.2.10/doc/en/source/changelog.embed	2006-06-21 03:59:31.000000000 -0500
++++ maradns-1.2.11/doc/en/source/changelog.embed	2006-07-17 22:47:33.000000000 -0500
+@@ -1,5 +1,25 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.11:
++<blockquote>
++<ul>
++<li>All known RR types added to <tt>MaraDns.h</tt>
++<li>Support for the following RR types added to CSV2 zone files: HINFO, WKS,
++    MD, MF, MB, MG, MINFO, MR, AFSDB, RP, X25, ISDN, RT, NSAP, NSAP-PTR, PX,
++    GPOS, and LOC.
++<li>Bugfix: We can now have email addresses without @ (using . instead)
++</ul>
++(2006.07.18)
++</blockquote>
++
++<p>maradns-1.2.07.7:
++<blockquote>
++<ul>
++<li>Backport of patch to work around Perl á annoyances to the stable branch.
++</ul>
++(2006.07.12)
++</blockquote>
++
+ <p>maradns-1.2.10:
+ <blockquote>
+ <ul>

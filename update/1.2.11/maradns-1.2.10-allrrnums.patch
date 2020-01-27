@@ -1,0 +1,158 @@
+This patch adds all known RRs to the MaraDns.h header file
+
+--- maradns-1.2.10/MaraDns.h	2006-06-11 00:16:32.000000000 -0700
++++ maradns-1.2.11/MaraDns.h	2006-06-23 12:20:20.000000000 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2005 Sam Trenholme
++/* Copyright (c) 2002-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -63,15 +63,11 @@
+ 
+    * Enter the doc/en/man directory
+   
+-   * If you have Perl on your system, you should be able to update the man 
+-     page by typing in 'make'. 
++   * If you have a recent version of Perl on your system, you should be 
++     able to update the man page by typing in 'make'. 
+ 
+    * Enter the doc/en/tutorial directory
+ 
+-   * If Perl is at /usr/bin, you should be able to update the html 
+-     documentation by typing in make.  Otherwise, change the tools/ej/ej2html
+-     file's first line to point to Perl
+-
+    * Enter the doc/en/tutorial/text directory
+  
+    * If Bash is at /bin, you should be able to update the text documentation
+@@ -267,35 +263,123 @@
+     js_string *rdata; /* variable length resource data */
+     } q_rr;
+ 
++/* This is, as of June 23 2006, a list of all DNS RRs over at 
++   http://www.iana.org/assignments/dns-parameters */
+ /* Some query types and their RFC1035 section 3.2.2 values */
+ /* A record: RFC1035 section 3.4.1 */
+ #define RR_A 1
+ /* NS record: RFC1035 section 3.3.11 */
+ #define RR_NS 2
+-/* Not supported: MD and MF */
++/* Obsolete; RFC1035 */
++#define RR_MD 3
++/* Obsolete; RFC1035 */
++#define RR_MF 4
+ /* CNAME: RFC1035 section 3.3.1 */
+ #define RR_CNAME 5
+ /* SOA: RFC1035 section 3.3.13 */
+ #define RR_SOA 6
+-/* Not supported: MB, MG, MR, NULL, and WKS */
++/* EXPERIMENTAL RFC1035 RRs */
++#define RR_MB 7
++#define RR_MG 8
++#define RR_MR 9
++#define RR_NULL 10
++/* Non-experimental RFC1035 RR */
++#define RR_WKS 11
+ /* PTR: RFC1035 section 3.3.12 */
+ #define RR_PTR 12
+-/* Not supported: HINFO and MINFO */
++/* Two more RFC1035 RRs */
++#define RR_HINFO 13
++#define RR_MINFO 14
+ /* MX: RFC1035 section 3.3.9 */
+ #define RR_MX 15
+ /* TXT: RFC1035 section 3.3.14 */
+-/* Not supported: Multiple character strings in a TXT record */
+ #define RR_TXT 16
+-/* AAAA: ipv6 addresses */
++/* RFC1183 RRs */
++#define RR_RP 17
++#define RR_AFSDB 18
++#define RR_X25 19
++#define RR_ISDN 20
++#define RR_RT 21
++/* RFC1706 RRs */
++#define RR_NSAP 22
++#define RR_NSAP_PTR 23
++/* RFC2535, RFC3755, and RFC4034 RRs */
++#define RR_SIG 24
++#define RR_KEY 25
++/* RFC2163 RR */
++#define RR_PX 26
++/* RFC1212 RR */
++#define RR_SPOS 27
++/* AAAA: ipv6 addresses (Not in an RFC) */
+ #define RR_AAAA 28
+-/* SRV: "service" records */
++/* RFC1876 */
++#define RR_LOC 29 
++/* Obsolete RFC2535 and RFC3755 RR */
++#define RR_NXT 30
++/* "Endpoint" (Not in an RFC) */
++#define RR_EID 31
++/* "Nimrod" (Not in an RFC) */
++#define RR_NIMLOC 32
++/* SRV: "service" records (RFC2782) */
+ #define RR_SRV 33
++/* "ATM address" (Not in an RFC) */
++#define RR_ATMA 34
++/* RFC2168,RFC2915 */
++#define RR_NAPTR 35
++/* RFC2230 */
++#define RR_KX 36
++/* RFC2538 */
++#define RR_CENT 37
++/* DON'T USE THIS A6 RR; harmful RFC2874 */
++#define RR_A6 38
++/* Again, harmful for same reason A6 is harmful; RFC2672 */
++#define RR_DNAME 39
++/* Kitchen Sink RR (Not in an RFC; looks to be a joke but BIND supports it) */
++#define RR_SINK 40
++/* RFC2671 */
++#define RR_OPT 41 
++/* RFC3123 */
++#define RR_APL 42
++/* RFC3658 */
++#define RR_DS 43
++/* RFC4255 */
++#define RR_SSHFP 44
++/* RFC4025 */
++#define RR_IPSECKEY 45
++/* 3 RFC3755 RRs */
++#define RR_RRSIG 46
++#define RR_NSEC 47
++#define RR_DNSKEY 48
++/* 49-98 are unassigned as of 2006/06/23 */
+ /* SPF: sender policy framework (stops forged email) record */
+ #define RR_SPF 99
++/* Four RRs not in an RFC but are IANA-reserved */
++#define RR_UINFO 100
++#define RR_UID 101
++#define RR_GID 102
++#define RR_UNSPEC 103
++/* 104-248 are unassigned as of 2006/06/23 */
++/* RFC2930 */
++#define RR_TKEY 249
++/* RFC2845 */
++#define RR_TSIG 250
++/* RFC251 (treated as AXFR by zoneserver) */
++#define RR_IXFR 251
+ /* AXFR: Special query that requests a zone transfer */
+ #define RR_AXFR 252
++/* RFC1035; not officially obsolete but for all practical purposes
++   obsolete */
++#define RR_MAILB 253
++/* MAILA is officially obsolete */
++#define RR_MAILA 254
+ /* ANY: Special query for all of the records for a given hostname */
+ #define RR_ANY 255
++/* This is not assigned by the IANA, but BIND uses this RR number */
++#define RR_ZXFR 256
++/* "DNSSEC Trust Authorities"; Not in an RFC */
++#define RR_TA 32768
++/* RFC4431 */
++#define RR_DLV 32769
+ /* Some "magic" RR types used by askmara */
+ /* RR_MAGIC_SPACE: Make the character representing the RR a space */
+ #define RR_MAGIC_SPACE -300

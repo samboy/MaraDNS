@@ -1,0 +1,24 @@
+--- maradns-1.2.07.2/doc/en/source/changelog.embed	2006-04-05 02:11:48.000000000 -0700
++++ maradns-1.2.07.3/doc/en/source/changelog.embed	2006-05-15 16:26:32.000000000 -0700
+@@ -1,5 +1,21 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.07.3:
++<blockquote>
++<ul>
++<li>MaraDNS compiles on OpenBSD (Thanks, Adam Montague, for the OpenBSD
++    account).
++<li>MaraDNS RPM file fixed to include <tt>/etc/maradns/logger</tt> directory
++    that the daeminizing tool needs.
++<li>Documentation updated to clarify that a single name can have more than
++    one IP 
++<li>Updated the <tt>mqhash</tt> password management utility (Next: Document
++    this useful little program).
++<li>The binary RPM is now built on CentOS 3.7 instead of RedHat 6.2
++</ul>
++(2006.05.15)
++</blockquote>
++
+ <p>maradns-1.2.07.2:
+ <blockquote>
+ <ul>

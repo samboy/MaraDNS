@@ -1,0 +1,11 @@
+--- maradns-1.2.07.1.orig/server/recursive.c	2006-03-10 01:59:46.000000000 -0800
++++ maradns-1.2.07.1/server/recursive.c	2006-03-21 12:03:02.000000000 -0800
+@@ -4298,7 +4298,7 @@
+         root_or_upstream = 1;
+         if(read_dvar(rootns,rootns_zone,rootns) == JS_ERROR) {
+ 	    /* Let them know they ar eusing the default servers */
+-	    printf("Using default ICANN root servers");
++	    printf("Using default ICANN root servers\n");
+ 	    root_or_upstream = 0; /* We're using root servers, actually */
+             /* Have ICANN be the default list of root servers, since
+ 	     * they are the most stable IPs for set-and-forget environments */

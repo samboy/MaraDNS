@@ -1,0 +1,219 @@
+#!/bin/bash -e
+
+# This script updates MaraDNS 1.2
+
+# To run this script, make sure that this script is in the directory
+# containing the tarball for the version of MaraDNS you wish to update, and
+# all of the patches are in a directory entitled 'patches'.
+
+# For example, to update MaraDNS 1.2.02 to 1.2.03, make sure 
+# maradns-1.2.02.tar.lzma is in the same directory as this script, and
+# that the directory containing this script has a directory called
+# "patches/" which has all of the maradns-1.2.02*.patch files.
+
+# You will need to have lzma on your system to run this script
+
+# Get the current and next version number
+
+CURRENT=${0%%-*}
+CURRENT=${CURRENT##*/}
+NEXT=${0##*-}
+
+# Make a clean CURRENT install, which we rename NEXT
+rm -fr maradns-$CURRENT 2> /dev/null
+rm -fr maradns-$NEXT 2> /dev/null
+echo extracting tarball
+cat maradns-$CURRENT.tar.lzma | lzma d -si -so | tar xf -
+if [ $? != 0 ] ; then
+	echo run this from the correct directory
+	exit 1
+fi
+rm -fr maradns-$NEXT*
+mv maradns-$CURRENT maradns-$NEXT
+cd maradns-$NEXT
+
+# The patches
+
+mkdir update/$NEXT
+cp ../patches/maradns-$CURRENT* update/$NEXT
+
+# This is one of the few places where we will need to change anything
+# in this script from version to version
+
+# The revision number; in the case of having multiple snapshots a day,
+# the revision number can be incremented so as to minimize confusion
+# This is only done when more than one snapshop is uploaded to the
+# maradns.org server in a given day.
+REVISION=.1
+
+echo applying patches
+
+# Patch #1: Add all other RRs to MaraDns.h
+patch -p1 < update/$NEXT/maradns-1.2.10-allrrnums.patch
+
+# Patch #2: Make explicit some parts of the code that use raw numbers
+#           instead of RR_NAME names
+patch -p1 < update/$NEXT/maradns-1.2.10-explicit_rrs.patch
+
+# Patch #3: The (somewhat obscure) HINFO RR 
+patch -p1 < update/$NEXT/maradns-1.2.10-hinfo.patch
+
+# Patch #4: Please upgrade from 1.0 to 1.2 if you have "How do I" questions
+patch -p1 < update/$NEXT/maradns-1.2.10-no-1.0-howdoi_questions.patch
+
+# Patch #5: The obscure WKS RR
+patch -p1 < update/$NEXT/maradns-1.2.10-wks.patch
+
+# Patch #6: Obscure mail-related RRs: MB, MG, MINFO, MR, MD (converted in to
+#           MX as per RFC1035), and MF (also converted to MX).  With this 
+#           patch, MaraDNS supports all RRs in RFC1035 (NULL RRs are not
+#           allowed in master/zone files).
+patch -p1 < update/$NEXT/maradns-1.2.10-mail_rtypes.patch
+
+# Patch #7: Fix bugs in email_2rfc1035 function; make this function 
+#           tolerate both hostnames without @s and zero-length hostnames.
+patch -p1 < update/$NEXT/maradns-1.2.10-email_2rfc1035.patch
+
+# Patch #8: Add support for obscure RFC1183 RRs
+patch -p1 < update/$NEXT/maradns-1.2.10-rfc1183.patch
+
+# Patch #9: Add support for obscure NSAP RR and NSAP-PTR RR
+patch -p1 < update/$NEXT/maradns-1.2.10-nsap.patch
+
+# Patch #10: Add support for obscure PX RR
+patch -p1 < update/$NEXT/maradns-1.2.10-px.patch
+
+# Patch #11: Add support for obscure GPOS RR
+patch -p1 < update/$NEXT/maradns-1.2.10-gpos.patch
+
+# Patch #12: Add support for the obscure LOC RR
+patch -p1 < update/$NEXT/maradns-1.2.10-loc.patch
+
+# Patch: Update RPM spec file (this is always done)
+patch -p1 < update/$NEXT/maradns-$CURRENT-rpm_spec.patch
+mv build/maradns-$CURRENT.spec build/maradns-$NEXT.spec
+
+# Patch: Update changelog (this is always done)
+patch -p1 < update/$NEXT/maradns-$CURRENT-changelog.patch
+
+# Patch: Update download link (this is always done)
+patch -p1 < update/$NEXT/maradns-$CURRENT-download.patch
+
+# Other release-specific fixes and changes go here
+# Remove outdated French documtation
+echo removing outdated French documentation
+rm -fr doc/fr
+echo adding useful remake.patch script
+cp ../remake.patch tools/misc
+
+# Clean out old changes
+rm -fr update/1.2.04
+rm -fr update/1.2.05
+rm -fr update/1.2.06
+
+# Anything below this line normally is not changed between MaraDNS versions
+echo updating documentation
+
+# Update the documentation
+cd doc/en
+make
+cd man
+make
+# The following is time-consuming, so we only do it when making the final
+# tarballs
+if [[ "$1" == "go" || "$1" == "snap" ]] ; then
+	echo making PDF reference
+	./make.pdf
+	echo done
+fi
+cd ../tutorial
+make
+cd ../text
+make
+cd ../webpage
+make
+# Go back to the maradns dir
+cd ../../..
+
+rm CHANGELOG
+ln -s doc/en/changelog.txt CHANGELOG
+
+# Go one level higher than the toplevel directory to copy this script
+# over
+cd ..
+
+# Put this script in the "build" directory
+cp $0 maradns-$NEXT/update/$NEXT
+
+if [[ "$1" != "go" && "$1" != "snap" && "$1" != "work" ]] ; then
+	echo OK, maradns-$NEXT built.  Confirm this compiles and	
+	echo perform basic regression before re-running this to make
+	echo the tarballs.  Once you have tested this, rerun this 
+	echo script as: \"$0 go\" or as \"$0 snap\" 
+        echo to make a daily snapshot
+	exit 0
+fi
+
+if [ "$1" == "work" ] ; then
+	cat maradns-$CURRENT.tar.lzma | lzma d -si -so | tar xf -
+	echo OK, both maradns-$CURRENT and maradns-$NEXT made\; you
+	echo now can make more patches as needed.  
+	exit 0
+fi
+
+# Build the tarballs
+echo making new tarballs
+
+if [ "$1" == "snap" ] ; then
+	SNAP=Q.$( date +%Y%m%d )$REVISION
+	rm -fr maradns-$SNAP
+	mv maradns-$NEXT maradns-$SNAP
+	tar cjf maradns-$SNAP.tar.bz2 maradns-$SNAP
+	exit 0
+else
+	SNAP=$NEXT
+	tar cjf maradns-$SNAP.tar.bz2 maradns-$SNAP
+	tar czf maradns-$SNAP.tar.gz maradns-$SNAP
+
+	# All of the compression we actually use was originally written by 
+	# Igor Pavlov for the 7-zip compression suite
+	echo shrinking .gz tarball
+	advdef -z -3 maradns-$SNAP.tar.gz
+fi
+
+echo using exotic compression
+tar cf maradns-$SNAP.tar maradns-$SNAP
+
+echo lzma compression \(this will take about 5 minutes\)
+date
+# To decompress: cat file.tar.lzma | lzma d -si -so | tar xvf -
+# -d20 makes the file almost as small as -d22, but uses 1/4 of the memory
+# (only a little over one meg needed for decompression)
+lzma e maradns-$SNAP.tar maradns-$SNAP.tar.lzma -a2 -d20 -fb255
+date
+echo
+
+# Clean up the uncompressed tarball
+rm maradns-$SNAP.tar
+
+exit 0
+
+# The other exotic compressors can't be run in a pipeline
+
+echo 7zip compression
+date
+7za a maradns-$SNAP.tar.7z maradns-$SNAP.tar
+date
+echo
+
+echo paq6 compression \(This will take 2\-3 minutes\)
+date
+paq6v2 -2 maradns-$SNAP.tar.pq6 maradns-$SNAP.tar
+date
+echo
+
+echo rzip compression
+date
+rzip maradns-$SNAP.tar
+date
+echo

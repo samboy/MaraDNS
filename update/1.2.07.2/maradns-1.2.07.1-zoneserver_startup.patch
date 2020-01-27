@@ -1,0 +1,25 @@
+Daniel Zilli found out that the Zoneserver startup script can not
+find duende in /usr/bin or /usr/local/bin.  Fixed.
+
+diff -ur maradns-1.2.07.1/build/zoneserver.startup maradns-1.2.07.2/build/zoneserver.startup
+--- maradns-1.2.07.1/build/zoneserver.startup	2005-10-08 19:00:36.000000000 -0700
++++ maradns-1.2.07.2/build/zoneserver.startup	2006-03-28 14:08:19.000000000 -0800
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ 
+-# Copyright 2005 Sam Trenholme
++# Copyright 2005-2006 Sam Trenholme
+ 
+ # TERMS
+ 
+@@ -36,6 +36,10 @@
+ 	DUENDE="/usr/sbin/duende"
+ elif [ -x "/usr/local/sbin/duende" ] ; then
+ 	DUENDE="/usr/local/sbin/duende"
++elif [ -x "/usr/bin/duende" ] ; then
++	DUENDE="/usr/bin/duende"
++elif [ -x "/usr/local/bin/duende" ] ; then
++	DUENDE="/usr/local/bin/duende"
+ else
+ 	echo unable to find duende
+ 	exit 1

@@ -1,0 +1,33 @@
+--- maradns-1.2.07.5/tools/askmara.c	2006-01-21 21:22:01.000000000 -0800
++++ maradns-1.2.07.6/tools/askmara.c	2006-06-01 02:55:58.000000000 -0700
+@@ -542,6 +542,30 @@
+     if(read_hdr(uindata,&header) == JS_ERROR)
+         harderror(L_INHEADER_CONV); /* Problem converting inheader */
+ 
++    /* If not 0, show them the rcode from the remote server */
++    switch(header.rcode) {
++	case 1:
++		printf("# Remote server said: FORMAT ERROR\n");
++		break;
++	case 2:
++		printf("# Remote server said: SERVER FAILURE\n");
++		break;
++	case 3:
++		printf("# Remote server said: NAME ERROR\n");
++		break;
++	case 4:
++		printf("# Remote server said: NOT IMPLEMENTED\n");
++		break;
++	case 5:
++		printf("# Remote server said: REFUSED\n");
++		break;
++	case 0:
++		break;
++	default:
++		printf("# Non-RFC1035 RCODE %d sent from remote server\n",
++                       header.rcode);
++	}
++
+     /* Move past the questions */
+     place = 12;
+     for(counter = 0;counter < header.qdcount;counter++) {
