@@ -1,0 +1,12 @@
+--- maradns-1.2.11/doc/en/webpage/contact.embed	2006-07-17 22:50:44.000000000 -0500
++++ maradns-1.2.12.01/doc/en/webpage/contact.embed	2006-07-26 00:51:37.000000000 -0500
+@@ -16,7 +16,8 @@
+ MaraDNS 1.2</A>.  MaraDNS 1.2 has
+ a number of usability improvments over 1.0, and is much easier to configure.
+ There is still a <A href="http://www.maradns.org/faq-1.0.html">FAQ for
+-MaraDNS 1.0 available</A>.
++MaraDNS 1.0 available</A>.  You may also be able to get help by posting your
++question to the MaraDNS mailing list.
+ <p>
+ If you are using 1.0 and have a bug to report, please feel free to report
+ it; I will continue to fix serious MaraDNS 1.0 bugs until December 21, 2007,

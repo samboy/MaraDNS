@@ -1,0 +1,225 @@
+--- maradns-1.2.11/doc/en/webpage/download.embed	2006-07-17 22:50:44.000000000 -0500
++++ maradns-1.2.12.01/doc/en/webpage/download.embed	2006-07-26 10:52:22.000000000 -0500
+@@ -3,89 +3,84 @@
+ <h1>&iexcl;Download MaraDNS!</h1>
+ 
+ <h2>Stable release</h2>
+-<p>This is the current stable release of MaraDNS, MaraDNS 1.2.07.7
++<p>This is the current stable release of MaraDNS, MaraDNS 1.2.07.8
+ <p>This release is available both at <A 
+-href="http://sourceforge.net/project/showfiles.php?group_id=24033&amp;package_id=16396&amp;release_id=431564">sourceforge.net</A>
++href="http://sourceforge.net/project/showfiles.php?group_id=24033&amp;package_id=16396&amp;release_id=434257">sourceforge.net</A>
+ and on this page.
+ 
+-<p><A 
+-href="download/1.2/1.2.07.7/maradns-1.2.07.7.tar.bz2"><!--
+-                         -->maradns-1.2.07.7.tar.bz2</A>
+-<p><A 
+-href="download/1.2/1.2.07.7/maradns-1.2.07.7.tar.bz2.sha1.asc">GPG signature</A><p>
+-<p><A 
+-href="download/1.2/1.2.07.7/maradns-1.2.07.7.tar.bz2.rmd.asc">GPG signature
+-using RIPEMD160 as the digest algorithm</A><p>
+-(released 2006/07/12)
+-
+-<p>
+-The following are files compressed with LZMA compression, which both compresses
+-better and decompresses faster than bzip2 compressed files.  Information
+-on decompressing LZMA files can be found <A 
+-href="download/1.2/00Uncompress.txt">here</A>.
+-
+-<p><A 
+-href="download/1.2/1.2.07.7/maradns-1.2.07.7.tar.lzma"><!--
+-                         -->maradns-1.2.07.7.tar.lzma</A>
+-<p><A 
+-href="download/1.2/1.2.07.7/maradns-1.2.07.7.tar.lzma.sha1.asc">GPG signature</A><p>
+-<p><A 
+-href="download/1.2/1.2.07.7/maradns-1.2.07.7.tar.lzma.rmd.asc">GPG signature
+-using RIPEMD160 as the digest algorithm</A><p>
+-
+-<p>
+-For people who prefer a gzip compressed archive:
+-
+-<p><A 
+-href="download/1.2/1.2.07.7/maradns-1.2.07.7.tar.gz"><!--
+-                         -->maradns-1.2.07.7.tar.gz</A>
+-<p><A 
+-href="download/1.2/1.2.07.7/maradns-1.2.07.7.tar.gz.sha1.asc">GPG signature</A><p>
+-<p><A 
+-href="download/1.2/1.2.07.7/maradns-1.2.07.7.tar.gz.rmd.asc">GPG signature
+-using RIPEMD160 as the digest algorithm</A><p>
+-
+-<h3>RPM files</h3>
+-<p><A href="download/1.2/1.2.07.7/maradns-1.2.07.7-1.src.rpm"><!--
+-                               -->maradns-1.2.07.7-1.src.rpm</A></p>
+-<p><i>Greg Swallow fixed the rpm package so that the RPM now builds on
+-   CentOS3 and CentOS4, in addition to RedHat 6.2.</i>
+-<p><b>Binary RPM</b> (Built on CentOS 3.7; verified to work in newer Linuxes)
+-</p>
+-<p><A href="download/1.2/1.2.07.7/maradns-1.2.07.7-1.i386.rpm"><!--
+-                               -->maradns-1.2.07.7-1.i386.rpm</A></p>
+-
+-<h3>Windows Binary</h3>
+-<p>I have made a partial port of MaraDNS to Windows.  While this port
+-does not have all of the security nor features of the Linux/UNIX version of
+-MaraDNS, this port allows Windows to have a basic, 
+-reasonably secure DNS client and recursive resolver.
+ <p>
+-People who want a full Windows port of MaraDNS can compile MaraDNS on
+-<A href="http://www.cygwin.com">Cygwin</A>.
+-
+-<p><A 
+-href="download/1.2/1.2.07.7/maradns-1-2-07-7-win32.zip"><!--
+-                         -->maradns-1-2-07-7-win32.zip</A>
+-<p><A 
+-href="download/1.2/1.2.07.7/maradns-1-2-07-7-win32.zip.sha1.asc">GPG signature</A><p>
+-<p><A 
+-href="download/1.2/1.2.07.7/maradns-1-2-07-7-win32.zip.rmd.asc">GPG signature
+-using RIPEMD160 as the digest algorithm</A><p>
+-
+-<h3>Slackware Package</h3>
+-
+-Daniel Zilli has made a Slackware package of maradns, which can be
+-downloaded <A
+-href="download/1.2/3rd_party/maradns-1.2.07.7-i486-2.tgz">here</A>.<p>
++<table><tr><td>
++<A 
++href="download/1.2/1.2.07.8/maradns-1.2.07.8.tar.bz2"><!--
++                         -->maradns-1.2.07.8.tar.bz2</A>
++</td><td>
++<A 
++href="download/1.2/1.2.07.8/maradns-1.2.07.8.tar.bz2.sha1.asc">sig</A><p>
++</td><td>
++<A href="#bz2">info</A> 
++</td></tr><tr><td>
++<A 
++href="download/1.2/1.2.07.8/maradns-1.2.07.8.tar.lzma"><!--
++                         -->maradns-1.2.07.8.tar.lzma</A>
++</td><td>
++<A 
++href="download/1.2/1.2.07.8/maradns-1.2.07.8.tar.lzma.sha1.asc">sig</A>
++</td><td>
++<A href="#lzma">info</A> 
++</td></tr><tr><td>
++<A 
++href="download/1.2/1.2.07.8/maradns-1.2.07.8.tar.gz"><!--
++                         -->maradns-1.2.07.8.tar.gz</A>
++</td><td>
++<A 
++href="download/1.2/1.2.07.8/maradns-1.2.07.8.tar.gz.sha1.asc">sig</A>
++</td><td>
++<A href="#gz">info</A>
++</td></tr><tr><td>
++<A href="download/1.2/1.2.07.8/maradns-1.2.07.8-1.src.rpm"><!--
++                                -->maradns-1.2.07.8-1.src.rpm</A>
++</td><td>
++<A 
++href="download/1.2/1.2.07.8/maradns-1.2.07.8-1.src.rpm.sha1.asc">sig</A>
++</td><td>
++<A 
++href="#srcrpm">info</A>
++</td></tr><tr><td>
++<A href="download/1.2/1.2.07.8/maradns-1.2.07.8-1.i386.rpm"><!--
++                            -->maradns-1.2.07.8-1.i386.rpm</A>
++</td><td>
++<A 
++   href="download/1.2/1.2.07.8/maradns-1.2.07.8-1.src.rpm.sha1.asc">sig</A>
++</td><td>
++<A 
++href="#rpm">info</A>
++</td></tr><tr><td>
++<A 
++href="download/1.2/1.2.07.8/maradns-1-2-07-8-win32.zip"><!--
++                         -->maradns-1-2-07-8-win32.zip</A>
++</td><td>
++<A 
++href="download/1.2/1.2.07.8/maradns-1-2-07-8-win32.zip.sha1.asc">sig</A>
++</td><td>
++<A href="#zip">info</A>
++</td></tr></table>
++
++<h3>Contributed packages</h3>
++
++<A
++href="download/1.2/3rd_party/maradns-1.2.07.8-i486-2.tgz"><!--
++                          -->maradns-1.2.07.8-i486-2.tgz</A> 
++<A href="#tgz">info</A>
+ 
+ <hr>
+ 
+ <h2>Testing release</h2>
+ 
+-I have a 1.2.11 testing release of MaraDNS, which can be downloaded
++I have a 1.2.12.01 testing release of MaraDNS, which can be downloaded
+ at <A href="http://sourceforge.net/projects/maradns">sourceforge.net</A>
+-and <A href="download/1.2/1.2.11">locally</A>.
++and <A href="download/1.2/1.2.12.01">locally</A>.  People may also be
++interested in looking at the <A href="download/1.2/snap/200607">daily
++snapshots</A>.
+ 
+ <hr>
+ 
+@@ -94,15 +89,15 @@
+ 1.0.  This release will no longer be supported for anything but critical
+ security fixes after December 21, 2007, and not supported at all after
+ December 21, 2010.
+-<A href="download/1.0/maradns-1.0.38.tar.bz2">Get the current 1.0 release</A>,
+-MaraDNS 1.0.38, released 2006/06/16 
++<A href="download/1.0/maradns-1.0.39.tar.bz2">Get the current 1.0 release</A>,
++MaraDNS 1.0.39, released 2006/07/24 
+ (bzip2 compressed).  
+ <p>
+-<A href="download/1.0/maradns-1.0.38.tar.bz2.sha1.asc">bzip2 GPG sig</A>
++<A href="download/1.0/maradns-1.0.39.tar.bz2.sha1.asc">bzip2 GPG sig</A>
+ <p>
+-<A href="download/1.0/maradns-1.0.38.tar.gz">gzip compressed version</A>
++<A href="download/1.0/maradns-1.0.39.tar.gz">gzip compressed version</A>
+ <p>
+-<A href="download/1.0/maradns-1.0.38.tar.gz.sha1.asc">gzip GPG sig</A>
++<A href="download/1.0/maradns-1.0.39.tar.gz.sha1.asc">gzip GPG sig</A>
+ <p>
+ 
+ <hr>
+@@ -134,3 +129,43 @@
+ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ 
++<hr>
++
++<h2>Information on file types</h2>
++
++<A name="bz2"><b>.bz2</b> A .bz2 file is compressed with the bzip2 program.  The
++maradns tar.bz2 file contains the source code for MaraDNS.</A>
++<p>
++<A name="lzma"><b>.lzma</b> A .lzma file
++is compressed with LZMA compression, which both compresses
++better and decompresses faster than bzip2 compressed files.  Information
++on decompressing LZMA files can be found </A><A 
++href="download/1.2/00Uncompress.txt">here</A>.  The maradns tar.lzma
++file contains the source code for MaraDNS.
++<p>
++<A name="gz"><b>.gz</b> A .gz file is compressed with the gzip program.  
++The maradns .tar.gz file contains the source code for MaraDNS.</A>
++<p>
++<A name="srcrpm"><b>.src.rpm</b> A .src.rpm file is a package with 
++source for rpm-based
++Linux distributions.  This file was created on CentOS 3, and contains
++the source code for MaraDNS.</A>
++<p>
++<A name="rpm"><b>.i386.rpm</b> A .i386.rpm file is a binary RPM package.  
++The RPM file
++was built on CentOS 3, and should run on other RPM-based systems.</A>
++<p>
++<A name="zip"><b>.zip</b> A .zip file is a compressed file that 
++Windows XP can open.
++The MaraDNS .zip file contains a Windows native binary of MaraDNS.
++This is a partial port of MaraDNS to Windows.  While this port
++does not have all of the security nor features of the Linux/UNIX version of
++MaraDNS, this port allows Windows to have a basic, 
++reasonably secure DNS client and recursive resolver.  People who want a full 
++Windows port of MaraDNS can compile MaraDNS on
++<A href="http://www.cygwin.com">Cygwin</A>.
++<p>
++<A name="tgz"><b>.tgz</b> A .tgz file is a tar.gz file.  The MaraDNS 
++.tgz file contains
++the Slackware package for MaraDNS.
++

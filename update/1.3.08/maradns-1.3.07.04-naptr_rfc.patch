@@ -1,0 +1,11 @@
+--- maradns-1.3.07.04/MaraDns.h	2007-06-19 08:59:07.000000000 -0500
++++ maradns-1.3.07.05/MaraDns.h	2007-09-19 17:19:12.000000000 -0500
+@@ -357,7 +357,7 @@
+ #define RR_SRV 33
+ /* "ATM address" (Not in an RFC) */
+ #define RR_ATMA 34
+-/* RFC2168,RFC2915 */
++/* RFC2168,RFC2915,RFC3403 */
+ #define RR_NAPTR 35
+ /* RFC2230 */
+ #define RR_KX 36

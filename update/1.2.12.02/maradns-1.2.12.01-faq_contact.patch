@@ -1,0 +1,13 @@
+--- maradns-1.2.12.02.orig/doc/en/source/faq.embed	2006-08-13 21:52:30.000000000 -0500
++++ maradns-1.2.12.02/doc/en/source/faq.embed	2006-08-13 21:54:15.000000000 -0500
+@@ -155,7 +155,9 @@
+ </A>
+ <H2>4. How do I report bugs in MaraDNS?</H2>
+ 
+-Please <A href="http://www.maradns.org/contact.html">contact me</A>.
++Please contact me; my email address is at
++<A 
++href="http://www.maradns.org/contact.html">http://www.maradns.org/contact.html</A>
+ 
+ <A NAME=chatter>
+ </A>

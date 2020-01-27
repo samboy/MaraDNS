@@ -1,0 +1,72 @@
+See Debian bug #373781
+
+--- maradns-1.2.09/doc/en/source/faq.embed	2006-06-14 03:17:28.000000000 -0700
++++ maradns-1.2.10/doc/en/source/faq.embed	2006-06-19 12:30:08.000000000 -0700
+@@ -67,7 +67,9 @@
+ 
+ 28. <A href="#mx">How do MX records work?</A><p>
+ 
+-29. <A href="#spf">Does MaraDNS have support for SPF?</A>
++29. <A href="#spf">Does MaraDNS have support for SPF?</A><p>
++
++30. <A href="#cname">I'm having problems resolving CNAMES I have set up.</A>
+ 
+ </BLOCKQUOTE>
+ <H2>ANSWERS</H2>
+@@ -617,4 +619,56 @@
+ the corresponding SPF record, which will have the syntax
+ <tt>example.net. SPF 'v=spf1 +mx a:colo.example.com/28 -all'</tt>.
+ 
++<A name="cname"> </A>
++<h2>30. I'm having problems resolving CNAMES I have set up.</h2>
++
++This is probably because you have set up what MaraDNS calls a dangling CNAME
++record.
++<p>
++Let us suppose we have a CNAME record without an A record in the local
++DNS server's database, such as:
++
++<pre>
++	google.example.com. CNAME www.google.com.
++</pre>
++
++<p>
++
++This record, which is a CNAME record for "google.example.com", points
++to "www.google.com".  Some DNS servers will recursively look up 
++www.google.com, and render the above record like this:
++
++<pre>
++	google.example.com. CNAME www.google.com.
++	www.google.com. CNAME 66.102.7.104
++</pre>
++
++<p>
++
++For security reasons, MaraDNS doesn't do this.  Instead, MaraDNS will simply
++output:
++
++<pre>
++	google.example.com. CNAME www.google.com.
++</pre>
++
++Some stub resolvers will be unable to resolve google.example.com as
++a consequence.
++
++<p>
++If you set up MaraDNS to resolve CNAMEs thusly, you will get a warning
++in your logs about having a dangling CNAME record.
++<p>
++
++If you want to remove these warnings, add the following to your mararc file:
++
++<pre>
++	no_cname_warnings = 1
++</pre>
++
++<p>
++
++Information about how to get MaraDNS to resolve dangling CNAME
++records is in the tutorial file <A 
++href="http://www.maradns.org/tutorial/dangling.html">dangling.html</A>
+ 

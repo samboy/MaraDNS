@@ -1,0 +1,31 @@
+--- maradns-1.2.07.3/doc/en/webpage/maradns-1.2-s.css	2006-03-10 01:59:45.000000000 -0800
++++ maradns-1.2.07.4/doc/en/webpage/maradns-1.2-s.css	2006-05-18 19:00:22.000000000 -0700
+@@ -112,6 +112,28 @@
+ 	padding: 7px;
+ }
+ 
++/* */
++
++#maradns-l a {
++/*/*//*/ display: inline; /* */
++}
++#maradns-l a {
++/*/*//*/ border: 1px solid #000000; /* */
++}
++#maradns-l a:hover {
++/*/*//*/	border: 1px solid #000000; /* */
++}
++#maradns-r {
++/*/*//*/	margin-top: 6px; /* */
++}
++.makelarge {
++/*/*//*/	display: none; /* */
++}
++/* */
++/*/*/
++a {
++}
++
+ .nocss {
+ 	display: none;
+ }

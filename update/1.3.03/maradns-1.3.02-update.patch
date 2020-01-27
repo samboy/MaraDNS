@@ -1,0 +1,115 @@
+--- maradns-1.3.02/doc/en/source/update.ej	2006-10-08 16:32:42.000000000 -0700
++++ maradns-1.3.03/doc/en/source/update.ej	2007-01-16 08:21:10.000000000 -0800
+@@ -4,7 +4,7 @@
+ </HEAD>
+ <BODY>
+ 
+-<!-- Copyright 2005-2006 Sam Trenholme
++<!-- Copyright 2005-2007 Sam Trenholme
+ 
+     TERMS
+ 
+@@ -21,8 +21,9 @@
+ 
+ <h1>Table of contents</h1>
+ <ul>
+-<li><A href=#1.0>Updating from 1.0 to 1.2</A>
+-<li><A href=#1.2.03>Updating from 1.2.03 to a later 1.2 release</A>
++<li><A href="#1.0">Updating from 1.0 to 1.2</A>
++<li><A href="#1.2.03">Updating from 1.2.03 to a later 1.2 release</A>
++<li><A href="#1.2.12">Updating from 1.2.12 to a 1.3 release</A>
+ </ul>
+ 
+ This document is divided in to two parts; anyone upgrading from a
+@@ -189,6 +190,90 @@
+ error when parsing a mararc file.  The reason for this is to make 
+ debugging mararc files easier.
+ 
+-</A>
++<A name=1.2.12>
++<h1>Updating from 1.2.12 to a 1.3 release</h1>
++
++In MaraDNS 1.3, some changes have been made to the csv2 parser.  In
++particular:
++
++<ul>
++<li>The first record in a csv2 zone file can no longer be a TXT, WKS, or
++LOC record.  
++<li>TXT (and SPF) records can no loner have tildes (the '~' character) in them.
++</ul>
++
++If these changes to the csv2 parser are not desired, it is possible to
++have MaraDNS 1.3's csv2 parser act like MaraDNS' 1.2 csv2 parser by adding 
++the following line to one's <tt>mararc</tt> file:
++
++<pre>
++csv2_tilde_handling = 0
++</pre>
++
++The above line is also accepted by MaraDNS 1.2 releases starting with
++1.2.12.04; this allows MaraDNS 1.2 and 1.3 use the same configuration
++file.
++
++<p>
++
++The reason for this change is because MaraDNS now can use tildes to 
++separate records.  A MaraDNS 1.2 csv2 zone file that looked like this:
++
++<pre>
++example.com. 10.1.2.4
++www.example.com. A 10.1.2.5
++example.com. MX mail.example.com.
++mail.example.com. 10.1.2.6
++example.com. TXT 'Hello, world!'
++</pre>
++
++Now can look like this:
++
++<pre>
++example.com. 10.1.2.4 ~
++www.example.com. A 10.1.2.5 ~
++example.com. MX mail.example.com. ~
++mail.example.com. 10.1.2.6 ~
++example.com. TXT 'Hello, world!'
++</pre>
++
++The way MaraDNS figures out whether to use tilde to separate records
++is by looking between the first and second record to see if a tilde
++is present.  If so, MaraDNS requries tildes to be between all
++records.  If not, MaraDNS' csv2 parsing is almost completely
++1.2 compatible, the only difference being that tildes can not be
++in TXT records.
++
++<p>
++Another MaraDNS 1.3 change only affects the unusual case when one has
++delegation NS records.  Let us suppose we have a zone file with the
++following records:
++
++<pre>
++example.com. A 10.1.2.3 ~
++www.example.com. A 10.1.2.4 ~
++joe.example.com. NS ns.joe.example.com. ~
++ns.joe.example.com. A 10.1.2.5 
++</pre>
++
++In MaraDNS 1.2, if we send a recursive request for 
++<tt>www.joe.example.com</tt>, MaraDNS will convert the request in to
++a recursive request.  In MaraDNS 1.3, we will get the following
++answer:
++
++<pre>
++joe.example.com. NS ns.joe.example.com. ~
++ns.joe.example.com. A 10.1.2.5
++</pre>
++
++If the old MaraDNS 1.2 behavior is desired, such as for someone who is
++using the same nameserver to both give out delegation records and to
++recursively resolve records, add the following line to one's mararc
++file:
++
++<pre>
++recurse_delegation = 1
++</pre>
++
+ </BODY></HTML>
+ 

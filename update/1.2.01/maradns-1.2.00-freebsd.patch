@@ -1,0 +1,30 @@
+This patch is based on suggestions of Alex Kapranoff.
+
+This patch needs to be applied with the -R switch.
+
+--- maradns-1.2.01/configure	2005-12-31 12:29:10.000000000 -0800
++++ maradns-1.2.02/configure	2005-12-05 14:26:12.000000000 -0800
+@@ -67,11 +67,7 @@
+ 	echo It looks like you are using FreeBSD\; this should compile
+ 	echo fine by typing in \'make\'.  There is an official port here:
+ 	echo
+-	echo	http://www.freebsd.org/cgi/cvsweb.cgi/ports/dns/maradns/
+-	echo
+-	echo Which may be on your system here:
+-	echo
+-	echo	/usr/ports/dns/maradns
++	echo	http://www.freebsd.org/cgi/query-pr.cgi?pr=28389
+ elif echo $UNAME | grep -i mingw32 > /dev/null ; then
+ 	cat $BUILDDIR/Makefile.mingw32 >> Makefile
+ 	echo It looks like you are using MinGW32 \; this is only a partial
+--- maradns-1.2.01/build/Makefile.freebsd	2005-12-31 12:28:21.000000000 -0800
++++ maradns-1.2.02/build/Makefile.freebsd	2005-11-22 14:29:18.000000000 -0800
+@@ -27,7 +27,7 @@
+ Q="DEFINES=-DSELECT_PROBLEM"
+ 
+ # FreeBSD needs some special flags to compile MaraDNS
+-CC="cc -O -pipe -D_THREAD_SAFE -pthread"
++CC="cc -O -pipe -D_THREAD_SAFE"
+ M=CC=$(CC) 
+ V="VERSION=$(VERSION)"
+ 

@@ -1,0 +1,68 @@
+--- maradns-1.2.11/doc/en/tutorial/Makefile	2005-12-13 12:48:47.000000000 -0600
++++ maradns-1.2.12/doc/en/tutorial/Makefile	2006-07-20 09:05:22.000000000 -0500
+@@ -3,7 +3,8 @@
+      glossary.html recordtypes.html dangling.html default_zonefile.html \
+      dnstcp.html man.duende.html dnsmaster.html man.csv2_txt.html \
+      dnsslave.html quick_start.html update.html man.askmara.html \
+-     man.fetchzone.html man.zoneserver.html dnsintro.html
++     man.fetchzone.html man.zoneserver.html dnsintro.html \
++     win_service.html
+ 
+ clean:
+ 	rm -f *.html 
+@@ -89,3 +90,5 @@
+ dnsintro.html: ../source/dnsintro.ej
+ 	../../../tools/ej/ej2html ../source/dnsintro.ej > dnsintro.html
+ 
++win_service.html: ../source/win_service.ej
++	../../../tools/ej/ej2html ../source/win_service.ej > win_service.html
+--- maradns-1.2.11/doc/en/text/Makefile	2005-12-13 12:49:24.000000000 -0600
++++ maradns-1.2.12/doc/en/text/Makefile	2006-07-20 09:06:19.000000000 -0500
+@@ -4,7 +4,8 @@
+      dnstcp.txt man.duende.txt dnsmaster.txt man.csv2_txt.txt \
+      man.csv2.txt dnsslave.txt update.txt man.askmara.txt \
+      man.fetchzone.txt man.zoneserver.txt man.maradns.txt \
+-     man.mararc.txt quick_start.txt dnsintro.txt
++     man.mararc.txt quick_start.txt dnsintro.txt \
++     win_service.txt
+ 
+ clean:
+ 	rm -f *.txt 
+@@ -90,3 +91,6 @@
+ 	../../../tools/ej/ej2txt ../source/quick_start.ej > \
+ 	    quick_start.txt
+ 
++win_service.txt: ../source/win_service.ej
++	../../../tools/ej/ej2txt ../source/win_service.ej > win_service.txt
++
+--- maradns-1.2.11/build/win32/make.win32.zip	2006-01-21 23:22:01.000000000 -0600
++++ maradns-1.2.12/build/win32/make.win32.zip	2006-07-20 09:10:33.000000000 -0500
+@@ -10,6 +10,7 @@
+ cp ../../server/maradns.exe $VERSION
+ cp ../../tools/askmara.exe $VERSION
+ cp ../../doc/en/tutorial/man.askmara.html $VERSION/Askmara.html
++cp ../../doc/en/tutorial/win_service.html $VERSION/Service.html
+ cp ../../../pthreadGC2.dll $VERSION
+ cp ../../../pthreads-w32-2-6-0-release.tar.bz2 $VERSION
+ zip -r $VERSION\-win32.zip $VERSION
+--- maradns-1.2.11/doc/en/source/credits.embed	2005-12-13 17:06:02.000000000 -0600
++++ maradns-1.2.12/doc/en/source/credits.embed	2006-07-20 09:23:08.000000000 -0500
+@@ -11,8 +11,6 @@
+ example, he provided invaluable assistance in getting MaraDNS to compile on
+ Solaris.  In addition, he has provided much valuable SQA help.
+ <p>
+-Thomas Seyrat has provided French translations of the MaraDNS documentation.
+-<p>
+ Christian Kurz, who has provided invaluable bug reports, especially 
+ when I had to re-implement the core hashing algorithm.
+ <p>
+@@ -49,6 +47,9 @@
+ these programmers making the code public domain, which is the only license 
+ under which I can add code to MaraDNS under.  
+ <p>
++Ross Johnson and others have made a Win32 port of the Pthreads library;
++this has made a native win32 port of MaraDNS possible.  
++<p>
+ I also appreciate the work of Dr. Brian Gladman and Fritz Schneider,
+ who have both written independent implementations of AES from which I 
+ obtained test vectors.  With the help of their hard work, I was able to

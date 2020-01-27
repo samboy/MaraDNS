@@ -1,0 +1,14 @@
+--- maradns-1.2.07.2/configure.orig	Thu Apr 20 01:16:01 2006
++++ maradns-1.2.07.2/configure	Thu Apr 20 01:17:52 2006
+@@ -77,6 +77,11 @@
+ 	echo	/usr/ports/dns/maradns
+ 	echo
+ 	EXITCODE=0
++elif echo $UNAME | grep -i openbsd > /dev/null ; then
++	cat $BUILDDIR/Makefile.freebsd >> Makefile
++	echo It looks like you are using OpenBSD\; this should compile 
++	echo fine by typing in \'make\'.
++	EXITCODE=0
+ elif echo $UNAME | grep -i mingw32 > /dev/null ; then
+ 	cat $BUILDDIR/Makefile.mingw32 >> Makefile
+ 	echo It looks like you are using MinGW32 \; this is only a partial

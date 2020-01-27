@@ -1,0 +1,79 @@
+diff -ur maradns-1.2.07.1.orig/sqa/aaaatest.c maradns-1.2.07.1/sqa/aaaatest.c
+--- maradns-1.2.07.1.orig/sqa/aaaatest.c	2003-01-11 22:52:32.000000000 -0800
++++ maradns-1.2.07.1/sqa/aaaatest.c	2006-03-20 22:48:25.000000000 -0800
+@@ -42,8 +42,8 @@
+ 
+ u_int16_t gen_id(char *hostname) {
+     /* May as well bring out the bug guns (e.g. our rng) */
+-    BYTE r_inBlock[17],r_outBlock[17],r_binKey[34];
+-    BYTE r_keyMaterial[320];
++    MARA_BYTE r_inBlock[17],r_outBlock[17],r_binKey[34];
++    MARA_BYTE r_keyMaterial[320];
+     keyInstance r_keyInst;
+     cipherInstance r_cipherInst;
+     unsigned char crypto_key[34];
+diff -ur maradns-1.2.07.1.orig/sqa/asktest.c maradns-1.2.07.1/sqa/asktest.c
+--- maradns-1.2.07.1.orig/sqa/asktest.c	2003-01-11 22:52:39.000000000 -0800
++++ maradns-1.2.07.1/sqa/asktest.c	2006-03-20 22:48:25.000000000 -0800
+@@ -44,8 +44,8 @@
+ 
+ u_int16_t gen_id(char *hostname) {
+     /* May as well bring out the bug guns (e.g. our secure RNG) */
+-    BYTE r_inBlock[17],r_outBlock[17],r_binKey[17];
+-    BYTE r_keyMaterial[320];
++    MARA_BYTE r_inBlock[17],r_outBlock[17],r_binKey[17];
++    MARA_BYTE r_keyMaterial[320];
+     keyInstance r_keyInst;
+     cipherInstance r_cipherInst;
+     unsigned char crypto_key[34];
+diff -ur maradns-1.2.07.1.orig/sqa/qr.test.c maradns-1.2.07.1/sqa/qr.test.c
+--- maradns-1.2.07.1.orig/sqa/qr.test.c	2003-01-11 22:52:48.000000000 -0800
++++ maradns-1.2.07.1/sqa/qr.test.c	2006-03-20 22:48:25.000000000 -0800
+@@ -42,8 +42,8 @@
+ 
+ u_int16_t gen_id(char *hostname) {
+     /* May as well bring out the bug guns (e.g. our RNG) */
+-    BYTE r_inBlock[17],r_outBlock[17],r_binKey[17];
+-    BYTE r_keyMaterial[320];
++    MARA_BYTE r_inBlock[17],r_outBlock[17],r_binKey[17];
++    MARA_BYTE r_keyMaterial[320];
+     keyInstance r_keyInst;
+     cipherInstance r_cipherInst;
+     unsigned char crypto_key[34];
+diff -ur maradns-1.2.07.1.orig/sqa/sendtcp.c maradns-1.2.07.1/sqa/sendtcp.c
+--- maradns-1.2.07.1.orig/sqa/sendtcp.c	2004-06-01 12:19:05.000000000 -0700
++++ maradns-1.2.07.1/sqa/sendtcp.c	2006-03-20 22:48:25.000000000 -0800
+@@ -28,8 +28,8 @@
+ 
+ u_int16_t gen_id(char *hostname) {
+     /* May as well bring out the bug guns (e.g. our secure RNG) */
+-    BYTE r_inBlock[17],r_outBlock[17],r_binKey[17];
+-    BYTE r_keyMaterial[320];
++    MARA_BYTE r_inBlock[17],r_outBlock[17],r_binKey[17];
++    MARA_BYTE r_keyMaterial[320];
+     keyInstance r_keyInst;
+     cipherInstance r_cipherInst;
+     unsigned char crypto_key[34];
+@@ -201,7 +201,7 @@
+     len[0] = (outdata->unit_count & 0xff00) >> 8;
+     len[1] = outdata->unit_count & 0xff;
+     if(write(s,len,2) == -1)
+-        harderror(L_SEND_2BYTE); /* "Could not send 2-byte length header 
++        harderror(L_SEND_2MARA_BYTE); /* "Could not send 2-byte length header 
+ 	                             to zone server" */
+     /* Body of request */
+     if(write(s,outdata->string,outdata->unit_count) == -1)
+diff -ur maradns-1.2.07.1.orig/sqa/sendudp.c maradns-1.2.07.1/sqa/sendudp.c
+--- maradns-1.2.07.1.orig/sqa/sendudp.c	2003-01-11 22:52:53.000000000 -0800
++++ maradns-1.2.07.1/sqa/sendudp.c	2006-03-20 22:48:26.000000000 -0800
+@@ -43,8 +43,8 @@
+ 
+ u_int16_t gen_id(char *hostname) {
+     /* May as well bring out the bug guns (e.g. our secure RNG) */
+-    BYTE r_inBlock[17],r_outBlock[17],r_binKey[17];
+-    BYTE r_keyMaterial[320];
++    MARA_BYTE r_inBlock[17],r_outBlock[17],r_binKey[17];
++    MARA_BYTE r_keyMaterial[320];
+     keyInstance r_keyInst;
+     cipherInstance r_cipherInst;
+     unsigned char crypto_key[34];

@@ -1,0 +1,104 @@
+--- maradns-1.2.08.orig/MaraDns.h	2005-12-05 14:30:47.000000000 -0800
++++ maradns-1.2.08/MaraDns.h	2006-06-07 18:24:00.000000000 -0700
+@@ -290,6 +290,8 @@
+ #define RR_AAAA 28
+ /* SRV: "service" records */
+ #define RR_SRV 33
++/* SPF: sender policy framework (stops forged email) record */
++#define RR_SPF 99
+ /* AXFR: Special query that requests a zone transfer */
+ #define RR_AXFR 252
+ /* ANY: Special query for all of the records for a given hostname */
+--- maradns-1.2.08.orig/parse/Csv2_parse.c	2006-02-21 01:32:15.000000000 -0800
++++ maradns-1.2.08/parse/Csv2_parse.c	2006-06-07 18:24:40.000000000 -0700
+@@ -893,6 +893,9 @@
+ 	if(js_qissame("txt",text_rtype) == 1) {
+ 		return RR_TXT;
+ 	}
++	if(js_qissame("spf",text_rtype) == 1) {
++		return RR_SPF;
++	}
+ 	if(js_qissame("fqdn4",text_rtype) == 1) {
+ 		return 65765;
+ 	}
+@@ -1187,6 +1190,7 @@
+ 			rddata = csv2_get_srv(stream,zone);
+ 			break;
+ 		case RR_TXT:
++		case RR_SPF:
+ 			rddata = csv2_get_txt(stream);
+ 			break;
+ 		case RR_NS:
+--- maradns-1.2.07.5/doc/en/source/example_csv2	2006-05-15 16:28:36.000000000 -0700
++++ maradns-1.2.08/doc/en/source/example_csv2	2006-06-09 18:31:50.000000000 -0700
+@@ -65,8 +65,13 @@
+ a.example.net. 		aaaa 	3ffe:ffff:1:2:3::4:f
+ 
+ # Not to mention support for SRV records
+-_http._tcp.% srv 0 0 80 a.%
++_http._tcp.%    srv   0 0 80 a.%
+ 
+-# And, of course, TXT records
++# TXT records, naturally
+ example.net.    txt 'This is some text'
+ 
++# Starting with MaraDNS 1.2.08, there is also support for SPF records,
++# which are identical to TXT records.  See RFC4408 for more details.
++example.net.    spf 'v=spf1 +mx a:colo.example.com/28 -all'
++
++
+--- maradns-1.2.07.5/doc/en/source/csv2.ej	2006-05-22 23:13:13.000000000 -0700
++++ maradns-1.2.08/doc/en/source/csv2.ej	2006-06-09 18:54:25.000000000 -0700
+@@ -156,6 +156,13 @@
+ Any binary data can be specified; see the <b>csv2_txt(5)</b> manual page
+ for full details.
+ 
++<h2>SPF</h2>
++
++A SPF record is, with the exception of the numeric rtype, identical to
++a TXT record.  SPF records are designed to make it more difficult to
++forge email.  More information about SPF records can be found in 
++RFC4408, or by performing a web search for 'sender policy framework'.
++
+ <h2>RAW</h2>
+ 
+ The RAW record is a special meta-record that allows any otherwise 
+--- maradns-1.2.07.5/doc/en/source/faq.embed	2006-05-22 23:13:13.000000000 -0700
++++ maradns-1.2.08/doc/en/source/faq.embed	2006-06-10 23:52:11.000000000 -0700
+@@ -67,6 +67,8 @@
+ 
+ 28. <A href="#mx">How do MX records work?</A>
+ 
++29. <A href="#spf">Does MaraDNS have support for SPF?</A>
++
+ </BLOCKQUOTE>
+ <H2>ANSWERS</H2>
+ 
+@@ -592,3 +594,27 @@
+ 
+ As an aside, do not have MX records point to CNAMEs.
+ 
++<a name="spf"> </a>
++<h2>29. Does MaraDNS have support for SPF?</h2>
++
++SPF, or sender policy framework, is method of using DNS that makes
++it more difficult to forge email.  MaraDNS has full support for SPF,
++both via TXT records and, starting with MaraDNS 1.2.08, via RFC4408 
++SPF records.  
++
++<p>
++
++SPF configuration is beyond the scope of MaraDNS' documentation.  However,
++at the time of this FAQ entry being written (June, 2006), information
++and documentation concerning SPF is available at 
++<A href="http://openspf.org">http://openspf.org</A>.  The BIND examples
++will work in MaraDNS csv2 zone files as long as the double quotes (") are 
++replaced by single quotes (').  For example, a SPF TXT record that 
++looks like <tt>example.net. IN TXT "v=spf1 +mx a:colo.example.com/28 -all"</tt>
++in a BIND zone file will look like 
++<tt>example.net. TXT 'v=spf1 +mx a:colo.example.com/28 -all'</tt> in a
++MaraDNS zone file.  MaraDNS version 1.2.08 and higher can also make
++the corresponding SPF record, which will have the syntax
++<tt>example.net. SPF 'v=spf1 +mx a:colo.example.com/28 -all'</tt>.
++
++

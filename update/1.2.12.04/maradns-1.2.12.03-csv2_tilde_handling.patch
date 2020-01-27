@@ -1,0 +1,64 @@
+*** maradns-1.2.12.03/parse/ParseMaraRc.c	Sun Jun 11 03:16:32 2006
+--- maradns-1.2.12.04/parse/ParseMaraRc.c	Wed Nov 22 08:32:07 2006
+***************
+*** 31,37 ****
+  
+  /* Keywords that are non-dictionary strings in Mara's rc file */
+  
+! #define KEYCOUNT 47
+  
+  char *keywords[KEYCOUNT] = {
+          "bind_address", /* IPv4 Addresses to bind to (old name) */
+--- 31,37 ----
+  
+  /* Keywords that are non-dictionary strings in Mara's rc file */
+  
+! #define KEYCOUNT 48
+  
+  char *keywords[KEYCOUNT] = {
+          "bind_address", /* IPv4 Addresses to bind to (old name) */
+***************
+*** 125,130 ****
+--- 125,131 ----
+                             * servers replying at all */
+          "retry_cycles", /* The number of times we try to contact all of
+                           * the remote DNS servers to resolve a given name */
++         "csv2_tilde_handling", /* How to handle tildes in CSV2 zone files */
+          "zone_transfer_acl" /* ACL of IPs allowed to perform zone transfers */
+          };
+  
+*** maradns-1.2.12.04/server/MaraDNS.c.orig	Wed Nov 22 08:32:19 2006
+--- maradns-1.2.12.04/server/MaraDNS.c	Wed Nov 22 08:37:20 2006
+***************
+*** 4721,4727 ****
+      if(1 == 2) {
+  #endif /* __CYGWIN__ */
+  #ifndef ALLOW_NON_ROOT
+! 	harderror("Running MaraDNS 1.1 as a non-root server support disabled");
+  #else
+          /* Bind to port 53 as a non-root user */
+  	bind_address = read_string_kvar("bind_address");
+--- 4721,4727 ----
+      if(1 == 2) {
+  #endif /* __CYGWIN__ */
+  #ifndef ALLOW_NON_ROOT
+! 	harderror("Running MaraDNS 1.2 as a non-root server support disabled");
+  #else
+          /* Bind to port 53 as a non-root user */
+  	bind_address = read_string_kvar("bind_address");
+***************
+*** 4755,4760 ****
+--- 4755,4767 ----
+  #endif /* ALLOW_NON_ROOT */
+          }
+  
++     /* Make sure that if csv2_tilde_handling is set, it has a value of 0 */
++     if(read_numeric_kvar("csv2_tilde_handling",0) != 0) {
++         harderror("For MaraDNS 1.2.12, csv2_tilde_handling, if set,\n"
++                   "must have a value of 0");
++         exit(1);
++         }
++ 
+      /* Create the big hash */
+      bighash = 0;
+      bighash = mhash_create(8);

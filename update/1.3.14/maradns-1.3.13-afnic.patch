@@ -1,0 +1,130 @@
+--- maradns-1.3.14/server/MaraDNS.c.orig	2009-08-02 10:04:07.000000000 -0500
++++ maradns-1.3.14/server/MaraDNS.c	2009-08-02 10:12:44.000000000 -0500
+@@ -153,6 +153,8 @@
+                              * IPs when they mistype a domain name or some
+                              * such (Sponsored by XeroBank). */
+ 
++int recursion_enabled = 0; /* Whether we have recursion */
++
+ /* A list of who is and who is not allowed to make recursive DNS queries */
+ ipv4pair recurse_acl[512];
+ /* A list of the ipv4 IP addresses we bind MaraDNS to (the netmask portion is
+@@ -359,6 +361,22 @@
+     exit(3);
+     }
+ 
++/* This function returns an appropriate RA (Recursion available) value.  
++ * If the user has not set "recursive_acl", this will always return 0.
++ * If the argument give to this is 0, return zero.  Otherwise, return 1
++ */
++
++int calc_ra_value(int want_ra) {
++#ifdef AUTHONLY
++	return 0;
++#else /* AUTHONLY */
++	if(recursion_enabled == 0) {
++		return 0;
++	}
++	return want_ra;
++#endif /* AUTHONLY */
++}
++
+ /* This function prepares the notthere_ip string so that it we can quickly
+  * make synthetic IPs.  Basically, the string is most of the DNS header and
+  * data for the generated synthetic IP, in this form:
+@@ -1789,7 +1807,7 @@
+         header.qr = 1;
+         header.opcode = 0;
+         header.tc = 0;
+-        header.ra = rd_val;
++        header.ra = calc_ra_value(rd_val);
+         header.z = 0;
+         header.rcode = 0; /* We "found" something */
+         /* We return just a single 0-ttl IP */
+@@ -2005,7 +2023,7 @@
+     header.opcode = 0;
+     header.tc = 0; /* To do: truncation handling */
+     header.rd = rd_val; /* RDBUG udpnotfound */
+-    header.ra = rd_val;
++    header.ra = calc_ra_value(rd_val);
+     header.z = 0;
+     /* Code that verifies that this host does not exist in
+        any class.  If so, then we give them a rcode of NXDOMAIN_RCODE.
+@@ -3874,7 +3892,6 @@
+     int cache_size;
+     int min_ttl_n = 300, min_ttl_c = 300;
+     int timestamp_type = 5; /* Type of timestamp */
+-    int recursion_enabled = 0; /* Whether we have recursion */
+ #ifndef AUTHONLY
+     int max_glueless; /* Maximum allowed glueless level */
+     int max_q_total; /* Maximum total queries in attempt to resolve hostname */
+--- maradns-1.3.14/server/udpsuccess.c.orig	2009-08-02 10:23:25.000000000 -0500
++++ maradns-1.3.14/server/udpsuccess.c	2009-08-02 10:23:35.000000000 -0500
+@@ -39,6 +39,7 @@
+ extern rr *seenlist[256];
+ extern int seenlist_where;
+ extern ipv4pair long_packet[512];
++extern int calc_ra_value(); /* Make -Wall happy */
+ 
+ /* If we successfully found a record, spit out that record on the
+    udp packet.
+--- maradns-Q.20090802.1/server/udpsuccess.c	2009-08-02 10:25:49.000000000 -0500
++++ maradns-1.3.14/server/udpsuccess.c	2009-08-02 12:14:40.000000000 -0500
+@@ -473,7 +473,7 @@
+     header.opcode = 0;
+     header.tc = 0;
+     header.rd = rd_val; /* RDBUG udpsuccess */
+-    header.ra = ra_value;
++    header.ra = calc_ra_value(ra_value);
+     header.z = 0;
+     header.rcode = 0; /* No error */
+     header.qdcount = 1;
+--- maradns-1.3.13/doc/en/webpage/faq.embed	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.3.14/doc/en/webpage/faq.embed	2009-08-04 11:08:49.000000000 -0500
+@@ -104,6 +104,9 @@
+ 41. <A href="#blankzone">I have a zone with only SOA/NS records, and the
+     zone is not working.</A>
+ 
++<p>42. <A href="#afnic">I am having problems registering my domain with AFNIC 
++    (the registrar for .fr domains)</A>
++
+ </BLOCKQUOTE>
+ <H2>ANSWERS</H2>
+ 
+@@ -1091,3 +1094,36 @@
+ (there is a perfectly good workaround), this bug will not be fixed in
+ MaraDNS 1.2.
+ 
++<A name=afnic> </A>
++
++<h2>I am having problems registering my domain with AFNIC (the registrar for
++.fr domains)</h2>
++
++Because of an issue with AFNIC (who, annoyingly enough, check the RA bit
++when registering a domain), in order to register a domain with AFNIC using
++MaraDNS as your DNS server, the following steps need to be followed:
++
++<ul>
++
++<li> MaraDNS version 1.3.14 or higher needs to be used; if you're using an
++older version of MaraDNS, upgrade.
++
++<li> It is necessary to have recursion disabled.  This can be done either by
++compiling MaraDNS without recursive support (./configure --authonly ; make),
++or by making sure MaraDNS does not have recursion enabled (by not having
++recursive_acl set in one's mararc file)
++
++</ul>
++
++If one wishes to both register domains with AFNIC and use MaraDNS as a
++recursive DNS server, it is required to have the recursive server be a
++separate instance of MaraDNS on a separate IP.  It is not possible to have
++the same DNS server both send DNS packets in a way that both makes AFNIC
++happy and allows recursive queries.
++
++<p>
++
++Note also that AFNIC gives warnings about reverse DNS lookups; more
++information about this issue can be found in <A href=#rdns>the FAQ entry 
++about reverse DNS mappings</A> (question 7).
++

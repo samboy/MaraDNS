@@ -1,0 +1,11 @@
+--- maradns-1.3.02/sqa/franky.hosts.test	2006-08-14 13:02:07.000000000 -0700
++++ maradns-1.3.03/sqa/franky.hosts.test	2007-02-14 07:06:50.000000000 -0800
+@@ -34,6 +34,8 @@
+             z = int(rand() * 256);
+  print "./sendudp P" w "." x "." y "." z ".in-addr.arpa. 127.0.0.4 > /dev/null"
+                }
++            # Regression for ect.d memleak 
++	    if(a % 19 == 0) { print "./sendnoise "$0" 127.0.0.4 > /dev/null" }
+ 	    print "./sendudp A"$0". 127.0.0.4 > /dev/null"}' | sh
+ 	sleep 10
+         # Make sure we'll still able to resolve host names

@@ -1,0 +1,89 @@
+diff -ur maradns-1.2.07.1.orig/tcp/zoneserver.c maradns-1.2.07.1/tcp/zoneserver.c
+--- maradns-1.2.07.1.orig/tcp/zoneserver.c	2006-02-21 01:32:15.000000000 -0800
++++ maradns-1.2.07.1/tcp/zoneserver.c	2006-03-20 00:04:43.000000000 -0800
+@@ -570,6 +570,7 @@
+     js_string *name, *data, *zone, *query, *response, *soa, *filename,
+               *binzone;
+     int is_soa = 1, soa_q = 0;
++    int counter;
+     uint32 ttl;
+ 
+     /* 30-second idle timeout */
+@@ -628,10 +629,10 @@
+         goto clean_nd;
+         }
+ 
+-    /* If they only have permission to convert the query, do so */
++    /* If they only have permission to convert (proxy via UDP) the query, 
++       do so */
+     if((perms & 1) != 1) {
+         if((perms & 2) == 2) {
+-            /*printf("DEBUG: OK, moving on to convert_query 3\n");*/
+             convert_query(connect,&udp_forward_server,4,data,perms);
+             return JS_SUCCESS;
+             }
+@@ -654,7 +655,6 @@
+     if(*(data->string + 12 + length) != 0) {
+         /* We may need to forward the query to the UDP DNS upstream */
+         if((perms & 2) == 2) {
+-            /*printf("DEBUG: OK, moving on to convert_query 2\n");*/
+             convert_query(connect,&udp_forward_server,4,data,perms);
+             return JS_SUCCESS;
+             }
+@@ -673,7 +673,6 @@
+                we need to forward the request when they ask for anything
+                besides a SOA, IXFR, or AXFR */
+             if((perms & 2) == 2) {
+-                /*printf("DEBUG: OK, moving on to convert_query\n");*/
+                 convert_query(connect,&udp_forward_server,4,data,perms);
+                 return JS_SUCCESS;
+                 }
+@@ -689,6 +688,14 @@
+     if(js_copy(name,binzone) == JS_ERROR) {
+         goto clean_ndb;
+         }
++    /* Convert the name in to all lowercase (since A-Z never appear as a 
++       metacharacter in a zone file, we can quickly do this conversion) */
++    for(counter = 0; counter < name->unit_count; counter++) {
++        if(*(name->string + counter) >= 'A' &&
++           *(name->string + counter) <= 'Z') {
++              *(name->string + counter) += 32;
++              } 
++        }
+     /* Convert the name in to a dotted decimal format that the mararc
+        file uses */
+     if(hname_translate(name,RR_A) == JS_ERROR)
+@@ -1375,7 +1382,6 @@
+             mlog(L_WAITING); /* "Awaiting data on port 53" */
+         connection = gettcp(&sock,zonetransfer_acl,tcpconvert_acl,
+                      recursive_acl,500,&permissions);
+-        /*printf("DEBUG: permissions %d\n",permissions);*/
+         if(connection == JS_ERROR)
+             continue;
+         if(verbose >= 2)
+--- maradns-1.2.07.1.orig/parse/ParseMaraRc.c	2006-03-10 01:59:46.000000000 -0800
++++ maradns-1.2.07.1/parse/ParseMaraRc.c	2006-03-21 19:30:59.000000000 -0800
+@@ -512,6 +512,23 @@
+     if(num == -2)
+         return num;
+ 
++    /* If num is 0 (csv1) or 1 (csv2), then we make the key all lower-case */
++    if(num <= 1) {
++        int y,z;
++        y = 0;
++        for(z = 0; z < key->unit_count; z++) {
++            if(*(key->string + z) <= 'Z' && *(key->string + z) >= 'A') {
++	        y = 1;
++		*(key->string + z) += 32;
++		}
++            }
++	    if(y == 1) {
++	        printf("csv%d zone name ",num + 1);
++		show_esc_stdout(key);
++		printf(" had upper-case letters.  Converted.\n");
++		}
++        }
++
+     /* If it already exists, return a -3 (unless using += operator) */
+     if(mhash_get_js(dvar[num],key) != 0 && is_plus != 1)
+         return -3;

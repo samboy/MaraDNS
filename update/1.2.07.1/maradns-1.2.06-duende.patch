@@ -1,0 +1,157 @@
+From: Sam Trenholme <sam+i7tq5rg@chaosring.org>
+To: list@maradns.org
+Subject: Re: MaraDNS with inetd
+In-Reply-To: <44137D72.5020309@gsent.org>
+References: <44137D72.5020309@gsent.org>
+X-PGP-Fingerprint: D167 252A 18BC D011 7CB4  6CA8 0BE8 D6AE 1E61 FCA6
+X-PGP-Note: The above fingerprint is for the MaraDNS signing key
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Thank you for the bug report.  Attached is a patch which will cause 
+duende to always send a log message before terminating; this will
+help both you and any other MaraDNS user with the same concern.
+
+In order to better help you, I would like to know which operating system
+you're running MaraDNS on; please let us know the output of 'uname -a'
+on your system.  I would also like to know which version of MaraDNS you
+are using; this can be seen by typing in 'maradns --version'.
+
+I take "MaraDNS freezes after running for a while" or "MaraDNS terminates
+after running for a while" bugs very seriously, but I need a lot more
+information to reproduce the concern.  To be frank, I haven't seen this,
+and I have done some very heavy testing with MaraDNS before the 1.2
+release, running MaraDNS 1.2.00 continuously for days on a FreeBSD 6
+system, giving MaraDNS dozens of DNS queries a second, with no sign of 
+MaraDNS dying.  Additionally, people who use MaraDNS in datacenters, 
+receiving 1200 queries a second, haven't seen anything like this, nor 
+has one ISP who is using MaraDNS as a DNS server for over one million 
+users.
+
+MaraDNS is a solid program with over four years of real-world use and
+people just haven't been reporting "MaraDNS freezes" or "MaraDNS
+dies after being used for a while" since Albert fixed a problem caused
+by the broken Linux kernel a year ago [1].  
+
+This is why I would like to know which operating system you are using.
+I may be able to have MaraDNS work around the problem with the OS in 
+question.
+
+MaraDNS is a good stress-test for the underlying pthreads() library.
+I know that OpenBSD has had problems with MaraDNS: One user is 
+reporting that MaraDNS gives out compile-time warnings; other
+users have reported that OpenBSD just can't take that kind of load
+on the threading library.  Older versions of FreeBSD also have
+problems; FreeBSD 4.0 would not respond to DNS queries for a while,
+for example.  Again, this is a case of an operating system not
+being able to handle the large number of threads a heavily loaded 
+MaraDNS recursive server generates.
+
+To apply this patch, enter the MaraDNS-1.2.06 (or MaraDNS-1.2.03.4)
+directory, and type in this command:
+
+	patch -p1 < maradns-1.2.06-duende.patch
+
+Where "maradns-1.2.06-duende.patch" is a file with the following
+patch.
+
+- Sam
+
+[1] I got one report of a freeze-up with 1.2.03.1, which was caused by
+    me accidently not applying Albert's fix on that one version of 
+    MaraDNS.
+
+--- maradns-1.2.06/tools/duende.c.orig	2006-03-11 20:28:33.000000000 -0800
++++ maradns-1.2.06/tools/duende.c	2006-03-11 20:36:00.000000000 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2003-2005 Sam Trenholme
++/* Copyright (c) 2003-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -91,6 +91,7 @@
+             syslog(LOG_INFO,"%s",out_buf);
+         }
+ 
++    syslog(LOG_ALERT,"log_helper process terminating");
+     exit(0); 
+ 
+     }
+@@ -104,22 +105,26 @@
+         if(WIFEXITED(exit_status)) { /* Exit with exit code */
+ 	    if(WEXITSTATUS(exit_status) != 8) { /* Anything but HUP */
+ 	        kill(alive,SIGTERM);
++                syslog(LOG_ALERT,"Child exited with status %d",exit_status);
+ 	        exit(WEXITSTATUS(exit_status));
+ 		}
+             }
+         if(WIFSIGNALED(exit_status)) { /* Got signal */
+             if(WTERMSIG(exit_status) != SIGHUP) {
++                syslog(LOG_ALERT,"Child got signal %d",exit_status);
+                 kill(alive,SIGTERM);
+ 	        exit(1);
+ 		}
+             }
+        /* If you somehow stop the child daemon, we go bye bye */
+        if(WIFSTOPPED(exit_status)) {
++            syslog(LOG_ALERT,"Child stopped");
+ 	    kill(exited,SIGTERM);
+ 	    kill(alive,SIGTERM);
+ 	    exit(2);
+ 	    }
+         /* Clean up the system logging */
++        syslog(LOG_ALERT,"Cleaning up system logging");
+         kill(alive,SIGTERM);
+     }
+ 
+@@ -160,25 +165,32 @@
+     pid = 0; log_pid = 0;
+ 
+     for(;;) {
+-        if(pipe(stream1) != 0)
++        if(pipe(stream1) != 0) {
++            syslog(LOG_ALERT,"Fatal pipe error");
+ 	    exit(3);
++            }
+     	pid = fork();
+-	if(pid == -1)
++	if(pid == -1) {
++            syslog(LOG_ALERT,"Fatal pid error");
+ 	    exit(1);
++            }
+         if(pid == 0) { /* Child; this one execs maradns */
+ 	    close(stream1[0]);
+ 	    /* Dup the standard output */
+ 	    if(dup2(stream1[1],1) != 1) {
++                syslog(LOG_ALERT,"Fatal dup2 error 1");
+ 	        exit(4); 
+ 		}
+             /* And the standard error */
+             if(dup2(stream1[1],2) != 2) {
++                syslog(LOG_ALERT,"Fatal dup2 error 2");
+ 	        exit(5);
+ 		}
+             argv[0] = argv[1]; 
+             execvp(argv[1],argv + 1); 
+ 	    /* OK, not found */
+ 	    printf("duende: %s: Command can't run, terminating\n",argv[1]);
++            syslog(LOG_ALERT,"Command can't run, terminating\n");
+ 	    exit(1);
+ 	    }
+ 
+@@ -188,6 +200,7 @@
+ 	if(log_pid == 0) { /* Child to syslog all of MaraDNS' output */
+ 	    argv[0] = "duende-log-helper";
+ 	    log_helper(argv[1],stream1[0]);
++            syslog(LOG_ALERT,"log_helper finished, terminating\n");
+ 	    exit(1);
+ 	    } 
+         for(;;) {
+@@ -202,6 +215,7 @@
+ 	        /* XXX: make sure term really stops the children */
+ 	        kill(pid,SIGTERM);
+ 		kill(log_pid,SIGTERM);
++                syslog(LOG_ALERT,"got term signal, terminating\n");
+ 		exit(0);
+ 		}
+ 	    sleep(1);

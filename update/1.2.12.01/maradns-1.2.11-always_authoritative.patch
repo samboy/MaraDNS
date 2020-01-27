@@ -1,0 +1,143 @@
+This patch makes it so that all data from the authoritative half of
+MaraDNS (with the exception of NS delegations) is always marked 
+authoritative in the DNS header.
+
+--- maradns-orig/server/recursive.c	2006-07-25 07:51:32.000000000 -0500
++++ maradns-1.2.12.01/server/recursive.c	2006-07-25 08:58:31.000000000 -0500
+@@ -135,7 +135,8 @@
+ 		       int recursive_call);
+ extern int udpsuccess(rr *where, int id, int sock, struct sockaddr_in 
+ 		      *client, js_string *query, void **rotate_point,
+-		      int show_cname_a, int rd_val, conn *ect);
++		      int show_cname_a, int rd_val, conn *ect,
++                      int force_authoritative);
+ extern int mhash_add_ip();
+ extern int mhash_put_data();
+ 
+@@ -2511,7 +2512,7 @@
+             }
+         else {
+             udpsuccess(value,id,sock,&client,query,rotate_point,
+-                       cname_answer,1,0);
++                       cname_answer,1,0,0);
+             }
+         }
+     else if(ipret != NULL) { /* If we are simply changint the value of
+@@ -3336,7 +3337,7 @@
+ 		log_unlock();
+                 }
+             udpsuccess(spot_data.value,id,sock,&client,query,
+-                       spot_data.point,0,1,0);
++                       spot_data.point,0,1,0,0);
+ 	    big_unlock();
+             return JS_SUCCESS;
+             }
+@@ -3419,10 +3420,10 @@
+                     }
+                 if(original_rtype > 0)
+                     udpsuccess(spot_data.value,id,sock,&client,query,
+-                               spot_data.point,original_rtype,1,0);
++                               spot_data.point,original_rtype,1,0,0);
+                 else
+                     udpsuccess(spot_data.value,id,sock,&client,query,
+-                               spot_data.point,0,1,0);
++                               spot_data.point,0,1,0,0);
+         big_unlock();
+                 return JS_SUCCESS;
+                 }
+--- maradns-orig/server/MaraDNS.c	2006-07-25 07:51:31.000000000 -0500
++++ maradns-1.2.12.01/server/MaraDNS.c	2006-07-25 08:57:51.000000000 -0500
+@@ -123,6 +123,10 @@
+                          running is the only thing that can be changed
+                          remotely) is allowed.  Default off */
+ 
++int force_auth = 1; /* Whether any non-NS delegation record returned
++                     * from the authoritative half is always marked 
++                     * authoritative */
++
+ /* A list of who is and who is not allowed to make recursive DNS queries */
+ ipv4pair recurse_acl[512];
+ /* A list of the ipv4 IP addresses we bind MaraDNS to (the netmask portion is
+@@ -486,13 +490,17 @@
+           a js_string containing the query (dname + type), whether to show
+           an A record along with a CNAME record (this is no longer used),
+ 	  rd_val (which to set the RD flag in the headers), ect: A 
+-	  description of the connection to send the reply to
++	  description of the connection to send the reply to,
++	  force_authoritative: A boolean.  If 0, the value of the 
++          authoritative bit is determined by looking at the data in where.
++          If 1, the record is always marked in the DNS headers as
++          "authoritative".
+    Output: JS_ERROR on error, JS_SUCCESS on success
+ */
+ 
+ int udpsuccess(rr *where, int id, int sock, struct sockaddr_in *client,
+                js_string *query, void **rotate_point, int show_cname_a,
+-	       int rd_val, conn *ect) {
++	       int rd_val, conn *ect, int force_authoritative) {
+     js_string *most = 0; /* Most of the data */
+     js_string *ar = 0; /* Then the additional records */
+ 
+@@ -570,7 +578,12 @@
+ 
+     /* We have to add this header here--authoritative depends on the
+        authorative status of the first record we find */
+-    header.aa = where->authoritative;
++    if(force_authoritative != 1) {
++        header.aa = where->authoritative;
++        }
++    else {
++	header.aa = 1;
++        }
+     is_auth = where->authoritative;
+ 
+     /* The data must be between 0 and 65535 bytes in length (16-bit
+@@ -1439,7 +1452,6 @@
+     js_destroy(starwhitis);
+     goto old_udpany_code_disabled;
+ 
+-
+ use_old_udpany_code:
+ 
+     /* The old udpany code is still used by the recursive half of
+@@ -1679,7 +1691,7 @@
+     header.tc = 0;
+     header.rd = 0;
+     header.ra = 0;
+-    header.aa = authoritative;
++    header.aa = authoritative; /* Currently always 1 */
+     header.z = 0;
+     header.rcode = 0; /* No error */
+     header.qdcount = 1;
+@@ -2921,11 +2933,11 @@
+     if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+         if(qtype_o == RR_A || qtype_q == RR_CNAME) {
+             udpsuccess(spot_data.value,id,sock,0,question,
+-                       spot_data.point,1,rd_value,ect);
++                       spot_data.point,1,rd_value,ect,force_auth);
+             }
+         else {
+             udpsuccess(spot_data.value,id,sock,0,question,
+-                       spot_data.point,0,rd_value,ect);
++                       spot_data.point,0,rd_value,ect,force_auth);
+              }
+         return JS_SUCCESS;
+         }
+@@ -3423,7 +3435,7 @@
+ #endif
+         /* Otherwise, we return a NS server delegation */
+         udpsuccess(spot_data.value,header.id,sock,0,origq,spot_data.point,
+-			0,desires_recursion,ect);
++			0,desires_recursion,ect,0);
+         js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+         return JS_SUCCESS;
+         }
+@@ -3490,7 +3502,7 @@
+ #endif
+             /* Otherwise, we return a NS server delegation */
+             udpsuccess(spot_data.value,header.id,sock,0,origq,
+-                       spot_data.point,0,desires_recursion,ect);
++                       spot_data.point,0,desires_recursion,ect,0);
+             js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+             return JS_SUCCESS;
+             }

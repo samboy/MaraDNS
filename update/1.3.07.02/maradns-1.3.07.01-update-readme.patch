@@ -1,0 +1,10 @@
+--- maradns-1.3.07.01/update/00README	2005-11-28 12:40:10.000000000 -0600
++++ maradns-1.3.07.02/update/00README	2007-06-24 13:50:48.000000000 -0500
+@@ -1,4 +1,4 @@
+ This is the directory where we place scripts and patches that automatically
+-update one MaraDNS 1.2 release to the next MaraDNS 1.2 release; this lets
+-people keep track of changes without needing to be dependent on having
+-a certain revision control system.
++update one MaraDNS 1.3 release to the next MaraDNS 1.3 release; this lets
++people keep track of changes without needing to have a revision control 
++system.

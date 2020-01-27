@@ -1,0 +1,88 @@
+--- maradns-1.2.12.01/doc/en/source/faq.embed	2006-06-21 03:59:30.000000000 -0500
++++ maradns-1.2.12.02/doc/en/source/faq.embed	2006-08-07 00:44:24.000000000 -0500
+@@ -70,6 +70,10 @@
+ 29. <A href="#spf">Does MaraDNS have support for SPF?</A><p>
+ 
+ 30. <A href="#cname">I'm having problems resolving CNAMES I have set up.</A>
++    <p>
++
++31. <A href="#delegate">I have a NS delegation, and MaraDNS is doing
++    strange things.</A>
+ 
+ </BLOCKQUOTE>
+ <H2>ANSWERS</H2>
+@@ -672,3 +676,74 @@
+ records is in the tutorial file <A 
+ href="http://www.maradns.org/tutorial/dangling.html">dangling.html</A>
+ 
++<A name="delegate">
++</A>
++<h2>I have a NS delegation, and MaraDNS is doing
++    strange things.</h2>
++
++In the case of there being a NS delegation, MaraDNS handles recursive
++queries and non-recursive DNS queries differently.  Basically, unless
++you use <tt>askmara</tt> with the <tt>-n</tt> option, dig with the 
++<tt>+norecuse</tt> option, or <tt>nslookup</tt> with the <tt>-norec</tt>
++option, MaraDNS will try to recursively resolve the record that is 
++delegated.
++
++<p>
++
++The thinking is this: A normal recursive DNS query is usually one 
++where one wants to know the final DNS output.  So, if MaraDNS
++delegates a given record to another DNS server, and gets a recursive
++request for said query, MaraDNS will recursively resolve the query
++for you.
++
++<p>
++
++For example, let us suppose we have a <tt>mararc</tt> file that looks
++like this:
++
++<pre>
++chroot_dir = "/etc/maradns"
++ipv4_bind_addresses = "10.1.2.3"
++chroot_dir = "/etc/maradns"
++recursive_acl = "127.0.0.1/8, 10.0.0.0/8"
++csv2 = {}
++csv2["example.com."] = "db.example.com"
++</pre>
++
++And a <tt>db.example.com</tt> file that looks like this:
++
++<pre>
++www.example.com. 	10.1.2.3
++joe.example.com. 	NS ns.joe.example.com.
++ns.joe.example.com.	A 10.1.2.4
++</pre>
++
++Next, you are trying to find out why www.joe.example.com is not
++resolving.  If you naively send a query to 10.1.2.3 for www.joe.example.com
++as <tt>askmara Awww.joe.example.com. 10.1.2.3</tt> or as
++<tt>dig @10.1.2.3 www.joe.example.com.</tt> or as 
++<tt>nslookup www.joe.example.com. 10.1.2.3</tt>, you will <b>not</b>
++get any information that will help you solve the problem, since 10.1.2.3
++will try to contact 10.1.2.4 to resolve www.joe.example.com.
++
++<p>
++
++The solution is to run your DNS query client thusly:
++
++<ul>
++<li>Askmara would be run thusly: 
++<p><tt>askmara -n Awww.joe.example.com. 10.1.2.3</tt><p>
++<li>Dig would be run thusly: 
++<p><tt>dig +norecurse @10.1.2.3 www.joe.example.com</tt><p>
++<li>Nslookup would be run thusly: 
++<p><tt>nslookup -norec www.joe.example.com 10.1.2.3</tt><p>
++</ul>
++
++This will allow you to see that packets MaraDNS actually sends to
++a recursive DNS server.
++
++<p>
++
++As an aside, this particular problem will not happen if MaraDNS is
++run only as an authoritative nameserver.
++

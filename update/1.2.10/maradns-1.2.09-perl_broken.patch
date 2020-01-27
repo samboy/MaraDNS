@@ -1,0 +1,17 @@
+--- maradns-1.2.09/tools/ej/ej2man	2006-06-11 00:16:32.000000000 -0700
++++ maradns-1.2.10/tools/ej/ej2man	2006-06-19 00:49:09.000000000 -0700
+@@ -21,7 +21,13 @@
+ # Input: First argument or standard input
+ # Output: Standard output
+ 
+-use utf8;
++# Determine the version of Perl we are using
++$vers=sprintf("%vd",$^V);
++# 5.8.0 needs the following line
++if($vers =~ /5.8.0/) {
++    print "Sorry, this verion of Perl is broken with Unicode characters\n";
++    exit 1;
++    }
+ 
+ # Tmp dir (used for running iconv on non-8859-1 pages)
+ $TMP = $ENV{'HOME'} . "/tmp";

@@ -1,0 +1,36 @@
+--- maradns-1.2.12.01/doc/en/source/changelog.embed	2006-07-26 10:58:44.000000000 -0500
++++ maradns-1.2.12.02/doc/en/source/changelog.embed	2006-08-14 14:57:48.000000000 -0500
+@@ -1,5 +1,33 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.12.02:
++<p>
++This is a stable release of MaraDNS.
++<blockquote>
++<ul>
++<li>Slight cleanup to new Csv2 parsing code
++<li>Bugfix: A PTR that pointed to a CNAME that pointed to a non-responsive
++    server would create a slightly invalid DNS packet.  Fixed.
++<li>Bugfix: RFC2181-compliant truncation was broken.  Fixed.
++<li>Updates to the old pre-1.0 testbed to run this testbed again
++    (MaraDNS passed with flying colors)
++<li>Updates to the 1.2 testbed
++<li>Updates to the stress test that sends a large number of real DNS queries
++<li>FAQ entry about how to debug NS delegation problems added
++<li>Updates to FAQ and documentation.
++<li>Minor update to compression code to make it conform to MaraDNS coding
++    style.
++<li>Documents advocating MaraDNS added (this is a work in progress)
++<li><tt>mqhash</tt> utility documented.
++<li>Various non-critical memory leaks (memory allocated once during startup
++    which wasn't correctly freed) and one minor error (which was not
++    a security problem) were detected by 
++    <A href="http://valgrind.org/">Valgrind</A> and fixed.
++<li>.pdf man page reference now uses letter size paper again.
++</ul>
++(2006.08.14)
++</blockquote>
++
+ <p>maradns-1.2.12.01:
+ <p>
+ This is a testing release of MaraDNS.

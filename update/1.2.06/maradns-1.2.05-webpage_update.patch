@@ -1,0 +1,602 @@
+Sólo en maradns-1.2.06/doc/en/webpage/: changelog.embed
+Sólo en maradns-1.2.06/doc/en/webpage/: changelog.html
+diff -ur maradns-1.2.05/doc/en/webpage/contact.html maradns-1.2.06/doc/en/webpage/contact.html
+--- maradns-1.2.05/doc/en/webpage/contact.html	2005-12-08 18:16:59.000000000 -0800
++++ maradns-1.2.06/doc/en/webpage/contact.html	2006-02-24 11:31:08.000000000 -0800
+@@ -34,7 +34,8 @@
+         </td></table></div>
+ </td>
+ </table>
+-
++<script type=text/javascript>
++</script>
+ <div id=lefthand>
+ <div id=maradns-l>
+ 	<a href="index.html">Main</a>
+diff -ur maradns-1.2.05/doc/en/webpage/dns_software.html maradns-1.2.06/doc/en/webpage/dns_software.html
+--- maradns-1.2.05/doc/en/webpage/dns_software.html	2005-12-08 18:16:59.000000000 -0800
++++ maradns-1.2.06/doc/en/webpage/dns_software.html	2006-02-24 11:31:09.000000000 -0800
+@@ -34,7 +34,8 @@
+         </td></table></div>
+ </td>
+ </table>
+-
++<script type=text/javascript>
++</script>
+ <div id=lefthand>
+ <div id=maradns-l>
+ 	<a href="index.html">Main</a>
+diff -ur maradns-1.2.05/doc/en/webpage/download.embed maradns-1.2.06/doc/en/webpage/download.embed
+--- maradns-1.2.05/doc/en/webpage/download.embed	2005-12-20 02:04:27.000000000 -0800
++++ maradns-1.2.06/doc/en/webpage/download.embed	2006-02-24 11:31:08.000000000 -0800
+@@ -3,31 +3,57 @@
+ <h1>&iexcl;Download MaraDNS!</h1>
+ 
+ <h2>Stable release</h2>
+-<p>This is the current stable release of MaraDNS, MaraDNS 1.2.
+-<p><A href="download/1.1/maradns-1.2.00.tar.bz2"><!--
+-                      -->maradns-1.2.00.tar.bz2</A>
+-<p><A href="download/1.1/maradns-1.2.00.tar.bz2.sha1.asc">GPG signature</A><p>
+-<p><A href="download/1.1/maradns-1.2.00.tar.bz2.rmd.asc">GPG signature
++<p>This is the current stable release of MaraDNS, MaraDNS 1.2.03.3
++<p>This release is available both at <A 
++href=http://sourceforge.net/project/showfiles.php?group_id=24033&package_id=16396>sourceforge.net</A>
++and on this page.
++
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.bz2"><!--
++                         -->maradns-1.2.03.3.tar.bz2</A>
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.bz2.sha1.asc">GPG signature</A><p>
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.bz2.rmd.asc">GPG signature
++using RIPEMD160 as the digest algorithm</A><p>
++(released 2006/02/10)
++
++<p>
++The following are files compressed with LZMA compression, which both compresses
++better and decompresses faster than bzip2 compressed files.  Information
++on decompressing LZMA files can be found <A 
++href=download/1.2/00Uncompress.txt>here</A>.
++
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.lzma"><!--
++                         -->maradns-1.2.03.3.tar.lzma</A>
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.lzma.sha1.asc">GPG signature</A><p>
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.lzma.rmd.asc">GPG signature
+ using RIPEMD160 as the digest algorithm</A><p>
+-(released 2005/12/21)
+ 
+ <p>
+ For people who prefer a gzip compressed archive:
+ 
+-<p><A href="download/1.1/maradns-1.2.00.tar.gz"><!--
+-                      -->maradns-1.2.00.tar.gz</A>
+-<p><A href="download/1.1/maradns-1.2.00.tar.gz.sha1.asc">GPG signature</A><p>
+-<p><A href="download/1.1/maradns-1.2.00.tar.gz.rmd.asc">GPG signature
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.gz"><!--
++                         -->maradns-1.2.03.3.tar.gz</A>
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.gz.sha1.asc">GPG signature</A><p>
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.gz.rmd.asc">GPG signature
+ using RIPEMD160 as the digest algorithm</A><p>
+ 
+ <h3>RPM files</h3>
+-<p><A href=download/maradns-1.2.00-1.src.rpm><!--
+-                 -->maradns-1.2.00-1.src.rpm</A></p>
+-<p>Note: This RPM only builds with older releases of RedHat.  
++<p><A href=download/1.2/1.2.03.3/maradns-1.2.03.3-1.src.rpm><!--
++                              -->maradns-1.2.03.3-1.src.rpm</A></p>
++<p><i>Greg Swallow fixed the rpm package so that the RPM now builds on
++   CentOS3 and CentOS4, in addition to RedHat 6.2.</i>
+ <p><b>Binary RPM</b> (Built on RedHat 6.2; verified to work in newer Linuxes)
+ </p>
+-<p><A href=download/maradns-1.2.00-1.i386.rpm><!--
+-                 -->maradns-1.2.00-1.i386.rpm</A></p>
++<p><A href=download/1.2/1.2.03.3/maradns-1.2.03.3-1.i386.rpm><!--
++                              -->maradns-1.2.03.3-1.i386.rpm</A></p>
+ 
+ <h3>Windows Binary</h3>
+ <p>I have made a partial port of MaraDNS to Windows.  While this port
+@@ -38,28 +64,35 @@
+ People who want a full Windows port of MaraDNS can compile MaraDNS on
+ <A href=http://www.cygwin.com>Cygwin</A>.
+ 
+-<p><A href="download/1.1/maradns-1-2-00-win32.zip"><!--
+-                      -->maradns-1-2-00-win32.zip</A>
+-<p><A href="download/1.1/maradns-1-2-00.zip.sha1.asc">GPG signature</A><p>
+-<p><A href="download/1.1/maradns-1-2-00.zip.ripemd160.asc">GPG signature
++<p><A 
++href="download/1.2/1.2.03.2/maradns-1-2-03-2-win32.zip"><!--
++                         -->maradns-1-2-03-2-win32.zip</A>
++<p><A 
++href="download/1.2/1.2.03.2/maradns-1-2-03-2-win32.zip.sha1.asc">GPG signature</A><p>
++<p><A 
++href="download/1.2/1.2.03.2/maradns-1-2-03-2-win32.zip.rmd.asc">GPG signature
+ using RIPEMD160 as the digest algorithm</A><p>
+ 
+ <hr>
+ 
++<h2>Testing release</h2>
++A testing release of MaraDNS, 1.2.05, has been released on February 21, 2006.
++This release can be downloaded <A href=/download/1.2/1.2.05>here</A>.
++
+ <h2>Legacy release</h2>
+-This is the current version of the last release of MaraDNS, MaraDNS
++This is the current version of the legacy release of MaraDNS, MaraDNS
+ 1.0.  This release will no longer be supported for anything but critical
+ security fixes after December 21, 2007, and not supported at all after
+ December 21, 2010.
+-<A href=download/maradns-1.0.35.tar.bz2>Get the current 1.0 release</A>,
+-MaraDNS 1.0.35, released 2005/11/20 
++<A href=download/maradns-1.0.36.tar.bz2>Get the current 1.0 release</A>,
++MaraDNS 1.0.36, released 2005/12/31 
+ (bzip2 compressed).  
+ <p>
+-<A href=download/maradns-1.0.35.tar.bz2.sha1.asc>bzip2 GPG sig</A>
++<A href=download/maradns-1.0.36.tar.bz2.sha1.asc>bzip2 GPG sig</A>
+ <p>
+-<A href=download/maradns-1.0.35.tar.gz>gzip compressed version</A>
++<A href=download/maradns-1.0.36.tar.gz>gzip compressed version</A>
+ <p>
+-<A href=download/maradns-1.0.35.tar.gz.sha1.asc>gzip GPG sig</A>
++<A href=download/maradns-1.0.36.tar.gz.sha1.asc>gzip GPG sig</A>
+ <p>
+ </p><p>
+ <b>Source RPM</b></p>
+@@ -77,7 +110,7 @@
+ 
+ <h2>Other</h2>
+ <p><A href=changelog.html>View the changelog</A></p>
+-<A href="download/1.1/">Other 1.1.xx releases of MaraDNS</A>
++<A href="download/1.1/old/">1.1.xx releases of MaraDNS</A>
+ 
+ <H2>Tools to help verify the sums of MaraDNS (or any other file)</H2>
+ <p>This is a mismash of various cryptographic summing algorithms.  <b>By and
+@@ -89,24 +122,6 @@
+ <A href=download/sums-papers-20010818.tar.bz2>sums-papers-20010818.tar.bz2</A>  
+ This is a collection of papers describing the various cryptographic hashes.
+ 
+-<H2>Deprecated branch</H2>
+-<p><b>This branch will be removed from this server in early 2006</b>
+-<p>
+-This is an older release which will be removed from this server shortly.
+-This version has not been changed since 2002.
+-<p>
+-<A href="http://marc.10east.com/?l=maradns-list&m=112767304828933&w=2">See
+-this page for the deprecation announcement</A>
+-<p><b>Tar</b></p>
+-<p><A href="download/maradns-0.5.33.tar.bz2">maradns-0.5.33.tar.bz2</A></p>
+-<p><b>Source code RPM</b></p>
+-<p><A href="download/maradns-0.5.33-1.src.rpm">maradns-0.5.33-1.src.rpm</A></p>
+-<p><b>Binary RPM</b></p>
+-<p><A href="download/maradns-0.5.33-1.i386.rpm">maradns-0.5.33-1.i386.rpm</A>
+-(This RPM was built on a RedHat 7.1 machine)
+-<p><b>Debian package</b></p>
+-<p><A href="http://packages.debian.org/maradns">http://packages.debian.org/maradns</A>
+-</p>
+ <H2>Disclaimer</H2>
+ THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
+ OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+diff -ur maradns-1.2.05/doc/en/webpage/download.html maradns-1.2.06/doc/en/webpage/download.html
+--- maradns-1.2.05/doc/en/webpage/download.html	2005-12-20 02:04:30.000000000 -0800
++++ maradns-1.2.06/doc/en/webpage/download.html	2006-02-24 11:31:09.000000000 -0800
+@@ -34,7 +34,8 @@
+         </td></table></div>
+ </td>
+ </table>
+-
++<script type=text/javascript>
++</script>
+ <div id=lefthand>
+ <div id=maradns-l>
+ 	<a href="index.html">Main</a>
+@@ -66,31 +67,57 @@
+ <h1>&iexcl;Download MaraDNS!</h1>
+ 
+ <h2>Stable release</h2>
+-<p>This is the current stable release of MaraDNS, MaraDNS 1.2.
+-<p><A href="download/1.1/maradns-1.2.00.tar.bz2"><!--
+-                      -->maradns-1.2.00.tar.bz2</A>
+-<p><A href="download/1.1/maradns-1.2.00.tar.bz2.sha1.asc">GPG signature</A><p>
+-<p><A href="download/1.1/maradns-1.2.00.tar.bz2.rmd.asc">GPG signature
++<p>This is the current stable release of MaraDNS, MaraDNS 1.2.03.3
++<p>This release is available both at <A 
++href=http://sourceforge.net/project/showfiles.php?group_id=24033&package_id=16396>sourceforge.net</A>
++and on this page.
++
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.bz2"><!--
++                         -->maradns-1.2.03.3.tar.bz2</A>
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.bz2.sha1.asc">GPG signature</A><p>
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.bz2.rmd.asc">GPG signature
++using RIPEMD160 as the digest algorithm</A><p>
++(released 2006/02/10)
++
++<p>
++The following are files compressed with LZMA compression, which both compresses
++better and decompresses faster than bzip2 compressed files.  Information
++on decompressing LZMA files can be found <A 
++href=download/1.2/00Uncompress.txt>here</A>.
++
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.lzma"><!--
++                         -->maradns-1.2.03.3.tar.lzma</A>
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.lzma.sha1.asc">GPG signature</A><p>
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.lzma.rmd.asc">GPG signature
+ using RIPEMD160 as the digest algorithm</A><p>
+-(released 2005/12/21)
+ 
+ <p>
+ For people who prefer a gzip compressed archive:
+ 
+-<p><A href="download/1.1/maradns-1.2.00.tar.gz"><!--
+-                      -->maradns-1.2.00.tar.gz</A>
+-<p><A href="download/1.1/maradns-1.2.00.tar.gz.sha1.asc">GPG signature</A><p>
+-<p><A href="download/1.1/maradns-1.2.00.tar.gz.rmd.asc">GPG signature
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.gz"><!--
++                         -->maradns-1.2.03.3.tar.gz</A>
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.gz.sha1.asc">GPG signature</A><p>
++<p><A 
++href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.gz.rmd.asc">GPG signature
+ using RIPEMD160 as the digest algorithm</A><p>
+ 
+ <h3>RPM files</h3>
+-<p><A href=download/maradns-1.2.00-1.src.rpm><!--
+-                 -->maradns-1.2.00-1.src.rpm</A></p>
+-<p>Note: This RPM only builds with older releases of RedHat.  
++<p><A href=download/1.2/1.2.03.3/maradns-1.2.03.3-1.src.rpm><!--
++                              -->maradns-1.2.03.3-1.src.rpm</A></p>
++<p><i>Greg Swallow fixed the rpm package so that the RPM now builds on
++   CentOS3 and CentOS4, in addition to RedHat 6.2.</i>
+ <p><b>Binary RPM</b> (Built on RedHat 6.2; verified to work in newer Linuxes)
+ </p>
+-<p><A href=download/maradns-1.2.00-1.i386.rpm><!--
+-                 -->maradns-1.2.00-1.i386.rpm</A></p>
++<p><A href=download/1.2/1.2.03.3/maradns-1.2.03.3-1.i386.rpm><!--
++                              -->maradns-1.2.03.3-1.i386.rpm</A></p>
+ 
+ <h3>Windows Binary</h3>
+ <p>I have made a partial port of MaraDNS to Windows.  While this port
+@@ -101,28 +128,35 @@
+ People who want a full Windows port of MaraDNS can compile MaraDNS on
+ <A href=http://www.cygwin.com>Cygwin</A>.
+ 
+-<p><A href="download/1.1/maradns-1-2-00-win32.zip"><!--
+-                      -->maradns-1-2-00-win32.zip</A>
+-<p><A href="download/1.1/maradns-1-2-00.zip.sha1.asc">GPG signature</A><p>
+-<p><A href="download/1.1/maradns-1-2-00.zip.ripemd160.asc">GPG signature
++<p><A 
++href="download/1.2/1.2.03.2/maradns-1-2-03-2-win32.zip"><!--
++                         -->maradns-1-2-03-2-win32.zip</A>
++<p><A 
++href="download/1.2/1.2.03.2/maradns-1-2-03-2-win32.zip.sha1.asc">GPG signature</A><p>
++<p><A 
++href="download/1.2/1.2.03.2/maradns-1-2-03-2-win32.zip.rmd.asc">GPG signature
+ using RIPEMD160 as the digest algorithm</A><p>
+ 
+ <hr>
+ 
++<h2>Testing release</h2>
++A testing release of MaraDNS, 1.2.05, has been released on February 21, 2006.
++This release can be downloaded <A href=/download/1.2/1.2.05>here</A>.
++
+ <h2>Legacy release</h2>
+-This is the current version of the last release of MaraDNS, MaraDNS
++This is the current version of the legacy release of MaraDNS, MaraDNS
+ 1.0.  This release will no longer be supported for anything but critical
+ security fixes after December 21, 2007, and not supported at all after
+ December 21, 2010.
+-<A href=download/maradns-1.0.35.tar.bz2>Get the current 1.0 release</A>,
+-MaraDNS 1.0.35, released 2005/11/20 
++<A href=download/maradns-1.0.36.tar.bz2>Get the current 1.0 release</A>,
++MaraDNS 1.0.36, released 2005/12/31 
+ (bzip2 compressed).  
+ <p>
+-<A href=download/maradns-1.0.35.tar.bz2.sha1.asc>bzip2 GPG sig</A>
++<A href=download/maradns-1.0.36.tar.bz2.sha1.asc>bzip2 GPG sig</A>
+ <p>
+-<A href=download/maradns-1.0.35.tar.gz>gzip compressed version</A>
++<A href=download/maradns-1.0.36.tar.gz>gzip compressed version</A>
+ <p>
+-<A href=download/maradns-1.0.35.tar.gz.sha1.asc>gzip GPG sig</A>
++<A href=download/maradns-1.0.36.tar.gz.sha1.asc>gzip GPG sig</A>
+ <p>
+ </p><p>
+ <b>Source RPM</b></p>
+@@ -140,7 +174,7 @@
+ 
+ <h2>Other</h2>
+ <p><A href=changelog.html>View the changelog</A></p>
+-<A href="download/1.1/">Other 1.1.xx releases of MaraDNS</A>
++<A href="download/1.1/old/">1.1.xx releases of MaraDNS</A>
+ 
+ <H2>Tools to help verify the sums of MaraDNS (or any other file)</H2>
+ <p>This is a mismash of various cryptographic summing algorithms.  <b>By and
+@@ -152,24 +186,6 @@
+ <A href=download/sums-papers-20010818.tar.bz2>sums-papers-20010818.tar.bz2</A>  
+ This is a collection of papers describing the various cryptographic hashes.
+ 
+-<H2>Deprecated branch</H2>
+-<p><b>This branch will be removed from this server in early 2006</b>
+-<p>
+-This is an older release which will be removed from this server shortly.
+-This version has not been changed since 2002.
+-<p>
+-<A href="http://marc.10east.com/?l=maradns-list&m=112767304828933&w=2">See
+-this page for the deprecation announcement</A>
+-<p><b>Tar</b></p>
+-<p><A href="download/maradns-0.5.33.tar.bz2">maradns-0.5.33.tar.bz2</A></p>
+-<p><b>Source code RPM</b></p>
+-<p><A href="download/maradns-0.5.33-1.src.rpm">maradns-0.5.33-1.src.rpm</A></p>
+-<p><b>Binary RPM</b></p>
+-<p><A href="download/maradns-0.5.33-1.i386.rpm">maradns-0.5.33-1.i386.rpm</A>
+-(This RPM was built on a RedHat 7.1 machine)
+-<p><b>Debian package</b></p>
+-<p><A href="http://packages.debian.org/maradns">http://packages.debian.org/maradns</A>
+-</p>
+ <H2>Disclaimer</H2>
+ THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
+ OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+diff -ur maradns-1.2.05/doc/en/webpage/faq-1.0.html maradns-1.2.06/doc/en/webpage/faq-1.0.html
+--- maradns-1.2.05/doc/en/webpage/faq-1.0.html	2005-12-12 12:53:42.000000000 -0800
++++ maradns-1.2.06/doc/en/webpage/faq-1.0.html	2006-02-24 11:31:09.000000000 -0800
+@@ -34,7 +34,8 @@
+         </td></table></div>
+ </td>
+ </table>
+-
++<script type=text/javascript>
++</script>
+ <div id=lefthand>
+ <div id=maradns-l>
+ 	<a href="index.html">Main</a>
+Sólo en maradns-1.2.06/doc/en/webpage/: faq.embed
+Sólo en maradns-1.2.06/doc/en/webpage/: faq.html
+diff -ur maradns-1.2.05/doc/en/webpage/index.embed maradns-1.2.06/doc/en/webpage/index.embed
+--- maradns-1.2.05/doc/en/webpage/index.embed	2005-12-17 14:17:37.000000000 -0800
++++ maradns-1.2.06/doc/en/webpage/index.embed	2006-02-24 11:31:42.000000000 -0800
+@@ -12,17 +12,16 @@
+ the server must use the absolute minimum number of resources possible (such
+ as on older PCs and embedded wi-fi routers).
+ MaraDNS was originally created in 2001; MaraDNS 1.0 was released in 2002
+-and MaraDNS 1.2 should be released by the end of 2005.  MaraDNS has been
++and MaraDNS 1.2 has just been released.  MaraDNS has been
+ extensively tested, both with a SQA process and with over three years of
+ real-world use. 
+ <p>
+ MaraDNS has the following design goals:
+ <ul>
+ <li>Ease of use.  While a full authoritative, caching, and recursive
+-DNS server, the 1.2 release will only need a single 3-line configuration
++DNS server, the 1.2 release only needs a single 3-line configuration
+ file to perform basic recursive DNS service.  MaraDNS is extensively 
+-documented with
+-both man pages and a tutorial.
++documented with both man pages and a tutorial.
+ <p>
+ <li> Security-aware programming.  A DNS server needs to be secure.  
+   MaraDNS has a number of security
+@@ -33,7 +32,7 @@
+   <li> The code uses a special string library which is resistant to buffer
+      overflows.<p></p></li>
+ 
+-  <li> The code, if started as root, mandates running as an unprivledged user 
++  <li> The code, if started as root, mandates running as an unprivileged user 
+      in a chroot() jail.<p></p></li>
+      
+   </ol><p></p></li>
+diff -ur maradns-1.2.05/doc/en/webpage/index.html maradns-1.2.06/doc/en/webpage/index.html
+--- maradns-1.2.05/doc/en/webpage/index.html	2005-12-17 14:17:39.000000000 -0800
++++ maradns-1.2.06/doc/en/webpage/index.html	2006-02-24 11:31:46.000000000 -0800
+@@ -34,7 +34,8 @@
+         </td></table></div>
+ </td>
+ </table>
+-
++<script type=text/javascript>
++</script>
+ <div id=lefthand>
+ <div id=maradns-l>
+ 	<a href="index.html">Main</a>
+@@ -75,17 +76,16 @@
+ the server must use the absolute minimum number of resources possible (such
+ as on older PCs and embedded wi-fi routers).
+ MaraDNS was originally created in 2001; MaraDNS 1.0 was released in 2002
+-and MaraDNS 1.2 should be released by the end of 2005.  MaraDNS has been
++and MaraDNS 1.2 has just been released.  MaraDNS has been
+ extensively tested, both with a SQA process and with over three years of
+ real-world use. 
+ <p>
+ MaraDNS has the following design goals:
+ <ul>
+ <li>Ease of use.  While a full authoritative, caching, and recursive
+-DNS server, the 1.2 release will only need a single 3-line configuration
++DNS server, the 1.2 release only needs a single 3-line configuration
+ file to perform basic recursive DNS service.  MaraDNS is extensively 
+-documented with
+-both man pages and a tutorial.
++documented with both man pages and a tutorial.
+ <p>
+ <li> Security-aware programming.  A DNS server needs to be secure.  
+   MaraDNS has a number of security
+@@ -96,7 +96,7 @@
+   <li> The code uses a special string library which is resistant to buffer
+      overflows.<p></p></li>
+ 
+-  <li> The code, if started as root, mandates running as an unprivledged user 
++  <li> The code, if started as root, mandates running as an unprivileged user 
+      in a chroot() jail.<p></p></li>
+      
+   </ol><p></p></li>
+diff -ur maradns-1.2.05/doc/en/webpage/license.html maradns-1.2.06/doc/en/webpage/license.html
+--- maradns-1.2.05/doc/en/webpage/license.html	2005-12-17 14:17:39.000000000 -0800
++++ maradns-1.2.06/doc/en/webpage/license.html	2006-02-24 11:31:09.000000000 -0800
+@@ -34,7 +34,8 @@
+         </td></table></div>
+ </td>
+ </table>
+-
++<script type=text/javascript>
++</script>
+ <div id=lefthand>
+ <div id=maradns-l>
+ 	<a href="index.html">Main</a>
+diff -ur maradns-1.2.05/doc/en/webpage/Makefile maradns-1.2.06/doc/en/webpage/Makefile
+--- maradns-1.2.05/doc/en/webpage/Makefile	2005-12-13 11:07:04.000000000 -0800
++++ maradns-1.2.06/doc/en/webpage/Makefile	2006-02-24 11:29:47.000000000 -0800
+@@ -2,35 +2,35 @@
+ 	faq-1.0.html faq.html index.html license.html notes.html \
+ 	roadmap.html security.html
+ 
+-changelog.html: changelog.embed
++changelog.html: changelog.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page changelog.embed
+ 
+-contact.html: contact.embed
++contact.html: contact.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page contact.embed
+ 
+-dns_software.html: dns_software.embed
++dns_software.html: dns_software.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page dns_software.embed
+ 
+-download.html: download.embed
++download.html: download.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page download.embed
+ 
+-faq-1.0.html: faq-1.0.embed
++faq-1.0.html: faq-1.0.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page faq-1.0.embed
+ 
+-faq.html: faq.embed
++faq.html: faq.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page faq.embed
+ 
+-index.html: index.embed
++index.html: index.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page index.embed
+ 
+-license.html: license.embed
++license.html: license.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page license.embed
+ 
+-notes.html: notes.embed
++notes.html: notes.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page notes.embed
+ 
+-roadmap.html: roadmap.embed
++roadmap.html: roadmap.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page roadmap.embed
+ 
+-security.html: security.embed
++security.html: security.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page security.embed
+diff -ur maradns-1.2.05/doc/en/webpage/maradns-1.2-s.css maradns-1.2.06/doc/en/webpage/maradns-1.2-s.css
+--- maradns-1.2.05/doc/en/webpage/maradns-1.2-s.css	2005-12-08 17:11:49.000000000 -0800
++++ maradns-1.2.06/doc/en/webpage/maradns-1.2-s.css	2006-02-24 11:29:47.000000000 -0800
+@@ -68,8 +68,9 @@
+ 		color: #ffffff;
+ 		background-color: #5a4529; 
+ 		display: block;
+-		text-decoration: none !important;
+-		text-decoration: underline;
++		width: auto !important;
++		width: 100%;
++		text-decoration: none;
+ 		border-bottom: 1px solid #000000;
+ 		padding-top: 4px;
+ 		padding-bottom: 4px;
+@@ -104,7 +105,8 @@
+ 
+ #maradns-r {
+         margin-top: 0px;
+-        margin-left: 4px;
++        margin-left: 4px !important;
++        margin-left: 0px;
+ 	margin-right: 4px;
+         margin-bottom: 4px;
+ 	padding: 7px;
+diff -ur maradns-1.2.05/doc/en/webpage/maradns-1.2-top.html maradns-1.2.06/doc/en/webpage/maradns-1.2-top.html
+--- maradns-1.2.05/doc/en/webpage/maradns-1.2-top.html	2005-12-08 15:27:10.000000000 -0800
++++ maradns-1.2.06/doc/en/webpage/maradns-1.2-top.html	2006-02-24 11:29:47.000000000 -0800
+@@ -34,7 +34,8 @@
+         </td></table></div>
+ </td>
+ </table>
+-
++<script type=text/javascript>
++</script>
+ <div id=lefthand>
+ <div id=maradns-l>
+ 	<a href="index.html">Main</a>
+diff -ur maradns-1.2.05/doc/en/webpage/notes.html maradns-1.2.06/doc/en/webpage/notes.html
+--- maradns-1.2.05/doc/en/webpage/notes.html	2005-12-12 14:39:15.000000000 -0800
++++ maradns-1.2.06/doc/en/webpage/notes.html	2006-02-24 11:31:09.000000000 -0800
+@@ -34,7 +34,8 @@
+         </td></table></div>
+ </td>
+ </table>
+-
++<script type=text/javascript>
++</script>
+ <div id=lefthand>
+ <div id=maradns-l>
+ 	<a href="index.html">Main</a>
+diff -ur maradns-1.2.05/doc/en/webpage/roadmap.embed maradns-1.2.06/doc/en/webpage/roadmap.embed
+--- maradns-1.2.05/doc/en/webpage/roadmap.embed	2005-12-20 02:06:36.000000000 -0800
++++ maradns-1.2.06/doc/en/webpage/roadmap.embed	2006-02-24 11:31:08.000000000 -0800
+@@ -42,7 +42,7 @@
+ <li>It is possible to compile the server without recursive support, making
+     the maradns binary 20% smaller and not needing to be linked to the  
+     pthread library.
+-<li>There is a special DOS surivial mode which resoves hostnames as 
++<li>There is a special DOS survival mode which resoves hostnames as 
+     quickly as possible
+     at the expense of not supporting some DNS features (such as CNAME records
+     or star records)
+diff -ur maradns-1.2.05/doc/en/webpage/roadmap.html maradns-1.2.06/doc/en/webpage/roadmap.html
+--- maradns-1.2.05/doc/en/webpage/roadmap.html	2005-12-20 23:49:01.000000000 -0800
++++ maradns-1.2.06/doc/en/webpage/roadmap.html	2006-02-24 11:31:09.000000000 -0800
+@@ -34,7 +34,8 @@
+         </td></table></div>
+ </td>
+ </table>
+-
++<script type=text/javascript>
++</script>
+ <div id=lefthand>
+ <div id=maradns-l>
+ 	<a href="index.html">Main</a>
+@@ -105,7 +106,7 @@
+ <li>It is possible to compile the server without recursive support, making
+     the maradns binary 20% smaller and not needing to be linked to the  
+     pthread library.
+-<li>There is a special DOS surivial mode which resoves hostnames as 
++<li>There is a special DOS survival mode which resoves hostnames as 
+     quickly as possible
+     at the expense of not supporting some DNS features (such as CNAME records
+     or star records)
+diff -ur maradns-1.2.05/doc/en/webpage/security.html maradns-1.2.06/doc/en/webpage/security.html
+--- maradns-1.2.05/doc/en/webpage/security.html	2005-12-08 18:17:00.000000000 -0800
++++ maradns-1.2.06/doc/en/webpage/security.html	2006-02-24 11:31:09.000000000 -0800
+@@ -34,7 +34,8 @@
+         </td></table></div>
+ </td>
+ </table>
+-
++<script type=text/javascript>
++</script>
+ <div id=lefthand>
+ <div id=maradns-l>
+ 	<a href="index.html">Main</a>

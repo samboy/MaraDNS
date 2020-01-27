@@ -1,0 +1,21 @@
+The person at the large ISP disabled the following now-undeed code
+snippet.
+
+--- maradns-1.2.03.2/server/recursive.c	2006-02-09 01:09:24.000000000 -0800
++++ maradns-1.2.04/server/recursive.c	2006-02-09 01:10:42.000000000 -0800
+@@ -1131,11 +1131,12 @@
+     }
+     /* Thanks to Hugo Vanwoerkom for pointing out that Aww4.janus.com.
+        doesn't reaolve in Mozilla; it has a TTL of 0 (ugh), which
+-       confuses stub resolver libraries */
+-    if(ttl > 30)
++       confuses stub resolver libraries.  This code is not necessary
++       now because of the above code */
++    /* if(ttl > 30)
+         data->ttl = ttl;
+     else
+-        data->ttl = 30;
++        data->ttl = 30; */
+ 
+     /* Create a js_string object to store the raw binary answer */
+     if((new=js_create(value->unit_count + 1,value->unit_size)) == 0) {

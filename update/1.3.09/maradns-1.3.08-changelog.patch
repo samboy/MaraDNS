@@ -1,0 +1,83 @@
+--- maradns-1.3.08/doc/en/source/changelog.embed	2007-09-21 07:07:48.000000000 -0500
++++ maradns-1.3.09/doc/en/source/changelog.embed	2007-10-19 08:51:56.000000000 -0500
+@@ -1,16 +1,77 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.3.09:</p>
++This is a development release of MaraDNS.
++<blockquote>
++<ul>
++<li>New DNS load balancer added in <tt>deadwood-1</tt> directory.  This is a
++    work in progress that will (hopefully) become a full fledged 
++    thread-free recursive DNS server.  Right now, it's only a basic UDP-only
++    DNS load balancer.
++<li>.rpm files are no longer part of MaraDNS releases.  People who wish to have
++    a .rpm can use the .spec file in build/ to make their own .rpm files.
++<li>A script now automatically updates the .spec file
++<li>Mr. Sarton has added some ipv6 support to <tt>askmara-tcp</tt> and
++    <tt>askmara</tt>.  Note that MaraDNS needs to be compiled with authonly
++    support to use ipv6.
++<li>Documents added: Document for Debian users telling them how to update to
++    a supported version of MaraDNS; MaraDNS coding style document.
++<li>Documents updated: Security web page; Roadmap web page; Download web
++    page; COPYING file (copyright updated); mararc man page; duende man page
++<li>Web page update: HTML modified so all web page documents parse in Dillo
++    without any reported errors.
++<li>SQA tests added: Test to make sure private IPs work; tests added for most
++    mararc parameters
++<li>SQA tests updated to not generated any visible messages except "test XXX
++    succeeded"
++<li>askmara updated to correctly escape hash ('#') characters in TXT records
++<li>It's now possible again, when <tt>debug_msg_level</tt> has a sufficiently
++    high level, to remotely see MaraDNS' timestamp when MaraDNS is only doing
++    recursion.
++<li>The mararc parameter <tt>dns_port</tt> now works.
++<li>AIX support contributed by Alfred Reibenschuh
++</ul>
++(2007.10.19)
++</blockquote>
++
++<p>maradns-1.3.07.06:</p>
++This is a beta testing release of MaraDNS.
++<blockquote>
++<ul>
++<li>.rpm files no longer part of MaraDNS release.  People who wish to have
++    a .rpm can use the .spec file in build/ to make their own .rpm files.
++<li>A script now automatically updates the .spec file
++<li>Documents added: Document for Debian users telling them how to update to
++    a supported version of MaraDNS; MaraDNS coding style document.
++<li>Documents updated: Security web page; Roadmap web page; Download web
++    page; COPYING file (copyright updated); mararc man page; duende man page
++<li>Web page update: HTML modified so all web page documents parse in Dillo
++    without any reported errors.
++<li>SQA tests added: Test to make sure private IPs work; tests added for most
++    mararc parameters
++<li>SQA tests updated to not generated any visible messages except "test XXX
++    succeeded"
++<li>askmara updated to correctly escape hash ('#') characters in TXT records
++<li>It's now possible again, when <tt>debug_msg_level</tt> has a sufficiently
++    high level, to remotely see MaraDNS' timestamp when MaraDNS is only doing
++    recursion.
++<li>The mararc parameter <tt>dns_port</tt> now works.
++<li>AIX support contributed by Alfred Reibenschuh
++</ul>
++(2007.10.19)
++</blockquote>
++
+ <p>maradns-1.3.08:</p>
+ This is a development release of MaraDNS, and a new branch of MaraDNS
+ <p>
+ (1.3.07 changes are limited to bugfixes, new SQA tests, and documentation
+-changes, and Mr. Sarto is making a lot of positive contributions improving
++changes, and Mr. Sarton is making a lot of positive contributions improving
+ IPV6 performance that I can't add to the 1.3.07 branch)
+ <blockquote>
+ <ul>
+ <li>IPV6 support added to <tt>askmara</tt> and <tt>fetchzone</tt> by
+-    Jean-Jacques Sarto.
+-<li>Support for FQDN6 records contributed by Jean-Jacques Sarto, and 
++    Jean-Jacques Sarton.
++<li>Support for FQDN6 records contributed by Jean-Jacques Sarton, and 
+ documented by myself.
+ <li>Advocacy documented updated to be current with MaraDNS and a couple 
+ of abandoned DNS servers; references added to support list of DjbDNS bugs.

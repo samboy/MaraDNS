@@ -1,0 +1,15 @@
+--- maradns-1.3.02/doc/en/webpage/contact.embed	2006-10-08 16:32:42.000000000 -0700
++++ maradns-1.3.03/doc/en/webpage/contact.embed	2007-01-16 17:04:40.000000000 -0800
+@@ -1,4 +1,7 @@
+ <h1>Contact the author of MaraDNS</h1>
++<b>Please note:</b> The author of MaraDNS is currently on vacation and
++will be unable to answer your email until late January.
++<p>
+ If you have a MaraDNS-related question, please include the following
+ information in your email:
+ <ul>
+@@ -28,3 +31,4 @@
+ it; I will continue to fix serious MaraDNS 1.0 bugs until December 21, 2007,
+ and MaraDNS 1.0 security bugs (should they arise) until December 21, 2010.
+ </p>
++

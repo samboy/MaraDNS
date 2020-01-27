@@ -1,0 +1,61 @@
+--- maradns-1.3.09/tools/askmara-tcp.c.orig	2007-10-16 20:42:15.000000000 -0500
++++ maradns-1.3.09/tools/askmara-tcp.c	2007-10-16 20:42:28.000000000 -0500
+@@ -152,7 +152,11 @@
+ 
+ int main(int argc, char **argv) {
+     char *server_address = NULL;
++#if defined AUTHONLY && ! defined __CYGWIN__
++    struct sockaddr_in6 server;
++#else
+     struct sockaddr_in server;
++#endif
+     int len_inet; /* Length */
+     int s; /* Socket */
+     js_string *outdata; /* Outgoing data */
+@@ -204,12 +208,35 @@
+        harderror(L_JS_CREATE_OUTDATA);
+     if((question.qname = js_create(512,1)) == 0)
+        harderror(L_JS_CREATE_QNAME);
+-    /* Create a TCP socket */
+-    if((s = socket(PF_INET,SOCK_STREAM,0)) == -1)
+-        harderror(L_SOCKET);
+ 
+     /* Create a socket address */
+     memset(&server,0,sizeof(server));
++#if defined AUTHONLY && ! defined __CYGWIN__
++    if ( strchr(server_address,':') != NULL) {
++        /* assume that we have an IPv6 address */
++        
++        /* Create a TCP socket */
++        if((s = socket(PF_INET6,SOCK_STREAM,0)) == -1)
++            harderror(L_SOCKET);
++
++        server.sin6_family = AF_INET6;
++        server.sin6_port = htons(DNS_PORT);
++        if( inet_pton(AF_INET6, server_address, &server.sin6_addr) < 1) {
++            harderror(L_MAL_IP);
++            }
++        }
++    else {
++        if((s = socket(PF_INET,SOCK_STREAM,0)) == -1)
++            harderror(L_SOCKET);
++        ((struct sockaddr_in*)&server)->sin_family = AF_INET;
++        ((struct sockaddr_in*)&server)->sin_port = htons(DNS_PORT);
++        if((((struct sockaddr_in*)&server)->sin_addr.s_addr = inet_addr(server_address)) == INADDR_NONE)
++            harderror(L_MAL_IP);
++        }
++#else
++    if((s = socket(PF_INET,SOCK_STREAM,0)) == -1)
++        harderror(L_SOCKET);
++
+     server.sin_family = AF_INET;
+     /* When debugging MaraDNS on systems where I do not have root, it is
+        useful to be able to contact a MaraDNS server running on a high
+@@ -218,6 +245,7 @@
+     server.sin_port = htons(DNS_PORT);
+     if((server.sin_addr.s_addr = inet_addr(server_address)) == INADDR_NONE)
+         harderror(L_MAL_IP);
++#endif
+ 
+     len_inet = sizeof(server);
+ 

@@ -1,0 +1,75 @@
+--- maradns-1.2.05/doc/en/source/recursive.ej	2005-12-13 11:02:32.000000000 -0800
++++ maradns-1.2.06/doc/en/source/recursive.ej	2006-02-21 16:23:59.000000000 -0800
+@@ -4,7 +4,7 @@
+ 
+ </HEAD><BODY>
+ 
+-<!-- Copyright 2005 Sam Trenholme
++<!-- Copyright 2005-2006 Sam Trenholme
+ 
+     TERMS
+ 
+@@ -35,6 +35,7 @@
+ <li><A href=#upstream>Using other recursive DNS servers</A>
+ <li><A href=#otherroot>Using different root servers</A>
+ <li><A href=#private>Having private host names</A>
++<li><A href=#custom>Customizing the resolution of some names</A>
+ </ul>
+ 
+ <A name=basic>
+@@ -346,5 +347,54 @@
+ in the <A href=authoritative.html#network>network section of the
+ authoritative document</A>.
+ 
+-</BODY>
++<A name=custom>
++<h2>Customizing the resolution of some names</h2>
++</A>
++
++One may wish to customize the resolution of certain names when using
++MaraDNS as both an authoritative and recursive name server.  For example,
++if a high-profile domain is hijacked (such as what happened with
++panix.com in January of 2005), it may be desirable to have the correct
++name for the domain be temporarily locally set.  This is also useful for 
++a list of blocked sites (so the user gets a friendly "this site is blocked"
++instead of just being unable to connect to the site in question), and for
++setups where some machines need special DNS resolution for names that
++other machines do not need DNS resolution for.
++
++<p>
++
++The procedure for doing this is almost identical to the procedure for
++having private host names as described above.  Here is an example
++relevant <tt>mararc</tt> file:
++
++<pre>
++ipv4_bind_addresses = "192.168.0.1"
++chroot_dir = "/etc/maradns"
++recursive_acl = "192.168.0.0/24"
++csv2 = {}
++csv2["example.com."] = "db.example.com"
++</pre>
++
++The only things that need to be changed in this mararc file are
++the <tt>ipv4_bind_addresses</tt> and the <tt>recursive_acl</tt>
++parameters.  The <tt>csv2["example.com."]</tt> is <i>not</i> changed.
++
++<p>
+ 
++Now, let us suppose we want to have the A records for "www.phishsite.foo" 
++and "phishsite.foo" resolve to an IP address that we control the web
++site for.  We would add the following records (lines) to the file
++<tt>/etc/maradns/db.example.com</tt>
++
++<pre>
++www.phishsite.foo. 192.168.0.2
++phishsite.foo. 192.168.0.2
++</pre>
++
++We can also add a star record:
++
++<pre>
++*.phishsite.foo. 192.168.0.2
++</pre>
++
++</BODY>

@@ -1,0 +1,255 @@
+diff -ur maradns-1.2.11/parse/Csv2_parse.c maradns-mdmf/parse/Csv2_parse.c
+--- maradns-1.2.11/parse/Csv2_parse.c	2006-07-13 08:50:53.000000000 -0500
++++ maradns-mdmf/parse/Csv2_parse.c	2006-07-13 09:30:57.000000000 -0500
+@@ -896,14 +896,34 @@
+ 	if(js_qissame("spf",text_rtype) == 1) {
+ 		return RR_SPF;
+ 	}
++	if(js_qissame("fqdn4",text_rtype) == 1) {
++		return 65765;
++	}
++	/* Obscure RR types follow */
++	/* Obscure RFC1035 RR types */
+         if(js_qissame("hinfo",text_rtype) == 1) {
+                 return RR_HINFO;
+         }
+ 	if(js_qissame("wks",text_rtype) == 1) {
+ 		return RR_WKS;
+ 	}
+-	if(js_qissame("fqdn4",text_rtype) == 1) {
+-		return 65765;
++	if(js_qissame("mb",text_rtype) == 1) {
++		return RR_MB;
++	}
++	if(js_qissame("md",text_rtype) == 1) {
++		return RR_MD;
++	}
++	if(js_qissame("mf",text_rtype) == 1) {
++		return RR_MF;
++	}
++	if(js_qissame("mg",text_rtype) == 1) {
++		return RR_MG;
++	}
++	if(js_qissame("mr",text_rtype) == 1) {
++		return RR_MR;
++	}
++	if(js_qissame("minfo",text_rtype) == 1) {
++		return RR_MINFO;
+ 	}
+ 	return -1;
+ }
+@@ -986,14 +1006,18 @@
+ 
+ /* Get a mx record; 0 is error */
+ 
+-js_string *csv2_get_mx(csv2_read *stream, js_string *zone) {
++js_string *csv2_get_mx(csv2_read *stream, js_string *zone, int pref) {
+ 	js_string *out;
+ 	js_string *name;
+ 	int num;
+ 
+ 	/* Get the priority */
+-	if((num = csv2_get_num(stream)) < 0) {
+-		return 0;
++	if(pref < 0) {
++		if((num = csv2_get_num(stream)) < 0) {
++			return 0;
++		}
++	} else {
++		num = pref;
+ 	}
+ 	if((out = js_create(256,1)) == 0) {
+ 		return 0;
+@@ -1190,7 +1214,7 @@
+ 			rddata = csv2_get_soa(stream,zone);
+ 			break;
+ 		case RR_MX:
+-			rddata = csv2_get_mx(stream,zone);
++			rddata = csv2_get_mx(stream,zone,-1);
+ 			break;
+ 		case RR_SRV:
+ 			rddata = csv2_get_srv(stream,zone);
+@@ -1199,15 +1223,17 @@
+ 		case RR_SPF:
+ 			rddata = csv2_get_txt(stream,0);
+ 			break;
+-                case RR_HINFO:
+-			rddata = csv2_get_txt(stream,2);
+-                        break;
+-		case RR_WKS:
+-			rddata = csv2_get_wks(stream);
++		case RR_MG:
++		case RR_MR:
++			rddata = csv2_get_mbox(stream,zone,1);
++			break;
++		case RR_MINFO:
++			rddata = csv2_get_mbox(stream,zone,2);
+ 			break;
+ 		case RR_NS:
+ 		case RR_CNAME:
+ 		case RR_PTR:
++		case RR_MB:
+ 			if(csv2_get_1st(stream,csv2_is_dchar,0) != 
+ 					JS_SUCCESS) {
+ 				return -1;
+@@ -1219,6 +1245,25 @@
+                              * PTR record */
+ 			rddata = csv2_get_a(stream);
+ 			break;
++		/* Obscure RRs follow */
++                case RR_HINFO:
++			rddata = csv2_get_txt(stream,2);
++                        break;
++		case RR_WKS:
++			rddata = csv2_get_wks(stream);
++			break;
++		case RR_MD:
++			/* As per RFC1035 §3.3.4; handle this as an MX with
++                         * priority 0 */
++			rddata = csv2_get_mx(stream,zone,0);
++			rtype = RR_MX;
++			break;
++		case RR_MF:
++			/* As per RFC1035 §3.3.5; handle this as an MX with
++                         * priority 10 */
++			rddata = csv2_get_mx(stream,zone,10);
++			rtype = RR_MX;
++			break;
+ 		default:
+ 			/* RAW rtype */
+ 			if(rtype >= 100000 && rtype <= 165535) {
+diff -ur maradns-1.2.11/parse/Csv2_rr_wks.c maradns-mdmf/parse/Csv2_rr_wks.c
+--- maradns-1.2.11/parse/Csv2_rr_wks.c	2006-07-13 08:50:53.000000000 -0500
++++ maradns-mdmf/parse/Csv2_rr_wks.c	2006-07-13 09:43:28.000000000 -0500
+@@ -16,6 +16,8 @@
+  * fitness for purpose.
+  */
+ 
++/* This file includes code to process WKS and other obscure record types */
++
+ #include "../libs/JsStr.h"
+ #include "../libs/MaraHash.h"
+ #include "../MaraDns.h"
+@@ -193,3 +195,43 @@
+ 	return out;
+ }
+ 
++/* This processes obscure RFC1035 mail-related records where the record 
++ * data is one or more email addresses (MG, MR, and MINFO) */
++
++js_string *csv2_get_mbox(csv2_read *stream, js_string *zone, int count) {
++	js_string *name;
++	js_string *out;
++	int c;
++
++	if((out = js_create(512,1)) == 0) {
++		return 0;
++	}
++
++	for(c = 0; c < count; c++) {
++		/* Mailbox label */
++		if(csv2_get_1st(stream,csv2_is_alphanum,0) != JS_SUCCESS) {
++			return 0;
++		}
++		if((name = process_mbox(stream)) == 0) {
++			js_destroy(out);
++			return 0;
++		}
++		if(csv2_convert_percent(name,zone) == 0) {
++			js_destroy(name);
++			js_destroy(out);
++			return 0;
++		}
++		if(email_2rfc1035(name) == JS_ERROR) {
++			js_destroy(name);
++			js_destroy(out);
++			return 0;
++		}
++		if(js_append(name,out) == JS_ERROR) {
++			js_destroy(name);
++			js_destroy(out);
++			return 0;
++		}
++		js_destroy(name);
++	}	
++	return out;
++}
+--- maradns-orig/doc/en/source/csv2.ej	2006-07-14 11:11:20.000000000 -0500
++++ maradns-1.2.11/doc/en/source/csv2.ej	2006-07-14 11:23:01.000000000 -0500
+@@ -206,14 +206,14 @@
+ x.example.net:
+ 
+ <pre>
+-x.example.net. A 10.2.28.79
++x.example.net. A 10.3.28.79
+ 79.28.3.10.in-addr.arpa. PTR x.example.net.
+ </pre>
+ 
+ But the above two lines in a zone file can also be represented thusly:
+ 
+ <pre>
+-x.example.net. FQDN4 10.2.28.79
++x.example.net. FQDN4 10.3.28.79
+ </pre>
+ 
+ Note that the csv2 parser does not bother to check that any given IP
+@@ -243,7 +243,7 @@
+ do not know what a csv2_default_zonefile is, this fact is of no 
+ relevance.
+ 
+-<h2>Historical and uncommon resource records</h2>
++<h1>Historical and uncommon resource records</h1>
+ 
+ The following resource records are mainly of historical interest, or
+ are not commonly used.
+@@ -287,8 +287,48 @@
+ example.net. WKS 10.1.2.3 6 22,80,119
+ </pre>
+ 
+-Note that MaraDNS only allows up to 10 different port numbers in a WKS record,
+-and that the listed port numbers can not be higher than 1023.
++MaraDNS only allows up to 10 different port numbers in a WKS record,
++and requires that the listed port numbers are not be higher than 1023.
++
++<h2>MD and MF</h2>
++
++MD and MF records are RR types that existed before MX records, and were
++made obsolete by MX records.  RFC1035 says that a DNS server can either
++reject these records or convert these records in to MX records.  BIND
++rejects these records; MaraDNS converts them.
++
++<p>
++
++Example:
++
++<pre>
++example.net. MD a.example.net.
++example.net. MF b.example.net.
++</pre>
++
++Is equivalent to:
++
++<pre>
++example.net. MX 0 a.example.net.
++example.net. MX 10 b.example.net.
++</pre>
++
++<h2>MB, MG, MINFO, and MR</h2>
++
++In the late 1980s, an alternative to MX records was proposed.  This
++alternative utilized MB, MG, MINFO, and MR records.  This alternative
++failed to gather popularity.  However, these records were codified in
++RFC1035, and are supported by MaraDNS.  Here is what the records look
++like:
++
++<pre>
++example.net. MB mail.example.net.
++example.net. MG mg@example.net.
++example.net. MINFO rm@example.net. re@example.net.
++example.net. MR mr@example.net.
++</pre>
++
++For information about these records can be found in RFC1035.
+ 
+ <h1>EXAMPLE ZONE FILE</h1>
+ 

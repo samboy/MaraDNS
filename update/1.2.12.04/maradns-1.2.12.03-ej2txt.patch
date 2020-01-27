@@ -1,0 +1,27 @@
+*** maradns-1.2.12.03/tools/ej/ej2txt	Tue Nov 29 22:27:21 2005
+--- maradns-1.2.12.04/tools/ej/ej2txt	Sun Nov 12 12:51:15 2006
+***************
+*** 3,8 ****
+--- 3,10 ----
+  # Convert an ej document to a htmlpage document; which we then make a utf-8
+  # text document
+  
++ TMP=$HOME/tmp
++ 
+  if which ej2html > /dev/null 2>&1 ; then
+  	CMD=ej2html
+  elif [ -e ../../tools/ej/ej2html ] ; then
+***************
+*** 16,19 ****
+  	exit 1
+  fi
+  
+! $CMD $1 | links -dump -stdin 
+--- 18,24 ----
+  	exit 1
+  fi
+  
+! $CMD $1 > $TMP/$$.html
+! links -dump $TMP/$$.html
+! rm $TMP/$$.html
+! 

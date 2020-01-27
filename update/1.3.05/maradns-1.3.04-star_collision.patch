@@ -1,0 +1,164 @@
+--- maradns-1.3.05/server/MaraDNS.c.orig	2007-05-13 20:36:31.000000000 -0500
++++ maradns-1.3.05/server/MaraDNS.c	2007-05-13 21:00:34.000000000 -0500
+@@ -2974,6 +2974,45 @@
+     return 0;
+     }
+ 
++/* Check to see if we have a collision that, when we anally follow
++ * RFC1034 section 4.3.3, makes it so we stop looking for a star record
++ * "above".  In other words, if there is a record b.example.com and a
++ * record *.example.com, this makes sure a.b.example.com and 
++ * c.a.b.example.com do not resolve */
++int star_collision(js_string *lookfor, mhash *bighash) {
++    	js_string *be_anal = 0;
++        mhash_e spot_data;
++    	if(js_length(lookfor) < 2) {
++    	    return 0;
++    	    } 
++    	be_anal = js_create(257,1);
++    	if(js_copy(lookfor,be_anal) == JS_ERROR) {
++    	    js_destroy(be_anal);
++    	    return JS_ERROR;
++    	    }    
++    	/* This is a very hackey way of removing the first character
++    	 * from the string.  This works, but it's very important to
++    	 * restore the string pointer to its previous position before
++    	 * deallocating the string. */
++      	be_anal->string++;
++      	be_anal->unit_count--; 
++        if(change_rtype(be_anal,RR_ANY) == JS_ERROR) {
++       	    be_anal->string--;
++            js_destroy(be_anal);
++            return JS_ERROR;
++            }
++        spot_data = mhash_get(bighash,be_anal);
++        if(spot_data.value != 0 && 
++              spot_data.datatype == MARA_DNS_LIST) {
++            /* There is a RR phohibiting the star record.  Return
++             * name error */
++            return 1;
++            }
++      	be_anal->string--;
++      	js_destroy(be_anal);
++        return 0;
++}
++
+ /* Process the DNS query that comes in from the 'net
+    Input: uncompressed form of incoming UDP query, IP address of where
+           this query came from, socket number of this socket
+@@ -3544,7 +3583,7 @@
+      * look for a star record with the same name.  This emulates BIND's
+      * behavior for star records and strictly follows RFC1034 section
+      * 4.3.3 */
+-    if(bind_star_handling == 1) {
++    if(bind_star_handling >= 1) {
+         if(js_copy(origq,lookfor) == JS_ERROR)
+             goto serv_fail;
+         if(fold_case(lookfor) == JS_ERROR)
+@@ -3587,7 +3626,7 @@
+ 
+     /* When bind_star_handling is set, we never incorrectly return a
+      * NXDOMAIN if there is a star record with the given name */
+-    if(bind_star_handling == 1) {
++    if(bind_star_handling >= 1) {
+         int rtype_saver;
+         rtype_saver = get_rtype(lookfor);
+ 	if(change_rtype(lookfor,RR_ANY) == JS_ERROR) {
+@@ -3602,12 +3641,44 @@
+             }
+         }
+ 
++    /* Anally strict RFC 1034 section 4.3.3 compliance.  If you
++     * have b.example.com and *.example.com, a.b.example.com does
++     * *not* match the star record */
++    if(bind_star_handling == 2) {
++	int r;
++	r = star_collision(lookfor,bighash);
++	if(r == -1) {
++	    goto serv_fail;
++	} else if(r == 1) {
++	    udpnotfound(nxstore,header.id,sock,0,origq,0,desires_recursion,
++                        ect,(always_not_there & 3));
++	    js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
++            return JS_SUCCESS;
++        }
++    }
++    	    
+     /* OK, maybe there is a star record "above".  In other words,
+        handle the case when they ask for foo.bar.example.com and we have
+        a record for *.example.com */
+     while(bobbit_starlabel(lookfor) > 0) {
+         int rtype_saver = 1;
+-        if(bind_star_handling == 1) {
++
++        /* If bind_star_handling is really high, look for any collision
++         * that breaks RFC1034 section 4.3.3 compliance */
++        if(bind_star_handling == 2) {
++	    int r;
++	    r = star_collision(lookfor,bighash);
++	    if(r == -1) {
++	        goto serv_fail;
++	    } else if(r == 1) {
++	        udpnotfound(nxstore,header.id,sock,0,origq,0,desires_recursion,
++                        ect,(always_not_there & 3));
++	        js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
++                return JS_SUCCESS;
++            }
++        }
++
++        if(bind_star_handling >= 1) {
+             rtype_saver = get_rtype(lookfor);
+         }
+         spot_data = mhash_get(bighash,lookfor);
+@@ -3622,7 +3693,7 @@
+             }
+         else {
+             /* Make sure we don't incorrectly return a NXDOMAIN */
+-            if(bind_star_handling == 1) {
++            if(bind_star_handling >= 1) {
+ 	        if(change_rtype(lookfor,RR_ANY) == JS_ERROR) {
+ 		    goto serv_fail;
+                 }
+@@ -3679,7 +3750,7 @@
+         spot_data = mhash_get(bighash,lookfor);
+ 
+         /* Optional strict RFC1034 section 4.3.3 compliance */
+-        if(bind_star_handling == 1) {
++        if(bind_star_handling >= 1) {
+             int rtype_saver;
+             rtype_saver = get_rtype(lookfor);
+             if(change_rtype(lookfor,RR_ANY) == JS_ERROR) {
+@@ -4330,8 +4401,8 @@
+      If this is any other value, exit with a fatal error
+      */
+      bind_star_handling = read_numeric_kvar("bind_star_handling",1);
+-     if(bind_star_handling < 0 || bind_star_handling > 1) {
+-         harderror("bind_star_handling must have a value of 0 or 1");
++     if(bind_star_handling < 0 || bind_star_handling > 2) {
++         harderror("bind_star_handling must have a value of 0, 1, or 2");
+      } 
+ 
+      /* remote_admin: Whether we allow remote administration.  Currently,
+--- maradns-1.3.05/doc/en/source/mararc.ej.orig	2007-05-14 08:22:00.000000000 -0500
++++ maradns-1.3.05/doc/en/source/mararc.ej	2007-05-14 08:25:55.000000000 -0500
+@@ -364,8 +364,19 @@
+ does not incorrectly return a NXDOMAIN (RFC 4074 section 4.2).
+ <p>
+ 
++Also, if bind_star_handling has a value of 2, MaraDNS will handle
++the following case exactly as per section 4.3.3 of RFC1034:
++
++<ul>
++<li>If a record for <tt>foo.example.com</tt> exists
++<li>An A record for <tt>*.example.com</tt> exists
++<li>And the user asks for the A record for <tt>bar.foo.example.com</tt>
++<li>MaraDNS will usually return the A record attached to <tt>*.example.com</tt>
++<li>RFC1034 section 4.3.3 says one should return a NXDOMAIN.
++</ul>
++
+ MaraDNS will exit with a fatal error if <tt>bind_star_handling</tt> has
+-any value besides 0 or 1.
++any value besides 0, 1, or 2.
+ 
+ <h2>chroot_dir</h2>
+ chroot_dir: The directory MaraDNS chroots to

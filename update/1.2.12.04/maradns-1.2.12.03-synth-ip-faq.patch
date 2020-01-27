@@ -1,0 +1,77 @@
+--- maradns-1.2.12.03/doc/en/source/faq.embed	2006-08-14 15:02:08.000000000 -0500
++++ maradns-1.2.12.04/doc/en/source/faq.embed	2006-10-25 11:26:19.000000000 -0500
+@@ -74,6 +74,10 @@
+ 
+ 31. <A href="#delegate">I have a NS delegation, and MaraDNS is doing
+     strange things.</A>
++    <p>
++
++32. <A href="#synthns">I am transferring a zone from another
++    server, but the NS records are these strange "synth-ip" records.</A>
+ 
+ </BLOCKQUOTE>
+ <H2>ANSWERS</H2>
+@@ -753,3 +757,63 @@
+ As an aside, this particular problem will not happen if MaraDNS is
+ run only as an authoritative nameserver.
+ 
++<A name="synthns"> </A>
++
++<h2>I am transferring a zone from another
++    server, but the NS records are these strange "synth-ip" records.
++</h2>
++
++MaraDNS expects, in csv2 zone files, for all
++delegation NS records to be between the SOA record and the first
++non-NS record.
++
++<p>
++
++If a zone looks like this:
++
++<pre>
++example.net. +600 soa ns1.example.net. hostmaster@example.net 
++10 10800 3600 604800 1080
++example.net. +600 mx 10 mail.example.net.
++example.net. +600 a 10.2.3.5
++example.net. +600 ns ns1.example.net.
++example.net. +600 ns ns3.example.net.
++mail.example.net. +600 a 10.2.3.7
++www.example.net. +600 a 10.2.3.11
++</pre>
++
++Then the NS records will be "synth-ip" records.
++
++<p>
++
++The zone should look like this:
++
++<pre>
++example.net. +600 soa ns1.example.net. hostmaster@example.net 
++10 10800 3600 604800 1080
++example.net. +600 ns ns1.example.net.
++example.net. +600 ns ns3.example.net.
++example.net. +600 mx 10 mail.example.net.
++example.net. +600 a 10.2.3.5
++mail.example.net. +600 a 10.2.3.7
++www.example.net. +600 a 10.2.3.11
++</pre>
++
++This will remove the "synth-ip" records.
++
++<p>
++
++To automate this process, this awk script is useful:
++
++<pre>
++fetchzone whatever.zone.foo 10.1.2.3 | awk '
++{if($3 ~ /ns/ || $3 ~ /soa/){print}
++else{a = a "\n" $0}}
++END{print a}' > zonefile.csv2
++</pre>
++
++Replace "whatever.zone.foo" with the name of the zone you are
++fetchin 10.1.2.3 with the IP address of the DNS master, and
++zonefile.csv2 with the name of the zone file MaraDNS loads.
++
++

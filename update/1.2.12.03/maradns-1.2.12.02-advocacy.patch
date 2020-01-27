@@ -1,0 +1,72 @@
+diff -u maradns-1.2.12.02/doc/en/misc/advocacy/active.other maradns-1.2.12.03/doc/en/misc/advocacy/active.other
+--- maradns-1.2.12.02/doc/en/misc/advocacy/active.other	2006-08-13 11:30:11.000000000 -0500
++++ maradns-1.2.12.03/doc/en/misc/advocacy/active.other	2006-08-15 22:02:42.000000000 -0500
+@@ -9,8 +9,31 @@
+ lead to a buffer overflow.
+ 
+ PowerDNS is harder to compile than MaraDNS; you need to download two
+-separate packages (the "boost" packages and the core PowerDNS package)
+-to compile it.
++separate packages (the "Boost" packages and the core PowerDNS package)
++to compile it.  The Boost packages are easy to download and install, but
++are quite big (over 10 megabytes in size) and took hours for me to
++compile on my MaraDNS development laptop.  
++
++Even after compiling Boost with "./configure; make" followed by
++"make install" as root, the PowerDNS configure script was unable 
++to find the Boost libraries.  I had to manually move the
++Boost include files from /usr/local/include/boost-1_33_1/boost to
++/usr/local/include/boost.
++
++After getting Boost installed, I also had to install MySQL on my
++system before installing PowerDNS.  This required installing some
++six different .rpm packages. [1] 
++
++PowerDNS is the only actively maintained DNS server with "dependency 
++hell"--the requiring of external libraries that a baseline UNIX
++system will not have.  While this makes PowerDNS more feature-rich,
++it also makes it harder to install and less secure (see the BIND portion
++of this advocacy document for information on how an external library
++can result in a remote root compromise).
++
++PowerDNS' binary is quite big: A stripped binary is 1,055,732
++bytes on my system; the pdns_control program is 118,140 bytes
++large (again, stripped).
+ 
+ NSD
+ 
+@@ -21,3 +44,20 @@
+ with NSD, but, then again, making a secure authoritative-only DNS server 
+ is easier thank making a secure authoritative + recusive DNS server.
+ 
++One interesting feature that NSD has is the separation of the zone file
++compiler from the main program.  This allows the core DNS server to be
++smaller and use less memory resources.
++
++The NSD binary is divided in four parts; the core nsd daeon is only
++69,572 bytes in size (stripped).  All four parts of NSD (including 
++the zone transfer program) have a total size of 237,348 bytes--smaller 
++than both MaraDNS (150,912 bytes stripped) and the zoneserver (combined 
++size 261,824 bytes).  Then again, MaraDNS has functionality that NSD 
++doesn't have, including recursive DNS support, a secure random number
++generator, and a secure string library.
++
++[1] I understand that tools like "Yum" automate this process; however
++    I like to know *exactly* what packages are on my system and Yum
++    can make some major changes to my system without my direct
++    knowledge or consent if I am not careful.
++
+diff -u maradns-1.2.12.02/doc/en/misc/advocacy/bind9 maradns-1.2.12.03/doc/en/misc/advocacy/bind9
+--- maradns-1.2.12.02/doc/en/misc/advocacy/bind9	2006-08-08 18:14:45.000000000 -0500
++++ maradns-1.2.12.03/doc/en/misc/advocacy/bind9	2006-08-15 22:01:07.000000000 -0500
+@@ -4,8 +4,8 @@
+ 
+ BIND is a very large application.  On my system, a stripped BIND 9.2.6
+ binary is some 1,117,348 bytes in size.  The maradns binary is only
+-150,432 bytes in size.  The zoneserver binary, if needed, is only
+-107,360 bytes in size--resulting in a combined size of 257,792 bytes.
++150,912 bytes in size.  The zoneserver binary, if needed, is only
++110,912 bytes in size--resulting in a combined size of 261,824 bytes.
+ This is a fraction of the size of BIND, making MaraDNS more suitable
+ for embedded applications or on systems with limited resources (such as
+ heavily loaded web servers).

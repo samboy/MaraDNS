@@ -1,0 +1,124 @@
+diff -ur maradns-1.2.07.1.orig/doc/en/source/recursive.ej maradns-1.2.07.1/doc/en/source/recursive.ej
+--- maradns-1.2.07.1.orig/doc/en/source/recursive.ej	2006-03-21 23:11:56.000000000 -0800
++++ maradns-1.2.07.1/doc/en/source/recursive.ej	2006-03-21 23:17:33.000000000 -0800
+@@ -144,6 +144,7 @@
+ ipv4_bind_addresses = "127.0.0.1"
+ chroot_dir = "/etc/maradns"
+ recursive_acl = "127.0.0.1"
++upstream_servers = {}
+ upstream_servers["."] = "10.66.77.88, 10.99.11.22"
+ </pre>
+ 
+diff -ur maradns-1.2.07.1.orig/doc/en/source/update.ej maradns-1.2.07.1/doc/en/source/update.ej
+--- maradns-1.2.07.1.orig/doc/en/source/update.ej	2005-12-03 00:48:55.000000000 -0800
++++ maradns-1.2.07.1/doc/en/source/update.ej	2006-03-21 23:37:43.000000000 -0800
+@@ -1,10 +1,10 @@
+-<HEAD><TITLE>Updating from 1.0 to 1.2</TITLE>
++<HEAD><TITLE>Updating MaraDNS</TITLE>
+ <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+ 
+ </HEAD>
+ <BODY>
+ 
+-<!-- Copyright 2005 Sam Trenholme
++<!-- Copyright 2005-2006 Sam Trenholme
+ 
+     TERMS
+ 
+@@ -19,7 +19,15 @@
+ 
+  -->
+ 
++<h1>Table of contents</h1>
++<ul>
++<li><A href=#1.0>Updating from 1.0 to 1.2</A>
++<li><A href=#1.2.03>Updating from 1.2.03 to 1.2.07</A>
++</ul>
++
++<A name=1.0>
+ <h1>Updating from 1.0 to 1.2</h1>
++</A>
+ 
+ MaraDNS 1.2 has a number of advantages over 1.0, including Y2038 compliance,
+ full support for DNS over TCP, and a new zone file format.  While including
+@@ -103,5 +111,80 @@
+ timestamp_type = 0
+ </pre>
+ 
++<A name=1.2.03>
++<h1>Updating from 1.2.03 to 1.2.07</h1>
++
++There are a few minor changes between the 1.2.03 branch and the 1.2.07
++branch of MaraDNS:
++
++<h3>The special remote queries have been changed</h3>
++
++The special remote queries, which can obtain information about MaraDNS'
++internal state, have been changed:
++
++<ul>
++<li>The <tt>admin_acl</tt> variable needs to be set for these variables
++    to work.  E.g. <tt>admin_acl = "127.0.0.1, 192.168.116.0/24"</tt>, 
++    which only allows 127.0.0.1 (the same machine) or any machine with an
++    IP that starts with 192.168.116 to access this information.
++<li>The TXT query <tt>erre-con-erre-cigarro.maradns.org</tt> is now done
++    with <tt>version.maradns</tt>
++<li>The TXT query <tt>numthreads</tt> (this and all other special queries
++    except <tt>version.maradns</tt> are only enabled when 
++    <tt>debug_msg_level</tt> is set) is now <tt>numthreads.maradns</tt>
++<li>The TXT query <tt>cache-elements</tt> is now 
++    <tt>cache-elements.maradns</tt>
++<li>The TXT query <tt>memusage</tt> is now <tt>memusage.maradns</tt>
++<li>The TXT query <tt>timestamp</tt> is now <tt>timestamp.maradns</tt>
++<li>The TXT query <i>number</i><tt>.verbose_level.maradns</tt> has been
++    added, but is only enabled if the <tt>remote_admin</tt> mararc
++    variable is set.
++</ul>
++
++Further information about these queries can be obtained by looking at
++the <A href=man.mararc.html>mararc man page</A>; in particular, look
++for <tt>admin_acl</tt>, <tt>debug_msg_level</tt>, and <tt>remote_admin</tt>.
++
++<h3>Zone names are now case-insensitive</h3>
++
++Zone names are now case-insensitive.  In other words, a line like this in
++the mararc file:
++
++<pre>
++csv2["EXAMPLE.COM."] = "DB.EXAMPLE.COM"
++</pre>
++
++Is converted as if the line were:
++
++<pre>
++csv2["example.com."] = "DB.EXAMPLE.COM"
++</pre>
++
++This affects both csv1 and csv2 zone names.  Since hostnames in both
++csv1 and csv2 host names are converted to lower-case, the impact of this
++change should be minimal.
++
++<h3>Dictionary variables now must be initialized before being used</h3>
++
++MaraDNS 1.2.07 now mandates that dictionary variables must be initialized
++before being used.  This line, by itself, used to parse in a mararc file:
++
++<pre>
++upstream_servers["."] = "10.1.2.3"
++</pre>
++
++However, this line would do nothing unless the <tt>upstream_servers</tt>
++dictionary variable was first initialized, e.g:
++
++<pre>
++upstream_servers = {}
++upstream_servers["."] = "10.1.2.3"
++</pre>
++
++MaraDNS 1.2.07 now mandates the initializion line or exits with a fatal
++error when parsing a mararc file.  The reason for this is to make 
++debugging mararc files easier.
++
++</A>
+ </BODY></HTML>
+ 

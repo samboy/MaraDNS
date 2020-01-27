@@ -1,0 +1,160 @@
+--- maradns-1.3.02/parse/Csv2_rr_wks.c	2006-10-08 16:32:42.000000000 -0700
++++ maradns-1.3.03/parse/Csv2_rr_wks.c	2007-02-04 19:53:08.000000000 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004-2006 Sam Trenholme
++/* Copyright (c) 2004-2007 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -86,22 +86,38 @@
+ 
+ 	/* Read the port numbers, putting them in the ports
+ 	 * array */
++	/* Allow the tilde to end a list */
++	if(stream->tilde_handling == 103) {
++		csv2_allow_tilde(stream);
++	}
+ 	look = csv2_justread(stream);
+ 	num = 0;
+-	for(x = 0; x < 100; x++) {
+-		/* This is one of the few places where we treat a newline
+-		 * differently than a space or tab; a newline (or EOF) ends
+-		 * the WKS list of ports */
+-		if(look == -2 || look == '\n' || look == '\r') {
+-			break;
+-		}
+-		/* Comments also end the WKS list of ports */
+-		else if(csv2_is_hash(look)) {
+-			process_comment(stream);
+-			break;
++	for(x = 0; x < 1000; x++) {
++		if(stream->tilde_handling != 103) {
++			/* This is one of the few places where we treat a 
++                         * newline differently than a space or tab; a newline 
++                         * (or EOF) ends the WKS list of ports */
++			if(look == -2 || look == '\n' || look == '\r') {
++				break;
++			}
++			/* Comments also end the WKS list of ports */
++			else if(csv2_is_hash(look)) {
++				process_comment(stream);
++				break;
++			}
++                } else { /* If we use the tilde as a record separator, 
++                          * no need to use hacks to determine when we
++                          * are at the end of the record */
++			if(look == '~') {
++				break;
++			} else if(csv2_is_hash(look)) {
++				process_comment(stream);
++				look = csv2_read_unicode(stream);
++				continue;
++			}	
+ 		}
+ 		/* Numbers are processed one byte at a time */
+-		else if(csv2_is_number(look)) {
++		if(csv2_is_number(look)) {
+ 			num *= 10; /* Decimal */
+ 			num += look - '0'; /* Random thought: It would have
+                                             * made hexadecimal processing
+@@ -113,8 +129,10 @@
+ 				return 0;
+ 			}
+ 		}
+-		/* If it's a space, tab, or comma... */
+-		else if(csv2_is_wks(look)) {
++		/* If it's a space, tab, or comma... (or newline 
++                 * if we use the tilde to separate records) */
++		else if(csv2_is_wks(look) || (stream->tilde_handling == 103
++                        && (look == '\r' || look == '\n'))) {
+ 			/* Take the number we've been processing and add it
+ 			 * to the list of ports */
+ 			if(portindex >= CSV2_WKS_PORTS_MAX) {
+@@ -502,7 +520,13 @@
+ 	/* (optionally) get the size, horizontal precision, and vertical 
+          * precision */	
+ 	get = -2;
+-	for(x = 0; x < 100; x++) {
++
++	/* Allow the tilde to end a list */
++	if(stream->tilde_handling == 103) {
++		csv2_allow_tilde(stream);
++	}
++
++	for(x = 0; x < 1000; x++) {
+ 		if(csv2_is_wks(look) || look == '\r' || look == '\n' ||
+                    look == -2 || csv2_is_hash(look)) {
+ 			int q = 1;
+@@ -534,22 +558,40 @@
+ 				get = -2;
+ 			}
+ 		}
+-		if(look == -2 || look == '\n' || look == '\r') {
+-			break;
+-		}
+-		else if(csv2_is_hash(look)) {
+-			process_comment(stream);
+-			break;
++		/* If we are not using the ~ to separate records */
++		if(stream->tilde_handling != 103) {
++			if(look == -2 || look == '\n' || look == '\r') {
++				break;
++			}
++			else if(csv2_is_hash(look)) {
++				process_comment(stream);
++				break;
++			}
++		} else { /* When we use the tilde to separate records, we 
++                          * don't need hacks to determine when we are at the
++                          * end of a record */
++			if(look == '~') {
++				break;
++			} else if(csv2_is_hash(look)) {
++				process_comment(stream);
++				look = csv2_read_unicode(stream);
++				continue;
++			}
+ 		}
+-		else if(csv2_is_number(look)) {
++		/* Numbers are processed one character at a time */
++		if(csv2_is_number(look)) {
+ 			if(get < 0) {
+ 				get = 0;
+ 			}
+ 			get *= 10;
+ 			get += look - '0';
+ 		}
+-		else if(!csv2_is_wks(look) && look != 'm') {
+-			return 0;
++		/* Error if not space, 'm', or, optionally, newline
++                 * if we're using tildes (~) to separate records */
++		else if(!csv2_is_wks(look) && look != 'm' &&
++                        !(stream->tilde_handling == 103 &&
++                        (look == '\r' || look == '\n'))) {
++			return 0; /* Error */
+ 		}
+ 		look = csv2_read_unicode(stream);
+ 	}	
+--- maradns-1.3.03/parse/Csv2_parse.c.orig	2007-02-04 19:29:19.000000000 -0800
++++ maradns-1.3.03/parse/Csv2_parse.c	2007-02-04 19:29:19.000000000 -0800
+@@ -453,7 +453,8 @@
+ 	/* If this character is not OK (is not a character we're looking for)
+          * and is not a delimiter (whitespace, comment, or |), then it's an 
+          * error */
+-	if(in != -328 && !csv2_is_delimiter(in)) {
++	if(in != -328 && !csv2_is_delimiter(in) && !(in == '~' && 
++           stream->tilde_handling == 103)) {
+ 		csv2_error(stream,"Unexpected character");
+ 		return FATAL_CSV2_READ;
+ 	}
+@@ -476,6 +477,10 @@
+ 		}
+ 	/* Reset the count of the number of tildes we have seen */
+ 	csv2_reset_tilde_seen(stream);
++	/* If the current character is a tilde, increment the count */
++        if(in == '~') {
++		stream->tilde_seen++;
++		}
+ 	}
+ 
+ 	for(x = 0; x < 10000; x++) {

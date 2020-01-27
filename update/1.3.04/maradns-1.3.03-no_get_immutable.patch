@@ -1,0 +1,110 @@
+--- maradns-1.3.03/libs/MaraHash.c	2006-08-14 13:02:07.000000000 -0700
++++ maradns-1.3.04/libs/MaraHash.c	2007-02-17 23:19:31.000000000 -0800
+@@ -258,10 +258,11 @@
+            0 if it isn't there/an error occured
+ */
+ 
+-js_string *mhash_get_immutable_key(mhash *hash, js_string *key) {
++js_string *mhash_copy_immutable_key(mhash *hash, js_string *key) {
+ 
+     mhash_offset first_found;
+     mhash_spot *point;
++    js_string *c;
+ 
+     /* Sanity check */
+     if(js_has_sanity(key) == JS_ERROR)
+@@ -286,7 +287,15 @@
+ 
+     /* Now that we know what key in the hash table to view, return a
+        pointer to it */
+-    return point->key;
++    c = js_create(point->key->unit_count + 1,1);
++    if(c == 0) {
++        return 0;
++        }
++    if(js_copy(point->key,c) == JS_ERROR) {
++        js_destroy(c);
++        return 0;
++        }
++    return c;
+ 
+     }
+ 
+@@ -471,6 +480,7 @@
+                 /* Go to the next element, destorying this element in the
+                    process */
+                 save = point->next;
++		js_destroy(point->key);
+                 js_dealloc(point);
+                 point = save;
+                 }
+--- maradns-1.3.03/server/MaraBigHash.c	2007-01-09 12:16:34.000000000 -0800
++++ maradns-1.3.04/server/MaraBigHash.c	2007-02-17 23:19:31.000000000 -0800
+@@ -250,14 +250,12 @@
+     mhash_autogrow(hash);
+ 
+     /* Now that we have copied the key to the big hash, add a pointer
+-       to that key to the data.  BTW, don't use mhash_get_immutable_key then
+-       change the value of the key string--dong so will mess things up
+-       badly (it will make it impossible to ever get that hash element
+-       again). */
++       to that key to the data. */
+ 
+-    data->query = mhash_get_immutable_key(hash,query);
++    data->query = mhash_copy_immutable_key(hash,query);
+ 
+     if(ret == JS_ERROR) {
++        js_destroy(data->query);
+         js_dealloc(data);
+         js_destroy(new);
+         return JS_ERROR;
+--- maradns-1.3.04/server/recursive.c.orig	2007-02-17 23:19:31.000000000 -0800
++++ maradns-1.3.04/server/recursive.c	2007-02-17 23:19:31.000000000 -0800
+@@ -1304,12 +1304,12 @@
+     /* If appropriate, have data->query point to the newly created hash
+        element */
+     if(use_immutable_key == 1)
+-        data->query = mhash_get_immutable_key(hash,query);
++        data->query = mhash_copy_immutable_key(hash,query);
+ 
+     /* Also, set up the place where this is on the "zap" list (The list
+        the custodian uses to zap [get rid of] records) */
+     if(add_zap == 1)
+-        data->zap = new_fila(data,0,data->query,0);
++        data->zap = new_fila(data,0,data->query,3);
+     else if(add_zap == -1)
+         data->zap = new_fila(data,0,zap_query,2);
+ 
+--- maradns-1.3.03/libs/MaraHash.h	2005-09-25 13:44:14.000000000 -0700
++++ maradns-1.3.04/libs/MaraHash.h	2007-02-17 23:19:31.000000000 -0800
+@@ -1,4 +1,20 @@
+-/* Released to the public domain 2001 by Sam Trenholme */
++/* Copyright (c) 2006 Sam Trenholme
++ *
++ * TERMS
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ *
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ *
++ * This software is provided 'as is' with no guarantees of correctness or
++ * fitness for purpose.
++ */
+ 
+ /* MaraHash: A series of functions to make assosciative arrays using
+    js_string objects as keys and values. 
+@@ -70,7 +86,7 @@
+ int mtuple_put(mara_tuple *tuple, js_string *js, int element);
+ js_string *mtuple_get(mara_tuple *tuple, int element);
+ mhash_e mhash_offset2val(mhash *hash, mhash_offset offset);
+-js_string *mhash_get_immutable_key(mhash *hash, js_string *key);
++js_string *mhash_copy_immutable_key(mhash *hash, js_string *key);
+ 
+ /* More function prototypes */
+ #include "functions_MaraHash.h"

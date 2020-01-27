@@ -1,0 +1,178 @@
+diff -ur maradns-1.2.00/libs/Makefile maradns-1.2.01/libs/Makefile
+--- maradns-1.2.00/libs/Makefile	2005-11-22 18:18:39.000000000 -0800
++++ maradns-1.2.01/libs/Makefile	2005-12-28 14:20:41.000000000 -0800
+@@ -1,5 +1,5 @@
+ OBJECTS = JsStr.o JsStrOS.o JsStrCP.o MaraHash.o
+-FLAGS = -g -Wall $(DEBUG)
++#FLAGS = -Wall $(DEBUG)
+ #FLAGS = -g -DDEBUG -DTHREADS
+ #FLAGS = -g $(DEBUG)
+ 
+diff -ur maradns-1.2.00/parse/Makefile maradns-1.2.01/parse/Makefile
+--- maradns-1.2.00/parse/Makefile	2005-06-07 21:36:08.000000000 -0700
++++ maradns-1.2.01/parse/Makefile	2005-12-28 14:21:01.000000000 -0800
+@@ -8,7 +8,7 @@
+ OBJECTS=$(JOBJS) $(MHOBJS) $(POBJECTS) $(DOBJECTS) $(OUTOBJ)
+ EXECS=parsetest parsetest2
+ 
+-FLAGS = -g -Wall $(DEBUG)
++#FLAGS = -g -Wall $(DEBUG)
+ #FLAGS = -g $(DEBUG)
+ 
+ all: $(POBJECTS) $(OUTOBJ)
+diff -ur maradns-1.2.00/qual/Makefile maradns-1.2.01/qual/Makefile
+--- maradns-1.2.00/qual/Makefile	2005-12-20 02:10:40.000000000 -0800
++++ maradns-1.2.01/qual/Makefile	2005-12-28 14:21:15.000000000 -0800
+@@ -2,7 +2,7 @@
+ JOBJS=../libs/JsStr.o ../libs/JsStrOS.o ../libs/JsStrCP.o 
+ OBJECTS=$(DOBJECTS)
+ 
+-FLAGS = -g -Wall $(DEBUG)
++#FLAGS = -g -Wall $(DEBUG)
+ #FLAGS = -g $(DEBUG)
+ 
+ all: qual_timestamp.o
+diff -ur maradns-1.2.00/rng/Makefile maradns-1.2.01/rng/Makefile
+--- maradns-1.2.00/rng/Makefile	2005-11-22 18:18:52.000000000 -0800
++++ maradns-1.2.01/rng/Makefile	2005-12-28 14:20:37.000000000 -0800
+@@ -5,7 +5,7 @@
+ OBJECTS=$(ROBJECTS)
+ TABLES=rng-32bit-tables.h
+ 
+-FLAGS = -g -Wall
++#FLAGS = -g -Wall
+ #FLAGS = -g
+ 
+ all: $(ROBJECTS) 
+diff -ur maradns-1.2.00/server/Makefile maradns-1.2.01/server/Makefile
+--- maradns-1.2.00/server/Makefile	2005-12-21 00:02:24.000000000 -0800
++++ maradns-1.2.01/server/Makefile	2005-12-28 14:21:28.000000000 -0800
+@@ -21,7 +21,7 @@
+ #FLAGS = -g $(DEBUG) -DNOTHREAD -DDEBUG
+ #FLAGS = -g -DDEBUG_MEMORY $(DEBUG) 
+ #FLAGS = -g $(DEBUG) 
+-FLAGS = -g -Wall $(DEBUG) $(DEFINES)
++#FLAGS = -g -Wall $(DEBUG) $(DEFINES)
+ 
+ all: $(EXECS)
+ 
+diff -ur maradns-1.2.00/server/Makefile.authonly maradns-1.2.01/server/Makefile.authonly
+--- maradns-1.2.00/server/Makefile.authonly	2005-11-22 18:15:15.000000000 -0800
++++ maradns-1.2.01/server/Makefile.authonly	2005-12-28 14:21:48.000000000 -0800
+@@ -20,7 +20,7 @@
+ #FLAGS = -g $(DEBUG) -DNOTHREAD -DDEBUG
+ #FLAGS = -g -DDEBUG_MEMORY $(DEBUG) 
+ #FLAGS = -g $(DEBUG) 
+-FLAGS = -g -Wall $(DEBUG) $(DEFINES) -DAUTHONLY
++#FLAGS = -g -Wall $(DEBUG) $(DEFINES) -DAUTHONLY
+ 
+ all: $(EXECS)
+ 
+diff -ur maradns-1.2.00/server/Makefile.recursive maradns-1.2.01/server/Makefile.recursive
+--- maradns-1.2.00/server/Makefile.recursive	2005-11-22 18:15:07.000000000 -0800
++++ maradns-1.2.01/server/Makefile.recursive	2005-12-28 14:21:55.000000000 -0800
+@@ -21,7 +21,7 @@
+ #FLAGS = -g $(DEBUG) -DNOTHREAD -DDEBUG
+ #FLAGS = -g -DDEBUG_MEMORY $(DEBUG) 
+ #FLAGS = -g $(DEBUG) 
+-FLAGS = -g -Wall $(DEBUG) $(DEFINES)
++#FLAGS = -g -Wall $(DEBUG) $(DEFINES)
+ 
+ all: $(EXECS)
+ 
+diff -ur maradns-1.2.00/tools/Makefile maradns-1.2.01/tools/Makefile
+--- maradns-1.2.00/tools/Makefile	2005-12-05 14:46:55.000000000 -0800
++++ maradns-1.2.01/tools/Makefile	2005-12-28 14:22:04.000000000 -0800
+@@ -9,7 +9,7 @@
+ Q=$(ROBJECTS) $(POBJECTS)
+ EXECS=askmara askmara-tcp strip.control benchmark duende
+ 
+-FLAGS = -g $(DEBUG)
++#FLAGS = -g $(DEBUG)
+ #FLAGS = -g $(DEBUG)
+ 
+ all: $(EXECS)
+--- maradns-1.2.00/build/Makefile.linux	2005-11-06 15:15:41.000000000 -0800
++++ maradns-1.2.01/build/Makefile.linux	2005-12-28 14:33:21.000000000 -0800
+@@ -23,31 +23,32 @@
+ # LDFLAGS=-L/usr/ucblib -lucb -lxnet
+ # end the Solaris section
+ # Non-Solaris version of "M"
+-M="VERSION=$(VERSION)"
++V="VERSION=$(VERSION)"
+ Q="DEFINES=-DSELECT_PROBLEM"
+ 
+ # Debug
+ D=$(M) DEBUG=-DDEBUG
+ 
+ FLAGS = -O2 -Wall
++M="CC=$(CC) $(FLAGS)"
+ #FLAGS = -g
+ 
+ all: 
+ 	cd libs ; make $(M) ; cd ../dns ; make $(M) ; \
+ 	cd ../rng ; make $(M) ; cd ../parse ; make $(M) ; \
+ 	cd ../qual ; make $(M) ; cd ../server ; \
+-	make $(M) $(Q) COMPILED=\"$(COMPILED)\" ; \
++	make $(M) $(Q) $(V) COMPILED=\"$(COMPILED)\" ; \
+ 	cd ../tools ; make $(M) ; \
+-	cd ../tcp ; make $(M) ; cat ../00README.FIRST
++	cd ../tcp ; make $(M) $(V) ; cat ../00README.FIRST
+ 
+ debug: 
+ 	cd libs ; make $(D) DEBUG="-DDEBUG -DTHREADS" ; \
+ 	cd ../dns ; make $(D) ; cd ../rng ; make $(D) ; \
+ 	cd ../parse ; make $(D) ; cd ../qual ; make $(D) ; \
+ 	cd ../server ; \
+-	make $(D) $(Q) COMPILED=\"$(COMPILED_DEBUG)\" ; \
++	make $(D) $(Q) $(V) COMPILED=\"$(COMPILED_DEBUG)\" ; \
+ 	cd ../tools ; make $(D) ; \
+-	cd ../tcp ; make $(D) ; cat ../00README.FIRST
++	cd ../tcp ; make $(D) $(V) ; cat ../00README.FIRST
+ 
+ clean:
+ 	rm -f $(OBJECTS) core $(EXECS) ; \
+--- maradns-1.2.00/dns/Makefile.authonly	2005-10-06 13:49:10.000000000 -0700
++++ maradns-1.2.01/dns/Makefile.authonly	2005-12-28 14:52:58.000000000 -0800
+@@ -3,7 +3,7 @@
+ MHOBJS=../libs/MaraHash.o
+ OBJECTS=$(DOBJECTS) $(JOBJS) $(MHOBJS)
+ 
+-FLAGS = -g -Wall $(DEBUG) -DAUTHONLY
++#FLAGS = -g -Wall $(DEBUG) -DAUTHONLY
+ #FLAGS = -g $(DEBUG)
+ 
+ all: Queries.o Compress.o bobbit.o Decompress.o
+--- maradns-1.2.00/dns/Makefile.recursive	2005-10-06 13:48:59.000000000 -0700
++++ maradns-1.2.01/dns/Makefile.recursive	2005-12-28 14:53:04.000000000 -0800
+@@ -3,7 +3,7 @@
+ MHOBJS=../libs/MaraHash.o
+ OBJECTS=$(DOBJECTS) $(JOBJS) $(MHOBJS)
+ 
+-FLAGS = -g -Wall $(DEBUG)
++#FLAGS = -g -Wall $(DEBUG)
+ #FLAGS = -g $(DEBUG)
+ 
+ all: Queries.o Compress.o bobbit.o Decompress.o
+--- maradns-1.2.00/tcp/Makefile.authonly	2005-11-22 18:20:18.000000000 -0800
++++ maradns-1.2.01/tcp/Makefile.authonly	2005-12-28 14:56:59.000000000 -0800
+@@ -16,7 +16,7 @@
+ 	$(TCPOBJS)
+ EXECS=getzone zoneserver fetchzone
+ 
+-FLAGS = -g -Wall $(DEBUG) -DAUTHONLY
++#FLAGS = -g -Wall $(DEBUG) -DAUTHONLY
+ #FLAGS = -g $(DEBUG)
+ 
+ all: $(EXECS)
+--- maradns-1.2.00/tcp/Makefile.recursive	2005-11-22 18:20:29.000000000 -0800
++++ maradns-1.2.01/tcp/Makefile.recursive	2005-12-28 14:57:05.000000000 -0800
+@@ -16,7 +16,7 @@
+ 	$(TCPOBJS)
+ EXECS=getzone zoneserver fetchzone
+ 
+-FLAGS = -g -Wall $(DEBUG)
++#FLAGS = -g -Wall $(DEBUG)
+ #FLAGS = -g $(DEBUG)
+ 
+ all: $(EXECS)

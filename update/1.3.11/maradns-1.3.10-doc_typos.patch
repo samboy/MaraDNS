@@ -1,0 +1,781 @@
+Kindly contributed by Boey Maun Suang (Mr. Boey)
+
+diff -ur maradns-1.3.10/doc/en/source/authoritative.ej maradns-1.3.11/doc/en/source/authoritative.ej
+--- maradns-1.3.10/doc/en/source/authoritative.ej	2007-09-21 07:07:48.000000000 -0500
++++ maradns-1.3.11/doc/en/source/authoritative.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -161,7 +161,7 @@
+ for
+ example.com with the IP 10.10.10.15.  In other words, the machine with the
+ IP 10.10.10.15 is set up to handle mail addressed to name@example.com,
+-where "name" is any string preceeding the '@' sign.
++where "name" is any string preceding the '@' sign.
+ <LI>Both 10.10.10.11 and 10.10.10.17 are running MaraDNS in authoritative
+ mode to serve DNS requests for example.com.
+ </UL>
+@@ -176,15 +176,15 @@
+ 
+ # We have two records which handle the serving of web pages.  These
+ # are simple name-to-ip translations.  In other words, we have one
+-# record which states "The IP for exmaple.com. is 10.10.10.12" and
++# record which states "The IP for example.com. is 10.10.10.12" and
+ # another that states "The IP for www.example.com. is 10.10.10.12"
+ example.com. 10.10.10.12 ~
+ www.example.com. 10.10.10.12 ~
+ 
+ # We also need to set up an IP for the machine that serves email for
+-# example.com.  Becuase of how DNS is designed, we both need
++# example.com.  Because of how DNS is designed, we both need
+ # a record which states "The machine which handles mail for
+-# exmaple.com is called mail1.example.com" and a record which states
++# example.com is called mail1.example.com" and a record which states
+ # "The IP address for mail1.example.com is 10.10.10.15":
+ example.com. MX 10 mail1.example.com. ~
+ mail1.example.com. 10.10.10.15 ~
+@@ -194,7 +194,7 @@
+ following changes:
+ 
+ <ul>
+-<li>Sustitute the name <b>example.com</b> with the name of the domain
++<li>Substitute the name <b>example.com</b> with the name of the domain
+ one wishes to administer.
+ <li>Substitute the IP 10.10.10.12 with the IP of the machine running the
+ web server for the domain.
+@@ -222,7 +222,7 @@
+ mail1.example.com.      10.10.10.19 ~
+ </pre>
+ 
+-Translated in english, the above lines say:
++Translated into English, the above lines say:
+ 
+ <ul>
+ <li>One name server for example.com
+@@ -305,7 +305,7 @@
+ MaraDNS has support for this by using the <tt>%</tt> symbol.  Whenever
+ MaraDNS sees a <tt>%</tt> in a csv2 zone file, MaraDNS knows to replace
+ the percent symbol with the name of the zone in question.  For example, if
+-the file in question is the zone file for example.com, the % is exanded
++the file in question is the zone file for example.com, the % is expanded
+ out to "example.com.".  If the zone file in question is for maradns.org,
+ the % is expanded out to "maradns.org.".  Hence, we could, provided that
+ the zone file is for example.com, have a zone file like this:
+@@ -317,7 +317,7 @@
+ www.% 10.10.10.12 ~
+ 
+ # We also need to set up an IP for the machine that serves email for
+-# our zone.  Becuase of how DNS is designed, we both need
++# our zone.  Because of how DNS is designed, we both need
+ # a record which states "The machine which handles mail for
+ # out zone is called mail1.<zone name>" and a record which states
+ # "The IP address for mail1.<zone name> is 10.10.10.15":
+diff -ur maradns-1.3.10/doc/en/source/bind2csv2.ej maradns-1.3.11/doc/en/source/bind2csv2.ej
+--- maradns-1.3.10/doc/en/source/bind2csv2.ej	2007-08-16 08:35:43.000000000 -0500
++++ maradns-1.3.11/doc/en/source/bind2csv2.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -34,7 +34,7 @@
+ bind2csv2.py -c zone1 zone2 zone3
+ </pre>
+ 
+-Substiture "zone1", "zone2", and "zone3" with a list of one or more 
++Substitute "zone1", "zone2", and "zone3" with a list of one or more 
+ BIND zone files you wish be converted in to MaraDNS 1.3 csv2 zone
+ files.  <p>
+ 
+@@ -48,7 +48,7 @@
+ 
+ <h2>BUGS</h2>
+ 
+-<tt>bind2csv2.py</tt> is not a perfect zone file convertor.  In
++<tt>bind2csv2.py</tt> is not a perfect zone file converter.  In
+ particular, <tt>bind2csv2.py</tt> does not act like BIND when NS records
+ have different TTLs.  Please make sure all NS records in your BIND zone
+ files have the same TTL.  <p>
+diff -ur maradns-1.3.10/doc/en/source/bind2csv2-man.ej maradns-1.3.11/doc/en/source/bind2csv2-man.ej
+--- maradns-1.3.10/doc/en/source/bind2csv2-man.ej	2007-09-21 07:07:48.000000000 -0500
++++ maradns-1.3.11/doc/en/source/bind2csv2-man.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -39,7 +39,7 @@
+ bind2csv2.py -c zone1 zone2 zone3
+ </pre>
+ 
+-Substiture "zone1", "zone2", and "zone3" with a list of one or more 
++Substitute "zone1", "zone2", and "zone3" with a list of one or more 
+ BIND zone files you wish be converted in to MaraDNS 1.3 csv2 zone
+ files.  <p>
+ 
+@@ -57,7 +57,7 @@
+ 
+ <H1>BUGS</H1>
+ 
+-<tt>bind2csv2.py</tt> is not a perfect zone file convertor.  In
++<tt>bind2csv2.py</tt> is not a perfect zone file converter.  In
+ particular, <tt>bind2csv2.py</tt> does not act like BIND when NS records
+ have different TTLs.  Please make sure all NS records in your BIND zone
+ files have the same TTL.  <p>
+diff -ur maradns-1.3.10/doc/en/source/convert.ej maradns-1.3.11/doc/en/source/convert.ej
+--- maradns-1.3.10/doc/en/source/convert.ej	2006-01-02 10:59:33.000000000 -0600
++++ maradns-1.3.11/doc/en/source/convert.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -46,7 +46,7 @@
+ </blockquote>
+ <li>By reading the documentation for the DNS server that one is 
+ currently running, set up the DNS server to allow zone transfers 
+-for exmaple.com, maradns.org, and heaven.af.mil
++for example.com, maradns.org, and heaven.af.mil
+ <li>Run fetchzone three times.  Assuming that the IP of the server currently
+ running DNS is at the IP 127.0.0.1:
+ <blockquote>
+diff -ur maradns-1.3.10/doc/en/source/credits.ej maradns-1.3.11/doc/en/source/credits.ej
+--- maradns-1.3.10/doc/en/source/credits.ej	2002-03-12 12:00:49.000000000 -0600
++++ maradns-1.3.11/doc/en/source/credits.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -7,7 +7,7 @@
+ One of the things that is very delightful about writing open-source 
+ software is the incredible amount of help people have been offering
+ me with MaraDNS.  Numerous people have provided invaluable assistance
+-with filing bug reports, making usability suggesations, providing
++with filing bug reports, making usability suggestions, providing
+ patches and reports with respect to running MaraDNS on other operating
+ systems, and otherwise making MaraDNS a superior program.
+ <p>
+diff -ur maradns-1.3.10/doc/en/source/csv1.ej maradns-1.3.11/doc/en/source/csv1.ej
+--- maradns-1.3.10/doc/en/source/csv1.ej	2005-12-08 14:45:43.000000000 -0600
++++ maradns-1.3.11/doc/en/source/csv1.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -40,7 +40,7 @@
+ <dt>
+ \ 
+ <dd>
+-This is used an an escape character, either to escape 
++This is used as an escape character, either to escape 
+ octal values such as '\045' for %, or to escape the '%' 
+ character so it has no special meaning, or to escape the 
+ backslash character.
+@@ -200,7 +200,7 @@
+ The above example is a "Kitchen Sink" RR (see 
+ draft-ietf-dnsind-kitchen-sink-02.txt) with a "meaning" of 8, a "coding"
+ of 1, a "subcoding" of 2, and a data string of "Kitchen sink data".
+-Since this particular data type is not formallized in a RFC at this time,
++Since this particular data type is not formalized in a RFC at this time,
+ the most appropriate method of storing this data is by using the catch-all 
+ "unsupported" syntax.
+ 
+diff -ur maradns-1.3.10/doc/en/source/csv2.ej maradns-1.3.11/doc/en/source/csv2.ej
+--- maradns-1.3.10/doc/en/source/csv2.ej	2007-09-21 07:07:48.000000000 -0500
++++ maradns-1.3.11/doc/en/source/csv2.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -9,11 +9,11 @@
+ <h1>DESCRIPTION</h1>
+ The csv2 zone file format is the zone file format introduced in MaraDNS 1.2.
+ This zone file format uses any kind of whitespace (space, tab, and carriage
+-return), or the '|' character, to deliminate fields.  
++return), or the '|' character, to delimit fields.  
+ 
+-<h2>Tilde delimination</h2>
++<h2>Tilde delimitation</h2>
+ 
+-In MaraDNS 1.3, the tilde ('~') character is used to deliminate records
++In MaraDNS 1.3, the tilde ('~') character is used to delimit records
+ in csv2 zone files; in order to maintain maximum compatibility with
+ MaraDNS 1.2 zone files, this feature is only enabled if a tilde is
+ placed between the first and second record.  Otherwise, tildes are
+@@ -129,7 +129,7 @@
+ <h2>NS</h2>
+ 
+ An NS record specifies the name servers for a given zone.  If the name
+-servers are not delegation name servers (in other words, if the the name
++servers are not delegation name servers (in other words, if the name
+ servers are the authoritative name servers for the zone), they need to be
+ at the beginning of the zone, either as the first records in the zone, or
+ right after the SOA record.  The NS records are optional; if not present,
+@@ -431,9 +431,9 @@
+ <h2>NSAP and NSAP-PTR</h2>
+ 
+ NSAP and NSAP-PTR records were proposed in RFC1706.  A NSAP record is
+-a hexadecimal number preceeded by the string "0x" and with optional dots
++a hexadecimal number preceded by the string "0x" and with optional dots
+ between bytes.  This hexadecimal number is converted in to a binary number
+-by MaraDNS.  A NSAP-PTR record is idenical to a PTR record, but has a 
++by MaraDNS.  A NSAP-PTR record is identical to a PTR record, but has a 
+ different RTYPE.
+ 
+ <p>
+@@ -486,7 +486,7 @@
+ 
+ <h2>LOC</h2>
+ 
+-The LOC recource record is an uncommonly used resource record that 
++The LOC resource record is an uncommonly used resource record that 
+ describes the position of a given server.  LOC records are described
+ in RFC1876.  
+ 
+diff -ur maradns-1.3.10/doc/en/source/csv2_txt.ej maradns-1.3.11/doc/en/source/csv2_txt.ej
+--- maradns-1.3.10/doc/en/source/csv2_txt.ej	2007-02-14 09:25:28.000000000 -0600
++++ maradns-1.3.11/doc/en/source/csv2_txt.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -101,9 +101,9 @@
+ <dd>
+ When any whitespace is backslashed (space, newline, cr, and tab), this
+ indicates that the record has not ended, and that more data for this
+-recource will follow.  This also allows comments to be placed in 
++resource will follow.  This also allows comments to be placed in 
+ TXT and RAW resource records.  What happens is that the backslash
+-indicates that any whitespace characters (space, tab, carraige return,
++indicates that any whitespace characters (space, tab, carriage return,
+ and line feed) are to be ignored until
+ the next non-whitespace character that is not a # (hash).  If a
+ # is seen, this indicates that we ignore any and all characters until the
+@@ -240,7 +240,7 @@
+                    ' jumped over the cat.' ~                 # The cat
+ </pre>
+ 
+-Note that, since the third comment is not preceeded by a backslash, this
++Note that, since the third comment is not preceded by a backslash, this
+ indicates the end of the resource record.  
+ 
+ <p>
+diff -ur maradns-1.3.10/doc/en/source/data_structures.ej maradns-1.3.11/doc/en/source/data_structures.ej
+--- maradns-1.3.10/doc/en/source/data_structures.ej	2005-12-06 03:50:22.000000000 -0600
++++ maradns-1.3.11/doc/en/source/data_structures.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -10,7 +10,7 @@
+ <H1>DNS records</H1>
+ 
+ The cached and authoritative DNS records are separate data structures in 
+-MaraDNS.  This is to minimize the interfearance between the cached data 
++MaraDNS.  This is to minimize the interference between the cached data 
+ and the authoritative data; it should be impossible for any changes to 
+ data in the recursive DNS cache to change authoritative DNS data.
+ 
+@@ -41,12 +41,12 @@
+ this information, but the information can be found here") in a different 
+ format than the recursive data structure.  Again, this is because the 
+ authoritative data is guaranteed to be complete, and the cache is 
+-essentially guaranteed only to be a snaphot of a few records in the DNS 
++essentially guaranteed only to be a snapshot of a few records in the DNS 
+ space.
+ 
+ <p>
+ If recursive DNS referrals were stored in the same format as authoritative 
+-DNS referrals, MaraDNS would be vulernable to a security attack known as 
++DNS referrals, MaraDNS would be vulnerable to a security attack known as 
+ <i>DNS cache poisoning</i>.  
+ 
+ <li>The authoritative dns structure can "cross-link" between different DNS 
+@@ -71,12 +71,12 @@
+ </ul>
+ 
+ Now that I have summarized the differences between the two data 
+-strucutres, I will describe, in great technical detail, the DNS data 
+-strucutre.
++structures, I will describe, in great technical detail, the DNS data 
++structure.
+ 
+ <H1>The DNS hash</H1>
+ 
+-The data strucutre that MaraDNS uses is a <i>hash</i>; the program looks 
++The data structure that MaraDNS uses is a <i>hash</i>; the program looks 
+ for an element in the array by string reference.  The process is, roughly 
+ speaking, as follows:
+ 
+@@ -104,7 +104,7 @@
+ 
+ <p>
+ 
+-The strings that MaraDNS' hash strucutre uses are not ordinary strings; 
++The strings that MaraDNS' hash structure uses are not ordinary strings; 
+ instead they are special <i>JsStr</i> objects.  JsStr strings are strings 
+ which are generated by a special library, which I wrote myself (this is, 
+ in fact, the oldest code in the MaraDNS code base; I wrote most of the 
+@@ -194,11 +194,11 @@
+ records, while in common use, are never used by responsible DNS
+ administrators.  Should ipv6 ever become a reality, AAAA records will be
+ used by responsible DNS administrators; irresponsible DNS administrators
+-may, unfortunatly, be foolish enough to use A6 or DNAME records.
++may, unfortunately, be foolish enough to use A6 or DNAME records.
+ 
+ <p>
+ 
+-Each resource record type has a numeric value assosciated with it.  "A" 
++Each resource record type has a numeric value associated with it.  "A" 
+ records have a numeric value of 1; "MX" records have a numeric value of 
+ 15.
+ 
+@@ -227,7 +227,7 @@
+ <H1>The hash data</H1>
+ 
+ MaraDNS' hash structure, in addition to having a pointer to the memory 
+-address with the hash data in question, has an interger which indicates 
++address with the hash data in question, has an integer which indicates 
+ the kind of data this hash elements has.  The authoritative hash (yes, 
+ the authoritative and cache data use separate hashes) only uses one 
+ datatype for its data: MARA_DNSRR, or a DNS resource record which uses an 
+@@ -346,7 +346,7 @@
+ <li>The case of a RR being the direct answer to our query.
+ 
+ <li>The case of a RR being a CNAME answer; in this case, our query
+-contains both the existance of a CNAME; and the A record which the CNAME
++contains both the existence of a CNAME; and the A record which the CNAME
+ points to (if it exists).
+ 
+ <li>The case where we are caching a "this record does not" exist 
+@@ -389,7 +389,7 @@
+ need to do this is because stub resolvers will not perform a second query 
+ to find out what the A record which corresponds to a given CNAME record 
+ is; if the data is not in the DNS packet which contains the CNAME, the 
+-host name in quesiton will not resolve.
++host name in question will not resolve.
+ 
+ <p>
+ 
+@@ -399,8 +399,8 @@
+ <p>
+ 
+ In the third case, where we cache a "this record does not exist" answer, 
+-the data is almost identical to a postivie RR.  The only difference is 
+-that the data is a SOA record instead of a reply for the quesiton 
++the data is almost identical to a positive RR.  The only difference is 
++that the data is a SOA record instead of a reply for the question 
+ that they asked; and that the "datatype" for the hash element is a 
+ "MARA_DNS_NEG" datatype instead of a standard "MARA_DNSRR" datatype.
+ 
+@@ -470,7 +470,7 @@
+ 
+ The cache, to be effective, only needs to be a small subset of all of the 
+ DNS information available on the internet.  In order to minimize the 
+-memory resources that MaraDNS needs, after the cache expens to a given 
++memory resources that MaraDNS needs, after the cache expands to a given 
+ size, MaraDNS will remove the elements from the cache.
+ 
+ <p>
+@@ -479,13 +479,13 @@
+ 
+ <ul>
+ <li>Elements removed from the cache have not been recently accessed
+-<li>There is not needless overhead for detemining what elements to remove
++<li>There is not needless overhead for determining what elements to remove
+     from the cache.
+ <li>We do not attempt to remove already-removed elements from the cache
+ </ul>
+ 
+ The way MaraDNS accomplishes this is by having a special <i>fila</i> 
+-data strcuture.  The <i>fila</i> code was developed when I was down in
++data structure.  The <i>fila</i> code was developed when I was down in
+ México; <i>fila</i> is the Spanish word for what American English 
+ speakers call a "line" and what the rest of the English-speaking world 
+ more accurately calls a "queue".  
+diff -ur maradns-1.3.10/doc/en/source/dnsintro.ej maradns-1.3.11/doc/en/source/dnsintro.ej
+--- maradns-1.3.10/doc/en/source/dnsintro.ej	2005-12-13 12:54:02.000000000 -0600
++++ maradns-1.3.11/doc/en/source/dnsintro.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -46,7 +46,7 @@
+ 
+ <LI>DNS servers which can convert most 
+ <A href="glossary.html#dns_node"><i>DNS nodes</i></A>
+-in to thier
++in to their
+ corresponding number.  These DNS servers are called 
+ <A href="glossary.html#recursive">
+ <i>recursive DNS servers</i></A>.
+diff -ur maradns-1.3.10/doc/en/source/dnsslave.ej maradns-1.3.11/doc/en/source/dnsslave.ej
+--- maradns-1.3.10/doc/en/source/dnsslave.ej	2005-12-13 16:38:01.000000000 -0600
++++ maradns-1.3.11/doc/en/source/dnsslave.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -150,7 +150,7 @@
+ 
+ <tt>fetchzone</tt>, when grabbing this zone, will disable the "www.google.com"
+ record because it doesn't end with "example.com".  The disabling will 
+-look something like this when the zone file is grabbled:
++look something like this when the zone file is grabbed:
+ 
+ <pre>
+ example.com. 10.1.2.3
+diff -ur maradns-1.3.10/doc/en/source/download.ej maradns-1.3.11/doc/en/source/download.ej
+--- maradns-1.3.10/doc/en/source/download.ej	2005-10-02 20:12:42.000000000 -0500
++++ maradns-1.3.11/doc/en/source/download.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -32,7 +32,7 @@
+ <p><A href=changelog.html>View the changelog</A></p>
+ 
+ <H2>Tool to help verify the sums of MaraDNS (or any other file)</H2>
+-<p>This is a mismash of various cryptographic summing algorithms.  <b>By and
++<p>This is a mishmash of various cryptographic summing algorithms.  <b>By and
+ large, the programs in this tarball are not public domain</b>
+ <p><A href=download/sums-20010925.tar.bz2>sums-20010925.tar.bz2</A>  This is the
+ actual code which performs various cryptographic hashes against the file.
+diff -ur maradns-1.3.10/doc/en/source/ej.doc.format maradns-1.3.11/doc/en/source/ej.doc.format
+--- maradns-1.3.10/doc/en/source/ej.doc.format	2005-12-03 02:28:59.000000000 -0600
++++ maradns-1.3.11/doc/en/source/ej.doc.format	2008-01-25 14:14:45.000000000 -0600
+@@ -41,7 +41,7 @@
+ 
+   BODYFLAGS are flags given to the BODY tag when the document is 
+   converted in to HTML.  This is here to allow an HTML document to
+-  be more aestically pleasing.
++  be more aesthetically pleasing.
+ 
+ * The BODY section uses two tags which do not exist in html: 
+ 
+@@ -50,7 +50,7 @@
+  
+   2. The HINCLUDE tag, which is like the INCLUDE tag, but is designed
+      to include HTML code which makes a rendered web page more 
+-     aestically pleasing; this code is included only when rendering the 
++     aesthetically pleasing; this code is included only when rendering the 
+      EJ document in question in to HTML.
+ 
+   EJ docs support the following HTML tags: <H1> (becomes section header
+diff -ur maradns-1.3.10/doc/en/source/example_csv2 maradns-1.3.11/doc/en/source/example_csv2
+--- maradns-1.3.10/doc/en/source/example_csv2	2007-02-14 09:25:28.000000000 -0600
++++ maradns-1.3.11/doc/en/source/example_csv2	2008-01-25 14:14:45.000000000 -0600
+@@ -54,7 +54,7 @@
+         10.1.1.1 	# Where we are 
+         ~               # End of record
+ 
+-# We can even have something similiar to csv1 if we want...
++# We can even have something similar to csv1 if we want...
+ e.example.net.|+86400|a|10.2.3.4|~
+ h.example.net.|a|10.9.8.7|~
+ # Here, we see we can specify the ttl but not the rtype if desired
+diff -ur maradns-1.3.10/doc/en/source/example_full_mararc maradns-1.3.11/doc/en/source/example_full_mararc
+--- maradns-1.3.10/doc/en/source/example_full_mararc	2007-11-26 11:48:19.000000000 -0600
++++ maradns-1.3.11/doc/en/source/example_full_mararc	2008-01-25 14:14:45.000000000 -0600
+@@ -41,7 +41,7 @@
+ # Normally, MaraDNS only returns A and MX records when given a
+ # QTYPE=* (all RR types) query.  Changing the value of default_rrany_set
+ # to 15 causes MaraDNS to also return the NS and SOA records, which
+-# some registars require.  The default value of this is 3
++# some registrars require.  The default value of this is 3
+ default_rrany_set = 3
+ 
+ # These constants limit the number of records we will display, in order
+@@ -125,9 +125,9 @@
+ #zone_transfer_acl       = "company"
+ 
+ # If you want to enable recursion on the loopback interface, uncomment
+-# the relevent lines in the following section
++# the relevant lines in the following section
+ 
+-# Recursive ACL: Who is allowd to perform recursive queries.  The format
++# Recursive ACL: Who is allowed to perform recursive queries.  The format
+ # is identical to that of "zone_transfer_acl", including ipv4_alias support
+ 
+ #ipv4_alias["localhost"] = "127.0.0.0/8"
+@@ -149,7 +149,7 @@
+ 
+ #maximum_cache_elements = 1024
+ 
+-# It is possible to change the minimul "time to live" for entries in the
++# It is possible to change the minimal "time to live" for entries in the
+ # cache; this is the minimum time that an entry will stay in the cache.
+ # Value is in seconds; default is 300 (5 minutes)
+ #min_ttl = 300
+diff -ur maradns-1.3.10/doc/en/source/example_recursive_mararc maradns-1.3.11/doc/en/source/example_recursive_mararc
+--- maradns-1.3.10/doc/en/source/example_recursive_mararc	2005-11-21 17:30:13.000000000 -0600
++++ maradns-1.3.11/doc/en/source/example_recursive_mararc	2008-01-25 14:14:45.000000000 -0600
+@@ -15,7 +15,7 @@
+ # The directory with all of the zone files
+ chroot_dir = "/etc/maradns"
+ 
+-# Recursive ACL: Who is allowd to perform recursive queries.  
++# Recursive ACL: Who is allowed to perform recursive queries.  
+ 
+ # With the following line, anyone with an IP starting with the number
+ # "10" can perform recursive queries 
+diff -ur maradns-1.3.10/doc/en/source/faq.embed maradns-1.3.11/doc/en/source/faq.embed
+--- maradns-1.3.10/doc/en/source/faq.embed	2007-09-21 07:07:48.000000000 -0500
++++ maradns-1.3.11/doc/en/source/faq.embed	2008-01-25 14:14:45.000000000 -0600
+@@ -508,7 +508,7 @@
+ Linux, upgrade to version 1.2.03.2.  There is a bug with the Linux kernel
+ which causes UDP clients to freeze unless code is written to work around
+ the kernel bug.  This workaround was first introduced in MaraDNS 1.0.28
+-and 1.1.35 and accidently disabled in 1.2.03.1.  
++and 1.1.35 and accidentally disabled in 1.2.03.1.  
+ 
+ <p>
+ If using your ISP's name servers or some other name servers which
+@@ -544,7 +544,7 @@
+ <H2>25. How scalable is MaraDNS?</H2>
+ 
+ MaraDNS is optimized for serving a small number of domains as quickly
+-as possible.  That said, MaraDNS is remarkably efficnent for serving a
++as possible.  That said, MaraDNS is remarkably efficient for serving a
+ large number of domains, as long as the server MaraDNS is on has the
+ memory to fit all of the domains, and as long as the startup time for
+ loading a large number of domains can be worked around.
+@@ -724,7 +724,7 @@
+ In the case of there being a NS delegation, MaraDNS handles recursive
+ queries and non-recursive DNS queries differently.  Basically, unless
+ you use <tt>askmara</tt> with the <tt>-n</tt> option, dig with the 
+-<tt>+norecuse</tt> option, or <tt>nslookup</tt> with the <tt>-norec</tt>
++<tt>+norecurse</tt> option, or <tt>nslookup</tt> with the <tt>-norec</tt>
+ option, MaraDNS will try to recursively resolve the record that is 
+ delegated.
+ 
+@@ -885,7 +885,7 @@
+     MaraDNS's <tt>./configure</tt> script can be run in only a second or
+     two; compare this to the 3-5 minute process autoconf's <tt>./configure</tt>
+     needs.
+-<li>Autoconf leaves GPL-tained files in a program's build tree.  MaraDNS is
++<li>Autoconf leaves GPL-tainted files in a program's build tree.  MaraDNS is
+     licensed under a BSD license that is <i>not</i> GPL-compatible, so 
+     MaraDNS can not be distributed with these GPL-licensed files.
+ </ul>
+@@ -949,7 +949,7 @@
+ is also usually an up-to-date Slackware package available.  In addition,
+ there is a Debian package in the Debian packages collection, a FreeBSD
+ port of MaraDNS, a Ubuntu package which is derived from the Debian package,
+-and undoubtably other MaraDNS packages floating around the internet.
++and undoubtedly other MaraDNS packages floating around the internet.
+ <p>
+ 
+ If you wish to have a package for your particular version of Linux (or 
+@@ -980,7 +980,7 @@
+ 
+ Now, to be fair to Debian, their policies do allow me to backport bugfixes
+ to the 1.2.12.04 release of MaraDNS, and the patches do get reviewed by
+-somone else, which minimizes bugfixes introducing new bugs (Yes, I have
++someone else, which minimizes bugfixes introducing new bugs (Yes, I have
+ done that), but there are not enough volunteers to review all of the
+ bugfixes I have made since 1.2.12.04.  So, Debian users get stuck with
+ an old, buggy version of MaraDNS.  The policy would work if there were
+diff -ur maradns-1.3.10/doc/en/source/files.ej maradns-1.3.11/doc/en/source/files.ej
+--- maradns-1.3.10/doc/en/source/files.ej	2005-11-23 01:54:19.000000000 -0600
++++ maradns-1.3.11/doc/en/source/files.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -48,7 +48,7 @@
+ 
+ <DT>locale.en
+ <DD>Shell script which changes the language of MaraDNS' messages to English
+-    (this is the default language).  This needs ot be run <i>before</i>
++    (this is the default language).  This needs to be run <i>before</i>
+     compiling MaraDNS.
+ 
+ <DT>locale.es
+diff -ur maradns-1.3.10/doc/en/source/glossary.ej maradns-1.3.11/doc/en/source/glossary.ej
+--- maradns-1.3.10/doc/en/source/glossary.ej	2006-10-08 18:32:42.000000000 -0500
++++ maradns-1.3.11/doc/en/source/glossary.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -64,7 +64,7 @@
+ 
+ <A name="ip">
+ <DT><b>IP</b></DT>
+-<DD>A number which a computer connected to the internet has, similiar to a 
++<DD>A number which a computer connected to the internet has, similar to a 
+ phone number. <p></DD>
+ 
+ <A name="isp">
+diff -ur maradns-1.3.10/doc/en/source/mararc.ej maradns-1.3.11/doc/en/source/mararc.ej
+--- maradns-1.3.10/doc/en/source/mararc.ej	2007-10-19 08:54:14.000000000 -0500
++++ maradns-1.3.11/doc/en/source/mararc.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -227,7 +227,7 @@
+ the hostname one is searching for is used.
+ <p>
+ 
+-For exmaple, let us suppose we have the following root_servers entries:
++For example, let us suppose we have the following root_servers entries:
+ 
+ <pre>
+ root_servers["."] = "198.41.0.4"
+@@ -465,7 +465,7 @@
+ Tmemusage.maradns. query will return the amount of memory MaraDNS has
+ allocated.  Note that the overhead for tracking memory usage is considerable
+ and that compiling MaraDNS with "make debug" will greatly slow down MaraDNS.
+-A debug build of MaraDNS is <b>not</b> reccomended for production use.
++A debug build of MaraDNS is <b>not</b> recommended for production use.
+ <p>
+ When set to three or higher, a Ttimestamp.maradns. query will return, in 
+ seconds since the UNIX epoch, the timestamp for the system MaraDNS
+@@ -491,7 +491,7 @@
+ <h2>dos_protection_level</h2>
+ If this is set to a non-zero value, certain features of MaraDNS will be
+ disabled in order to speed up MaraDNS' response time.  This is designed for
+-situtations when a MaraDNS server is receiving a large number of queries,
++situations when a MaraDNS server is receiving a large number of queries,
+ such as during a denial of service attack.  
+ 
+ <p>
+@@ -507,7 +507,7 @@
+ 
+ <li>A dos_protection_level of 8 or above disables CNAME lookups.
+ 
+-<li>A dos_protection_level or 12 or above diables delegation NS records.
++<li>A dos_protection_level or 12 or above disables delegation NS records.
+ 
+ <li>A dos_protection_level of 14 or above disables ANY record processing.
+ 
+@@ -533,7 +533,7 @@
+ informs the client that Mara was unable to contact any remote DNS servers
+ when trying to resolve a given domain.  
+ 
+-If this is set to 0, no reponse will be sent to the DNS client.
++If this is set to 0, no response will be sent to the DNS client.
+ 
+ If this is set to 1, a "server fail" message will be sent to the DNS client.
+ 
+@@ -710,15 +710,15 @@
+ <p>
+ 
+ As an aside, RFC1123 section 6.1.2.1 implies that zero-length TTL records 
+-should be passed on with a TTL of zero.  This, unfortunatly, breaks some
++should be passed on with a TTL of zero.  This, unfortunately, breaks some
+ stub resolvers (such as Mozilla's stub resolver).
+ 
+ <h2>random_seed_file</h2>
+-randsom_seed_file:  The file from which we read 16 bytes from to
++random_seed_file:  The file from which we read 16 bytes from to
+ get the 128-bit seed for the secure pseudo random number generator.
+ <p>
+ 
+-This localcation of this file is relative to the root of the
++The location of this file is relative to the root of the
+ filesystem, not MaraDNS' chroot directory.
+ <p>
+ 
+@@ -896,7 +896,7 @@
+ 
+ <h2>timestamp_type</h2>
+ timestamp_type: The type of timestamp to display.  The main purpose of
+-this option is to supress the output of timestamps.  Since duende uses
++this option is to suppress the output of timestamps.  Since duende uses
+ syslog() to output data, and since syslog() adds its own timestamp, this
+ option should be set to 5 when maradns is invoked with the duende tool.
+ 
+@@ -936,7 +936,7 @@
+ This is the port that MaraDNS' recursive resolver uses to contact other
+ DNS servers.  This is usually 53 (the default value), but certain unusual
+ MaraDNS setups (such as when resolving dangling CNAME records on but a
+-single IP) may need to have a different valur for this.
++single IP) may need to have a different value for this.
+ 
+ <h2>verbose_level</h2>
+ verbose_level: The number of messages we log to stdout
+diff -ur maradns-1.3.10/doc/en/source/quick_start.ej maradns-1.3.11/doc/en/source/quick_start.ej
+--- maradns-1.3.10/doc/en/source/quick_start.ej	2005-12-06 13:06:52.000000000 -0600
++++ maradns-1.3.11/doc/en/source/quick_start.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -5,7 +5,7 @@
+ 
+ </HEAD>
+ <BODY>
+-<i>This guide is for experienced UNIX/Liunx/BSD users who just want to 
++<i>This guide is for experienced UNIX/Linux/BSD users who just want to 
+    quickly try out MaraDNS</i>
+ <p>
+ MaraDNS acts as both a recursive and an authoritative DNS server.  In
+@@ -110,7 +110,7 @@
+     (Yes, experienced DNS admins, you can have SOA, NS, MX, SRV, and any other
+      kind of DNS data stored in a csv2 zone file.  Read the csv2 man page for
+      details)
+-<li>Recurisve queries will be resolved normally
++<li>Recursive queries will be resolved normally
+ <li>Queries for <tt>example.com</tt> will resolve to 10.1.2.3
+ <li>Any other 
+ <tt>name.example.com</tt> query will return a "this host does not exist"
+diff -ur maradns-1.3.10/doc/en/source/security_design.embed maradns-1.3.11/doc/en/source/security_design.embed
+--- maradns-1.3.10/doc/en/source/security_design.embed	2005-11-18 23:38:04.000000000 -0600
++++ maradns-1.3.11/doc/en/source/security_design.embed	2008-01-25 14:14:45.000000000 -0600
+@@ -50,7 +50,7 @@
+ <p>
+ 
+ Second of all, MaraDNS protects herself from cache poisoning without ever
+-discarding glue records is by handling out-of-bailiwick records
++discarding glue records by handling out-of-bailiwick records
+ differently, depending on where the offending records are.  The actual
+ rules are fairly complex, and detailed in a document 
+ called "<A 
+@@ -149,7 +149,7 @@
+ The reason this security glitch passed through was because of an
+ overzealous effort to honor the RFC spirit to be "liberal in what one
+ accepts and conservative in what one sends". Since then, I have gone over
+-the DNS spec to see if their are any other cases where a malformed packet
++the DNS spec to see if there are any other cases where a malformed packet
+ could cause this kind of security problem, and have made an effort that
+ any such cases in MaraDNS no longer exist.
+ 
+@@ -210,7 +210,7 @@
+ both ways; first by giving the fetchzone tool more input validation.
+ Later on, I modified the csv2 parser to not accept the kind of data which
+ would have triggered the <tt>fetchzone</tt> security bug.  This issue was
+-fixed in MaraDNS 1.1.38 (the csv2 improvments appeared in MaraDNS 
++fixed in MaraDNS 1.1.38 (the csv2 improvements appeared in MaraDNS 
+ 1.1.47).
+ 
+ <p>
+@@ -223,7 +223,7 @@
+ D. J. Bernstein.  Since the underlying random number generator uses a fairly
+ simple key schedule (well, a simple key schedule for a cryptographic routine),
+ and since the random number generator uses table lookups, modern CPUs will
+-very slighly vary (on the order of billionths of a second) in the amount
++very slightly vary (on the order of billionths of a second) in the amount
+ of time used to generate a secure random number, depending on the underlying
+ key.  Bernstein needed to examine over 200 million packets, obtaining very
+ precise timing information on each packet, to extract a key.
+diff -ur maradns-1.3.10/doc/en/source/troubleshoot.ej maradns-1.3.11/doc/en/source/troubleshoot.ej
+--- maradns-1.3.10/doc/en/source/troubleshoot.ej	2007-01-09 14:16:34.000000000 -0600
++++ maradns-1.3.11/doc/en/source/troubleshoot.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -195,7 +195,7 @@
+ 
+ <p>
+ 
+-You will have to do a similiar configuration change to any firewalls
++You will have to do a similar configuration change to any firewalls
+ between your server and the internet.
+ 
+ <h2>Timeout</h2>
+@@ -265,7 +265,7 @@
+ 
+ <h2>Conclusion</h2>
+ 
+-Basically, the best strategy for troubleshooting problems with MarNS is
++Basically, the best strategy for troubleshooting problems with MaraDNS is
+ to have the mararc file be a simple three line mararc file.  If things
+ still don't work, the problem is probably outside of MaraDNS.
+ 
+diff -ur maradns-1.3.10/doc/en/source/tutorial.ej maradns-1.3.11/doc/en/source/tutorial.ej
+--- maradns-1.3.10/doc/en/source/tutorial.ej	2007-08-29 11:30:03.000000000 -0500
++++ maradns-1.3.11/doc/en/source/tutorial.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -58,7 +58,7 @@
+ <LI><A href=dangling.html>How to resolve "dangling" CNAME records</A>
+ <LI><A href=troubleshoot.html>MaraDNS troubleshooting guide</A>
+ <li><A href=bind2csv2.html>How to convert BIND zone files in to 
+-    MaraDNS-compatable zone files.</A>
++    MaraDNS-compatible zone files.</A>
+ </UL>
+ 
+ <h2>Man pages</h2>
+diff -ur maradns-1.3.10/doc/en/source/update.ej maradns-1.3.11/doc/en/source/update.ej
+--- maradns-1.3.10/doc/en/source/update.ej	2007-05-21 06:37:54.000000000 -0500
++++ maradns-1.3.11/doc/en/source/update.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -90,7 +90,7 @@
+ 
+ This misspelled <tt>mararc</tt> variable needs to either be completely
+ removed from the <tt>mararc</tt> file, or disabled by commenting
+-out.  The following <tt>mararc</tt> snippet will work identially
++out.  The following <tt>mararc</tt> snippet will work identically
+ in MaraDNS 1.0 as the above snippet, and will parse in MaraDNS 1.2 
+ without a fatal error:
+ 
+@@ -186,7 +186,7 @@
+ upstream_servers["."] = "10.1.2.3"
+ </pre>
+ 
+-MaraDNS 1.2.07 now mandates the initializion line or exits with a fatal
++MaraDNS 1.2.07 now mandates the initialization line or exits with a fatal
+ error when parsing a mararc file.  The reason for this is to make 
+ debugging mararc files easier.
+ 
+@@ -241,7 +241,7 @@
+ 
+ The way MaraDNS figures out whether to use tilde to separate records
+ is by looking between the first and second record to see if a tilde
+-is present.  If so, MaraDNS requries tildes to be between all
++is present.  If so, MaraDNS requires tildes to be between all
+ records.  If not, MaraDNS' csv2 parsing is almost completely
+ 1.2 compatible, the only difference being that tildes can not be
+ in TXT records.
+diff -ur maradns-1.3.10/doc/en/source/win_service.ej maradns-1.3.11/doc/en/source/win_service.ej
+--- maradns-1.3.10/doc/en/source/win_service.ej	2006-07-26 10:58:44.000000000 -0500
++++ maradns-1.3.11/doc/en/source/win_service.ej	2008-01-25 14:14:45.000000000 -0600
+@@ -137,7 +137,7 @@
+ Start -> Control Panel -> Administrator tools -> Services.<p>  If you can not 
+ find "Administrator tools" under the control panel, make sure you are using 
+ classic instead of category view (selected on the left hand side of the control
+-panel window), or select "upkeep and maintainence", followed by "Administrator 
++panel window), or select "upkeep and maintenance", followed by "Administrator 
+ tools".<p>
+ <li>Find the MaraDNS service in the list of services.<p>
+ <li>Double click on the service to bring up its properties.<p>
+@@ -164,7 +164,7 @@
+ 
+ If not, verify that you have a working internet connection.  If you do, make
+ sure MaraDNS is running by seeing if it is listed as "maradns.exe" in the task 
+-manager (Cntl + Alt + Del) under the "Processes" tab.  Note: If you can't see
++manager (Ctrl + Alt + Del) under the "Processes" tab.  Note: If you can't see
+ tabs in the task manager, simply double click in the blank area on the side of 
+ the task manager.
+ 

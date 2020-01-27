@@ -1,0 +1,29 @@
+--- maradns-1.3.07.02/doc/en/source/bind2csv2.ej	2007-06-20 22:46:00.000000000 -0500
++++ maradns-1.3.07.03/doc/en/source/bind2csv2.ej	2007-08-09 00:00:44.000000000 -0500
+@@ -25,7 +25,7 @@
+ of <tt>bind2csv2.py</tt>.  Naturally, you will need the Python
+ interpreter installed on your system to use <tt>bind2csv2.py</tt>.  
+ This is a well-known open source language supported by most modern
+-Linux distributions.
++Linux and BSD distributions.
+ 
+ To use the script, enter a directory containing BIND
+ zone files, and invoke the script thusly:<p>
+@@ -46,11 +46,15 @@
+ Should there already be a "zone1.csv2" file when <tt>bind2csv2.py</tt>
+ is run, the "zone1.csv2" file will be replaced. <p>
+ 
++<h2>BUGS</h2>
++
+ <tt>bind2csv2.py</tt> is not a perfect zone file convertor.  In
+ particular, <tt>bind2csv2.py</tt> does not act like BIND when NS records
+ have different TTLs.  Please make sure all NS records in your BIND zone
+-files have the same TTL.  <tt>bind2csv2.py</tt> also does not support
+-all resource record types that BIND support.  Only the following RRs
++files have the same TTL.  <p>
++
++In addition, <tt>bind2csv2.py</tt> also does not support
++all resource record types that BIND supports.  Only the following RRs
+ are supported by <tt>bind2csv2.py</tt>:
+ 
+ A

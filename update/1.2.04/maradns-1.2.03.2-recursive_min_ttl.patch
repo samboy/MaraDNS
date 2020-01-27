@@ -1,0 +1,42 @@
+This patch makes the minimum TTL that the client sees be the value of
+min_ttl / min_ttl_cname as set in the MaraRC file.
+
+Contributed by someone using MaraDNS as a large-scale production recursive
+DNS cache.
+
+This actually doesn't do anything since data->ttl is now only used by the
+authoritative half (yes, I know...) and TTL aging based on the expire
+timestamp is used on the recursive half.
+
+What I should do is have a minimum visible TTL be a new parameter.
+
+--- maradns-1.2.03.2/server/recursive.c	2006-02-09 00:26:22.000000000 -0800
++++ maradns-1.2.04/server/recursive.c	2006-02-09 00:33:17.000000000 -0800
+@@ -1113,18 +1113,22 @@
+ 
+     /* The minimum TTL is determined by whether this is CNAME or non-CNAME
+        data */
++    data->ttl = ttl;
+     if(rrtype == RR_CNAME) {
+-        if(ttl < min_ttl_cname)
++        if(ttl < min_ttl_cname) {
+             data->expire = qual_get_time() + min_ttl_cname;
+-        else
++            data->ttl = min_ttl_cname;
++        } else {
+             data->expire = qual_get_time() + ttl;
+         }
+-    else {
+-        if(ttl < min_ttl_normal)
++    } else {
++        if(ttl < min_ttl_normal) {
+             data->expire = qual_get_time() + min_ttl_normal;
+-        else
++            data->ttl = min_ttl_normal; 
++        } else {
+             data->expire = qual_get_time() + ttl;
+         }
++    }
+     /* Thanks to Hugo Vanwoerkom for pointing out that Aww4.janus.com.
+        doesn't reaolve in Mozilla; it has a TTL of 0 (ugh), which
+        confuses stub resolver libraries */

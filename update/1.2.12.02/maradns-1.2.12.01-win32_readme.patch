@@ -1,0 +1,45 @@
+--- maradns-1.2.12.01/build/win32/readme.txt	2006-01-21 23:22:01.000000000 -0600
++++ maradns-1.2.12.02/build/win32/readme.txt	2006-08-06 08:59:27.000000000 -0500
+@@ -1,4 +1,6 @@
+-This directory contains some files from MaraDNS ported to win32.
++This directory contains some files from MaraDNS ported to win32.  These
++programs have only been tested on Windows XP and may or may not work on
++other versions of Windows.
+ 
+ These files were compiled using mingw32.
+ 
+@@ -11,19 +13,23 @@
+ online in case you are on a network with a broken DNS server.  Askmara is
+ a tool that can be used to help debug DNS problems.
+ 
+-Both programs are run in a command-line shell.  To get a command line
+-shell, go to start->run, and type in "cmd" as the program to run.
+-Enter the directory that contains this README file.
++Both programs are run in a command-line shell; maradns.exe can also be
++run as a Windows NT/XP service.  To get a command line shell, go to 
++start->run, and type in "cmd" as the program to run.  Enter the directory 
++that contains this README.txt file.
+ 
+ "run_maradns.bat" will start the DNS server.  If you are able to ping
+-sites outside your local network, but are unable to access web sites, this
+-program will do DNS resolution for you.  The shell window that
+-run_maradns.bat is opened from needs to stay open while MaraDNS is 
+-running.
+-
+-run_maradns may also be ran by double-clicking on it; be sure to keep
+-this command shell open while using MaraDNS as a DNS server to access
+-the internet.
++sites outside your local network, but are unable to access web sites, 
++this program will do DNS resolution for you.  When MaraDNS is started
++this way, the shell window that run_maradns.bat is opened from needs 
++to stay open while MaraDNS is running.
++
++run_maradns may also be ran by double-clicking on it.  Again, when
++started this way, be sure to keep this command shell open while using 
++MaraDNS as a DNS server to access the internet.
++
++For details on how to run MaraDNS as a Windows service that doesn't need 
++a command shell window, read the file Service.html. 
+ 
+ To make MaraDNS your DNS server, go to Start->Control Panel->Network
+ Connections, and right click on "Local Area Connection" (or the name of

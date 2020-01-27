@@ -1,0 +1,21 @@
+--- maradns-1.2.12.02/server/MaraDNS.c	2006-08-14 15:02:08.000000000 -0500
++++ maradns-1.2.12.03/server/MaraDNS.c	2006-10-05 11:29:53.000000000 -0500
+@@ -423,6 +423,18 @@
+     if(log_level >= min_log_level) {
+         show_timestamp();
+         zjlog(L_BAD_QUERY,raw); /* "Bad query received: " */
++        if(ect != 0 && ect->type == 4) {
++	    struct sockaddr_in *clin = 0;
++	    clin = (struct sockaddr_in *)(ect->d);
++	    printf("From IP: ");
++            debug_show_ip(ntohl(clin->sin_addr.s_addr));
++	    printf("\n");
++            }
++        else if(from != 0) {
++	    printf("From IP: ");
++            debug_show_ip(ntohl(from->sin_addr.s_addr));
++            printf("\n");
++            }
+         }
+     if(log_level >= 2) /* Tell them why */
+         mlog(why);

@@ -1,0 +1,68 @@
+--- maradns-1.3.10/doc/en/source/changelog.embed	2007-11-26 11:48:19.000000000 -0600
++++ maradns-1.3.11/doc/en/source/changelog.embed	2008-03-23 20:23:10.000000000 -0600
+@@ -1,5 +1,65 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.3.11:</p>
++This is a development release of MaraDNS.
++<blockquote>
++<ul>
++<li>Bugfix: MaraDNS should now be able to compile on Mac OS X (Darwin)
++    again.
++<li>Some SQA test fixes: The private_ips test should now work in Fedora;
++    an uninitialized variable in the askmara.bug test is now initialized.
++    Thanks to Jean-Jacques Sarton for the bug reports and this fixes.
++<li>Default maximum memory allowed to be allocated greatly increased in
++    order to minimize the chances of the program dying because it can not
++    allocate memory.
++<li>Bugfix: RD value is now correctly echoed to client again
++<li>Bugfix: RA bit has (generally) a reasonably sensible value, since
++    some embedded devices actually check this bit.
++<li>TCP socket is released more quickly, allowing fast restarts of the TCP
++    zone server
++<li>Other updates to the SQA regressions
++<li>Improved cross-platform support, contributed by Jean-Jacques Sarton
++<li>Some improvments to askmara.c and askmara-tcp.c
++<li>Documentation typos kindly fixed by Boey Maun Suang
++<li>Updates to documentation (DjbDNS is now FOSS software, man page cleanup,
++    etc.)
++<li>Warn user if there is an unprintable control character in their zone file
++</ul>
++(2008.03.23)
++</blockquote>
++
++<p>maradns-1.3.07.08:</p>
++This is a stable release of MaraDNS.
++<blockquote>
++<ul>
++<li>Some SQA test fixes: The private_ips test should now work in Fedora;
++    an uninitialized variable in the askmara.bug test is now initialized.
++    Thanks to Jean-Jacques Sarton for the bug reports and this fixes.
++<li>Default maximum memory allowed to be allocated greatly increased in
++    order to minimize the chances of the program dying because it can not
++    allocate memory.
++</ul>
++(2007.12.25)
++</blockquote>
++
++<p>maradns-1.2.12.09:</p>
++This is a stable (soon to be "previous stable") release of MaraDNS.  This
++will also be the last MaraDNS release to include RPM files, but 1.3 releases
++always have an up-to-date .spec file.
++<blockquote>
++<ul>
++<li>Backport of ICANN root server list update
++<li>Update to Daniel's <tt>maraconf.sh</tt> script
++<li>Updates to the FAQ
++<li>Bugfix: segfault when zoneserver was given bad IP in mararc file
++<li>Bugfix: RD value is now correctly echoed to client again
++<li>Bugfix: RA bit has (generally) a reasonably sensible value, since
++    some embedded devices actually check this bit.
++<li>Compile warning when compiling as authoritative-only server removed.
++</ul>
++(2007.12.14)
++</blockquote>
++
+ <p>maradns-1.3.10:</p>
+ This is a development release of MaraDNS.
+ <blockquote>

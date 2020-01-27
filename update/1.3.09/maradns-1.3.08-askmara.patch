@@ -1,0 +1,79 @@
+--- maradns-1.3.08/tools/askmara.c	2007-09-21 07:07:49.000000000 -0500
++++ maradns-1.3.09/tools/askmara.c	2007-10-13 14:34:40.000000000 -0500
+@@ -161,7 +161,7 @@
+     struct sockaddr_in6 dns_udp6;
+ #endif
+     int len_inet; /* Length */
+-    int s; /* Socket */
++    int s = -1; /* Socket */
+     js_string *outdata; /* Outgoing data */
+     js_string *indata, *uindata; /* Incoming data (uncompressed version) */
+     q_header header; /* header data */
+@@ -231,38 +231,30 @@
+        port number.  However, DNS_PORT should be 53 otherwise (defined
+        in MaraDNS.h) */
+     dns_udp.sin_port = htons(DNS_PORT);
+-    if((dns_udp.sin_addr.s_addr = inet_addr(server_address)) == INADDR_NONE)
+-        harderror(L_MAL_IP);
+     len_inet = sizeof(dns_udp);
+ 
+-    /* Create a UDP client socket */
+-    if((s = socket(AF_INET,SOCK_DGRAM,0)) == -1)
+-#ifndef AUTHONLY
+-        harderror(L_SOCKET);
+-#else
+-    {
+-        /* the address is not a valid IPv4 Address, try with IPv6 */
++    if((dns_udp.sin_addr.s_addr = inet_addr(server_address)) == INADDR_NONE) {
++#ifdef AUTHONLY
+         memset(&dns_udp6,0,sizeof(dns_udp6));
+         dns_udp6.sin6_family = AF_INET6;
+         dns_udp6.sin6_port = htons(DNS_PORT);
+-        if( inet_pton(AF_INET6, server_address, &dns_udp6.sin6_addr) < 0) {
++        if( inet_pton(AF_INET6, server_address, &dns_udp6.sin6_addr) < 1) {
++#endif
+             harderror(L_MAL_IP);
+-            }
+-        else {
+-           len_inet = sizeof(dns_udp6);
+-           pdns_udp = (struct sockaddr_in*)&dns_udp6;
+-           close(s);
+-           if((s = socket(AF_INET6,SOCK_DGRAM,0)) == -1)
++#ifdef AUTHONLY
++        } else {
++            len_inet = sizeof(dns_udp6);
++            pdns_udp = (struct sockaddr_in*)&dns_udp6;
++            if((s = socket(AF_INET6,SOCK_DGRAM,0)) == -1)
+                 harderror(L_SOCKET);
+             }
+-        }
+-    else {
+-        len_inet = sizeof(dns_udp);
+-        pdns_udp = (struct sockaddr_in*)&dns_udp;
++#endif
++    } else {
++         /* Create a UDP IPv4 client socket */
+         if((s = socket(AF_INET,SOCK_DGRAM,0)) == -1)
+             harderror(L_SOCKET);
+         }
+-#endif
++
+ 
+     id = gen_id(argv[1 + verbose_mode]);
+     /* Format a DNS request */
+--- maradns-1.3.09/configure.orig	2007-10-13 15:08:53.000000000 -0500
++++ maradns-1.3.09/configure	2007-10-13 15:09:16.000000000 -0500
+@@ -170,11 +170,13 @@
+ 	cp qual/Makefile.threadsafe qual/Makefile
+ 	cp tcp/Makefile.recursive tcp/Makefile
+ 	cp dns/Makefile.recursive dns/Makefile
++	cp tools/Makefile.recursive tools/Makefile
+ else
+ 	cp server/Makefile.authonly server/Makefile
+ 	cp qual/Makefile.nothreads qual/Makefile
+ 	cp tcp/Makefile.authonly tcp/Makefile
+ 	cp dns/Makefile.authonly dns/Makefile
++	cp tools/Makefile.authonly tools/Makefile
+ fi
+ 
+ echo

@@ -1,0 +1,40 @@
+diff -ur maradns-1.3.07.08/sqa/regressions/mararc_n_verbose_query/do.test maradns-1.3.07.09/sqa/regressions/mararc_n_verbose_query/do.test
+--- maradns-1.3.07.08/sqa/regressions/mararc_n_verbose_query/do.test	2007-09-30 16:46:43.000000000 -0500
++++ maradns-1.3.07.09/sqa/regressions/mararc_n_verbose_query/do.test	2008-08-03 12:16:16.000000000 -0500
+@@ -46,11 +46,11 @@
+ root_servers["."] = "127.0.0.1"
+ EOF
+ 
+-../../../server/maradns -f mararc2 | awk -F: '{$1=""}/[0-9]/{print}' &
++../../../server/maradns -f mararc2 | \
++	awk -F: '{$1=""}/[0-9]/{print "'$LEVEL' " $0 }' &
+ sleep 1
+ 
+ ../../../tools/askmara -t 2 Awww.example.com. 127.0.0.2 > /dev/null
+-echo
+ 
+ kill $( \
+     ps auxw | grep maradns | grep mararc2 | grep -v grep | awk '{print $2}' ) \
+@@ -58,9 +58,6 @@
+ 
+ rm mararc2
+ 
+-echo 
+-echo
+-
+ done
+ 
+ # Clean up
+diff -ur maradns-1.3.07.08/sqa/regressions/mararc_n_verbose_query/output.success maradns-1.3.07.09/sqa/regressions/mararc_n_verbose_query/output.success
+--- maradns-1.3.07.08/sqa/regressions/mararc_n_verbose_query/output.success	2007-09-30 16:46:54.000000000 -0500
++++ maradns-1.3.07.09/sqa/regressions/mararc_n_verbose_query/output.success	2008-08-03 12:16:42.000000000 -0500
+@@ -1,7 +1 @@
+-
+-
+-
+-
+- 1 www.example.com.
+-
+-
++1  1 www.example.com.
+Only in maradns-1.3.07.09/sqa/regressions/mararc_n_verbose_query/: output.test

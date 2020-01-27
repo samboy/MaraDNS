@@ -1,0 +1,96 @@
+--- maradns-1.3.02/parse/ParseMaraRc.c	2007-01-09 12:16:34.000000000 -0800
++++ maradns-1.3.03/parse/ParseMaraRc.c	2007-01-12 21:21:17.000000000 -0800
+@@ -31,7 +31,7 @@
+ 
+ /* Keywords that are non-dictionary strings in Mara's rc file */
+ 
+-#define KEYCOUNT 50
++#define KEYCOUNT 51
+ 
+ char *keywords[KEYCOUNT] = {
+         "bind_address", /* IPv4 Addresses to bind to (old name) */
+@@ -129,6 +129,11 @@
+         "dns_port", /* What port to bind MaraDNS to */
+         "upstream_port", /* What port to contact when contacting other
+                             DNS servers */
++	"recurse_delegation", /* They might just want to recurse in the
++                               * case when the server would otherwise give 
++                               * out a delegation NS record.  This is by 
++                               * default disabled, since turning this on 
++                               * confuses people */
+         "zone_transfer_acl" /* ACL of IPs allowed to perform zone transfers */
+         };
+ 
+--- maradns-1.3.02/server/MaraDNS.c	2007-01-09 12:16:34.000000000 -0800
++++ maradns-1.3.03/server/MaraDNS.c	2007-01-12 21:28:06.000000000 -0800
+@@ -131,6 +131,9 @@
+ 
+ int csv2_tilde_handling = 2; /* How to parse tildes in CSV2 zone files */
+ 
++int recurse_delegation = 0; /* Whether MaraDNS will recurse when we would
++                             * otherwise give out a NS delegation entry */
++
+ /* A list of who is and who is not allowed to make recursive DNS queries */
+ ipv4pair recurse_acl[512];
+ /* A list of the ipv4 IP addresses we bind MaraDNS to (the netmask portion is
+@@ -3426,6 +3429,23 @@
+     /* If the non-authoritative NS was found, return the NS infomation */
+     if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR &&
+        point->authoritative == 0) {
++	/* It is possible, but unlikely, they want recursion */
++#ifndef AUTHONLY
++	if(recurse_delegation == 1 && desires_recursion == 1 && 
++	   has_recursive_authority == 1) {
++		/* Recursion only works for IPV4 */
++		if(ect->type != 4) {
++			js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
++			return JS_ERROR;
++		}
++		/* Launch the thread that will process the request; we
++		 * copy ect->d over */
++		z = (struct sockaddr_in *)ect->d;
++		launch_thread(header.id,sock,*z,origq);
++		js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
++		return JS_SUCCESS;
++		}
++#endif
+         /* We return a NS server delegation */
+         udpsuccess(spot_data.value,header.id,sock,0,origq,spot_data.point,
+ 			0,desires_recursion,ect,0);
+@@ -4732,6 +4752,15 @@
+         exit(1);
+         }
+ 
++    recurse_delegation = read_numeric_kvar("recurse_delegation",0);
++
++    /* Make sure that if recurse_delegation is set, it has a value 0-1 */
++    if(recurse_delegation < 0 || recurse_delegation > 1) {
++        harderror("recurse_delegation "
++                  "must have a value between 0 and 1");
++        exit(1);
++        }
++
+     /* Set the dns_port and the upstream_port */
+     dns_port = read_numeric_kvar("dns_port",53);
+     if(dns_port < 1 || dns_port > 65530) {
+--- maradns-1.3.02/doc/en/source/mararc.ej	2007-01-09 12:16:34.000000000 -0800
++++ maradns-1.3.03/doc/en/source/mararc.ej	2007-01-12 21:47:48.000000000 -0800
+@@ -713,6 +713,18 @@
+ contents of that file is random and with 600 perms, owned by root.
+ We read the file <b>before</b> dropping root privileges.
+ 
++<h2>recurse_delegation</h2>
++recurse_delegation: Whether to recurse in the case of us finding a NS
++delegation record, but the user/stub resolver sent a query that
++desires recursion.  Before MaraDNS 1.3, this was the default behavior.
++<p>
++
++When recurse_delegation has a value of 1, we recurse in this case.  
++Otherwise, we do not.
++<p>
++
++This parameter has a default value of 0.
++
+ <h2>recursive_acl</h2>
+ recursive_acl: List of ips allowed to perform recursive queries with
+ the recursive portion of the MaraDNS server

@@ -1,0 +1,44 @@
+--- maradns-1.2.10/doc/en/webpage/contact.embed	2006-05-23 02:13:13.000000000 -0400
++++ maradns-1.2.11/doc/en/webpage/contact.embed	2006-07-11 13:27:25.000000000 -0400
+@@ -1,4 +1,24 @@
+ <h1>Contact the author of MaraDNS</h1>
++If you have a MaraDNS-related question, please include the following
++information in your email:
++<ul>
++<li>A copy of your <tt>mararc</tt> file (this is usually <tt>/etc/mararc</tt>)
++<li>A copy of any relavant zone files (these can usually be found in the
++    <tt>/etc/maradns</tt> directory)
++<li>The version number of MaraDNS that you are using (this can be obtained
++    by typing in <tt>maradns --version</tt>). 
++</ul>
+ <p>My email address is available 
+ <A href="http://www.samiam.org/mailme.php">here</A></p>
+-<p></p>
++<p><b>Note</b>: If you are using MaraDNS 1.0, and have a question about
++how to configure MaraDNS, please 
++<A href="http://www.maradns.org/tutorial/1.2/update.html">upgrade to 
++MaraDNS 1.2</A>.  MaraDNS 1.2 has
++a number of usability improvments over 1.0, and is much easier to configure.
++There is still a <A href="http://www.maradns.org/faq-1.0.html">FAQ for
++MaraDNS 1.0 available</A>.
++<p>
++If you are using 1.0 and have a bug to report, please feel free to report
++it; I will continue to fix serious MaraDNS 1.0 bugs until December 21, 2007,
++and MaraDNS 1.0 security bugs (should they arise) until December 21, 2010.
++</p>
+--- maradns-1.2.10/doc/en/webpage/faq.embed	2006-06-21 04:59:30.000000000 -0400
++++ maradns-1.2.11/doc/en/webpage/faq.embed	2006-07-11 13:26:35.000000000 -0400
+@@ -78,9 +78,10 @@
+ </A>
+ <H2>1. I'm still using version 1.0 of MaraDNS</H2>
+ 
+-MaraDNS 1.0 will continue to be fully supported until December 21, 2007; this
+-means that MaraDNS 1.0 questions will still be answered and bug fixes will
+-still be applied.  After 2007/12/21, MaraDNS 1.0 will no longer be fully 
++MaraDNS 1.0 will continue to be partially supported until December 21, 2007; 
++this means that, while 1.0 questions will be answered with "please update
++to 1.2", MaraDNS 1.0 bug fixes will
++still be applied.  After 2007/12/21, MaraDNS 1.0 will no longer be 
+ supported; the only updates, at that point, would be bugtraq-worthy critical
+ security fixes.  Not even these security updates will be applied after
+ December 21, 2010.  

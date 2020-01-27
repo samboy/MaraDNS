@@ -1,0 +1,198 @@
+--- maradns-orig/parse/Csv2_database.c	2006-07-24 23:15:45.000000000 -0500
++++ maradns-1.2.12/parse/Csv2_database.c	2006-07-25 00:42:40.000000000 -0500
+@@ -82,6 +82,9 @@
+ 	}
+ 	new->buffer = 0;
+ 	new->zone = nzone; /* This is the "origin" */
++	new->ostack = 0; /* A pointer to a "stack" or origin values we can
++                          * push or pop */
++	new->ostack_height = 0;
+ 	new->rrnum = 0;
+ 	new->bighash = 0;
+ 	new->add_method = 0;
+--- maradns-orig/parse/Csv2_database.h	2006-07-24 23:15:45.000000000 -0500
++++ maradns-1.2.12/parse/Csv2_database.h	2006-07-25 00:42:40.000000000 -0500
+@@ -32,10 +32,17 @@
+ 	struct csv2_rr *next;
+ } csv2_rr;
+ 
++typedef struct csv2_origin {
++	js_string *origin;
++	struct csv2_origin *next;
++} csv2_origin;
++
+ typedef struct csv2_add_state {
+ 	csv2_rr *buffer;
+ 	js_string *zone; /* This is the "origin", in ASCII "name.com." 
+                           * format */
++	csv2_origin *ostack;
++	int ostack_height;
+ 	int rrnum;
+ 	int add_method;
+ 	int32 soa_serial; /* Serial number synthetic SOA will have */
+--- maradns-orig/parse/Csv2_parse.c	2006-07-24 23:15:45.000000000 -0500
++++ maradns-1.2.12/parse/Csv2_parse.c	2006-07-25 01:06:13.000000000 -0500
+@@ -1236,15 +1236,19 @@
+ 			}
+ 
+ 			look = csv2_read_unicode(stream);
+-			if((cmd == 1 && look != 't') || (cmd == 2 &&
++			if(cmd == 2 && look == 'p') { /* opush/opop */
++				cmd = 3; /* opush */
++			} else if((cmd == 1 && look != 't') || (cmd == 2 &&
+                             look != 'r')) {
+ 				csv2_error(stream,"Invalid slash command");
+ 				return -1;
+ 			}
+ 			
+ 			look = csv2_read_unicode(stream);
+-			if((cmd == 1 && look != 'l') || (cmd == 2 &&
+- 			    look != 'i')) {
++			if(cmd == 3 && look == 'o') {
++				cmd = 4; /* opop */
++			} else if((cmd == 1 && look != 'l') || (cmd == 2 &&
++ 			    look != 'i') || (cmd == 3 && look != 'u')) {
+ 				csv2_error(stream,"Invalid slash command");
+ 				return -1;
+ 			}
+@@ -1304,6 +1308,94 @@
+ 				js_destroy(state->zone);
+ 				state->zone = n;
+ 				zone = n;
++			} else if(cmd == 3 && look == 's') {
++				js_string *n;
++				csv2_origin *c, *o;
++				if(csv2_read_unicode(stream) != 'h') {
++					csv2_error(stream,
++				    	    "Invalid slash command");
++					return -1;
++				}	
++				look = csv2_read_unicode(stream);
++				if(!csv2_is_delimiter(look)) {
++					csv2_error(stream,
++					    "Invalid slash command");
++					return -1;
++				}	
++				if(csv2_get_1st(stream,csv2_is_dchar,0) !=
++				    JS_SUCCESS) {
++					csv2_error(stream, 
++					"Invalid argument for /opush");
++					return -1;
++				}
++				n = process_1stchar(stream,
++				        csv2_is_starwhitis,0);
++				if(n == 0) {
++					csv2_error(stream, 
++					"Error processing /opush");
++					return -1;
++				}
++				n = js_append_dname(n, stream, 3);
++				if(csv2_convert_percent(n,state->zone) == 0) {
++					csv2_error(stream,
++					"Problem running convert_percent");
++					return -1;
++				}
++				if(n == 0) {
++					csv2_error(stream, 
++					"Invalid argument for /opush");
++					return -1;
++				}
++				/* Now, see if there is room on the stack */
++				if(state->ostack_height > 7 ||
++                                   state->ostack_height < 0) {
++					csv2_error(stream, 
++					"origin stack too high");
++					return -1;
++				}
++				/* OK, there is room; push the current
++                                 * origin on the stack and replace it with
++                                 * the new value */
++				state->ostack_height++;
++				o = state->ostack;
++				c = js_alloc(1,sizeof(csv2_origin));
++				if(c == 0) {
++					csv2_error(stream,
++					"js_alloc error");
++					return -1;
++				}
++				c->origin = state->zone;
++				c->next = o;
++				state->ostack = c;
++				state->zone = n;
++				zone = state->zone;
++			} else if(cmd == 4 && look == 'p') {
++				csv2_origin *o;
++				look = csv2_read_unicode(stream);
++				if(!csv2_is_delimiter(look)) {
++					csv2_error(stream,
++					    "Invalid slash command");
++					return -1;
++				}
++				if(state->ostack_height < 1 || 
++				   state->ostack_height > 8) {
++				       csv2_error(stream,
++				           "origin stack too low");
++					return -1;
++				}
++				if(state->ostack == 0) {
++					csv2_error(stream,
++					    "origin stack empty");
++					return -1;
++				}
++				/* OK, pop the top value from the origin
++				 * stack and make it the origin value */
++				o = state->ostack;
++				js_destroy(state->zone);
++				state->ostack = o->next;
++				state->zone = o->origin;
++				zone = state->zone;
++				js_dealloc(o);
+ 			} else {
+ 				csv2_error(stream,"Invalid slash command");
+ 				return -1;
+--- maradns-orig/doc/en/source/csv2.ej	2006-07-24 23:15:45.000000000 -0500
++++ maradns-1.2.12/doc/en/source/csv2.ej	2006-07-25 01:44:29.000000000 -0500
+@@ -526,6 +526,43 @@
+ mail.example.org. 10.2.0.2
+ </pre>
+ 
++It is also possible to make the current origin be part of the new origin:
++
++<pre>
++/origin example.com.
++% 10.3.2.1 # example.com now has IP 10.3.2.1
++/origin mail.%
++% 10.3.2.2 # mail.example.com now has IP 10.3.2.2
++</pre>
++
++<h2>Opush and Opop</h2>
++
++The '/opush' and '/opop' slash commands use a stack to remember and later
++recall values for the origin (see origin above).  The '/opush' command
++is used just like the '/origin' command; however, the current origin is
++placed on a stack instead of discarded.  The '/opop' command removes 
++("pops") the top element from this stack and makes the element the origin.
++
++<p>
++
++For example:
++
++<pre>
++/origin example.com.
++/opush mail.% # origin is now mail.example.com; example.com is on stack
++a.% 10.4.0.1 # a.mail.example.com has IP 10.4.0.1
++/opush web.example.com. # mail.example.com and example.com are on stack
++a.% 10.5.0.1 # a.web.example.com has IP 10.5.0.1
++b.% 10.5.0.2 # b.web.example.com has IP 10.5.0.2
++/opop # origin is now mail.example.com again
++b.% 10.4.0.2 # b.mail.example.com has IP 10.4.0.2
++/opop # origin is now example.com
++% MX 10 a.mail.% # example.com. MX 10 a.mail.example.com.
++% MX 20 b.mail.% # example.com. MX 20 b.mail.example.com.
++</pre>
++
++The opush/opop stack can have up to seven elements on it.
++
+ <h1>EXAMPLE ZONE FILE</h1>
+ 
+ <pre>

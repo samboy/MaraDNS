@@ -1,0 +1,22 @@
+Someone in private email pointed out that 'netstat -nap' doesn't work on all
+*nix operating systems.
+
+--- maradns-1.2.05/doc/en/source/faq.embed	2006-02-21 01:32:15.000000000 -0800
++++ maradns-1.2.06/doc/en/source/faq.embed	2006-02-21 11:19:55.000000000 -0800
+@@ -252,12 +252,12 @@
+ When MaraDNS is up, the relevant line in the netstat output looks 
+ like this:            
+ <tt>
+-udp        0      0 127.0.0.4:53            0.0.0.0:* 
++udp        0      0 127.0.0.1:53            0.0.0.0:* 
+ </tt>
+ <p>
+-While on the topic of netstat, if you run <TT>netstat -nap</TT> as root,
+-you can see the names of the processes which are providing internet 
+-services.
++While on the topic of netstat, if you run <TT>netstat -nap</TT> as root
++on Linux and some other *nix operating systems, you can see the names of 
++the processes which are providing internet services.
+ 
+ <A NAME=jsstr>
+ <H2>11. What string library does MaraDNS use?</H2>

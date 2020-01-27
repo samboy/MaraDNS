@@ -1,0 +1,1092 @@
+--- maradns-1.2.12.02/tools/maraconf.sh	2006-08-14 15:02:08.000000000 -0500
++++ maradns-1.2.12.03/tools/maraconf.sh	2006-08-26 10:57:00.000000000 -0500
+@@ -2,17 +2,34 @@
+ 
+ #################################################################
+ # MaraConf - The MaraDNS Configurator          			#
+-# Written by: Daniel Zilli (zilli.daniel@gmail.com) with a big  # 
+-# help from Sam Trenholme.					#	
++# Written by: Daniel Zilli (zilli.daniel@gmail.com) with help   # 
++# from Sam Trenholme.						#	
+ # License: BSD - http://www.maradns.org/license.html		#	
+ #								#
+-# v1.2.00 beta04 - 04/08/2006		  			#
++# v1.2.12.03 - 17/08/2006		  			#
+ ###								#
+ # ChangeLog							#
+ #								#
++# v1.2.12.03							#
++# - I cleaned up andimproved all the code. Especially           #
++#   all the questions. 						#		
++# - First public stable release.				#
++#								#
++# v1.2.00 -beta05						#
++# - All questions are treated now.				#
++# - Fixed some loops.						#
++# - Made the trapping function. 				# 
++# - I think that "finished" the script. Now I will do some	# 
++#   final tests and waiting the community feedback. 		#
++# - Made the confirm's functions better.			#
++# - Added a function to configure your resolv.conf file in 	#
++#   recursive mode...if you want, of course.			#
++# - Maraconf now has a man-page. :-)				#
++# - This is my last beta, so I will be careful.			#
++#								#
+ # v1.2.00 -beta04						#	
+ # - Explained what happens when you cancel the program.		#
+-# - Authoritative mode is working. Is test time!		#	
++# - Authoritative mode is working. Is test time!		#
+ #								#
+ # v1.2.00 -beta03						#	
+ # - Made the maraconf arguments Gnu/Linux "standart".		#
+@@ -56,10 +73,39 @@
+ # - First beta release.						#
+ #################################################################
+ 
+-trap "echo \"For some reason, you canceled the program and lost your confs!\" ; exit" 2 3
++trap trapping 1 2 3 6
++
++trapping() {
++  echo 
++  echo "For some reason, you canceled the program.  You have lost your changes"
++  echo	
++  exit 1
++}
++
++confirm_resolv() {
++echo
++read -p "Would you like to configure your /etc/resolv.conf ? (y/n) " YN
++case "$YN" in 
++	y|Y)
++		if [ -e /etc/resolv.conf ] ; then
++			BACKUP=resolv.conf.backup
++			cp /etc/resolv.conf /etc/$BACKUP
++			echo Current /etc/resolv.conf copied to /etc/$BACKUP
++		fi
++		echo "nameserver $IPADD" > /etc/resolv.conf
++	;; 
++	n|N)
++		echo	
++		echo "Don't forget to put the IP $IPADD in your /etc/resolv.conf file"
++		echo
++	;;
++	*) 
++		confirm_resolv	
++	;; 
++esac
++}
+ 
+ confirm_mararc() {
+-# Let's decide with we copy the file to /etc or not.
+ echo
+ if [ -e /etc/$MARARC ] ; then
+ 	echo -e "WARNING: /etc/$MARARC already exists; while this script"
+@@ -67,46 +113,57 @@
+ 	echo -e "will change if you select 'y'."
+ fi
+ echo
+-echo -e "Would like to copy the created mararc file to /etc? (y/n)"
+-read YN
+-if [ "$YN"  = "y" ] || [ "$YN" = "Y" ]; then
+-	if [ -e /etc/$MARARC ] ; then
+-		BACKUP=$MARARC.$( date +%s )
+-		cp /etc/$MARARC /etc/$BACKUP
+-		echo Current /etc/$MARARC copied to /etc/$BACKUP
+-	fi
+-	cp -a $TMP/$MARARC /etc/
+-else
+-	echo
+-	echo "Your mararc file is in $TMP"
+-	echo
+-fi
++read -p "Would like to copy the created mararc file to /etc? (y/n) " YN
++case "$YN" in 
++	y|Y)
++		if [ -e /etc/$MARARC ] ; then
++			BACKUP=$MARARC.$( date +%s )
++			cp /etc/$MARARC /etc/$BACKUP
++			echo Current /etc/$MARARC copied to /etc/$BACKUP
++		fi
++		cp -a $TMP/$MARARC /etc/
++		confirm_resolv
++	;; 
++	n|N)
++		echo	
++		echo "Your mararc file is in $TMP"
++		echo
++	;;
++	*) 
++		confirm_mararc	
++	;; 
++esac
+ }
+ 
+ confirm_db() {
+-echo
+ if [ -e /etc/maradns/db.$DOMAIN ] ; then
++	echo
+ 	echo -e "WARNING: /etc/maradns/db.$DOMAIN already exists;"
+-	echo -e "while this script will backup it, the contents"
++	echo -e "while this script will back it up, the contents"
+ 	echo -e "of this file will change if you select 'y'."
+ fi
+ echo
+-echo -e "Would like to copy the db.$DOMAIN file to /etc/maradns? (y/n)"
+-read YN
+-if [ "$YN"  = "y" ] || [ "$YN" = "Y" ]; then
+-	if [ -e /etc/maradns/db.$DOMAIN ] ; then
+-		BACKUP=db.$DOMAIN.$( date +%s )
+-		cp /etc/maradns/db.$DOMAIN /etc/maradns/$BACKUP
+-		echo Current /etc/maradns/db.$DOMAIN copied to /etc/maradns/$BACKUP
+-	fi
+-	cp -a $TMP/tmp_zone /etc/maradns/db.$DOMAIN
+-else
+-	cd $TMP
+-	mv tmp_zone db.$DOMAIN
+-	echo
+-	echo "Your db.$DOMAIN file is in $TMP"
+-	echo
+-fi
++read -p "Would like to copy the db.$DOMAIN file to /etc/maradns? (y/n) " YN
++case "$YN" in 
++	y|Y)
++		if [ -e /etc/maradns/db.$DOMAIN ] ; then
++			BACKUP=db.$DOMAIN.$( date +%s )
++			cp /etc/maradns/db.$DOMAIN /etc/maradns/$BACKUP
++			echo Current /etc/maradns/db.$DOMAIN copied to /etc/maradns/$BACKUP
++		fi
++		cp -a $TMP/tmp_zone /etc/maradns/db.$DOMAIN
++	;; 
++	n|N)
++		cd $TMP
++		mv tmp_zone db.$DOMAIN
++		echo
++		echo "Your db.$DOMAIN file is in $TMP"
++		echo
++	;;
++	*) 
++		confirm_db
++	;; 
++esac
+ }
+ 
+ #### RECURSIVE QUESTIONS #################
+@@ -115,60 +172,63 @@
+ ###
+ ##
+ #
+-
+ rec_easy() {
+-INLOOP=1
+-while [ "$INLOOP" == "1" ]; do
+- setterm -clear
+-    echo -e "${DECOLINE}"
+-    echo -e "| MaraConf ${VERSION} |"
+-    echo -e "${DECOLINE}"
+-    echo -e "|- RECURSIVE DNS - easy way"
+-    echo -e "|"
+-    echo -e "| Enter the address that this DNS server runs on:"
+-    echo -e "|--type your value or press ENTER to use default (127.0.0.1):"
+-    echo -n -e "=> "
+-    read IPADD	
+-    echo -e "| Enter the ip allowed to perform recursive queries:"
+-    echo -e "|--type your value or press ENTER to use default (127.0.0.1):"
+-    echo -n -e "=> "
+-    read IPREC	
++setterm -clear
++echo -e "${DECOLINE}"
++echo -e "| MaraConf ${VERSION} |"
++echo -e "${DECOLINE}"
++echo -e "|-> RECURSIVE DNS -> Easy way"
++echo -e "|"
++echo -e "| Enter the address that this DNS server runs on:"
++echo -e "|--type your value or press ENTER to use default (127.0.0.1):"
++echo -n -e "=> "
++read IPADD	
++echo -e "| Enter the ip allowed to perform recursive queries:"
++echo -e "|--type your value or press ENTER to use default (127.0.0.1):"
++echo -n -e "=> "
++read IPREC	
+ 
+ # Treating the variables.
+-# Here I delete any blank space that the user typed and fill it with.
+-# default value when needed. 
++# Here I delete any blank space that the user typed. 
++# If needed, default value are filled it. 
+ if [ "$IPADD" != "" ]; then
+-	IPADD=`echo ${IPADD// }`
++	IPADD=$( echo ${IPADD// } )
+ else
+ 	IPADD="127.0.0.1"
+ fi	
+ 
+ if [ "$IPREC" != "" ]; then
+-	IPREC=`echo ${IPREC// }`
++	IPREC=$( echo ${IPREC// } )
+ else
+ 	IPREC="127.0.0.1"
+ fi	
+ 
+-# confirme the values entered.
+-    	echo
+-	echo -e "Please confirm the values entered:"
+-	echo -e "Q: Enter the address that this DNS server runs on:"
+-	echo -e "A: $IPADD"
+-	echo
+-	echo -e "Q: Enter the ip allowed to perform recursive queries:"
+-	echo -e "A: $IPREC"
+-	echo
+-	echo -e "Is this the information that you entered? (y/n)"
+-	read YN
+-	if [ "$YN"  = "y" ] || ["$YN" = "Y" ]
+-	    then
+-		INLOOP=0
+-	    else
+-		INLOOP=1
+-	fi
+-
++# Confirm the values entered.
++# The loop is to ensure that the user will only choose y or n.
++while [ -z "$opt" ]; do
++echo
++echo -e "Please confirm the values entered:"
++echo -e "Q: Enter the address that this DNS server runs on:"
++echo -e "A: $IPADD"
++echo
++echo -e "Q: Enter the ip allowed to perform recursive queries:"
++echo -e "A: $IPREC"
++echo
++read -p "Is this the information that you entered correct? (y/n) " YN
++# we must type something useful.
++  case "$YN" in 
++	y|Y) 	
++		opt=ok
++	;; 
++	n|N) 	
++		rec_easy
++	;; 
++	*) echo "--> Please type y or n to answer." 
++	;; 
++  esac
+ done
+- 	
++unset opt
++
+ # Create the mararc file.
+ cat << EOF > $TMP/$MARARC
+ # Base settings.
+@@ -184,72 +244,67 @@
+ 
+ # Calling a function.
+ confirm_mararc
+-
+ }
+ 
+ rec_hard() {
+-INLOOP=1
+-while [ "$INLOOP" == "1" ] ; do
+-    setterm -clear
+-    echo -e "${DECOLINE}"
+-    echo -e "| MaraConf ${VERSION} |"
+-    echo -e "${DECOLINE}"
+-    echo -e "|- RECURSIVE DNS - hard way"
+-    echo -e "|"
+-    echo -e "| Enter with the address that this DNS server runs on:"
+-    echo -e "|--type your value or press ENTER to use default (127.0.0.1):"
+-    echo -n -e "=> "
+-    read IPADD	
+-    echo -e "| Enter with the ip allowed to perform recursive queries:"
+-    echo -e "|--type your value or press ENTER to use default (127.0.0.1):"
+-    echo -n -e "=> "
+-    read IPREC	
+-    echo -e "| What is the directory with all of the zone files?"
+-    echo -e "|--type your value or press ENTER to use default (/etc/maradns):"
+-    echo -n -e "=> "
+-    read CHROOT	
+-    echo -e "| What is the numeric UID MaraDNS will run as?"
+-    echo -e "|--type your value or press ENTER to use default (99):"
+-    echo -n -e "=> "
+-    read NUID	
+-    echo -e "| What is the numeric GID MaraDNS will run as?"
+-    echo -e "|--type your value or press ENTER to use default (99):"
+-    echo -n -e "=> "
+-    read NGID	
+-    echo -e "| Which is the maximum number of threads that MaraDNS is allowed to run?"
+-    echo -e "|--type your value or press ENTER to use default (64):"
+-    echo -n -e "=> "
+-    read MNT	
+-    echo -e "| Do you want make MaraDNS obscure (for security reason)?"
+-    echo -e " 0) no (default)"
+-    echo -e " 1) yes"
+-    echo -n -e "=> "
+-    read NOFING	
+-    echo -e "| Choose the level of the messages we log to stdout (0,1,2,3)?"
+-    echo -e " 0) No messages except for fatal parsing errors and the legal disclaimer"
+-    echo -e " 1) Only startup messages logged (default)"
+-    echo -e " 2) Error queries logged"
+-    echo -e " 3) All queries logged (but not very verbosely right now)"
+-    echo -n -e "=> "
+-    read NLOG	
+-    echo -e "| Do you want to increase the time to process queries on some slow networks?"
+-    echo -e "|--type your value or press ENTER to use default (2):"
+-    echo -n -e "=> "
+-    read TIMES
+-    echo -e "| Do you want use other recursive DNS servers?"
+-    echo -e " 0) no (default)"
+-    echo -e " 1) yes"
+-    echo -n -e "=> "  
+-    read OTREC
+-    if [ "$OTREC" == "1" ]; then
+-     	echo -e "| Enter the IP address for the other recursive DNS server:"
+-	echo -n -e "=> "
+-	read OTRECIP
+-    fi
++setterm -clear
++echo -e "${DECOLINE}"
++echo -e "| MaraConf ${VERSION} |"
++echo -e "${DECOLINE}"
++echo -e "|-> RECURSIVE DNS -> Hard way"
++echo -e "|"
++echo -e "| Enter with the address that this DNS server runs on:"
++echo -e "|--type your value or press ENTER to use default (127.0.0.1):"
++echo -n -e "=> "
++read IPADD	
++echo -e "| Enter with the ip allowed to perform recursive queries:"
++echo -e "|--type your value or press ENTER to use default (127.0.0.1):"
++echo -n -e "=> "
++read IPREC	
++echo -e "| What is the directory with all of the zone files?"
++echo -e "|--type your value or press ENTER to use default (/etc/maradns):"
++echo -n -e "=> "
++read CHROOT	
++echo -e "| What is the numeric UID MaraDNS will run as?"
++echo -e "|--type your value or press ENTER to use default (99):"
++echo -n -e "=> "
++read NUID	
++echo -e "| What is the numeric GID MaraDNS will run as?"
++echo -e "|--type your value or press ENTER to use default (99):"
++echo -n -e "=> "
++read NGID	
++echo -e "| Which is the maximum number of threads that MaraDNS is allowed to run?"
++echo -e "|--type your value or press ENTER to use default (64):"
++echo -n -e "=> "
++read MNT	
++echo -e "| Do you want make MaraDNS obscure (for security reason)?"
++echo -e " 0) no (default)"
++echo -e " 1) yes"
++echo -n -e "=> "
++read NOFING	
++echo -e "| Choose the level of the messages we log to stdout (0,1,2,3)?"
++echo -e " 0) No messages except for fatal parsing errors and the legal disclaimer"
++echo -e " 1) Only start-up messages logged (default)"
++echo -e " 2) Error queries logged"
++echo -e " 3) All queries logged (but not very verbosely right now)"
++echo -n -e "=> "
++read NLOG	
++echo -e "| Do you want to increase the time to process queries on some slow networks?"
++echo -e "|--type your value or press ENTER to use default (2):"
++echo -n -e "=> "
++read TIMES
++echo -e "| Do you want use other recursive DNS servers?"
++echo -e " 0) no (default)"
++echo -e " 1) yes"
++echo -n -e "=> "  
++read OTREC
++if [ "$OTREC" == "1" ]; then
++ echo -e "| Enter the IP address for the other recursive DNS server:"
++ echo -n -e "=> "
++ read OTRECIP
++fi
+     
+ # Treating the variables.
+-# Here I delete any blank space that the user typed and fill it with.
+-# default value when needed. 
+ if [ "$IPADD" != "" ]; then
+ 	IPADD=`echo ${IPADD// }`
+ else
+@@ -307,50 +362,57 @@
+ OTRECIP=`echo ${OTRECIP// }` 
+ 
+ # Confirm the values entered
+-    	echo
+-	echo -e "Please confirm the values entered:"
+-	echo -e "Q: Enter the address that this DNS server runs on:"
+-	echo -e "A: $IPADD"
+-	echo
+-	echo -e "Q: Enter the ip allowed to perform recursive queries:"
+-	echo -e "A: $IPREC"
+-	echo
+-	echo -e "Q: What is the directory with all of the zone files?"
+-	echo -e "A: $CHROOT"
+-	echo
+-	echo -e "Q: What is the numeric UID MaraDNS will run as?"
+-	echo -e "A: $NUID"
+-	echo
+-	echo -e "Q: What is the numeric GID MaraDNS will run as?:"
+-	echo -e "A: $NGID"
+-	echo
+-	echo -e "Q: Which is the maximum number of threads that MaraDNS is allowed to run?"
+-	echo -e "A: $MNT"
+-	echo
+-	echo -e "Q: Do you want make MaraDNS obscure (for security reason)?"
+-	echo -e "A: $NOFING"
+-	echo
+-	echo -e "Q: Choose the level of the messages we log to stdout (0,1,2,3)?"
+-	echo -e "A: $NLOG"
+-	echo
+-	echo -e "Q: Do you want to increase the time to process queries on some slow networks?"
+-    	echo -e "A: $TIMES"
+-	echo
+-	echo -e "Q: Do you want to use other recursive DNS servers?"
+-	if [ "$OTRECIP" != "" ]; then
++while [ -z "$opt" ]; do
++ echo
++ echo -e "Please confirm the values entered:"
++ echo -e "Q: Enter the address that this DNS server runs on:"
++ echo -e "A: $IPADD"
++ echo
++ echo -e "Q: Enter the ip allowed to perform recursive queries:"
++ echo -e "A: $IPREC"
++ echo
++ echo -e "Q: What is the directory with all of the zone files?"
++ echo -e "A: $CHROOT"
++ echo
++ echo -e "Q: What is the numeric UID MaraDNS will run as?"
++ echo -e "A: $NUID"
++ echo
++ echo -e "Q: What is the numeric GID MaraDNS will run as?:"
++ echo -e "A: $NGID"
++ echo
++ echo -e "Q: Which is the maximum number of threads that MaraDNS is allowed to run?"
++ echo -e "A: $MNT"
++ echo
++ echo -e "Q: Do you want make MaraDNS harder to detect (for security reason)?"
++ echo -e "A: $NOFING"
++ echo
++ echo -e "Q: Choose the level of the messages we log to stdout (0,1,2,3)?"
++ echo -e "A: $NLOG"
++ echo
++ echo -e "Q: Do you want to increase the time to process queries on some slow networks?"
++ echo -e "A: $TIMES"
++ echo
++ echo -e "Q: Do you want to use other recursive DNS servers?"
++ if [ "$OTRECIP" != "" ]; then
+ 	echo -e "A: $OTRECIP"
+-	else
++ else
+ 	echo -e "A: no"
+-	fi
+-	echo
+-	echo -e -n "Is this the information that you entered correct? (y/n) "
+-    	read YN
+-    	if [ "$YN"  = "y" ] || ["$YN" = "Y" ]; then
+-		INLOOP=0
+-    	else
+-		INLOOP=1
+-    	fi
++ fi
++ echo
++ read -p "Is this the information that you entered correct? (y/n) " YN
++ case "$YN" in 
++	y|Y) 	
++		opt=ok
++	;; 
++	n|N) 	 
++		rec_hard		
++	;; 
++	*) echo "--> Please type y or n to answer." 
++	;; 
++ esac
++
+ done
++unset opt
+ 
+ # create the mararc
+ cat << EOF > $TMP/$MARARC
+@@ -385,7 +447,7 @@
+ 
+ if [ "$OTRECIP" != "" ]; then
+ cat << EOF >> $TMP/$MARARC
+-# Using other recursives servers
++# Using others recursive servers.
+ upstream_servers = {}
+ upstream_servers["."] = "$OTRECIP"
+ 
+@@ -394,51 +456,41 @@
+ 
+ # Calling a function.
+ confirm_mararc
+-
+ }
+ 
+ rec_screen() {
+-RS_INLOOP=1
+-while [ "$RS_INLOOP" == "1" ] ; do
+-    setterm -clear
++setterm -clear
+     echo -e "${DECOLINE}"
+     echo -e "| MaraConf ${VERSION} |"
+     echo -e "${DECOLINE}"
+-    echo -e "|- RECURSIVE DNS"
++    echo -e "|-> RECURSIVE DNS"
++    echo -e "|"
++    echo -e "|- How do you want to setup recursive dns?"
+     echo -e "|"
+-    echo -e "|- (How do you want to setup recursive dns?)"
+     echo -e "| 1) The easy way (using a wizard)"
+     echo -e "| 2) The hard way (for experienced users)"
+     echo -e "| 0) Back"
+     echo -e "|"
+     echo -n -e "Choose a option [0-2] => "
+-    read action
++    read ACTION
+     echo -e ""
+-
+-case $action in
++case $ACTION in
+     	1)	rec_easy
+-		RS_INLOOP=0
+-		ST_INLOOP=0
+ 	;;
+ 	
+ 	2) 	rec_hard
+-		RS_INLOOP=0
+-		ST_INLOOP=0
+   	;;
+ 	
+ 	0)
+-		RS_INLOOP=0
+-		ST_INLOOP=1
++		start
+   	;;
+   	*)	echo "Please type in a number between 0 - 2." 1>&2
+ 		sleep 2s
+-		start
++		rec_screen
+   	;;
+-    esac	
+-done
++esac	
+ }
+ 
+-
+ #### AUTHORITATIVE QUESTIONS #################
+ ####
+ ####
+@@ -446,20 +498,230 @@
+ ##
+ #
+ 
+-aut_mode() {
++autho_a() {
++#
++# A record.
++read -p "| Do you want to setup an A record? (y/n) " YN
++case "$YN" in 
++	y|Y)	
++		echo 
++		echo -e "| Enter the IP address for the A record"
++    		echo -n -e "=> "
++    		read IPA
++    		IPA=`echo ${IPA// }`
++		
++		# Save all the records here.
++    		echo "$DOMAIN. $IPA" >> $TMP/tmp_zone
++		
++		# Ask again.
++		while [ -z "$opt" ] ; do
++		read -p "Do you want to setup an other A record? (y/n) " YN
++			case "$YN" in
++				y|Y) 
++				# Here we go again.
++				echo 
++				echo -e "| Enter the IP address for the A record"
++   				echo -n -e "=> "
++  				read IPA	
++ 				IPA=`echo ${IPA// }`
++		
++				# Save all the records here.
++    				echo "$DOMAIN. $IPA" >> $TMP/tmp_zone
++				;;	
++				n|N) break ; opt=ok ;;
++				*) echo "--> Please type y or n to answer." ;;
++			esac
++		done
++		unset opt 
++	;; 
++	n|N)
++	return
++	# Nothing happens here.
++	;;
++	*) 	
++		echo "--> Please type y or n to answer."
++		autho_a
++	;; 
++esac
++}
++
++autho_ns() {
++#
++# NS record.
++read -p "| Do you want to setup a NS record? (y/n) " YN
++case "$YN" in 
++	y|Y)	
++		echo 
++		echo -e "| Enter the IP address for the NS record"
++    		read IPNS
++		IPNS=`echo ${IPNS// }`
++		
++		echo -e "| Enter with the hostname used with the NS record."
++		echo -n -e "=> "
++		read NS_HOST	
++     		NS_HOST=`echo ${NS_HOST// }`
++		
++		# Save all the records here.
++		echo "$DOMAIN. NS $NS_HOST.$DOMAIN." >> $TMP/tmp_zone
++		echo "$NS_HOST.$DOMAIN.	$IPNS" >> $TMP/tmp_zone
++		
++		# Ask again.
++		while [ -z "$opt" ] ; do
++		read -p echo -n "Do you want to setup an other NS record? (y/n) " YN
++			case "$YN" in
++				y|Y) 
++				# Here we go again.
++				echo -e "| Enter the IP address for the NS record"
++    				read IPNS
++				IPNS=`echo ${IPNS// }`
++		
++				echo -e "| Enter with the hostname used with the NS record."
++				echo -n -e "=> "
++				read NS_HOST	
++     				NS_HOST=`echo ${NS_HOST// }`
++		
++				# Save all the records here.
++				echo "$DOMAIN. NS $NS_HOST.$DOMAIN." >> $TMP/tmp_zone
++				echo "$NS_HOST.$DOMAIN.	$IPNS" >> $TMP/tmp_zone
++				;;	
++				n|N) break ; opt=ok ;;
++				*) echo "--> Please type y or n to answer." ;;
++			esac
++		done
++		unset opt 
++	;; 
++	n|N)
++	return
++	# Nothing happens here.
++	;;
++	*) 	
++		echo "--> Please type y or n to answer."
++		autho_ns
++	;; 
++esac
++}
++
++autho_mx() {
++#
++# MX record.
++read -p "| Do you want to setup a MX record? (y/n) " YN
++case "$YN" in 
++	y|Y)	
++		echo 
++		echo -e "| Enter the IP address for the MX record"
++		echo -n -e "=> "
++		read IPMX
++		IPMX=`echo ${IPMX// }`	
++		echo -e "| Enter with the hostname used with the MX record."
++		echo -n -e "=> "
++		read MX_HOST	
++     		MX_HOST=`echo ${MX_HOST// }`
++	
++		# Save all the records here.
++		echo "$DOMAIN.	MX  10	$MX_HOST.$DOMAIN." >> $TMP/tmp_zone
++		echo "$MX_HOST.$DOMAIN.	$IPNS" >> $TMP/tmp_zone
++		
++		# Ask again.
++		while [ -z "$opt" ] ; do
++		read -p echo -n "Do you want to setup an other MX record? (y/n) " YN
++			case "$YN" in
++				y|Y) 
++				# Here we go again.
++				echo -e "| Enter the IP address for the MX record"
++				echo -n -e "=> "
++				read IPMX
++				IPMX=`echo ${IPMX// }`	
++				echo -e "| Enter with the hostname used with the MX record."
++				echo -n -e "=> "
++				read MX_HOST	
++     				MX_HOST=`echo ${MX_HOST// }`
++	
++				# Save all the records here.
++				echo "$DOMAIN.	MX  10	$MX_HOST.$DOMAIN." >> $TMP/tmp_zone
++				echo "$MX_HOST.$DOMAIN.	$IPNS" >> $TMP/tmp_zone
++				;;	
++				n|N) break ; opt=ok ;;
++				*) echo "--> Please type y or n to answer." ;;
++			esac
++		done
++		unset opt 
++	;; 
++	n|N)
++	return
++	# Nothing happens here.
++	;;
++	*) 	
++		echo "--> Please type y or n to answer."
++		autho_mx
++	;; 
++esac
++}
++
++autho_sn() {
+ #
++# Single Names record.
++read -p "| Do you want to setup a single name to ip? (y/n) " YN
++case "$YN" in 
++	y|Y)	
++		echo 
++		echo -e "| Enter with the hostname for the single name."
++		echo -n -e "=> "
++		read SN_HOST	
++		SN_HOST=`echo ${SN_HOST// }`
++		echo -e "| Enter the IP address for the single name."
++		echo -n -e "=> "
++		read IPSN     		
++		IPSN=`echo ${IPSN// }`
++
++		# Save all the records here.
++		echo "$SN_HOST.$DOMAIN.	$IPSN" >> $TMP/tmp_zone
++		
++		# Ask again.
++		while [ -z "$opt" ] ; do
++		read -p "Do you want to setup an other single name? (y/n) " YN
++			case "$YN" in
++				y|Y) 
++				# Here we go again.
++				echo -e "| Enter with the hostname for the single name."
++				echo -n -e "=> "
++				read SN_HOST	
++				SN_HOST=`echo ${SN_HOST// }`
++				echo -e "| Enter the IP address for the single name."
++				echo -n -e "=> "
++				read IPSN     		
++				IPSN=`echo ${IPSN// }`
++
++				# Save all the records here.
++				echo "$SN_HOST.$DOMAIN.	$IPSN" >> $TMP/tmp_zone
++				;;	
++				n|N) break ; opt=ok ;;
++				*) echo "--> Please type y or n to answer." ;;
++			esac
++		done
++		unset opt 
++	;; 
++	n|N)
++	return
++	# Nothing happens here.
++	;;
++	*) 	
++		echo "--> Please type y or n to answer."
++		autho_sn
++	;; 
++esac
++}
++
+ # Configuring mararc file.
+ #
+-INLOOP=1
+-while [ "$INLOOP" == "1" ] ; do
++aut_mode() {
+     setterm -clear
+     echo -e "${DECOLINE}"
+     echo -e "| MaraConf ${VERSION} |"
+     echo -e "${DECOLINE}"
+-    echo -e "|- AUTHORITATIVE DNS - configuring mararc:"
++    echo -e "|-> AUTHORITATIVE DNS -> Configuring mararc:"
+     echo -e "|"
+-    echo -e "| Enter the address that this DNS server runs on."
+-    echo -e "|--you must type a value, there is no default here:"
++    echo -e "| Enter the IP(s) address(es) that this DNS server runs on."
++    echo -e "|--you must type the values separate by comma."
+     echo -n -e "=> "
+     read IPADD	
+     echo -e "| Enter the domain."
+@@ -473,24 +735,27 @@
+     IPADD=`echo ${IPADD// }`
+     DOMAIN=`echo ${DOMAIN// }`
+ 
+-    # Confirme the values entered
+-    	echo
+-	echo -e "Please confirm the values entered:"
+-	echo -e "Q: Enter the address that this DNS server runs on:"
+-	echo -e "A: $IPADD"
+-	echo
+-	echo -e "Q: Enter the domain:"
+-	echo -e "A: $DOMAIN"
+-	echo
+-	echo -e -n "Is this the information that you entered? (y/n) "
+-	read YN
+-	if [ "$YN"  = "y" ] || ["$YN" = "Y" ]
+-	    then
+-		INLOOP=0
+-	    else
+-		INLOOP=1
+-	fi
++    # Confirm the values entered.
++while [ -z "$opt" ] ; do
++    echo
++    echo -e "Please confirm the values entered:"
++    echo -e "Q: Enter the address that this DNS server runs on:"
++    echo -e "A: $IPADD"
++    echo
++    echo -e "Q: Enter the domain:"
++    echo -e "A: $DOMAIN"
++    echo
++    read -p "Is this the information that you entered correct? (y/n) " YN
++    case "$YN" in 
++	y|Y) opt=ok
++	;; 
++	n|N) aut_mode
++	;; 
++	*) echo "--> Please type y or n to answer." 
++	;; 
++    esac
+ done
++unset opt
+ 
+ # create the mararc
+ cat << EOF > $TMP/$MARARC
+@@ -512,144 +777,58 @@
+ #
+ # Configuring  zone file.
+ #
+-
+ INLOOP=1
+ while [ "$INLOOP" == "1" ] ; do
+  setterm -clear
+     echo -e "${DECOLINE}"
+     echo -e "| MaraConf ${VERSION} |"
+     echo -e "${DECOLINE}"
+-    echo -e "|- AUTHORITATIVE DNS - configuring the zone file:"
++    echo -e "|-> AUTHORITATIVE DNS -> Configuring the zone file:"
+     echo -e "|"
+ 
+ # A record.
+-    ALOOP=1    
+-    	echo -n "| Do you want to setup an A record? (y/n) "
+-	read YN
+-	while [ "$ALOOP" == "1" ] && [ "$YN"  = "y" ] || [ "$YN" = "Y" ] ; do     	
+-		echo -e "| Enter the IP address for the A record"
+-		echo -n -e "=> "
+-		read IPA
+-		IPA=`echo ${IPA// }`
+-#		echo -e "| Enter with the hostname used with the A record."
+-#		echo -n -e "=> "
+-#		read A_HOST
+-
+-		# Save all the records here.
+-		echo "$DOMAIN.	$IPA" >> $TMP/tmp_zone
+-    	
+-		echo -n "Do you want to setup an other A record? (y/n) "
+-     		read YN
+-     		if [ "$YN"  = "n" ] || [ "$YN" = "N" ]; then 
+-			ALOOP=0
+-		fi
+-	done
++autho_a
+ 
+ # NS record.
+-NSLOOP=1    
+-	echo
+-    	echo -n "| Do you want to setup a NS record? (y/n) "
+-    	read YN
+-    	while [ "$NSLOOP" == "1" ] && [ "$YN"  = "y" ] || [ "$YN" = "Y" ] ; do 	
+-		echo -e "| Enter the IP address for the NS record"
+-		echo -n -e "=> "
+-		read IPNS
+-		IPNS=`echo ${IPNS// }`
+-		echo -e "| Enter with the hostname used with the NS record."
+-		echo -n -e "=> "
+-		read NS_HOST	
+-     		NS_HOST=`echo ${NS_HOST// }`
+-		# Save all the records here.
+-		echo "$DOMAIN. NS $NS_HOST.$DOMAIN." >> $TMP/tmp_zone
+-		echo "$NS_HOST.$DOMAIN.	$IPNS" >> $TMP/tmp_zone
+-	
+-		echo -n "Do you want to setup an other NS record? (y/n) "
+-     		read YN
+-     		if [ "$YN"  = "n" ] || [ "$YN" = "N" ]; then 
+-			NSLOOP=0
+-     		fi
+-	done
+-
++autho_ns
+ 
+ # MX record.
+-MXLOOP=1    
+-	echo
+-    	echo -n "| Do you want to setup a MX record? (y/n) "
+-    	read YN
+-    	while [ "$MXLOOP" == "1" ] && [ "$YN"  = "y" ] || [ "$YN" = "Y" ] ; do 	
+-		echo -e "| Enter the IP address for the MX record"
+-		echo -n -e "=> "
+-		read IPMX
+-		IPMX=`echo ${IPMX// }`	
+-		echo -e "| Enter with the hostname used with the MX record."
+-		echo -n -e "=> "
+-		read MX_HOST	
+-     		MX_HOST=`echo ${MX_HOST// }`
+-	
+-		# Save all the records here.
+-		echo "$DOMAIN.	MX  10	$MX_HOST.$DOMAIN." >> $TMP/tmp_zone
+-		echo "$MX_HOST.$DOMAIN.	$IPNS" >> $TMP/tmp_zone
+-	
+-		echo -n "Do you want to setup an other MX record? (y/n) "
+-     		read YN
+-     		if [ "$YN"  = "n" ] || [ "$YN" = "N" ]; then 
+-			MXLOOP=0
+-     		fi
+-	done
++autho_mx
+ 
+ # Single names.
+-SNLOOP=1    
+-	echo
+-    	echo -n "| Do you want to setup a single name to ip? (y/n) "
+-    	read YN
+-    	while [ "$SNLOOP" == "1" ] && [ "$YN"  = "y" ] || [ "$YN" = "Y" ] ; do 	
+-		echo -e "| Enter with the hostname for the single name."
+-		echo -n -e "=> "
+-		read SN_HOST	
+-		SN_HOST=`echo ${SN_HOST// }`
+-		echo -e "| Enter the IP address for the single name."
+-		echo -n -e "=> "
+-		read IPSN     		
+-		IPSN=`echo ${IPSN// }`
+-
+-		# Save all the records here.
+-		echo "$SN_HOST.$DOMAIN.	$IPSN" >> $TMP/tmp_zone
+-	
+-		echo -n "Do you want to setup an other single name? (y/n) "
+-     		read YN
+-     		if [ "$YN"  = "n" ] || [ "$YN" = "N" ]; then 
+-			SNLOOP=0
+-     		fi
+-	done
+-
++autho_sn
+ 
+-# confirme the values entered
++while [ -z "$opt" ]; do
+     	echo
+ 	echo -e "Please confirm the values entered:"
+ 	if [ -f $TMP/tmp_zone ]; then
+ 		cat $TMP/tmp_zone
+ 	else
+-		echo "no zone file created"
++		echo "No zone file created, so we exit now."
++		exit 0
+ 	fi
+-	
+ 	echo
+-	echo -e -n "Is this the information that you entered? (y/n) "
+-	read YN
+-	if [ "$YN"  = "y" ] || [ "$YN" = "Y" ]; then
+-	    
+-		INLOOP=0
+-	    else
+-		INLOOP=1
+-	fi
++	read -p "Is this the information that you entered correct? (y/n) " YN
++	case "$YN" in 
++		y|Y)	
++			opt=ok 
++			INLOOP=0
++		;;
++		n|N)
++			opt=ok
++		;;
++		*)
++			echo 
++			echo "--> Please type y or n to answer."
++		;;
++	esac
++done
+ done
+ 
+ confirm_db
+-	
+ }
+ 
+ start() {
+-ST_INLOOP=1
+-while [ "$ST_INLOOP" == "1" ] ; do
+     setterm -clear
+     echo -e "${DECOLINE}"
+     echo -e "| MaraConf ${VERSION} |"
+@@ -662,10 +841,10 @@
+     echo -e "| 0) Exit"
+     echo -e "|"
+     echo -n -e "Choose a option [0-2] => "
+-    read action
++    read ACTION
+     echo -e ""
+ 
+-case $action in
++   case $ACTION in
+     	1)	rec_screen
+ 	;;
+ 	
+@@ -678,7 +857,6 @@
+ 		sleep 2s
+   	;;
+     esac	
+-done
+ }
+ 
+ ##################
+@@ -709,9 +887,9 @@
+ 
+ # Menu.
+ DECOLINE="+--------------------------------+"
+-VERSION="v1.2.00 -beta04      "
++VERSION="v1.2.12.03           "
+ 
+-case $1 in
++case "$1" in
+ 	-s|--start)
+ 		# Calling the function.
+ 		clear
+@@ -719,13 +897,14 @@
+ 	;;	
+ 	-h|--help)
+ 		# Msg screen.
++		clear
+ 		echo "####################################" 
+ 		echo "# MaraDNS configurator 		   #"
+ 		echo "####################################" 
+ 		echo
+-		echo "This program is designed to help you setup a recursive and autothirative" 
++		echo "This program is designed to help you setup a recursive and authoritative" 
+ 		echo "DNS servers using MaraDNS.  What this script will do is create a mararc" 
+-		echo "file and the respectives zone files for a domain, to be used for the"
++		echo "file and the respective zone files for a domain, to be used for the"
+ 		echo "authoritative server.  It should work on any Unix-like system that has" 
+ 		echo "bash in /bin."
+ 		echo 
+@@ -741,14 +920,13 @@
+ 	;;
+ 	*)
+ 		echo 
+-		echo -e "Usage: maraconf OPTION"
++		echo -e "Usage: maraconf OPTIONS"
+ 		echo
+ 		echo -e "OPTIONS:"
+-		echo -e "-s, --start  	initialize the configuration."
++		echo -e "-s, --start  	initialize the configurator."
+ 		echo -e "-h, --help	show a brief explanation."
+ 		echo
+ 		echo "MaraConf $VERSION"
+ 		echo
+ 	;;
+ esac
+-

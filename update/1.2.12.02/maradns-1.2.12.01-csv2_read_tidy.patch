@@ -1,0 +1,10 @@
+--- maradns-1.2.12.01/parse/Csv2_read.c	2006-07-26 10:58:44.000000000 -0500
++++ maradns-1.2.12.02/parse/Csv2_read.c	2006-07-28 10:48:37.000000000 -0500
+@@ -98,6 +98,7 @@
+ 	while(v != 0 && a < 1000) {
+ 		w = v->next;
+ 		fclose(v->reading);
++		js_dealloc(v->filename);
+ 		js_dealloc(v);
+ 		v = w;
+ 		a++;

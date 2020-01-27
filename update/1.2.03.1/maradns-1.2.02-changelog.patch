@@ -1,0 +1,25 @@
+--- maradns-1.2.02/doc/en/source/changelog.embed	2006-01-02 08:59:33.000000000 -0800
++++ maradns-1.2.03.1/doc/en/source/changelog.embed	2006-01-21 20:50:57.000000000 -0800
+@@ -1,5 +1,22 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.03.1:
++<blockquote>
++<ul>
++<li>Fixed issue with ANY queries pointed out by Christian Klossek.
++<li>Made <tt>bind_star_handling</tt> even more RFC-compliant: If 
++    <tt>*.example.com.</tt> and <tt>bar.example.com.</tt> exist,
++    then <tt>foo.bar.example.com.</tt> should point to "not there" 
++    instead of whatever <tt>*.example.com</tt> points at.
++<li>Updated mingw32 port: Removed compile-time warnings, set up scripts
++    to mostly automate making the .zip file for the win32 MaraDNS binary.
++<li>Updated numbering scheme to use major.minor.revision.patchlevel
++    for stable 1.2 releases; this allows the 1.2 branch to better have
++    both a testing and a stable branch.
++</ul>
++(2006.01.21)
++</blockquote>
++
+ <p>maradns-1.2.02:
+ This is a beta-test potentially unstable release, since the changes 
+ are significant enough to warrant full testing before declaring this

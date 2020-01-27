@@ -1,0 +1,238 @@
+--- maradns-1.2.10/parse/Csv2_parse.c	2006-06-11 02:16:32.000000000 -0500
++++ maradns-1.2.11/parse/Csv2_parse.c	2006-07-12 18:12:25.000000000 -0500
+@@ -896,6 +896,9 @@
+ 	if(js_qissame("spf",text_rtype) == 1) {
+ 		return RR_SPF;
+ 	}
++        if(js_qissame("hinfo",text_rtype) == 1) {
++                return RR_HINFO;
++        }
+ 	if(js_qissame("fqdn4",text_rtype) == 1) {
+ 		return 65765;
+ 	}
+@@ -1191,8 +1194,11 @@
+ 			break;
+ 		case RR_TXT:
+ 		case RR_SPF:
+-			rddata = csv2_get_txt(stream);
++			rddata = csv2_get_txt(stream,0);
+ 			break;
++                case RR_HINFO:
++			rddata = csv2_get_txt(stream,2);
++                        break;
+ 		case RR_NS:
+ 		case RR_CNAME:
+ 		case RR_PTR:
+--- maradns-1.2.10/parse/Csv2_functions.h	2005-11-22 20:01:40.000000000 -0600
++++ maradns-1.2.11/parse/Csv2_functions.h	2006-07-12 18:12:25.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004 Sam Trenholme
++/* Copyright (c) 2004-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -181,7 +181,7 @@
+ /* Get a TXT record from the stream.
+  * Input: A pointer to the stream we are reading
+  * Output: A js_string object with the raw rddata we want */
+-js_string *csv2_get_txt(csv2_read *stream);
++js_string *csv2_get_txt(csv2_read *stream, int numchunks);
+ 
+ /* Get a RAW record from the stream.
+  * Input: A pointer to the stream we are reading
+--- maradns-1.2.10/doc/en/source/csv2.ej	2006-06-11 02:16:32.000000000 -0500
++++ maradns-1.2.11/doc/en/source/csv2.ej	2006-07-12 21:34:22.000000000 -0500
+@@ -239,7 +239,37 @@
+ 
+ <p>
+ 
+-CNAME records are not permitted in a csv2_default_zonefile.
++CNAME records are not permitted in a csv2_default_zonefile.  If you
++do not know what a csv2_default_zonefile is, this fact is of no 
++relevance.
++
++<h2>Historical and uncommon resource records</h2>
++
++The following resource records are mainly of historical interest, or
++are not commonly used.
++
++<h2>HINFO</h2>
++
++An HINFO record is a description of the CPU (processor) and OS that
++a given host is using.  The format for this record is identical to a
++TXT record, except that the field must have precisely two chunks.
++
++<p>
++
++The first chunk of a HINFO record is the CPU the host is running; the
++second chunk is the OS the host is running.
++
++<p>
++
++Example:
++
++<pre>
++example.com. HINFO 'Intel Pentium III';'CentOS Linux 3.7'
++</pre>
++
++This resource record is not actively used--the IANA
++has a list of CPUs and OSes that this record is supposed to have.  However,
++this list has not been updated since 2002.
+ 
+ <h1>EXAMPLE ZONE FILE</h1>
+ 
+--- maradns-1.2.10/parse/Csv2_rr_txt.c	2005-11-16 02:05:54.000000000 -0600
++++ maradns-1.2.11/parse/Csv2_rr_txt.c	2006-07-12 18:12:25.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004-2005 Sam Trenholme
++/* Copyright (c) 2004-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -141,15 +141,15 @@
+ /* Get a TXT record from the stream.
+  * Input: A pointer to the stream we are reading
+  * Output: A js_string object with the raw rddata we want */
+-js_string *csv2_get_txt(csv2_read *stream) {
+-        return csv2_get_string(stream,1);
++js_string *csv2_get_txt(csv2_read *stream, int numchunks) {
++        return csv2_get_string(stream,numchunks);
+ }
+ 
+ /* Get a RAW record from the stream.
+  * Input: A pointer to the stream we are reading
+  * Output: A js_string object with the raw rddata we want */
+ js_string *csv2_get_raw(csv2_read *stream) {
+-        return csv2_get_string(stream,2);
++        return csv2_get_string(stream,-1);
+ }
+ 
+ /* Append a Unicode character to a stream, returning the length of the
+@@ -179,15 +179,16 @@
+ 	
+ /* Get a string from the stream; we have this so that processing
+  * RAW data and processing TXT records can use the same code
+- * Input: A pointer to a stream we are reading; datatype (1 if TXT record;
+- * 2 if raw string)
++ * Input: A pointer to a stream we are reading; number of chunks (0 if any
++   one or more chunks are allowed; -1 if we're not using chunks)
+  * Output: A js_string object with the raw rddata we want; 0 on error */
+ 
+-js_string *csv2_get_string(csv2_read *stream, int datatype) {
++js_string *csv2_get_string(csv2_read *stream, int numchunks) {
+         int state;
+         int out_num = 0; /* Used for octal and hext sequences (\123 or \xE4) */
+         int txt_len_place = -1; /* Where we put binary length in TXT records */
+         int txt_len; /* How long this TXT chunk is in a TXT record */
++        int chunkcount = 0;
+ 	int x; /* counter used to make sure a txt record is not too long */
+ 	int32 look;
+         js_string *out;
+@@ -220,9 +221,10 @@
+ 
+ 	/* If this is a TXT record instead of a raw binary stream, make
+ 	 * the first character be one we put the length in */
+-	if(datatype == 1) {
++	if(numchunks != -1) {
+ 		txt_len_place = out->unit_count; /* 0 */
+ 		txt_len = 0;
++                chunkcount = 1;
+ 		if(csv2_append_utf8(out, 0) == JS_ERROR) {
+ 			js_destroy(out);
+ 			return 0;
+@@ -250,8 +252,8 @@
+ 		state = TXT_QUOTE_STATE;
+ 	}
+ 
+-	/* [\;] if datatype is 1 (TXT record) */
+-	else if(csv2_is_semicolon(look) && datatype == 1) {
++	/* [\;] if we allow one or more chunks (non-RAW record) */
++	else if(csv2_is_semicolon(look) && numchunks != -1) {
+ 		if(txt_len_place < 0 || txt_len_place > out->max_count) {
+ 			js_destroy(out);
+ 			return 0;
+@@ -264,6 +266,7 @@
+ 		*(out->string + txt_len_place) = txt_len;
+ 		txt_len_place = out->unit_count; /* 1 */
+ 		txt_len = 0;
++                chunkcount++;
+ 		if(csv2_append_utf8(out, 0) == JS_ERROR) {
+ 			js_destroy(out);
+ 			return 0;
+@@ -300,7 +303,7 @@
+ 			else if(csv2_is_delimiter(look) || 
+ 					look == -2 /* EOF */) {
+ 				/* TXT length */
+-				if(datatype == 1) {
++				if(numchunks != -1) {
+ 				    if(txt_len_place < 0 || 
+ 			                txt_len_place > out->max_count) {
+ 						js_destroy(out);
+@@ -313,7 +316,16 @@
+ 					return 0;
+ 				    }
+ 				    *(out->string + txt_len_place) = txt_len;
++                                    chunkcount++;
+ 				}
++                                /* This if only affects HINFO and other obscure
++                                   RRs */
++                                if(numchunks > 0 && chunkcount != numchunks) {
++                                    csv2_error(stream,
++                                    "Incorrect number of chunks for this RR");
++                                    js_destroy(out);
++                                    return 0;
++                                    }
+ 				return out;
+ 			}
+ 			/* [\\] */
+@@ -324,8 +336,8 @@
+ 			else if(csv2_is_quote(look)) {
+ 				state = TXT_QUOTE_STATE;
+ 			}
+-			/* [\;]: New TXT field, only if TXT RR */
+-			else if(csv2_is_semicolon(look) && datatype == 1) {
++			/* [\;]: New TXT field, only if non-RAW RR */
++			else if(csv2_is_semicolon(look) && numchunks != -1) {
+ 				if(txt_len_place < 0 || 
+ 				    txt_len_place > out->max_count) {
+ 					js_destroy(out);
+@@ -344,7 +356,7 @@
+ 			else if(csv2_is_hash(look)) {
+ 				process_comment(stream);
+ 				/* TXT length */
+-				if(datatype == 1) {
++				if(numchunks != -1) {
+ 				    if(txt_len_place < 0 || 
+ 			                txt_len_place > out->max_count) {
+ 						js_destroy(out);
+@@ -357,18 +369,27 @@
+ 					return 0;
+ 				    }
+ 				    *(out->string + txt_len_place) = txt_len;
++                                    chunkcount++;
+ 				}
++                                /* This if only affects HINFO and other obscure
++                                   RRs */
++                                if(numchunks > 0 && chunkcount != numchunks) {
++                                    csv2_error(stream,
++                                    "Incorrect number of chunks for this RR");
++                                    js_destroy(out);
++                                    return 0;
++                                    }
+ 				return out;
+ 			}
+ 			/* Syntax error */
+ 			else {
+-				if(datatype == 1) {
++				if(numchunks != -1) {
+ 					csv2_error(stream,
+-						"Syntax error in TXT RR");
++						"Syntax error in TXT/SPF RR");
+ 					js_destroy(out);
+ 					return 0;
+ 				}
+-				else if(datatype == 2) {
++				else if(numchunks == -1) {
+ 					csv2_error(stream, 
+ 						"Syntax error in RAW");
+ 					js_destroy(out);

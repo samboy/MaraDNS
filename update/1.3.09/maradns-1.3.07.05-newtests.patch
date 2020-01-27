@@ -1,0 +1,95 @@
+--- maradns-1.3.07.05/sqa/regressions/do.tests	2007-09-21 07:07:08.000000000 -0500
++++ maradns-1.3.07.06/sqa/regressions/do.tests	2007-10-07 12:22:50.000000000 -0500
+@@ -3,13 +3,66 @@
+ # This is a shell script that will do all of the sqa tests; this script
+ # will halt if any of the tests does not give the desired result
+ 
+-TESTS="any_case askmara.bug bad_query def_zone_nx delegation_glue loc "
++# Tests to make sure most Mararc parameters work
++TESTS="mararc_n_admin_acl "
++TESTS=$TESTS"mararc_n_bind_address "
++TESTS=$TESTS"mararc_n_bind_star_handling "
++TESTS=$TESTS"mararc_n_chroot_dir "
++TESTS=$TESTS"mararc_n_csv2_default_zonefile "
++TESTS=$TESTS"mararc_n_csv2_synthip_list "
++TESTS=$TESTS"mararc_n_csv2_tilde_handling "
++TESTS=$TESTS"mararc_n_debug_msg_level "
++TESTS=$TESTS"mararc_n_default_rrany_set "
++TESTS=$TESTS"mararc_n_dns_port "
++TESTS=$TESTS"mararc_n_dos_protection_level "
++TESTS=$TESTS"mararc_n_handle_noreply "
++TESTS=$TESTS"mararc_n_hide_disclaimer "
++TESTS=$TESTS"mararc_n_ipv4_bind_addresses "
++TESTS=$TESTS"mararc_n_maradns_gid "
++TESTS=$TESTS"mararc_n_maradns_uid "
++TESTS=$TESTS"mararc_n_max_ar_chain "
++TESTS=$TESTS"mararc_n_max_chain "
++TESTS=$TESTS"mararc_n_max_glueless_level "
++TESTS=$TESTS"mararc_n_max_queries_total "
++TESTS=$TESTS"mararc_n_max_total "
++TESTS=$TESTS"mararc_n_min_ttl "
++TESTS=$TESTS"mararc_n_min_ttl_cname "
++TESTS=$TESTS"mararc_n_min_visible_ttl "
++TESTS=$TESTS"mararc_n_recurse_delegation "
++TESTS=$TESTS"mararc_n_recursive_acl "
++TESTS=$TESTS"mararc_n_remote_admin "
++TESTS=$TESTS"mararc_n_spammers "
++TESTS=$TESTS"mararc_n_synth_soa_origin "
++TESTS=$TESTS"mararc_n_synth_soa_serial "
++TESTS=$TESTS"mararc_n_timestamp_type "
++TESTS=$TESTS"mararc_n_upstream_port "
++TESTS=$TESTS"mararc_n_verbose_level "
++TESTS=$TESTS"mararc_n_verbose_query "
++TESTS=$TESTS"mararc_n_zone_transfer_acl "
++
++# Tests to make sure all Mararc dictionary variables work
++
++TESTS=$TESTS"mararc_d_csv1 mararc_d_csv2 mararc_d_ipv4_alias "
++TESTS=$TESTS"mararc_d_root_servers mararc_d_upstream_servers future "
++
++# Tests to make sure all old known bugs have been fixed and stay fixed
++
++# Valgrind is required to run some of these tests.  
++
++TESTS=$TESTS"any_case askmara.bug bad_query def_zone_nx delegation_glue loc "
+ TESTS=$TESTS"long.chunk noat_parse_bug noise percent_parse_bug "
+ TESTS=$TESTS"predator1 predator2 ptr_leak recurse_delegation "
+ TESTS=$TESTS"star_handling_1 star_handling_2 star_handling_leak "
+ TESTS=$TESTS"truncation zoneserver_doc improper_rotation "
+-TESTS=$TESTS"mararc_d_csv1 mararc_d_csv2 mararc_d_ipv4_alias "
+-TESTS=$TESTS"mararc_d_root_servers mararc_d_upstream_servers "
++
++# Test to make sure synthetic ips in csv2 zone files correctly handle 
++# MaraDNS bound to private and public IPs
++
++# Note: The private_ips test changes the localhost IP when run.  Please
++# only run this test on a machine where you can have the localhost IP
++# temporarily disrupted (The localhost interface will briefly have the IPs
++# 192.168.1.116, 172.16.116.70, 10.1.2.3, and 126.254.254.9)
++TESTS=$TESTS"private_ips "
+ 
+ for test in $TESTS ; do
+ 	cd $test
+--- maradns-1.3.07.05/sqa/regressions/README	2007-09-21 07:07:08.000000000 -0500
++++ maradns-1.3.07.06/sqa/regressions/README	2007-10-07 12:21:48.000000000 -0500
+@@ -1,7 +1,10 @@
+ This directory contains various tests, mainly ones that detect the 
+ presence of known MaraDNS bugs that have been fixed.
+ 
+-These tests are run by typing in 'sh ./do.test' in the appropriate
++All of these tests can be run at once by typing in 'sh ./do.tests' from this
++directory.
++
++These tests can also be run by typing in 'sh ./do.test' in the appropriate
+ directory for the test in question.  MaraDNS needs to be compiled before
+ these tests can be run.
+ 
+--- maradns-1.3.07.05/sqa/regressions/zoneserver_doc/do.test	2007-08-22 17:35:59.000000000 -0500
++++ maradns-1.3.07.06/sqa/regressions/zoneserver_doc/do.test	2007-10-07 12:21:48.000000000 -0500
+@@ -27,5 +27,6 @@
+ ../../../tools/askmara-tcp Awww.example.com.
+ dig +tcp @127.0.0.1 www.example.com. | grep www | grep -v DiG
+ killall maradns
++killall zoneserver
+ rm mararc
+ rm db.example.com

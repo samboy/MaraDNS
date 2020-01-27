@@ -1,0 +1,254 @@
+--- maradns-1.3.12/tools/misc/mqhash.c	2008-09-09 06:40:20.000000000 -0500
++++ maradns-1.3.13/tools/misc/mqhash.c	2009-01-29 12:59:56.000000000 -0600
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2006 Sam Trenholme
++/* Copyright (c) 2002-2009 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -29,6 +29,8 @@
+ #include <unistd.h>
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <stdint.h>
++#include <string.h>
+ 
+ /* Routine that runs the compression funciton of our hash.
+    Input: Plaintext we wish to compress (which is HASH_BYTES long),
+@@ -92,6 +94,208 @@
+     return 1;
+     }
+ 
++/* The Radio Gatun 32-bit core */
++/* This determines the word size we use for this particular Radio Gatun
++ * implementation; DWR_WORDSIZE needs to be a multiple of 8.  Note also
++ * that dwr_rng() needs to be rewritten if these values are changed. */
++#define DWR_WORD uint32_t
++#define DWR_WORDSIZE 32
++
++/* These are hard coded in the Radio Gatun specification */
++#define DWR_MILLSIZE 19
++#define DWR_BELTROWS 3
++#define DWR_BELTCOL 13
++#define DWR_BELTFEED 12
++
++/* A structure contining a RadioGatun state */
++typedef struct {
++        DWR_WORD *mill;
++        DWR_WORD *belt;
++        int32_t index;
++} dwr_rg;
++/* This is the mill part of the RadioGatun algorithm */
++void dwr_mill(DWR_WORD *a) {
++        DWR_WORD A[DWR_MILLSIZE];
++        DWR_WORD x;
++        int i = 0;
++        int y = 0;
++        int r = 0;
++        int z = 0;
++        for(i = 0; i < DWR_MILLSIZE ; i++) {
++                y = (i * 7) % DWR_MILLSIZE;
++                r = ((i * (i + 1)) / 2) % DWR_WORDSIZE;
++                x = a[y] ^ (a[ ((y + 1) % DWR_MILLSIZE) ] |
++                    (~a[ ((y + 2) % DWR_MILLSIZE) ]));
++                A[i] = (x >> r) | (x << (DWR_WORDSIZE - r));
++        }
++        for(i = 0; i < DWR_MILLSIZE ; i++) {
++                y = i;
++                r = (i + 1) % DWR_MILLSIZE;
++                z = (i + 4) % DWR_MILLSIZE;
++                a[i] = A[y] ^ A[r] ^ A[z];
++        }
++        a[0] ^= 1;
++}
++
++/* This is the belt part of the RadioGatun algorithm */
++void dwr_belt(DWR_WORD *a, DWR_WORD *b) {
++        DWR_WORD q[DWR_BELTROWS];
++        int s = 0;
++        int i = 0;
++        int v = 0;
++        for(s = 0; s < DWR_BELTROWS ; s++) {
++                q[s] = b[((s * DWR_BELTCOL) + DWR_BELTCOL - 1)];
++        }
++        for(i = DWR_BELTCOL - 1; i > 0; i--) {
++                for(s = 0; s < DWR_BELTROWS ; s++) {
++                        v = i - 1;
++                        if(v < 0) {
++                                v = DWR_BELTCOL - 1;
++                        }
++                        b[((s * DWR_BELTCOL) + i)] =
++                                b[((s * DWR_BELTCOL) + v)];
++                }
++        }
++        for(s = 0; s < DWR_BELTROWS; s++) {
++                b[(s * DWR_BELTCOL)] = q[s];
++        }
++        for(i = 0; i < DWR_BELTFEED ; i++) {
++                s = (i + 1) + ((i % DWR_BELTROWS) * DWR_BELTCOL);
++                b[s] ^= a[(i + 1)];
++        }
++        dwr_mill(a);
++        for(i = 0; i < DWR_BELTROWS; i++) {
++                a[(i + DWR_BELTCOL)] ^= q[i];
++        }
++}
++
++/* Destroy an already created RadioGatun state */
++void dwr_zap(dwr_rg *tozap) {
++        if(tozap != 0) {
++                if(tozap->mill != 0) {
++                        free(tozap->mill);
++                }
++                if(tozap->belt != 0) {
++                        free(tozap->belt);
++                }
++                free(tozap);
++        }
++        return;
++}
++
++/* Create a new blank RadioGatun state (this is private and only called
++ * from dwr_init_rg() ) */
++dwr_rg *dwr_new() {
++        int q = 0;
++        dwr_rg *new = 0;
++        DWR_WORD *a = 0, *b = 0;
++
++        new = malloc(sizeof(dwr_rg));
++        if(new == 0) {
++                goto catch_dwr_new;
++        }
++        new->mill = malloc((DWR_MILLSIZE + 1) * sizeof(DWR_WORD));
++        new->belt = malloc(((DWR_BELTROWS * DWR_BELTCOL) + 1) *
++                           sizeof(DWR_WORD));
++        new->index = 0;
++        a = new->mill;
++        b = new->belt;
++        if(a == 0 || b == 0) {
++                goto catch_dwr_new;
++        }
++        for(q = 0; q < DWR_MILLSIZE; q++) {
++                a[q] = 0;
++        }
++        for(q = 0; q < DWR_BELTROWS * DWR_BELTCOL; q++) {
++                b[q] = 0;
++        }
++        return new;
++catch_dwr_new:
++        dwr_zap(new);
++        return 0;
++}
++
++#define dwr_input_map()         for(c = 0; c < 3; c++) { \
++                                        b[c * 13] ^= p[c]; \
++                                        a[16 + c] ^= p[c]; \
++                                } \
++                                dwr_belt(a,b)
++
++/* Create a Radio Gatun state, using the contents of a null-terminated string
++ * as the input */
++dwr_rg *dwr_init_rg(char *obj) {
++        DWR_WORD p[3];
++        int q = 0;
++        int c = 0;
++        int r = 0;
++        int done = 0;
++        dwr_rg *new = 0;
++        DWR_WORD *a = 0, *b = 0;
++        int index = 0;
++        int32_t counter = 0;
++
++        new = dwr_new();
++        if(new == 0) {
++                return 0;
++        }
++        a = new->mill;
++        b = new->belt;
++        for(counter = 0; counter < 16777218; counter++) {
++                p[0] = p[1] = p[2] = 0;
++                for(r = 0; r < 3; r++) {
++                        for(q = 0; q < DWR_WORDSIZE; q+=8) {
++                                int x = 0;
++                                x = (int)*(obj + index);
++                                index++;
++                                x &= 0xff;
++                                if(x == 0) {
++                                        done = 1;
++                                        x = 1; /* Append with single byte
++                                                * w/ value of 1 */
++                                }
++                                p[r] |= x << q;
++                                if(done == 1) {
++                                        dwr_input_map();
++                                        for(c = 0; c < 16; c++) {
++                                                dwr_belt(a,b);
++                                        }
++                                        return new;
++                                }
++                        }
++                }
++                dwr_input_map();
++        }
++        return 0;
++}
++
++/* Given a RadioGatun state, generate a psuedo-random number. */
++DWR_WORD dwr_rng(dwr_rg *in) {
++        DWR_WORD *o;
++	DWR_WORD out;
++        if(in == 0) {
++                return 0;
++        }
++        if(DWR_WORDSIZE != 32) {
++                return 0;
++        }
++        o = in->mill + 1;
++        if(in->index >= 100000000) {
++                in->index = 0; /* I am considering rekeying here */
++        }
++        if(in->index % 2 == 0) {
++                dwr_belt(in->mill, in->belt);
++                in->index++;
++                out = o[0];
++        } else {
++                in->index++;
++		out = o[1];
++                }
++	/* Endian issues */
++	out = ((out & 0xff0000) >> 8) | ((out & 0xff000000) >> 24) |
++              ((out & 0xff00) << 8) | ((out & 0xff) << 24);
++	return out;
++}
++
+ /* The main routine.  This reads a file specified on the command line,
+    then makes a hash out of that file. */
+ 
+@@ -272,10 +476,27 @@
+     hash_compress(input,state);
+     hash_compress(state,state);
+ 
++    printf("marahash: ");
++
+     for(counter = 0; counter < HASH_BYTES; counter++) {
+         printf("%02x",state[counter] & 0xff);
+         if(counter % 4 == 3) {printf(" ");}
+         }
+     printf("\n");
++
++    /* OK, now give them the rg32 hash of the same input */
++    dwr_rg *rg32;
++    rg32=dwr_init_rg(copy);
++    printf("rg32hash: ");
++    for(counter = 0; counter < 7; counter++) {
++	printf("%08x ",dwr_rng(rg32));
++    }
++    printf("\n");
++    printf("          ");
++    for(counter = 0; counter < 7; counter++) {
++	printf("%08x ",dwr_rng(rg32));
++    }
++    printf("\n");
++
+     }
+ 

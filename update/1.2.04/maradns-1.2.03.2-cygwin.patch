@@ -1,0 +1,57 @@
+--- maradns-1.2.03.2/server/MaraDNS.c	2006-01-21 21:22:02.000000000 -0800
++++ maradns-1.2.03.3/server/MaraDNS.c	2006-02-09 10:27:36.000000000 -0800
+@@ -3897,7 +3897,9 @@
+ 	      *uncomp = 0, *verbstr = 0;
+ #ifndef MINGW32
+     unsigned char chroot_zt[255];
++#ifndef __CYGWIN__
+     uid_t uid;
++#endif
+     gid_t gid;
+ #endif
+     int errorn, value, maxprocs, counter;
+@@ -4302,7 +4304,9 @@
+ 
+ #ifndef MINGW32
+     /* Determine if we are root */
++#ifndef __CYGWIN__
+     if(geteuid() == 0) {
++#endif
+ 
+ 	js_destroy(verbstr);
+ 	verbstr = read_string_kvar("chroot_dir");
+@@ -4315,8 +4319,10 @@
+             harderror(L_CHROOT_NT); /* "Problem making chroot nt string.\nMake sure the chroot directory is 200 chars or less" */
+         if(chdir((char *)chroot_zt) != 0)
+             sys_harderror(L_CHROOT_CHANGE); /* "Problem changing to chroot dir.\nMake sure chroot_dir points to a valid directory" */
++#ifndef __CYGWIN__
+         if(chroot((char *)chroot_zt) != 0)
+             sys_harderror(L_CHROOT_DO);  /* "Problem changing the root directory." */
++#endif
+ 
+         mlog(L_CHROOT_SUCCESS); /* "Root directory changed" */
+ #else
+@@ -4418,6 +4424,7 @@
+         /* Set the group ID */
+         setgid(gid);
+ 
++#ifndef __CYGWIN__
+         /* Next, change the UID */
+         uid = read_numeric_kvar("maradns_uid",MARADNS_DEFAULT_UID);
+         if(uid < 10)
+@@ -4430,10 +4437,15 @@
+             sys_harderror(L_STILL_ROOT);  /* "We seem to still be root" */
+ 
+         mlog(L_DROP_SUCCESS); /* "Root privileges dropped" */
++#endif /* __CYGWIN__ */
+ #endif /* MINGW32 */
+ 
++#ifndef __CYGWIN__
+         }
+     else {
++#else 
++    if(1 == 2) {
++#endif /* __CYGWIN__ */
+ #ifndef ALLOW_NON_ROOT
+ 	/* I'm not dealing with the ipv4_bind_address/bind_address mess
+ 	 * with cut-and-paste code */

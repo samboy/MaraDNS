@@ -1,0 +1,16 @@
+--- maradns-1.3.07.03/sqa/regressions/README	2007-08-16 08:35:43.000000000 -0500
++++ maradns-1.3.07.04/sqa/regressions/README	2007-08-20 09:41:20.000000000 -0500
+@@ -1,6 +1,13 @@
+ This directory contains various tests, mainly ones that detect the 
+ presence of known MaraDNS bugs that have been fixed.
+ 
++These tests are run by typing in 'sh ./do.test' in the appropriate
++directory for the test in question.
++
++Note that you must be root to run these tests, since they start up maradns
++and what not.  Note also that these tests can be run on a computer not
++connected to the internet.  
++
+ Many tests are described by the corresponding README file in the test's
+ directory.  Some tests, as follows, do not have README files:
+ 

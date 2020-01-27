@@ -1,0 +1,10 @@
+--- maradns-Q.20061007.1/server/recursive.c.orig	2006-10-08 09:28:48.000000000 -0500
++++ maradns-Q.20061007.1/server/recursive.c	2006-10-08 09:30:50.000000000 -0500
+@@ -3179,6 +3179,7 @@
+                              glueless_level,ipret,ptrret) == JS_ERROR) {
+                         return JS_ERROR;
+                     }
++		return JS_SUCCESS; /* Since we did find something */
+                 }
+ 	    /* We couldn't contact any nameservers */
+             /* Return a bogus SOA record */

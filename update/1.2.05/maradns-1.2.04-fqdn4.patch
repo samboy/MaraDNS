@@ -1,0 +1,195 @@
+--- maradns-1.2.04/parse/Csv2_parse.c	2006-01-21 21:22:01.000000000 -0800
++++ maradns-1.2.05/parse/Csv2_parse.c	2006-02-14 01:10:05.000000000 -0800
+@@ -847,10 +847,13 @@
+  * -1 means fatal error or unknown rtype; positive is the rtype */
+ 
+ int csv2_numeric_rtype(js_string *text_rtype) {
++
++	/* these labels are case-insensitive */
+ 	js_set_encode(text_rtype,JS_US_ASCII);
+ 	if(js_tolower(text_rtype) == JS_ERROR) {
+ 		return -1;
+ 	}
++
+ 	if(js_qissame("in",text_rtype) == 1) {
+ 		return -2;
+ 	}
+@@ -884,6 +887,9 @@
+ 	if(js_qissame("txt",text_rtype) == 1) {
+ 		return RR_TXT;
+ 	}
++	if(js_qissame("fqdn4",text_rtype) == 1) {
++		return 65765;
++	}
+ 	return -1;
+ }
+ 
+@@ -1186,6 +1192,11 @@
+ 			}
+ 			rddata = csv2_get_hostname(stream,zone,3);
+ 			break;
++		case 65765: /* FQDN4: This is an A record where we
++                             * automagically also make the corresponding
++                             * PTR record */
++			rddata = csv2_get_a(stream);
++			break;
+ 		default:
+ 			if(rtype >= 100000 && rtype <= 165535) {
+ 				rtype -= 100000;
+--- maradns-1.2.04/parse/Csv2_database.c	2005-12-05 12:57:24.000000000 -0800
++++ maradns-1.2.05/parse/Csv2_database.c	2006-02-14 01:09:59.000000000 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004-2005 Sam Trenholme
++/* Copyright (c) 2004-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -972,7 +972,84 @@
+ 
+ }
+ 
++/* Given a binary js_string object with an IP in it (e.g. "127.0.0.1"
++   is, in hexadecimal "7f000001" in the input), create the corresponding
++   ptr label as a Blabel ("\x011\x010\x010\x03127\x07in-addr\x04arpa\x00"
++   in the "7f000001" case). */
++
++js_string *csv2_make_ptr_query(js_string *binary_ip) {
++	js_string *ptr_label;
++	int len = 0;
++	int counter = 0;
++
++	/* Sanity check */
++	if(js_length(binary_ip) != 4)
++		return 0;
++
++	ptr_label = js_create(31,1); /* Maximum possible length for this */
++	if(ptr_label == 0) {
++		return 0;
++	}
++
++	/* This for loop handles the "d.c.b.a" part of 
++	   "d.c.b.a.in-addr.arpa." */
++	for(counter = 3; counter >= 0; counter--) {
++		char a;
++		int b; 
++		int c = 1;
++		int d;
++		a = (*(binary_ip->string + counter));
++
++		/* The following sillyness is because some versions of
++		   GCC on some ports of linux don't have "unsigned char" */
++		b = a;
++		b &= 0xff;
++
++		if(b < 0) {
++			b += 128;
++		}
++		if(b > 99) {
++			c++; /* Not the programming language */
++		}
++		if(b > 9) {
++			c++; 
++		}	
++		if(len <= 30) 
++			*(ptr_label->string + len) = c;
++		d = c;
++		while(c > 0) {
++			if(len + c <= 30) 
++				*(ptr_label->string + len + c) = '0' + b % 10;
++			b /= 10;
++			c--;
++		}
++		len++;
++		len += d;
++	}
++
++	/* Reset the length of the string */
++	if(len < ptr_label->max_count)
++		ptr_label->unit_count = len;
++
++	/* And now, end it off with "in-addr.arpa." */
++	js_qappend(".in-addr.arpa.",ptr_label);
++	if(len <= 30) {
++		*(ptr_label->string + len) = 7; /* "in-addr" length */	
++	}
++	len += 8;
++	if(len <= 30) {
++		*(ptr_label->string + len) = 4; /* "arpa" length */
++	}
++	len += 5;
++	if(len <= 30) {
++		*(ptr_label->string + len) = 0; /* null to end dlabel */
++	}
++
++	return ptr_label;
++}
++	
+ /* Function to add an rr in general */
++/* Note: "query" is a Blabel */
+ int csv2_add_rr_w(csv2_add_state *state, js_string *query,
+ 		int rtype, int32 ttl, js_string *data) {
+ 	js_string *cquery;
+@@ -1006,6 +1083,18 @@
+ 		counter++;
+ 	}
+ 
++        /* The "magic" rtype of 65765 means that we add this as an
++           A record, then add a PTR record (which is created from the
++           A record) as needed */
++        if(rtype == 65765) {
++            js_string *pq;
++            rtype = 1;
++            pq = csv2_make_ptr_query(data);
++            /* This can not infinitely recurse because we change the
++             * rtype from the magic 65765 rtype */
++	    csv2_add_rr_w(state,pq,RR_PTR,ttl,cquery); 
++            js_destroy(pq);
++            }
+ 	ret = JS_ERROR; /* This should be set to another value */
+ 	switch(state->add_method) {
+ 		case 1: /* Adding records to MaraDNS-1 style "bighash" */
+@@ -1016,7 +1105,8 @@
+ 			ret = csv2_add_rr_zoneserver(state, cquery, rtype,
+ 					ttl, data);
+ 			break;
+-		case 3:
++		case 3: /* Identical to case one, as it turns out; this
++                           last argument is ignored */
+ 			ret = csv2_add_rr_bighash(state, cquery, rtype,
+ 					ttl, data, 1);
+ 			break;
+--- maradns-1.2.04/doc/en/source/csv2.ej	2005-12-13 14:48:12.000000000 -0800
++++ maradns-1.2.05/doc/en/source/csv2.ej	2006-02-14 01:21:11.000000000 -0800
+@@ -190,6 +190,32 @@
+ format for a TXT data field.  Both formats are described in full in the
+ <b>csv2_txt(5)</b> manual page.
+ 
++<h2>FQDN4</h2>
++
++The FQDN4 (short for "Fully Qualified Domain Name for IPv4") record is
++a special form of the "A" record (see above) that instructs MaraDNS
++to automatically create the corresponding PTR record.  For example,
++the following is one way of setting up the reverse DNS lookup for
++x.example.net:
++
++<pre>
++x.example.net. A 10.2.28.79
++79.28.3.10.in-addr.arpa. PTR x.example.net.
++</pre>
++
++But the above two lines in a zone file can also be represented thusly:
++
++<pre>
++x.example.net. FQDN4 10.2.28.79
++</pre>
++
++Note that the csv2 parser does not bother to check that any given IP
++only has a single FQDN4 record; it is up to the DNS administrator to
++ensure that a given IP has only one FQDN4 record.  In the case of
++there being multiple FQDN4 records with the same IP, MaraDNS will
++have multiple entries in the corresponding PTR record, which is 
++usually not the desired behavior.
++
+ <h1>EXAMPLE ZONE FILE</h1>
+ 
+ <pre>

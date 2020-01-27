@@ -1,0 +1,26 @@
+--- maradns-1.3.05/server/MaraDNS.c.orig	2007-05-07 09:36:00.000000000 -0500
++++ maradns-1.3.05/server/MaraDNS.c	2007-05-07 09:36:24.000000000 -0500
+@@ -3614,22 +3614,7 @@
+         point = spot_data.value;
+         if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+ 
+-            /* Optional strict RFC1034 section 4.3.3 compliance */
+-            if(bind_star_handling == 1) {
+-	        if(change_rtype(lookfor,RR_ANY) == JS_ERROR) {
+-		    goto serv_fail;
+-                }
+-                spot_data = mhash_get(bighash,lookfor);
+-                if(spot_data.value != 0 && 
+-                     spot_data.datatype == MARA_DNS_LIST) {
+-                    always_not_there = 4;
+-                    goto skip_starwhitis;
+-                }
+-                if(change_rtype(lookfor,rtype_saver) == JS_ERROR) {
+-                    goto serv_fail;
+-                }
+-            }
+-
++            /* We found the record */
+             udpstar(spot_data.value,header.id,sock,0,origq,origq,
+ 			    desires_recursion,0,ect);
+             js_destroy(lookfor); js_destroy(origq); js_destroy(lc);

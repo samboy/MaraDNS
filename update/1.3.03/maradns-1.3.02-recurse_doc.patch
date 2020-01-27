@@ -1,0 +1,95 @@
+--- maradns-1.3.02/doc/en/source/recursive.ej	2006-11-24 03:44:29.000000000 -0800
++++ maradns-1.3.03/doc/en/source/recursive.ej	2007-01-18 22:39:02.000000000 -0800
+@@ -4,7 +4,7 @@
+ 
+ </HEAD><BODY>
+ 
+-<!-- Copyright 2005-2006 Sam Trenholme
++<!-- Copyright 2005-2007 Sam Trenholme
+ 
+     TERMS
+ 
+@@ -35,6 +35,8 @@
+ <li><A href=#upstream>Using other recursive DNS servers</A>
+ <li><A href=#otherroot>Using different root servers</A>
+ <li><A href=#private>Having private host names</A>
++<li><A href=#privateauth>Using authoritative records for private names</A>
++<li><A href=#privateroot>Private names with custom root servers</A>
+ <li><A href=#custom>Customizing the resolution of some names</A>
+ </ul>
+ 
+@@ -286,12 +288,23 @@
+ One may wish to have private host names when running MaraDNS as a recursive
+ name server.  These are names that are not attached to the root servers,
+ but will resolve on the recursive name server.  For example, it might make
+-sense to have "router.example.com." resolve to the IP of a router in an
++sense to have "router.office." resolve to the IP of a router in an
+ office.
+ 
+ <p>
+ 
+-This is done by taking advantage of the fact that MaraDNS 
++There are two ways to do this with MaraDNS: By using a custom
++root server for only names that end in "office", or by having the
++authoritative half of MaraDNS handle custom name resolutions.
++
++<p>
++
++<A name="privateauth">
++<h2>Using authoritative records for private names</h2>
++</A>
++
++We can have local names by taking advantage of the fact that
++MaraDNS 
+ can act as both a recursive and authoritative name server on the same IP.
+ MaraDNS first looks up authoritative names before performing recursion.
+ For example, if <tt>www.google.com</tt> is defined in a MaraDNS zone
+@@ -323,7 +336,7 @@
+ chroot_dir = "/etc/maradns"
+ recursive_acl = "192.168.0.0/24"
+ csv2 = {}
+-csv2["example.com."] = "db.example.com"
++csv2["office."] = "db.office"
+ </pre>
+ 
+ Replace 192.168.0.1 with the IP of the machine running the recursive MaraDNS;
+@@ -347,6 +360,39 @@
+ in the <A href="authoritative.html#network">network section of the
+ authoritative document</A>.
+ 
++<A name="privateroot"> 
++<h2>Private names with custom root servers</h2>
++</A>
++
++MaraDNS, starting with version 1.3.02, can have custom root name servers
++that only resolve names in a subtree of the DNS space.  In other words,
++we can tell MaraDNS to have 192.168.0.7 resolve all names ending in 
++<tt>office</tt> by having a line like this in one's mararc file:
++
++<pre>
++root_servers["office."] = "192.168.0.7"
++</pre>
++
++Here is how a configuration may look on 192.168.0.1, the recursive
++server:
++
++<pre>
++ipv4_bind_addresses = "192.168.0.1"
++chroot_dir = "/etc/maradns"
++recursive_acl = "192.168.0.0/24"
++root_servers = {}
++root_servers["office."] = "192.168.0.7"
++</pre>
++
++And the configuration on 192.168.0.7, the authoritative server:
++
++<pre>
++ipv4_bind_addresses = "192.168.0.7"
++chroot_dir = "/etc/maradns"
++csv2 = {}
++csv2["office."] = "db.office"
++</pre>
++
+ <A name=custom>
+ <h2>Customizing the resolution of some names</h2>
+ </A>

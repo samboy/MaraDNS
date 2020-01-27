@@ -1,0 +1,132 @@
+--- maradns-1.3.07.03/sqa/regressions/askmara.bug/do.test	2007-06-29 14:32:31.000000000 -0500
++++ maradns-1.3.07.04/sqa/regressions/askmara.bug/do.test	2007-08-28 08:41:35.000000000 -0500
+@@ -2,12 +2,14 @@
+ 
+ # This tests for a known bug in askmara
+ 
+-cc -o bad.packet bad.packet.c
++cc -o bad.packet bad.packet.c > /dev/null 2>&1
+ 
+ # OK, test the server
+ ./bad.packet > /dev/null &
+ sleep 1
+-../../../tools/askmara Tt1.example.com.
++../../../tools/askmara -t 1 Tt1.example.com. > /dev/null
++../../../tools/askmara -t 1 Tt1.example.com. > /dev/null
++../../../tools/askmara -t 1 Tt1.example.com. 
+ sleep 1
+ killall bad.packet
+ sleep 1
+--- maradns-1.3.07.03/sqa/regressions/loc/do.test	2007-08-11 09:40:08.000000000 -0500
++++ maradns-1.3.07.04/sqa/regressions/loc/do.test	2007-08-28 10:42:01.000000000 -0500
+@@ -19,7 +19,7 @@
+ # OK, test the server
+ ../../../server/maradns -f mararc > /dev/null 2>&1 &
+ sleep 1
+-dig @127.0.0.1 example.com loc | grep 123
++dig @127.0.0.1 example.com loc | grep 123 | awk '{$1=$1;print $0}'
+ sleep 1
+ killall maradns
+ rm mararc
+--- maradns-1.3.07.03/sqa/regressions/loc/output.success	2007-08-11 09:38:54.000000000 -0500
++++ maradns-1.3.07.04/sqa/regressions/loc/output.success	2007-08-28 10:39:58.000000000 -0500
+@@ -1 +1 @@
+-example.com.            86400   IN      LOC     19 31 2.123 N 98 3 4.000 W 2000.00m 10m 100m 1000m
++example.com. 86400 IN LOC 19 31 2.123 N 98 3 4.000 W 2000.00m 10m 100m 1000m
+--- maradns-1.3.07.03/sqa/regressions/noise/do.test	2007-06-19 08:59:08.000000000 -0500
++++ maradns-1.3.07.04/sqa/regressions/noise/do.test	2007-08-28 21:52:54.000000000 -0500
+@@ -8,13 +8,15 @@
+ chroot_dir="$( /bin/pwd )"
+ recursive_acl="127.0.0.1/16"
+ ipv4_bind_addresses="127.0.0.1"
++max_mem = 100000000
+ EOF
+ 
+-valgrind ../../../server/maradns -f mararc 2>&1 | fgrep 'ly lost' &
++valgrind ../../../server/maradns -f mararc 2>&1 | \
++	fgrep 'definitely lost' | awk '{print $4}' &
+ echo wait 5 seconds
+ sleep 5
+ for a in 1 2 3 4 5 ; do
+-	./sendnoise Awww${a}.example.com. 127.0.0.1
++	./sendnoise Awww${a}.example.com. 127.0.0.1 > /dev/null
+ 	echo wait 1 second
+ 	sleep 1
+ done
+--- maradns-1.3.07.03/sqa/regressions/predator1/do.test	2007-06-19 08:59:08.000000000 -0500
++++ maradns-1.3.07.04/sqa/regressions/predator1/do.test	2007-08-28 21:53:05.000000000 -0500
+@@ -8,13 +8,16 @@
+ chroot_dir="$( /bin/pwd )"
+ recursive_acl="127.0.0.1/16"
+ ipv4_bind_addresses="127.0.0.1"
++max_mem = 100000000
+ EOF
+ 
+-valgrind ../../../server/maradns -f mararc 2>&1 | fgrep 'ly lost' &
++valgrind ../../../server/maradns -f mararc 2>&1 | \
++ 	fgrep 'definitely lost' | awk '{print $4}' &	
++#	cat &
+ echo wait 5 seconds
+ sleep 5
+ for a in 1 2 3 4 5 ; do
+-	./sendp1 Awww.example.com. 127.0.0.1
++	./sendp1 Awww.example.com. 127.0.0.1 > /dev/null
+ 	echo wait 1 second
+ 	sleep 1
+ done
+--- maradns-1.3.07.03/sqa/regressions/predator2/do.test	2007-06-19 08:59:08.000000000 -0500
++++ maradns-1.3.07.04/sqa/regressions/predator2/do.test	2007-08-28 21:53:16.000000000 -0500
+@@ -8,13 +8,15 @@
+ chroot_dir="$( /bin/pwd )"
+ recursive_acl="127.0.0.1/16"
+ ipv4_bind_addresses="127.0.0.1"
++max_mem = 100000000
+ EOF
+ 
+-valgrind ../../../server/maradns -f mararc 2>&1 | fgrep 'ly lost' &
++valgrind ../../../server/maradns -f mararc 2>&1 | \
++	fgrep 'definitely lost' | awk '{print $4}' &
+ echo wait 5 seconds
+ sleep 5
+ for a in 1 2 3 4 5 ; do
+-	./sendp2 Awww.example.com. 127.0.0.1
++	./sendp2 Awww.example.com. 127.0.0.1 > /dev/null
+ 	echo wait 1 second
+ 	sleep 1
+ done
+--- maradns-1.3.07.03/sqa/regressions/star_handling_leak/do.test	2007-06-19 08:59:08.000000000 -0500
++++ maradns-1.3.07.04/sqa/regressions/star_handling_leak/do.test	2007-08-28 21:47:03.000000000 -0500
+@@ -14,10 +14,11 @@
+ *.example.net. 127.0.0.3
+ EOF
+ 
+-valgrind ../../../server/maradns -f mararc 2>&1 | fgrep 'ly lost' &
++valgrind ../../../server/maradns -f mararc 2>&1 | \
++	fgrep 'definitely lost' | awk '{print $4}' &
+ echo wait 5 seconds
+ sleep 5
+-../../../tools/askmara Ab.a.example.net. 127.0.0.1
++../../../tools/askmara Ab.a.example.net. 127.0.0.1 | grep NAME
+ sleep 1
+ kill $( ps auxw | grep maradns | grep -v grep | awk '{print $2}' )
+ 
+--- maradns-1.3.07.03/sqa/regressions/ptr_leak/do.test	2007-06-19 08:59:08.000000000 -0500
++++ maradns-1.3.07.04/sqa/regressions/ptr_leak/do.test	2007-08-28 22:26:08.000000000 -0500
+@@ -18,13 +18,14 @@
+ foo. CNAME bar.
+ EOF
+ 
+-../../../server/maradns -f mararc1 &
++../../../server/maradns -f mararc1 > /dev/null &
+ echo wait 5 seconds
+ sleep 5
+-valgrind ../../../server/maradns -f mararc2 2>&1 | fgrep 'ly lost' &
++valgrind ../../../server/maradns -f mararc2 2>&1 | \
++	fgrep 'definitely lost' | awk '{print $4}' &
+ echo wait 5 seconds
+ sleep 5
+-../../../tools/askmara 12:foo. 127.0.0.2
++../../../tools/askmara 12:foo. 127.0.0.2 > /dev/null
+ sleep 1
+ kill $( ps auxw | grep maradns | grep -v grep | awk '{print $2}' )
+ sleep 1

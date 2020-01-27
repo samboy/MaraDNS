@@ -1,0 +1,32 @@
+--- maradns-1.2.07.3/server/MaraDNS.c	2006-04-05 02:11:48.000000000 -0700
++++ maradns-1.2.07.4/server/MaraDNS.c	2006-05-22 18:45:37.000000000 -0700
+@@ -498,6 +498,7 @@
+ 
+     uint16 first_rr_type;
+     int in_ns = 0;
++    int ns_delegation = 0;
+     int length_save;
+     int len_inet = sizeof(struct sockaddr);
+     rr *ipwhere = 0;
+@@ -558,6 +559,12 @@
+         }
+     first_rr_type = get_rtype(query);
+ 
++    /* Somewhat hacky way to determine that this is a NS delegation */
++    ns_delegation = 0;
++    if(first_rr_type != RR_NS && where->rr_type == RR_NS) {
++        ns_delegation = 1;
++        }
++
+     /* With the cache, this may be a rtype of RR_ANY.  We need to handle
+        this special case */
+ 
+@@ -623,7 +630,7 @@
+                             8 records in the authority section */
+             }
+         if(a_count < max_chain && total_count < max_total && (in_ns == 0
+-           || is_auth == 1)) {
++           || is_auth == 1 || ns_delegation == 1)) {
+             a_count++;
+             total_count++;
+             if(!in_ns) {

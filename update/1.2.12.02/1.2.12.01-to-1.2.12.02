@@ -1,0 +1,273 @@
+#!/bin/bash -e
+
+# This script updates MaraDNS 1.2
+
+# To run this script, make sure that this script is in the directory
+# containing the tarball for the version of MaraDNS you wish to update, and
+# all of the patches are in a directory entitled 'patches'.
+
+# For example, to update MaraDNS 1.2.02 to 1.2.03, make sure 
+# maradns-1.2.02.tar.lzma is in the same directory as this script, and
+# that the directory containing this script has a directory called
+# "patches/" which has all of the maradns-1.2.02*.patch files.
+
+# You will need to have lzma on your system to run this script
+
+# Get the current and next version number
+
+CURRENT=${0%%-*}
+CURRENT=${CURRENT##*/}
+NEXT=${0##*-}
+
+# Make a clean CURRENT install, which we rename NEXT
+rm -fr maradns-$CURRENT 2> /dev/null
+rm -fr maradns-$NEXT 2> /dev/null
+echo extracting tarball
+cat maradns-$CURRENT.tar.lzma | lzma d -si -so | tar xf -
+if [ $? != 0 ] ; then
+	echo run this from the correct directory
+	exit 1
+fi
+rm -fr maradns-$NEXT*
+mv maradns-$CURRENT maradns-$NEXT
+cd maradns-$NEXT
+
+# The patches
+
+mkdir update/$NEXT
+cp ../patches/maradns-$CURRENT* update/$NEXT
+
+# This is one of the few places where we will need to change anything
+# in this script from version to version
+
+# The revision number; in the case of having multiple snapshots a day,
+# the revision number can be incremented so as to minimize confusion
+# This is only done when more than one snapshop is uploaded to the
+# maradns.org server in a given day.
+REVISION=.1
+
+echo applying patches
+# Patch #1: Deallocate a little bit of wasted memory in the Csv2_read code
+patch -p1 < update/$NEXT/maradns-1.2.12.01-csv2_read_tidy.patch
+
+# Patch #2: Update the old testbed to use the 127.0.3 network instead of
+#           127.0.0 (so this test doesn't stomp on legit invocations of
+#           maradns); we also use a relative path for the maradns binary
+patch -p1 < update/$NEXT/maradns-1.2.12.01-old_testbed.patch
+
+# Patch #3: Fix a big where a PTR request that points to a CNAME that
+#           points to a non-responsive server would generate an invalid
+#           packet.
+patch -p1 < update/$NEXT/maradns-1.2.12.01-ptrret_noreply.patch
+
+# Patch #4: Add an entry about how to correctly send DNS queries when
+#           MaraDNS performs NS delegation
+patch -p1 < update/$NEXT/maradns-1.2.12.01-delegate_faq.patch
+
+# Patch #4: Update the test that sends a large number of real-world DNS
+#           queries to also reverse-DNS-lookup random IPs every 17th lookup
+patch -p1 < update/$NEXT/maradns-1.2.12.01-update_franky_test.patch
+
+# Patch #5: Update the Win32 readme.txt by pointing out that you can now
+#           run MaraDNS as a Windows service
+patch -p1 < update/$NEXT/maradns-1.2.12.01-win32_readme.patch
+
+# Patch #6: Limit the number of dangling CNAME warnings shown
+patch -p1 < update/$NEXT/maradns-1.2.12.01-limit_dangling_shown.patch
+
+# Patch #7: Give both root and non-root the same ipv4_bind_addresses /
+#           bind_address sematics
+patch -p1 < update/$NEXT/maradns-1.2.12.01-non_root_ipv4.patch
+
+# Patch #8: Make the security documentation current
+patch -p1 < update/$NEXT/maradns-1.2.12.01-security_doc.patch
+
+# Patch #9: Fix various bugs that have popped up with the new truncation
+#           code (we also tweak Compress.c since this code makes packets
+#           that Compress.c couldn't handle)
+patch -p1 < update/$NEXT/maradns-1.2.12.01-truncation_bugs.patch
+
+# Patch #10: Make sure the compression conforms to MaraDNS coding style
+patch -p1 < update/$NEXT/maradns-1.2.12.01-compress_style.patch
+
+# Patch #11: Update some outdated information in the MaraDNS man page and
+#            FAQ
+patch -p1 < update/$NEXT/maradns-1.2.12.01-doc_update.patch
+
+# Patch #12: Document the mqhash program
+patch -p1 < update/$NEXT/maradns-1.2.12.01-mqhash_doc.patch
+
+# Patch #13: Various fixes suggested by the Valgrind utility
+patch -p1 < update/$NEXT/maradns-1.2.12.01-valgrind_fixes.patch
+
+# Patch #14: Update the year for Csv2_main.c 
+patch -p1 < update/$NEXT/maradns-1.2.12.01-csv2_main_year.patch
+
+# Patch #15: Since mingw32 doesn't have gmtime_r, don't allow people to
+# set synth_soa_serial to 2 on the win32 port
+patch -p1 < update/$NEXT/maradns-1.2.12.01-mingw32_no_gmtime.patch
+
+# Patch #16: Fix the things in the csv2 parsing code that valgrind 
+# is complaining about
+patch -p1 < update/$NEXT/maradns-1.2.12.01-valgrind_csv2_fixes.patch
+
+# Patch #17: Fix the .pdf file to use letter, not A4, paper size
+patch -p1 < update/$NEXT/maradns-1.2.12.01-letter_size_pdffile.patch
+
+# Patch #18: Fix "contact me" FAQ entry to have explicit URL in 
+# text so that the ASCII FAQ is usable.
+patch -p1 < update/$NEXT/maradns-1.2.12.01-faq_contact.patch
+
+# Patch #19: Change mhash_get_immutable_key to mhash_copy_immutable_key
+# (the old get_immutable_key forced the autogrow to leak memory, since we
+#  could never deallocate the memory used to store a hash key)
+# (Not yet; this requires changes to recursive.c that require some testing
+#  and tweaking to get just right)
+#patch -p1 < update/$NEXT/maradns-1.2.12.01-no_get_immutable.patch
+
+# Patch: Update RPM spec file (this is always done)
+patch -p1 < update/$NEXT/maradns-$CURRENT-rpm_spec.patch
+mv build/maradns-$CURRENT.spec build/maradns-$NEXT.spec
+
+# Patch: Update changelog (this is always done)
+patch -p1 < update/$NEXT/maradns-$CURRENT-changelog.patch
+
+# Patch: Update download link (this is always done)
+patch -p1 < update/$NEXT/maradns-$CURRENT-download.patch
+
+# Other release-specific fixes and changes go here
+# Daniel's maraconf tool
+cp ../newfiles/maraconf.sh tools/
+# Some updates to the SQA process
+cp ../newfiles/1.2.NEW.TESTS sqa/
+cd sqa
+tar xvjf ../../newfiles/roottest.tar.bz2
+cd ..
+# Since it may be a while before I release 1.2.07.9, make a backup of the
+# script and patches to go from 1.2.07.8 to 1.2.07.9
+mkdir update/1.2.07.9
+cp ../1.2.07.8-to-1.2.07.9 update/1.2.07.9
+cp ../patches/maradns-1.2.07.8* update/1.2.07.9
+# Copy over some documents advocating MaraDNS
+cp -a ../advocacy doc/en/misc
+# Remove old compression code
+rm dns/Compress_old.c
+# Add openbsd version of stress test
+cp ../newfiles/franky.hosts.test.openbsd sqa/
+# Remove cruft: old logfile ended up in doc/en
+rm doc/en/logfile
+# Update the webpage a little
+cd doc/en/webpage
+rm faq.embed
+ln -s ../source/faq.embed faq.embed
+cd ../../..
+rm -fr doc/en/webpage/old
+# Remove stress test that is identical to other stress test
+rm sqa/old-testbed/cache.stress.test.4
+
+# Anything below this line normally is not changed between MaraDNS versions
+echo updating documentation
+
+# Update the documentation
+cd doc/en
+make
+cd man
+make
+# The following is time-consuming, so we only do it when making the final
+# tarballs
+if [[ "$1" == "go" || "$1" == "snap" ]] ; then
+	echo making PDF reference
+	./make.pdf
+	echo done
+fi
+cd ../tutorial
+make
+cd ../text
+make
+cd ../webpage
+make
+# Go back to the maradns dir
+cd ../../..
+
+rm CHANGELOG
+ln -s doc/en/changelog.txt CHANGELOG
+
+# Go one level higher than the toplevel directory to copy this script
+# over
+cd ..
+
+# Put this script in the "build" directory
+cp $0 maradns-$NEXT/update/$NEXT
+
+if [[ "$1" != "go" && "$1" != "snap" && "$1" != "work" ]] ; then
+	echo OK, maradns-$NEXT built.  Confirm this compiles and	
+	echo perform basic regression before re-running this to make
+	echo the tarballs.  Once you have tested this, rerun this 
+	echo script as: \"$0 go\" or as \"$0 snap\" 
+        echo to make a daily snapshot
+	exit 0
+fi
+
+if [ "$1" == "work" ] ; then
+	cat maradns-$CURRENT.tar.lzma | lzma d -si -so | tar xf -
+	echo OK, both maradns-$CURRENT and maradns-$NEXT made\; you
+	echo now can make more patches as needed.  
+	exit 0
+fi
+
+# Build the tarballs
+echo making new tarballs
+
+if [ "$1" == "snap" ] ; then
+	SNAP=Q.$( date +%Y%m%d )$REVISION
+	rm -fr maradns-$SNAP
+	mv maradns-$NEXT maradns-$SNAP
+	tar cjf maradns-$SNAP.tar.bz2 maradns-$SNAP
+	exit 0
+else
+	SNAP=$NEXT
+	tar cjf maradns-$SNAP.tar.bz2 maradns-$SNAP
+	tar czf maradns-$SNAP.tar.gz maradns-$SNAP
+
+	# All of the compression we actually use was originally written by 
+	# Igor Pavlov for the 7-zip compression suite
+	echo shrinking .gz tarball
+	advdef -z -3 maradns-$SNAP.tar.gz
+fi
+
+echo using exotic compression
+tar cf maradns-$SNAP.tar maradns-$SNAP
+
+echo lzma compression \(this will take about 5 minutes\)
+date
+# To decompress: cat file.tar.lzma | lzma d -si -so | tar xvf -
+# -d20 makes the file almost as small as -d22, but uses 1/4 of the memory
+# (only a little over one meg needed for decompression)
+lzma e maradns-$SNAP.tar maradns-$SNAP.tar.lzma -a2 -d20 -fb255
+date
+echo
+
+# Clean up the uncompressed tarball
+rm maradns-$SNAP.tar
+
+exit 0
+
+# The other exotic compressors can't be run in a pipeline
+
+echo 7zip compression
+date
+7za a maradns-$SNAP.tar.7z maradns-$SNAP.tar
+date
+echo
+
+echo paq6 compression \(This will take 2\-3 minutes\)
+date
+paq6v2 -2 maradns-$SNAP.tar.pq6 maradns-$SNAP.tar
+date
+echo
+
+echo rzip compression
+date
+rzip maradns-$SNAP.tar
+date
+echo

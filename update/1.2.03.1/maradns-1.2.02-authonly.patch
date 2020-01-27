@@ -1,0 +1,58 @@
+This allows MaraDNS to be compiled as an authoritative-only DNS server
+with the new build process.
+
+--- maradns-1.2.03.1/tcp/Makefile.authonly	2006-01-02 08:59:33.000000000 -0800
++++ maradns-1.2.03.2/tcp/Makefile.authonly	2006-01-21 21:06:55.000000000 -0800
+@@ -16,8 +16,7 @@
+ 	$(TCPOBJS)
+ EXECS=getzone zoneserver fetchzone
+ 
+-#FLAGS = -g -Wall $(DEBUG) -DAUTHONLY
+-#FLAGS = -g $(DEBUG)
++FLAGS = -DAUTHONLY
+ 
+ all: $(EXECS)
+ 
+--- maradns-1.2.03.1/dns/Makefile.authonly	2006-01-02 08:59:33.000000000 -0800
++++ maradns-1.2.03.2/dns/Makefile.authonly	2006-01-21 21:07:11.000000000 -0800
+@@ -3,8 +3,7 @@
+ MHOBJS=../libs/MaraHash.o
+ OBJECTS=$(DOBJECTS) $(JOBJS) $(MHOBJS)
+ 
+-#FLAGS = -g -Wall $(DEBUG) -DAUTHONLY
+-#FLAGS = -g $(DEBUG)
++FLAGS = -DAUTHONLY
+ 
+ all: Queries.o Compress.o bobbit.o Decompress.o
+ 
+--- maradns-1.2.03.1/server/Makefile.authonly	2006-01-02 08:59:33.000000000 -0800
++++ maradns-1.2.03.2/server/Makefile.authonly	2006-01-21 21:07:04.000000000 -0800
+@@ -12,15 +12,7 @@
+ OBJECTS=$(JOBJS) $(MHOBJS) $(MJOBJS) $(SOBJECTS) $(DOBJECTS) $(POBJECTS) $(ROBJECTS)
+ EXECS=maradns.authonly
+ 
+-#FLAGS = -g -Wall
+-#FLAGS = -g -DDEBUG -DCALL_LOCKS
+-#FLAGS = -g -DCALL_LOCKS $(DEBUG)
+-#FLAGS = -g -DDEBUG 
+-#FLAGS = -g -DDEBUG -DNOTHREAD
+-#FLAGS = -g $(DEBUG) -DNOTHREAD -DDEBUG
+-#FLAGS = -g -DDEBUG_MEMORY $(DEBUG) 
+-#FLAGS = -g $(DEBUG) 
+-#FLAGS = -g -Wall $(DEBUG) $(DEFINES) -DAUTHONLY
++FLAGS = -DAUTHONLY
+ 
+ all: $(EXECS)
+ 
+--- maradns-1.2.03.1/qual/Makefile.nothreads	2005-11-07 20:06:25.000000000 -0800
++++ maradns-1.2.03.2/qual/Makefile.nothreads	2006-01-21 21:09:52.000000000 -0800
+@@ -2,8 +2,7 @@
+ JOBJS=../libs/JsStr.o ../libs/JsStrOS.o ../libs/JsStrCP.o 
+ OBJECTS=$(DOBJECTS)
+ 
+-FLAGS = -g -Wall $(DEBUG) -DAUTHONLY
+-#FLAGS = -g $(DEBUG) -DAUTHONLY
++FLAGS = -DAUTHONLY
+ 
+ all: qual_timestamp.o
+ 

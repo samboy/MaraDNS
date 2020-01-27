@@ -1,0 +1,156 @@
+BYTE is already defined in win32; hence the need for a special
+"MARA_BYTE" name.
+
+diff -ur maradns-1.2.02/rng/rng-api-fst.c maradns-1.2.03/rng/rng-api-fst.c
+--- maradns-1.2.02/rng/rng-api-fst.c	2003-01-11 22:51:26.000000000 -0800
++++ maradns-1.2.03/rng/rng-api-fst.c	2006-01-12 17:00:45.000000000 -0800
+@@ -64,7 +64,7 @@
+ #include "rng-alg-fst.h"
+ #include "rng-api-fst.h"
+ 
+-int makeKey(keyInstance *key, BYTE direction, int keyLen, char *keyMaterial) {
++int makeKey(keyInstance *key, MARA_BYTE direction, int keyLen, char *keyMaterial) {
+ 	int i;
+ 	char *keyMat;
+ 	u8 cipherKey[MAXKB];
+@@ -123,7 +123,7 @@
+ 	return TRUE;
+ }
+ 
+-int cipherInit(cipherInstance *cipher, BYTE mode, char *IV) {
++int cipherInit(cipherInstance *cipher, MARA_BYTE mode, char *IV) {
+ 	if (mode == MODE_ECB) {
+ 		cipher->mode = mode;
+ 	} else {
+@@ -138,7 +138,7 @@
+ }
+ 
+ int blockEncrypt(cipherInstance *cipher, keyInstance *key,
+-		BYTE *input, int inputLen, BYTE *outBuffer) {
++		MARA_BYTE *input, int inputLen, MARA_BYTE *outBuffer) {
+ 	int i, numBlocks;
+ 
+ 	if (cipher == NULL ||
+diff -ur maradns-1.2.02/rng/rng-api-fst.h maradns-1.2.03/rng/rng-api-fst.h
+--- maradns-1.2.02/rng/rng-api-fst.h	2003-01-11 22:52:22.000000000 -0800
++++ maradns-1.2.03/rng/rng-api-fst.h	2006-01-12 17:00:45.000000000 -0800
+@@ -88,11 +88,11 @@
+ 
+ /*  Typedefs  */
+ 
+-typedef unsigned char   BYTE;
++typedef unsigned char   MARA_BYTE;
+ 
+ /*  The structure for key information */
+ typedef struct {
+-    BYTE  direction;                /* Key used for encrypting or decrypting? */
++    MARA_BYTE  direction;                /* Key used for encrypting or decrypting? */
+     int   keyLen;                   /* Length of the key  */
+     char  keyMaterial[MAX_KEY_SIZE+1];  /* Raw key data in ASCII, e.g., user input or KAT values */
+ 	int   Nr;                       /* key-length-dependent number of rounds */
+@@ -102,31 +102,31 @@
+ 
+ /*  The structure for cipher information */
+ typedef struct {                    /* changed order of the components */
+-    BYTE  mode;                     /* MODE_ECB, MODE_CBC, or MODE_CFB1 */
+-    BYTE  IV[MAX_IV_SIZE];          /* A possible Initialization Vector for ciphering */
++    MARA_BYTE  mode;                     /* MODE_ECB, MODE_CBC, or MODE_CFB1 */
++    MARA_BYTE  IV[MAX_IV_SIZE];          /* A possible Initialization Vector for ciphering */
+ } cipherInstance;
+ 
+ /*  Function prototypes  */
+ 
+-int makeKey(keyInstance *key, BYTE direction, int keyLen, char *keyMaterial);
++int makeKey(keyInstance *key, MARA_BYTE direction, int keyLen, char *keyMaterial);
+ 
+-int cipherInit(cipherInstance *cipher, BYTE mode, char *IV);
++int cipherInit(cipherInstance *cipher, MARA_BYTE mode, char *IV);
+ 
+ int blockEncrypt(cipherInstance *cipher, keyInstance *key,
+-        BYTE *input, int inputLen, BYTE *outBuffer);
++        MARA_BYTE *input, int inputLen, MARA_BYTE *outBuffer);
+ 
+ int padEncrypt(cipherInstance *cipher, keyInstance *key,
+-		BYTE *input, int inputOctets, BYTE *outBuffer);
++		MARA_BYTE *input, int inputOctets, MARA_BYTE *outBuffer);
+ 
+ int blockDecrypt(cipherInstance *cipher, keyInstance *key,
+-        BYTE *input, int inputLen, BYTE *outBuffer);
++        MARA_BYTE *input, int inputLen, MARA_BYTE *outBuffer);
+ 
+ int padDecrypt(cipherInstance *cipher, keyInstance *key,
+-		BYTE *input, int inputOctets, BYTE *outBuffer);
++		MARA_BYTE *input, int inputOctets, MARA_BYTE *outBuffer);
+ 
+ #ifdef INTERMEDIATE_VALUE_KAT
+ int cipherUpdateRounds(cipherInstance *cipher, keyInstance *key,
+-        BYTE *input, int inputLen, BYTE *outBuffer, int Rounds);
++        MARA_BYTE *input, int inputLen, MARA_BYTE *outBuffer, int Rounds);
+ #endif /* INTERMEDIATE_VALUE_KAT */
+ 
+ #endif /* __RIJNDAEL_API_FST_H */
+--- maradns-1.2.02/server/recursive.c	2005-12-05 14:39:31.000000000 -0800
++++ maradns-1.2.03/server/recursive.c	2006-01-12 17:05:52.000000000 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2005 Sam Trenholme
++/* Copyright (c) 2002-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -153,8 +153,8 @@
+ 
+ /* BEGIN RNG USING CODE */
+ /* The variables that the srng (secure random-number generator) uses */
+-BYTE r_inBlock[17],r_outBlock[17],r_binSeed[17];
+-BYTE r_seedMaterial[320]; /* We may not eventually need this */
++MARA_BYTE r_inBlock[17],r_outBlock[17],r_binSeed[17];
++MARA_BYTE r_seedMaterial[320]; /* We may not eventually need this */
+ keyInstance r_seedInst;
+ cipherInstance r_cipherInst;
+ u_int32_t r_counter = 0;
+--- maradns-1.2.02/tools/askmara.c	2006-01-02 08:59:33.000000000 -0800
++++ maradns-1.2.03/tools/askmara.c	2006-01-12 17:05:42.000000000 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2005 Sam Trenholme
++/* Copyright (c) 2002-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -92,7 +92,7 @@
+ u_int16_t gen_id(char *hostname) {
+     /* BEGIN RNG USING CODE */
+     /* May as well bring out the bug guns (e.g. our secure RNG) */
+-    BYTE r_inBlock[17],r_outBlock[17],r_binKey[17];
++    MARA_BYTE r_inBlock[17],r_outBlock[17],r_binKey[17];
+     keyInstance r_keyInst;
+     cipherInstance r_cipherInst;
+     unsigned char crypto_key[34];
+--- maradns-1.2.02/tcp/zoneserver.c	2005-12-04 23:58:28.000000000 -0800
++++ maradns-1.2.03/tcp/zoneserver.c	2006-01-12 17:05:32.000000000 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2005 Sam Trenholme and Albert Lee
++/* Copyright (c) 2002-2006 Sam Trenholme and Albert Lee
+  *
+  * TERMS
+  *
+@@ -115,8 +115,7 @@
+     pid_t process_id = 0;
+     char path[MAXPATHLEN + 2];
+     uint16 ret;
+-    static BYTE r_inBlock[17],r_outBlock[17],r_binSeed[17];
+-    /* static BYTE r_seedMaterial[320]; (We don't need this anymore) */
++    static MARA_BYTE r_inBlock[17],r_outBlock[17],r_binSeed[17];
+     static keyInstance r_seedInst;
+     static cipherInstance r_cipherInst;
+ 
+--- maradns-1.2.02/tools/askmara-tcp.c	2006-01-02 08:59:33.000000000 -0800
++++ maradns-1.2.03/tools/askmara-tcp.c	2006-01-12 17:05:15.000000000 -0800
+@@ -89,7 +89,7 @@
+ u_int16_t gen_id(char *hostname) {
+     /* BEGIN RNG USING CODE */
+     /* May as well bring out the bug guns (e.g. our secure RNG) */
+-    BYTE r_inBlock[17],r_outBlock[17],r_binKey[17];
++    MARA_BYTE r_inBlock[17],r_outBlock[17],r_binKey[17];
+     keyInstance r_keyInst;
+     cipherInstance r_cipherInst;
+     unsigned char crypto_key[34];

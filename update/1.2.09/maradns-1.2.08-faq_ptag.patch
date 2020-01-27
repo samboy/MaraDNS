@@ -1,0 +1,11 @@
+--- maradns-1.2.08/doc/en/source/faq.embed	2006-06-11 02:20:01.000000000 -0700
++++ maradns-1.2.09//doc/en/source/faq.embed	2006-06-11 03:41:04.000000000 -0700
+@@ -65,7 +65,7 @@
+ 
+ 27. <A href="#validate">Why doesn't the MaraDNS.org web page validate?</A><p>
+ 
+-28. <A href="#mx">How do MX records work?</A>
++28. <A href="#mx">How do MX records work?</A><p>
+ 
+ 29. <A href="#spf">Does MaraDNS have support for SPF?</A>
+ 

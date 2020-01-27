@@ -1,0 +1,119 @@
+--- maradns-1.3.08/parse/Csv2_parse.c.orig	2007-09-19 16:25:48.000000000 -0500
++++ maradns-1.3.08/parse/Csv2_parse.c	2007-09-19 16:33:43.000000000 -0500
+@@ -1116,6 +1116,10 @@
+         if(js_qissame("loc",text_rtype) == 1) {
+                 return RR_LOC;
+         }
++	/* Maybe not obscure RFC3403 RR */
++        if(js_qissame("naptr",text_rtype) == 1) {
++		return RR_NAPTR;
++	}
+         return -1;
+ }
+ 
+@@ -1780,6 +1784,8 @@
+                         }
+                         rddata = csv2_get_loc(stream);
+                         break;
++		case RR_NAPTR:
++			rddata = csv2_get_naptr(stream);
+                 default:
+                         /* RAW rtype */
+                         if(rtype >= 100000 && rtype <= 165535) {
+--- maradns-1.3.08/parse/Csv2_rr_wks.c.orig	2007-02-14 09:25:28.000000000 -0600
++++ maradns-1.3.08/parse/Csv2_rr_wks.c	2007-09-19 17:05:36.000000000 -0500
+@@ -633,4 +633,83 @@
+ 	return out;
+ 	
+ }
+-	
++  
++/* This processes the somewhat complicated NAPTR RR (RFC3403, etc.) */
++
++js_string *csv2_get_naptr(csv2_read *stream) {
++	/* New coding style practices.  All variables, when feasible,
++         * are initialized when declared */
++	js_string *out = 0;
++	js_string *name = 0;
++	js_string *zone = 0;
++	int num = 0;
++	int c = 0;
++
++	out = js_create(256,1);
++	if(out == 0) {
++		return 0;
++	}
++
++	/* RFC3403 section 4.1 */
++	/* Get the "order" and "preference" (both numbers) */
++	for(c = 1; c <= 2; c++) {
++		if((num = csv2_get_num(stream)) < 0) {
++			js_destroy(out);
++			return 0;
++		}
++		if(js_adduint16(out,num) == JS_ERROR) {
++			js_destroy(out);
++			return 0;
++		}
++	}
++
++	/* Get "flags", "services", and "regexp" (three TXT-type fields) */
++	name = csv2_get_string(stream,3);
++	if(name == 0) {
++		js_destroy(out);
++		return 0;
++	}
++
++	/* Append those three fields to the outputted name */
++	if(js_append(name,out) == JS_ERROR) {
++		js_destroy(name);
++		js_destroy(out);
++		return 0;
++	}
++
++	js_destroy(name); 
++
++	/* Get "replacement" (Domain name) */
++	if(csv2_get_1st(stream,csv2_is_dchar,0) != JS_SUCCESS) {
++		js_destroy(out);
++		return 0;
++	}
++
++	zone = js_create(256,1); /* csv2_get_hostname expects zone to
++                                  * be valid js_string, so we just allocate
++                                  * an empty string */
++	if(zone == 0) {
++		js_destroy(out);
++		return 0;
++	}
++
++	name = csv2_get_hostname(stream,zone,3);
++
++	js_destroy(zone);
++
++	if(name == 0) {
++		js_destroy(out);
++		return 0;
++	}
++
++	/* Append the "replacment" to the outputted string */
++	if(js_append(name,out) == JS_ERROR) {
++		js_destroy(name);
++		js_destroy(out);
++		return 0;
++	}
++
++	js_destroy(name);
++	return out;
++}
++
+--- maradns-1.3.07.04/parse/Csv2_functions.h	2006-12-21 02:34:46.000000000 -0600
++++ maradns-1.3.08/parse/Csv2_functions.h	2007-09-19 18:53:05.000000000 -0500
+@@ -283,6 +283,7 @@
+ js_string *csv2_get_mbox(csv2_read *stream, js_string *zone, int count);
+ js_string *csv2_get_hex(csv2_read *stream);
+ js_string *csv2_get_loc(csv2_read *stream);
++js_string *csv2_get_naptr(csv2_read *stream);
+ 
+ /* Some more Csv2_read.c functions */
+ int csv2_push_file(csv2_read *file, js_string *filename);

@@ -1,0 +1,240 @@
+--- maradns-1.3.12/doc/en/webpage/download.embed	2008-09-09 06:40:21.000000000 -0500
++++ maradns-1.3.13/doc/en/webpage/download.embed	2009-02-12 16:51:08.000000000 -0600
+@@ -3,8 +3,8 @@
+ <h1>&iexcl;Download MaraDNS!</h1>
+ 
+ <h2>Stable release</h2>
+-<p>This is the current stable release of MaraDNS, MaraDNS 1.3.07.08,
+-released December 25, 2007.
++<p>This is the current stable release of MaraDNS, MaraDNS 1.3.07.09,
++released August 4, 2008.
+ <p>This release is available both at <A 
+ href="http://sourceforge.net/project/showfiles.php?group_id=24033">sourceforge.net</A>
+ and on this page.
+@@ -12,156 +12,163 @@
+ <p>
+ <table><tr><td>
+ <A 
+-href="download/1.3/1.3.07.08/maradns-1.3.07.08.tar.bz2"><!--
+-                          -->maradns-1.3.07.08.tar.bz2</A>
++href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.bz2"><!--
++                          -->maradns-1.3.07.09.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.07.08/maradns-1.3.07.08.tar.bz2.sha.asc">sig</A><p>
++href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.bz2.sha.asc">sig</A><p>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.07.08/maradns-1.3.07.08.tar.lzma"><!--
+-                          -->maradns-1.3.07.08.tar.lzma</A>
++href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.lzma"><!--
++                          -->maradns-1.3.07.09.tar.lzma</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.07.08/maradns-1.3.07.08.tar.lzma.sha.asc">sig</A>
++href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.lzma.sha.asc">sig</A>
+ </td><td>
+ <A href="#lzma">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.07.08/maradns-1.3.07.08.tar.gz"><!--
+-                          -->maradns-1.3.07.08.tar.gz</A>
++href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.gz"><!--
++                          -->maradns-1.3.07.09.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.07.08/maradns-1.3.07.08.tar.gz.sha.asc">sig</A>
++href="download/1.3/1.3.07.09/maradns-1.3.07.09.tar.gz.sha.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.07.08/maradns-1-3-07-08-win32.zip"><!--
+-                          -->maradns-1-3-07-08-win32.zip</A>
++href="download/1.3/1.3.07.09/maradns-1-3-07-09-win32.zip"><!--
++                          -->maradns-1-3-07-09-win32.zip</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.07.08/maradns-1-3-07-08-win32.zip.sha.asc">sig</A>
++href="download/1.3/1.3.07.09/maradns-1-3-07-09-win32.zip.sha.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ </td></tr></table>
+ <hr>
+ 
+-<h2>Previous stable release</h2>
++<h2>Development release</h2>
+ 
+-This is the previous stable branch of MaraDNS; this release will be 
+-supported with critical and maintenance updates until December 31, 2010.
+-Doesn't have BIND zone file support, nor a couple of other features,
+-but otherwise similar to the stable release of MaraDNS. <p>
++This is a development release.  This is where new features get added
++to MaraDNS; new features have often not been fully tested so <b>use 
++this release at your own risk</b>.
+ 
+-<p>This is the previous stable release of MaraDNS, MaraDNS 1.2.12.09,
+-released December 14, 2007.
++<p>This is the current development release of MaraDNS, MaraDNS 1.3.12,
++released September 10, 2008.  One can also download the <A 
++href=download/1.3/snap>snapshot release</A>.
+ 
+ <p>
+ <table><tr><td>
+ <A 
+-href="download/1.2/1.2.12.09/maradns-1.2.12.09.tar.bz2"><!--
+-                          -->maradns-1.2.12.09.tar.bz2</A>
++href="download/1.3/1.3.12/maradns-1.3.12.tar.bz2"><!--
++                          -->maradns-1.3.12.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.09/maradns-1.2.12.09.tar.bz2.sha.asc">sig</A><p>
++href="download/1.3/1.3.12/maradns-1.3.12.tar.bz2.sha.asc">sig</A><p>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.2/1.2.12.09/maradns-1.2.12.09.tar.lzma"><!--
+-                          -->maradns-1.2.12.09.tar.lzma</A>
++href="download/1.3/1.3.12/maradns-1.3.12.tar.lzma"><!--
++                          -->maradns-1.3.12.tar.lzma</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.09/maradns-1.2.12.09.tar.lzma.sha.asc">sig</A>
++href="download/1.3/1.3.12/maradns-1.3.12.tar.lzma.sha.asc">sig</A>
+ </td><td>
+ <A href="#lzma">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.2/1.2.12.09/maradns-1.2.12.09.tar.gz"><!--
+-                          -->maradns-1.2.12.09.tar.gz</A>
++href="download/1.3/1.3.12/maradns-1.3.12.tar.gz"><!--
++                          -->maradns-1.3.12.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.09/maradns-1.2.12.09.tar.gz.sha.asc">sig</A>
++href="download/1.3/1.3.12/maradns-1.3.12.tar.gz.sha.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+ <A 
+-href="download/1.2/1.2.12.09/maradns-1-2-12-09-win32.zip"><!--
+-                          -->maradns-1-2-12-09-win32.zip</A>
++href="download/1.3/1.3.12/maradns-1-3-12-win32.zip"><!--
++                          -->maradns-1-3-12-win32.zip</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.09/maradns-1-2-12-09-win32.zip.sha.asc">sig</A>
++href="download/1.3/1.3.12/maradns-1-3-12-win32.zip.sha.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ 
+ </td></tr></table>
+-<h3>Contributed packages</h3>
+ 
+-<A
+-href="download/1.2/3rd_party/maradns-1.2.12.08-i486-2.tgz"><!--
+-                          -->maradns-1.2.12.08-i486-2.tgz</A> 
+-<A href="#tgz">info</A>
+-<h2>Development release</h2>
++<h3>Pthreads soruce code</h3>
+ 
+-This is a development release.  This is where new features get added
+-to MaraDNS; new features have often not been fully tested so <b>use 
+-this release at your own risk</b>.
++The Windows port of MaraDNS 1.3 uses the LGPL phtreads library. Source 
++code for this library is available <A 
++href="download/pthreads-w32-2-8-0-release.tar.gz">here</A>
+ 
+-<p>This is the current development release of MaraDNS, MaraDNS 1.3.11,
+-released March 24, 2008.  One can also download the <A 
+-href=download/1.3/snap>snapshot release</A>.
++<hr>
++
++<h2>Deadwood</h2>
++
++Deadwood is the code that will eventually become MaraDNS' next recursive
++resolver; it can be looked at <A href=deadwood/>by clicking on this link</A>
++
++<hr>
++
++<h2>Previous stable release</h2>
++
++This is the previous stable branch of MaraDNS; this release will be 
++supported with critical and maintenance updates until December 31, 2010.
++Doesn't have BIND zone file support, nor a couple of other features,
++but otherwise similar to the stable release of MaraDNS. <p>
++
++<p>This is the previous stable release of MaraDNS, MaraDNS 1.2.12.10,
++released August 4, 2008.
+ 
+ <p>
+ <table><tr><td>
+ <A 
+-href="download/1.3/1.3.11/maradns-1.3.11.tar.bz2"><!--
+-                          -->maradns-1.3.11.tar.bz2</A>
++href="download/1.2/1.2.12.10/maradns-1.2.12.10.tar.bz2"><!--
++                          -->maradns-1.2.12.10.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.11/maradns-1.3.11.tar.bz2.sha.asc">sig</A><p>
++href="download/1.2/1.2.12.10/maradns-1.2.12.10.tar.bz2.sha.asc">sig</A><p>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.11/maradns-1.3.11.tar.lzma"><!--
+-                          -->maradns-1.3.11.tar.lzma</A>
++href="download/1.2/1.2.12.10/maradns-1.2.12.10.tar.lzma"><!--
++                          -->maradns-1.2.12.10.tar.lzma</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.11/maradns-1.3.11.tar.lzma.sha.asc">sig</A>
++href="download/1.2/1.2.12.10/maradns-1.2.12.10.tar.lzma.sha.asc">sig</A>
+ </td><td>
+ <A href="#lzma">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.11/maradns-1.3.11.tar.gz"><!--
+-                          -->maradns-1.3.11.tar.gz</A>
++href="download/1.2/1.2.12.10/maradns-1.2.12.10.tar.gz"><!--
++                          -->maradns-1.2.12.10.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.11/maradns-1.3.11.tar.gz.sha.asc">sig</A>
++href="download/1.2/1.2.12.10/maradns-1.2.12.10.tar.gz.sha.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.11/maradns-1-3-11-win32.zip"><!--
+-                          -->maradns-1-3-11-win32.zip</A>
++href="download/1.2/1.2.12.10/maradns-1-2-12-10-win32.zip"><!--
++                          -->maradns-1-2-12-10-win32.zip</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.11/maradns-1-3-11-win32.zip.sha.asc">sig</A>
++href="download/1.2/1.2.12.10/maradns-1-2-12-10-win32.zip.sha.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ 
+ </td></tr></table>
++<h3>Contributed packages</h3>
+ 
+-<h3>Pthreads soruce code</h3>
+-
+-The Windows port of MaraDNS 1.3 uses the LGPL phtreads library. Source 
+-code for this library is available <A 
+-href="download/1.3/1.3.11/pthreads-w32-2-8-0-release.tar.lzma">here</A>
+-
+-<hr>
+-
++<A
++href="download/1.2/3rd_party/maradns-1.2.12.08-i486-2.tgz"><!--
++                          -->maradns-1.2.12.08-i486-2.tgz</A> 
++<A href="#tgz">info</A>
+ <h2>Other</h2>
+ <p><A href=changelog.html>View the changelog</A></p>
+ 

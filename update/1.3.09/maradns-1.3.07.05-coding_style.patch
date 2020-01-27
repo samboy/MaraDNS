@@ -1,0 +1,40 @@
+--- maradns-1.3.07.06/doc/en/text/Makefile.orig	2007-09-27 15:50:00.000000000 -0500
++++ maradns-1.3.07.06/doc/en/text/Makefile	2007-09-27 15:50:54.000000000 -0500
+@@ -5,7 +5,7 @@
+      man.csv2.txt dnsslave.txt update.txt man.askmara.txt \
+      man.fetchzone.txt man.zoneserver.txt man.maradns.txt \
+      man.mararc.txt quick_start.txt dnsintro.txt \
+-     win_service.txt troubleshoot.txt bind2csv2.txt
++     win_service.txt troubleshoot.txt bind2csv2.txt coding_style.txt
+ 
+ clean:
+ 	rm -f *.txt 
+@@ -99,3 +99,8 @@
+ 
+ troubleshoot.txt: ../source/troubleshoot.ej
+ 	../../../tools/ej/ej2txt ../source/troubleshoot.ej > troubleshoot.txt
++
++coding_style.txt: ../source/coding_style.ej
++	../../../tools/ej/ej2html ../source/coding_style.ej > \
++	    coding_style.txt
++
+--- maradns-1.3.07.06/doc/en/tutorial/Makefile.orig	2007-09-27 15:48:38.000000000 -0500
++++ maradns-1.3.07.06/doc/en/tutorial/Makefile	2007-09-27 15:49:51.000000000 -0500
+@@ -4,7 +4,7 @@
+      dnstcp.html man.duende.html dnsmaster.html man.csv2_txt.html \
+      dnsslave.html quick_start.html update.html man.askmara.html \
+      man.fetchzone.html man.zoneserver.html dnsintro.html \
+-     win_service.html troubleshoot.html bind2csv2.html
++     win_service.html troubleshoot.html bind2csv2.html coding_style.html
+ 
+ clean:
+ 	rm -f *.html 
+@@ -98,3 +98,8 @@
+ 
+ troubleshoot.html: ../source/troubleshoot.ej
+ 	../../../tools/ej/ej2html ../source/troubleshoot.ej > troubleshoot.html
++
++coding_style.html: ../source/coding_style.ej
++	../../../tools/ej/ej2html ../source/coding_style.ej > \
++		coding_style.html
++

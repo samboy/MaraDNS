@@ -1,0 +1,38 @@
+*** maradns-1.2.12.03/MaraDns.h	Mon Jul 17 23:50:44 2006
+--- maradns-1.2.12.04/MaraDns.h	Thu Nov 23 10:03:00 2006
+***************
+*** 104,109 ****
+--- 104,117 ----
+     systems where I do not have root. */
+  #define DNS_PORT 53
+  
++ /* The port to use when contacting remove DNS servers; it may be desirable
++  * to have two instances of MaraDNS on the same IP when resolving the 
++  * dangling CNAME issue on a machine with only one loopback IP (You would
++  * think, with an entire Class A of the IP space reserved for loopback,
++  * more systems would have at least two loopback IPs.  You would be wrong)
++  */
++ #define UPSTREAM_PORT 53
++ 
+  /* Whether we allow MaraDNS to run as a non root user; this is usually 
+   * disabled, but can be enabled by uncommenting the following line */
+  /* #define ALLOW_NON_ROOT */
+*** maradns-1.2.12.04/server/recursive.c.orig	Thu Nov 23 10:00:28 2006
+--- maradns-1.2.12.04/server/recursive.c	Thu Nov 23 10:03:25 2006
+***************
+*** 1584,1590 ****
+      /* Create a server socket address to use with sendto() */
+      memset(&server,0,sizeof(server));
+      server.sin_family = AF_INET;
+!     server.sin_port = htons(53);
+      if((server.sin_addr.s_addr = htonl(remote_ip)) == INADDR_NONE) {
+          if(rlog_level >= 4) {
+              log_lock();
+--- 1584,1590 ----
+      /* Create a server socket address to use with sendto() */
+      memset(&server,0,sizeof(server));
+      server.sin_family = AF_INET;
+!     server.sin_port = htons(UPSTREAM_PORT);
+      if((server.sin_addr.s_addr = htonl(remote_ip)) == INADDR_NONE) {
+          if(rlog_level >= 4) {
+              log_lock();

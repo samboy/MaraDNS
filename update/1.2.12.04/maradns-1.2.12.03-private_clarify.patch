@@ -1,0 +1,34 @@
+*** maradns-1.2.12.03/doc/en/source/authoritative.ej	Mon May 15 19:28:36 2006
+--- maradns-1.2.12.04/doc/en/source/authoritative.ej	Thu Nov 23 10:10:17 2006
+***************
+*** 484,489 ****
+--- 484,497 ----
+  
+  <p>
+  
++ It is possible to do this in MaraDNS because MaraDNS first looks up 
++ authoritative names before performing recursion.  For example, if 
++ <tt>www.google.com</tt> is defined in a MaraDNS zone file, MaraDNS
++ will use the value in the zone file instead of contacting nameservers
++ on the internet to get the IP for <tt>www.google.com</tt>.
++ 
++ <p>
++ 
+  On UNIX, BSD, and Linux machines in an office, this is done by adding
+  a line like this to the file <tt>/etc/resolv.conf</tt>:
+  
+*** maradns-1.2.12.03/doc/en/source/recursive.ej	Sun Oct  8 19:32:42 2006
+--- maradns-1.2.12.04/doc/en/source/recursive.ej	Thu Nov 23 10:10:56 2006
+***************
+*** 293,298 ****
+--- 293,302 ----
+  
+  This is done by taking advantage of the fact that MaraDNS 
+  can act as both a recursive and authoritative name server on the same IP.
++ MaraDNS first looks up authoritative names before performing recursion.
++ For example, if <tt>www.google.com</tt> is defined in a MaraDNS zone
++ file, MaraDNS will use the value in the zone file instead of contacting
++ nameservers on the internet to get the IP for <tt>www.google.com</tt>.
+  
+  <p>
+  

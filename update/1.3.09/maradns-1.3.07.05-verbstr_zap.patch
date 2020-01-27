@@ -1,0 +1,73 @@
+--- maradns-1.3.07.06/server/MaraDNS.c.orig	2007-10-12 08:50:34.000000000 -0500
++++ maradns-1.3.07.06/server/MaraDNS.c	2007-10-12 08:52:00.000000000 -0500
+@@ -4079,6 +4079,7 @@
+     }
+     if(verbstr != 0) {
+         js_destroy(verbstr);
++        verbstr = 0;
+     }
+ #endif
+ 
+@@ -4137,7 +4138,7 @@
+ 
+     /* Read in the list of spam-friendly DNS servers, which we will
+        refuse to get data from */
+-    if(verbstr != 0) { js_destroy(verbstr); }
++    if(verbstr != 0) { js_destroy(verbstr); verbstr = 0; }
+     verbstr = read_string_kvar("spammers");
+ 
+     /* If there is a spam-friendly list, read it in */
+@@ -4151,7 +4152,7 @@
+             harderror(L_INIT_SPAMMERS); /* "Could not make spammers list" */
+         }
+ 
+-    if(verbstr != 0) { js_destroy(verbstr); }
++    if(verbstr != 0) { js_destroy(verbstr); verbstr = 0; }
+     /* BEGIN RNG USING CODE */
+     /* Determine which file to read the key from */
+     verbstr = read_string_kvar("random_seed_file");
+@@ -4170,7 +4171,7 @@
+         }
+     else if((recurse_acl[0]).ip != 0xffffffff) {
+         /* Default random_seed_file value: /dev/urandom */
+-        if(verbstr != 0) { js_destroy(verbstr); }
++        if(verbstr != 0) { js_destroy(verbstr); verbstr = 0; }
+         verbstr = js_create(256,1);
+         if(js_qstr2js(verbstr,"/dev/urandom") == JS_ERROR)
+              harderror(L_KVAR_Q);
+@@ -4204,7 +4205,7 @@
+ #else /* AUTHONLY */
+     /* Die right away so an admin isn't scratching their head wondering why
+      * Mara isn't able to recursively resolve hostname */
+-    if(verbstr != 0) { js_destroy(verbstr); }
++    if(verbstr != 0) { js_destroy(verbstr); verbstr = 0; }
+     verbstr = read_string_kvar("recursive_acl");
+     if(verbstr != 0 && js_length(verbstr) > 0) {
+             harderror("No recursion when MaraDNS is compiled authonly");
+@@ -4215,7 +4216,7 @@
+      * MaraDNS' internal information */
+     for(counter = 0; counter < 511; counter++)
+         admin_acl[counter].ip = 0xffffffff;
+-    if(verbstr != 0) { js_destroy(verbstr); }
++    if(verbstr != 0) { js_destroy(verbstr); verbstr = 0; }
+     verbstr = read_string_kvar("admin_acl");
+     if(verbstr != 0 && js_length(verbstr) > 0) {
+         if(make_ip_acl(verbstr,admin_acl,500,0) == JS_ERROR)
+@@ -4243,7 +4244,7 @@
+     if(geteuid() == 0) {
+ #endif
+ 
+-        if(verbstr != 0) { js_destroy(verbstr); }
++        if(verbstr != 0) { js_destroy(verbstr); verbstr = 0; }
+         verbstr = read_string_kvar("chroot_dir");
+         if(verbstr == 0) {
+             harderror(L_CHROOT_KVAR);
+@@ -4505,7 +4506,7 @@
+         harderror(L_POPULATE_FATAL); /* "This error in populate hash is fatal" */
+         }
+ 
+-    if(verbstr != 0) { js_destroy(verbstr); }
++    if(verbstr != 0) { js_destroy(verbstr); verbstr = 0; }
+     verbstr = read_string_kvar("csv2_default_zonefile");
+     if(verbstr !=0 && js_length(verbstr) > 0) {
+             js_string *zone;

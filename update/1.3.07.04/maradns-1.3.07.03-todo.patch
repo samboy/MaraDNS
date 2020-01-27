@@ -1,0 +1,87 @@
+--- maradns-1.3.07.03/TODO.1.3	2007-08-16 08:35:43.000000000 -0500
++++ maradns-1.3.07.04/TODO.1.3	2007-08-28 11:48:05.000000000 -0500
+@@ -1,68 +1,31 @@
+-Bugfix: MaraDNS does not do the right thing when recurse_delegation has
+-a value of 1
++Try to find and fix problem with inappropriate RR rotation.  If the bug is
++truly unreproducable, rewrite the rotation code.
+ 
+-bind2csv2.py script:
++---- Already done:
+ 
+-* Add support for $READ directive (DEFER until post 1.3-stable)
++Have a single megascript that does all of the SQA tests and lets us know 
++that we have passed all of them. (DONE)
+ 
+-* Improve rr_txt parser to correctly handle quoting when there are backslashed
+-  characters. (DONE)
++Apply patch from DragonFLY BSD person (DONE)
+ 
+-* Make NS records have consistant TTLs (DEFER until post 1.3-stable)
++Fix: mingw32 compile warnings (DONE)
+ 
+-Update zoneserer man page; include example mararc file for transferring
+-zones in this manpage
++Update zoneserver man page; include example mararc file for transferring
++zones in this manpage (DONE)
+ 
+-Csv2 parsing bugs:
+-
+-* www.% 10.1.2.3 doesn't work (FIXED before 1.3.06)
+-
+-* % soa example.com. hostmaster.example.com. 1 7200 3600 604800 1800 is broken
+-  (FIXED before 1.3.06)
++Check to make sure above example is correct. (DONE)
+ 
+ Make SQA regressions to cover bugs that popped up in the 1.2
+ series: 
+ 
+-* The two Predator memleaks (DONE)
+-
+-* The noise memleak (DONE)
+-
+-* Anal bind_star_handling memleak (DONE)
+-
+-* The old recursive PTR record memleak (DONE)
+-
+-* RFC2181 compliant truncation (Fixed in 1.2.12.02) (DONE)
+-
+-* Check for spurious "server fail" DNS messages (Fixed in 1.2.12.03)
+-
+-* ANY and case insentivity (Fixed in 1.2.12.04) (DONE)
+-
+-* GCC2.96 compile (DONE; 1.3.06 compiles without warning)
+-
+-* LOC records with a precision of 10 (Fixed in 1.3.03) (DONE)
++* Check for spurious "server fail" DNS messages (Fixed in 1.2.12.03) (DONE)
+ 
+ * Make sure, when bind_star_handling is 1, that we do not incorrectly
+-  return NXDOMAINs
+-
+-* Make sure, when bind_star_handling is 2, that we do not incorrectly
+-  return NXDOMAINs (Fixed in 1.3.06) (DONE)
+-
+-* Make sure, when there is a csv2_default_zonefile, that we do not 
+-  incorrectly return NXDOMAINs (Fixed in 1.3.05) (DONE)
+-
+-* Make sure, when bind_star_handling is 2, that we anally follow
+-  RFC1034 section 4.3.3 (Fixed in 1.3.06) (DONE)
++  return NXDOMAINs (DONE)
+ 
+-Make SQA test cases for bind to csv2 conversions. (DONE)
++* www.% 10.1.2.3 doesn't work (FIXED before 1.3.06) (DONE; never appears to
++  have been a bug)
+ 
+-Separate udpany() in to two functions; one for recursion; one for 
+-authoritative.
+-
+-Ease of use feature: Don't require zone names to end in a dot.  This
+-                     trips up a lot of new users. (NO)
+-
+-SQA: Test recurse_delegation feature. (DONE)
+-
+-Fetchzone: Make sure SOA record is the first one; make sure all NS
+-           records for a zone are before any other records. (DEFER?)
++* % soa example.com. hostmaster.example.com. 1 7200 3600 604800 1800 is broken
++  (FIXED before 1.3.06) (DONE; never appears to have been a bug)
+ 

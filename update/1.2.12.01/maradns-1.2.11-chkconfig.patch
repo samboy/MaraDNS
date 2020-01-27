@@ -1,0 +1,11 @@
+--- maradns-1.2.11/build/mara.startup	2006-06-21 03:59:30.000000000 -0500
++++ maradns-1.2.12/build/mara.startup	2006-07-19 20:54:04.000000000 -0500
+@@ -1,4 +1,8 @@
+ #!/bin/bash
++# MaraDNS	This shell script takes care of starting and stopping MaraDNS
++# chkconfig: - 55 45
++# description: MaraDNS is secure Domain Name Server (DNS)
++# probe: true
+ 
+ # Copyright 2005-2006 Sam Trenholme
+ 

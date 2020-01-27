@@ -1,0 +1,290 @@
+--- maradns-1.3.10/tools/misc/make.download.embed	2007-11-26 11:48:19.000000000 -0600
++++ maradns-1.3.11/tools/misc/make.download.embed	2008-03-23 20:22:26.000000000 -0600
+@@ -13,30 +13,26 @@
+ # 2) ./make.download.embed > download.embed
+ 
+ # Stable release
+-SV=1.2
+-STABLE=1.2.12.08
+-SZIP="1-2-12-08"
+-SDATE="August 29, 2007"
++SV=1.3
++STABLE=1.3.07.08
++SZIP="1-3-07-08"
++SDATE="December 25, 2007"
++
++# Previous Stable release
++PV=1.2
++PREV=1.2.12.09
++PZIP="1-2-12-09"
++PDATE="December 14, 2007"
+ SLAKWARE="maradns-1.2.12.08-i486-2.tgz"
+ 
+-# Beta release
+-BV=1.3
+-BETA=1.3.07.07
+-BZIP="1-3-07-07"
+-BDATE="November 26, 2007"
+-
+ # Development release
+ DV=1.3
+-DEV=1.3.10
+-DZIP="1-3-10"
+-DDATE="November 26, 2007"
+-
+-# Legacy release
+-LEGACY=1.0.41
+-LDATE="August 29, 2007"
++DEV=1.3.11
++DZIP="1-3-11"
++DDATE="March 24, 2008"
+ 
+ # Name of windows pthreads library source (needs to be included with
+-# beta and development releases)
++# win32 releases)
+ PTHREADS="pthreads-w32-2-8-0-release.tar.lzma"
+ 
+ cat << EOF
+@@ -80,24 +76,6 @@
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+-<A href="download/${SV}/${STABLE}/maradns-${STABLE}-1.src.rpm"><!--
+-                             -->maradns-${STABLE}-1.src.rpm</A>
+-</td><td>
+-<A 
+-href="download/${SV}/${STABLE}/maradns-${STABLE}-1.src.rpm.sha.asc">sig</A>
+-</td><td>
+-<A 
+-href="#srcrpm">info</A>
+-</td></tr><tr><td>
+-<A href="download/${SV}/${STABLE}/maradns-${STABLE}-1.i386.rpm"><!--
+-                             -->maradns-${STABLE}-1.i386.rpm</A>
+-</td><td>
+-<A 
+-   href="download/${SV}/${STABLE}/maradns-${STABLE}-1.i386.rpm.sha.asc">sig</A>
+-</td><td>
+-<A 
+-href="#rpm">info</A>
+-</td></tr><tr><td>
+ <A 
+ href="download/${SV}/${STABLE}/maradns-${SZIP}-win32.zip"><!--
+                           -->maradns-${SZIP}-win32.zip</A>
+@@ -107,70 +85,72 @@
+ </td><td>
+ <A href="#zip">info</A>
+ </td></tr></table>
+-EOF
+-
+-if [ ! -z "$SLAKWARE" ] ; then
+-	cat << EOF
+-<h3>Contributed packages</h3>
+-
+-<A
+-href="download/1.2/3rd_party/${SLAKWARE}"><!--
+-                          -->${SLAKWARE}</A> 
+-<A href="#tgz">info</A>
+-EOF
+-
+-fi
+-
+-cat << EOF
+ <hr>
+ 
+-<h2>Beta testing release</h2>
++<h2>Previous stable release</h2>
+ 
+-This is a beta testing release.  The only changes before this release
+-is declared stable will be bug fixes and documentation changes.
++This is the previous stable branch of MaraDNS; this release will be 
++supported with critical and maintenance updates until December 31, 2010.
++Doesn't have BIND zone file support, nor a couple of other features,
++but otherwise similar to the stable release of MaraDNS. <p>
+ 
+-<p>This is the current beta testing release of MaraDNS, MaraDNS ${BETA},
+-released ${BDATE}.
++<p>This is the previous stable release of MaraDNS, MaraDNS ${PREV},
++released ${PDATE}.
+ 
+ <p>
+ <table><tr><td>
+ <A 
+-href="download/${BV}/${BETA}/maradns-${BETA}.tar.bz2"><!--
+-                          -->maradns-${BETA}.tar.bz2</A>
++href="download/${PV}/${PREV}/maradns-${PREV}.tar.bz2"><!--
++                          -->maradns-${PREV}.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/${BV}/${BETA}/maradns-${BETA}.tar.bz2.sha.asc">sig</A><p>
++href="download/${PV}/${PREV}/maradns-${PREV}.tar.bz2.sha.asc">sig</A><p>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/${BV}/${BETA}/maradns-${BETA}.tar.lzma"><!--
+-                          -->maradns-${BETA}.tar.lzma</A>
++href="download/${PV}/${PREV}/maradns-${PREV}.tar.lzma"><!--
++                          -->maradns-${PREV}.tar.lzma</A>
+ </td><td>
+ <A 
+-href="download/${BV}/${BETA}/maradns-${BETA}.tar.lzma.sha.asc">sig</A>
++href="download/${PV}/${PREV}/maradns-${PREV}.tar.lzma.sha.asc">sig</A>
+ </td><td>
+ <A href="#lzma">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/${BV}/${BETA}/maradns-${BETA}.tar.gz"><!--
+-                          -->maradns-${BETA}.tar.gz</A>
++href="download/${PV}/${PREV}/maradns-${PREV}.tar.gz"><!--
++                          -->maradns-${PREV}.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/${BV}/${BETA}/maradns-${BETA}.tar.gz.sha.asc">sig</A>
++href="download/${PV}/${PREV}/maradns-${PREV}.tar.gz.sha.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+ <A 
+-href="download/${BV}/${BETA}/maradns-${BZIP}-win32.zip"><!--
+-                          -->maradns-${BZIP}-win32.zip</A>
++href="download/${PV}/${PREV}/maradns-${PZIP}-win32.zip"><!--
++                          -->maradns-${PZIP}-win32.zip</A>
+ </td><td>
+ <A 
+-href="download/${BV}/${BETA}/maradns-${BZIP}-win32.zip.sha.asc">sig</A>
++href="download/${PV}/${PREV}/maradns-${PZIP}-win32.zip.sha.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ 
+ </td></tr></table>
++EOF
++
++if [ ! -z "$SLAKWARE" ] ; then
++	cat << EOF
++<h3>Contributed packages</h3>
++
++<A
++href="download/1.2/3rd_party/${SLAKWARE}"><!--
++                          -->${SLAKWARE}</A> 
++<A href="#tgz">info</A>
++EOF
++
++fi
++
++cat << EOF
+ <h2>Development release</h2>
+ 
+ This is a development release.  This is where new features get added
+@@ -178,7 +158,8 @@
+ this release at your own risk</b>.
+ 
+ <p>This is the current development release of MaraDNS, MaraDNS ${DEV},
+-released ${DDATE}.
++released ${DDATE}.  One can also download the <A 
++href=download/${DV}/snap>snapshot release</A>.
+ 
+ <p>
+ <table><tr><td>
+@@ -228,26 +209,6 @@
+ 
+ <hr>
+ 
+-<h2>Legacy release</h2>
+-
+-This is the current version of the legacy release of MaraDNS, MaraDNS
+-1.0.  This release is not supported except for bug reports, and will no 
+-longer be supported for anything but critical security fixes after 
+-December 21, 2007, and not supported at all after December 21, 2010.
+-
+-<A href="download/1.0/maradns-${LEGACY}.tar.bz2">Get the current 1.0 release</A>,
+-MaraDNS ${LEGACY}, released ${LDATE}
+-(bzip2 compressed).  
+-<p>
+-<A href="download/1.0/maradns-${LEGACY}.tar.bz2.sha.asc">bzip2 GPG sig</A>
+-<p>
+-<A href="download/1.0/maradns-${LEGACY}.tar.gz">gzip compressed version</A>
+-<p>
+-<A href="download/1.0/maradns-${LEGACY}.tar.gz.sha.asc">gzip GPG sig</A>
+-<p>
+-
+-<hr>
+-
+ <h2>Other</h2>
+ <p><A href=changelog.html>View the changelog</A></p>
+ 
+@@ -262,6 +223,15 @@
+ This is a collection of papers describing some of the various 
+ cryptographic hashes.
+ 
++<h2>Obsolete 1.0 MaraDNS branch</h1>
++
++The <A href=download/1.0>obsolete 1.0 branch of MaraDNS</A>.  The only 
++updates I would do on this branch are critical security fixes.  You're
++better off using 1.2 or 1.3.  If you want something small for embedded
++systems, the "Deadwood" code in the 1.3 development snapshots is your
++best bet.  Unless you've found a critical security hole, I don't
++support this version.
++
+ <H2>Disclaimer</H2>
+ THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
+ OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+--- maradns-1.3.10/doc/en/webpage/contact.embed	2007-10-19 08:54:14.000000000 -0500
++++ maradns-1.3.11/doc/en/webpage/contact.embed	2008-03-23 20:22:26.000000000 -0600
+@@ -7,8 +7,11 @@
+ <ul>
+ <li>MaraDNS 1.0.41
+ <li>MaraDNS 1.2.12.08
+-<li>MaraDNS 1.3.07.05
+-<li>MaraDNS 1.3.08
++<li>MaraDNS 1.2.12.09
++<li>MaraDNS 1.3.07.08
++<li>The most recent <A 
++href="http://www.maradns.org/download/1.3/snap/200802">development 
++snapshot</A> of MaraDNS.
+ </ul>
+ 
+ The version number of MaraDNS you are using can be obtained by typing
+@@ -16,7 +19,7 @@
+ <p>
+ 
+ <b>Debian and Ubuntu users:</b> The version of MaraDNS Debian
+-and Ubuntu uses is problably not supported by me.  Please read <A
++and Ubuntu uses may not be supported by me.  Please read <A
+ href=debian.html>this page</A> for information on upgrading to a supported
+ release of MaraDNS. <p>
+ 
+@@ -41,7 +44,7 @@
+ more information or for the sender to update MaraDNS.
+ <p>
+ 
+-If you are using MaraDNS 1.0.39 or 1.0.40, and have a question about
++If you are using MaraDNS 1.0.41, and have a question about
+ how to configure MaraDNS, please 
+ <A href="http://www.maradns.org/tutorial/1.2/update.html">upgrade to 
+ MaraDNS 1.2</A>.  MaraDNS 1.2 has
+@@ -51,9 +54,10 @@
+ question to the MaraDNS mailing list.
+ <p>
+ 
+-If you are using 1.0 and have a bug to report, please feel free to report
+-it; I will continue to fix serious MaraDNS 1.0 bugs until December 21, 2007,
+-and MaraDNS 1.0 security bugs (should they arise) until December 21, 2010.
++If you are using 1.0 and have a security bug to report, please feel free to 
++report
++it; I will continue to fix 
++MaraDNS 1.0 security bugs (should any arise) until December 21, 2010.
+ <p>
+ 
+ I am constantly working on improving MaraDNS' documentation so that 
+@@ -63,8 +67,9 @@
+ isn't clear about the documentation.
+ <p>
+ 
+-It may take me up to a week to reply to a given support question.  <b>Please
+-be patient</b>.
++It may take me up to two weeks to reply to a given support question.  
++<b>Please be patient</b>.  If you don't get a reply after two weeks, feel
++free to resend your support request.
+ <p>
+ 
+ Again, <b>I will not answer questions that do not tell me which version

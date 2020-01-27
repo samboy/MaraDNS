@@ -1,0 +1,12 @@
+--- maradns-1.3.08/parse/Csv2_esc_txt.c	2007-09-21 07:07:48.000000000 -0500
++++ maradns-1.3.09/parse/Csv2_esc_txt.c	2007-09-29 21:14:15.000000000 -0500
+@@ -38,7 +38,8 @@
+ 
+     while(counter < js->unit_count) {
+         this = *(js->string + counter);
+-        if(this < 32 || this > 122) { /* 122 == 'z'; {|}~ are escaped since
++        if(this < 32 || this > 122 || this == '#') { 
++                                      /* 122 == 'z'; {|}~ are escaped since
+                                          we currently don't allow the {
+                                          character in csv2 zone files (to
+                                          allow for future macro processing) */

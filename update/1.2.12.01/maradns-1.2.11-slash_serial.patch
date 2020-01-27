@@ -1,0 +1,175 @@
+diff -ur maradns-1.2.11/parse/Csv2_functions.h maradns-1.2.12/parse/Csv2_functions.h
+--- maradns-1.2.11/parse/Csv2_functions.h	2006-07-17 22:50:44.000000000 -0500
++++ maradns-1.2.12/parse/Csv2_functions.h	2006-07-22 19:55:11.000000000 -0500
+@@ -247,7 +247,8 @@
+ js_string *csv2_get_hostname(csv2_read *stream, js_string *zonename,
+ 		int starwhitis); 
+ js_string *csv2_get_dname(csv2_read *stream); 
+-js_string *csv2_get_soa(csv2_read *stream, js_string *zone);
++js_string *csv2_get_soa(csv2_read *stream, js_string *zone, 
++	csv2_add_state *state);
+ js_string *csv2_convert_percent(js_string *in, js_string *psub);
+ int csv2_close(csv2_read *file); 
+ int csv2_readchar(csv2_read *file); 
+ 
+diff -ur maradns-1.2.11/parse/Csv2_parse.c maradns-1.2.12/parse/Csv2_parse.c
+--- maradns-1.2.11/parse/Csv2_parse.c	2006-07-17 22:50:44.000000000 -0500
++++ maradns-1.2.12/parse/Csv2_parse.c	2006-07-22 20:07:01.000000000 -0500
+@@ -61,6 +61,13 @@
+ 	return (in >= '0' && in <= '9');
+ }
+ 
++/* This function is designed to tell us if the character in question 
++ * is a number or slash */
++
++int csv2_is_number_orslash(int32 in) {
++	return (in >= '0' && in <= '9') || in == '/';
++}
++
+ /* This function is designed to tell us if the character in question is
+  * an uppercase letter */
+ 
+@@ -985,7 +992,7 @@
+ 				return -1;
+ 			}
+ 			ret = csv2_get_num(stream);
+-			if(ret == -1) {
++			if(ret < 0) {
+ 				return -1;
+ 			}
+ 			ret += 100000;
+@@ -1000,14 +1007,42 @@
+ 	return ret;
+ }	
+ 
+-/* Get a number from the stream; return a -1 on error */
++/* Get a number from the stream; return a -1 on error, -2 if they
++ * specified '/serial' */
+ int32 csv2_get_num(csv2_read *stream) {
+ 	js_string *num;
+ 	int32 ret;
+ 
+-	if(csv2_get_1st(stream,csv2_is_number,0) != JS_SUCCESS) {
++	if(csv2_get_1st(stream,csv2_is_number_orslash,0) != JS_SUCCESS) {
+ 		return -1;
+ 	}
++
++	/* '/serial' gets special treatment and returns -2 */
++	if(csv2_justread(stream) == '/') {
++		if(csv2_read_unicode(stream) != 's') {
++			return -1;
++		}
++		if(csv2_read_unicode(stream) != 'e') {
++			return -1;
++		}
++		if(csv2_read_unicode(stream) != 'r') {
++			return -1;
++		}
++		if(csv2_read_unicode(stream) != 'i') {
++			return -1;
++		}
++		if(csv2_read_unicode(stream) != 'a') {
++			return -1;
++		}
++		if(csv2_read_unicode(stream) != 'l') {
++			return -1;
++		}
++		if(!csv2_is_delimiter(csv2_read_unicode(stream))) {
++			return -1;
++		}
++		return -2;
++	}
++			
+ 	if((num = process_number(stream)) == 0) {
+ 		return -1;
+ 	}
+@@ -1206,7 +1242,7 @@
+ 			csv2_error(stream, "Unexpected char around +");
+ 			return -1;
+ 		}
+-		if((ttl = csv2_get_num(stream)) == -1) {
++		if((ttl = csv2_get_num(stream)) < 0) {
+ 			js_destroy(name);
+ 			csv2_error(stream,"Problem getting TTL");
+ 			return -1;
+@@ -1258,7 +1294,7 @@
+ 			rddata = csv2_get_aaaa(stream);
+ 			break;
+ 		case RR_SOA:
+-			rddata = csv2_get_soa(stream,zone);
++			rddata = csv2_get_soa(stream,zone,state);
+ 			break;
+ 		case RR_MX:
+ 		case RR_AFSDB:
+diff -ur maradns-1.2.11/parse/Csv2_rr_soa.c maradns-1.2.12/parse/Csv2_rr_soa.c
+--- maradns-1.2.11/parse/Csv2_rr_soa.c	2006-07-17 22:50:44.000000000 -0500
++++ maradns-1.2.12/parse/Csv2_rr_soa.c	2006-07-22 20:28:40.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004 Sam Trenholme
++/* Copyright (c) 2004-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -104,7 +104,8 @@
+ /* Get a SOA record from the stream (ignoring any leading whitespace)
+  * return a js_string object with the raw rddata for the SOA record */
+ 
+-js_string *csv2_get_soa(csv2_read *stream, js_string *zone) {
++js_string *csv2_get_soa(csv2_read *stream, js_string *zone, 
++	csv2_add_state *state) {
+ 	js_string *name;
+ 	js_string *out;
+ 	int c;
+@@ -156,11 +157,18 @@
+ 	/* The five remaining fields (serial, refresh, retry, expire, min) */
+ 	for(c = 0 ; c < 5 ; c++) {
+ 		int32 num;
+-		if((num = csv2_get_num(stream)) < 0) {
++		num = csv2_get_num(stream);
++		/* Special case: They put in '/serial' for the serial 
++                 * number */
++		if(num == -2 && c == 0) {
++			if(js_adduint32(out,state->soa_serial) == JS_ERROR) {
++				js_destroy(out);
++				return 0;
++			}
++		} else if(num < 0) {
+ 			js_destroy(out);
+ 			return 0;
+-		}
+-		if(js_adduint32(out,num) == JS_ERROR) {
++		} else if(js_adduint32(out,num) == JS_ERROR) {
+ 			js_destroy(out);
+ 			return 0;
+ 		}
+--- maradns-1.2.11/doc/en/source/csv2.ej	2006-07-17 22:50:44.000000000 -0500
++++ maradns-1.2.12/doc/en/source/csv2.ej	2006-07-22 20:45:38.000000000 -0500
+@@ -139,6 +139,16 @@
+ x.org. SOA x.org. email@x.org. 1 7200 3600 604800 1800
+ </pre>
+ 
++The serial numeric field may be replaced by the string '/serial'; this
++string tells the CSV2 zone parser to synthesize a serial number for the
++zone based on the timestamp for the zone file.  This allows one to 
++have the serial number be automatically updated whenever the zone file is
++edited.  Here is how this special field looks in a SOA record:
++
++<pre>
++x.org. SOA x.org. email@x.org. /serial 7200 3600 604800 1800
++</pre>
++
+ <h2>TXT</h2>
+ 
+ A TXT record stores arbitrary text and/or binary data for a given
+--- maradns-Q.20060722.1/doc/en/source/csv2.ej	2006-07-22 22:56:01.000000000 -0500
++++ maradns-1.2.12/doc/en/source/csv2.ej	2006-07-23 10:47:25.000000000 -0500
+@@ -149,6 +149,9 @@
+ x.org. SOA x.org. email@x.org. /serial 7200 3600 604800 1800
+ </pre>
+ 
++The '/serial' string is case-sensitive; only '/serial' in all lower
++case will parse.  
++
+ <h2>TXT</h2>
+ 
+ A TXT record stores arbitrary text and/or binary data for a given

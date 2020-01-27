@@ -1,0 +1,226 @@
+*** maradns-1.2.12.04/parse/ParseMaraRc.c	Fri Nov 24 06:44:29 2006
+--- maradns-1.3.01/parse/ParseMaraRc.c	Mon Dec 11 03:49:45 2006
+***************
+*** 31,37 ****
+  
+  /* Keywords that are non-dictionary strings in Mara's rc file */
+  
+! #define KEYCOUNT 48
+  
+  char *keywords[KEYCOUNT] = {
+          "bind_address", /* IPv4 Addresses to bind to (old name) */
+--- 31,37 ----
+  
+  /* Keywords that are non-dictionary strings in Mara's rc file */
+  
+! #define KEYCOUNT 50
+  
+  char *keywords[KEYCOUNT] = {
+          "bind_address", /* IPv4 Addresses to bind to (old name) */
+***************
+*** 126,131 ****
+--- 126,134 ----
+          "retry_cycles", /* The number of times we try to contact all of
+                           * the remote DNS servers to resolve a given name */
+          "csv2_tilde_handling", /* How to handle tildes in CSV2 zone files */
++         "dns_port", /* What port to bind MaraDNS to */
++         "upstream_port", /* What port to contact when contacting other
++                             DNS servers */
+          "zone_transfer_acl" /* ACL of IPs allowed to perform zone transfers */
+          };
+  
+*** maradns-1.2.12.04/MaraDns.h	Fri Nov 24 06:44:29 2006
+--- maradns-1.3.01/MaraDns.h	Mon Dec 11 03:50:53 2006
+***************
+*** 97,114 ****
+     MAN PAGE (askmara.ej) */
+  #define ASKMARA_DEFAULT_SERVER "127.0.0.1"
+  
+! /* The port to bind the DNS server to, and the port that askmara uses 
+     to bind to.  Note that a lot of MaraDNS' messages are hard-coded
+     to say that we are binding on port 53, so only change this for
+     debugging purposes.  I use this so that I can debug MaraDNS on
+     systems where I do not have root. */
+  #define DNS_PORT 53
+  
+! /* The port to use when contacting remove DNS servers; it may be desirable
+!  * to have two instances of MaraDNS on the same IP when resolving the 
+!  * dangling CNAME issue on a machine with only one loopback IP (You would
+!  * think, with an entire Class A of the IP space reserved for loopback,
+!  * more systems would have at least two loopback IPs.  You would be wrong)
+   */
+  #define UPSTREAM_PORT 53
+  
+--- 97,115 ----
+     MAN PAGE (askmara.ej) */
+  #define ASKMARA_DEFAULT_SERVER "127.0.0.1"
+  
+! /* The default port to bind the DNS server to, and the port that askmara uses 
+     to bind to.  Note that a lot of MaraDNS' messages are hard-coded
+     to say that we are binding on port 53, so only change this for
+     debugging purposes.  I use this so that I can debug MaraDNS on
+     systems where I do not have root. */
+  #define DNS_PORT 53
+  
+! /* The default port to use when contacting remove DNS servers; it may 
+!  * be desirable to have two instances of MaraDNS on the same IP when 
+!  * resolving the dangling CNAME issue on a machine with only one 
+!  * loopback IP (You would * think, with an entire Class A of the IP 
+!  * space reserved for loopback, * more systems would have at least 
+!  * two loopback IPs.  You would be wrong)
+   */
+  #define UPSTREAM_PORT 53
+  
+*** maradns-1.2.12.04/server/recursive.c	Fri Nov 24 06:44:29 2006
+--- maradns-1.3.01/server/recursive.c	Mon Dec 11 03:59:18 2006
+***************
+*** 110,115 ****
+--- 110,118 ----
+   * and resolve a name */
+  int retry_cycles = 2;
+  
++ /* The port we connect to when contacting remote DNS servers */
++ int upstream_port = 53;
++ 
+  typedef struct {
+      int id;
+      int sock;
+***************
+*** 1584,1590 ****
+      /* Create a server socket address to use with sendto() */
+      memset(&server,0,sizeof(server));
+      server.sin_family = AF_INET;
+!     server.sin_port = htons(UPSTREAM_PORT);
+      if((server.sin_addr.s_addr = htonl(remote_ip)) == INADDR_NONE) {
+          if(rlog_level >= 4) {
+              log_lock();
+--- 1587,1593 ----
+      /* Create a server socket address to use with sendto() */
+      memset(&server,0,sizeof(server));
+      server.sin_family = AF_INET;
+!     server.sin_port = htons(upstream_port);
+      if((server.sin_addr.s_addr = htonl(remote_ip)) == INADDR_NONE) {
+          if(rlog_level >= 4) {
+              log_lock();
+***************
+*** 4213,4218 ****
+--- 4216,4235 ----
+  
+      }
+  
++ /* Set the upstream_port; the port we use to contact to remote DNS
++  * servers */
++ 
++ int set_upstream_port(int num) {
++     if(num < 1 || num > 65530) {
++         printf("Warning: upstream_port out of range; using default value"
++         " of 53\n");
++         upstream_port = 53;
++         return 0;
++         }
++     upstream_port = num;
++     return 1;
++     }
++     
+  /* Set the minimim TTLs
+     Input: The minimum TTL for non-CNAME records, the minimum TTL for
+            CNAME records
+*** maradns-1.2.12.04/server/MaraDNS.c	Fri Nov 24 06:44:29 2006
+--- maradns-1.3.01/server/MaraDNS.c	Mon Dec 11 03:59:42 2006
+***************
+*** 127,132 ****
+--- 127,134 ----
+                       * from the authoritative half is always marked 
+                       * authoritative */
+  
++ int dns_port = 53; /* The default port for the server to listen on */
++ 
+  /* A list of who is and who is not allowed to make recursive DNS queries */
+  ipv4pair recurse_acl[512];
+  /* A list of the ipv4 IP addresses we bind MaraDNS to (the netmask portion is
+***************
+*** 3813,3819 ****
+          dns_udp.sin_family = AF_INET;
+          /* DNS_PORT is usually 53, but can be another port.  Defined in
+             MaraDNS.h */
+!         dns_udp.sin_port = htons(DNS_PORT);
+          if((dns_udp.sin_addr.s_addr = htonl(addresses[counter].ip))
+             == INADDR_NONE)
+              return JS_ERROR;
+--- 3815,3821 ----
+          dns_udp.sin_family = AF_INET;
+          /* DNS_PORT is usually 53, but can be another port.  Defined in
+             MaraDNS.h */
+!         dns_udp.sin_port = htons(dns_port);
+          if((dns_udp.sin_addr.s_addr = htonl(addresses[counter].ip))
+             == INADDR_NONE)
+              return JS_ERROR;
+***************
+*** 3873,3879 ****
+      dns_udp.sin6_family = AF_INET6;
+      /* DNS_PORT is usually 53, but can be another port.  Defined in
+         MaraDNS.h */
+!     dns_udp.sin6_port = htons(DNS_PORT);
+      inet_pton(AF_INET6,ascii_ipv6,&(dns_udp.sin6_addr));
+  
+     /* if((dns_udp.sin6_addr = htonl(addresses[counter].ip))
+--- 3875,3881 ----
+      dns_udp.sin6_family = AF_INET6;
+      /* DNS_PORT is usually 53, but can be another port.  Defined in
+         MaraDNS.h */
+!     dns_udp.sin6_port = htons(dns_port);
+      inet_pton(AF_INET6,ascii_ipv6,&(dns_udp.sin6_addr));
+  
+     /* if((dns_udp.sin6_addr = htonl(addresses[counter].ip))
+***************
+*** 4767,4772 ****
+--- 4769,4783 ----
+          exit(1);
+          }
+  
++     /* Set the dns_port and the upstream_port */
++     dns_port = read_numeric_kvar("dns_port",53);
++     if(dns_port < 1 || dns_port > 65530) {
++         harderror("dns_port must be between 1 and 65530");
++         exit(1);
++     }
++     
++     set_upstream_port(read_numeric_kvar("upstream_port",53));
++ 
+      /* Create the big hash */
+      bighash = 0;
+      bighash = mhash_create(8);
+*** maradns-1.2.12.04/doc/en/source/mararc.ej	Fri Nov 24 06:44:29 2006
+--- maradns-1.3.01/doc/en/source/mararc.ej	Mon Dec 11 04:06:17 2006
+***************
+*** 415,420 ****
+--- 415,427 ----
+  
+  The only accepted values for this variable were 3 and 15.
+  
++ <h2>dns_port</h2>
++ 
++ This is the port that MaraDNS listens on.  This is usually 53 (the
++ default value), but certain unusual MaraDNS setups (such as when resolving
++ dangling CNAME records on but a single IP) may need to have a different
++ valur for this.
++ 
+  <h2>dos_protection_level</h2>
+  If this is set to a non-zero value, certain features of MaraDNS will be
+  disabled in order to speed up MaraDNS' response time.  This is designed for
+***************
+*** 838,843 ****
+--- 845,857 ----
+  
+  <p> The default value for this variable is 5.
+  
++ <h2>upstream_port</h2>
++ 
++ This is the port that MaraDNS' recursive resolver uses to contact other
++ DNS servers.  This is usually 53 (the default value), but certain unusual
++ MaraDNS setups (such as when resolving dangling CNAME records on but a
++ single IP) may need to have a different valur for this.
++ 
+  <h2>verbose_level</h2>
+  verbose_level: The number of messages we log to stdout
+  <P>

@@ -1,0 +1,61 @@
+This patch stops FQDN4 records from being added to a CSV2 default
+zonefile (zone file with stars at the end of hostnames).
+
+--- maradns-1.2.04/parse/Csv2_database.c	2006-02-14 23:04:12.000000000 -0800
++++ maradns-1.2.05/parse/Csv2_database.c	2006-02-14 23:09:28.000000000 -0800
+@@ -1085,8 +1085,8 @@
+ 
+         /* The "magic" rtype of 65765 means that we add this as an
+            A record, then add a PTR record (which is created from the
+-           A record) as needed */
+-        if(rtype == 65765) {
++           A record) as needed; this is spelled "FQDN4" in the zone file */
++        if(rtype == 65765 && state->add_method != 3) {
+             js_string *pq;
+             rtype = 1;
+             pq = csv2_make_ptr_query(data);
+@@ -1094,6 +1094,11 @@
+              * rtype from the magic 65765 rtype */
+ 	    csv2_add_rr_w(state,pq,RR_PTR,ttl,cquery); 
+             js_destroy(pq);
++        } else if(rtype == 65765 && state->add_method == 3) {
++            printf("Warning: FQDN4 records are not permitted "
++                   "in the\ndefault zonefile.  This record is ignored.\n");
++	    js_destroy(cquery);
++	    return JS_ERROR;
+             }
+ 	ret = JS_ERROR; /* This should be set to another value */
+ 	switch(state->add_method) {
+@@ -1106,7 +1111,9 @@
+ 					ttl, data);
+ 			break;
+ 		case 3: /* Identical to case one, as it turns out; this
+-                           last argument is ignored */
++                           last argument is ignored.  However, this
++                           is when we are adding records to the 
++                           "csv2_default_zonefile" */
+ 			ret = csv2_add_rr_bighash(state, cquery, rtype,
+ 					ttl, data, 1);
+ 			break;
+--- maradns-1.2.04/doc/en/source/mararc.ej	2006-02-09 12:00:39.000000000 -0800
++++ maradns-1.2.05/doc/en/source/mararc.ej	2006-02-14 23:11:51.000000000 -0800
+@@ -334,7 +334,7 @@
+ <li>Stars are allowed at the end of hostnames
+ <li>A SOA record is mandatory
+ <li>NS records are mandatory
+-<li>CNAME records are not permitted in the zone file
++<li>Neither CNAME nor FQDN4 records are permitted in the zone file
+ <li>Delegation NS records are not permitted in the zone file
+ <li>Default zonefiles may not be transferred via zone transfer
+ <li>Both recursion and default zonefiles may not be enabled at the same
+--- maradns-1.2.04/doc/en/source/default_zonefile.ej	2005-12-13 14:34:54.000000000 -0800
++++ maradns-1.2.05/doc/en/source/default_zonefile.ej	2006-02-14 23:22:48.000000000 -0800
+@@ -22,7 +22,7 @@
+ <ul>
+ <li>A SOA record is mandatory
+ <li>NS records are mandatory
+-<li>CNAME records are not permitted in the zone file
++<li>Neither CNAME nor FQDN4 records are permitted in the zone file
+ <li>Delegation NS records are not permitted in the zone file
+ <li>Default zonefiles may not be transferred via zone transfer
+ </ul>

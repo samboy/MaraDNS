@@ -1,0 +1,35 @@
+diff -ur maradns-1.2.00/doc/en/source/changelog.embed maradns-1.2.01/doc/en/source/changelog.embed
+--- maradns-1.2.00/doc/en/source/changelog.embed	2005-12-20 23:44:33.000000000 -0800
++++ maradns-1.2.01/doc/en/source/changelog.embed	2006-01-01 11:57:02.000000000 -0800
+@@ -1,5 +1,31 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.01:
++<blockquote>
++<ul>
++<li>Added script that will (mostly) automatically explode the tarball of
++    the last release of MaraDNS, apply the patches, update the doc, and
++    make the patches part of the 1.2 release.
++<li>Updated dangling CNAME document to clarify that typos can also cause
++    the dangling CNAME warning.
++<li>Updated the tarball building process of MaraDNS to have use Igor
++    Pavlov's LZMA compression to make a compressed MaraDNS tarball which 
++    is both smaller and extracts faster than the bzip2 tarball.
++<li>Fixed spurious dangling CNAME warning bug which Alex Kapranoff found.
++</ul>
++(2006.01.01)
++</blockquote>
++
++<p>maradns-1.0.36:
++<blockquote>
++This is a bugfix release for the legacy 1.0 branch of MaraDNS.  
++<ul>
++<li>A backport of the 2-line patch recently posted to the mailing list
++    concerning incorrect dangling CNAME warnings
++</ul>
++(2005.12.31)
++</blockquote>
++
+ <p>maradns-1.2.00:
+ <blockquote>
+ This is the new stable release of MaraDNS, which is an update of the 1.0

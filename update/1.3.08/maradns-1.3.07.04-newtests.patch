@@ -1,0 +1,11 @@
+--- maradns-1.3.07.04/sqa/regressions/do.tests	2007-08-29 11:30:03.000000000 -0500
++++ maradns-1.3.07.05/sqa/regressions/do.tests	2007-09-09 22:38:27.000000000 -0500
+@@ -8,6 +8,8 @@
+ TESTS=$TESTS"predator1 predator2 ptr_leak recurse_delegation "
+ TESTS=$TESTS"star_handling_1 star_handling_2 star_handling_leak "
+ TESTS=$TESTS"truncation zoneserver_doc improper_rotation "
++TESTS=$TESTS"mararc_d_csv1 mararc_d_csv2 mararc_d_ipv4_alias "
++TESTS=$TESTS"mararc_d_root_servers mararc_d_upstream_servers "
+ 
+ for test in $TESTS ; do
+ 	cd $test

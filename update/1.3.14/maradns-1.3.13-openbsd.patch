@@ -1,0 +1,20 @@
+--- maradns-1.3.13/server/MaraDNS.c	2009-02-13 02:18:32.000000000 -0600
++++ maradns-1.3.14/server/MaraDNS.c	2009-02-19 12:37:19.000000000 -0600
+@@ -44,6 +44,7 @@
+ #ifndef DARWIN
+ #endif
+ #ifndef MINGW32
++#include <sys/time.h>
+ #include <sys/resource.h>
+ #include <sys/wait.h>
+ #include <sys/socket.h>
+--- maradns-1.3.13/server/udpsuccess.c	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.3.14/server/udpsuccess.c	2009-02-19 12:37:19.000000000 -0600
+@@ -17,7 +17,6 @@
+  */
+ 
+ #ifndef MINGW32
+-#include <sys/time.h>
+ #include <sys/resource.h>
+ #include <sys/wait.h>
+ #include <sys/socket.h>

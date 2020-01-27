@@ -1,0 +1,216 @@
+#!/bin/bash -e
+
+# This script updates MaraDNS 1.3
+
+# To run this script, make sure that this script is in the directory
+# containing the tarball for the version of MaraDNS you wish to update, and
+# all of the patches are in a directory entitled 'patches'.
+
+# For example, to update MaraDNS 1.3.02 to 1.3.03, make sure 
+# maradns-1.3.02.tar.bz2 is in the same directory as this script, and
+# that the directory containing this script has a directory called
+# "patches/" which has all of the maradns-1.2.02*.patch files.
+
+# You will need to have lzma 4.27 on your system to run this script
+
+# Get the current and next version number
+
+CURRENT=${0%%-*}
+CURRENT=${CURRENT##*/}
+NEXT=${0##*-}
+
+# The revision number; in the case of having multiple snapshots a day,
+# the revision number can be incremented so as to minimize confusion
+# This is only done when more than one snapshop is uploaded to the
+# maradns.org server in a given day.
+REVISION=.1
+
+# Make a clean CURRENT install, which we rename NEXT
+rm -fr maradns-$CURRENT 2> /dev/null
+rm -fr maradns-$NEXT 2> /dev/null
+echo extracting tarball
+cat maradns-$CURRENT.tar.lzma | lzma d -si -so | tar xf -
+if [ $? != 0 ] ; then
+	echo run this from the correct directory
+	exit 1
+fi
+rm -fr maradns-$NEXT*
+mv maradns-$CURRENT maradns-$NEXT
+cd maradns-$NEXT
+
+# The patches
+
+mkdir update/$NEXT
+cp ../patches/maradns-$CURRENT* update/$NEXT
+
+# This is one of the few places where we will need to change anything
+# in this script from version to version
+
+echo applying patches
+
+# Patch #1: Update mingw32 to optimize for size and to use the
+#           just released version  2.8.0 of the Pthreads library 
+patch -p1 < update/$NEXT/maradns-1.3.01-mingw.patch
+
+# Patch #2: Refine how tildes in comments are parsed in csv2 zone
+#           files: Tildes are now always allowed and never separate
+#           records inside a comment.
+patch -p1 < update/$NEXT/maradns-1.3.01-tilde.patch
+
+# Patch #3: Bugfix: Fix how stars records which are not authoritative
+#           are processed.  Note that this increses the time needed before
+#           Mara becomes recursive
+patch -p1 < update/$NEXT/maradns-1.3.01-noauth.star.records.patch
+
+# Patch #4: Update the text form of the "paypal donate" button
+patch -p1 < update/$NEXT/maradns-1.3.01-paypal.text.patch
+
+# Patch #5: Have MaraDNS skip all authoritative processing if there are
+#           no authoritative records 
+patch -p1 < update/$NEXT/maradns-1.3.01-skip_auth.patch
+
+# Patch #6: Update copyright statements and what not to reflect that
+#           we are now in 2007
+patch -p1 < update/$NEXT/maradns-1.3.01-2007.patch
+
+# Patch #7: Update root_servers to allow non-root root_servers, such
+#           as root_servers["local."] = "192.168.1.12"
+patch -p1 < update/$NEXT/maradns-1.3.01-root_servers.patch
+
+# Patch #7: Update documents to incorporate new troubleshooting guide
+patch -p1 < update/$NEXT/maradns-1.3.01-troubleshoot.patch
+
+# Patch: Update RPM spec file (this is always done)
+patch -p1 < update/$NEXT/maradns-$CURRENT-rpm_spec.patch
+mv build/maradns-$CURRENT.spec build/maradns-$NEXT.spec
+
+# Patch: Update changelog (this is always done)
+patch -p1 < update/$NEXT/maradns-$CURRENT-changelog.patch
+
+# Patch: Update download link (this is always done)
+patch -p1 < update/$NEXT/maradns-$CURRENT-download.patch
+
+# Other release-specific fixes and changes go here
+
+mv build/win32/make.win32.zip build/win32/make.zipfile.sh
+# Remove pre-1.2.12 update scripts
+rm -fr update/1.2.0*
+rm -fr update/1.2.10
+rm -fr update/1.2.11
+
+cp ../TODO.1.3 .
+cd sqa
+echo adding recursive server redirection test cases
+tar xvjf ../../newfiles/sredir.tar.bz2
+cd ..
+echo adding troubleshooting guide
+cp ../newfiles/troubleshoot.ej doc/en/source
+
+# Anything below this line normally is not changed between MaraDNS versions
+echo updating documentation
+
+# Update the documentation
+cd doc/en
+make
+cd man
+make
+# The following is time-consuming, so we only do it when making the final
+# tarballs
+if [[ "$1" == "go" || "$1" == "snap" ]] ; then
+	# Disabled because the ps2pdf script is currently broken on my
+	# system
+	#echo making PDF reference
+	#./make.pdf
+	echo done
+fi
+cd ../tutorial
+make
+cd ../text
+make
+cd ../webpage
+make
+# Go back to the maradns dir
+cd ../../..
+
+rm CHANGELOG
+ln -s doc/en/changelog.txt CHANGELOG
+
+# Go one level higher than the toplevel directory to copy this script
+# over
+cd ..
+
+# Put this script in the "build" directory
+cp $0 maradns-$NEXT/update/$NEXT
+
+if [[ "$1" != "go" && "$1" != "snap" && "$1" != "work" ]] ; then
+	echo OK, maradns-$NEXT built.  Confirm this compiles and	
+	echo perform basic regression before re-running this to make
+	echo the tarballs.  Once you have tested this, rerun this 
+	echo script as: \"$0 go\" or as \"$0 snap\" 
+        echo to make a daily snapshot
+	exit 0
+fi
+
+if [ "$1" == "work" ] ; then
+	cat maradns-$CURRENT.tar.lzma | lzma d -si -so | tar xf -
+	echo OK, both maradns-$CURRENT and maradns-$NEXT made\; you
+	echo now can make more patches as needed.  
+	exit 0
+fi
+
+# Build the tarballs
+echo making new tarballs
+
+if [ "$1" == "snap" ] ; then
+	SNAP=Q.$( date +%Y%m%d )$REVISION
+	rm -fr maradns-$SNAP
+	mv maradns-$NEXT maradns-$SNAP
+	tar cjf maradns-$SNAP.tar.bz2 maradns-$SNAP
+	exit 0
+else
+	SNAP=$NEXT
+	tar cjf maradns-$SNAP.tar.bz2 maradns-$SNAP
+	tar czf maradns-$SNAP.tar.gz maradns-$SNAP
+
+	# All of the compression we actually use was originally written by 
+	# Igor Pavlov for the 7-zip compression suite
+	echo shrinking .gz tarball
+	advdef -z -3 maradns-$SNAP.tar.gz
+fi
+
+echo using exotic compression
+tar cf maradns-$SNAP.tar maradns-$SNAP
+
+echo lzma compression \(this will take about 5 minutes\)
+date
+# To decompress: cat file.tar.lzma | lzma d -si -so | tar xvf -
+# -d20 makes the file almost as small as -d22, but uses 1/4 of the memory
+# (only a little over one meg needed for decompression)
+lzma e maradns-$SNAP.tar maradns-$SNAP.tar.lzma -a2 -d20 -fb255
+date
+echo
+
+# Clean up the uncompressed tarball
+rm maradns-$SNAP.tar
+
+exit 0
+
+# The other exotic compressors can't be run in a pipeline
+
+echo 7zip compression
+date
+7za a maradns-$SNAP.tar.7z maradns-$SNAP.tar
+date
+echo
+
+echo paq6 compression \(This will take 2\-3 minutes\)
+date
+paq6v2 -2 maradns-$SNAP.tar.pq6 maradns-$SNAP.tar
+date
+echo
+
+echo rzip compression
+date
+rzip maradns-$SNAP.tar
+date
+echo

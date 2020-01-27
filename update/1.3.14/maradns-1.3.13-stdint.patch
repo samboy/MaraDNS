@@ -1,0 +1,208 @@
+Use stdint.h for all ints with a fixed size.
+
+--- maradns-1.3.13/libs/JsStr.h	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.3.14/libs/JsStr.h	2009-08-01 10:03:50.000000000 -0500
+@@ -13,37 +13,8 @@
+ #ifndef JS_STRING_INCLUDED
+ #define JS_STRING_INCLUDED
+ 
+-#ifdef QNX
++/* Needed for uint32_t */
+ #include <stdint.h>
+-typedef uint32_t u_int32_t;
+-typedef uint16_t u_int16_t;
+-#undef SOLARIS
+-#endif
+-
+-/* Solaris needs u_int32_t and u_int16_t defined */
+-#ifdef SOLARIS
+-#ifndef _uint_defined
+-typedef unsigned int u_int32_t;
+-typedef unsigned short u_int16_t;
+-#define _uint_defined
+-#endif /* _uint_defined */
+-#endif /* SOLARIS */
+-
+-/* Same thing needed in Mingw32 */
+-#ifdef MINGW32
+-#ifndef _uint_defined
+-typedef unsigned int u_int32_t;
+-typedef unsigned short u_int16_t;
+-#define _uint_defined
+-#endif /* _uint_defined */
+-#endif /* MINGW32 */
+-
+-#ifdef SOLARIS
+-#include <sys/file.h>
+-#endif
+-
+-/* Needed for u_int32_t */
+-#include <sys/types.h>
+ 
+ typedef struct {
+     unsigned char *string;   /* Actual physical string */
+@@ -137,11 +108,11 @@
+ int js_buf_read(js_file *desc);
+ int js_buf_getline(js_file *desc, js_string *js);
+ int js_qstr2js(js_string *js, char *string);
+-int js_adduint32(js_string *js, u_int32_t number);
++int js_adduint32(js_string *js, uint32_t number);
+ int js_substr_append(js_string *source, js_string *dest, int offset,
+                      int length);
+-u_int32_t js_readuint32(js_string *js, unsigned int offset);
+-int js_strnlen(char *s, u_int32_t limit);
++uint32_t js_readuint32(js_string *js, unsigned int offset);
++int js_strnlen(char *s, uint32_t limit);
+ int js_tell_memory_allocated();
+ int show_esc_stdout(js_string *js);
+ int safe_esc_stdout(js_string *js);
+--- maradns-1.3.13/libs/JsStrOS.c	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.3.14/libs/JsStrOS.c	2009-08-01 10:05:42.000000000 -0500
+@@ -21,7 +21,6 @@
+ #include <stdio.h>
+ #include <string.h>
+ #include <sys/stat.h>
+-#include <sys/types.h>
+ #include <fcntl.h>
+ #include <sys/file.h>
+ #include <limits.h>
+@@ -866,10 +865,10 @@
+                  in big-endian format, where the js->unit_size is one.
+    input: pointer to js_string object, number to add
+    output: JS_ERROR on error, JS_SUCCESS on success
+-   (This is in OS because of the dependency on u_int32_t
++   (This is in OS because of the dependency on uint32_t
+ */
+ 
+-int js_adduint32(js_string *js, u_int32_t number) {
++int js_adduint32(js_string *js, uint32_t number) {
+ 
+     /* sanity checks */
+     if(js_has_sanity(js) == JS_ERROR)
+@@ -896,12 +895,12 @@
+           of string (0 is beginning of string, 1 second byte, etc.)
+    output: JS_ERROR on error, value of uint32 on success
+            (Hack: 0xffffffff is the same as -1 in comparisons)
+-   (This is in OS because of the dependency on u_int32_t)
++   (This is in OS because of the dependency on uint32_t)
+ */
+ 
+-u_int32_t js_readuint32(js_string *js, unsigned int offset) {
++uint32_t js_readuint32(js_string *js, unsigned int offset) {
+ 
+-    u_int32_t ret;
++    uint32_t ret;
+     /* sanity checks */
+     if(js_has_sanity(js) == JS_ERROR)
+         return 0xffffffff;
+@@ -927,8 +926,8 @@
+  * to the length determined by the limit.  This is here because strnlen
+  * is, alas, not a portable string library call.  This call is originally
+  * by Matthew T. Russotto */
+-int js_strnlen(char *s, u_int32_t limit) {
+-        u_int32_t len;
++int js_strnlen(char *s, uint32_t limit) {
++        uint32_t len;
+         if(limit > 2147483600 || limit < 0) { /* Just under 2 ** 31 */
+                 return JS_ERROR;
+         }
+--- maradns-1.3.13/MaraDns.h	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.3.14/MaraDns.h	2009-08-01 10:10:12.000000000 -0500
+@@ -27,26 +27,7 @@
+ /* The amount of memory a single thread will use */
+ #define PER_THREAD_MEM 16777216
+ 
+-#ifdef QNX
+-#undef SOLARIS
+ #include <stdint.h>
+-#include <arpa/inet.h>
+-#endif
+-
+-#ifdef SOLARIS
+-#include <stdint.h>
+-#endif
+-
+-/* Mingw32 */
+-#ifdef MINGW32
+-#ifndef _uint_defined
+-typedef unsigned int u_int32_t;
+-typedef unsigned short u_int16_t;
+-typedef short int16_t;
+-typedef int int32_t;
+-#define _uint_defined
+-#endif /* _uint_defined */
+-#endif /* MINGW32 */
+ 
+ /* Gerrit P. Haase's suggested the following for compiling this on
+    Cygwin */
+@@ -145,26 +126,18 @@
+ #include "libs/JsStr.h"
+ #endif
+ 
+-/* u_int16_t, etc. */
+-#include <sys/types.h>
+-
+ /* The encoding for the strings in the configuration files (3: iso 8859-1) */
+ #define MARA_LOCALE 3
+ 
+-#ifndef MINGW32
+ /* The data types for 32-bit signed and unsigned data */
+ #define int32 int32_t
+-#define uint32 u_int32_t
++#define uint32 uint32_t
+ 
+ /* These data types need to store at least 16 bits, and can store more */
+ #define int16 int16_t
+-#define uint16 u_int16_t
++#define uint16 uint16_t
+ 
+-#else
+-#define int32 int
+-#define uint32 unsigned int
+-#define int16 int
+-#define uint16 unsigned int
++#ifdef MINGW32
+ #define MSG_WAITALL 0
+ #define socklen_t int
+ #endif /* MINGW32 */
+--- maradns-1.3.13/server/recursive.c	2009-02-13 02:18:32.000000000 -0600
++++ maradns-1.3.14/server/recursive.c	2009-08-01 10:11:53.000000000 -0500
+@@ -31,7 +31,7 @@
+ #include <string.h>
+ #include <time.h>
+ #include <sys/time.h>
+-#include <sys/types.h>
++#include <stdint.h>
+ #ifndef MINGW32
+ #include <sys/resource.h>
+ #include <sys/wait.h>
+@@ -173,7 +173,7 @@
+ MARA_BYTE r_seedMaterial[320]; /* We may not eventually need this */
+ keyInstance r_seedInst;
+ cipherInstance r_cipherInst;
+-u_int32_t r_counter = 0;
++uint32_t r_counter = 0;
+ /* END RNG USING CODE */
+ int r_place = 0;
+ 
+--- maradns-1.3.13/tools/askmara.c	2009-02-13 02:18:33.000000000 -0600
++++ maradns-1.3.14/tools/askmara.c	2009-08-01 10:13:14.000000000 -0500
+@@ -27,8 +27,8 @@
+ #include <errno.h>
+ #include <string.h>
+ #include <time.h>
++#include <stdint.h>
+ #ifndef MINGW32
+-#include <sys/types.h>
+ #include <sys/time.h>
+ #include <sys/socket.h>
+ #include <netinet/in.h>
+@@ -91,7 +91,7 @@
+ /* Generate a psudo-random query-id based on the hostname we give it.
+    This helps us test the server against a large number of query IDs */
+ 
+-u_int16_t gen_id(char *hostname) {
++uint16_t gen_id(char *hostname) {
+     /* BEGIN RNG USING CODE */
+     /* May as well bring out the bug guns (e.g. our secure RNG) */
+     MARA_BYTE r_inBlock[17],r_outBlock[17],r_binKey[17];

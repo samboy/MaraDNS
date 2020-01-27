@@ -1,0 +1,175 @@
+diff -ur maradns-1.2.06.orig/doc/en/source/mararc.ej maradns-1.2.06/doc/en/source/mararc.ej
+--- maradns-1.2.06.orig/doc/en/source/mararc.ej	2006-03-01 09:57:31.000000000 -0800
++++ maradns-1.2.06/doc/en/source/mararc.ej	2006-03-01 10:23:51.000000000 -0800
+@@ -439,6 +439,20 @@
+ for this variable to be set, MaraDNS must be bound to at least one 
+ ipv4 address.
+ 
++<h2>handle_noreply</h2>
++This is a numeric variable which determines how the recursive resolver
++informs the client that Mara was unable to contact any remote DNS servers
++when trying to resolve a given domain.  
++
++If this is set to 0, no reponse will be sent to the DNS client.
++
++If this is set to 1, a "server fail" message will be sent to the DNS client.
++
++If this is set to 2, a "this host does not exist" message will be sent
++to the DNS client.
++
++The default value for this is 2.
++
+ <h2>hide_disclaimer</h2>
+ If this is set to "YES", MaraDNS will not display the legal disclaimer when
+ starting up.
+diff -ur maradns-1.2.06.orig/parse/ParseMaraRc.c maradns-1.2.06/parse/ParseMaraRc.c
+--- maradns-1.2.06.orig/parse/ParseMaraRc.c	2006-02-21 01:32:16.000000000 -0800
++++ maradns-1.2.06/parse/ParseMaraRc.c	2006-03-01 10:00:59.000000000 -0800
+@@ -31,7 +31,7 @@
+ 
+ /* Keywords that are non-dictionary strings in Mara's rc file */
+ 
+-#define KEYCOUNT 45
++#define KEYCOUNT 46
+ 
+ char *keywords[KEYCOUNT] = {
+         "bind_address", /* IPv4 Addresses to bind to (old name) */
+@@ -121,6 +121,8 @@
+         "admin_acl", /* List of IPs allowed to administrate MaraDNS */
+         "remote_admin", /* Whether verbose_level can be remotely
+                          * set while MaraDNS is running */
++        "handle_noreply", /* How to handle the case of none of the remote
++                           * servers replying at all */
+         "zone_transfer_acl" /* ACL of IPs allowed to perform zone transfers */
+         };
+ 
+diff -ur maradns-1.2.06.orig/server/MaraDNS.c maradns-1.2.06/server/MaraDNS.c
+--- maradns-1.2.06.orig/server/MaraDNS.c	2006-03-01 09:57:31.000000000 -0800
++++ maradns-1.2.06/server/MaraDNS.c	2006-03-01 10:07:16.000000000 -0800
+@@ -3982,6 +3982,8 @@
+     int max_q_total; /* Maximum total queries in attempt to resolve hostname */
+     int timeout; /* Maximum time to wait for a remote server when performing
+                     a recursive query */
++    int handle_noreply = 2; /* How tohandle a recursive query when you don't 
++                             * get a remote reply at all */
+ #else
+ /* Cygwin doesn't have ipv6 support yet */
+ #ifndef __CYGWIN__
+@@ -4163,6 +4165,14 @@
+     if(min_visible_ttl < 5)
+         min_visible_ttl = 5;
+ 
++#ifndef AUTHONLY
++    handle_noreply = read_numeric_kvar("handle_noreply",2);
++    if(handle_noreply < 0 || handle_noreply > 2) {
++        harderror("handle_noreply must have a value between 0 and 2");
++    }
++    init_handle_noreply(handle_noreply);
++#endif /* AUTHONLY */
++
+     /* Set the values */
+ #ifndef AUTHONLY
+     set_min_ttl(min_ttl_n,min_ttl_c);
+diff -ur maradns-1.2.06.orig/server/recursive.c maradns-1.2.06/server/recursive.c
+--- maradns-1.2.06.orig/server/recursive.c	2006-02-09 12:00:39.000000000 -0800
++++ maradns-1.2.06/server/recursive.c	2006-03-01 10:17:17.000000000 -0800
+@@ -103,6 +103,10 @@
+ 
+ int rlog_level = 1;
+ 
++/* How to handle the case of getting no reply at all from any of the
++ * remote servers */
++int handle_noreply = 2;
++
+ typedef struct {
+     int id;
+     int sock;
+@@ -240,6 +244,15 @@
+     return ret;
+     }
+ 
++/* Routine to set the handle_noreply value (how to handle the case of
++   there being no reply at all from any of the remote DNS servers)
++ */
++
++int init_handle_noreply(int value) {
++    handle_noreply = value;
++    return value;
++}
++
+ /* Routine used to determine if a given DNS label ends with the
+    string ".arpa"; we use this information to determine whether we
+    chase down the A or PTR record when given a CNAME record
+@@ -3104,9 +3117,29 @@
+                 }
+ 	    /* We couldn't contact any nameservers */
+             /* Return a bogus SOA record */
++	    /* CODE HERE: Return either bogus "not here", "server fail", or
++                          nothing based on user's preferences */
++            
+             if(ipret == NULL && ptrret == NULL) { /* If we send a UDP packet
+                                      as an answer */
+-                udpnotfound(rra_data,id,sock,&client,query,0,1,0,3);
++                if(handle_noreply == 2) {
++                    udpnotfound(rra_data,id,sock,&client,query,0,1,0,3);
++                    } 
++                else if(handle_noreply == 1) {
++                    /* udperror with "server fail" */
++                    js_string *synthesized_header;
++                    /* udperror with "server fail" */
++                    if((synthesized_header = js_create(24,1)) == 0) {
++                        return JS_ERROR;
++                        }
++                    if(js_adduint16(synthesized_header,id) == JS_ERROR) {
++                        js_destroy(synthesized_header);
++                        return JS_ERROR;
++                        }
++                    udperror(sock,synthesized_header,&client,query,FORMAT_ERROR,
++                             "No reply from remote servers",2,1,0);
++                    js_destroy(synthesized_header);
++                    }
+ 	        }
+             return JS_SUCCESS;
+             }
+@@ -3115,9 +3148,27 @@
+     /* We could not find a "closer" name server, which is an error
+        condition */
+     /* Return a bogus SOA record */
++    /* CODE HERE: Return either bogus "not here", "server fail", or
++                  nothing based on user's preferences */
+     if(ipret == NULL && ptrret == NULL) { /* If we send a UDP packet
+                                            * as an answer */
+-        udpnotfound(rra_data,id,sock,&client,query,0,1,0,3);
++        if(handle_noreply == 2) {
++            udpnotfound(rra_data,id,sock,&client,query,0,1,0,3);
++            }
++        else if(handle_noreply == 1) {
++            js_string *synthesized_header;
++            /* udperror with "server fail" */
++            if((synthesized_header = js_create(24,1)) == 0) {
++                return JS_ERROR;
++                }
++            if(js_adduint16(synthesized_header,id) == JS_ERROR) {
++                js_destroy(synthesized_header);
++                return JS_ERROR;
++                }
++            udperror(sock,synthesized_header,&client,query,FORMAT_ERROR,
++                 "No reply from remote servers",2,1,0);
++            js_destroy(synthesized_header);
++            }
+         }
+     /* Clean up the request */
+     success:
+--- maradns-1.2.06/server/functions_server.h.orig	2006-03-01 10:39:41.000000000 -0800
++++ maradns-1.2.06/server/functions_server.h	2006-03-01 10:41:07.000000000 -0800
+@@ -266,3 +266,10 @@
+ 
+ void harderror(char *why);
+ 
++/* In recursive.c: Set how we handle the case of not being able to
++   contact any remote servers when making a recursive query.  0: Drop
++   the packet on the floor.  1: Send the client a "server fail" error.
++   2: Send the client a "this host does not exist" reply. */
++
++int init_handle_noreply(int value);
++

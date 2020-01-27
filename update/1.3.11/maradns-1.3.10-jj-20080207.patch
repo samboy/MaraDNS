@@ -1,0 +1,48 @@
+--- maradns-Q.20080204.1/server/MaraDNS.c	2008-02-04 17:48:31.000000000 +0100
++++ maradns-Q.20080204.2/server/MaraDNS.c	2008-02-07 08:45:20.000000000 +0100
+@@ -4265,7 +4265,7 @@
+             harderror(L_CHROOT_NT); /* "Problem making chroot nt string.\nMake sure the chroot directory is 200 chars or less" */
+         if(chdir((char *)chroot_zt) != 0)
+             sys_harderror(L_CHROOT_CHANGE); /* "Problem changing to chroot dir.\nMake sure chroot_dir points to a valid directory" */
+-#ifndef __CYGWIN__
++#if ! (defined __CYGWIN__ || defined QNX)
+         if(chroot((char *)chroot_zt) != 0)
+             sys_harderror(L_CHROOT_DO);  /* "Problem changing the root directory." */
+ #endif
+--- maradns-Q.20080204.1/qual/qual_timestamp.c	2008-02-04 17:48:31.000000000 +0100
++++ maradns-Q.20080204.2/qual/qual_timestamp.c	2008-02-07 08:26:56.000000000 +0100
+@@ -35,8 +35,12 @@
+                       when the 32-bit time() call gives us -1 in 2106 */
+ 
+ #ifndef AUTHONLY
++#ifdef __SUNPRO_C
++pthread_mutex_t qtime_lock = {0, };
++#else
+ pthread_mutex_t qtime_lock = PTHREAD_MUTEX_INITIALIZER;
+ #endif
++#endif
+ 
+ /* Give an application a timestamp in a non-blocking manner */
+ 
+--- maradns-Q.20080204.1/tcp/fetchzone.c	2008-02-04 17:48:31.000000000 +0100
++++ maradns-Q.20080204.2/tcp/fetchzone.c	2008-02-07 08:34:54.000000000 +0100
+@@ -71,6 +71,7 @@
+     q_rr rr;
+     rr_soa soa;
+     int qclass = 1;
++    int on = 1;
+ 
+     unsigned char len[2];
+ 
+@@ -116,6 +117,11 @@
+             harderror(L_NO_SOCK);
+     }
+ 
++    if(setsockopt(sock, SOL_SOCKET, SO_REUSEADDR,
++                  (int *)&on, sizeof(int)) == -1) {
++         harderror("setsockopt failed");
++    }
++
+     /* Connect to the zone server */
+     if(connect(sock,(struct sockaddr *)pzone_server,len_inet) == -1)
+         harderror(L_NO_CONNECT); /* "Unable to connect to zone server" */

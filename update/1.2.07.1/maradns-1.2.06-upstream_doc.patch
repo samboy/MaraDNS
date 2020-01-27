@@ -1,0 +1,61 @@
+diff -ur maradns-1.2.07.1.orig/doc/en/source/example_full_mararc maradns-1.2.07.1/doc/en/source/example_full_mararc
+--- maradns-1.2.07.1.orig/doc/en/source/example_full_mararc	2006-03-10 01:59:46.000000000 -0800
++++ maradns-1.2.07.1/doc/en/source/example_full_mararc	2006-03-15 11:54:17.000000000 -0800
+@@ -169,6 +169,10 @@
+ # superroot.  
+ #root_servers["."] = "icann"
+ 
++# If you prefer to contact other recursive DNS servers instead of the ICANN
++# root servers, this is done with the upstream_servers mararc variable:
++#upstream_servers["."] = "192.168.0.1, 192.168.0.2"
++
+ # You can tell MaraDNS to *not* query certain DNS servers when in recursive
+ # mode.  This is mainly used to not allow spam-friendly domains to resolve,
+ # since spammers are starting to get in the habit of using spam-friendly
+diff -ur maradns-1.2.07.1.orig/doc/en/source/mararc.ej maradns-1.2.07.1/doc/en/source/mararc.ej
+--- maradns-1.2.07.1.orig/doc/en/source/mararc.ej	2006-03-10 01:59:46.000000000 -0800
++++ maradns-1.2.07.1/doc/en/source/mararc.ej	2006-03-15 11:56:19.000000000 -0800
+@@ -230,7 +230,8 @@
+ <h2>upstream_servers</h2>
+ 
+ This is identical to the root_servers variable (can have only one
+-element, the element is a list of ipv4_addresses, etc.), but is used
++element, the element is a list of ipv4_addresses, the variable is a 
++dictionary variable, etc.), but is used
+ when one wishes to use MaraDNS to query other recursive servers, instead
+ of querying the actual root name servers for an answer.
+ <p>
+@@ -238,6 +239,13 @@
+ Note that one can not have both root_servers and upstream_servers set
+ in a given mararc file; MaraDNS will return with a fatal error if one
+ attempts to do this.
++<p>
++
++If you get a syntax error when trying to use upstream_servers, please 
++search for upstream_servers in the
++MaraDNS FAQ and read this entry, or look for upstream_servers
++in the example mararc file below for an example of correct usage
++of this variable.
+ 
+ <h2>Final note on dictionary variables</h2>
+ 
+@@ -855,7 +863,7 @@
+ <h1>EXAMPLE MARARC FILE</h1>
+ 
+ <pre>
+-<include "../source/example_mararc">
++<include "../source/example_full_mararc">
+ </pre>
+ 
+ <h1>BUGS</h1>
+--- maradns-1.2.06/doc/en/source/recursive.ej	2006-03-15 11:59:41.000000000 -0800
++++ maradns-1.2.07.1/doc/en/source/recursive.ej	2006-03-10 01:59:45.000000000 -0800
+@@ -144,7 +144,7 @@
+ ipv4_bind_addresses = "127.0.0.1"
+ chroot_dir = "/etc/maradns"
+ recursive_acl = "127.0.0.1"
+-upstream_servers = "10.66.77.88, 10.99.11.22"
++upstream_servers["."] = "10.66.77.88, 10.99.11.22"
+ </pre>
+ 
+ <A name=otherroot>

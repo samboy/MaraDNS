@@ -1,0 +1,1377 @@
+--- maradns-1.2.07.3/doc/en/webpage/contact.embed	2005-11-10 13:23:14.000000000 -0800
++++ maradns-1.2.07.4/doc/en/webpage/contact.embed	2006-05-19 17:07:04.000000000 -0700
+@@ -1,4 +1,4 @@
+ <h1>Contact the author of MaraDNS</h1>
+ <p>My email address is available 
+-<A href=http://www.samiam.org/mailme.php>here</A></p>
++<A href="http://www.samiam.org/mailme.php">here</A></p>
+ <p></p>
+--- maradns-1.2.07.3/doc/en/webpage/dns_software.embed	2005-12-06 00:52:13.000000000 -0800
++++ maradns-1.2.07.4/doc/en/webpage/dns_software.embed	2006-05-19 17:07:04.000000000 -0700
+@@ -10,19 +10,26 @@
+ 
+ <UL>
+ 
+-<LI><A href=http://www.isc.org/products/BIND/bind9.html>BIND 9</A> is
++<LI><A href="http://www.isc.org/products/BIND/bind9.html">BIND 9</A> is
+     a complete rewrite of BIND, and, as such, probably does not have the
+     security issues that previous versions of BIND has.  In fact, one of the
+     BIND developers found a security problem in earlier versions of MaraDNS.  
+     Very full-featured, and is the reference standard for the newer DNS RFCs.
+ </LI>
+ 
+-<LI><A href=http://freshmeat.net/projects/pdnsd/>pdnsd</A> is a 
++<LI><A href="http://www.powerdns.com">PowerDNS</A> is an authoritative
++and recursive
++DNS server with support for, among other things, SQL.  I would like to
++applaud the PowerDNS developers for making a <i>libre</i> release of this
++software.  
++</LI>
++
++<LI><A href="http://freshmeat.net/projects/pdnsd/">pdnsd</A> is a 
+     recursive caching DNS server.  Paul Rombouts is the current maintainer
+     of this program.
+ </LI>
+ 
+-<LI><A href=http://posadis.sourceforge.net>Posadis</A> is another DNS
++<LI><A href="http://posadis.sourceforge.net">Posadis</A> is another DNS
+     server project, similiar to MaraDNS.  This server is now both
+     a resolving and an authoritative DNS server.
+ </LI>
+@@ -32,37 +39,31 @@
+ <B>Non-recursive DNS servers</B>
+ 
+ <UL>
+-<LI><A href=http://www.powerdns.com>PowerDNS</A> is an authoritative-only
+-DNS server with support for, among other things, SQL.  I would like to
+-applaud the PowerDNS developers for making a <i>libre</i> release of this
+-software.  <!--<b>Note:</b> Recursive code is in the works; PowerDNS will 
+-soon enough be a fully functioning recursive DNS server.-->
+-</LI>
+ 
+-<LI><A href=http://www.xbill.org/dnsjava/>DnsJAVA</A> is an authoritative-only
++<LI><A href="http://www.xbill.org/dnsjava/">DnsJAVA</A> is an authoritative-only
+     DNS server written in Java.
+ </LI>
+ 
+-<LI><A href=http://www.nlnetlabs.nl/nsd/>NSD</A> is an authoritative-only
++<LI><A href="http://www.nlnetlabs.nl/nsd/">NSD</A> is an authoritative-only
+     DNS server which is compatible with BIND zone files.
+ </LI>
+ 
+-<LI><A href=http://mydns.bboy.net/>MyDNS</A> is an authoritative-only
++<LI><A href="http://mydns.bboy.net/">MyDNS</A> is an authoritative-only
+     DNS server which uses MySQL as a database back end. </LI>
+ 
+ <LI>The Pliant language/package 
+-    <A href=http://pliant.cx/pliant/protocol/dns/>comes with a
++    <A href="http://pliant.cx/pliant/protocol/dns/">comes with a
+     DNS server</A>.  This DNS server can not recursively process DNS queries
+     given a list of root servers.
+ 
+ </LI>
+-<LI><A href=http://www.twistedmatrix.com/>Twisted</A> includes a 
++<LI><A href="http://www.twistedmatrix.com/">Twisted</A> includes a 
+     non-recursive DNS server.
+ </LI>
+ <LI>The Eddit project includes a
+-    <A href=http://eddie.sourceforge.net/lbdns.html>DNS server</A>
++    <A href="http://eddie.sourceforge.net/lbdns.html">DNS server</A>
+ </LI>
+-<LI><A href=http://threading.2038bug.com/sheerdns/>SheerDNS</A> is a 
++<LI><A href="http://threading.2038bug.com/sheerdns/">SheerDNS</A> is a 
+     simple non-caching DNS server that stores all records as their
+     own files.
+ 
+@@ -77,67 +78,67 @@
+ DNS servers.
+ 
+ <UL>
+-<LI><A href=http://www.digitallumber.com/oak>Oak DNS</A> is a DNS
++<LI><A href="http://www.digitallumber.com/oak">Oak DNS</A> is a DNS
+ server written completely in python.  It is compatible (I think) with
+ both BIND zone files and cache files.  The file can be downloaded
+-<A href=http://www.digitallumber.com/oak/code/oak-1.2.tar.gz>here</A>,
+-<A href=http://www.maradns.org/download/non-maradns/oak-1.2.tar.gz>here</A>,
+-or <A href=http://www.lpthe.jussieu.fr/~talon/oak-1.2.tar.gz>here</A>.
++<A href="http://www.digitallumber.com/oak/code/oak-1.2.tar.gz">here</A>,
++<A href="http://www.maradns.org/download/non-maradns/oak-1.2.tar.gz">here</A>,
++or <A href="http://www.lpthe.jussieu.fr/~talon/oak-1.2.tar.gz">here</A>.
+ The most recent alpha version can be downloaded <A
+-href=http://www.digitallumber.com/oak/code/oak-1.4.tar.gz>here</A>
++href="http://www.digitallumber.com/oak/code/oak-1.4.tar.gz">here</A>
+ or
+ <A 
+-href=http://www.maradns.org/download/non-maradns/oak-1.4.tar.gz>here</A>.
++href="http://www.maradns.org/download/non-maradns/oak-1.4.tar.gz">here</A>.
+ The most recent file in this alpha is from February of 2003; until
+ this program has a more recent update, I am marking this abandoned.
+ (Thanks, Michel Talon, for the update)
+ </LI>
+ 
+-<LI><A href=http://moodns.sourceforge.net>MooDNS</A> is another DNS server
++<LI><A href="http://moodns.sourceforge.net">MooDNS</A> is another DNS server
+     project.  
+     A CVS checkout on January 21, 2003 shows that no files have been updated
+     since July 20, 2002, except for a single readme file updated on August
+     1, 2002.  This project is abadoned. 
+     <p>
+     I have made a
+-    <A href=moodns-20021011.tar.bz2>tarball available</A> for people who
++    <A href="moodns-20021011.tar.bz2">tarball available</A> for people who
+     do not want to bother with a CVS checkout.
+ </LI>
+-<LI><A href=http://sourceforge.net/projects/dents>Dents</A> is a DNS
++<LI><A href="http://sourceforge.net/projects/dents">Dents</A> is a DNS
+     server that showed a lot of promise.  Unfortunatly, no files have been
+     released since 1999.
+ </LI>
+ 
+-<LI><A href=http://www.kyuzz.org/antirez/ens.html>Yaku-NS</A> is a
++<LI><A href="http://www.kyuzz.org/antirez/ens.html">Yaku-NS</A> is a
+     DNS server geared towards embedded systems.  According to the changelog,
+     no one has made any changes to this software since Feburary, 2001.
+ </LI>
+ 
+-<LI><A href=http://customdns.sourceforge.net>CustomDNS</A> has not released
++<LI><A href="http://customdns.sourceforge.net">CustomDNS</A> has not released
+     any files since the summer of 2000. 
+ </UL>
+ 
+ <B>Other</B>
+ <UL>
+-<LI><A href=http://www.nimh.org/code/>LdapDNS</A> is a small DNS server
++<LI><A href="http://www.nimh.org/code/">LdapDNS</A> is a small DNS server
+     which converts DNS requests in to LDAP requests, without caching.
+ </LI>
+-<LI><A href=http://www.dnspython.org/>DnsPython</A> is a DNS toolkit for
++<LI><A href="http://www.dnspython.org/">DnsPython</A> is a DNS toolkit for
+     Python.
+ </LI>
+-<LI><A href=http://gnudip2.sourceforge.net/>GnuDIP</A> is designed for
++<LI><A href="http://gnudip2.sourceforge.net/">GnuDIP</A> is designed for
+     dynamically assigned IP addresses.
+-<LI><A href=http://jdrowell.com/Linux/Projects/jdresolve>JD Resolve</A> is
++<LI><A href="http://jdrowell.com/Linux/Projects/jdresolve">JD Resolve</A> is
+     a tool written in Perl that uses DNS to resolve hostnames.
+ </LI>
+-<LI><A href=http://dproxy.sourceforge.net/>Dproxy</A> is a caching DNS proxy.
++<LI><A href="http://dproxy.sourceforge.net/">Dproxy</A> is a caching DNS proxy.
+ </LI>
+ 
+ <!--
+-<LI><A href=http://posadis.sourceforge.net/servers.php>A list that the
++<LI><A href="http://posadis.sourceforge.net/servers.php">A list that the
+     Posadis developers have of DNS servers</A>
+  -->
+-<LI><A href=http://cr.yp.to/djbdns/other.html>Dan J. Bernstein also has a list
++<LI><A href="http://cr.yp.to/djbdns/other.html">Dan J. Bernstein also has a list
+     of DNS servers</A>
+ </LI>
+ 
+@@ -146,12 +147,11 @@
+ <H2>Semi-libre DNS solutions</H2>
+ 
+ <UL>
+-<LI><A href=http://cr.yp.to/djbdns.html>DjbDNS</A>  DJ Bernstein's DNS
++<LI><A href="http://cr.yp.to/djbdns.html">DjbDNS</A>  DJ Bernstein's DNS
+     package, which has both an authoritative DNS server and a caching
+     nameserver.  Excellent in all aspects except for its 
+-    <A href=http://cr.yp.to/distributors.html>license</A>. (Thanks to
+-    <A href=http://dustman.net/andy/djbware>Andy Dustman</A> for
+-    correcting the link for DjbDNS' license).  This is being listed as
++    <A href="http://cr.yp.to/distributors.html">license</A>.  This 
++    is being listed as
+     semi-libre software because open source software allows people
+     to modify software and <i>distribute modified versions of the
+     software</i>.  Full source code provided; no expectation of receiving
+@@ -165,18 +165,19 @@
+ I find the idea of using proprietary software for anything that 
+ matters repulsive; however I try to keep this list up-to-date</em>
+ 
+-<LI><A href=http://www.ultradns.com>UltraDNS</A></LI>
++<UL>
++<LI><A href="http://www.ultradns.com">UltraDNS</A></LI>
+ <LI><A 
+-href=http://www.cisco.com/warp/public/cc/pd/nemnsw/nerr/prodlit/cnr30_ov.htm>Cisco  
++href="http://www.cisco.com/warp/public/cc/pd/nemnsw/nerr/prodlit/cnr30_ov.htm">Cisco  
+     Network Registrar</A></LI>
+-<LI><A href=http://www.qip.lucent.com/>QIP</A> These people are obviously 
++<LI><A href="http://www.qip.lucent.com/">QIP</A> These people are obviously 
+     hiding something, since they require a password to look up the 
+     technical details of their product.</LI>
+-<LI><A href=http://www.incognito.com/products/DNSCommander/overview.jsp>DNS
++<LI><A href="http://www.incognito.com/products/DNSCommander/overview.jsp">DNS
+     commander</A></LI>
+-<LI><A href=http://www.jhsoft.com/>Simple DNS plus</A>.  Only available for
++<LI><A href="http://www.jhsoft.com/">Simple DNS plus</A>.  Only available for
+      Windows.
+-<LI><A href=http://www.menandmice.com/2000/2200_quick_dns.html>Yet another
++<LI><A href="http://www.menandmice.com/2000/2200_quick_dns.html">Yet another
+ DNS program; this one at least has a Linux port</A>
+ </UL>
+ 
+--- maradns-1.2.07.3/doc/en/webpage/download.embed	2006-03-10 01:59:45.000000000 -0800
++++ maradns-1.2.07.4/doc/en/webpage/download.embed	2006-05-19 17:07:04.000000000 -0700
+@@ -3,57 +3,57 @@
+ <h1>&iexcl;Download MaraDNS!</h1>
+ 
+ <h2>Stable release</h2>
+-<p>This is the current stable release of MaraDNS, MaraDNS 1.2.03.3
++<p>This is the current stable release of MaraDNS, MaraDNS 1.2.07.3
+ <p>This release is available both at <A 
+-href=http://sourceforge.net/project/showfiles.php?group_id=24033&package_id=16396>sourceforge.net</A>
++href="http://sourceforge.net/project/showfiles.php?group_id=24033&amp;package_id=16396">sourceforge.net</A>
+ and on this page.
+ 
+ <p><A 
+-href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.bz2"><!--
+-                         -->maradns-1.2.03.3.tar.bz2</A>
++href="download/1.2/1.2.07.3/maradns-1.2.07.3.tar.bz2"><!--
++                         -->maradns-1.2.07.3.tar.bz2</A>
+ <p><A 
+-href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.bz2.sha1.asc">GPG signature</A><p>
++href="download/1.2/1.2.07.3/maradns-1.2.07.3.tar.bz2.sha1.asc">GPG signature</A><p>
+ <p><A 
+-href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.bz2.rmd.asc">GPG signature
++href="download/1.2/1.2.07.3/maradns-1.2.07.3.tar.bz2.rmd.asc">GPG signature
+ using RIPEMD160 as the digest algorithm</A><p>
+-(released 2006/02/10)
++(released 2006/05/15)
+ 
+ <p>
+ The following are files compressed with LZMA compression, which both compresses
+ better and decompresses faster than bzip2 compressed files.  Information
+ on decompressing LZMA files can be found <A 
+-href=download/1.2/00Uncompress.txt>here</A>.
++href="download/1.2/00Uncompress.txt">here</A>.
+ 
+ <p><A 
+-href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.lzma"><!--
+-                         -->maradns-1.2.03.3.tar.lzma</A>
++href="download/1.2/1.2.07.3/maradns-1.2.07.3.tar.lzma"><!--
++                         -->maradns-1.2.07.3.tar.lzma</A>
+ <p><A 
+-href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.lzma.sha1.asc">GPG signature</A><p>
++href="download/1.2/1.2.07.3/maradns-1.2.07.3.tar.lzma.sha1.asc">GPG signature</A><p>
+ <p><A 
+-href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.lzma.rmd.asc">GPG signature
++href="download/1.2/1.2.07.3/maradns-1.2.03.3.tar.lzma.rmd.asc">GPG signature
+ using RIPEMD160 as the digest algorithm</A><p>
+ 
+ <p>
+ For people who prefer a gzip compressed archive:
+ 
+ <p><A 
+-href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.gz"><!--
+-                         -->maradns-1.2.03.3.tar.gz</A>
++href="download/1.2/1.2.07.3/maradns-1.2.07.3.tar.gz"><!--
++                         -->maradns-1.2.07.3.tar.gz</A>
+ <p><A 
+-href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.gz.sha1.asc">GPG signature</A><p>
++href="download/1.2/1.2.07.3/maradns-1.2.07.3.tar.gz.sha1.asc">GPG signature</A><p>
+ <p><A 
+-href="download/1.2/1.2.03.3/maradns-1.2.03.3.tar.gz.rmd.asc">GPG signature
++href="download/1.2/1.2.07.3/maradns-1.2.07.3.tar.gz.rmd.asc">GPG signature
+ using RIPEMD160 as the digest algorithm</A><p>
+ 
+ <h3>RPM files</h3>
+-<p><A href=download/1.2/1.2.03.3/maradns-1.2.03.3-1.src.rpm><!--
+-                              -->maradns-1.2.03.3-1.src.rpm</A></p>
++<p><A href="download/1.2/1.2.07.3/maradns-1.2.07.3-1.src.rpm"><!--
++                               -->maradns-1.2.07.3-1.src.rpm</A></p>
+ <p><i>Greg Swallow fixed the rpm package so that the RPM now builds on
+    CentOS3 and CentOS4, in addition to RedHat 6.2.</i>
+ <p><b>Binary RPM</b> (Built on RedHat 6.2; verified to work in newer Linuxes)
+ </p>
+-<p><A href=download/1.2/1.2.03.3/maradns-1.2.03.3-1.i386.rpm><!--
+-                              -->maradns-1.2.03.3-1.i386.rpm</A></p>
++<p><A href="download/1.2/1.2.07.3/maradns-1.2.07.3-1.i386.rpm"><!--
++                               -->maradns-1.2.07.3-1.i386.rpm</A></p>
+ 
+ <h3>Windows Binary</h3>
+ <p>I have made a partial port of MaraDNS to Windows.  While this port
+@@ -62,47 +62,43 @@
+ reasonably secure DNS client and recursive resolver.
+ <p>
+ People who want a full Windows port of MaraDNS can compile MaraDNS on
+-<A href=http://www.cygwin.com>Cygwin</A>.
++<A href="http://www.cygwin.com">Cygwin</A>.
+ 
+ <p><A 
+-href="download/1.2/1.2.03.2/maradns-1-2-03-2-win32.zip"><!--
+-                         -->maradns-1-2-03-2-win32.zip</A>
++href="download/1.2/1.2.07.3/maradns-1-2-07-3-win32.zip"><!--
++                         -->maradns-1-2-07-3-win32.zip</A>
+ <p><A 
+-href="download/1.2/1.2.03.2/maradns-1-2-03-2-win32.zip.sha1.asc">GPG signature</A><p>
++href="download/1.2/1.2.07.3/maradns-1-2-07-3-win32.zip.sha1.asc">GPG signature</A><p>
+ <p><A 
+-href="download/1.2/1.2.03.2/maradns-1-2-03-2-win32.zip.rmd.asc">GPG signature
++href="download/1.2/1.2.07.3/maradns-1-2-07-3-win32.zip.rmd.asc">GPG signature
+ using RIPEMD160 as the digest algorithm</A><p>
+ 
+ <hr>
+ 
+-<h2>Testing release</h2>
+-A testing release of MaraDNS, 1.2.05, has been released on February 21, 2006.
+-This release can be downloaded <A href=/download/1.2/1.2.05>here</A>.
+-
+ <h2>Legacy release</h2>
+ This is the current version of the legacy release of MaraDNS, MaraDNS
+ 1.0.  This release will no longer be supported for anything but critical
+ security fixes after December 21, 2007, and not supported at all after
+ December 21, 2010.
+-<A href=download/maradns-1.0.36.tar.bz2>Get the current 1.0 release</A>,
+-MaraDNS 1.0.36, released 2005/12/31 
++<A href="download/maradns-1.0.36.tar.bz2">Get the current 1.0 release</A>,
++MaraDNS 1.0.37, released 2006/04/07 
+ (bzip2 compressed).  
+ <p>
+-<A href=download/maradns-1.0.36.tar.bz2.sha1.asc>bzip2 GPG sig</A>
++<A href="download/maradns-1.0.37.tar.bz2.sha1.asc">bzip2 GPG sig</A>
+ <p>
+-<A href=download/maradns-1.0.36.tar.gz>gzip compressed version</A>
++<A href="download/maradns-1.0.37.tar.gz">gzip compressed version</A>
+ <p>
+-<A href=download/maradns-1.0.36.tar.gz.sha1.asc>gzip GPG sig</A>
++<A href="download/maradns-1.0.37.tar.gz.sha1.asc">gzip GPG sig</A>
+ <p>
+ </p><p>
+ <b>Source RPM</b></p>
+-<p><A href=download/maradns-1.0.35-1.src.rpm><!--
+-                 -->maradns-1.0.35-1.src.rpm</A></p>
++<p><A href="download/maradns-1.0.37-1.src.rpm"><!--
++                 -->maradns-1.0.37-1.src.rpm</A></p>
+ <p>Note: This RPM only builds with older releases of RedHat.  
+ <p><b>Binary RPM</b> (Built on RedHat 6.2; verified to work in newer Linuxes)
+ </p>
+-<p><A href=download/maradns-1.0.35-1.i386.rpm><!--
+-                 -->maradns-1.0.35-1.i386.rpm</A></p>
++<p><A href=download/maradns-1.0.37-1.i386.rpm><!--
++                 -->maradns-1.0.37-1.i386.rpm</A></p>
+ <em>Note: The binary RPM automatically starts the MaraDNS service when
+ installed.</em>
+ 
+--- maradns-1.2.07.3/doc/en/webpage/faq-1.0.embed	2005-12-12 12:53:24.000000000 -0800
++++ maradns-1.2.07.4/doc/en/webpage/faq-1.0.embed	2006-05-19 17:07:04.000000000 -0700
+@@ -1,103 +1,103 @@
+ <h1>FREQUENTLY ASKED QUESTIONS</h1>
+ 
+ <h3>This FAQ is for version 1.0 of MaraDNS.  An updated FAQ for version
+-1.2 of MaraDNS is available <A href=http://www.maradns.org/faq.html>here</A>
++1.2 of MaraDNS is available <A href="http://www.maradns.org/faq.html">here</A>
+ </h3>
+ 
+ <h2>INDEX</h2>
+ <BLOCKQUOTE>
+-1. <A HREF=#tryout>How to I try out MaraDNS?</A> <P>
+-2. <A HREF=#license>What license is MaraDNS released under?</A><P>
++1. <A href="#tryout">How to I try out MaraDNS?</A> <P>
++2. <A href="#license">What license is MaraDNS released under?</A><P>
+ 
+-3. <A HREF=#ips>How do I get MaraDNS to bind to multiple IP addresses?</A><P>
++3. <A href="#ips">How do I get MaraDNS to bind to multiple IP addresses?</A><P>
+ 
+-4. <A HREF=#ipsbug>How come BIND 9 can not process MaraDNS queries when 
++4. <A href="#ipsbug">How come BIND 9 can not process MaraDNS queries when 
+ MaraDNS is bound to multiple IP addresses?</A><P>
+ 
+-5. <A HREF=#bugzilla>How do I report bugs in MaraDNS?</A><P>
++5. <A href="#bugzilla">How do I report bugs in MaraDNS?</A><P>
+ 
+-6. <A HREF=#chatter>Some of the postings to the mailing list do not talk 
++6. <A href="#chatter">Some of the postings to the mailing list do not talk 
+    about MaraDNS!</A><P>
+ 
+-7. <A HREF=#unsub>How to I get off the mailing list?</A><P>
++7. <A href="#unsub">How to I get off the mailing list?</A><P>
+ 
+-8. <A HREF=#rdns>How do I set up reverse DNS on MaraDNS?</A><P>
++8. <A href="#rdns">How do I set up reverse DNS on MaraDNS?</A><P>
+ 
+-9. <A HREF=#timeout>I am on a slow network, and MaraDNS can not process 
++9. <A href="#timeout">I am on a slow network, and MaraDNS can not process 
+    recursive queries</A><P>
+ 
+-10. <A HREF=#obtuse>When I try to run MaraDNS, I get a 
++10. <A href="#obtuse">When I try to run MaraDNS, I get a 
+     <tt>Fatal error: Error running populate_main program</tt>
+     or a <tt>Fatal error: init_cache() failed</tt>
+     error message.</A><P>
+ 
+-11. <A HREF=#rrany>I am trying to register a domain under the .au or 
++11. <A href="#rrany">I am trying to register a domain under the .au or 
+     the .de name space,and my registrar is not taking my domain name</A><P>
+ 
+-12. <A HREF=#netstat>After I start MaraDNS, I can not see the process 
++12. <A href="#netstat">After I start MaraDNS, I can not see the process 
+     when I run netstat -na</A><P>
+ 
+-13. <A HREF=#jsstr>What string library does MaraDNS use?</A><P>
++13. <A href="#jsstr">What string library does MaraDNS use?</A><P>
+ 
+-14. <A HREF=#license>Why is MaraDNS public domain instead of BSD or GPL 
++14. <A href="#license">Why is MaraDNS public domain instead of BSD or GPL 
+     licensed?</A><P>
+ 
+-15. <A HREF=#whythreads>Why does MaraDNS use a multi-threaded model?</A><P>
++15. <A href="#whythreads">Why does MaraDNS use a multi-threaded model?</A><P>
+ 
+-16. <A HREF=#wishlist>I feel that XXX feature should be added to MaraDNS</A><P>
++16. <A href="#wishlist">I feel that XXX feature should be added to MaraDNS</A><P>
+ 
+-17. <A HREF=#docbook>I feel that MaraDNS should use another documentation 
++17. <A href="#docbook">I feel that MaraDNS should use another documentation 
+     format</A><P>
+ 
+-18. <A HREF=#patch>Is there any process I need to follow to add a patch 
++18. <A href="#patch">Is there any process I need to follow to add a patch 
+     to MaraDNS?</A><P>
+ 
+-19. <A HREF=#primary>Can MaraDNS act as a primary nameserver?</A><P>
++19. <A href="#primary">Can MaraDNS act as a primary nameserver?</A><P>
+ 
+-20. <A HREF=#secondary>Can MaraDNS act as a secondary nameserver?</A><P>
++20. <A href="#secondary">Can MaraDNS act as a secondary nameserver?</A><P>
+ 
+-21. <A HREF=#auth>What is the difference between an authoritative and 
++21. <A href="#auth">What is the difference between an authoritative and 
+     a recursive DNS server?</A><P>
+ 
+-22. <A HREF=#bailiwick>The getzone client isn't allowing me to add certain 
++22. <A href="#bailiwick">The getzone client isn't allowing me to add certain 
+     hostnames to my zone</A><P>
+ 
+-23. <A HREF=#kosherzone>I have having problems transferring zones from 
++23. <A href="#kosherzone">I have having problems transferring zones from 
+     MaraDNS' zone server to a BIND zone transfer client</A><P>
+ 
+-24. <A HREF=#portable>Is MaraDNS portable?</A><P>
++24. <A href="#portable">Is MaraDNS portable?</A><P>
+ 
+-25. <A HREF=#openbsd>How do I compile MaraDNS on OpenBSD?</A><P>
++25. <A href="#openbsd">How do I compile MaraDNS on OpenBSD?</A><P>
+ 
+-26. <A HREF=#cygwin>Can I use MaraDNS in Windows?</A><P>
++26. <A href="#cygwin">Can I use MaraDNS in Windows?</A><P>
+ 
+-27. <A HREF=#upstream>MaraDNS freezes up after being used for a while</A><P>
++27. <A href="#upstream">MaraDNS freezes up after being used for a while</A><P>
+ 
+-28. <A HREF=#python>What kind of Python integration does MaraDNS have</A><P>
++28. <A href="#python">What kind of Python integration does MaraDNS have</A><P>
+ 
+-29. <A HREF=#kvar>Doesn't "kvar" mean "four" in Esperanto?</A><p>
++29. <A href="#kvar">Doesn't "kvar" mean "four" in Esperanto?</A><p>
+ 
+-30. <A HREF=#timestamp>How do I make MaraDNS' time stamps 
++30. <A href="#timestamp">How do I make MaraDNS' time stamps 
+     human-readable?</A><p>
+ 
+-31. <A HREF=#scability>How scalable is MaraDNS?</A><p>
++31. <A href="#scability">How scalable is MaraDNS?</A><p>
+ 
+-32. <A HREF=#dcname>I'm getting a warning about dangling CNAME entries</A><p>
++32. <A href="#dcname">I'm getting a warning about dangling CNAME entries</A><p>
+ 
+ </BLOCKQUOTE>
+ <H2>ANSWERS</H2>
+ 
+-<A NAME=tryout>
++<a name="tryout"> </a>
+ <H2>1. How to I try out MaraDNS?</H2>
+ 
+-<p>Read the <A href=quickstart.html>quick start guide</A>, which
++<p>Read the <A href="quickstart.html">quick start guide</A>, which
+    is the file named 0QuickStart in the MaraDNS distribution.
+ <p>
+-<A NAME=license>
++<a name="license"> </a>
+ <H2>2. What license is MaraDNS released under?</H2>
+ <p>None, actually.  MaraDNS is released to the public domain.
+ 
+-<A NAME=ips>
++<a name="ips"> </a>
+ <H2>3. How do I get MaraDNS to bind to multiple IP addresses?</H2>
+ <p>
+ The current method is to run multiple copies of MaraDNS, each using its
+@@ -122,7 +122,7 @@
+ code used by the zone server.  Until then, I will add this workaround to
+ the FAQ.
+ 
+-<A NAME=ipsbug>
++<a name="ipsbug"> </a>
+ <H2>4. How come BIND 9 can not process MaraDNS queries when MaraDNS is bound
+ to multiple IP addresses?</H2>
+ In certain cricumstances, when MaraDNS is bound to more than one IP
+@@ -132,7 +132,7 @@
+ the reply to come from the same IP that the request was sent to.
+ <p>
+ 
+-<A NAME=bugzilla>
++<a name="bugzilla"> </a>
+ <H2>5. How do I report bugs in MaraDNS?</H2>
+ 
+ <p>
+@@ -153,12 +153,12 @@
+ 
+ <p>
+ Subscribe to the mailing list by sending mail to 
+-<A href=mailto:list-subscribe@maradns.org>list-subscribe@maradns.org</A>
++<A href="mailto:list-subscribe@maradns.org">list-subscribe@maradns.org</A>
+ with "subscribe" as the subject line,
+ and describe the bug by sending email to
+-<A href=mailto:list@maradns.org>list@maradns.org</A>.
++<A href="mailto:list@maradns.org">list@maradns.org</A>.
+ 
+-<A NAME=chatter>
++<a name="chatter"> </a>
+ <H2>6. Some of the postings to the mailing list do not talk about MaraDNS!</H2>
+ In cases where I post something to the mailing list which does not directly
+ talk about MaraDNS, the subject line will not have [MARA] in it, but will
+@@ -175,15 +175,15 @@
+ email notice of any critical bug fixes without needing to be
+ subscribed to the mailing list.
+ <P>
+-The web page <A href=http://www.maradns.org>http://www.maradns.org/</A>
++The web page <A href="http://www.maradns.org">http://www.maradns.org/</A>
+ has a link to the mailing list archives.
+ 
+-<A NAME=unsub>
++<a name="unsub"> </a>
+ <H2>7. How to I get off the mailing list?</H2>
+ Send an email to list-request@maradns.org with "unsubscribe" as the
+ subject line.
+ 
+-<A NAME=rdns>
++<a name="rdns"> </a>
+ <H2>8. How do I set up reverse DNS on MaraDNS?</H2>
+ 
+ By using PTR (pointer) records.  For example, the PTR record which performs
+@@ -217,7 +217,7 @@
+ able to control reverse DNS loookups for those IPs requires ISP 
+ intervention.
+ 
+-<A NAME=timeout>
++<a name="timeout"> </a>
+ <H2>9. I am on a slow network, and MaraDNS can not process recursive 
+ queries</H2>
+ 
+@@ -234,7 +234,7 @@
+ Note that making this too high will slow MaraDNS down when DNS servers
+ are down, which is, alas, all too common on today's internet.
+ 
+-<A NAME=obtuse>
++<a name="obtuse"> </a>
+ 
+ <H2>10. When I try to run MaraDNS, I get a 
+ <tt>Fatal error: Error running populate_main program</tt>
+@@ -251,7 +251,7 @@
+ <p>Otherwise, this error message should not be visible.  If it appears, 
+ subscribe to
+ the mailing list (see above), and describe your problem by sending email to 
+-<A href=mailto:list@maradns.org>list@maradns.org</A>.  Be sure to include
++<A href="mailto:list@maradns.org">list@maradns.org</A>.  Be sure to include
+ the following information:
+ 
+ <ul><li>The contents of your /etc/mararc file
+@@ -262,7 +262,7 @@
+ 
+ </ul>
+ 
+-<A NAME=rrany>
++<a name="rrany"> </a>
+ <H2>11. I am trying to register a domain under the .au or the .de name space,
+ and my registrar is not taking my domain name</H2>
+ 
+@@ -272,7 +272,7 @@
+ 
+ <tt>default_rrany_set = 15</tt>
+ 
+-<A NAME=netstat>
++<a name="netstat"> </a>
+ <H2>12. After I start MaraDNS, I can not see the process when I run netstat -na
+ </H2>
+ 
+@@ -288,15 +288,15 @@
+ you can see the names of the processes which are providing internet 
+ services.
+ 
+-<A NAME=jsstr>
++<a name="jsstr"> </a>
+ <H2>13. What string library does MaraDNS use?</H2>
+ 
+ <p>MaraDNS uses her own string library, which is called the "js_string"
+ library.  Man pages for most of the functions in the js_string library
+-are in the folder <tt>doc/man</tt> of the <A href=download.html>MaraDNS
++are in the folder <tt>doc/man</tt> of the <A href="download.html">MaraDNS
+ distribution</A>
+ 
+-<A NAME=license>
++<a name="license"> </a>
+ <H2>14. Why is MaraDNS public domain instead of BSD or GPL licensed?</H2>
+ 
+ <p>The post-1.0.xx releases of MaraDNS are, in fact, under a simple
+@@ -306,14 +306,14 @@
+ Python is, I believe, currently GPL compatible, Python was not 
+ GPL-compatible at the time I decided on a license for MaraDNS.
+ 
+-<A name=thythreads>
++<a name="thythreads"> </a>
+ <H2>15. Why does MaraDNS use a multi-threaded model?</H2>
+ 
+ <p>The multi-threaded model is, plain and simple, the simplest way to write
+ a functioning recursive DNS server.  There is a reason why MaraDNS, pdnsd, and
+ BIND 9 all use the multi-threaded model.
+ 
+-<A NAME=wishlist>
++<a name="wishlist"> </a>
+ <H2>16. I feel that XXX feature should be added to MaraDNS</H2>
+ <p>
+ Before sending mail to the list with a feature request, please read
+@@ -330,7 +330,7 @@
+ Note that MaraDNS is currently "frozen".  In other words, new features will
+ not be added until after the 1.0 release.
+ 
+-<A NAME=docbook>
++<a name="docbook"> </a>
+ <H2>17. I feel that MaraDNS should use another documentation format</H2>
+ <p>
+ The reason that MaraDNS uses its own documentation format is to satisfy both
+@@ -349,7 +349,7 @@
+ Having a given program have its own documentation format is not
+ without precedent; Perl uses its own "pod" documentation format.
+ 
+-<A NAME=patch>
++<a name="patch"> </a>
+ <H2>18. Is there any process I need to follow to add a patch to MaraDNS?</H2>
+ 
+ <p>Yes.  
+@@ -378,7 +378,7 @@
+ the contents of the patch in to the public domain.  If I find that the patch
+ works well, I will integrate it in to MaraDNS.
+ 
+-<A NAME=primary>
++<a name="primary"> </a>
+ <H2>19. Can MaraDNS act as a primary nameserver?</H2>
+ 
+ <p>Yes.
+@@ -388,7 +388,7 @@
+ program from the <tt>maradns</tt> server, which processes both 
+ authoritative and recursive UDP DNS queries.
+ 
+-<A NAME=secondary>
++<a name="secondary"> </a>
+ <H2>20. Can MaraDNS act as a secondary nameserver?</H2>
+ 
+ <p>Yes.
+@@ -405,7 +405,7 @@
+    not ideal; the best design is to have a number of simple applications
+    working together.
+ 
+-<A NAME=auth>
++<a name="auth"> </a>
+ <H2>21. What is the difference between an authoritative and a recursive DNS 
+ server?</H2>
+ 
+@@ -418,7 +418,7 @@
+ An authoritative DNS server is a DNS server that a recursive server 
+ contacts in order to find out the answer to a given DNS query.
+ 
+-<A NAME=bailiwick>
++<a name="bailiwick"> </a>
+ <H2>22. The getzone client isn't allowing me to add certain hostnames to 
+ my zone</H2>
+ 
+@@ -442,7 +442,7 @@
+     question.
+ </UL>
+ 
+-<A NAME=kosherzone>
++<a name="kosherzone"> </a>
+ <H2>23. I have having problems transferring zones from MaraDNS' zone server
+       to a BIND zone transfer client</H2>
+ 
+@@ -453,7 +453,7 @@
+     zone, immediately after the SOA record
+ <li>Make sure that your authoritative NS records are NS records
+     for your zone
+-<li>To work around <A href=quirks.html>a known bug in MaraDNS</a>, make
++<li>To work around <A href="quirks.html">a known bug in MaraDNS</a>, make
+     sure you have at least one non-NS record between the authoritative NS
+     records for your zone and any delegation NS records that exist in the
+     zone.
+@@ -480,19 +480,19 @@
+ Aexample.com.|12345|10.2.3.4
+ Nsubdomain.example.com.|86400|ns.subdomain.example.com.
+ </PRE>
+-<A NAME=portable>
++<a name="portable"> </a>
+ <H2>24. Is MaraDNS portable?</H2>
+ 
+ <p>While I intend to have MaraDNS be a portable DNS server which will
+ compile on a variety of unices, right now all of MaraDNS's work development
+ is being done on Linux.  
+ In terms of proprietary OSes, I know that SCO Open Server,
+-SCO UNIXware and <A href=solaris.html>Solaris</A> have issues running a
++SCO UNIXware and <A href="solaris.html">Solaris</A> have issues running a
+ UDP or TCP server in a chroot() environment.  Word is that, with
+ Solaris and UNIXware, placing /dev/tcp and /dev/udp in the chroot() jail
+ will allow a server like MaraDNS to function.
+ 
+-<A NAME=openbsd>
++<a name="openbsd"> </a>
+ <H2>25. How do I compile MaraDNS on OpenBSD?</H2>
+ 
+ <p>
+@@ -506,7 +506,7 @@
+ <P>
+ (Florin Iucha provided this tip)
+ 
+-<A NAME=cygwin>
++<a name="cygwin"> </a>
+ <H2>26. Can I use MaraDNS in Windows?</H2>
+ 
+ <p>
+@@ -520,7 +520,7 @@
+ MaraDNS should now compile fine on Cygwin systems. If not, join the mailing
+ list and let me know; I will correct this FAQ entry.
+ 
+-<A NAME=upstream>
++<a name="upstream"> </a>
+ <H2>27. MaraDNS freezes up after being used for a while</H2>
+ 
+ If using your ISP's name servers or some other name servers which
+@@ -533,7 +533,7 @@
+ If you still see MaraDNS freeze up after making this correction, please
+ send a bug report to the mailing list.
+ 
+-<A NAME=python>
++<a name="python"> </a>
+ <H2>28. What kind of Python integration does MaraDNS have</H2>
+ 
+ The mararc file uses the same syntax that Python uses; in fact, Python
+@@ -541,7 +541,7 @@
+ <p>
+ There is currently no other integration with Python.
+ 
+-<A NAME=kvar>
++<a name="kvar"> </a>
+ <H2>29. Doesn't "kvar" mean "four" in Esperanto?</H2>
+ 
+ Indeed, it does.  However the use of "kvar" in the MaraDNS source
+@@ -549,7 +549,7 @@
+ for "Kiwi variable"; a lot of the parsing code comes from the code
+ used in the Kiwi spam filter project.  
+ 
+-<A NAME=timestamp>
++<a name="timestamp"> </a>
+ <H2>30. How do I make MaraDNS' time stamps human-readable?</H2>
+ 
+ MaraDNS uses standard UNIX timestamps; which is the number of 
+@@ -568,7 +568,7 @@
+ The MaraDNS startup script has the option to use this Awk script 
+ to convert the time stamp; read the script for details.
+ 
+-<A NAME=scability>
++<a name="scability"> </a>
+ <H2>31. How scalable is MaraDNS?</H2>
+ 
+ MaraDNS is optimized for serving a small number of domains as quickly
+@@ -590,7 +590,7 @@
+ As can be seen, MaraDNS will process 1 or 100000 domains in the same amount
+ of time, once the domain names are loaded in to memory.  
+ 
+-<A NAME=dcname>
++<a name="dcname"> </a>
+ <H2>I'm getting a warning about dangling CNAME entries</H2>
+ 
+ Let us suppose we have a CNAME record without an A record in the local
+@@ -633,8 +633,8 @@
+ 
+ Information about how to get MaraDNS to resolve dangling CNAME
+ records is in the tutorial file <A 
+-href=http://www.maradns.org/tutorial/dangling.html>dangling.html</A>
++href="http://www.maradns.org/tutorial/dangling.html">dangling.html</A>
+ 
+-<!-- <A NAME=memusage>
++<!-- <a name="memusage"> </a>
+ <H2>32. How much memory does MaraDNS use?</H2> -->
+ 
+--- maradns-1.2.07.3/doc/en/webpage/faq.embed	2006-03-10 01:59:45.000000000 -0800
++++ maradns-1.2.07.4/doc/en/webpage/faq.embed	2006-05-19 17:07:36.000000000 -0700
+@@ -2,73 +2,77 @@
+ 
+ <h2>INDEX</h2>
+ <BLOCKQUOTE>
+-1. <A HREF=#version1>I'm still using version 1.0 of MaraDNS</A> <P>
++1. <A href="#version1">I'm still using version 1.0 of MaraDNS</A> <P>
+ 
+-2. <A HREF=#tryout>How do I try out MaraDNS?</A> <P>
++2. <A href="#tryout">How do I try out MaraDNS?</A> <P>
+ 
+-3. <A HREF=#license>What license is MaraDNS released under?</A><P>
++3. <A href="#license">What license is MaraDNS released under?</A><P>
+ 
+-4. <A HREF=#bugzilla>How do I report bugs in MaraDNS?</A><P>
++4. <A href="#bugzilla">How do I report bugs in MaraDNS?</A><P>
+ 
+-5. <A HREF=#chatter>Some of the postings to the mailing list do not talk 
++5. <A href="#chatter">Some of the postings to the mailing list do not talk 
+    about MaraDNS!</A><P>
+ 
+-6. <A HREF=#unsub>How do I get off the mailing list?</A><P>
++6. <A href="#unsub">How do I get off the mailing list?</A><P>
+ 
+-7. <A HREF=#rdns>How do I set up reverse DNS on MaraDNS?</A><P>
++7. <A href="#rdns">How do I set up reverse DNS on MaraDNS?</A><P>
+ 
+-8. <A HREF=#timeout>I am on a slow network, and MaraDNS can not process 
++8. <A href="#timeout">I am on a slow network, and MaraDNS can not process 
+    recursive queries</A><P>
+ 
+-9. <A HREF=#obtuse>When I try to run MaraDNS, I get a 
++9. <A href="#obtuse">When I try to run MaraDNS, I get a 
+     cryptic error message.</A><P>
+ 
+-10. <A HREF=#netstat>After I start MaraDNS, I can not see the process 
++10. <A href="#netstat">After I start MaraDNS, I can not see the process 
+     when I run netstat -na</A><P>
+ 
+-11. <A HREF=#jsstr>What string library does MaraDNS use?</A><P>
++11. <A href="#jsstr">What string library does MaraDNS use?</A><P>
+ 
+-12. <A HREF=#whythreads>Why does MaraDNS use a multi-threaded model?</A><P>
++12. <A href="#whythreads">Why does MaraDNS use a multi-threaded model?</A><P>
+ 
+-13. <A HREF=#wishlist>I feel that XXX feature should be added to MaraDNS</A><P>
++13. <A href="#wishlist">I feel that XXX feature should be added to MaraDNS</A><P>
+ 
+-14. <A HREF=#docbook>I feel that MaraDNS should use another documentation 
++14. <A href="#docbook">I feel that MaraDNS should use another documentation 
+     format</A><P>
+ 
+-15. <A HREF=#patch>Is there any process I need to follow to add a patch 
++15. <A href="#patch">Is there any process I need to follow to add a patch 
+     to MaraDNS?</A><P>
+ 
+-16. <A HREF=#primary>Can MaraDNS act as a primary nameserver?</A><P>
++16. <A href="#primary">Can MaraDNS act as a primary nameserver?</A><P>
+ 
+-17. <A HREF=#secondary>Can MaraDNS act as a secondary nameserver?</A><P>
++17. <A href="#secondary">Can MaraDNS act as a secondary nameserver?</A><P>
+ 
+-18. <A HREF=#auth>What is the difference between an authoritative and 
++18. <A href="#auth">What is the difference between an authoritative and 
+     a recursive DNS server?</A><P>
+ 
+-19. <A HREF=#bailiwick>The getzone client isn't allowing me to add certain 
++19. <A href="#bailiwick">The getzone client isn't allowing me to add certain 
+     hostnames to my zone</A><P>
+ 
+-20. <A HREF=#portable>Is MaraDNS portable?</A><P>
++20. <A href="#portable">Is MaraDNS portable?</A><P>
+ 
+-21. <A HREF=#cygwin>Can I use MaraDNS in Windows?</A><P>
++21. <A href="#cygwin">Can I use MaraDNS in Windows?</A><P>
+ 
+-22. <A HREF=#upstream>MaraDNS freezes up after being used for a while</A><P>
++22. <A href="#upstream">MaraDNS freezes up after being used for a while</A><P>
+ 
+-23. <A HREF=#python>What kind of Python integration does MaraDNS have</A><P>
++23. <A href="#python">What kind of Python integration does MaraDNS have</A><P>
+ 
+-24. <A HREF=#kvar>Doesn't "kvar" mean "four" in Esperanto?</A><p>
++24. <A href="#kvar">Doesn't "kvar" mean "four" in Esperanto?</A><p>
+ 
+-25. <A href=#scability>How scalable is MaraDNS?</A><p>
++25. <A href="#scability">How scalable is MaraDNS?</A><p>
+ 
+-26. <A href=#upstream_d>I am having problems setting 
+-    <tt>upstream_servers</tt></A>
++26. <A href="#upstream_d">I am having problems setting 
++    <tt>upstream_servers</tt></A><p>
++
++27. <A href="#validate">Why doesn't the MaraDNS.org web page validate?</A><p>
++
++28. <A href="#mx">How do MX records work?</A>
+ 
+ </BLOCKQUOTE>
+ <H2>ANSWERS</H2>
+ 
+ <A NAME=version1>
+-<H2>1. I'm still using version 1.0 of MaraDNS</H2>
+ </A>
++<H2>1. I'm still using version 1.0 of MaraDNS</H2>
+ 
+ MaraDNS 1.0 will continue to be fully supported until December 21, 2007; this
+ means that MaraDNS 1.0 questions will still be answered and bug fixes will
+@@ -87,14 +91,14 @@
+ <p>
+ 
+ There is still a FAQ for version 1.0 of MaraDNS available
+-<A href=http://www.maradns.org/faq-1.0.html>here</A>.
++<A href="http://www.maradns.org/faq-1.0.html">here</A>.
+ 
+ <p>
+ 
+ Updating from 1.0 to 1.2 requires a minimum number of changes; with most 
+ configurations, MaraDNS 1.2 is fully compatible with MaraDNS 1.0 data
+ files.  Details are in the <A 
+-href=http://www.maradns.org/tutorial/1.2/update.html>updating</A> document
++href="http://www.maradns.org/tutorial/1.2/update.html">updating</A> document
+ in the tutorial.
+ 
+ <p>
+@@ -104,18 +108,18 @@
+ directory of MaraDNS 1.2.
+ 
+ <A NAME=tryout>
+-<H2>2. How do I try out MaraDNS?</H2>
+ </A>
++<H2>2. How do I try out MaraDNS?</H2>
+ 
+ <p>Read the <A 
+-href=http://www.maradns.org/tutorial/1.2/quick_start.html>quick 
++href="http://www.maradns.org/tutorial/1.2/quick_start.html">quick 
+ start guide</A>, which is the file named 0QuickStart in the MaraDNS 
+ distribution.
+ <p>
+ 
+ <A NAME=license>
+-<H2>3. What license is MaraDNS released under?</H2>
+ </A>
++<H2>3. What license is MaraDNS released under?</H2>
+ 
+ MaraDNS 1.2 is released with the following two-clause BSD license:
+ BSD-type license:
+@@ -140,14 +144,14 @@
+ </BLOCKQUOTE>
+ 
+ <A NAME=bugzilla>
+-<H2>4. How do I report bugs in MaraDNS?</H2>
+ </A>
++<H2>4. How do I report bugs in MaraDNS?</H2>
+ 
+-Please <A href=http://www.maradns.org/contact.html>contact me</A>.
++Please <A href="http://www.maradns.org/contact.html">contact me</A>.
+ 
+ <A NAME=chatter>
+-<H2>5. Some of the postings to the mailing list do not talk about MaraDNS!</H2>
+ </A>
++<H2>5. Some of the postings to the mailing list do not talk about MaraDNS!</H2>
+ In cases where I post something to the mailing list which does not directly
+ talk about MaraDNS, the subject line will not have [MARA] in it, but will
+ have some form of the word CHATTER in it.  
+@@ -163,18 +167,18 @@
+ email notice of any critical bug fixes without needing to be
+ subscribed to the mailing list.
+ <P>
+-The web page <A href=http://www.maradns.org>http://www.maradns.org/</A>
++The web page <A href="http://www.maradns.org">http://www.maradns.org/</A>
+ has a link to the mailing list archives.
+ 
+ <A NAME=unsub>
+-<H2>6. How do I get off the mailing list?</H2>
+ </A>
++<H2>6. How do I get off the mailing list?</H2>
+ Send an email to list-request@maradns.org with "unsubscribe" as the
+ subject line.
+ 
+ <A NAME=rdns>
+-<H2>7. How do I set up reverse DNS on MaraDNS?</H2>
+ </A>
++<H2>7. How do I set up reverse DNS on MaraDNS?</H2>
+ 
+ Reverse DNS (sometimes called "reverse mapping") is set up by using 
+ PTR (pointer) records.  For example, the PTR record which performs
+@@ -220,9 +224,9 @@
+ intervention.
+ 
+ <A NAME=timeout>
++</A>
+ <H2>8. I am on a slow network, and MaraDNS can not process recursive 
+ queries</H2>
+-</A>
+ 
+ MaraDNS, by default, only waits two seconds for a reply from a remote
+ DNS server.  This default can be increased by adding a line like this 
+@@ -238,9 +242,9 @@
+ are down, which is, alas, all too common on today's internet.
+ 
+ <A NAME=obtuse>
++</A>
+ <H2>9. When I try to run MaraDNS, I get a cryptic
+ error message.</H2>
+-</A>
+ 
+ There is usually some context of where there is a syntax error in a
+ data file before the cryptic error message.  For example, when there
+@@ -250,14 +254,14 @@
+ <p>
+ 
+ If MaraDNS does return a cryptic error message without letting you know
+-what is wrong, <A href=http://www.maradns.org/contact.html>let me know</A> 
++what is wrong, <A href="http://www.maradns.org/contact.html">let me know</A> 
+ so that I can fix the bug.  MaraDNS is designed
+ to be easy to use; cryptic error messages go against this spirit.
+ 
+ <A NAME=netstat>
++</A>
+ <H2>10. After I start MaraDNS, I can not see the process when I run netstat -na
+ </H2>
+-</A>
+ 
+ Udp services do not have a prominent "LISTEN" when netstat is run.
+ <p>
+@@ -272,25 +276,25 @@
+ the processes which are providing internet services.
+ 
+ <A NAME=jsstr>
+-<H2>11. What string library does MaraDNS use?</H2>
+ </A>
++<H2>11. What string library does MaraDNS use?</H2>
+ 
+ <p>MaraDNS uses its own string library, which is called the "js_string"
+ library.  Man pages for most of the functions in the js_string library
+-are in the folder <tt>doc/man</tt> of the <A href=download.html>MaraDNS
++are in the folder <tt>doc/man</tt> of the <A href="download.html">MaraDNS
+ distribution</A>
+ 
+ <A name=whythreads>
+-<H2>12. Why does MaraDNS use a multi-threaded model?</H2>
+ </A>
++<H2>12. Why does MaraDNS use a multi-threaded model?</H2>
+ 
+ <p>The multi-threaded model is, plain and simple, the simplest way to write
+ a functioning recursive DNS server.  There is a reason why MaraDNS, pdnsd, and
+ BIND 9 all use the multi-threaded model.
+ 
+ <A NAME=wishlist>
+-<H2>13. I feel that XXX feature should be added to MaraDNS</H2>
+ </A>
++<H2>13. I feel that XXX feature should be added to MaraDNS</H2>
+ <p>
+ There are currently no plans to implement new features in MaraDNS.  The
+ reason for this is because, bottom line, MaraDNS has failed to make my
+@@ -315,8 +319,8 @@
+ as a DNS server, I may update MaraDNS to use that technology.
+ 
+ <A NAME=docbook>
+-<H2>14. I feel that MaraDNS should use another documentation format</H2>
+ </A>
++<H2>14. I feel that MaraDNS should use another documentation format</H2>
+ <p>
+ The reason that MaraDNS uses its own documentation format is to satisfy both
+ the needs of translators to have a unified document format and my own 
+@@ -337,8 +341,8 @@
+ without precedent; Perl uses its own "pod" documentation format.
+ 
+ <A NAME=patch>
+-<H2>15. Is there any process I need to follow to add a patch to MaraDNS?</H2>
+ </A>
++<H2>15. Is there any process I need to follow to add a patch to MaraDNS?</H2>
+ 
+ <p>Yes.  
+ 
+@@ -367,8 +371,8 @@
+ works well, I will integrate it in to MaraDNS.
+ 
+ <A NAME=primary>
+-<H2>16. Can MaraDNS act as a primary nameserver?</H2>
+ </A>
++<H2>16. Can MaraDNS act as a primary nameserver?</H2>
+ 
+ <p>Yes.
+ 
+@@ -377,23 +381,23 @@
+ program from the <tt>maradns</tt> server, which processes both 
+ authoritative and recursive UDP DNS queries.
+ 
+-<p>See the <A href=http://www.maradns.org/tutorial/1.2/dnsmaster.html>DNS
++<p>See the <A href="http://www.maradns.org/tutorial/1.2/dnsmaster.html">DNS
+ master</A> document in the MaraDNS tutorial for details.
+ 
+ <A NAME=secondary>
+-<H2>17. Can MaraDNS act as a secondary nameserver?</H2>
+ </A>
++<H2>17. Can MaraDNS act as a secondary nameserver?</H2>
+ 
+ <p>Yes.
+ 
+-<p>Please read the <A href=http://www.maradns.org/tutorial/1.2/dnsslave.html>
++<p>Please read the <A href="http://www.maradns.org/tutorial/1.2/dnsslave.html">
+ DNS slave</A> document, which is part of the MaraDNS tutorial.
+ 
+ 
+ <A NAME=auth>
++</A>
+ <H2>18. What is the difference between an authoritative and a recursive DNS 
+ server?</H2>
+-</A>
+ 
+ A recursive DNS server is a DNS server that is able to contact other DNS
+ servers in order to resolve a given domain name label.  This is the kind 
+@@ -405,9 +409,9 @@
+ contacts in order to find out the answer to a given DNS query.
+ 
+ <A NAME=bailiwick>
++</A>
+ <H2>19. The fetchzone client isn't allowing me to add certain hostnames to 
+ my zone</H2>
+-</A>
+ 
+ For security reasons, MaraDNS' fetchzone client does not
+ add records which are not part of the zone in question.  For example,
+@@ -430,17 +434,17 @@
+ </UL>
+ 
+ <A name=portable>
+-<H2>20. Is MaraDNS portable?</H2>
+ </A>
++<H2>20. Is MaraDNS portable?</H2>
+ 
+ <p>MaraDNS will only compile on FreeBSD, Mac OS X, Cygwin, Linux, and
+ partially on MinGW32 systems.  If you are interested in porting MaraDNS
+ to another system, please <A 
+-href=http://www.maradns.org/contact.html>let me know</A>.
++href="http://www.maradns.org/contact.html">let me know</A>.
+ 
+ <A NAME=cygwin>
+-<H2>21. Can I use MaraDNS in Windows?</H2>
+ </A>
++<H2>21. Can I use MaraDNS in Windows?</H2>
+ 
+ <p>
+ Yes.  There is both a partial mingw32 (native win32 binary) port and a full
+@@ -448,8 +452,8 @@
+ of MaraDNS.
+ 
+ <A NAME=upstream>
+-<H2>22. MaraDNS freezes up after being used for a while</H2>
+ </A>
++<H2>22. MaraDNS freezes up after being used for a while</H2>
+ 
+ If you are using MaraDNS 1.2.03.1 (or any 1.1 release, for that matter) on 
+ Linux, upgrade to version 1.2.03.2.  There is a bug with the Linux kernel
+@@ -469,8 +473,8 @@
+ send a bug report to the mailing list.
+ 
+ <A NAME=python>
+-<H2>23. What kind of Python integration does MaraDNS have</H2>
+ </A>
++<H2>23. What kind of Python integration does MaraDNS have</H2>
+ 
+ The mararc file uses the same syntax that Python uses; in fact, Python
+ can parse a properly formatted mararc file.
+@@ -478,8 +482,8 @@
+ There is currently no other integration with Python.
+ 
+ <A NAME=kvar>
+-<H2>24. Doesn't "kvar" mean "four" in Esperanto?</H2>
+ </A>
++<H2>24. Doesn't "kvar" mean "four" in Esperanto?</H2>
+ 
+ Indeed, it does.  However the use of "kvar" in the MaraDNS source
+ code only coincidentally is an Esperanto word.  "kvar" is short
+@@ -487,8 +491,8 @@
+ used in the Kiwi spam filter project.  
+ 
+ <A NAME=scability>
+-<H2>25. How scalable is MaraDNS?</H2>
+ </A>
++<H2>25. How scalable is MaraDNS?</H2>
+ 
+ MaraDNS is optimized for serving a small number of domains as quickly
+ as possible.  That said, MaraDNS is remarkably efficnent for serving a
+@@ -510,8 +514,8 @@
+ of time, once the domain names are loaded in to memory.  
+ 
+ <A name=upstream_d>
+-<h2>26. I am having problems setting <tt>upstream_servers</tt></h2>
+ </A>
++<h2>26. I am having problems setting <tt>upstream_servers</tt></h2>
+ 
+ The <tt>upstream_servers</tt> mararc variable is set thusly:
+ 
+@@ -538,3 +542,46 @@
+ upstream_servers["."] = "10.1.2.3, 10.2.4.6"
+ </pre>
+ 
++<a name="validate"> </a>
++<h2>27. Why doesn't the MaraDNS.org web page validate?</h2>
++
++I have designed MaraDNS' web page to be usable and as attractive as possible
++in any major browser released in the last ten years.  Cross-browser support
++is more important than strict <A href="http://validator.w3.org">W3 
++validation</A>.  
++There is a bug in <A href="http://lynx.isc.org">Lynx</A> where text 
++in the tables used for MaraDNS' rendering 
++looks wrong if a &lt;tr&gt; tag is used in the tables.  The only way to
++get this page to render correctly in Lynx is to use HTML syntax that results in
++four errors.
++<p>
++If any page on MaraDNS' server has more than four validation errors, please
++<A href="http://www.maradns.org/contact.html">let me know</A>.
++<p>
++On a related note, the reason why I use tables instead of CSS for some of
++the layout is because Microsoft Internet Explorer 6 and other browsers do
++not have support for the <tt>max-width</tt> CSS property.  Without this
++property, the web page will not scale down correctly without using tables.  
++Additionally, tables allow a reasonably attractive header in browsers 
++without CSS support.
++
++<a name="mx"> </a>
++<h2>28. How do MX records work?</h2>
++
++How MX records work:
++
++<ul>
++<li>The mail transport agent (Sendmail, Postfix, Qmail, MS Exchange, etc.)
++  looks up the MX record for the domain
++<li>For each of the records returned, the MTA (mail transport agent) looks
++  up the IP for the names.
++<li>It will choose, at random, any of the MXes with the lowest priority number.
++<li>Should that server fail, it will try another server with the same
++  priority number.
++<li>Should all MX records with a given priority number fail, the MTA will
++  try sending email to any of the MX records with the second-lowest
++  priority value.
++</ul>
++
++As an aside, do not have MX records point to CNAMEs.
++
+--- maradns-1.2.07.3/doc/en/webpage/index.embed	2006-05-15 16:28:36.000000000 -0700
++++ maradns-1.2.07.4/doc/en/webpage/index.embed	2006-05-19 17:07:04.000000000 -0700
+@@ -41,7 +41,7 @@
+ the 1.2 release will be released under a
+ <A href=license.html>two-clause BSD license</A> which is almost
+ identical to the 
+-<A href=http://www.freebsd.org/copyright/freebsd-license.html>FreeBSD
++<A href="http://www.freebsd.org/copyright/freebsd-license.html">FreeBSD
+ license</A>.
+ <p></p>
+ </li>
+--- maradns-1.2.07.3/doc/en/webpage/license.embed	2005-12-17 14:16:16.000000000 -0800
++++ maradns-1.2.07.4/doc/en/webpage/license.embed	2006-05-19 17:07:04.000000000 -0700
+@@ -23,6 +23,6 @@
+ </blockquote>
+ 
+ This is a standard two-clause BSD license, and is almost identical to
+-the <A href=http://www.freebsd.org/copyright/freebsd-license.html>FreeBSD
++the <A href="http://www.freebsd.org/copyright/freebsd-license.html">FreeBSD
+ license</A>.
+ 
+--- maradns-1.2.07.3/doc/en/webpage/notes.embed	2005-12-12 14:39:12.000000000 -0800
++++ maradns-1.2.07.4/doc/en/webpage/notes.embed	2006-05-19 17:07:04.000000000 -0700
+@@ -21,14 +21,14 @@
+ <p>
+ 
+ <h2>Security information</h2>
+-<A href=security.html>Informaiton on MaraDNS' security design and a
++<A href="security.html">Informaiton on MaraDNS' security design and a
+ description of all of MaraDNS' security updates</A>
+ 
+ <h2>Some other information</h2>
+ 
+-<A href=speed.comparison.html>An informal speed comparison between MaraDNS
++<A href="speed.comparison.html">An informal speed comparison between MaraDNS
+  and two other DNS servers.</A>
+ 
+-<P><A href=dns_software.html>A list of some other DNS server software 
++<P><A href="dns_software.html">A list of some other DNS server software 
+    available</A>.</P>
+ 
+--- maradns-1.2.07.3/doc/en/webpage/roadmap.embed	2006-05-15 16:28:36.000000000 -0700
++++ maradns-1.2.07.4/doc/en/webpage/roadmap.embed	2006-05-19 17:07:04.000000000 -0700
+@@ -2,11 +2,11 @@
+ 
+ <h3>MaraDNS 1.2</h3>
+ 
+-I have released MaraDNS 1.2 on December 21, 2005.
++I released MaraDNS 1.2 on December 21, 2005.
+ 
+ <p>
+ 
+-<A href=/tutorial/1.2/update.html>Document on transitioning
++<A href="/tutorial/1.2/update.html">Document on transitioning
+ from 1.0 to 1.2</A>.
+ 
+ <p>
+--- maradns-1.2.07.3/doc/en/webpage/security.embed	2005-11-18 21:38:04.000000000 -0800
++++ maradns-1.2.07.4/doc/en/webpage/security.embed	2006-05-19 17:07:04.000000000 -0700
+@@ -1,7 +1,7 @@
+ <h1>MaraDNS' security</h1>
+ 
+ <i>For people who just want to quickly get current with MaraDNS' security
+-history should jump to the <A href=#history>history section</A>.</i><p>
++history should jump to the <A href="#history">history section</A>.</i><p>
+ 
+ MaraDNS should be a secure DNS server.
+ 
+@@ -55,13 +55,13 @@
+ rules are fairly complex, and detailed in a document 
+ called "<A 
+ href=
+-http://www.maradns.org/cache_poison_protection.html>cache.poison.protection
++"http://www.maradns.org/cache_poison_protection.html">cache.poison.protection
+ </A>".
+ 
+ <p>
+ 
+ Third of all, I have extensively read Dan Bernstein's <A 
+-href=http://cr.yp.to/djbdns.html>notes</A> on DNS 
++href="http://cr.yp.to/djbdns.html">notes</A> on DNS 
+ implementation before implementing MaraDNS.  Two ideas for 
+ implementing DNS security discussed on Dan's pages have been implemented in 
+ MaraDNS:
+@@ -236,7 +236,7 @@
+ 
+ <p>
+ 
+-<A href=http://marc.10east.com/?l=maradns-list&m=111494679116870>Mailing
++<A href="http://marc.10east.com/?l=maradns-list&amp;m=111494679116870">Mailing
+ list posting describing this issue</A>
+ 
+ <p>
+@@ -253,10 +253,12 @@
+ 
+ <p>
+ 
+-<A href=http://www.maradns.org/download/patches/maradns-1.0.34-rng.patch>Patch
++<A href="http://www.maradns.org/download/patches/maradns-1.0.34-rng.patch">Patch
+ which describes the issue and how I work around it</A>
+ 
+ <p>
+ 
+ Impact: Theoretical local spoofing of DNS records.
+ 
++</ol>
++
+--- maradns-1.2.07.3/doc/en/webpage/maradns-1.2-top.html	2006-03-10 01:59:45.000000000 -0800
++++ maradns-1.2.07.4/doc/en/webpage/maradns-1.2-top.html	2006-05-19 17:07:04.000000000 -0700
+@@ -1,3 +1,4 @@
++<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+ <html><head><title>MaraDNS - a security-aware DNS server</title>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+ <link rel="stylesheet" title="Woodson (Default)"
+@@ -46,13 +47,13 @@
+ 	<a href="roadmap.html">Roadmap</a>
+ 	<a href="contact.html">Contact</a>
+ </div> <!-- maradns-l -->
+-<script type=text/javascript>
+-<!-- 
++<script type="text/javascript">
++<!--
+ if(isOKbrowser()) { 
+ document.write("<p class=nocss><font size=-1>The following links that change text size will do nothing on your browser because your browser does not support CSS.  This page is otherwise usable in a non-CSS browser.");
+-document.write("</font></p><div class=makelarge><div class=iebug>To make the font larger, <A ");
+-document.write("href=\"#\" onclick=\"setActiveStyleSheet('Large Print');return false;\">click here</A></div></div><p class=makenormal>");
+-document.write("To see this without using a large font, <A href=\"#\" onclick=\"setActiveStyleSheet('Woodson (Default)');return false;\">click here</A></p>");
++document.write("<\/font><\/p><div class=makelarge><div class=iebug>");
++document.write("To make the font larger, <A href=\"#\" onclick=\"setActiveStyleSheet('Large Print');return false;\">click here<\/A><\/div><\/div><p class=makenormal>");
++document.write("To see this without using a large font, <A href=\"#\" onclick=\"setActiveStyleSheet('Woodson (Default)');return false;\">click here<\/A><\/p>");
+ }
+ -->
+ </script>

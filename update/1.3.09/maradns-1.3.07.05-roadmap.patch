@@ -1,0 +1,226 @@
+--- maradns-1.3.07.05/doc/en/webpage/roadmap.embed	2007-03-22 01:31:27.000000000 -0600
++++ maradns-1.3.07.06/doc/en/webpage/roadmap.embed	2007-09-23 11:41:53.000000000 -0500
+@@ -1,37 +1,56 @@
+ <h2>MaraDNS roadmap</h2>
+ 
+-I have already started the 1.3 branch of MaraDNS, and this is where
+-most of MaraDNS' development is happening.  Here is a list of some
+-changes already done in MaraDNS 1.3, and some planned changes
+-for MaraDNS.
++The MaraDNS 1.3.07 branch of MaraDNS is now in beta testing.  In other 
++words, the only changes to this branch before being declared stable will
++be documentation updates, bug fixes, and new SQA tests added. <p>
++
++The 1.3.07 branch has a few new features compared to MaraDNS 1.2:
++
++<ul>
++<li>BIND zone file support.  This is done with a Python script that 
++    converts a BIND zone file in to a MaraDNS-compatible zone file, and 
++    with some minor changes to the CSV2 zone file format (see below).
++<li>It's now possible to tell the recursive resolver to use different 
++    DNS servers to resolve records that end with a given string.  For 
++    example, you can tell the recursive resolver to use the DNS server 
++    with the IP 192.168.1.2 to resolve anything that ends in 
++    <tt>.local</tt>.
++<li>New mararc variables: <tt>upstream_port</tt> and <tt>dns_port</tt> 
++    (these two mararc variables allow one to resolve dangling CNAME 
++    records when one only has a single IP), 
++    <tt>recurse_min_bind_port</tt> and <tt>recurse_number_ports</tt> 
++    (these mararc variables allow one to choose which ports MaraDNS
++    binds to when making recursive queries), <tt>recurse_delegation</tt>
++    (how we handle things when we are both a recursive server and 
++    delegate zones), and <tt>max_mem</tt> (What is the maximum amount of
++    memory we allow MaraDNS to allocate).
++<li>'.' can now be a hostname by itself in csv2 zone files
++</ul>
+ 
+ <h3>Tildes now separate records</h3>
+ 
+-The tilde (~) now separates records.  The
+-tilde is only used to separate records.  I chose the tilde because
+-it's a character that one is usually not going to have in comments nor
+-in TXT/SPF/RAW records.
++In order to make it easier to convert from BIND's zone file format to 
++MaraDNS' zone file format, the tilde (~) now separates records.  The 
++tilde is only used to separate records.  I chose the tilde because it's 
++a character that one is usually not going to have in comments nor in 
++TXT/SPF/RAW records.
+ 
+ <p>
+ 
+-What the csv2 parser does is parse the first record.  If it sees a
+-tilde between the end of the first record and the beginning of the
+-second record, the parser requires that there be a tilde between
+-every single record.  A tilde is not allowed anywhere else in a
+-csv2 zone file;
+- a tilde is not allowed in comments 
+-nor in TXT/SPF
+-records, for example.  If you need a tilde in a TXT record, use the
+-\x7e escape sequence.
++What the csv2 parser does is parse the first record.  If it sees a tilde 
++between the end of the first record and the beginning of the second 
++record, the parser requires that there be a tilde between every single 
++record.  A tilde is not allowed anywhere else in a csv2 zone file except 
++in comments; a tilde is not allowed in TXT/SPF records, for example.
++If you need a tilde in a TXT record, use the \x7e escape sequence.
+ 
+ <p>
+ 
+-For
+-people who have csv2 zone files with tildes in them already, it is
+-be possible to disable this new behavior by setting a new mararc
+-variable, called csv2_tilde_handling, to 0.  csv2_tilde_handling, with
+-a value of 0, is also supported in MaraDNS 1.2.12.04 and later 1.2 releases
+-of MaraDNS.
++For people who have csv2 zone files with tildes in them already, it is 
++possible to disable this new behavior by setting a new mararc 
++variable, called <tt>csv2_tilde_handling</tt>, to 0.  
++<tt>csv2_tilde_handling</tt>, with a value of 0, is also supported in 
++MaraDNS 1.2.12.04 and later 1.2 releases of MaraDNS.
+ 
+ <p>
+ 
+@@ -73,64 +92,71 @@
+                 A       10.2.19.83 ~
+ </pre>
+ 
+-<h3>Other MaraDNS 1.3 updates</h3>
+-
+-I also have made the following small changes to the 1.3 branch:
+-
+-<ul>
+-<li>
+-I have added two variables, bind_port and upstream_port, which allow
+-MaraDNS to bind to or listen on other ports.  This makes certain
+-setups where we're using MaraDNS to handle dangling CNAME records
+-easier.
+-<li>
+-I have made it possible to customize the nameserver used to
+-recursively resolve a given subdomain.  A lot of djbdns refugees miss
+-this feature, and it was not too difficult to add.
+-</ul>
+-
+-<h3>Planned 1.3 changes</h3>
+-I plan on doing the following change to the 1.3 code:
+-
+-<ul>
+-<li>I will finish the 
+-Python script to convert BIND zone files to csv2 zone files.
+-<li>
+-udpany() will be rewritten to be two functions; one to be used by
+-the authoritative code; one by the recursive code.  This function
+-currently is ugly looking.
+-</ul>
+-
+-<h3>Post-1.3 plans</h3>
++<h3>MaraDNS 1.3.07 plans</h3>
+ 
+-After doing this, I plan on rewriting the recursive resolver.
+-Basically, the code is quite ugly and this recursive resolver has been
+-needing a rewrite for a few years now.  While I'm at it, I may as well
+-add ipv6 support to the recursive half of Mara.
++I will be creating new tests for the 1.3.07 series to see if I can find 
++any other bugs before making the 1.3.07 series stable on December 21, 
++2007.  I will also be updating the documentation, and fixing any bugs 
++that I find.  Once 1.3.07 is made stable on December 21, the only 
++changes I will make to this branch are important bugfixes and 
++documentation updates.
++
++<h3>Post-1.3.07 plans</h3>
++
++I, on September 21, 2007, split the 1.3 series in to two branches: The 
++1.3.07 branch, and the post-1.3.07 branch, starting with MaraDNS 1.3.08.  
++The reason for this split is new features to MaraDNS can be contributed.  
++For example, Jean-Jacques Sarton is working on improving MaraDNS' ipv6 
++support, and I added support for the NAPTR record that someone on the 
++mailing list asked for.  <p>
++
++I plan on rewriting the recursive resolver. Basically, the code is quite 
++ugly and this recursive resolver has been needing a rewrite for a few 
++years now.  While I'm at it, I will probably add ipv6 support to the 
++recursive half of Mara.  This is a project that will take <i>at 
++least</i> six months to implement once I start writing code (I've been 
++too busy babysitting older releases and answering support questions to 
++start work on my code, and, yeah, this thing called real life sometimes 
++gets in the way too).
+ 
+ <p>
+ 
+-After that, I'll revamp the authoritative code to handle AXFRs
+-correctly, to have "views", and to be able to reload zones without
+-restarting MaraDNS.
++After that, I may revamp the authoritative code to handle AXFRs 
++correctly, to have "views", and to be able to reload zones without 
++restarting MaraDNS.  It will be a while before I start writing this 
++code.
+ 
+ <h3>Show me the money</h3>
+ 
+-Since MaraDNS is an open source project, any of these plans can change
+-at any time.  For example, since I'm not getting paid to work on MaraDNS,
+-I have recently been distracted by another project to make a desktop
+-version of Linux, complete with a basic word processor, for 486 and other 
+-older computers that people may otherwise throw out.
++Since MaraDNS is an open source project, any of these plans can change 
++at any time.  For example, since I'm not getting paid to work on 
++MaraDNS, I may decide that it's more fun to hang out with my girlfriend 
++or to play some interactive fiction. <p>
++
++If people desperately need features added to MaraDNS, let's talk.  Since 
++I'm living in Mexico, my expenses are fairly low so I can add new 
++features at good prices.  Note that, if you want to keep the new 
++features proprietary, I will charge considerably more to implement the 
++new features.
+ 
+ <hr>
+ 
+-<h3>MaraDNS 1.2 changes</h3>
++<h3>MaraDNS 1.0 and 1.2</h3>
++
++MaraDNS 1.0 was released over five years ago, and will only be supported 
++(with the exception of security updates) until December 21, 2007.  After 
++that date, MaraDNS 1.0 users will be on their own.  I no longer answer 
++"how do I" questions for this release of MaraDNS, and will not fix 
++non-security bugs after December 21.  If anyone is interested in 
++becoming the maintainer of MaraDNS 1.0, <A 
++href=contact.html>let me know</A>.
+ 
+-MaraDNS 1.2 has the following new features over 1.0:
++<p> MaraDNS 1.2, which was released nearly two years ago, has the 
++following new features over 1.0:
+ 
+ <ul>
+-<li>MaraDNS can now run with only a single three-line
+-    configuration file.
++<li>MaraDNS can now run with only a single three-line configuration 
++    file.
+ <li>Expanded and improved documentation.
+ <li>A partial native Win32 port has been done; basic MaraDNS functionality
+     is now available on Windows.
+@@ -158,9 +184,8 @@
+     the maradns binary 20% smaller and not needing to be linked to the  
+     pthread library.
+ <li>There is a special DOS survival mode which resoves hostnames as 
+-    quickly as possible
+-    at the expense of not supporting some DNS features (such as CNAME records
+-    or star records)
++    quickly as possible at the expense of not supporting some DNS 
++    features (such as CNAME records or star records)
+ <li>MaraDNS now has authoritative-only UDP ipv6 support.  AAAA records are 
+     supported in csv2 zone files, and it is possible to run MaraDNS on
+     an ipv6 address.  
+@@ -183,9 +208,10 @@
+     Brazilian Portuguese.
+ </ul>
+ 
+-My next plan for the 1.2 branch is to add the ability to query all of the 
+-servers for a given zone multiple times before giving up.  I also
+-plan on eventually rewriting MaraDNS in C++.
++The 1.2 release of MaraDNS will only be updated to fix critical and 
++security bugs, and to fix errors in the documentation.
++
+ <p>
+-- Sam (2007.03.14)
++- Sam (2007.09.23)
++
+ 

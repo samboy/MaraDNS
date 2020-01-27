@@ -1,0 +1,26 @@
+--- maradns-1.2.08/doc/en/webpage/download.embed	2006-05-29 00:53:04.000000000 -0700
++++ maradns-1.2.09/doc/en/webpage/download.embed	2006-06-11 02:19:31.000000000 -0700
+@@ -5,7 +5,7 @@
+ <h2>Stable release</h2>
+ <p>This is the current stable release of MaraDNS, MaraDNS 1.2.07.5
+ <p>This release is available both at <A 
+-href="http://sourceforge.net/project/showfiles.php?group_id=24033&amp;package_id=16396">sourceforge.net</A>
++href="http://sourceforge.net/project/showfiles.php?group_id=24033&package_id=16396&release_id=420762">sourceforge.net</A>
+ and on this page.
+ 
+ <p><A 
+@@ -81,6 +81,14 @@
+ 
+ <hr>
+ 
++<h2>Testing release</h2>
++
++I have a 1.2.08 testing release of MaraDNS, which can be downloaded
++at <A href="http://sourceforge.net/projects/maradns">sourceforge.net</A>
++and <A href="download/1.2/1.2.08">locally</A>.
++
++<hr>
++
+ <h2>Legacy release</h2>
+ This is the current version of the legacy release of MaraDNS, MaraDNS
+ 1.0.  This release will no longer be supported for anything but critical

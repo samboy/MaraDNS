@@ -1,0 +1,11 @@
+--- maradns-1.3.07.03/build/install.sh	2005-12-12 00:17:27.000000000 -0600
++++ maradns-1.3.07.04/build/install.sh	2007-08-24 14:29:03.000000000 -0500
+@@ -130,7 +130,7 @@
+ 
+ # If the system in question does not already have configuration files,
+ # place example configuration files in /etc
+-if [ -d docs/$LANGUAGE/examples ] ; then
++if [ -d doc/$LANGUAGE/examples ] ; then
+ 	cd doc/$LANGUAGE/examples
+ else
+ 	cd doc/en/examples

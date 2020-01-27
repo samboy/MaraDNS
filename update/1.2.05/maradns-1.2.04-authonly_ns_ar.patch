@@ -1,0 +1,45 @@
+This fixes a bug where out-of-bailiwick data in a zone would have,
+incorrectly, the authoritative data for the zone file that the
+out-of-bailiwick data happens to be in be in the NS and AR part of
+the the DNS response.  This patch fixes this behavior; now such
+out-of-bailiwick data only has an answer, and has no NS nor AR
+data.
+
+--- maradns-1.2.04/server/MaraDNS.c	2006-02-09 12:00:39.000000000 -0800
++++ maradns-1.2.05/server/MaraDNS.c	2006-02-13 23:36:03.000000000 -0800
+@@ -479,6 +479,7 @@
+     /* These two variables are added to handle PTR records */
+     int seen_ptr_record = 0;
+     rr *top = where;
++    int is_auth = 0;
+ 
+     q_header header;
+ 
+@@ -532,6 +533,7 @@
+     /* We have to add this header here--authoritative depends on the
+        authorative status of the first record we find */
+     header.aa = where->authoritative;
++    is_auth = where->authoritative;
+ 
+     /* The data must be between 0 and 65535 bytes in length (16-bit
+        unsigned value) */
+@@ -589,13 +591,16 @@
+                             answers: 8 records in the answer section then
+                             8 records in the authority section */
+             }
+-        if(a_count < max_chain && total_count < max_total) {
++        if(a_count < max_chain && total_count < max_total && (in_ns == 0
++           || is_auth == 1)) {
+             a_count++;
+             total_count++;
+-            if(!in_ns)
++            if(!in_ns) {
+                 header.ancount++;
+-            else
++                }
++            else {
+                 header.nscount++;
++                }
+             /* Append the name for this answer to the answer */
+             if(js_append(where->query,most) == JS_ERROR)
+                 goto giveerror;

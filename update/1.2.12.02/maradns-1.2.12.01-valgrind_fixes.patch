@@ -1,0 +1,550 @@
+diff -ur maradns-1.2.12.02.orig/dns/Decompress.c maradns-1.2.12.02/dns/Decompress.c
+--- maradns-1.2.12.02.orig/dns/Decompress.c	2005-12-14 04:20:24.000000000 -0600
++++ maradns-1.2.12.02/dns/Decompress.c	2006-08-13 20:27:32.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002 Sam Trenholme
++/* Copyright (c) 2002-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -750,6 +750,7 @@
+     /* Set the log level */
+     dlog_level = alog_level;
+ 
++    js_destroy(temp);
+     return JS_SUCCESS;
+ 
+     }
+diff -ur maradns-1.2.12.02.orig/libs/MaraHash.c maradns-1.2.12.02/libs/MaraHash.c
+--- maradns-1.2.12.02.orig/libs/MaraHash.c	2005-04-09 02:37:35.000000000 -0500
++++ maradns-1.2.12.02/libs/MaraHash.c	2006-08-13 20:27:32.000000000 -0500
+@@ -1,4 +1,21 @@
+-/* Released to the public domain 2001 by Sam Trenholme */
++/* Copyright (c) 2006 Sam Trenholme
++ *
++ * TERMS
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ *
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ *
++ * This software is provided 'as is' with no guarantees of correctness or
++ * fitness for purpose.
++ */
++
+ /* Note: This file is encoded using utf-8 encoding */
+ /* Note also: This is the revamped linked-list based hash which was changed
+    for MaraDNS 0.8.30 */
+diff -ur maradns-1.2.12.02.orig/parse/ParseIpAcl.c maradns-1.2.12.02/parse/ParseIpAcl.c
+--- maradns-1.2.12.02.orig/parse/ParseIpAcl.c	2005-12-05 15:00:25.000000000 -0600
++++ maradns-1.2.12.02/parse/ParseIpAcl.c	2006-08-13 20:27:32.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2005 Sam Trenholme
++/* Copyright (c) 2002-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -285,7 +285,8 @@
+         return JS_ERROR;
+         }
+     if(js_str2js(delimq,&delim,1,1) == JS_ERROR) {
+-        js_destroy(sub); js_destroy(delimq); return JS_ERROR;
++        js_destroy(sub); js_destroy(value); js_destroy(delimq); 
++        return JS_ERROR;
+         }
+ 
+     next = -1;
+@@ -294,7 +295,7 @@
+ 	/* Look for the next comma */
+         next = js_match_offset(delimq,in,start);
+         if(next == JS_ERROR) {
+-            js_destroy(sub); js_destroy(delimq);
++            js_destroy(sub); js_destroy(delimq); js_destroy(value);
+             return JS_ERROR;
+             }
+         /* If there is no next comma */
+@@ -311,13 +312,13 @@
+                     nx--;
+ 		    }
+ 		else {
+-                    js_destroy(sub); js_destroy(delimq);
++                    js_destroy(sub); js_destroy(delimq); js_destroy(value);
+                     return JS_ERROR;
+                     }
+                 }
+ 	    /* Make the string "sub" go to the end of the string */
+             if(js_substr(in,sub,start,(nx + 1) - start) == JS_ERROR) {
+-                js_destroy(sub); js_destroy(delimq);
++                js_destroy(sub); js_destroy(delimq); js_destroy(value);
+                 return JS_ERROR;
+                 }
+             }
+@@ -336,25 +337,25 @@
+                     nx--;
+ 		    }
+ 		else {
+-                    js_destroy(sub); js_destroy(delimq);
++                    js_destroy(sub); js_destroy(delimq); js_destroy(value);
+                     return JS_ERROR;
+                     }
+                 }
+ 	    /* Make the string "sub" go to the next comma */
+             if(js_substr(in,sub,start,(nx + 1) - start) == JS_ERROR) {
+-                js_destroy(sub); js_destroy(delimq);
++                js_destroy(sub); js_destroy(delimq); js_destroy(value);
+                 return JS_ERROR;
+                 }
+             }
+         /* See if an alias for the value exists */
+         if(js_qstr2js(value,"ipv4_alias") == JS_ERROR) {
+-            js_destroy(sub); js_destroy(delimq);
++            js_destroy(sub); js_destroy(delimq); js_destroy(value);
+             return JS_ERROR;
+             }
+         /* If so, recurse */
+         if(read_dvar(value,sub,value) != JS_ERROR) {
+             if(make_ip_acl(value,out,max,depth + 1) == JS_ERROR) {
+-                js_destroy(sub); js_destroy(delimq);
++                js_destroy(sub); js_destroy(delimq); js_destroy(value);
+                 return JS_ERROR;
+                 }
+             }
+@@ -365,11 +366,12 @@
+                 index++;
+             /* Error if we are out of bounds */
+             if(index >= max) {
+-                js_destroy(sub); js_destroy(delimq); return JS_ERROR;
++                js_destroy(sub); js_destroy(delimq); js_destroy(value);
++		return JS_ERROR;
+                 }
+             /* Run ddip_ip_mask to convert the actual ip/mask pair */
+             if(ddip_ip_mask(sub,&(out[index]),0) == JS_ERROR) {
+-                js_destroy(sub); js_destroy(delimq);
++                js_destroy(sub); js_destroy(delimq); js_destroy(value);
+                 return JS_ERROR;
+                 }
+             }
+@@ -377,6 +379,7 @@
+ 
+     js_destroy(sub);
+     js_destroy(delimq);
++    js_destroy(value);
+     return JS_SUCCESS;
+     }
+ 
+diff -ur maradns-1.2.12.02.orig/parse/Parse_ipv6.c maradns-1.2.12.02/parse/Parse_ipv6.c
+--- maradns-1.2.12.02.orig/parse/Parse_ipv6.c	2005-12-05 01:21:24.000000000 -0600
++++ maradns-1.2.12.02/parse/Parse_ipv6.c	2006-08-13 20:27:32.000000000 -0500
+@@ -140,7 +140,7 @@
+ }
+ 
+ /* Count_thungys: Generalized function that counts the number of
+- * character as defined by the function we pass as an argument,
++ * characters as defined by the function we pass as an argument,
+  * 
+  * Input: The js_string object we look at, the offset in said string
+  * Output: The number of digits on normal exit, JS_ERROR on error
+@@ -308,7 +308,14 @@
+ zeros:
+ 		/* See if we have a double colon; if so, skip ahead the
+ 		 * appropriate number of nybbles */
+-		q = see_double_colon(i,input_point);
++		if(input_point < i->unit_count) {
++			q = see_double_colon(i,input_point);
++		} else if(input_point == i->unit_count) {
++			q = 0;
++		} else {
++			js_dealloc(o);
++			return 0;
++		}
+ 		if(q == JS_ERROR) {
+ 			js_dealloc(o);
+ 			return 0;
+diff -ur maradns-1.2.12.02.orig/server/MaraBigHash.c maradns-1.2.12.02/server/MaraBigHash.c
+--- maradns-1.2.12.02.orig/server/MaraBigHash.c	2006-08-13 20:27:13.000000000 -0500
++++ maradns-1.2.12.02/server/MaraBigHash.c	2006-08-13 20:27:32.000000000 -0500
+@@ -628,30 +628,90 @@
+ 
+     /* Create the js_String objects containing the zone name and
+        corresponding filename */
+-    if((udpzone = js_create(128,1)) == 0)
++    if((udpzone = js_create(128,1)) == 0) {
+         return JS_ERROR;
+-    if((filename = js_create(256,1)) == 0)
++        }
++    if((filename = js_create(256,1)) == 0) {
++        js_destroy(udpzone);
+         return JS_ERROR;
+-    if((line = js_create(MAX_RECORD_LENGTH + 3,1)) == 0)
++        }
++    if((line = js_create(MAX_RECORD_LENGTH + 3,1)) == 0) {
++        js_destroy(filename);
++        js_destroy(udpzone);
+         return JS_ERROR;
+-    if(js_set_encode(line,MARA_LOCALE) == JS_ERROR)
++        }
++    if(js_set_encode(line,MARA_LOCALE) == JS_ERROR) {
++        js_destroy(line);
++        js_destroy(filename);
++        js_destroy(udpzone);
+         return JS_ERROR;
+-    if((pline = js_create(MAX_RECORD_LENGTH + 3,1)) == 0)
++        }
++    if((pline = js_create(MAX_RECORD_LENGTH + 3,1)) == 0) {
++        js_destroy(line);
++        js_destroy(filename);
++        js_destroy(udpzone);
+         return JS_ERROR;
+-    if(js_set_encode(pline,MARA_LOCALE) == JS_ERROR)
++        }
++    if(js_set_encode(pline,MARA_LOCALE) == JS_ERROR) {
++        js_destroy(pline);
++        js_destroy(line);
++        js_destroy(filename);
++        js_destroy(udpzone);
+         return JS_ERROR;
+-    if((soaline = js_create(256,1)) == 0)
++        }
++    if((soaline = js_create(256,1)) == 0) {
++        js_destroy(pline);
++        js_destroy(line);
++        js_destroy(filename);
++        js_destroy(udpzone);
+         return JS_ERROR;
+-    if(js_set_encode(soaline,MARA_LOCALE) == JS_ERROR)
++        }
++    if(js_set_encode(soaline,MARA_LOCALE) == JS_ERROR) {
++        js_destroy(soaline);
++        js_destroy(pline);
++        js_destroy(line);
++        js_destroy(filename);
++        js_destroy(udpzone);
+         return JS_ERROR;
+-    if((query = js_create(256,1)) == 0)
++        }
++    if((query = js_create(256,1)) == 0) {
++        js_destroy(soaline);
++        js_destroy(pline);
++        js_destroy(line);
++        js_destroy(filename);
++        js_destroy(udpzone);
+         return JS_ERROR;
+-    if((data = js_create(MAX_RECORD_LENGTH + 3,1)) == 0)
++        }
++    if((data = js_create(MAX_RECORD_LENGTH + 3,1)) == 0) {
++        js_destroy(query);
++        js_destroy(soaline);
++        js_destroy(pline);
++        js_destroy(line);
++        js_destroy(filename);
++        js_destroy(udpzone);
+         return JS_ERROR;
+-    if((zone = js_create(MAX_ZONE_SIZE,1)) == 0)
++        }
++    if((zone = js_create(MAX_ZONE_SIZE,1)) == 0) {
++        js_destroy(data);
++        js_destroy(query);
++        js_destroy(soaline);
++        js_destroy(pline);
++        js_destroy(line);
++        js_destroy(filename);
++        js_destroy(udpzone);
+         return JS_ERROR;
+-    if((desc = js_alloc(1,sizeof(js_file))) == 0)
++        }
++    if((desc = js_alloc(1,sizeof(js_file))) == 0) {
++        js_destroy(zone);
++        js_destroy(data);
++        js_destroy(query);
++        js_destroy(soaline);
++        js_destroy(pline);
++        js_destroy(line);
++        js_destroy(filename);
++        js_destroy(udpzone);
+         return JS_ERROR;
++        }
+ 
+     /* Pass 1: fill up the hash with the AN and NS answers */
+ 
+@@ -661,6 +721,9 @@
+     if(csvs == 0) {
+         /* A csv1 hash is no longer mandatory, now that MaraDNS has recursive
+            capability */
++        js_destroy(udpzone); js_destroy(filename); js_destroy(line);
++        js_destroy(pline); js_destroy(soaline); js_destroy(query);
++        js_destroy(data); js_destroy(zone); js_dealloc(desc);
+         return 0;
+         /*js_qstr2js(error,L_INITCSV); */
+         /*"csv1 hash is not correctly initialized.\nMake sure to have csv1 initialized with csv1 = {}, and that it has one or\nmore elements." */
+@@ -670,6 +733,9 @@
+     if(mhash_firstkey(csvs,zone) == 0) {
+         /* We actually do not need to have anything in the hash, in
+            the case of people running a recursive nameserver */
++        js_destroy(udpzone); js_destroy(filename); js_destroy(line);
++        js_destroy(pline); js_destroy(soaline); js_destroy(query);
++        js_destroy(data); js_destroy(zone); js_dealloc(desc);
+         return 0;
+         }
+     do {
+@@ -678,10 +744,18 @@
+         if(zone != 0) {
+ 
+             /* Make udpzone be like zone, but in raw RFC1035 format */
+-            if(js_qstr2js(udpzone,"A") == JS_ERROR)
++            if(js_qstr2js(udpzone,"A") == JS_ERROR) {
++                js_destroy(udpzone); js_destroy(filename); js_destroy(line);
++                js_destroy(pline); js_destroy(soaline); js_destroy(query);
++                js_destroy(data); js_destroy(zone); js_dealloc(desc);
+                 return JS_ERROR;
+-            if(js_append(zone,udpzone) == JS_ERROR)
++                }
++            if(js_append(zone,udpzone) == JS_ERROR) {
++                js_destroy(udpzone); js_destroy(filename); js_destroy(line);
++                js_destroy(pline); js_destroy(soaline); js_destroy(query);
++                js_destroy(data); js_destroy(zone); js_dealloc(desc);
+                 return JS_ERROR;
++                }
+             if(hname_2rfc1035(udpzone) == JS_ERROR) {
+                 js_qstr2js(error,L_BADZONE); /* "A zone file is incorrectly named.  All zone files must end with a dot, e.g.\ncsv1[\"example.com.\"] = \"filename\".\nBad zone name: " */
+                 js_qappend("\ncsv1[\"",error);
+@@ -689,16 +763,28 @@
+                 js_qappend("\"] = \"",error);
+                 js_append(mhash_get_js(csvs,zone),error);
+                 js_qappend("\"\n",error);
++                js_destroy(udpzone); js_destroy(filename); js_destroy(line);
++                js_destroy(pline); js_destroy(soaline); js_destroy(query);
++                js_destroy(data); js_destroy(zone); js_dealloc(desc);
+                 return -2;
+                 }
+             /* Add the binary RR_NS to the end of the udpzone string
+                (This makes authoritative checks easier) */
+-            if(js_addbyte(udpzone,0) == JS_ERROR)
++            if(js_addbyte(udpzone,0) == JS_ERROR) {
++                js_destroy(udpzone); js_destroy(filename); js_destroy(line);
++                js_destroy(pline); js_destroy(soaline); js_destroy(query);
++                js_destroy(data); js_destroy(zone); js_dealloc(desc);
+                 return JS_ERROR;
+-            if(js_addbyte(udpzone,RR_NS) == JS_ERROR)
++                }
++            if(js_addbyte(udpzone,RR_NS) == JS_ERROR) {
++                js_destroy(udpzone); js_destroy(filename); js_destroy(line);
++                js_destroy(pline); js_destroy(soaline); js_destroy(query);
++                js_destroy(data); js_destroy(zone); js_dealloc(desc);
+                 return JS_ERROR;
++                }
+ 
+             /* Get the file name to open from the element's value */
++            js_destroy(filename);
+             filename = mhash_get_js(csvs,zone);
+             /* Open up the filename in question */
+             if(js_open_read(filename,desc) == JS_ERROR) {
+@@ -717,13 +803,22 @@
+ 
+                 /* Get the line */
+                 result = js_buf_getline(desc,line);
+-                if(result == JS_ERROR)
++                if(result == JS_ERROR) {
++                    js_destroy(udpzone); js_destroy(filename); 
++                    js_destroy(line);
++                    js_destroy(pline); js_destroy(soaline); js_destroy(query);
++                    js_destroy(data); js_destroy(zone); js_dealloc(desc);
+                     return JS_ERROR;
++                    }
+                 else if(result == -2) {
+                     printf("%s%d%s",L_LINE_NUMBER,linenum + 1,L_TOO_LONG);
+                     show_esc_stdout(filename);
+                     printf("\n");
+                     /* "line number ... is too long in file " */
++                    js_destroy(udpzone); js_destroy(filename); 
++                    js_destroy(line);
++                    js_destroy(pline); js_destroy(soaline); js_destroy(query);
++                    js_destroy(data); js_destroy(zone); js_dealloc(desc);
+                     return JS_ERROR;
+                     }
+ 
+@@ -739,8 +834,15 @@
+                         continue;
+                     /* Add the SOA in the special case of the zone
+                        only having SOA and NS records */
+-                    if(parse_csv1_line(soaline,query,data,&ttl) != RR_SOA)
++                    if(parse_csv1_line(soaline,query,data,&ttl) != RR_SOA) {
++
++                        js_destroy(udpzone); js_destroy(filename); 
++                        js_destroy(line);
++                        js_destroy(pline); js_destroy(soaline); 
++                        js_destroy(query);
++                        js_destroy(data); js_destroy(zone); js_dealloc(desc);
+                         return JS_ERROR;
++                        }
+                     add_rr_to_bighash(maintable,query,data,ttl,udpzone,0);
+                     break;
+                     }
+@@ -750,8 +852,13 @@
+                     break;
+ 
+                 /* Process the % character and any \ sequences */
+-                if(bs_process(line,pline,zone) == JS_ERROR)
++                if(bs_process(line,pline,zone) == JS_ERROR) {
++                    js_destroy(udpzone); js_destroy(filename); 
++                    js_destroy(line);
++                    js_destroy(pline); js_destroy(soaline); js_destroy(query);
++                    js_destroy(data); js_destroy(zone); js_dealloc(desc);
+                     return JS_ERROR;
++                    }
+ 
+                 /* Parse the line and get the rr type of the query */
+                 rr_type = parse_csv1_line(pline,query,data,&ttl);
+@@ -795,8 +902,15 @@
+                        record knows what NS records to place in the NS
+                        section of the answer) */
+                     else if(rrnum == 1) {
+-                        if(js_copy(pline,soaline) == JS_ERROR)
++                        if(js_copy(pline,soaline) == JS_ERROR) {
++                            js_destroy(udpzone); js_destroy(filename); 
++                            js_destroy(line);
++                            js_destroy(pline); js_destroy(soaline); 
++                            js_destroy(query);
++                            js_destroy(data); js_destroy(zone); 
++                            js_dealloc(desc);
+                             return JS_ERROR;
++                            }
+                         }
+                     /* Only one SOA allowed per zone */
+                     else if(rrnum != 1 && rr_type == RR_SOA) {
+@@ -813,8 +927,16 @@
+                     else if((rr_type != RR_NS || !js_issame(query,udpzone))
+                             && in_ns) {
+                         /* Add the SOA after the zone's NS records */
+-                        if(parse_csv1_line(soaline,query,data,&ttl) != RR_SOA)
++                        if(parse_csv1_line(soaline,query,data,&ttl) != 
++			   RR_SOA) {
++                            js_destroy(udpzone); js_destroy(filename); 
++                            js_destroy(line);
++                            js_destroy(pline); js_destroy(soaline); 
++                            js_destroy(query);
++                            js_destroy(data); js_destroy(zone); 
++                            js_dealloc(desc);
+                             return JS_ERROR;
++                            }
+                         add_rr_to_bighash(maintable,query,data,ttl,udpzone,0);
+                         /* Now, add the record we are looking at (the
+                            first non-SOA and non-authoritative-NS record) */
+@@ -846,6 +968,9 @@
+             js_close(desc);
+             }
+         } while(mhash_nextkey(csvs,zone) != 0);
++    js_destroy(udpzone); js_destroy(filename); js_destroy(line);
++    js_destroy(pline); js_destroy(soaline); js_destroy(query);
++    js_destroy(data); js_destroy(zone); js_dealloc(desc);
+     return JS_SUCCESS;
+ }
+ 
+diff -ur maradns-1.2.12.02.orig/server/MaraDNS.c maradns-1.2.12.02/server/MaraDNS.c
+--- maradns-1.2.12.02.orig/server/MaraDNS.c	2006-08-13 20:27:13.000000000 -0500
++++ maradns-1.2.12.02/server/MaraDNS.c	2006-08-13 20:27:32.000000000 -0500
+@@ -4095,7 +4095,7 @@
+ int main(int argc, char **argv) {
+ 
+     js_string *mararc_loc = 0, *errors = 0,
+-              *kvar_query = 0, *bind_address = 0, *ipv6_bind_address = 0,
++              *bind_address = 0, *ipv6_bind_address = 0,
+ 	      *csv2_synthip_address = 0,
+ 	      *ipv4_bind_address = 0, *incoming = 0, 
+ 	      *uncomp = 0, *verbstr = 0;
+@@ -4164,11 +4164,6 @@
+     if(js_set_encode(errors,MARA_LOCALE) == JS_ERROR)
+         harderror(L_EL); /* "Could not set locale for errors string" */
+ 
+-    if((kvar_query = js_create(256,1)) == 0)
+-        harderror(L_KQC); /* "Could not create kvar_query string" */
+-    if(js_set_encode(kvar_query,MARA_LOCALE) == JS_ERROR)
+-        harderror(L_KQL); /* "Could not set locale for kvar_query string" */
+-
+     if((incoming = js_create(768,1)) == 0)
+         harderror(L_IC); /* "Could not create incoming string" */
+     if(js_set_encode(incoming,MARA_LOCALE) == JS_ERROR)
+@@ -4200,6 +4195,7 @@
+     if(read_mararc(mararc_loc,errors,&errorn) == JS_ERROR) {
+         harderror(L_MARARC_PARSE); /* "Error parsing contents of mararc file" */
+         }
++    js_destroy(mararc_loc);
+     if(errorn != 0) {
+         /* Print this out at log level 0 because it is a fatal error */
+         if(errorn != -1)
+@@ -4457,7 +4453,7 @@
+ 
+     /* Read in the list of spam-friendly DNS servers, which we will
+        refuse to get data from */
+-    js_destroy(verbstr);
++    if(verbstr != 0) { js_destroy(verbstr); }
+     verbstr = read_string_kvar("spammers");
+ 
+     /* If there is a spam-friendly list, read it in */
+@@ -4471,7 +4467,7 @@
+             harderror(L_INIT_SPAMMERS); /* "Could not make spammers list" */
+         }
+ 
+-    js_destroy(verbstr);
++    if(verbstr != 0) { js_destroy(verbstr); }
+     /* BEGIN RNG USING CODE */
+     /* Determine which file to read the key from */
+     verbstr = read_string_kvar("random_seed_file");
+@@ -4490,6 +4486,7 @@
+         }
+     else if((recurse_acl[0]).ip != 0xffffffff) {
+ 	/* Default random_seed_file value: /dev/urandom */
++        if(verbstr != 0) { js_destroy(verbstr); }
+         verbstr = js_create(256,1);
+ 	if(js_qstr2js(verbstr,"/dev/urandom") == JS_ERROR)
+ 	     harderror(L_KVAR_Q);
+@@ -4522,6 +4519,7 @@
+ #else /* AUTHONLY */
+     /* Die right away so an admin isn't scratching their head wondering why
+      * Mara isn't able to recursively resolve hostname */
++    if(verbstr != 0) { js_destroy(verbstr); }
+     verbstr = read_string_kvar("recursive_acl");
+     if(verbstr != 0 && js_length(verbstr) > 0) {
+ 	    harderror("No recursion when MaraDNS is compiled authonly");
+@@ -4532,6 +4530,7 @@
+      * MaraDNS' internal information */
+     for(counter = 0; counter < 511; counter++)
+ 	admin_acl[counter].ip = 0xffffffff;
++    if(verbstr != 0) { js_destroy(verbstr); }
+     verbstr = read_string_kvar("admin_acl");
+     if(verbstr != 0 && js_length(verbstr) > 0) {
+         if(make_ip_acl(verbstr,admin_acl,500,0) == JS_ERROR) 
+@@ -4558,7 +4557,7 @@
+     if(geteuid() == 0) {
+ #endif
+ 
+-	js_destroy(verbstr);
++	if(verbstr != 0) { js_destroy(verbstr); }
+ 	verbstr = read_string_kvar("chroot_dir");
+ 	if(verbstr == 0) {
+ 	    harderror(L_CHROOT_KVAR);
+@@ -4630,6 +4629,9 @@
+             zjlog(L_BIND2ADDR,ipv4_bind_address); /* "Binding to address " */
+ 	}
+         mlog(L_BIND_SUCCESS);  /* "Socket opened on UDP port 53" */
++	js_destroy(bind_address);
++	js_destroy(csv2_synthip_address);
++	js_destroy(ipv4_bind_address);
+ 
+ 	ipv6_bind_address = read_string_kvar("ipv6_bind_address");
+ #ifndef AUTHONLY
+@@ -4749,7 +4751,7 @@
+         harderror(L_POPULATE_FATAL); /* "This error in populate hash is fatal" */
+         }
+ 
+-    js_destroy(verbstr);
++    if(verbstr != 0) { js_destroy(verbstr); }
+     verbstr = read_string_kvar("csv2_default_zonefile");
+     if(verbstr !=0 && js_length(verbstr) > 0) {
+ 	    js_string *zone;
+Only in maradns-1.2.12.02/server: MaraDNS.c.orig

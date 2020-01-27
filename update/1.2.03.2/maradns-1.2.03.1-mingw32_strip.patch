@@ -1,0 +1,13 @@
+--- maradns-1.2.03.1/build/Makefile.mingw32	2006-01-21 21:22:01.000000000 -0800
++++ maradns-1.2.04/build/Makefile.mingw32	2006-01-22 20:38:59.000000000 -0800
+@@ -42,8 +42,8 @@
+ 	cd ../rng ; make $(M) ; cd ../parse ; make $(M) ; \
+ 	cd ../qual ; make $(M) ; cd ../server ; \
+ 	make $(M) $(Q) COMPILED=\"$(COMPILED)\" $(V) ; \
+-	cd ../tools ; make $(M) ; \
+-	cat ../00README.FIRST
++	cd ../tools ; make $(M) ; strip ../server/maradns.exe ; \
++	strip ../tools/askmara.exe ; cat ../00README.FIRST
+ 
+ clean:
+ 	rm -f $(OBJECTS) core $(EXECS) ; \

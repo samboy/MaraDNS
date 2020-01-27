@@ -1,0 +1,16 @@
+--- maradns-1.2.03.2/doc/en/source/faq.embed	2005-12-17 13:55:28.000000000 -0800
++++ maradns-1.2.04/doc/en/source/faq.embed	2006-02-02 19:13:23.000000000 -0800
+@@ -436,6 +436,13 @@
+ <H2>22. MaraDNS freezes up after being used for a while</H2>
+ </A>
+ 
++If you are using MaraDNS 1.2.03.1 (or any 1.1 release, for that matter) on 
++Linux, upgrade to version 1.2.03.2.  There is a bug with the Linux kernel
++which causes UDP clients to freeze unless code is written to work around
++the kernel bug.  This workaround was first introduced in MaraDNS 1.0.28
++and 1.1.35 and accidently disabled in 1.2.03.1.  
++
++<p>
+ If using your ISP's name servers or some other name servers which
+ are not, in fact, root name servers, please make sure that you are
+ using the upstream_servers dictionary variable instead of the

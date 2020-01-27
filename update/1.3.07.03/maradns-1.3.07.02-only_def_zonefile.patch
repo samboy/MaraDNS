@@ -1,0 +1,42 @@
+This patch fixes a bug where one could not have only a 
+csv2_default_zonefile without any csv2 (nor csv1) zonefiles.
+
+--- maradns-1.3.07.02/server/MaraDNS.c	2007-06-19 08:59:07.000000000 -0500
++++ maradns-1.3.07.03/server/MaraDNS.c	2007-08-12 12:30:52.000000000 -0500
+@@ -3204,7 +3204,8 @@
+ 
+     /* We go straight to processing this as a recursive query at a
+      * dos_protection_level of 78; this is the default value of
+-     * dos_protection_level if neither csv1 nor csv2 is set */
++     * dos_protection_level if neither csv1 nor csv2 nor csv2_default_zonefile
++     * is set */
+     if(dos_protection_level == 78 ) {
+   	    goto recursive_call;
+     }
+@@ -5023,11 +5024,6 @@
+         harderror(L_POPULATE_FATAL); /* "This error in populate hash is fatal" */
+         }
+ 
+-    /* Set the dos_protection_level to see if we disable some features
+-     * to protect us from a denial of service attack. */
+-    dos_protection_level = 
+-	read_numeric_kvar("dos_protection_level",default_dos_level);
+-
+     if(verbstr != 0) { js_destroy(verbstr); }
+     verbstr = read_string_kvar("csv2_default_zonefile");
+     if(verbstr !=0 && js_length(verbstr) > 0) {
+@@ -5048,8 +5044,14 @@
+ 	    } 
+ 	    printf("Csv2 default zonefile parsed\n");
+             default_zonefile_enabled = 1;
++	    default_dos_level = 0;
+     }
+ 
++    /* Set the dos_protection_level to see if we disable some features
++     * to protect us from a denial of service attack. */
++    dos_protection_level = 
++	read_numeric_kvar("dos_protection_level",default_dos_level);
++
+     mlog(L_RRS_LOADED);  /* "All RRs have been loaded" */
+ 
+     /* Right now, all we do after getting a HUP signal is exit with a code

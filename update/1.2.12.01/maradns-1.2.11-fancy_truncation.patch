@@ -1,0 +1,186 @@
+--- maradns-1.2.11/dns/Queries.c	2006-07-17 22:50:44.000000000 -0500
++++ maradns-1.2.12/dns/Queries.c	2006-07-23 20:01:22.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002 Sam Trenholme
++/* Copyright (c) 2002-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -967,3 +967,116 @@
+     return out->unit_count;
+     }
+ 
++/* This function is designed to make a packet which compresses to a size
++ * greater than 512 bytes smaller.  The input is an uncompressed DNS packet;
++ * the output is the same packet with the last DNS record removed from the
++ * packet.  As per RFC2181 §9, if we are removing a DNS record from the NS
++ * or AN section of a reply, the TC bit is not set.  Otherwise (as a 
++ * reasonable interpretation of the wishes in RFC2181 §9), we remove all DNS
++ * information except the header and mark the DNS packet truncated. 
++ *
++ * Input: A js_string object with a full uncompressed raw DNS packet.
++ * 
++ * Output: A point to the above js_string object on success; 0 on error */
++
++js_string *squeeze_to_fit(js_string *packet) {
++	q_header hdr;
++	int qd,an,ns,ar; /* counts of the various record types */
++	int qc,count;
++        int offset;
++	
++        if(read_hdr(packet,&hdr) == JS_ERROR) {
++		return 0;
++	}
++
++	qd = hdr.qdcount;
++	an = hdr.ancount;
++	ns = hdr.nscount;
++	ar = hdr.arcount;
++
++        /* If the packet is already marked truncated, we remove all records
++         * past the record and otherwise return it as is;
++	 * In the case of there being no ns nor ar records, we do the same
++         * thing */
++
++	if(hdr.tc == 1 || (ns == 0 && ar == 0)) {
++		make_hdr(&hdr,packet);
++		return packet;
++	}
++
++        qc = qd;
++        count = an + ns + ar;
++	offset = 12; /* Beginning of first question */
++	/* Jump past all of the questions */
++        while(qc > 1) {
++		int len;
++		len = dlabel_length(packet,offset);
++		if(len == JS_ERROR) {
++			hdr.tc = 1;
++			make_hdr(&hdr,packet);
++			return packet;
++		}
++		len += 4; /* Type and class */
++		offset += len;
++		if(offset >= packet->unit_count) {
++			hdr.tc = 1;
++			make_hdr(&hdr,packet);
++			return packet;
++		}
++		qc--;
++	}
++
++	/* Jump past all of the answers except for the last one */	
++	while(count > 2) {
++		int len;
++		len = dlabel_length(packet,offset);
++		if(len == JS_ERROR) {
++			hdr.tc = 1;
++			make_hdr(&hdr,packet);
++			return packet;
++		}
++		len += 8; /* type, class, TTL, and RDLENGTH */
++		offset += len;
++		if(offset + 2 >= packet->unit_count) {
++			hdr.tc = 1;
++			make_hdr(&hdr,packet);
++			return packet;
++		}
++		/* Get len from the rdlength of the data (this is why the 
++                 * packet *must* be uncompressed) */
++		len = (((*(packet->string + offset ) & 0xff) << 8) +
++		      *(packet->string + offset + 1));
++	        offset += len + 2;
++		if(offset >= packet->unit_count) {
++			hdr.tc = 1;
++			make_hdr(&hdr,packet);
++			return packet;
++		}
++		count--;
++	}
++			
++	/* Now that we've found the last DNS data, remove it from the 
++         * packet */
++	if(ar > 0) { 
++		ar--; 
++		hdr.arcount = ar; 
++	} else if(ns > 0) { 
++		ns--; 
++		hdr.nscount = ns;
++	} else {		
++		hdr.tc = 1;
++		make_hdr(&hdr,packet);
++		return packet;
++	}
++
++	hdr.tc = 0;
++	make_hdr(&hdr,packet);
++	packet->unit_count = offset;
++	return packet;
++
++}
++
++	
++	
++		
++		
+--- maradns-1.2.11/server/MaraDNS.c	2006-06-11 02:16:32.000000000 -0500
++++ maradns-1.2.12/server/MaraDNS.c	2006-07-23 20:01:22.000000000 -0500
+@@ -943,6 +943,7 @@
+     /* Check to make sure the data fits in under 512 bytes (4096 bytes
+      * if it's a long_packet_ipv4 address) truncate if not */
+     if(ar->unit_count > 512) {
++	int x;
+ #ifdef AUTHONLY
+ 	
+ 	if(ect->type == 4) { /* If this is an ipv4 connection */
+@@ -959,10 +960,19 @@
+ 	        }
+             }
+ #endif
+-        /* We handle truncation by truncating everything except the
+-           12-byte header */
+-        header.tc = 1;
+-        make_hdr(&header,ar);
++
++	for(x = 0; x < 20; x++) {		
++		/* OK, try to squeeze the packet in by removing records */
++		if(squeeze_to_fit(most) == 0) {
++			goto giveerror;		
++		}
++		if(compress_data(most,ar) == JS_ERROR) {
++			goto giveerror;
++		}
++		if(ar->unit_count <= 512) {
++			break;
++		}
++	    }
+         }
+ 
+ #ifdef AUTHONLY
+--- maradns-orig/dns/functions_dns.h	2005-09-25 15:27:37.000000000 -0500
++++ maradns-1.2.12/dns/functions_dns.h	2006-07-24 23:04:19.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002 Sam Trenholme
++/* Copyright (c) 2002-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -185,3 +185,18 @@
+    Output: JS_ERROR on error, byes in TXT record on success
+ */
+ int read_txt(js_string *in, js_string *out, int offset);
++
++/* This function is designed to make a packet which compresses to a size
++ * greater than 512 bytes smaller.  The input is an uncompressed DNS packet;
++ * the output is the same packet with the last DNS record removed from the
++ * packet.  As per RFC2181 §9, if we are removing a DNS record from the NS
++ * or AN section of a reply, the TC bit is not set.  Otherwise (as a 
++ * reasonable interpretation of the wishes in RFC2181 §9), we remove all DNS
++ * information except the header and mark the DNS packet truncated. 
++ *
++ * Input: A js_string object with a full uncompressed raw DNS packet.
++ * 
++ * Output: A point to the above js_string object on success; 0 on error */
++
++js_string *squeeze_to_fit(js_string *packet);
++

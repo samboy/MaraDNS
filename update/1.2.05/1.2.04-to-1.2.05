@@ -1,0 +1,194 @@
+#!/bin/bash -e
+
+# This script updates MaraDNS 1.2
+
+# To run this script, make sure that this script is in the directory
+# containing the tarball for the version of MaraDNS you wish to update, and
+# all of the patches are in a directory entitled 'patches'.
+
+# For example, to update MaraDNS 1.2.02 to 1.2.03, make sure 
+# maradns-1.2.02.tar.lzma is in the same directory as this script, and
+# that the directory containing this script has a directory called
+# "patches/" which has all of the maradns-1.2.02*.patch files.
+
+# You will need to have lzma on your system to run this script
+
+# Get the current and next version number
+
+CURRENT=${0%%-*}
+CURRENT=${CURRENT##*/}
+NEXT=${0##*-}
+
+# Make a clean CURRENT install, which we rename NEXT
+rm -fr maradns-$CURRENT 2> /dev/null
+rm -fr maradns-$NEXT 2> /dev/null
+echo extracting tarball
+cat maradns-$CURRENT.tar.lzma | lzma d -si -so | tar xf -
+if [ $? != 0 ] ; then
+	echo run this from the correct directory
+	exit 1
+fi
+rm -fr maradns-$NEXT*
+mv maradns-$CURRENT maradns-$NEXT
+cd maradns-$NEXT
+
+# The patches
+
+mkdir update/$NEXT
+cp ../patches/maradns-$CURRENT* update/$NEXT
+
+# This is one of the few places where we will need to change anything
+# in this script from version to version
+
+echo applying patches
+
+# Patch #1: Add FAQ entry about setting upstream_servers
+patch -p1 < update/$NEXT/maradns-1.2.04-upstream_faq.patch
+
+# Patch #2: Update that FAQ entry again
+patch -p1 < update/$NEXT/maradns-1.2.04-upstream_faq_2.patch
+
+# Patch #3: Get rid of three mararc variables which are currently not
+# implemented and which have never been documented
+patch -p1 < update/$NEXT/maradns-1.2.04-mararc_cleanup.patch
+
+# Patch #4: Better handle authoritative resource records which really
+#           don't belong in a zone.  In more detail, if a given RR is
+#           out of bailiwick for a given zone, do not show any NS nor
+#           AR information for that record.  Note that this information
+#           is still in the record; it's just not shown any more.
+patch -p1 < update/$NEXT/maradns-1.2.04-authonly_ns_ar.patch
+
+# Patch #5: Add a new CSV2 record type: A "fqdn4", which is an A record
+#           that automatically creates the corresponding PTR record 
+patch -p1 < update/$NEXT/maradns-1.2.04-fqdn4.patch
+
+# Patch #6: Make sure that FQDN4 records are not allowed in 
+#           a csv2_default_zonefile.  Docuement this fact.
+patch -p1 < update/$NEXT/maradns-1.2.04-fqdn4_no_default.patch
+
+# Patch #7: We forgot to document CNAME records in the csv2 man page.
+#           Fix this.
+patch -p1 < update/$NEXT/maradns-1.2.04-cname_doc.patch
+
+# Patch #8: Change the error message to be more helpful when someone
+#           forgets to end a hostname with a '.' (or '%' or sometimes '*')
+patch -p1 < update/$NEXT/maradns-1.2.04-improper_termination.patch
+
+# Patch #9: Update the default zonefile documentation
+patch -p1 < update/$NEXT/maradns-1.2.04-default_doc.patch
+
+# Patch #10: Document the verbose_query variable
+patch -p1 < update/$NEXT/maradns-1.2.04-doc_verbose_query.patch
+
+# Patch #11: Add the admin_acl variable (list of IPs allowed to get
+#            potentially confidental internal MaraDNS information)
+patch -p1 < update/$NEXT/maradns-1.2.04-admin_acl.patch
+
+# Patch #12: Add the remote_admin variable, which allows people to
+#            remotely reset the verbose_level (this allows fine-tuned
+#            debugging of host names that do not resolve)
+patch -p1 < update/$NEXT/maradns-1.2.04-remote_admin.patch
+
+# Patch: Update RPM spec file (this is always done)
+patch -p1 < update/$NEXT/maradns-$CURRENT-rpm_spec.patch
+mv build/maradns-$CURRENT.spec build/maradns-$NEXT.spec
+
+# Patch: Update changelog (this is always done)
+patch -p1 < update/$NEXT/maradns-$CURRENT-changelog.patch
+
+# Other release-specific fixes and changes go here
+
+# Change #1: Remove file with obnoxious advertising clause BSD license
+rm server/win9x-srvc.c
+
+# Anything below this line normally is not changed between MaraDNS versions
+echo updating documentation
+
+# Update the documentation
+cd doc/en
+make
+cd man
+make
+# The following is time-consuming, so we only do it when making the final
+# tarballs
+if [[ "$1" == "go" || "$1" == "snap" ]] ; then
+	echo making PDF reference
+	./make.pdf
+	echo done
+fi
+cd ../tutorial
+make
+cd ../text
+make
+# Go back to the maradns dir
+cd ../../..
+
+rm CHANGELOG
+ln -s doc/en/changelog.txt CHANGELOG
+
+# Go one level higher than the toplevel directory to copy this script
+# over
+cd ..
+
+# Put this script in the "build" directory
+cp $0 maradns-$NEXT/update/$NEXT
+
+if [[ "$1" != "go" && "$1" != "snap" ]] ; then
+	echo OK, maradns-$NEXT built.  Confirm this compiles and	
+	echo perform basic regression before re-running this to make
+	echo the tarballs.  Once you have tested this, rerun this 
+	echo script as: $0 go
+	exit 0
+fi
+
+# Build the tarballs
+echo making new tarballs
+
+if [ "$1" == "snap" ] ; then
+	SNAP=snap-$( date +%Y%m%d )
+else
+	SNAP=$NEXT
+fi
+
+tar cjf maradns-$SNAP.tar.bz2 maradns-$NEXT
+tar czf maradns-$SNAP.tar.gz maradns-$NEXT
+
+echo using exotic compression
+tar cf maradns-$SNAP.tar maradns-$NEXT
+
+# All of the compression we actually use was originally written by 
+# Igor Pavlov for the 7-zip compression suite
+echo shrinking .gz tarball
+advdef -z -3 maradns-$SNAP.tar.gz
+
+echo lzma compression \(this will take about 5 minutes\)
+date
+# To decompress: cat file.tar.lzma | lzma d -si -so | tar xvf -
+# -d20 makes the file almost as small as -d22, but uses 1/4 of the memory
+# (only a little over one meg needed for decompression)
+lzma e maradns-$SNAP.tar maradns-$SNAP.tar.lzma -a2 -d20 -fb255
+date
+echo
+
+exit 0
+
+# The other exotic compressors can't be run in a pipeline
+
+echo 7zip compression
+date
+7za a maradns-$SNAP.tar.7z maradns-$SNAP.tar
+date
+echo
+
+echo paq6 compression \(This will take 2\-3 minutes\)
+date
+paq6v2 -2 maradns-$SNAP.tar.pq6 maradns-$SNAP.tar
+date
+echo
+
+echo rzip compression
+date
+rzip maradns-$SNAP.tar
+date
+echo

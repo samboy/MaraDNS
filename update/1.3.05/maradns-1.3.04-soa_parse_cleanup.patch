@@ -1,0 +1,27 @@
+--- maradns-1.3.05/parse/Csv2_rr_soa.c.orig	2007-04-02 00:36:09.000000000 -0500
++++ maradns-1.3.05/parse/Csv2_rr_soa.c	2007-04-02 00:36:09.000000000 -0500
+@@ -146,23 +146,7 @@
+ 	js_destroy(name);
+ 
+ 	/* Mbox label */
+-	if(csv2_get_1st(stream,csv2_is_alphanum,0) != JS_SUCCESS) {
+-		return 0;
+-	}
+-	if((name = process_mbox(stream)) == 0) {
+-		js_destroy(out);
+-		return 0;
+-	}
+-	if(csv2_convert_percent(name,zone) == 0) {
+-		js_destroy(name);
+-		js_destroy(out);
+-		return 0;
+-	}
+-	if(email_2rfc1035(name) == JS_ERROR) {
+-		js_destroy(out);
+-		js_destroy(name);
+-		return 0;
+-	}
++	name = csv2_get_mbox(stream,zone,1);
+ 	if(js_append(name,out) == JS_ERROR) {
+ 		js_destroy(name);
+ 		js_destroy(out);

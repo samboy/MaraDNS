@@ -1,0 +1,353 @@
+diff -u maradns-1.2.12.01/sqa/old-testbed/db.0.0.127.in-addr.arpa maradns-1.2.12.02/sqa/old-testbed/db.0.0.127.in-addr.arpa
+--- maradns-1.2.12.01/sqa/old-testbed/db.0.0.127.in-addr.arpa	2003-01-12 02:17:22.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/db.0.0.127.in-addr.arpa	2006-07-29 21:16:48.000000000 -0500
+@@ -6,7 +6,7 @@
+ # for this zone.
+ S%|86400|%|hostmaster@example.com.|19771108|7200|3600|604800|1800
+ N%|86400|ns1.%
+-Ans1.%|86400|127.0.0.8
++Ans1.%|86400|127.0.3.8
+ 
+ # A 'PTR' record which, while marked as unauthoritative, allows this
+ # program to work with the obsolete tool nslookup when bound on IP 127.0.0.3
+diff -u maradns-1.2.12.01/sqa/old-testbed/db.com maradns-1.2.12.02/sqa/old-testbed/db.com
+--- maradns-1.2.12.01/sqa/old-testbed/db.com	2003-01-12 02:17:35.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/db.com	2006-07-29 21:18:26.000000000 -0500
+@@ -8,7 +8,7 @@
+ Ncom.|86400|ns2.example.net.
+ 
+ # Some 'IN A' records
+-Ans2.example.net.|86400|127.0.0.2
++Ans2.example.net.|86400|127.0.3.2
+ 
+ 
+ # NS delegation
+@@ -17,7 +17,7 @@
+ #Ansbad.example.com.|86400|10.1.1.1
+ # Good in-bailiwick record
+ #Nexample.com.|86400|ns1.example.com.
+-#Ans1.example.com.|86400|127.0.0.4
++#Ans1.example.com.|86400|127.0.3.4
+ # out-of-bailiwick record
+ Nexample.com.|86400|example-com.example.org.
+ # Massive timeout (disabled)
+@@ -35,5 +35,5 @@
+ 
+ # A 'PTR' record which, while marked as unauthoritative, allows this
+ # program to work with the obsolete tool nslookup when bound on IP 127.0.0.3
+-P2.0.0.127.in-addr.arpa.|1234|ns2.example.net.
++P2.3.0.127.in-addr.arpa.|1234|ns2.example.net.
+ 
+diff -u maradns-1.2.12.01/sqa/old-testbed/db.example.com maradns-1.2.12.02/sqa/old-testbed/db.example.com
+--- maradns-1.2.12.01/sqa/old-testbed/db.example.com	2003-01-12 02:17:51.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/db.example.com	2006-07-29 21:18:49.000000000 -0500
+@@ -10,7 +10,7 @@
+ # Some 'IN A' records
+ Aexample.com.|86400|10.1.2.3
+ Amx.example.com.|86400|10.1.2.4
+-Ans1.example.com.|86400|127.0.0.4
++Ans1.example.com.|86400|127.0.3.4
+ 
+ # An 'IN MX' record
+ @example.com.|86400|10|mx.example.com.
+@@ -40,7 +40,7 @@
+ # A NS delegation chain
+ Nnslist.example.com.|86400|ns.nslist.example.com.
+ Ans.nslist.example.com.|86400|127.99.99.99
+-Ans.nslist.example.com.|86400|127.0.0.7
++Ans.nslist.example.com.|86400|127.0.3.7
+ 
+ # An 'IN TXT' record
+ Texample.com.|86400|Example.com: Buy examples of products online!
+@@ -55,5 +55,5 @@
+  
+ # A 'PTR' record which, while marked as unauthoritative, allows this
+ # program to work with the obsolete tool nslookup when bound on IP 127.0.0.3
+-#P4.0.0.127.in-addr.arpa.|1234|ns1.example.com.
++#P4.3.0.127.in-addr.arpa.|1234|ns1.example.com.
+ 
+diff -u maradns-1.2.12.01/sqa/old-testbed/db.example.org maradns-1.2.12.02/sqa/old-testbed/db.example.org
+--- maradns-1.2.12.01/sqa/old-testbed/db.example.org	2003-01-12 02:18:04.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/db.example.org	2006-07-29 21:18:56.000000000 -0500
+@@ -8,7 +8,7 @@
+ Nexample.org.|86400|ns2.example.org.
+ 
+ # Some 'IN A' records
+-Ans2.example.org.|86400|127.0.0.6
++Ans2.example.org.|86400|127.0.3.6
+ 
+ # A CNAME record
+ Ccname.example.org.|86400|www.example.com.
+@@ -18,9 +18,9 @@
+ 
+ # NS delegation
+ # Error handling testing
+-Aexample-com.example.org.|86400|127.0.0.4
++Aexample-com.example.org.|86400|127.0.3.4
+ 
+ # A 'PTR' record which, while marked as unauthoritative, allows this
+ # program to work with the obsolete tool nslookup when bound on IP 127.0.0.6
+-P6.0.0.127.in-addr.arpa.|1234|ns2.example.net.
++P6.3.0.127.in-addr.arpa.|1234|ns2.example.net.
+ 
+diff -u maradns-1.2.12.01/sqa/old-testbed/db.org maradns-1.2.12.02/sqa/old-testbed/db.org
+--- maradns-1.2.12.01/sqa/old-testbed/db.org	2003-01-12 02:18:18.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/db.org	2006-07-29 21:18:43.000000000 -0500
+@@ -8,14 +8,14 @@
+ Norg.|86400|ns1.example.org.
+ 
+ # Some 'IN A' records
+-Ans1.example.org.|86400|127.0.0.5
++Ans1.example.org.|86400|127.0.3.5
+ 
+ # NS delegation
+ # Error handling testing
+ Nexample.org.|86400|ns2.example.org.
+-Ans2.example.org.|86400|127.0.0.6
++Ans2.example.org.|86400|127.0.3.6
+ 
+ # A 'PTR' record which, while marked as unauthoritative, allows this
+ # program to work with the obsolete tool nslookup when bound on IP 127.0.0.5
+-P5.0.0.127.in-addr.arpa.|1234|ns2.example.net.
++P5.3.0.127.in-addr.arpa.|1234|ns2.example.net.
+ 
+diff -u maradns-1.2.12.01/sqa/old-testbed/db-root maradns-1.2.12.02/sqa/old-testbed/db-root
+--- maradns-1.2.12.01/sqa/old-testbed/db-root	2003-01-12 02:18:29.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/db-root	2006-07-29 21:18:34.000000000 -0500
+@@ -11,13 +11,13 @@
+ N0.0.127.in-addr.arpa.|86400|ns1.0.0.127.in-addr.arpa.
+ 
+ # Some 'IN A' records
+-Ans1.example.net.|86400|127.0.0.1
++Ans1.example.net.|86400|127.0.3.1
+ # Deliberately an address that does not exist
+-Ans2.example.net.|86400|127.0.0.2
+-Ans1.example.org.|86400|127.0.0.5
+-Ans1.0.0.127.in-addr.arpa.|86400|127.0.0.8
++Ans2.example.net.|86400|127.0.3.2
++Ans1.example.org.|86400|127.0.3.5
++Ans1.0.0.127.in-addr.arpa.|86400|127.0.3.8
+ 
+ # A 'PTR' record which, while marked as unauthoritative, allows this
+ # program to work with the obsolete tool nslookup when bound on IP 127.0.0.3
+-P1.0.0.127.in-addr.arpa.|1234|ns1.example.net.
++P1.3.0.127.in-addr.arpa.|1234|ns1.example.net.
+ 
+diff -u maradns-1.2.12.01/sqa/old-testbed/mararc maradns-1.2.12.02/sqa/old-testbed/mararc
+--- maradns-1.2.12.01/sqa/old-testbed/mararc	2001-10-16 18:44:46.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/mararc	2006-07-29 21:15:09.000000000 -0500
+@@ -6,8 +6,8 @@
+ #csv1["example.com."] = "db.example.com"
+ 
+ # The address this DNS server runs on
+- bind_address = "127.0.0.3"
+-#bind_address = "127.0.0.1"
++ bind_address = "127.0.3.3"
++#bind_address = "127.0.3.1"
+ # The directory with all of the zone files
+ chroot_dir = "/var/maradns"
+ # chroot_dir = "/home/set/maradns/zone"
+diff -u maradns-1.2.12.01/sqa/old-testbed/mararc.1 maradns-1.2.12.02/sqa/old-testbed/mararc.1
+--- maradns-1.2.12.01/sqa/old-testbed/mararc.1	2002-03-02 03:56:16.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/mararc.1	2006-07-29 21:15:23.000000000 -0500
+@@ -10,7 +10,7 @@
+ 
+ # The address this DNS server runs on
+ # bind_address = "127.0.0.3"
+-bind_address = "127.0.0.1"
++bind_address = "127.0.3.1"
+ # The directory with all of the zone files
+ chroot_dir = "/var/maradns"
+ # chroot_dir = "/home/set/maradns/zone"
+diff -u maradns-1.2.12.01/sqa/old-testbed/mararc.2 maradns-1.2.12.02/sqa/old-testbed/mararc.2
+--- maradns-1.2.12.01/sqa/old-testbed/mararc.2	2002-03-02 03:56:22.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/mararc.2	2006-07-29 21:15:30.000000000 -0500
+@@ -7,7 +7,7 @@
+ 
+ # The address this DNS server runs on
+ # bind_address = "127.0.0.3"
+-bind_address = "127.0.0.2"
++bind_address = "127.0.3.2"
+ # The directory with all of the zone files
+ chroot_dir = "/var/maradns"
+ # chroot_dir = "/home/set/maradns/zone"
+diff -u maradns-1.2.12.01/sqa/old-testbed/mararc.4 maradns-1.2.12.02/sqa/old-testbed/mararc.4
+--- maradns-1.2.12.01/sqa/old-testbed/mararc.4	2002-03-02 03:56:30.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/mararc.4	2006-07-29 21:15:45.000000000 -0500
+@@ -7,7 +7,7 @@
+ 
+ # The address this DNS server runs on
+ # bind_address = "127.0.0.3"
+-bind_address = "127.0.0.4"
++bind_address = "127.0.3.4"
+ # The directory with all of the zone files
+ chroot_dir = "/var/maradns"
+ # chroot_dir = "/home/set/maradns/zone"
+diff -u maradns-1.2.12.01/sqa/old-testbed/mararc.5 maradns-1.2.12.02/sqa/old-testbed/mararc.5
+--- maradns-1.2.12.01/sqa/old-testbed/mararc.5	2002-03-02 03:56:36.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/mararc.5	2006-07-29 21:15:52.000000000 -0500
+@@ -7,7 +7,7 @@
+ 
+ # The address this DNS server runs on
+ # bind_address = "127.0.0.3"
+-bind_address = "127.0.0.5"
++bind_address = "127.0.3.5"
+ # The directory with all of the zone files
+ chroot_dir = "/var/maradns"
+ # chroot_dir = "/home/set/maradns/zone"
+diff -u maradns-1.2.12.01/sqa/old-testbed/mararc.6 maradns-1.2.12.02/sqa/old-testbed/mararc.6
+--- maradns-1.2.12.01/sqa/old-testbed/mararc.6	2002-03-02 03:56:43.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/mararc.6	2006-07-29 21:15:58.000000000 -0500
+@@ -7,7 +7,7 @@
+ 
+ # The address this DNS server runs on
+ # bind_address = "127.0.0.3"
+-bind_address = "127.0.0.6"
++bind_address = "127.0.3.6"
+ # The directory with all of the zone files
+ chroot_dir = "/var/maradns"
+ # chroot_dir = "/home/set/maradns/zone"
+diff -u maradns-1.2.12.01/sqa/old-testbed/mararc.7 maradns-1.2.12.02/sqa/old-testbed/mararc.7
+--- maradns-1.2.12.01/sqa/old-testbed/mararc.7	2002-03-02 03:56:49.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/mararc.7	2006-07-29 21:16:09.000000000 -0500
+@@ -7,7 +7,7 @@
+ 
+ # The address this DNS server runs on
+ # bind_address = "127.0.0.3"
+-bind_address = "127.0.0.7"
++bind_address = "127.0.3.7"
+ # The directory with all of the zone files
+ chroot_dir = "/var/maradns"
+ # chroot_dir = "/home/set/maradns/zone"
+diff -u maradns-1.2.12.01/sqa/old-testbed/mararc.8 maradns-1.2.12.02/sqa/old-testbed/mararc.8
+--- maradns-1.2.12.01/sqa/old-testbed/mararc.8	2002-12-25 20:21:01.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/mararc.8	2006-07-29 21:16:16.000000000 -0500
+@@ -7,7 +7,7 @@
+ 
+ # The address this DNS server runs on
+ # bind_address = "127.0.0.3"
+-bind_address = "127.0.0.8"
++bind_address = "127.0.3.8"
+ # The directory with all of the zone files
+ chroot_dir = "/var/maradns"
+ # chroot_dir = "/home/set/maradns/zone"
+diff -u maradns-Q.20060805.1/sqa/old-testbed/cache.stress.test maradns-1.2.12.02/sqa/old-testbed/cache.stress.test
+--- maradns-Q.20060805.1/sqa/old-testbed/cache.stress.test	2003-01-17 22:19:43.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/cache.stress.test	2006-08-05 14:59:12.000000000 -0500
+@@ -13,13 +13,13 @@
+     for(a=1;a<='$NUM';a++)
+         {
+ 	# A records 
+-	print "askmara A"a".example.com. > /dev/null"
++	print "askmara A"a".example.com. 127.0.3.3 > /dev/null"
+ 	# CNAME records
+-	print "askmara Ac"a".example.com. > /dev/null"
++	print "askmara Ac"a".example.com. 127.0.3.3 > /dev/null"
+ 	# CNAME records which point nowhere (SOA caching)
+-	print "askmara Ad"a".example.com. > /dev/null"
++	print "askmara Ad"a".example.com. 127.0.3.3 > /dev/null"
+ 	# NS records which point nowhere
+-	#print "../sendudp Asub.r"a".example.com. > /dev/null"
++	#print "../sendudp Asub.r"a".example.com. 127.0.3.3 > /dev/null"
+ 	print "echo "a" | tr '\''\\012'\'' '\''\\015'\''"
+ 	}
+     }' | sh
+diff -u maradns-Q.20060805.1/sqa/old-testbed/cache.stress.test.2 maradns-1.2.12.02/sqa/old-testbed/cache.stress.test.2
+--- maradns-Q.20060805.1/sqa/old-testbed/cache.stress.test.2	2001-11-16 21:04:13.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/cache.stress.test.2	2006-08-05 14:59:56.000000000 -0500
+@@ -2,7 +2,7 @@
+ 
+ # This attempts to recreate the maradns crashes
+ awk 'BEGIN{for(a=0;a<2500;a++){
+-    print "askmara Atest.example.org. > /dev/null &";
++    print "askmara Atest.example.org. 127.0.3.3 > /dev/null &";
+     print "echo "a" | tr '\''\\012'\'' '\''\\015'\''"
+     }
+ }' | sh
+diff -u maradns-Q.20060805.1/sqa/old-testbed/cache.stress.test.3 maradns-1.2.12.02/sqa/old-testbed/cache.stress.test.3
+--- maradns-Q.20060805.1/sqa/old-testbed/cache.stress.test.3	2001-11-16 21:04:48.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/cache.stress.test.3	2006-08-05 15:00:10.000000000 -0500
+@@ -13,9 +13,9 @@
+     for(a=1;a<='$NUM';a++)
+         {
+         for(b=0;b<1000;b++) {
+-	    print "askmara A"a".example.com. > /dev/null &"
+-	    print "askmara Ac"a".example.com. > /dev/null &"
+-	    print "askmara Ad"a".example.com. > /dev/null &"
++	    print "askmara A"a".example.com. 127.0.3.3 > /dev/null &"
++	    print "askmara Ac"a".example.com. 127.0.3.3 > /dev/null &"
++	    print "askmara Ad"a".example.com. 127.0.3.3 > /dev/null &"
+ 	    print "echo "a" "b" \"    \"  | tr '\''\\012'\'' '\''\\015'\''"
+ 	    }
+ 	}
+diff -u maradns-Q.20060805.1/sqa/old-testbed/cache.stress.test.4 maradns-1.2.12.02/sqa/old-testbed/cache.stress.test.4
+--- maradns-Q.20060805.1/sqa/old-testbed/cache.stress.test.4	2002-02-25 02:58:30.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/cache.stress.test.4	2006-08-05 15:00:54.000000000 -0500
+@@ -13,11 +13,11 @@
+     for(a=1;a<='$NUM';a++)
+         {
+ 	# A records 
+-	print "askmara A"a".example.com. > /dev/null"
++	print "askmara A"a".example.com. 127.0.3.3 > /dev/null"
+ 	# CNAME records
+-	print "askmara Ac"a".example.com. > /dev/null"
++	print "askmara Ac"a".example.com. 127.0.3.3 > /dev/null"
+ 	# CNAME records which point nowhere (SOA caching)
+-	print "askmara Ad"a".example.com. > /dev/null"
++	print "askmara Ad"a".example.com. 127.0.3.3 > /dev/null"
+ 	print "echo "a" | tr '\''\\012'\'' '\''\\015'\''"
+ 	}
+     }' | sh
+diff -u maradns-Q.20060805.1/sqa/old-testbed/cache.stress.test.sendudp maradns-1.2.12.02/sqa/old-testbed/cache.stress.test.sendudp
+--- maradns-Q.20060805.1/sqa/old-testbed/cache.stress.test.sendudp	2002-02-25 02:59:01.000000000 -0600
++++ maradns-1.2.12.02/sqa/old-testbed/cache.stress.test.sendudp	2006-08-05 15:00:31.000000000 -0500
+@@ -13,13 +13,13 @@
+     for(a=1;a<='$NUM';a++)
+         {
+ 	# A records 
+-	print "../sendudp A"a".example.com. > /dev/null"
++	print "../sendudp A"a".example.com. 127.0.3.3 > /dev/null"
+ 	# CNAME records
+-	print "../sendudp Ac"a".example.com. > /dev/null"
++	print "../sendudp Ac"a".example.com. 127.0.3.3 > /dev/null"
+ 	# CNAME records which point nowhere (SOA caching)
+-	print "../sendudp Ad"a".example.com. > /dev/null"
++	print "../sendudp Ad"a".example.com. 127.0.3.3 > /dev/null"
+ 	# NS records which point nowhere
+-	print "../sendudp Asub.r"a".example.com. > /dev/null"
++	print "../sendudp Asub.r"a".example.com. 127.0.3.3 > /dev/null"
+ 	print "echo "a" | tr '\''\\012'\'' '\''\\015'\''"
+ 	}
+     }' | sh
+--- maradns-Q.20060805.1/sqa/old-testbed/mararc	2006-08-05 13:17:33.000000000 -0500
++++ maradns-1.2.12.02/sqa/old-testbed/mararc	2006-08-05 15:06:04.000000000 -0500
+@@ -72,3 +72,6 @@
+ 
+ zone_transfer_acl = "192.168.42.0/24"
+ 
++recursive_acl = "127.0.0.1/8"
++root_servers = {}
++root_servers["."] = "127.0.3.1"
+--- maradns-1.2.12.02/sqa/old-testbed/run.testbed.orig	2006-08-13 23:24:55.000000000 -0500
++++ maradns-1.2.12.02/sqa/old-testbed/run.testbed	2006-08-13 23:27:21.000000000 -0500
+@@ -1,13 +1,13 @@
+ #!/bin/bash
+ 
+-maradns -f /etc/mararc.1 &
+-maradns -f /etc/mararc.2 &
++../../server/maradns -f /etc/mararc.1 &
++../../server/maradns -f /etc/mararc.2 &
+ # .3 is reserved for the recursive server
+-maradns -f /etc/mararc.4 &
+-maradns -f /etc/mararc.5 &
+-maradns -f /etc/mararc.6 &
+-maradns -f /etc/mararc.7 &
+-maradns -f /etc/mararc.8 &
++../../server/maradns -f /etc/mararc.4 &
++../../server/maradns -f /etc/mararc.5 &
++../../server/maradns -f /etc/mararc.6 &
++../../server/maradns -f /etc/mararc.7 &
++../../server/maradns -f /etc/mararc.8 &
+ # Dead host simulated
+ #../dead_host_simulate 127.240.240.241 &
+ #../dead_host_simulate 127.240.240.242 &

@@ -1,0 +1,106 @@
+This makes ANY queries case-insensitive.
+
+I would like to thank Kyler Laird for pointing out this issue.
+
+*** maradns-1.2.12.04/server/MaraDNS.c.orig	Wed Nov 22 09:19:21 2006
+--- maradns-1.2.12.04/server/MaraDNS.c	Wed Nov 22 09:24:50 2006
+***************
+*** 1299,1305 ****
+  
+  int udpany(int id,int sock,struct sockaddr_in *client, js_string *query,
+             int rr_set, mhash *bighash, int rd_val, conn *ect, int
+! 	   called_from_recursive) {
+      js_string *most, *ns, *ar; /* The answers, the ns records, the ar records*/
+  
+      js_string *starwhitis;
+--- 1299,1305 ----
+  
+  int udpany(int id,int sock,struct sockaddr_in *client, js_string *query,
+             int rr_set, mhash *bighash, int rd_val, conn *ect, int
+! 	   called_from_recursive, js_string *origq) {
+      js_string *most, *ns, *ar; /* The answers, the ns records, the ar records*/
+  
+      js_string *starwhitis;
+***************
+*** 1336,1345 ****
+          goto giveerror;
+  
+      /* Append the question to the answer */
+!     if(js_append(query,most) == JS_ERROR) {
+!         goto giveerror;
+!         }
+! 
+      /* Append the class (in) to the answer */
+      if(js_adduint16(most,1) == JS_ERROR) {
+          goto giveerror;
+--- 1336,1350 ----
+          goto giveerror;
+  
+      /* Append the question to the answer */
+!     if(origq == 0) {
+!         if(js_append(query,most) == JS_ERROR) {
+!             goto giveerror;
+!             }
+!     } else {
+!         if(js_append(origq,most) == JS_ERROR) {
+!             goto giveerror;
+!             }
+!     }
+      /* Append the class (in) to the answer */
+      if(js_adduint16(most,1) == JS_ERROR) {
+          goto giveerror;
+***************
+*** 3131,3138 ****
+  
+      /* Handle the case of RR_ANY */
+      if(qtype == RR_ANY) { 
+!         result_code = udpany(header.id,sock,0,origq,rrany_set,bighash,
+! 			desires_recursion,ect,0);
+          if(result_code == JS_SUCCESS) {
+              js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+              return JS_SUCCESS;
+--- 3136,3143 ----
+  
+      /* Handle the case of RR_ANY */
+      if(qtype == RR_ANY) { 
+!         result_code = udpany(header.id,sock,0,lookfor,rrany_set,bighash,
+! 			desires_recursion,ect,0,origq);
+          if(result_code == JS_SUCCESS) {
+              js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+              return JS_SUCCESS;
+*** maradns-1.2.12.04/server/recursive.c.orig	Wed Nov 22 09:24:55 2006
+--- maradns-1.2.12.04/server/recursive.c	Wed Nov 22 09:25:22 2006
+***************
+*** 124,130 ****
+  /* Function prototypes so gcc doesn't complain when -Wall is set */
+  extern int udpany(int id,int sock,struct sockaddr_in *client,
+  		  js_string *query,int rr_set, mhash *bighash, int rd_val,
+! 		  conn *ect, int called_from_recursive);
+  extern int udperror(int sock,js_string *raw, struct sockaddr_in *from, 
+                      js_string *question,
+  		    int error,char *why, int min_log_level, int rd_val, 
+--- 124,130 ----
+  /* Function prototypes so gcc doesn't complain when -Wall is set */
+  extern int udpany(int id,int sock,struct sockaddr_in *client,
+  		  js_string *query,int rr_set, mhash *bighash, int rd_val,
+! 		  conn *ect, int called_from_recursive, js_string *origq);
+  extern int udperror(int sock,js_string *raw, struct sockaddr_in *from, 
+                      js_string *question,
+  		    int error,char *why, int min_log_level, int rd_val, 
+***************
+*** 2729,2735 ****
+      }
+          change_rtype(query,RR_ANY);
+          /* If something was found, we have success */
+!         if(udpany(id,sock,&client,query,3,dnscache,1,0,1) == JS_SUCCESS) {
+              js_destroy(lower);
+              return JS_SUCCESS;
+              }
+--- 2729,2735 ----
+      }
+          change_rtype(query,RR_ANY);
+          /* If something was found, we have success */
+!         if(udpany(id,sock,&client,query,3,dnscache,1,0,1,0) == JS_SUCCESS) {
+              js_destroy(lower);
+              return JS_SUCCESS;
+              }

@@ -1,0 +1,67 @@
+--- maradns-1.2.05/doc/en/source/changelog.embed	2006-02-21 01:32:16.000000000 -0800
++++ maradns-1.2.06/doc/en/source/changelog.embed	2006-03-10 01:01:55.000000000 -0800
+@@ -1,5 +1,30 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.06:
++This is a testing (possibly unstable) release of MaraDNS.
++<blockquote>
++<ul>
++<li>Many minor updates to the documentation.
++<li>Web page HTML/CSS updated to look better in MSIE 6.
++<li>New mararc variable, <tt>handle_noreply</tt>, which determines how
++    to inform the DNS client that no remote servers could be contacted
++    when trying to resolve a host name.
++<li>It is now possible to send DNS error messages via the <tt>udperror()</tt>
++    function again.
++<li>Some minor update to how log messages are output.
++</ul>
++(2006.03.10)
++</blockquote>
++
++<p>maradns-1.2.03.4:
++<blockquote>
++<ul>
++<li>It is now possible to send DNS error messages via the <tt>udperror()</tt>
++    function again.
++</ul>
++(2006.03.03)
++</blockquote>
++
+ <p>maradns-1.2.05:
+ <p>
+ This is a testing (possibly unstable) release of MaraDNS.
+@@ -8,7 +33,7 @@
+ <li>Added faq entry about setting <tt>upstream_servers</tt>
+ <li>Removed three unimplemented (or never documented and disabled) 
+     <tt>mararc</tt> variables: <tt>tuzona_inetd</tt>, 
+-    <tt>win9x_service<tt>, and <tt>resurrections<tt>.
++    <tt>win9x_service</tt>, and <tt>resurrections</tt>.
+ <li>Out-of-bailiwick authoritative records now no longer have an
+     authority section.
+ <li>New csv2 record type "FQDN4"; this is an A record which
+@@ -28,6 +53,15 @@
+ (2006.02.21)
+ </blockquote>
+ 
++<p>maradns-1.2.03.3:
++<blockquote>
++<ul>
++<li>MaraDNS 1.2.04 Cygwin fix patch applied to the stable branch
++<li>FAQ updated to tell people how to use <tt>upstream_servers</tt>
++</ul>
++(2006.02.10)
++</blockquote>
++
+ <p>maradns-1.2.04:
+ <p>
+ This is a testing (potentially unstable) release of MaraDNS.
+@@ -2616,7 +2650,7 @@
+ <p>maradns-0.8.03:
+ <blockquote><p>
+ Solaris support added, but does not fully work, added disclaimer, improved 
+-code which drops group privledges.
++code which drops group privileges.
+ (2001.07.13)
+ </blockquote><p>
+ 

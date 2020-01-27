@@ -1,0 +1,116 @@
+--- maradns-1.2.03.1/build/rpm.mararc	2005-02-10 13:03:51.000000000 -0800
++++ maradns-1.2.04/build/rpm.mararc	2006-01-22 23:46:04.000000000 -0800
+@@ -1,76 +1,42 @@
+-#!/usr/sbin/maradns -f
+-# Example simplified mararc file.  
+-
+-# The address this DNS server runs on.  The IP address "0.0.0.0" binds
+-# to all addresses that a given machine has; note that this can result
+-# in problems in certain specialized cases.  See the FAQ for details.
+-bind_address = "0.0.0.0"
++# Default mararc file for rpm build of MaraDNS.
++# This only shows a subset of MaraDNS' features needed to be an
++# authoritative and recursive name server.  Look at 
++# detailed/example_full_mararc for an example showing most of 
++# the features that MaraDNS has.
++
++# Note that this example mararc file will not actually do anything
++# without modification.
++# Look in the doc/en/examples directory for a working example 
++# authoritative nameserver, and a working recursive nameserver.
++
++# The address this DNS server runs on.  If you want to bind 
++# to multiple addresses, separate them with a comma like this:
++# "10.1.2.3, 10.1.2.4, 127.0.0.1"
++ipv4_bind_addresses = "127.0.0.1"
+ # The directory with all of the zone files
+ chroot_dir = "/etc/maradns"
+ 
+-# Initialize the IP aliases, which are used by the list of root name servers,
+-# and the ACL of who gets to perform recursive queries
+-ipv4_alias = {}
+-
+-# Initialize the csv1 list (a list of zone files)
+-csv1 = {}
+-
+-# Here is an example setup which has MaraDNS being authoritative for
+-# the domain example.com.  Change this and add lines if you need to be
+-# authoritative for other domains.
+-csv1["example.com."] = "db.example.com"
+-
+-# Various sets of root name servers
+-# Note: Netmasks can exist, but are ignored when specifying root name server
+-
+-# ICANN: the most common and most controversial root name server
+-# http://www.icann.org
+-ipv4_alias["icann"] = "198.41.0.4,128.9.0.107,192.33.4.12,128.8.10.90,192.203.230.10,192.5.5.241,192.112.36.4,128.63.2.53,192.36.148.17,198.41.0.10,193.0.14.129,198.32.64.12,202.12.27.33"
+-
+-# OSRC: http://www.open-rsc.org/
+-ipv4_alias["osrc"] = "199.166.24.1,205.189.73.102,199.166.24.3,204.80.125.130,207.126.103.16,195.117.6.10,199.166.31.3,199.166.31.250,199.5.157.128,205.189.73.10,204.57.55.100,213.196.2.97"
+-
+-# Other root servers are in the full example mararc file, included with the
+-# MaraDNS distribution
+-
+-# Recursive ACL: Who is allowd to perform recursive queries.  
+-# The following value allows people on NAT networks and on the same machine
+-# to perform recursive queries
+-recursive_acl = "127.0.0.0/8,192.168.0.0/16,10.0.0.0/8"
+-
+-# Random seed file: The file from which we read 16 bytes from to get the
+-# 128-bit random seed.  This is ideally a file which is a good source
+-# of random numbers, but can also be a fixed file if your OS does not have
+-# a decent random number generator (make sure the contents of that file is
+-# random and with 600 perms, owned by root, since we read the file *before*
+-# dropping root privileges)
+-
+-random_seed_file = "/dev/urandom"
+-
+-# The root servers which we use when making recursive queries.
+-
+-# The following line must be uncommented to enable recursive queries
+-root_servers = {}
+-
+-# You can choose which set of root servers to use.  Current values (set above)
+-# are: icann, and osrc 
+-# Other alternate registries are listed in the example_full_mararc file
+-root_servers["."] = "icann"
+-
+-# We can also blacklist known spam-friendly DNS servers, so that MaraDNS 
+-# refuses to query known spam-friendly DNS servers
+-
+-# As of August 12, 2001, azmalink.net is a known spam-friendly DNS 
+-# provider (see doc/detailed/spammers/azmalink.net for details).
+-# Note that this is based on IPs, and azmalink.net constantly
+-# changes IPs (as they constantly have to change ISPs)
+-# Updated on 2002/10/11 to reflect azmalink's current ISP
+-ipv4_alias["azmalink"] = "12.164.194.0/24"
+-
+-# As of September 20, 2001, hiddenonline.net is a known spam-friendly
+-# DNS provider (see doc/detailed/spammers/hiddenonline for details).
+-ipv4_alias["hiddenonline"] = "65.107.225.0/24"
+-spammers = "azmalink,hiddenonline"
++# The following line enables recursion on just the loopback interface
++recursive_acl = "127.0.0.1/8"
+ 
+-# And that does it for the caching at this point
++# If you're on a slow network, you may need to increase this value for
++# MaraDNS to resolve names
++timeout_seconds = 2
++
++# The various zones a MaraDNS server hosts; these zones are just examples
++
++# When running in authoritative mode, we must initialize the csv2 hash, 
++# or MaraDNS will be unable to load any csv2 zone files
++csv2 = {}
++
++# This is just to show the format of the file
++# Note the one zone is commented out.  Any line that starts with 
++# a '#' is not read by the parser.  Remove the leading '#' to 
++# enable any line that is commented out
++
++# The following line (commented out) tells MaraDNS to look at the 
++# file db.example.net to get the zone for example.net
++csv2["example.net."] = "db.example.net"
++# Naturally, we can have multiple zone files
++#csv2["example.com."] = "db.example.com"
+ 

@@ -1,0 +1,113 @@
+diff -ur maradns-1.2.11/parse/Csv2_parse.c maradns-px/parse/Csv2_parse.c
+--- maradns-1.2.11/parse/Csv2_parse.c	2006-07-15 17:06:06.000000000 -0500
++++ maradns-px/parse/Csv2_parse.c	2006-07-15 17:08:09.000000000 -0500
+@@ -948,6 +948,10 @@
+ 	if(js_qissame("nsap-ptr",text_rtype) == 1) {
+ 		return RR_NSAP_PTR;
+ 	}
++	/* Obscure RFC2163 RR */
++	if(js_qissame("px",text_rtype) == 1) {
++		return RR_PX;
++	}
+ 	return -1;
+ }
+ 
+@@ -1027,12 +1031,16 @@
+ 	return csv2_get_hostname(stream,0,1);
+ }
+ 
+-/* Get a mx record; 0 is error */
++/* Get a mx record; 0 is error.  Pref makes this record more flexible;
++ * if this number is 0 or higher, instead of reading the pref from the
++ * zone file, the pref is set to the value given the function.  If pref
++ * is -1, this is treated as a normal MX record.  Is pref is -2, we read
++ * two instead of one host label (for the obscure PX record) */
+ 
+ js_string *csv2_get_mx(csv2_read *stream, js_string *zone, int pref) {
+ 	js_string *out;
+-	js_string *name;
+ 	int num;
++	int hlabels = 1;
+ 
+ 	/* Get the priority */
+ 	if(pref < 0) {
+@@ -1050,22 +1058,30 @@
+ 		return 0;
+ 	}
+ 
+-	/* And the MX host name */
+-	if(csv2_get_1st(stream,csv2_is_dchar,0) != JS_SUCCESS) {
+-		js_destroy(out); 
+-		return 0;
++	if(pref == -2) {
++		hlabels = 2;
+ 	}
+-	if((name = csv2_get_hostname(stream,zone,3)) == 0) {
+-		js_destroy(out); 
+-		return 0;
+-	}
+-	if(js_append(name,out) == JS_ERROR) {
++
++	/* And the MX host name */
++	while(hlabels > 0) {
++		js_string *name;
++		if(csv2_get_1st(stream,csv2_is_dchar,0) != JS_SUCCESS) {
++			js_destroy(out); 
++			return 0;
++		}
++		if((name = csv2_get_hostname(stream,zone,3)) == 0) {
++			js_destroy(out); 
++			return 0;
++		}
++		if(js_append(name,out) == JS_ERROR) {
++			js_destroy(name);
++			js_destroy(out);
++			return 0;
++		}
+ 		js_destroy(name);
+-		js_destroy(out);
+-		return 0;
++		hlabels--;
+ 	}
+ 
+-	js_destroy(name);
+ 	return out;
+ 
+ }
+@@ -1296,6 +1312,9 @@
+ 		case RR_NSAP:
+ 			rddata = csv2_get_hex(stream);
+ 			break;
++		case RR_PX:
++			rddata = csv2_get_mx(stream,zone,-2);
++			break;
+ 		default:
+ 			/* RAW rtype */
+ 			if(rtype >= 100000 && rtype <= 165535) {
+--- maradns-1.2.11/doc/en/source/csv2.ej	2006-07-15 17:06:06.000000000 -0500
++++ maradns-px/doc/en/source/csv2.ej	2006-07-15 17:16:20.000000000 -0500
+@@ -104,7 +104,7 @@
+ please refer to RFC 2782.  Example:
+ 
+ <pre>
+-_http._tcp.% srv 0 0 80 a.%
++_http._tcp.% SRV 0 0 80 a.%
+ </pre>
+ 
+ <h2>NS</h2>
+@@ -379,6 +379,15 @@
+ example.net. NSAP-PTR nsap.example.net.
+ </pre>
+ 
++<h2>PX</h2>
++
++The PX RR is an obscure RR described in RFC2163.  A PX record looks like
++this in a CSV2 zone file:
++
++<pre>
++example.net. PX 15 px1.example.net. px2.example.net.
++</pre>
++
+ <h1>EXAMPLE ZONE FILE</h1>
+ 
+ <pre>

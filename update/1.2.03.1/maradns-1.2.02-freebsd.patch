@@ -1,0 +1,13 @@
+Have MaraDNS compile with optimization level 2 on FreeBSD.
+
+--- maradns-1.2.02/build/Makefile.freebsd	2006-01-01 12:00:26.000000000 -0800
++++ maradns-1.2.03/build/Makefile.freebsd	2006-01-12 10:18:09.000000000 -0800
+@@ -27,7 +27,7 @@
+ Q="DEFINES=-DSELECT_PROBLEM"
+ 
+ # FreeBSD needs some special flags to compile MaraDNS
+-CC="cc -O -pipe -D_THREAD_SAFE -pthread"
++CC="cc -O2 -Wall -pipe -D_THREAD_SAFE -pthread"
+ M=CC=$(CC) 
+ V="VERSION=$(VERSION)"
+ 

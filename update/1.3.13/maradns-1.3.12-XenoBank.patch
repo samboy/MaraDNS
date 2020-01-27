@@ -1,0 +1,264 @@
+--- maradns-1.3.12/parse/ParseMaraRc.c	2008-09-09 06:40:20.000000000 -0500
++++ maradns-1.3.13/parse/ParseMaraRc.c	2009-02-02 12:33:14.000000000 -0600
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2007 Sam Trenholme
++/* Copyright (c) 2002-2009 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -31,7 +31,7 @@
+ 
+ /* Keywords that are non-dictionary strings in Mara's rc file */
+ 
+-#define KEYCOUNT 54
++#define KEYCOUNT 55
+ 
+ char *keywords[KEYCOUNT] = {
+         "bind_address", /* IPv4 Addresses to bind to (old name) */
+@@ -140,6 +140,9 @@
+                                  * is allowed to bind to */
+         "max_mem", /* The maximum amount of memory we allow MaraDNS to
+                     * allocate, in kilobytes */
++        "notthere_ip", /* The IP to give users when they try to recursively
++                        * query a host that is not there or isn't responding
++                        */
+         "zone_transfer_acl" /* ACL of IPs allowed to perform zone transfers */
+         };
+ 
+--- maradns-1.3.12/server/MaraDNS.c	2008-09-09 06:40:20.000000000 -0500
++++ maradns-1.3.13/server/MaraDNS.c	2009-02-02 12:44:20.000000000 -0600
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2008 Sam Trenholme
++/* Copyright (c) 2002-2009 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -147,6 +147,11 @@
+ 
+ int dns_records_served = 0; /* The number of DNS records we are serving */
+ 
++js_string *notthere_ip = 0; /* The Class + TTL (0) + Rdlength (4)
++                             * + IP (The IP the user wants) for synthetic
++                             * IPs when they mistype a domain name or some
++                             * such (Sponsored by XeroBank). */
++
+ /* A list of who is and who is not allowed to make recursive DNS queries */
+ ipv4pair recurse_acl[512];
+ /* A list of the ipv4 IP addresses we bind MaraDNS to (the netmask portion is
+@@ -353,6 +358,57 @@
+     exit(3);
+     }
+ 
++/* This function prepares the notthere_ip string so that it we can quickly
++ * make synthetic IPs.  Basically, the string is most of the DNS header and
++ * data for the generated synthetic IP, in this form:
++ *
++ * Dname: 2-byte compression pointer to question (0xc00c)
++ * Class (16-bit): 1 (Internet)
++ * TTL: 0 (Not to be cached)
++ * Rdlength: 4 (4-byte IP)
++ * Rddata: The dotted-decimal IP given to the function converted in to raw
++ *         binary form.
++ *
++ * Input: A js_string containing the dotted-decimal IP we will convert
++ * Output: A js_string containing the above raw data
++ */
++
++js_string *make_notthere_ip(js_string *ddip) {
++        js_string *out = 0;
++        js_string *ip = 0;
++        out = js_create(19,1);
++        if(out == 0) {
++                return 0;
++        }
++        ip = js_create(10,1);
++        if(ip == 0) {
++                js_destroy(out);
++                return 0;
++        }
++        if(js_adduint16(out,0xc00c) == JS_ERROR || /* Hostname (compressed) */
++           js_adduint16(out,1) == JS_ERROR || /* TYPE (A) */
++           js_adduint16(out,1) == JS_ERROR || /* CLASS */
++           js_adduint16(out,0) == JS_ERROR || /* TTL pt. 1 */
++           js_adduint16(out,0) == JS_ERROR || /* TTL pt. 2 */
++           js_adduint16(out,4) == JS_ERROR) { /* Rdlength */
++                js_destroy(out);
++                js_destroy(ip);
++                return 0;
++        }
++        if(ddip_2_ip(ddip,ip,0) == JS_ERROR) {
++                js_destroy(out);
++                js_destroy(ip);
++                return 0;
++        }
++        if(js_append(ip,out) == JS_ERROR) {
++                js_destroy(out);
++                js_destroy(ip);
++                return 0;
++        }
++        js_destroy(ip);
++        return out;
++}
++
+ /* Calculate the TTL age given the expire time (absolute time) and
+    the ttl (relative time)
+    Input: Exprire time, TTL in question
+@@ -1717,6 +1773,51 @@
+ 
+     }
+ 
++/* Create a bogus 0-TTL ip answer if we give out these answers instead
++ * of SOA answers/NXDOMAINS for non-existant addresses */
++
++int make_notthere_reply(int id, int sock, struct sockaddr_in *client,
++                        js_string *query, int rd_val, conn *ect) {
++        js_string *most;
++        q_header header;
++        int len_inet = sizeof(struct sockaddr);
++
++        init_header(&header);
++        header.rd = rd_val; /* RDBUG make_notthere_reply */
++        header.id = id;
++        header.qr = 1;
++        header.opcode = 0;
++        header.tc = 0;
++        header.ra = rd_val;
++        header.z = 0;
++        header.rcode = 0; /* We "found" something */
++        /* We return just a single 0-ttl IP */
++        header.qdcount = 1; /* Echo the question in the answer */
++        header.ancount = 1;
++        header.nscount = 0;
++        header.arcount = 0;
++        if((most = js_create(520,1)) == 0) {
++                return JS_ERROR;
++        }
++        make_hdr(&header,most);
++        /* Question */
++        js_append(query,most);
++        js_adduint16(most,1); /* Class: 1 */
++        /* Answer */
++        js_append(notthere_ip,most);
++
++        /* Send answer over UDP */
++        if(ect == 0) {
++                sendto(sock,most->string,most->unit_count,0,
++                        (struct sockaddr *)client,len_inet);
++        } else {
++                mara_send(ect,sock,most);
++        }
++
++        js_destroy(most);
++        return JS_SUCCESS;
++}
++
+ /* If we have a NXDOMAIN, deliver that record on the udp packet.
+  *        Input: where: A pointer to the rr in question (the SOA record),
+  *
+@@ -1771,6 +1872,19 @@
+         always_not_there = 4;
+     }
+ 
++    if(js_has_sanity(query) == JS_ERROR) {
++        return JS_ERROR;
++        }
++    first_rr_type = get_rtype(query);
++
++    /* See if notthere_ip is set, they are using recursion, and
++     * that they want an IP */
++    if(notthere_ip != 0 && (recursive_call & 1) == 1 && first_rr_type == 1) {
++                /* If so, give them a synthetic IP reply */
++                return make_notthere_reply(id, sock, client, query, rd_val,
++                                           ect);
++    }
++
+     /* Initialize the js_string objects */
+     if((most = js_create(1024,1)) == 0)
+         return JS_ERROR;
+@@ -1803,10 +1917,7 @@
+     if(js_has_sanity(where->data) == JS_ERROR) {
+         goto giveerror;
+         }
+-    if(js_has_sanity(query) == JS_ERROR) {
+-        goto giveerror;
+-        }
+-    first_rr_type = get_rtype(query);
++
+ 
+     /* We have to add this header here--authoritative depends on the
+        authorative status of the first record we find */
+@@ -3924,6 +4035,17 @@
+     init_rlog_level(log_level);
+ #endif
+ 
++    /* If they want a synthetic IP given when the recursive resolver would
++     * otherwise give a SOA "not there" record (or when it's impossible to
++     * contact an upstream_server if handle_noreply is appropriately set),
++     * prepare most of the synthetic answer we will give them. */
++    verbstr = read_string_kvar("notthere_ip");
++    if(verbstr != 0) {
++        notthere_ip = make_notthere_ip(verbstr);
++        js_destroy(verbstr);
++    }
++    verbstr = 0;
++
+     /* Determine if we will handle star records the way BIND does:
+        . If a non-A record for foo.example.com exists
+        . And an A record for *.example.com exists
+--- maradns-1.3.12/doc/en/source/mararc.ej	2008-03-24 09:52:27.000000000 -0600
++++ maradns-1.3.13/doc/en/source/mararc.ej	2009-02-02 12:33:13.000000000 -0600
+@@ -537,8 +537,9 @@
+ 
+ If this is set to 1, a "server fail" message will be sent to the DNS client.
+ 
+-If this is set to 2, a "this host does not exist" message will be sent
+-to the DNS client.
++If this is set to 2, either a "this host does not exist" message will be sent
++to the DNS client if notthere_ip is not set, or the IP specified in 
++notthere_ip will be sent if set.
+ 
+ The default value for this is 1.
+ 
+@@ -713,6 +714,32 @@
+ should be passed on with a TTL of zero.  This, unfortunately, breaks some
+ stub resolvers (such as Mozilla's stub resolver).
+ 
++<h2>notthere_ip</h2>
++
++This parameter, if set, causes MaraDNS' recursive resolver to return a
++0-TTL synthetic IP for non-existent hostnames instead of a "this host does
++not exist" DNS reply.  The IP returned is the value for this parameter.
++<p>
++
++For example, if one wishes to send the IP 10.11.12.13 to clients whenever
++MaraDNS' recursive resolver gets a "this host does not exist" reply, set
++notthere_ip thusly:
++<p>
++
++notthere_ip = "10.11.12.13"
++<p>
++
++If one also wishes to have this IP returned when there is no reply
++from remote DNS servers, set handle_noreply thusly:
++<p>
++
++handle_noreply = 2
++<p>
++
++This parameter only affects the recursive resolver, and doesn't affect
++authoritative zones that MaraDNS serves.  This parameter only affects
++A queries, and doesn't affect other DNS query types.
++
+ <h2>random_seed_file</h2>
+ random_seed_file:  The file from which we read 16 bytes from to
+ get the 128-bit seed for the secure pseudo random number generator.
+--- maradns-1.3.12/sqa/regressions/do.tests	2008-03-24 09:52:27.000000000 -0600
++++ maradns-1.3.13/sqa/regressions/do.tests	2009-02-03 11:41:12.000000000 -0600
+@@ -45,6 +45,7 @@
+ TESTS=$TESTS"mararc_n_min_ttl "
+ TESTS=$TESTS"mararc_n_min_ttl_cname "
+ TESTS=$TESTS"mararc_n_min_visible_ttl "
++TESTS=$TESTS"mararc_n_notthere_ip "
+ TESTS=$TESTS"mararc_n_recurse_delegation "
+ TESTS=$TESTS"mararc_n_recursive_acl "
+ TESTS=$TESTS"mararc_n_remote_admin "

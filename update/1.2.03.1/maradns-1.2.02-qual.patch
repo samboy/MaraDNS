@@ -1,0 +1,12 @@
+--- maradns-1.2.03.1/qual/Makefile.threadsafe	2005-11-07 20:16:42.000000000 -0800
++++ maradns-1.2.03.2/qual/Makefile.threadsafe	2006-01-21 21:13:49.000000000 -0800
+@@ -2,9 +2,6 @@
+ JOBJS=../libs/JsStr.o ../libs/JsStrOS.o ../libs/JsStrCP.o 
+ OBJECTS=$(DOBJECTS)
+ 
+-FLAGS = -g -Wall $(DEBUG)
+-#FLAGS = -g $(DEBUG)
+-
+ all: qual_timestamp.o
+ 
+ clean:

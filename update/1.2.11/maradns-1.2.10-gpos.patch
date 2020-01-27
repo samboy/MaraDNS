@@ -1,0 +1,110 @@
+--- maradns-orig/parse/Csv2_parse.c	2006-07-15 17:21:23.000000000 -0500
++++ maradns-1.2.11/parse/Csv2_parse.c	2006-07-15 17:45:13.000000000 -0500
+@@ -952,6 +952,10 @@
+ 	if(js_qissame("px",text_rtype) == 1) {
+ 		return RR_PX;
+ 	}
++	/* Obscure RFC1712 RR */
++	if(js_qissame("gpos",text_rtype) == 1) {
++		return RR_GPOS;
++	}
+ 	return -1;
+ }
+ 
+@@ -1315,6 +1319,9 @@
+ 		case RR_PX:
+ 			rddata = csv2_get_mx(stream,zone,-2);
+ 			break;
++		case RR_GPOS:
++			rddata = csv2_get_txt(stream,3);
++			break;
+ 		default:
+ 			/* RAW rtype */
+ 			if(rtype >= 100000 && rtype <= 165535) {
+--- maradns-orig/parse/Csv2_rr_txt.c	2006-07-15 17:21:23.000000000 -0500
++++ maradns-1.2.11/parse/Csv2_rr_txt.c	2006-07-15 17:45:13.000000000 -0500
+@@ -224,7 +224,7 @@
+ 	if(numchunks != -1) {
+ 		txt_len_place = out->unit_count; /* 0 */
+ 		txt_len = 0;
+-                chunkcount = 1;
++                chunkcount = 0;
+ 		if(csv2_append_utf8(out, 0) == JS_ERROR) {
+ 			js_destroy(out);
+ 			return 0;
+@@ -344,6 +344,7 @@
+ 					return 0;
+ 				}
+ 				*(out->string + txt_len_place) = txt_len;
++				chunkcount++;
+ 				txt_len_place = out->unit_count; /* 1 */
+ 				txt_len = 0;
+ 				if(csv2_append_utf8(out, 0) == JS_ERROR) {
+--- maradns-orig/doc/en/source/csv2.ej	2006-07-15 17:21:23.000000000 -0500
++++ maradns-1.2.11/doc/en/source/csv2.ej	2006-07-15 17:48:58.000000000 -0500
+@@ -328,7 +328,7 @@
+ example.net. MR mr@example.net.
+ </pre>
+ 
+-For information about these records can be found in RFC1035.
++More information about these records can be found in RFC1035.
+ 
+ <h2>AFSDB, RP, X25, ISDN, and RT</h2>
+ 
+@@ -388,6 +388,32 @@
+ example.net. PX 15 px1.example.net. px2.example.net.
+ </pre>
+ 
++<h2>GPOS</h2>
++
++An GPOS record is a description of the location of a given server.
++The format for this record is identical to a
++TXT record, except that the field must have precisely three chunks.
++
++<p>
++
++The first chunk of a GPOS record is the longitude; the second chunk is
++the latitude; the third chunk is the altitude (in meters).
++
++<p>
++
++Example:
++
++<pre>
++example.net. GPOS '19.283';'-98.6502';'7034'
++</pre>
++
++More information about this record can be found in RFC1712.
++
++<p>
++
++This resource record is not actively used; for the relatively few people
++who encode their position in DNS, the LOC record is far more common.
++
+ <h1>EXAMPLE ZONE FILE</h1>
+ 
+ <pre>
+--- maradns-orig/MaraDns.h	2006-07-15 17:21:23.000000000 -0500
++++ maradns-1.2.11/MaraDns.h	2006-07-15 17:51:01.000000000 -0500
+@@ -308,8 +308,8 @@
+ #define RR_KEY 25
+ /* RFC2163 RR */
+ #define RR_PX 26
+-/* RFC1212 RR */
+-#define RR_SPOS 27
++/* RFC1712 RR */
++#define RR_SGOS 27
+ /* AAAA: ipv6 addresses (Not in an RFC) */
+ #define RR_AAAA 28
+ /* RFC1876 */
+--- maradns-orig/MaraDns.h	2006-07-17 17:04:14.000000000 -0500
++++ maradns-loc/MaraDns.h	2006-07-17 18:30:09.000000000 -0500
+@@ -309,7 +309,7 @@
+ /* RFC2163 RR */
+ #define RR_PX 26
+ /* RFC1712 RR */
+-#define RR_SGOS 27
++#define RR_GPOS 27
+ /* AAAA: ipv6 addresses (Not in an RFC) */
+ #define RR_AAAA 28
+ /* RFC1876 */

@@ -1,0 +1,179 @@
+diff -ur maradns-orig/parse/Csv2_functions.h maradns-1.2.11/parse/Csv2_functions.h
+--- maradns-orig/parse/Csv2_functions.h	2006-07-14 11:54:46.000000000 -0500
++++ maradns-1.2.11/parse/Csv2_functions.h	2006-07-14 12:28:57.000000000 -0500
+@@ -188,6 +188,9 @@
+  * Output: A js_string object with the raw rddata we want */
+ js_string *csv2_get_raw(csv2_read *stream);
+ 
++/* This returns true for [\#] */
++int csv2_is_hash(int32 in);
++
+ /* --- Csv2_main.c --- */
+ 
+ /* The main function for parsing a csv2_zone for putting stuff 
+@@ -267,4 +270,9 @@
+ js_string *csv2_get_aaaa(csv2_read *stream);
+ js_string *csv2_get_string(csv2_read *stream, int datatype);
+ 
++/* Csv2_rr_wks.c */
+ 
++int csv2_is_wks(int32 in);
++int csv2_is_alphanum_ordot(int32 in);
++js_string *csv2_get_wks(csv2_read *stream);
++js_string *csv2_get_mbox(csv2_read *stream, js_string *zone, int count);
+diff -ur maradns-orig/parse/Csv2_parse.c maradns-1.2.11/parse/Csv2_parse.c
+--- maradns-orig/parse/Csv2_parse.c	2006-07-14 11:54:46.000000000 -0500
++++ maradns-1.2.11/parse/Csv2_parse.c	2006-07-14 13:17:43.000000000 -0500
+@@ -925,6 +925,22 @@
+ 	if(js_qissame("minfo",text_rtype) == 1) {
+ 		return RR_MINFO;
+ 	}
++	/* Obscure RFC1183 data types follow */
++	if(js_qissame("afsdb",text_rtype) == 1) {
++		return RR_AFSDB;
++	}
++	if(js_qissame("rp",text_rtype) == 1) {
++		return RR_RP;
++	}
++	if(js_qissame("x25",text_rtype) == 1) {
++		return RR_X25;
++	}
++	if(js_qissame("isdn",text_rtype) == 1) {
++		return RR_ISDN;
++	}
++	if(js_qissame("rt",text_rtype) == 1) {
++		return RR_RT;
++	}
+ 	return -1;
+ }
+ 
+@@ -1214,12 +1230,16 @@
+ 			rddata = csv2_get_soa(stream,zone);
+ 			break;
+ 		case RR_MX:
++		case RR_AFSDB:
++		case RR_RT:
+ 			rddata = csv2_get_mx(stream,zone,-1);
+ 			break;
+ 		case RR_SRV:
+ 			rddata = csv2_get_srv(stream,zone);
+ 			break;
+ 		case RR_TXT:
++		case RR_X25:
++		case RR_ISDN:
+ 		case RR_SPF:
+ 			rddata = csv2_get_txt(stream,0);
+ 			break;
+@@ -1228,6 +1248,7 @@
+ 			rddata = csv2_get_mbox(stream,zone,1);
+ 			break;
+ 		case RR_MINFO:
++		case RR_RP:
+ 			rddata = csv2_get_mbox(stream,zone,2);
+ 			break;
+ 		case RR_NS:
+diff -ur maradns-orig/parse/Csv2_rr_soa.c maradns-1.2.11/parse/Csv2_rr_soa.c
+--- maradns-orig/parse/Csv2_rr_soa.c	2005-10-01 11:05:51.000000000 -0500
++++ maradns-1.2.11/parse/Csv2_rr_soa.c	2006-07-14 13:19:02.000000000 -0500
+@@ -46,7 +46,7 @@
+ 	int32 look;
+ 	int x;
+ 
+-	o = process_1stchar(stream,csv2_is_alphanum,"Z");
++	o = process_1stchar(stream,csv2_is_alphanum_ordot,"Z");
+ 	if(o == 0) {
+ 		return 0;
+ 	}
+@@ -54,6 +54,17 @@
+ 	/* First, the stuff before the @ */
+ 	for(x = 0; x < 10000; x++) {
+ 		look = csv2_read_unicode(stream);
++		/* Special code to handle empty email addresses (just a '.') 
++                 * RFC1183 requires these to be supported */
++		if(x == 0 && o->unit_count >= 2 && *(o->string + 1) == '.') {
++			if(csv2_is_delimiter(look)) {
++				return o;
++			}
++			csv2_error(stream,
++          ". can only be at start of label that is just a . by itself");	
++			js_destroy(o);
++			return 0;
++		}
+ 		if(look == FATAL_CSV2_READ) {
+ 			js_destroy(o);
+ 			return 0;
+diff -ur maradns-orig/parse/Csv2_rr_wks.c maradns-1.2.11/parse/Csv2_rr_wks.c
+--- maradns-orig/parse/Csv2_rr_wks.c	2006-07-14 11:54:46.000000000 -0500
++++ maradns-1.2.11/parse/Csv2_rr_wks.c	2006-07-14 13:18:48.000000000 -0500
+@@ -21,6 +21,7 @@
+ #include "../libs/JsStr.h"
+ #include "../libs/MaraHash.h"
+ #include "../MaraDns.h"
++#include "../dns/functions_dns.h"
+ #include "Csv2_database.h"
+ #include "Csv2_read.h"
+ #include "Csv2_functions.h"
+@@ -40,6 +41,11 @@
+ 	return (in == ',' || in == '\t' || in == ' ');
+ }
+ 
++/* Match on [0-9a-zA-Z\-\_\.] */
++int csv2_is_alphanum_ordot(int32 in) {
++        return (csv2_is_alphanum(in) || in == '.');
++}
++
+ /* Get an WKS record from the stream (ignoring any leading whitespace) and
+  * return a js_string object with the raw rddata for the A record */
+ js_string *csv2_get_wks(csv2_read *stream) {
+@@ -209,7 +215,8 @@
+ 
+ 	for(c = 0; c < count; c++) {
+ 		/* Mailbox label */
+-		if(csv2_get_1st(stream,csv2_is_alphanum,0) != JS_SUCCESS) {
++		if(csv2_get_1st(stream,csv2_is_alphanum_ordot,0) != 
++                    JS_SUCCESS) {
+ 			return 0;
+ 		}
+ 		if((name = process_mbox(stream)) == 0) {
+@@ -235,3 +242,4 @@
+ 	}	
+ 	return out;
+ }
++
+--- maradns-orig/doc/en/source/csv2.ej	2006-07-14 11:54:46.000000000 -0500
++++ maradns-1.2.11/doc/en/source/csv2.ej	2006-07-14 13:29:12.000000000 -0500
+@@ -330,6 +330,34 @@
+ 
+ For information about these records can be found in RFC1035.
+ 
++<h2>AFSDB, RP, X25, ISDN, and RT</h2>
++
++AFSDB, RP, X25, ISDN, and RT are resource records which were 
++proposed in RFC1183.  None of these resource records are widely
++used.
++
++<p>
++
++With the exception of the ISDN record, the format of these records
++is identical to the examples in RFC1183.  The format of the ISDN
++record is identical unless the record has a subaddress (SA).  If
++an ISDN record has a subaddress, it is separated from the ISDN-address
++by a ';' instead of whitespace.
++
++<p>
++
++If used, here is how the records would look in a csv2 zone file:
++
++<pre>
++example.net. AFSDB 1 afsdb.example.net.
++example.net. RP rp@example.net. rp.example.net.
++example.net. RP rp2@example.net. .
++example.net. X25 311061700956
++example.net. ISDN 150862028003217
++example.net. ISDN 150862028003217;004
++example.net. RT 10 relay.example.net.
++</pre>
++
+ <h1>EXAMPLE ZONE FILE</h1>
+ 
+ <pre>

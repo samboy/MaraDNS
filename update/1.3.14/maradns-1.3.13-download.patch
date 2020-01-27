@@ -1,0 +1,35 @@
+--- maradns-1.3.13/doc/en/webpage/download.embed	2009-02-13 02:18:34.000000000 -0600
++++ maradns-1.3.14/doc/en/webpage/download.embed	2009-02-21 10:00:46.000000000 -0600
+@@ -71,15 +71,6 @@
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.12/maradns-1.3.12.tar.lzma"><!--
+-                          -->maradns-1.3.12.tar.lzma</A>
+-</td><td>
+-<A 
+-href="download/1.3/1.3.12/maradns-1.3.12.tar.lzma.sha.asc">sig</A>
+-</td><td>
+-<A href="#lzma">info</A> 
+-</td></tr><tr><td>
+-<A 
+ href="download/1.3/1.3.12/maradns-1.3.12.tar.gz"><!--
+                           -->maradns-1.3.12.tar.gz</A>
+ </td><td>
+@@ -87,16 +78,6 @@
+ href="download/1.3/1.3.12/maradns-1.3.12.tar.gz.sha.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+-</td></tr><tr><td>
+-<A 
+-href="download/1.3/1.3.12/maradns-1-3-12-win32.zip"><!--
+-                          -->maradns-1-3-12-win32.zip</A>
+-</td><td>
+-<A 
+-href="download/1.3/1.3.12/maradns-1-3-12-win32.zip.sha.asc">sig</A>
+-</td><td>
+-<A href="#zip">info</A>
+-
+ </td></tr></table>
+ 
+ <h3>Pthreads soruce code</h3>

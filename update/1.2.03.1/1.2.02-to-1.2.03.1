@@ -1,0 +1,265 @@
+#!/bin/bash -e
+
+# This script updates MaraDNS 1.2
+
+# To run this script, make sure that this script is in the directory
+# containing the tarball for the version of MaraDNS you wish to update, and
+# all of the patches are in a directory entitled 'patches'.
+
+# For example, to update MaraDNS 1.2.02 to 1.2.03, make sure 
+# maradns-1.2.02.tar.lzma is in the same directory as this script, and
+# that the directory containing this script has a directory called
+# "patches/" which has all of the maradns-1.2.02*.patch files.
+
+# You will need to have lzma on your system to run this script
+
+# Get the current and next version number
+
+CURRENT=${0%%-*}
+CURRENT=${CURRENT##*/}
+NEXT=${0##*-}
+
+# Make a clean CURRENT install, which we rename NEXT
+rm -fr maradns-$CURRENT 2> /dev/null
+echo extracting tarball
+cat maradns-$CURRENT.tar.lzma | lzma d -si -so | tar xf -
+if [ $? != 0 ] ; then
+	echo run this from the correct directory
+	exit 1
+fi
+rm -fr maradns-$NEXT*
+mv maradns-$CURRENT maradns-$NEXT
+cd maradns-$NEXT
+
+# The patches
+
+mkdir update/$NEXT
+cp ../patches/maradns-$CURRENT* update/$NEXT
+
+# This is one of the few places where we will need to change anything
+# in this script from version to version
+
+echo applying patches
+
+# Patch #1: Fix bug with ANY found by Christian
+patch -p1 < update/1.2.03.1/maradns-1.2.02-anybug.patch
+
+# Patch #2: Make bind_star_handling even more RFC-compliant
+patch -p1 < update/1.2.03.1/maradns-1.2.02-star.patch
+
+# Patch #3: Up the optimization on FreeBSD
+patch -p1 < update/1.2.03.1/maradns-1.2.02-freebsd.patch
+
+# Patch #4: Up the optimization on mingw32
+patch -p1 < update/1.2.03.1/maradns-1.2.02-mingw32.patch
+
+# Patch #5: Change the name BYTE to MARA_BYTE
+patch -p1 < update/1.2.03.1/maradns-1.2.02-mara_byte.patch
+
+# Patch #6: Alex pointed out that this compiles fine on both
+#           FreeBSD 4 and FreeBSD 6
+patch -p1 < update/1.2.03.1/maradns-1.2.02-configure-1.patch
+
+# Patch #7: Update configure to remove error message during mingw32
+#           building process
+patch -p1 < update/1.2.03.1/maradns-1.2.02-configure-2.patch
+
+# Patch #8: Update functions_server.h and MaraDNS.c to remove all
+#           mingw32 compile-time warnings
+patch -p1 < update/1.2.03.1/maradns-1.2.02-mingw32-nowarn.patch
+
+# Patch #9: Better handling of non-data RRs being added via the RAW
+#           record
+patch -p1 < update/1.2.03.1/maradns-1.2.02-non_data_rtype.patch
+
+# Patch #10: Fix authonly (authoritative-only) to work with the new
+#            building/Makefile procedure
+patch -p1 < update/1.2.03.1/maradns-1.2.02-authonly.patch
+
+# Patch #11: Remove -g flag from the timestamp code Makefile
+patch -p1 < update/1.2.03.1/maradns-1.2.02-qual.patch
+
+# Patch: Update changelog (this is always done)
+patch -p1 < update/$NEXT/maradns-$CURRENT-changelog.patch
+
+# Other release-specific fixes and changes go here
+
+# Set it up so the win32 zip file can be automatically generated
+mkdir build/win32
+cd build/win32
+cat > foo << EOF
+This directory contains some files from MaraDNS ported to win32.
+
+These files were compiled using mingw32.
+
+MaraDNS is a multithreaded application, and needs the pthreadGC2.dll file
+to run.  This file is licensed under the LGPL; basically, in order to
+distribute this file, the corresponding pthreads-w32-2-6-0-release.tar.bz2
+file must also be included.
+
+MaraDNS is a DNS server; this means that MaraDNS will allow you to get
+online in case you are on a network with a broken DNS server.  Askmara is
+a tool that can be used to help debug DNS problems.
+
+Both programs are run in a command-line shell.  To get a command line
+shell, go to start->run, and type in "cmd" as the program to run.
+Enter the directory that contains this README file.
+
+"run_maradns.bat" will start the DNS server.  If you are able to ping
+sites outside your local network, but are unable to access web sites, this
+program will do DNS resolution for you.  The shell window that
+run_maradns.bat is opened from needs to stay open while MaraDNS is 
+running.
+
+run_maradns may also be ran by double-clicking on it; be sure to keep
+this command shell open while using MaraDNS as a DNS server to access
+the internet.
+
+To make MaraDNS your DNS server, go to Start->Control Panel->Network
+Connections, and right click on "Local Area Connection" (or the name of
+the connection you use to get on the internet).  Select "Properties" and
+double click on "Ineternet Protocol (TCP/IP)" (you may have to scroll
+down to see this).  Click on the dot to the left of "Use the following
+DNS server address" and put "127.0.0.1" as the DNS server address.
+
+At this point, you will be able to use the internet without needing an
+external DNS server.
+
+Both MaraDNS and Askmara need internet access to run; please have any
+installed firewall grant this access.
+
+The file Askmara.html explains how to use Askmara.
+EOF
+
+# DOS newlines (we have to do it this way)
+cat foo | awk '{print $0 "\r"}' > readme.txt
+rm foo
+
+cat > foo << EOF
+start maradns -f mararc
+exit
+EOF
+
+cat foo | awk '{print $0 "\r"}' > run_maradns.bat
+rm foo
+
+cat > mararc << EOF
+# Win32-specific MaraRC file; this makes a basic recursive DNS
+# server.
+
+ipv4_bind_addresses = "127.0.0.1"
+recursive_acl = "127.0.0.1/8"
+timestamp_type = 2
+
+# This is insecure
+random_seed_file = "maradns.exe"
+EOF
+
+cat > make.win32.zip << EOF
+#!/bin/bash
+
+VERSION=\$( pwd )
+VERSION=\${VERSION%%/build/win32}
+VERSION=\${VERSION##*/}
+VERSION=\$( echo \$VERSION | sed 's/\./\-/g' )
+echo \$VERSION
+mkdir \$VERSION
+cp mararc readme.txt run_maradns.bat \$VERSION
+cp ../../server/maradns.exe \$VERSION
+cp ../../tools/askmara.exe \$VERSION
+cp ../../doc/en/tutorial/man.askmara.html \$VERSION/Askmara.html
+cp ../../../pthreadGC2.dll \$VERSION
+cp ../../../pthreads-w32-2-6-0-release.tar.bz2 \$VERSION
+zip -r \$VERSION\-win32.zip \$VERSION
+EOF
+
+chmod 755 make.win32.zip
+
+cd ../..
+rm 00README.FIRST 
+ln -s COPYING 00README.FIRST
+
+# Anything below this line normally is not changed between MaraDNS versions
+echo updating documentation
+
+# Update the documentation
+cd doc/en
+make
+cd man
+make
+# The following is time-consuming, so we only do it when making the final
+# tarballs
+if [ "$1" == "go" ] ; then
+	echo making PDF reference
+	./make.pdf
+	echo done
+fi
+cd ../tutorial
+make
+cd ../text
+make
+# Go back to the maradns dir
+cd ../../..
+
+rm CHANGELOG
+ln -s doc/en/changelog.txt CHANGELOG
+
+# Go one level higher than the toplevel directory to copy this script
+# over
+cd ..
+
+# Put this script in the "build" directory
+cp $0 maradns-$NEXT/update/$NEXT
+
+if [ "$1" != "go" ] ; then
+	echo OK, maradns-$NEXT built.  Confirm this compiles and	
+	echo perform basic regression before re-running this to make
+	echo the tarballs.  Once you have tested this, rerun this 
+	echo script as: $0 go
+	exit 0
+fi
+
+# Build the tarballs
+echo making new tarballs
+
+tar cjf maradns-$NEXT.tar.bz2 maradns-$NEXT
+tar czf maradns-$NEXT.tar.gz maradns-$NEXT
+
+echo using exotic compression
+tar cf maradns-$NEXT.tar maradns-$NEXT
+
+# All of the compression we actually use was originally written by 
+# Igor Pavlov for the 7-zip compression suite
+echo shrinking .gz tarball
+advdef -z -3 maradns-$NEXT.tar.gz
+
+echo lzma compression \(this will take about 5 minutes\)
+date
+# To decompress: cat file.tar.lzma | lzma d -si -so | tar xvf -
+# -d20 makes the file almost as small as -d22, but uses 1/4 of the memory
+# (only a little over one meg needed for decompression)
+lzma e maradns-$NEXT.tar maradns-$NEXT.tar.lzma -a2 -d20 -fb255
+date
+echo
+
+exit 0
+
+# The other exotic compressors can't be run in a pipeline
+
+echo 7zip compression
+date
+7za a maradns-$NEXT.tar.7z maradns-$NEXT.tar
+date
+echo
+
+echo paq6 compression \(This will take 2\-3 minutes\)
+date
+paq6v2 -2 maradns-$NEXT.tar.pq6 maradns-$NEXT.tar
+date
+echo
+
+echo rzip compression
+date
+rzip maradns-$NEXT.tar
+date
+echo

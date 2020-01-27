@@ -1,0 +1,232 @@
+diff -ur maradns-Q.20060722.1/parse/Csv2_database.c maradns-1.2.12/parse/Csv2_database.c
+--- maradns-Q.20060722.1/parse/Csv2_database.c	2006-02-21 03:32:15.000000000 -0600
++++ maradns-1.2.12/parse/Csv2_database.c	2006-07-23 00:27:01.000000000 -0500
+@@ -56,7 +56,8 @@
+  *   "\007example\003com\000\000\001" We will call this SBlabel
+  */
+ 
+-/* Function to initialize the csv2_add_state for a new zone
++/* Function to initialize the csv2_add_state for a new zone; this would
++ * be in the constructor if we were coding in C++ 
+  * Input: The zone in Alabel format.
+  * Output: The initialized csv2 add state
+  */
+@@ -80,11 +81,12 @@
+ 		return 0;
+ 	}
+ 	new->buffer = 0;
+-	new->zone = nzone;
++	new->zone = nzone; /* This is the "origin" */
+ 	new->rrnum = 0;
+ 	new->bighash = 0;
+ 	new->add_method = 0;
+ 	new->soa_serial = 1;
++	new->default_ttl = 86400;
+ 	new->in_ns = 1;
+ 	new->zone_nses_added = 0;
+ 	return new;
+diff -ur maradns-Q.20060722.1/parse/Csv2_database.h maradns-1.2.12/parse/Csv2_database.h
+--- maradns-Q.20060722.1/parse/Csv2_database.h	2005-12-05 16:20:41.000000000 -0600
++++ maradns-1.2.12/parse/Csv2_database.h	2006-07-23 00:27:01.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004 Sam Trenholme
++/* Copyright (c) 2004-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -34,10 +34,12 @@
+ 
+ typedef struct csv2_add_state {
+ 	csv2_rr *buffer;
+-	js_string *zone; /* In ASCII "name.com." format */
++	js_string *zone; /* This is the "origin", in ASCII "name.com." 
++                          * format */
+ 	int rrnum;
+ 	int add_method;
+ 	int32 soa_serial; /* Serial number synthetic SOA will have */
++	int32 default_ttl; /* Default TTL for RRs */
+ 	int in_ns;
+ 	int zone_nses_added;
+ 	mhash *bighash;
+diff -ur maradns-Q.20060722.1/parse/Csv2_parse.c maradns-1.2.12/parse/Csv2_parse.c
+--- maradns-Q.20060722.1/parse/Csv2_parse.c	2006-07-22 22:56:01.000000000 -0500
++++ maradns-1.2.12/parse/Csv2_parse.c	2006-07-23 11:05:56.000000000 -0500
+@@ -555,6 +555,11 @@
+ 	return (csv2_is_text(in) || in == '*' || in == '%');
+ }
+ 
++/* Match on [0-9a-zA-Z\-\_\*\%\/] or anything utf-8 */
++int csv2_is_starwhitis_orslash(int32 in) {
++	return (csv2_is_text(in) || in == '*' || in == '%' || in == '/');
++}
++
+ /* Process number: Process a number that is coming in on the input stream
+  * Input: The stream we want to get the number from (we've already seen
+  *        the first digit of said number)
+@@ -1183,6 +1188,7 @@
+ 	int32 ttl = 86400;
+ 	int32 rtype;
+ 	int q;
++	int slash_command = 0;
+ 
+ 	/* Sanity checks */
+ 	if(state->bighash == 0 && state->add_method == 1) {
+@@ -1194,16 +1200,77 @@
+ 
+ 	zone = state->zone;
+ 
+-	/* The host name must be at the begining of a line (or the file) */
+-	q = csv2_get_1st(stream, csv2_is_starwhitis,1);
++	/* We read look for the beginning of the host name; this is made
++         * more complicated that the "host name" may actually be a
++         * special command, such as on that changes the origin (hostname
++         * to substitute '%' with) or TTL */
+ 
+-	if(q == -2) {
+-		return -2;
+-	}
++	do {
++		slash_command = 0;
+ 
+-	if(q == JS_ERROR) {
+-		return -1;
+-	}
++		/* The host name must be at the begining of a line 
++                 * (or the file) */
++		q = csv2_get_1st(stream, csv2_is_starwhitis_orslash,1);
++
++		if(q == -2) {
++			return -2;
++		}
++
++		if(q == JS_ERROR) {
++			return -1;
++		}
++
++		/* Process the slash commands (currently only '/origin' and
++                 * '/ttl') */
++		if(csv2_justread(stream) == '/') {
++			int32 look, cmd;
++			slash_command = 1;
++			look = csv2_read_unicode(stream);
++			if(look == 't') {
++				cmd = 1; /* ttl */
++			} else if(look == 'o') {
++				cmd = 2; /* origin */
++			} else {
++				csv2_error(stream,"Invalid slash command");
++				return -1; /* error */
++			}
++
++			look = csv2_read_unicode(stream);
++			if((cmd == 1 && look != 't') || (cmd == 2 &&
++                            look != 'r')) {
++				csv2_error(stream,"Invalid slash command");
++				return -1;
++			}
++			
++			look = csv2_read_unicode(stream);
++			if((cmd == 1 && look != 'l') || (cmd == 2 &&
++ 			    look != 'i')) {
++				csv2_error(stream,"Invalid slash command");
++				return -1;
++			}
++
++			look = csv2_read_unicode(stream);
++			if(cmd == 1 && csv2_is_delimiter(look)) {
++				int newttl;
++				newttl = csv2_get_num(stream);
++				if(newttl < 0) {
++					csv2_error(stream,
++					    "Invalid slash command");
++					return -1;
++				}
++				state->default_ttl = newttl;
++			} else if(cmd == 2 && look == 'g') {
++				/* CODE HERE: Make sure it ends with 'en\s' */
++				csv2_error(stream,"/origin not implemented");
++				return -1; /* placeholder */
++			} else {
++				csv2_error(stream,"Invalid slash command");
++				return -1;
++			}
++			
++		}
++
++	} while(slash_command == 1);
+ 
+ 	/* If star records are allowed at the end of
+ 	 * hostnames, we make the third argument of csv2_get_hostname have
+@@ -1233,7 +1300,7 @@
+ 		return -1;
+ 	}
+ 
+-	ttl = 86400;
++	ttl = state->default_ttl;
+ 	/* If we saw a +, process this field as a TTL */
+ 	if(csv2_justread(stream) == '+') {
+ 		if(csv2_read_unicode(stream) < 0) {
+--- maradns-Q.20060722.1/doc/en/source/csv2.ej	2006-07-22 22:56:01.000000000 -0500
++++ maradns-1.2.12/doc/en/source/csv2.ej	2006-07-23 11:23:39.000000000 -0500
+@@ -32,8 +32,8 @@
+ <p>
+ 
+ Anything in square brackets is an optional field.  If the ttl is not 
+-specified, the ttl is set to be 86400 seconds long (one day).  If the rtype
+-is not specified, it is set to be an "A" (ipv4 address) record.  
++specified, the ttl is set to the default ttl value (see "Default TTL" below).  
++If the rtype is not specified, it is set to be an "A" (ipv4 address) record.  
+ <p>
+ 
+ The zone file supports comments; comments are specified by having a '#' 
+@@ -446,6 +446,50 @@
+ example.net. LOC 19 31 2.123 N 98 3 4 W 2000m 2m 4m 567m
+ </pre>
+ 
++<h1>SLASH COMMANDS</h1>
++
++In addition to being able to have resource records and comments, csv2
++zone files can also have special slash commands.  These slash commands,
++with the exception of the '/serial' slash command (see "SOA" above),
++can only be placed where the name for a record would be placed.
++Note that slash commands are case-sensitive, and the command in 
++question must be in all-lower-case.
++
++<p>
++
++These commands are as follows:
++
++<h2>Default TTL</h2>
++
++The default TTL is the TTL for a resource record without a TTL specified.
++This can be changed with the '/ttl' slash command.  This command
++takes only a single argument: The time, in seconds, for the new default TTL.
++The '/ttl' slash command only affects the TTL of records that follow the
++command.  A zone file can have multiple '/ttl' slash commands.
++
++<p>
++
++The default TTL is 86400 seconds (one day) until changed by the '/ttl'
++slash command.
++
++<p>
++
++In the following example, a.ttl.example.com will have a TTL of 86400 
++seconds (as long as the zone file with this record has not previously used
++the '/ttl' slash command), b.ttl.example.com and d.ttl.example.com will 
++have a TTL of 3600 seconds, c.ttl.example.com will have a TTL of 9600 
++seconds, and e.ttl.example.com will have a TTL of 7200 seconds:
++
++<pre>
++a.ttl.example.com.       10.0.0.1
++/ttl 3600
++b.ttl.example.com.       10.0.0.2
++c.ttl.example.com. +9600 10.0.0.3
++d.ttl.example.com.       10.0.0.4
++/ttl 7200
++e.ttl.example.com.       10.0.0.5
++</pre>
++
+ <h1>EXAMPLE ZONE FILE</h1>
+ 
+ <pre>

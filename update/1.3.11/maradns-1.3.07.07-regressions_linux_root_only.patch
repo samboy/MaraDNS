@@ -1,0 +1,52 @@
+--- maradns-1.3.07.07/sqa/regressions/do.tests	2007-11-26 11:20:31.000000000 -0600
++++ maradns-1.3.07.08/sqa/regressions/do.tests	2007-12-12 12:18:29.000000000 -0600
+@@ -3,6 +3,23 @@
+ # This is a shell script that will do all of the sqa tests; this script
+ # will halt if any of the tests does not give the desired result
+ 
++# These tests only work in Linux when run as root
++if uname | grep Linux >/dev/null
++then
++    :
++else
++    echo These test work only under Linux
++    exit 1
++fi
++
++if id | grep 'uid=0(root' >/dev/null
++then
++    :
++else
++    echo You must be root in order to perform the tests
++    exit 1
++fi
++
+ # Tests to make sure most Mararc parameters work
+ TESTS="mararc_n_admin_acl "
+ TESTS=$TESTS"mararc_n_bind_address "
+--- maradns-1.3.07.07/sqa/regressions/do.tests.authonly	2007-10-19 08:52:20.000000000 -0500
++++ maradns-1.3.07.08/sqa/regressions/do.tests.authonly	2007-12-12 12:18:22.000000000 -0600
+@@ -3,6 +3,23 @@
+ # This is a shell script that will do all of the sqa tests; this script
+ # will halt if any of the tests does not give the desired result
+ 
++# These tests only work in Linux when run as root
++if uname | grep Linux >/dev/null
++then
++    :
++else
++    echo These test work only under Linux
++    exit 1
++fi
++
++if id | grep 'uid=0(root' >/dev/null
++then
++    :
++else
++    echo You must be root in order to perform the tests
++    exit 1
++fi
++
+ # So we don't have to rewrite all of the tests, copy over maradns.authonly
+ # to maradns
+ cp ../../server/maradns.authonly ../../server/maradns

@@ -1,0 +1,154 @@
+From: Sam Trenholme <sam+i7tq5rg@chaosring.org>
+To: list@maradns.org
+Subject: [MARA] Patch to allow MaraDNS to handle star records like BIND
+X-PGP-Fingerprint: D167 252A 18BC D011 7CB4  6CA8 0BE8 D6AE 1E61 FCA6
+X-PGP-Note: The above fingerprint is for the MaraDNS signing key
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+In this article, Remmy brought up the fact that MaraDNS sometimes
+handles star records differently than BIND does:
+
+	http://marc.10east.com/?l=maradns-list&m=111886704220174
+
+I looked at this issue here:
+
+	http://marc.10east.com/?l=maradns-list&m=113442656016732
+
+With this patch, I have completely resolved the issue.
+
+This patch adds a new mararc variable, bind_star_handling.  This variable
+makes MaraDNS optionally allows MaraDNS to handle star records the same
+way BIND does.
+
+In more detail:
+
+     * If a non-A record for foo.example.com exists
+     * An A record for *.example.com exists
+     * No A record for foo.example.com exists
+     * And the user asks for the A record for foo.example.com
+     * MaraDNS will usually return the A record attached to *.example.com
+     * BIND, on the other hand, returns a "not there" for foo.example.com
+
+Once this patch is applied, if the BIND behavior is desired, set
+bind_star_handling to 1. Otherwise, set this to 0 (the default value if
+this is not set at all in the mararc file).
+
+- Sam
+
+--- maradns-1.2.01/parse/ParseMaraRc.c	2005-12-05 13:00:48.000000000 -0800
++++ maradns-1.2.02/parse/ParseMaraRc.c	2005-12-30 18:59:31.000000000 -0800
+@@ -31,7 +31,7 @@
+ 
+ /* Keywords that are non-dictionary strings in Mara's rc file */
+ 
+-#define KEYCOUNT 44
++#define KEYCOUNT 45
+ 
+ char *keywords[KEYCOUNT] = {
+         "bind_address", /* IPv4 Addresses to bind to (old name) */
+@@ -125,6 +125,8 @@
+         "synth_soa_origin", /* The origin to put in a synthetic SOA record */
+         "synth_soa_serial", /* The format for the serial in a synthetic SOA
+                                record */
++        "bind_star_handling", /* Whether or not to handle star records the 
++                                 way BIND does */
+         "zone_transfer_acl" /* ACL of IPs allowed to perform zone transfers */
+         };
+ 
+--- maradns-1.2.01/server/MaraDNS.c	2005-12-05 14:38:33.000000000 -0800
++++ maradns-1.2.02/server/MaraDNS.c	2005-12-30 20:33:19.000000000 -0800
+@@ -115,6 +115,8 @@
+ 				 to give up to make her more immune to
+ 				 Denial of Service attacks */
+ 
++int bind_star_handling = 0; /* Handle star records the same way BIND does */
++
+ /* A list of who is and who is not allowed to make recursive DNS queries */
+ ipv4pair recurse_acl[512];
+ /* A list of the ipv4 IP addresses we bind MaraDNS to (the netmask portion is
+@@ -3319,6 +3321,25 @@
+ 	    goto skip_starwhitis;
+     }
+ 
++    /* Remmy's issue: If we have any recordtype for a given record, we don't
++       look for a star record with the same name.  This emulates BIND's
++       behavior for star records */
++    if(bind_star_handling == 1) {
++        if(js_copy(origq,lookfor) == JS_ERROR)
++            goto serv_fail;
++        if(fold_case(lookfor) == JS_ERROR)
++	    goto serv_fail;
++        /* Look for an ANY record with the same name and
++           goto skip_starwhitis if found */
++	if(change_rtype(lookfor,RR_ANY) == JS_ERROR) {
++	    goto serv_fail;
++	}
++	spot_data = mhash_get(bighash,lookfor); 
++	if(spot_data.value != 0 && spot_data.datatype == MARA_DNS_LIST) {
++	    goto skip_starwhitis;
++            }
++    }
++
+     /* Maybe it is a star record they are looking for */
+ 
+     /* We need to restore "lookfor" because we shredded both
+@@ -3981,6 +4002,22 @@
+     init_rlog_level(log_level);
+ #endif
+ 
++    /* Determine if we will handle star records the way BIND does:
++       . If a non-A record for foo.example.com exists
++       . And an A record for *.example.com exists
++       . And the user asks for the A record for "foo.example.com"
++       . Return "not there" instead of the A record attached to "*.example.com"
++
++     If this is 0, we return the A record attached to "*.example.com"
++     If this is 1, we return "not there" (since at least one RR for 
++     foo.example.com exists)
++     If this is any other value, exit with a fatal error
++     */
++     bind_star_handling = read_numeric_kvar("bind_star_handling",0);
++     if(bind_star_handling < 0 || bind_star_handling > 1) {
++         harderror("bind_star_handling must have a value of 0 or 1");
++     } 
++
+     /* Set the timestamp type */
+     timestamp_type = read_numeric_kvar("timestamp_type",5);
+     set_timestamp(timestamp_type);
+--- maradns-1.2.01/doc/en/source/mararc.ej	2005-12-13 21:58:20.000000000 -0800
++++ maradns-1.2.02/doc/en/source/mararc.ej	2005-12-30 20:42:19.000000000 -0800
+@@ -286,6 +286,33 @@
+ continue to work with MaraDNS 1.2.
+ <p>
+ 
++<h2>bind_star_handling</h2>
++
++In the case where there is both a star record for a given name and recordtype,
++a non-star record with the same name but a different recordtype, and no record
++for the given name and recordtype, MaraDNS will usually return the
++star record.  BIND, on the other hand, will return a "not there" reply.
++
++In other words:
++
++<ul>
++<li>If a non-A record for <tt>foo.example.com</tt> exists
++<li>An A record for <tt>*.example.com</tt> exists
++<li>No A record for <tt>foo.example.com</tt> exists
++<li>And the user asks for the A record for <tt>foo.example.com</tt>
++<li>MaraDNS will usually return the A record attached to <tt>*.example.com</tt>
++<li>BIND, on the other hand, returns a "not there" for <tt>foo.example.com</tt>
++</ul>
++
++If the BIND behavior is desired, set <tt>bind_star_handling</tt> to 1.  
++Otherwise, set this to 0 (the default value if this is not set at all
++in the <tt>mararc</tt> file).  
++
++<p>
++
++MaraDNS will exit with a fatal error if <tt>bind_star_handling</tt> has
++any value besides 0 or 1.
++
+ <h2>chroot_dir</h2>
+ chroot_dir: The directory MaraDNS chroots to
+ <p>

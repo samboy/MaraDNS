@@ -1,0 +1,38 @@
+--- maradns-1.2.07.5/build/maradns-1.2.07.5.spec	2006-05-29 00:53:04.000000000 -0700
++++ maradns-1.2.08/build/maradns-1.2.08.spec	2006-06-10 00:34:54.000000000 -0700
+@@ -1,12 +1,12 @@
+ Summary: An authoritative and recursive DNS server made with security in mind
+ Name: maradns
+-Version: 1.2.07.5
++Version: 1.2.08
+ Release: 1
+ License: BSD (Two-clause)
+ Group: Networking/Daemons
+-Source: http://www.maradns.org/download/1.2/1.2.07.5/maradns-1.2.07.5.tar.bz2
+-Source1: maradns-1.2.07.5.tar.bz2.sha1.asc
+-Source2: maradns-1.2.07.5.tar.bz2.rmd.asc
++Source: http://www.maradns.org/download/1.2/1.2.08/maradns-1.2.08.tar.bz2
++Source1: maradns-1.2.08.tar.bz2.sha1.asc
++Source2: maradns-1.2.08.tar.bz2.rmd.asc
+ Patch0: maradns-1.1.59-rpm.patch
+ BuildRoot: /var/tmp/%{name}-buildroot
+ 
+@@ -49,7 +49,7 @@
+ 
+ %files
+ %defattr(-,root,root)
+-%doc /usr/doc/maradns-1.2.07.5/*
++%doc /usr/doc/maradns-1.2.08/*
+ 
+ /usr/sbin/maradns
+ /usr/sbin/zoneserver
+@@ -88,6 +88,9 @@
+ echo MaraDNS should have been stopped
+ 
+ %changelog
++* Sat Jun 10 2006 Sam Trenholme <sam+i55e6bt@chaosring.org>
++- MaraDNS rpm package updated for version 1.2.08
++
+ * Mon May 29 2006 Sam Trenholme <sam+i55e6bt@chaosring.org>
+ - MaraDNS rpm package updated for version 1.2.07.5
+ 

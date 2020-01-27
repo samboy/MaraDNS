@@ -1,0 +1,194 @@
+This patch fixes a bug where non-authoritative star records would not
+work.
+
+Let us suppose we have this mararc:
+
+ipv4_bind_addresses = "127.0.0.1"
+chroot_dir = "/etc/maradns"
+recursive_acl = "127.0.0.1/8"
+csv2 = {}
+csv2["example.com."] = "db.example.com"
+
+And this db.example.com:
+
+example.com. 127.0.0.1 ~
+*.spammerdomain.foo. 127.0.0.1
+
+In older versions of MaraDNS, bar.spammerdomain.coo. would not resolve
+to 127.0.0.1; this patch fixes this issue.
+
+The problem is this: We have to trude through a lot more code before we
+now make a recursive lookup.  The next patch will make it so MaraDNS
+goes through *no* (or almost no) authoritative code and goes straight 
+to recursive if csv1 nor csv2 are set.
+
+*** maradns-1.3.01/server/MaraDNS.c	2006-12-21 00:34:46.000000000 -0800
+--- maradns-1.3.02/server/MaraDNS.c	2007-01-01 19:52:09.000000000 -0800
+***************
+*** 3404,3424 ****
+      /* If dos_protection_level is greater than 11, then we don't
+       * look for delegation NS records */
+      if(dos_protection_level > 11) {
+- #ifndef AUTHONLY
+-         if(desires_recursion == 1 && has_recursive_authority == 1) {
+-             /* Recursion only works for IPV4 */
+- 	    if(ect->type != 4) {
+-                 js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+- 		return JS_ERROR;
+- 	        }
+- 	    /* Launch the thread that will process the request; we
+- 	     * copy ect->d over */
+- 	    z = (struct sockaddr_in *)ect->d;
+-             launch_thread(header.id,sock,*z,origq);
+-             js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+-             return JS_SUCCESS;
+-             }
+- #endif
+          goto skip_delegation_ns;
+      }
+  
+--- 3404,3409 ----
+***************
+*** 3433,3456 ****
+      /* If the non-authoritative NS was found, return the NS infomation */
+      if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR &&
+         point->authoritative == 0) {
+!         /* In the case of them desiring recursion, and the client having
+!            authority to be recursive, we go recursive */
+! #ifndef AUTHONLY
+!         if(desires_recursion == 1 && has_recursive_authority == 1) {
+!             /* Recursion only works for IPV4 */
+! 	    if(ect->type != 4) {
+!                 js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+! 		return JS_ERROR;
+! 	        }
+! 	    /* Launch the thread that will process the request; we
+! 	     * copy ect->d over */
+! 	    z = (struct sockaddr_in *)ect->d;
+!             launch_thread(header.id,sock,*z,origq);
+!             js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+!             return JS_SUCCESS;
+!             }
+! #endif
+!         /* Otherwise, we return a NS server delegation */
+          udpsuccess(spot_data.value,header.id,sock,0,origq,spot_data.point,
+  			0,desires_recursion,ect,0);
+          js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+--- 3418,3424 ----
+      /* If the non-authoritative NS was found, return the NS infomation */
+      if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR &&
+         point->authoritative == 0) {
+!         /* We return a NS server delegation */
+          udpsuccess(spot_data.value,header.id,sock,0,origq,spot_data.point,
+  			0,desires_recursion,ect,0);
+          js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+***************
+*** 3500,3523 ****
+              }
+          /* Return the NS record we found "up the tree", if appropriate */
+          if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+!             /* In the case of them desiring recursion, and the client having
+!                authority to be recursive, we go recursive */
+! #ifndef AUTHONLY
+!             if(desires_recursion == 1 && has_recursive_authority == 1) {
+!                 /* Recursion only works for IPV4 */
+! 	        if(ect->type != 4) {
+!                     js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+! 		    return JS_ERROR;
+! 	            }
+! 	        /* Launch the thread that will process the request; we
+! 	         * copy ect->d over */
+! 		z = (struct sockaddr_in *)ect->d;
+!                 launch_thread(header.id,sock,*z,origq);
+!                 js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+!                 return JS_SUCCESS;
+!                 }
+! #endif
+!             /* Otherwise, we return a NS server delegation */
+              udpsuccess(spot_data.value,header.id,sock,0,origq,
+                         spot_data.point,0,desires_recursion,ect,0);
+              js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+--- 3468,3474 ----
+              }
+          /* Return the NS record we found "up the tree", if appropriate */
+          if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+!             /* We return a NS server delegation */
+              udpsuccess(spot_data.value,header.id,sock,0,origq,
+                         spot_data.point,0,desires_recursion,ect,0);
+              js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+***************
+*** 3527,3561 ****
+  
+  skip_delegation_ns:
+  
+-     /* If we do not have authority for this record... */
+-     if(have_authority == 0 && default_zonefile_enabled != 1) {
+-         /* Ask other DNS servers for RRs which we do not have authoity
+-            for.  */
+- 
+-         /* Launch a separate thread to recursivly determine the
+-            host name in question */
+- #ifndef AUTHONLY
+-         if(has_recursive_authority == 1 && desires_recursion == 1) {
+-             /* Recursion only works for IPV4 */
+- 	    if(ect->type != 4) {
+-                 js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+- 		return JS_ERROR;
+- 	        }
+- 	    /* Launch the thread that will process the request; we
+- 	     * copy ect->d over */
+- 	    z = ect->d;
+-             launch_thread(header.id,sock,*z,origq);
+- 	    }
+-         else
+- #endif
+-             udperror(sock,raw,0,0,REFUSED,
+-             "I'm sorry Dave (recurse attempt)",3,desires_recursion,ect,1);
+-         js_destroy(lookfor); 
+- 	js_destroy(origq); 
+- 	js_destroy(lc);
+-         return JS_SUCCESS;
+-         }
+- 
+      /* Skip search for star levels at the beginning of hostnames if
+       * dos_protection_level is greater than 17 */
+      if(dos_protection_level > 17) {
+--- 3478,3483 ----
+***************
+*** 3756,3761 ****
+--- 3678,3712 ----
+  	return JS_SUCCESS;
+          }
+  
++     /* If we do not have authority for this record... */
++     if(have_authority == 0 && default_zonefile_enabled != 1) {
++         /* Ask other DNS servers for RRs which we do not have authoity
++            for.  */
++ 
++         /* Launch a separate thread to recursivly determine the
++            host name in question */
++ #ifndef AUTHONLY
++         if(has_recursive_authority == 1 && desires_recursion == 1) {
++             /* Recursion only works for IPV4 */
++ 	    if(ect->type != 4) {
++                 js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
++ 		return JS_ERROR;
++ 	        }
++ 	    /* Launch the thread that will process the request; we
++ 	     * copy ect->d over */
++ 	    z = ect->d;
++             launch_thread(header.id,sock,*z,origq);
++ 	    }
++         else
++ #endif
++             udperror(sock,raw,0,0,REFUSED,
++             "I'm sorry Dave (recurse attempt)",3,desires_recursion,ect,1);
++         js_destroy(lookfor); 
++ 	js_destroy(origq); 
++ 	js_destroy(lc);
++         return JS_SUCCESS;
++         }
++ 
+      /* Currently, MaraDNS will not support star records for NS
+         subdelegation.  Code in ParseCsv1.c warns the user of this fact. */
+  

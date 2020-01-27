@@ -1,0 +1,134 @@
+This patch removed the following three undocumented MaraRC variables
+that are both undocumented and not currently implemented.  The three
+variables are:
+
+tuzona_inetd:  One of my very first users, back in the 0.5 days, was
+	porting MaraDNS to a specialized embedded system which did not
+	have proper fork() support but could run daemons from something
+	resembling Unix's inetd.  This allowed MaraDNS' zone server to
+	run on this system.  The project in question was eventually
+	abandoned around the 1.0 days, and this variable was never 
+	documented.
+
+	During the late 1.1 days, this feature was silently completely
+	disabled.  No one has complained that this is no longer here,
+	so I am now completely removing this from the mararc file.
+
+win9x_service: At one point, the 1.1 branch could run as a Win9x (but,
+	alas, not NT) service.  The code in question was BSD licensed with
+	the obnoxious advertising clause, so I couldn't include it with
+	MaraDNS.  By the time 1.2 came around, very few people are using
+	Windows 95/98/ME, so it makes little sense to still have this code.
+
+resurrections: The thinking behind this, during the early 1.1 days, was to
+	allow records to remain cached after they expired, so that people
+	could still get the IPs for the host in case of a catastrophic
+	failure of DNS.  Alas, it was too difficult to add this to the 
+	1.0/1.2 recursive code, so this project was finally completely 
+	dropped in 2004
+
+--- maradns-1.2.04/parse/ParseMaraRc.c	2006-02-09 12:00:39.000000000 -0800
++++ maradns-1.2.05/parse/ParseMaraRc.c	2006-02-12 20:49:53.000000000 -0800
+@@ -31,7 +31,7 @@
+ 
+ /* Keywords that are non-dictionary strings in Mara's rc file */
+ 
+-#define KEYCOUNT 46
++#define KEYCOUNT 43
+ 
+ char *keywords[KEYCOUNT] = {
+         "bind_address", /* IPv4 Addresses to bind to (old name) */
+@@ -92,11 +92,6 @@
+ 			     choose this or the mailing list will
+ 			     have a heated discussion about what 
+ 			     format to use every month or so */
+-        "tuzona_inetd", /* Do we run the zoneserver from inetd (security risk:
+-                           enabling this disables the zone_transfer_acl)
+-                           This feature is deprecated (never was 
+-                           documented) */
+-        "win9x_service", /* Run as Win9x (not NT) service (Thanks JEB) */
+         "verbose_level", /* How verbose error messages are */
+ 	"tcp_convert_acl", /* Who is allowed to use the zoneserver to forward 
+ 	                      requests to a UDP DNS server */
+@@ -104,11 +99,6 @@
+ 	                         forwards requests to */
+         "tcp_convert_recursion", /* Whether or not to ask for recursion when
+ 	                            sending requests to the UDP DNS server */
+-        "resurrections", /* Whether it is possible to look at expired 
+-                            data in case any of the nameservers for a 
+-                            given record can not be contacted; named
+-                            thusly because we "ressurect" expired data
+-                            if we need to */
+ 	"reject_aaaa", /* Send a bogus SOA whenever an AAAA request is sent
+ 			  to the server */
+ 	"reject_ptr", /* Send a bogus SOA whenever a PTR request is sent
+--- maradns-1.2.04/tcp/zoneserver.c	2006-01-21 21:22:01.000000000 -0800
++++ maradns-1.2.05/tcp/zoneserver.c	2006-02-12 21:03:48.000000000 -0800
+@@ -1060,12 +1060,7 @@
+     /* Initialize the psudo-random-number-generator */
+     srng();
+ 
+-    /* Determine if we are standalone, or if we should run from inetd */
+-    if(js_qstr2js(kvar_query,"tuzona_inetd") == JS_ERROR)
+-        harderror(L_MAKE_KQ);
+-    if(read_kvar(kvar_query,kvar_str) == JS_SUCCESS) {
+-        inetd = js_atoi(kvar_str,0);
+-        }
++    inetd = 0;
+ 
+     /* Get in to a state of least privledge ASAP */
+ 
+@@ -1119,8 +1114,7 @@
+         if(uid < 10)  /* Security check */
+ 	      uid = MARADNS_DEFAULT_UID;	
+ 
+-        if(inetd != 1) /* We have no logs if run from inetd */
+-            mlog(L_CHROOT_SUCCESS); /* "Root directory changed" */
++        mlog(L_CHROOT_SUCCESS); /* "Root directory changed" */
+ 
+         /* Bind to port 53
+            To Do: use capset to give us privledged bind abilities without
+@@ -1235,18 +1229,8 @@
+             mlog(L_DROP_SUCCESS); /* "Root privileges dropped" */
+ 
+         }
+-    else if(inetd != 1) {
+-        /* Bind to port 53 as a non-root user */
+-        if(js_qstr2js(kvar_query,"bind_address") == JS_ERROR)
+-            harderror(L_MAKE_KQ); /* "Could not create kvar_query" */
+-        if(read_kvar(kvar_query,bind_address) == JS_ERROR)
+-            harderror(L_BIND_GET); /* "Problem getting chroot kvar.\nYou must have bind_address set to the IP maradns will listen on" */
+-	/* OK, this is a cop-out */
+-	harderror("I didn't get around to finishing the conversion of the zoneserver so that\nit works with tuzona_inetd set.  I didn't think anyone actually used this\nfeature (it was never documented), so complain on the MaraDNS mailing list\nthat tuzona_inetd is broken.\n");
+-	/* 
+-        if(tcpbind(&sock,bind_address) == JS_ERROR) */
+-            harderror(L_BE_ROOT); /* "Problem binding to port 53.\nYou should run this as root" */
+-        mlog(L_SOCKET_SUCCESS);  /* "Socket opened on TCP port 53" */
++    else {
++	harderror("inetd is not zero; this is a fatal error.  Complain loudly on the MaraDNS\nmailing list.\n");
+         }
+ 
+     /* Make a database of IPs permitted to transfer zone file */
+@@ -1258,8 +1242,7 @@
+     if(read_kvar(kvar_query,kvar_str) == JS_ERROR)
+         harderror(L_NO_ACL); /* "Could not read zone_transfer_acl data" */
+     if(inetd == 1) {
+-        if(kvar_str->unit_count != 0)
+-            harderror(L_ACL_INETD); /* "zone_transfer_acl must not be set when running in inetd mode" */
++	harderror("inetd is set.  This is a fatal error.  You should not be seeing this\nComplain loudly on the MaraDNS mailing list.");
+         }
+     else {
+         if(make_ip_acl(kvar_str,zonetransfer_acl,500,0) == JS_ERROR) {
+@@ -1367,11 +1350,8 @@
+     /* Initialize decompression */
+     decomp_init(0);
+ 
+-    /* If we are being called from an external helper, such as inetd
+-       or tcpserver */
+     if(inetd == 1) {
+-        serve_zone(1,1);
+-        exit(0);
++        harderror("inetd is not zero.  This is a fatal error\nComplain loudly on the MaraDNS mailing list.\n");
+         }
+ 
+     /* Set up a signal handler so we can decrement the number of children

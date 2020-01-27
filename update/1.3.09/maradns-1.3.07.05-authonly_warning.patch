@@ -1,0 +1,23 @@
+--- maradns-1.3.07.06/server/MaraDNS.c.orig	2007-10-11 22:25:11.000000000 -0500
++++ maradns-1.3.07.06/server/MaraDNS.c	2007-10-11 22:26:01.000000000 -0500
+@@ -3629,6 +3629,7 @@
+ #ifndef __CYGWIN__
+     if(have_ipv6_address == 1) {
+         if(FD_ISSET(sock[counter],&rx_fd)) {
++	    socklen_t stupid_gcc_warning; /* To get rid of gcc warning */
+             len_inet = sizeof(struct sockaddr_in6);
+             ect->addrlen = len_inet;
+             ipv6_client = js_alloc(1,sizeof(struct sockaddr_in6));
+@@ -3638,8 +3639,11 @@
+ #ifdef SELECT_PROBLEM
+             fcntl(sock[counter], F_SETFL, O_NONBLOCK);
+ #endif
++            stupid_gcc_warning = ect->addrlen;
+             len = recvfrom(sock[counter],data->string,max_len,0,
+-                           (struct sockaddr *)ipv6_client,&(ect->addrlen));
++                           (struct sockaddr *)ipv6_client,
++			   &stupid_gcc_warning);
++            ect->addrlen = stupid_gcc_warning;
+ 
+             if(len < 0) {
+                 js_dealloc(ipv6_client);

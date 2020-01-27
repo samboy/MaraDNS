@@ -1,0 +1,81 @@
+--- maradns-1.2.03.2/parse/ParseMaraRc.c	2006-01-02 08:59:33.000000000 -0800
++++ maradns-1.2.04/parse/ParseMaraRc.c	2006-02-09 10:40:58.000000000 -0800
+@@ -31,7 +31,7 @@
+ 
+ /* Keywords that are non-dictionary strings in Mara's rc file */
+ 
+-#define KEYCOUNT 45
++#define KEYCOUNT 46
+ 
+ char *keywords[KEYCOUNT] = {
+         "bind_address", /* IPv4 Addresses to bind to (old name) */
+@@ -70,7 +70,8 @@
+         "maximum_cache_elements", /* Maximum number of elements in the cache */
+         "maxprocs",     /* Maximum number of udp threads or tcp processes */
+         "min_ttl_cname", /* Minimum TTL for CNAME records */
+-	"min_ttl", /* Minimum TTL for records */
++	"min_ttl", /* Minimum TTL for authoritative records */
++        "min_visible_ttl", /* Minimum TTL that MaraDNS will report */
+         "no_fingerprint", /* Do we remove certain distinctive traits that
+                              MaraDNS has; e.g. a TXT query of
+                              erre-con-erre-cigarro.maradns.org. tells us
+--- maradns-1.2.03.2/server/MaraDNS.c	2006-02-09 10:39:54.000000000 -0800
++++ maradns-1.2.04/server/MaraDNS.c	2006-02-09 10:47:20.000000000 -0800
+@@ -90,6 +90,7 @@
+                                      stars at end of hostnames) */
+ int no_cname_warnings = 0; /* Whether to supress warnings about dangling
+ 			      CNAMES or not */
++int min_visible_ttl = 30; /* The minimum TTL we will show the user */
+ 
+ /* Some variables used to assist in the housekeeping making sure we
+    do not display a given RR in the Additional records section twice */
+@@ -320,10 +321,10 @@
+         return 29;
+         }
+  
+-    if(expire - now > 30) {
++    if(expire - now > min_visible_ttl) {
+         return expire - now;
+         }
+-    return 30;
++    return min_visible_ttl;
+     }
+ 
+ /* Given a JS_STRING object with a DNS query (starting with the header)
+@@ -4076,6 +4077,10 @@
+     /* Get the minttl values from the kvar database (if there) */
+     min_ttl_n = read_numeric_kvar("min_ttl",300);
+     min_ttl_c = read_numeric_kvar("min_ttl_cname",min_ttl_n);
++    min_visible_ttl = read_numeric_kvar("min_visible_ttl",30);
++    if(min_visible_ttl < 5)
++        min_visible_ttl = 5;
++
+     /* Set the values */
+ #ifndef AUTHONLY
+     set_min_ttl(min_ttl_n,min_ttl_c);
+--- maradns-1.2.03.2/doc/en/source/mararc.ej	2006-01-02 08:59:33.000000000 -0800
++++ maradns-1.2.04/doc/en/source/mararc.ej	2006-02-09 11:03:02.000000000 -0800
+@@ -581,6 +581,23 @@
+ The default value for this is the value min_ttl has; the minimum value
+ for this is 180 (2 minutes).
+ 
++<h2>min_visible_ttl</h2>
++min_visible_ttl: The minimum value that we will will show as the TTL (time
++to live) value for a resource record to other DNS servers and stub resolvers.
++In other words, this is the minimum value we will ask other DNS server to
++cache (keep in their memory) a DNS resource record.  
++<p>
++
++The value is in seconds.  The default value for this is 30; the minimum 
++value this can have is 5.  People running highly loaded MaraDNS servers 
++may wish to increase this value to 3600 (one hour) in order to reduce the
++number of queries recursively processed by MaraDNS.
++<p>
++
++As an aside, RFC1123 section 6.1.2.1 implies that zero-length TTL records 
++should be passed on with a TTL of zero.  This, unfortunatly, breaks some
++stub resolvers (such as Mozilla's stub resolver).
++
+ <h2>no_fingerprint</h2>
+ no_fingerprint: Flag that allows MaraDNS to be harder to detect.
+ <p>

@@ -1,0 +1,61 @@
+diff -ur maradns-1.2.07.2/doc/en/webpage/changelog.embed maradns-1.2.07.3/doc/en/webpage/changelog.embed
+--- maradns-1.2.07.2/doc/en/webpage/changelog.embed	2006-04-05 02:11:48.000000000 -0700
++++ maradns-1.2.07.3/doc/en/webpage/changelog.embed	2006-05-03 15:24:40.000000000 -0700
+@@ -1,5 +1,14 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.07.3:
++<blockquote>
++<ul>
++<li>MaraDNS compiles on OpenBSD (Thanks, Adam Montague, for the OpenBSD
++    account).
++</ul>
++(2006.04.XX)
++</blockquote>
++
+ <p>maradns-1.2.07.2:
+ <blockquote>
+ <ul>
+diff -ur maradns-1.2.07.2/doc/en/webpage/index.embed maradns-1.2.07.3/doc/en/webpage/index.embed
+--- maradns-1.2.07.2/doc/en/webpage/index.embed	2006-03-10 01:59:45.000000000 -0800
++++ maradns-1.2.07.3/doc/en/webpage/index.embed	2006-05-03 15:30:34.000000000 -0700
+@@ -12,7 +12,7 @@
+ the server must use the absolute minimum number of resources possible (such
+ as on older PCs and embedded wi-fi routers).
+ MaraDNS was originally created in 2001; MaraDNS 1.0 was released in 2002
+-and MaraDNS 1.2 has just been released.  MaraDNS has been
++and MaraDNS 1.2 was released in December of 2005.  MaraDNS has been
+ extensively tested, both with a SQA process and with over three years of
+ real-world use. 
+ <p>
+diff -ur maradns-1.2.07.2/doc/en/webpage/roadmap.embed maradns-1.2.07.3/doc/en/webpage/roadmap.embed
+--- maradns-1.2.07.2/doc/en/webpage/roadmap.embed	2006-03-10 01:59:45.000000000 -0800
++++ maradns-1.2.07.3/doc/en/webpage/roadmap.embed	2006-05-03 15:40:29.000000000 -0700
+@@ -53,8 +53,24 @@
+     A records in the authoritative half.
+ </ul>
+ 
+-I have some ideas of what to do with MaraDNS after 1.2, but want to see
+-how people react to the 1.2 release before making definite post-1.2 plans.
++I have added the following features to the post-1.2.00 releases of MaraDNS:
++
++<ul>
++<li>Optional strict RFC-compliant handling of star records.
++<li>Added special record which sets up both forward and reverse DNS lookup
++    for a given IP.
++<li>Added limited remove administrative features (disabled by default), and
++    restricted all queries that give internal informaiton about MaraDNS to
++    a list of IPs specified by the admin.
++<li>Ability to customize the case of informing the DNS stub resolver how
++    to handle the case of being unable to contact any remote servers.
++<li>Daniel Zilli has translated all of Mara's documentation in to 
++    Brazilian Portuguese.
++</ul>
++
++My next plan for the 1.2 branch is to add the ability to query all of the 
++servers for a given zone multiple times before giving up.  I also
++plan on eventually rewriting MaraDNS in C++.
+ <p>
+-- Sam (2005.12.21)
++- Sam (2006.05.03)
+ 

@@ -1,0 +1,32 @@
+--- maradns-1.3.07.06/server/MaraDNS.c.orig	2007-09-29 22:28:29.000000000 -0500
++++ maradns-1.3.07.06/server/MaraDNS.c	2007-09-29 22:29:24.000000000 -0500
+@@ -4011,6 +4011,14 @@
+ 
+     verbose_query = read_numeric_kvar("verbose_query",0);
+ 
++    /* Set the dns_port */
++    dns_port = read_numeric_kvar("dns_port",53);
++    if(dns_port < 1 || dns_port > 65530) {
++        harderror("dns_port must be between 1 and 65530");
++        exit(1);
++    }
++    
++
+     /* Get the values for the synthetic SOA serial and the synthetic SOA
+        origin (called MNAME in RFC1035) */
+     synth_soa_serial = read_numeric_kvar("synth_soa_serial",1);
+@@ -4420,13 +4428,7 @@
+         exit(1);
+         }
+ 
+-    /* Set the dns_port and the upstream_port */
+-    dns_port = read_numeric_kvar("dns_port",53);
+-    if(dns_port < 1 || dns_port > 65530) {
+-        harderror("dns_port must be between 1 and 65530");
+-        exit(1);
+-    }
+-    
++    /* Set the upstream port */
+     set_upstream_port(read_numeric_kvar("upstream_port",53));
+ 
+     /* Create the big hash */

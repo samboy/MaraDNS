@@ -1,0 +1,99 @@
+From: Sam Trenholme <sam+i7tq5rg@chaosring.org>
+To: list@maradns.org
+Subject: [MARA] Patch that improves dangling CNAME document
+
+I have been getting some private email about someone getting a
+dangling CNAME warning.  After thinking about why he was getting
+this (my test setup didn't get the warning), I realized that a dangling 
+CNAME warning can also be caused by typos in the mara or in a zone file.
+
+I have updated the documentation to point this out.
+
+- Sam
+
+(2005/12/28: Patch revised to remove an hr that looked wrong in this
+ document)
+
+diff -ur maradns-1.2.00/doc/en/source/dangling.ej maradns-1.2.01/doc/en/source/dangling.ej
+--- maradns-1.2.00/doc/en/source/dangling.ej	2005-12-02 15:11:16.000000000 -0800
++++ maradns-1.2.01/doc/en/source/dangling.ej	2005-12-28 01:04:29.000000000 -0800
+@@ -19,6 +19,20 @@
+ 
+  -->
+ 
++There are two cases that can cause the "dangling CNAME" message
++to appear:
++
++<ul>
++<li><A href="#nonlocal">When a CNAME points to an external host
++    name.</A>
++<li><A href="#local">When a CNAME is misspelled or the host the
++    CNAME points to is misspelled</A>
++</ul>
++
++<A name=nonlocal>
++<h3>CNAMEs pointing to external host names</h3>
++</A>
++
+ Sometimes, people may wish to have local names point to external
+ entries with CNAME records.  For example, it may be desirable to
+ have the shortcut "google" for "www.google.com".  One way
+@@ -97,8 +111,6 @@
+ csv2["example.com."] = "db.example.com"
+ </pre>
+ 
+-<hr>
+-
+ If dangling CNAMEs are not an issue for a given setup, or if they are
+ resolved by the above setup with two instances of MaraDNS, the warnings
+ about dangling CNAMEs can be turned off by adding this to a mararc file:
+@@ -107,5 +119,49 @@
+ no_cname_warnings = 1
+ </pre>
+ 
++<A name=local>
++<h3>A typo can cause a dangling CNAME record</h3>
++</A>
++
++A typo can also cause a dangling CNAME record.  E.g:
++
++<pre>
++www.example.com. CNAME hoost1.example.com.
++host1.example.com. A 10.1.2.3
++</pre>
++
++Here, we mispelled the CNAME record; we meant to type "host1.example.com"
++but typed in "hoost1.example.com".  We can also get a dangling CNAME
++thusly:
++
++<pre>
++www.example.com. CNAME host1.example.com.
++hoost1.example.com. A 10.1.2.3
++</pre>
++
++Or by a typo in the <tt>mararc</tt> file:
++
++<pre>
++csv2["exammple.com."] = "db.example.com"
++</pre>
++
++(We typed in exammple.com when we should have typed in "example.com")
++
++<P>
++
++Followed by a zone file that looks like this:
++
++<pre>
++www.example.com. CNAME host1.example.com.
++host1.% A 10.1.2.3
++</pre>
++
++Since the % will expand to "exam<b>m</b>ple.com" instead of "example.com".
++
++<P>
++
++In all of these cases, the dangling CNAME warning will go away when the typo
++is found and corrected.
++
+ </BODY></HTML>
+ 

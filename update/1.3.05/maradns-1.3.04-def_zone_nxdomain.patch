@@ -1,0 +1,40 @@
+--- maradns-1.3.05/server/MaraDNS.c.orig	2007-05-13 21:19:41.000000000 -0500
++++ maradns-1.3.05/server/MaraDNS.c	2007-05-13 22:46:46.000000000 -0500
+@@ -3798,6 +3798,7 @@
+ 	     * "a.b.c.d.e.[...].y.z.[...].a.b.c.d[...and so on...].z. Where
+ 	     * the domain name was very long with very short labels.  Again,
+ 	     * not in the real world ) */
++            int store_rtype;
+ 	    if(labels > 120)
+ 		    continue;
+ 	    spot_data = mhash_get(bighash,lookfor);
+@@ -3808,9 +3809,27 @@
+ 		js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+ 		return JS_SUCCESS;
+ 	        }
+-	    } 
+ 
+-	/* OK, if we didn't find anything, make a "not here" reply */
++            /* If we failed, see if we return "not there" or NXDOMAIN */
++            store_rtype = get_rtype(lookfor);
++            if(store_rtype == JS_ERROR) {
++		goto serv_fail;
++                }
++            if(change_rtype(lookfor,RR_ANY) == JS_ERROR) {
++	        goto serv_fail;
++                }
++            spot_data = mhash_get(bighash,lookfor);
++            if(change_rtype(lookfor,store_rtype) == JS_ERROR) {
++	        goto serv_fail;
++                }
++            if(spot_data.value != 0 && spot_data.datatype == MARA_DNS_LIST) {
++                always_not_there = 4;
++	        } 
++
++            }
++	/* OK, if we didn't find anything, give out a 
++         * NXDOMAIN or "Not there" reply. */
++
+ 	/* Find the SOA record for the default zonefile */
+ 	if(change_rtype(lookfor,RR_SOA) == JS_ERROR) {
+ 		js_destroy(lookfor); js_destroy(origq); js_destroy(lc);

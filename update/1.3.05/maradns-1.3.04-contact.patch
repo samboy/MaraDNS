@@ -1,0 +1,84 @@
+--- maradns-1.3.04/doc/en/webpage/contact.embed	2006-10-08 18:32:42.000000000 -0500
++++ maradns-1.3.05/doc/en/webpage/contact.embed	2007-03-22 10:51:11.000000000 -0600
+@@ -1,21 +1,42 @@
+-<h1>Contact the author of MaraDNS</h1>
+-If you have a MaraDNS-related question, please include the following
+-information in your email:
++<h1>MaraDNS support</h1>
++Please read all of this page before you send me an email asking for
++MaraDNS support.
++<p>
++
++The <b>only</b> supported MaraDNS versions are:
++<ul>
++<li>MaraDNS 1.0.39
++<li>MaraDNS 1.0.40
++<li>MaraDNS 1.2.12.05
++<li>MaraDNS 1.3.04
++</ul>
++
++The version number of MaraDNS you are using can be obtained by typing
++in <tt>maradns --version</tt>.
++<p>
++
++If you have obtained an older version of MaraDNS from a third-party
++software repository, please let me know where you got MaraDNS so I can
++contact the people in charge of the offending repository and ask them
++to either update or remove MaraDNS.  
++<p>
++
++Be sure to include the following information in your email:
+ <ul>
+ <li>A copy of your <tt>mararc</tt> file (this is usually <tt>/etc/mararc</tt>)
+ <li>A copy of any relavant zone files (these can usually be found in the
+     <tt>/etc/maradns</tt> directory)
+ <li>The version number of MaraDNS that you are using (this can be obtained
+     by typing in <tt>maradns --version</tt>). 
++<li>The operating system that you are running MaraDNS under.
+ </ul>
+-I am constantly working on improving MaraDNS' documentation so that 
+-anyone else with the same question can also have their question
+-answered.  Therefore, I may answer your question by showing you
+-the relevant part of the MaraDNS documentation and asking you what 
+-isn't clear about the documentation.
+-<p>My email address is available 
+-<A href="http://www.samiam.org/mailme.php">here</A></p>
+-<p><b>Note</b>: If you are using MaraDNS 1.0, and have a question about
++
++Messages about concerns with an unsupported version of MaraDNS or without 
++all of the above information will be sent back to the sender, asking for
++more information or for the sender to update MaraDNS.
++<p>
++
++If you are using MaraDNS 1.0.39 or 1.0.40, and have a question about
+ how to configure MaraDNS, please 
+ <A href="http://www.maradns.org/tutorial/1.2/update.html">upgrade to 
+ MaraDNS 1.2</A>.  MaraDNS 1.2 has
+@@ -24,7 +45,27 @@
+ MaraDNS 1.0 available</A>.  You may also be able to get help by posting your
+ question to the MaraDNS mailing list.
+ <p>
++
+ If you are using 1.0 and have a bug to report, please feel free to report
+ it; I will continue to fix serious MaraDNS 1.0 bugs until December 21, 2007,
+ and MaraDNS 1.0 security bugs (should they arise) until December 21, 2010.
++<p>
++
++I am constantly working on improving MaraDNS' documentation so that 
++anyone else with the same question can also have their question
++answered.  Therefore, I may answer your question by showing you
++the relevant part of the MaraDNS documentation and asking you what 
++isn't clear about the documentation.
++<p>
++
++It may take me up to a week to reply to a given support question.  <b>Please
++be patient</b>.
++<p>
++
++Again, <b>I will not answer questions that do not tell me which version
++of MaraDNS you are using, that do not contain your mararc and relevant zone 
++files, and that do not tell me which operating system you are using</b>.
++My email address is available 
++<A href="http://www.samiam.org/mailme.php">here</A></p>
++
+ </p>

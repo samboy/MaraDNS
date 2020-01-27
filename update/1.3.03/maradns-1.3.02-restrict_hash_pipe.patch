@@ -1,0 +1,343 @@
+--- maradns-1.3.02/parse/Csv2_rr_txt.c	2006-07-17 20:50:44.000000000 -0700
++++ maradns-1.3.03/parse/Csv2_rr_txt.c	2007-01-26 21:27:39.000000000 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004-2006 Sam Trenholme
++/* Copyright (c) 2004-2007 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -409,8 +409,31 @@
+ 			 * quoted text; this should be fixed */
+ 			if(csv2_is_quote(look)) {
+ 				state = TXT_GET_STATE;
+-			}
+-			else {
++			} else if(stream->tilde_handling == 103) {
++				if(look == '#') {
++					csv2_error(stream,
++                           "The # character is not allowed in TXT records\n"
++                           "Please use the '\\x23' escape sequence instead.");
++                           		return 0;
++				} else if(look == '|') {
++					csv2_error(stream,
++                           "The | character is not allowed in TXT records\n"
++                           "Please use the '\\x7c' escape sequence instead.");
++                           		return 0;
++				} else if(look == 127) {
++					csv2_error(stream,
++                           "The DEL character is not allowed in TXT records\n"
++                           "Please use the '\\x7f' escape sequence instead.");
++				} else if(look < ' ') {
++					csv2_error(stream,
++   "Control characters (including newlines) are not allowed in TXT records\n"
++                        "Please use the appropriate escape sequence instead.");
++					return 0;
++				} else if(csv2_txt_append(out, look, &txt_len) 
++                                       != 1) {
++					return 0;
++				}
++			} else {
+ 				if(csv2_txt_append(out, look, &txt_len) != 1) {
+ 					return 0;
+ 				}
+--- maradns-1.3.03/doc/en/source/update.ej.orig	2007-01-26 18:54:21.000000000 -0800
++++ maradns-1.3.03/doc/en/source/update.ej	2007-01-26 21:25:35.000000000 -0800
+@@ -245,6 +245,23 @@
+ in TXT records.
+ 
+ <p>
++Note that, if tildes are used to separate records, the following restrictions
++are added to TXT records:
++
++<ul>
++<li>The pipe (|) character is not allowed in TXT records.  Use the '\x7c' 
++    escape sequence instead.  For example, change a TXT record that looks
++    like 'ls | more' to become 'ls '\x7c' more'
++
++<li>The pipe (#) character is not allowed in TXT records.  Use the '\x23' 
++    escape sequence instead.  For example, change a TXT record that looks
++    like 'press the # key' to become 'press the '\x23' key'
++
++<li>Control characters, including the newline character, are not allowed.
++    The escape sequence used depends on the desired control character.
++    For example, use \x0a for a UNIX linefeed.
++</ul>
++<p>
+ Another MaraDNS 1.3 change only affects the unusual case when one has
+ delegation NS records.  Let us suppose we have a zone file with the
+ following records:
+--- maradns-1.3.02/doc/en/source/csv2.ej	2007-01-09 12:16:34.000000000 -0800
++++ maradns-1.3.03/doc/en/source/csv2.ej	2007-01-26 21:48:27.000000000 -0800
+@@ -1,5 +1,5 @@
+ <HEAD>
+-<TH>CSV2 5 "December 2006" MARADNS "MaraDNS reference"</TH>
++<TH>CSV2 5 "January 2007" MARADNS "MaraDNS reference"</TH>
+ <DTWIDTH>3</DTWIDTH>
+ <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+ </HEAD>
+@@ -9,7 +9,7 @@
+ <h1>DESCRIPTION</h1>
+ The csv2 zone file format is the zone file format introduced in MaraDNS 1.2.
+ This zone file format uses any kind of whitespace (space, tab, and carriage
+-return), or the '|' character, to deliminate fields.  i
++return), or the '|' character, to deliminate fields.  
+ 
+ <h2>Tilde delimination</h2>
+ 
+@@ -17,7 +17,7 @@
+ in csv2 zone files; in order to maintain maximum compatibility with
+ MaraDNS 1.2 zone files, this feature is only enabled if a tilde is
+ placed between the first and second record.  Otherwise, tildes are
+-not allowed in zone files at all.
++not allowed in zone files.
+ 
+ <p>
+ 
+@@ -186,7 +186,13 @@
+ </pre>
+ 
+ Any binary data can be specified; see the <b>csv2_txt(5)</b> manual page
+-for full details.
++for full details.  
++<p>
++
++If tildes are used to separate records, a TXT record can not contain a
++'|' (pipe) character, a '#' character, nor any ASCII control character;
++these characters can be added to a TXT record via the use of escape
++sequences; read the csv2_txt man page for details.
+ 
+ <h2>SPF</h2>
+ 
+--- maradns-1.3.02/doc/en/source/csv2_txt.ej	2006-12-21 00:34:46.000000000 -0800
++++ maradns-1.3.03/doc/en/source/csv2_txt.ej	2007-01-26 21:46:07.000000000 -0800
+@@ -1,5 +1,5 @@
+ <HEAD>
+-<TH>CSV2_TXT 5 "February 2005" MARADNS "MaraDNS reference"</TH>
++<TH>CSV2_TXT 5 "January 2007" MARADNS "MaraDNS reference"</TH>
+ <DTWIDTH>3</DTWIDTH>
+ <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+ </HEAD>
+@@ -28,8 +28,11 @@
+ a.example.com. TXT 'This is some text' ~
+ </pre>
+ 
+-It is also possible, to place almost any byte with
+-a value less than 0x80 (128) between quotes.  If there are any bytes
++It is also possible, to place almost any printable ASCII characters 
++between quotes.  The '~' (tilde) character is not allowed unless 
++csv2_tilde_handling has a value of 0; the '|' (pipe), '#' (hash) and
++non-printable ASCII control characters are not allowed in TXT data
++if the ~ is used to separate records.  If there are any bytes
+ with a value of 0x80 or more, the data must be UTF-8 encoded Unicode.
+ <hibit>
+ For example:
+@@ -43,9 +46,9 @@
+ 
+ <p>
+ 
+-The ASCII characters not allowed in quotes are the ' character, the
+-'|' character, the '~' (tilde) character, and the '#' character.  See 
+-BACKSLASH ESCAPE SEQUENCES below for information on adding these 
++The printable ASCII characters not allowed in quotes are the ' character,
++the '|' character, the '~' (tilde) character, and the '#' character.
++See BACKSLASH ESCAPE SEQUENCES below for information on adding these
+ characters to TXT or RAW fields.
+ 
+ <h2>UNQUOTED DATA</h2>
+@@ -77,13 +80,12 @@
+ <h2>BACKSLASH ESCAPE SEQUENCES</h2>
+ 
+ In order to accommodate storing non-UTF-8 high bit characters, the
+-single quote character, the '|', '~', and '#' characters, and to permit 
+-multi-line
+-TXT/RAW records (with comments allowed mid-record), the TXT/RAW RR allows
+-backslashes.  These backslashes only have significance <i>outside</i>
+-of quoted text; if they are placed inside single quotes, they are not
+-interpreted and result in a literal backslash being added to the resource
+-record data.
++single quote character, non-printable ASCII control codes, the '|',
++'~', and '#' characters, and to permit multi-line TXT/RAW records
++(with comments allowed mid-record), the TXT/RAW RR allows backslashes.
++These backslashes only have significance <i>outside</i> of quoted text;
++if they are placed inside single quotes, they are not interpreted and
++result in a literal backslash being added to the resource record data.
+ 
+ <p>
+ 
+@@ -135,38 +137,38 @@
+ hi-bit data:
+ 
+ <pre>
+-e.example.com. TXT \x80\x81\x82\x83
++e.example.com. TXT \x80\x81\x82\x83 ~
+ </pre>
+ 
+ This same data can also be created as follows:
+ 
+ <pre>
+-f.example.com. TXT \200\201\202\203
++f.example.com. TXT \200\201\202\203 ~
+ </pre>
+ 
+ Octal and hex information can be mixed:
+ 
+ <pre>
+-g.example.com. TXT \200\x81\202\x83
++g.example.com. TXT \200\x81\202\x83 ~
+ </pre>
+ 
+ Literal single quotes can be placed in resource records:
+ 
+ <pre>
+-h.example.com. TXT 'perl -e '\''print "A Perl of a TXT record!\n"'\'
++h.example.com. TXT 'perl -e '\''print "A Perl of a TXT record!\n"'\' ~
+ </pre>
+ 
+ The above example produces this record:
+ 
+ <pre>
+-perl -e 'print "A Perl of a TXT record!\n"'
++perl -e 'print "A Perl of a TXT record!\n"' ~
+ </pre>
+ 
+ To render the '~' character, use the escape sequence \x7e (outside of
+ quotes).  For example:
+ 
+ <pre>
+-h1.example.com. TXT 'http://ocf.berkeley.edu/'\x7e'set'
++h1.example.com. TXT 'http://ocf.berkeley.edu/'\x7e'set' ~
+ </pre>
+ 
+ Produces this record:
+@@ -178,7 +180,7 @@
+ To render the '|' character, use the escape sequence \x7c:
+ 
+ <pre>
+-h2.example.com. TXT 'ls '\x7c' more'
++h2.example.com. TXT 'ls '\x7c' more' ~
+ </pre>
+ 
+ Produces this record:
+@@ -190,7 +192,7 @@
+ To render the '#' character, use the escape sequence \x23:
+ 
+ <pre>
+-h3.example.com. TXT 'Press '\x23' for customer service'
++h3.example.com. TXT 'Press '\x23' for customer service' ~
+ </pre>
+ 
+ Produces this record:
+@@ -206,7 +208,7 @@
+ record will span more than one line on an 80-column display:
+ 
+ <pre>
+-i.example.com. TXT 'Not only did the quick brown fox jump over the lazy dog, but the lazy dog jumped over the cat.'
++i.example.com. TXT 'Not only did the quick brown fox jump over the lazy dog, but the lazy dog jumped over the cat.' ~
+ </pre>
+ 
+ Without affecting this resource record, the same data can be split over 
+@@ -215,7 +217,7 @@
+ <pre>
+ j.example.com. TXT 'Not only did the quick brown fox jump '\
+                    'over the lazy dog, but the lazy dog'\
+-                   ' jumped over the cat.'
++                   ' jumped over the cat.' ~
+ </pre>
+ 
+ Some points:
+@@ -235,7 +237,7 @@
+ <pre>
+ k.example.com. TXT 'Not only did the quick brown fox jump '\ # The fox
+                    'over the lazy dog, but the lazy dog'\    # The dog
+-                   ' jumped over the cat.'                   # The cat
++                   ' jumped over the cat.' ~                 # The cat
+ </pre>
+ 
+ Note that, since the third comment is not preceeded by a backslash, this
+@@ -253,7 +255,7 @@
+ 
+ # Now we have some more comments, 
+ # followed by the rest of the data
+-    'and this is the rest of the data'
++    'and this is the rest of the data' ~
+ </pre>
+ 
+ <p>
+@@ -265,22 +267,22 @@
+ bytes long.  The default is to have one chunk, as follows:
+ 
+ <pre>
+-o.example.com. TXT 'TXT record with only one chunk'
++o.example.com. TXT 'TXT record with only one chunk' ~
+ </pre>
+ 
+ It is also possible to have a record with multiple chunks.  Chunks
+ are delimited by an unquoted ';' character:
+ 
+ <pre>
+-p.example.com. TXT 'This is chunk one';'This is chunk two'
++p.example.com. TXT 'This is chunk one';'This is chunk two' ~
+ </pre>
+ 
+ Or:
+ 
+ <pre>
+-q.example.com. TXT 'This is chunk one';\ # Our first chunk
+-                    This_is_chunk_two;\  # Our second chunk
+-                   'This is chunk three' # Our final chunk
++q.example.com. TXT 'This is chunk one';\   # Our first chunk
++                    This_is_chunk_two;\    # Our second chunk
++                   'This is chunk three' ~ # Our final chunk
+ </pre>
+ 
+ Quoted ; characters simply add a ; to the record data.
+@@ -300,14 +302,14 @@
+ It is possible to have zero length chunks:
+ 
+ <pre>
+-r.example.com. TXT 'chunk one';;'chunk three' # Chunk two zero-length
++r.example.com. TXT 'chunk one';;'chunk three' ~ # Chunk two zero-length
+ </pre>
+ 
+ In particular, is is possible to have zero length chunks at the
+ beginning and end of a TXT record:
+ 
+ <pre>
+-s.example.com. TXT ;'chunk two'; # Chunks one and three zero-length
++s.example.com. TXT ;'chunk two'; ~ # Chunks one and three zero-length
+ </pre>
+ 
+ Do not place semicolons at the beginning nor end of TXT records unless
+@@ -328,27 +330,27 @@
+ following manners:
+ 
+ <pre>
+-t1.example.com. RAW 40 \x10\x01\x02'Kitchen sink'\x2b' data'
++t1.example.com. RAW 40 \x10\x01\x02'Kitchen sink'\x2b' data' ~
+ </pre>
+ 
+ <pre>
+-t.example.com. RAW 40 \020\001\002Kitchen' sink+ data'
++t.example.com. RAW 40 \020\001\002Kitchen' sink+ data' ~
+ </pre>
+ 
+ <pre>
+-u.example.com. RAW 40 \x10\x01\x02Kitchen\x20sink+\x20data
++u.example.com. RAW 40 \x10\x01\x02Kitchen\x20sink+\x20data ~
+ </pre>
+ 
+ <pre>
+ v.example.com. RAW 40 \x10\001\x02\
+-                      'Kitchen sink+ data'
++                      'Kitchen sink+ data' ~
+ </pre>
+ 
+ <pre>
+ w.example.com. RAW 40 \x10\ # Meaning: 16
+                       \x01\ # Coding: 1
+                       \x02\ # Sub-coding: 2
+-                      'Kitchen sink+ data' # Data: 'Kitchen sink+ data'
++                      'Kitchen sink+ data' ~ # Data: 'Kitchen sink+ data'
+ </pre>
+ 
+ <h1>LEGAL DISCLAIMER</h1>

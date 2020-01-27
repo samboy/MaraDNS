@@ -1,0 +1,45 @@
+I would like to thank Joao Antunes for finding this.  I can't believe
+I didn't notice this myself.
+
+--- maradns-1.3.05/server/MaraDNS.c.orig	2007-05-15 08:11:08.000000000 -0500
++++ maradns-1.3.05/server/MaraDNS.c	2007-05-15 08:16:44.000000000 -0500
+@@ -3112,6 +3112,7 @@
+         js_destroy(lookfor);
+         udperror(sock,raw,0,0,SERVER_FAIL,"can't create origq string",2,
+ 			desires_recursion,ect,1);
++        js_destroy(lookfor);
+         return JS_ERROR;
+         }
+ 
+@@ -3127,6 +3128,7 @@
+            a fingerprint check. */
+         udperror(sock,raw,0,lookfor,NOT_IMPLEMENTED,"non-0 opcode",2,
+ 			desires_recursion,ect,1);
++        js_destroy(origq); js_destroy(lookfor);
+         return JS_SUCCESS;
+         }
+ 
+@@ -3134,9 +3136,11 @@
+     /* Down here so we can echo the question */
+     if(*(raw->string + length + 14) != 0 &&
+        *(raw->string + length + 15) != 1) {
+-        if(no_fingerprint != 1)
++        if(no_fingerprint != 1) {
+             udperror(sock,raw,0,lookfor,NOT_IMPLEMENTED,"Class not 1",2,
+ 			    desires_recursion,ect,1);
++            }
++        js_destroy(origq); js_destroy(lookfor);
+         return JS_ERROR;
+         }
+ 
+@@ -3891,7 +3895,9 @@
+        gotos */
+     serv_fail:
+         js_destroy(origq);
+-        js_destroy(lc);
++        if(lc != 0) {
++            js_destroy(lc);
++            }
+         if(no_fingerprint != 1)
+             udperror(sock,raw,0,lookfor,SERVER_FAIL,
+                      "serv_fail in proc_query",2,desires_recursion,ect,1);

@@ -1,0 +1,37 @@
+--- maradns-1.3.03/sqa/old-testbed/run.testbed	2006-08-14 13:02:07.000000000 -0700
++++ maradns-1.3.04/sqa/old-testbed/run.testbed	2007-02-17 23:39:32.000000000 -0800
+@@ -1,13 +1,16 @@
+ #!/bin/bash
+ 
+-../../server/maradns -f /etc/mararc.1 &
+-../../server/maradns -f /etc/mararc.2 &
++if [ ! -e /var/maradns ] ; then
++	./make.testbed
++fi
++../../server/maradns -f $(pwd)/mararc.1 &
++../../server/maradns -f $(pwd)/mararc.2 &
+ # .3 is reserved for the recursive server
+-../../server/maradns -f /etc/mararc.4 &
+-../../server/maradns -f /etc/mararc.5 &
+-../../server/maradns -f /etc/mararc.6 &
+-../../server/maradns -f /etc/mararc.7 &
+-../../server/maradns -f /etc/mararc.8 &
++../../server/maradns -f $(pwd)/mararc.4 &
++../../server/maradns -f $(pwd)/mararc.5 &
++../../server/maradns -f $(pwd)/mararc.6 &
++../../server/maradns -f $(pwd)/mararc.7 &
++../../server/maradns -f $(pwd)/mararc.8 &
+ # Dead host simulated
+ #../dead_host_simulate 127.240.240.241 &
+ #../dead_host_simulate 127.240.240.242 &
+--- maradns-1.3.03/sqa/old-testbed/make.testbed	2002-12-25 18:24:06.000000000 -0800
++++ maradns-1.3.04/sqa/old-testbed/make.testbed	2007-02-17 23:37:46.000000000 -0800
+@@ -2,7 +2,7 @@
+ 
+ # Set up mararc files for testing purposes
+ 
+-cp mararc.1 mararc.2 mararc.4 mararc.5 mararc.6 mararc.7 mararc.8 /etc
++#cp mararc.1 mararc.2 mararc.4 mararc.5 mararc.6 mararc.7 mararc.8 /etc
+ mkdir /var/maradns
+ cp db.com db.example.com db-root db.org db.example.org \
+    db.nslist.example.com db.0.0.127.in-addr.arpa /var/maradns

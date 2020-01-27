@@ -1,0 +1,31 @@
+--- maradns-1.2.10/server/recursive.c	2006-06-14 03:17:28.000000000 -0700
++++ maradns-1.2.11/server/recursive.c	2006-06-23 13:04:26.000000000 -0700
+@@ -3042,8 +3042,13 @@
+                         local_c->data = jstr_copy;
+                         break;
+                     default:
+-                        local_c->datatype = 10; /* NULL RR number, since this
+-                                                   data is invalid */
++                        local_c->datatype = RR_NULL; /* NULL RR number, 
++                                                        since this
++                                                        data is invalid; this
++                                                        hopefully does not
++                                                        stop the NULL RR 
++                                                        from being used by
++                                                        MaraDNS */
+                         local_c->data = NULL;
+                     }
+                 if(cpoint->next != NULL) {
+--- maradns-1.2.10/tcp/zoneserver.c	2006-03-22 00:00:24.000000000 -0800
++++ maradns-1.2.11/tcp/zoneserver.c	2006-06-23 13:06:21.000000000 -0700
+@@ -664,8 +664,8 @@
+     switch(*(data->string + 13 + length)) {
+         case RR_SOA: /* SOA */
+             soa_q = 1;
+-        case 251: /* IXFR */
+-        case 252: /* AXFR */
++        case RR_IXFR: /* IXFR */
++        case RR_AXFR: /* AXFR */
+             break;
+         default:
+             /* In the case of them having permission to both server

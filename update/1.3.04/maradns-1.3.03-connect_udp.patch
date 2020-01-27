@@ -1,0 +1,63 @@
+--- maradns-1.3.03/server/recursive.c	2007-02-14 07:25:28.000000000 -0800
++++ maradns-1.3.04/server/recursive.c	2007-02-16 13:46:29.000000000 -0800
+@@ -1685,8 +1685,7 @@
+ 	    printf("Bind failed, trying again\n");
+ 	    log_unlock();
+ 	    }
+-        /* XXX read some kvars which determine the range of this 
+-	   (V1.2 feature) */
++        /* To add: Read mararc parameters which determine the range of this */
+         dns_udp.sin_port = htons(15000 + (srng() & 4095));
+ 	counter++;
+ 	} while(bind(s,(struct sockaddr *)&dns_udp,sizeof(dns_udp)) < 0 &&
+@@ -1707,8 +1706,16 @@
+     /* (End code snippet removed in rng-disabled version) */
+ 
+     /* And send, on the same socket, the message to the server */
+-    counter = sendto(s,outdata->string,outdata->unit_count,0,
+-                 (struct sockaddr *)&server,len_inet);
++    /* Thanks to Rani Assaf for pointing out that you can actually
++     * connect with a UDP connection */
++#ifdef SELECT_PROBLEM
++    /* Set socket to non-blocking mode to work around select() being
++       unreliable in linux; packet may have been dropped.
++     */
++    fcntl(s, F_SETFL, O_NONBLOCK);
++#endif
++    connect(s, (struct sockaddr *)&server, sizeof(server));
++    counter = send(s,outdata->string,outdata->unit_count,0);
+     if(counter < 0) {
+         close(s);
+         if(rlog_level >= 4) {
+@@ -1726,8 +1733,13 @@
+     maxd = s + 1;
+     tv.tv_sec = timeout_seconds;
+     tv.tv_usec = 0;
++    /* Since a number of different threads will be at this point waiting
++     * for a reply from a remote DNS server on a heavily loaded resolver,
++     * we let each thread do a select() at the same time */
+     big_unlock();
+     n = select(maxd,&rx_set,NULL,NULL,&tv);
++    /* OK, we're done waiting for the slow remote DNS server.  Lock the
++     * thread again */
+     do_big_lock();
+     if(n == -1)  /* select error */ {
+         if(rlog_level >= 4) {
+@@ -1749,16 +1761,8 @@
+             }
+         goto minus2;
+         }
+-#ifdef SELECT_PROBLEM
+-    /* Set socket to non-blocking mode to work around select() being
+-       unreliable in linux; packet may have been dropped.
+-     */
+-    fcntl(s, F_SETFL, O_NONBLOCK);
+-#endif
+     /* Get the actual reply from the DNS server */
+-    if((count = recvfrom(s,indata->string,indata->max_count,0,
+-                         (struct sockaddr *)&dns_udp,
+-                         (socklen_t *)&len_inet)) < 0) {
++    if((count = recv(s,indata->string,indata->max_count,0)) < 0) {
+         close(s);
+         if(rlog_level >= 4) {
+             log_lock();

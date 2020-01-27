@@ -1,0 +1,114 @@
+diff -ur maradns-1.2.12.02.orig/doc/en/source/faq.embed maradns-1.2.12.02/doc/en/source/faq.embed
+--- maradns-1.2.12.02.orig/doc/en/source/faq.embed	2006-08-10 00:07:34.000000000 -0500
++++ maradns-1.2.12.02/doc/en/source/faq.embed	2006-08-10 00:16:40.000000000 -0500
+@@ -305,27 +305,31 @@
+ </A>
+ <H2>13. I feel that XXX feature should be added to MaraDNS</H2>
+ <p>
+-There are currently no plans to implement new features in MaraDNS.  The
+-reason for this is because, bottom line, MaraDNS has failed to make my
+-resume impressive enough for me to easily get a job in today's job
+-market.  
+-<p>
+-Both the BIND and NSD name servers were developed by having the programmers
+-paid to work on the programs.  PowerDNS was originally commercial software
+-with the author only reluctantly made GPL after seeing that the market
++The only thing that will convince me to implement a given feature for
++MaraDNS is cold, hard cash.  If you want me to keep a given feature
++proprietary, you better have lots of cold hard cash.  If you're willing
++to opensource your feature, less cash should be sufficient.
++<p>
++Keep in mind that both the BIND and NSD name servers were 
++developed by having the programmers paid to work on the programs.  
++PowerDNS was originally commercial software with the author only 
++reluctantly made GPL after seeing that the market
+ for a commercial DNS server is very small.  All of the other DNS servers
+ which have been developed as hobbyist projects (Posadis, Pdnsd, and djbdns)
+ are no longer being actively worked on by the primary developer.
+ <p>
+-If I were to work on MaraDNS again, it will be a complete rewrite in C++;
+-if I can get C++ on my resume, I may be able to get a job more easily.
++I plan on someday adding standards-compliant BIND zone file support.
++After that, I may even add real DNS slave support.
+ <p>
+-Like anything else, this is not absolute.  For example, if I see a large
++If I see a large
+ MaraDNS community and a strong demand for new features from that community,
+-I will change my mind.  Should ipv6 start to become dominant, I will update
++I will consider their wishes.  Especially if some of the members of 
++the community
++have large bank accounts.  Should ipv6 start to become dominant, I will update
+ MaraDNS to have full ipv6 support.  Should some other technology come along
+ that will require an update to MaraDNS for MaraDNS to continue to function
+-as a DNS server, I may update MaraDNS to use that technology.
++as a DNS server, I may very well update MaraDNS to use that technology.
++
+ 
+ <A NAME=docbook>
+ </A>
+diff -ur maradns-1.2.12.02.orig/doc/en/source/maradns.ej maradns-1.2.12.02/doc/en/source/maradns.ej
+--- maradns-1.2.12.02.orig/doc/en/source/maradns.ej	2005-12-21 01:30:34.000000000 -0600
++++ maradns-1.2.12.02/doc/en/source/maradns.ej	2006-08-10 00:21:42.000000000 -0500
+@@ -112,9 +112,7 @@
+ (as opposed to DOS or UNIX newlines), while the file will parse, any errors
+ in the file will be reported as being on line 1.
+ <p>
+-The maximum allowed number of threads is 125; this is a hard limit because
+-there may be problems with some pthreads implementations causing MaraDNS to
+-hang if this number is higher.  
++The maximum allowed number of threads is 5000.
+ <p>
+ The system startup script included with MaraDNS assumes that the only 
+ MaraDNS processes running are started by the script; it stops <i>all</i>
+@@ -152,13 +150,16 @@
+ MaraDNS does not use the zone file ("master file") format specified in 
+ chapter 5 of RFC1035.
+ <p>
+-If a wildcard MX record exists in the form "*.example.com", and
++MaraDNS default behavior with star records is not RFC-compliant.
++In more detail, 
++if a wildcard MX record exists in the form "*.example.com", and
+ there is an A record for "www.example.com", but no MX record for
+ "www.example.com", the correct behavior (based on RFC1034 
+ <hibit alt="section ">§</hibit>4.3.3)
+ is to return "no host" (nothing in the answer section, SOA in the
+ authority section, 0 result code) for a MX request to "www.example.com".
+ Instead, MaraDNS returns the MX record attached to "*.example.com".
++This can be changed by setting <tt>bind_star_handling</tt> to 1.
+ <p>
+ Star records (what RFC1034 calls "wildcards") can not be attached to
+ NS records.
+@@ -189,11 +190,6 @@
+ MaraDNS, like every other known DNS implementation, only supports a 
+ QDCOUNT of 0 or 1.
+ <p>
+-MaraDNS does not send more than one DNS packet to a given DNS server when
+-processing a DNS request; this is not a serious problem because most
+-client implementations send multiple DNS packets to a recurisve DNS server
+-when processing a DNS request.
+-<p>
+ MaraDNS spawns a new thread for every single recursive DNS request 
+ when the data in question is not in MaraDNS' cache; this
+ makes MaraDNS an excellent stress tester for pthread implementations.  
+@@ -209,9 +205,6 @@
+ <i>These are features which will not be implemented in the 1.2 release 
+ of MaraDNS:</i>
+ <p>
+-MaraDNS does not have a "fully qualified host name" record, which would 
+-automagically create a PTR record from an A record.
+-<p>
+ MaraDNS does not have a disk-based caching scheme for authoritative 
+ zones.  
+ <p>
+@@ -226,11 +219,6 @@
+ <p>
+ MaraDNS only has limited authoritative-only support for IPv6.
+ <p>
+-MaraDNS generally does not support any DNS features which are not present 
+-in RFC1034 and RFC1035.  The exceptions are the ability to decompress some
+-RRs not in RFC1035, and zone file support for AAAA records (RFC 1886) and 
+-SRV records (RFC 2052).
+-<p>
+ MaraDNS only allows wildcards
+ at the beginning or end of a host name.  E.g. names with wildcards like 
+ "foo.*.example.com".  "www.*" will work, however, if a default zonefile is

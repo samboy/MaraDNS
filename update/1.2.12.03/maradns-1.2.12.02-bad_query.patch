@@ -1,0 +1,227 @@
+diff -ur maradns-1.2.12.03.orig/server/MaraDNS.c maradns-1.2.12.03/server/MaraDNS.c
+--- maradns-1.2.12.03.orig/server/MaraDNS.c	2006-10-07 10:35:32.000000000 -0500
++++ maradns-1.2.12.03/server/MaraDNS.c	2006-10-07 10:42:06.000000000 -0500
+@@ -414,13 +414,13 @@
+ 
+ int udperror(int sock,js_string *raw, struct sockaddr_in *from,
+              js_string *question, int error,
+-             char *why,int min_log_level, int rd_val, conn *ect) {
++             char *why,int min_log_level, int rd_val, conn *ect,int log_msg) {
+ 
+     q_header header;
+     js_string *reply;
+     int len_inet = sizeof(struct sockaddr);
+ 
+-    if(log_level >= min_log_level) {
++    if(log_level >= min_log_level && log_msg == 1) {
+         show_timestamp();
+         zjlog(L_BAD_QUERY,raw); /* "Bad query received: " */
+         if(ect != 0 && ect->type == 4) {
+@@ -1022,7 +1022,7 @@
+     giveerror:
+         js_destroy(ar);
+         udperror(sock,most,client,0,SERVER_FAIL,"giveerror in udpsuccess",2,
+-			rd_value,ect);
++			rd_value,ect,1);
+         js_destroy(most);
+ 
+         /* Clean up the seenlist_where list */
+@@ -1721,7 +1721,7 @@
+         js_destroy(ar);
+         js_destroy(ns);
+         udperror(sock,most,client,0,SERVER_FAIL,"compression failure",2,
+-			rd_value,ect);
++			rd_value,ect,1);
+         js_destroy(most);
+         return JS_ERROR;
+         }
+@@ -1761,7 +1761,7 @@
+         js_destroy(ar);
+         js_destroy(ns);
+         udperror(sock,most,client,0,SERVER_FAIL,"giveerror in udpany",2,
+-			rd_value,ect);
++			rd_value,ect,1);
+         js_destroy(most);
+ 
+         /* Clean up the seenlist_where list
+@@ -2192,7 +2192,7 @@
+     if(compress_data(most,ar) == JS_ERROR) {
+         js_destroy(ar);
+         udperror(sock,most,client,0,SERVER_FAIL,"compression failure",2,
+-			rd_value,ect);
++			rd_value,ect,1);
+         js_destroy(most);
+         if(synth_ns_record != 0) { js_destroy(synth_ns_record); }
+         return JS_ERROR;
+@@ -2226,7 +2226,7 @@
+         if(synth_ns_record != 0) { js_destroy(synth_ns_record); }
+         js_destroy(ar);
+         udperror(sock,most,client,0,SERVER_FAIL,"giveerror in udpstar",2,
+-			rd_value,ect);
++			rd_value,ect,1);
+         js_destroy(most);
+         return JS_ERROR;
+ 
+@@ -2443,7 +2443,7 @@
+     if(compress_data(most,compressed) == JS_ERROR) {
+         js_destroy(compressed);
+         udperror(sock,most,client,0,SERVER_FAIL,"Compression failure",2,
+-			rd_value,ect);
++			rd_value,ect,1);
+         js_destroy(most);
+         return JS_ERROR;
+         }
+@@ -2474,7 +2474,7 @@
+     giveerror:
+         js_destroy(compressed);
+         udperror(sock,most,client,0,SERVER_FAIL,"giveerror in udpnotfound",2,
+-			rd_value,ect);
++			rd_value,ect,1);
+         js_destroy(most);
+         return JS_ERROR;
+ 
+@@ -2992,7 +2992,7 @@
+     /* Get the header */
+     if(read_hdr(raw,&header) == JS_ERROR) { /* Something went wrong,
+                                                return error "Format error" */
+-        udperror(sock,raw,0,0,FORMAT_ERROR,"Couldn't get header",2,0,ect);
++        udperror(sock,raw,0,0,FORMAT_ERROR,"Couldn't get header",2,0,ect,1);
+         return JS_SUCCESS;
+         }
+ 
+@@ -3009,7 +3009,7 @@
+     if(header.qdcount != 1) {
+         if(no_fingerprint != 1)
+             udperror(sock,raw,0,0,NOT_IMPLEMENTED,"Qdcount not 1",2,
+-			    desires_recursion,ect);
++			    desires_recursion,ect,1);
+         return JS_SUCCESS;
+         }
+ 
+@@ -3017,7 +3017,7 @@
+     if(raw->unit_count < 14) {
+         if(no_fingerprint != 1)
+             udperror(sock,raw,0,0,FORMAT_ERROR,"bad question hdr",2,
+-			    desires_recursion,ect);
++			    desires_recursion,ect,1);
+         return JS_SUCCESS;
+         }
+ 
+@@ -3026,7 +3026,7 @@
+     if(length < 0 || length > 255) {
+         if(no_fingerprint != 1)
+             udperror(sock,raw,0,0,FORMAT_ERROR,"bad question length",2,
+-			    desires_recursion,ect);
++			    desires_recursion,ect,1);
+         return JS_SUCCESS;
+         }
+ 
+@@ -3034,7 +3034,7 @@
+                                            and 4 for the type and class */
+         if(no_fingerprint != 1)
+             udperror(sock,raw,0,0,FORMAT_ERROR,"question doesn't fit",2,
+-			    desires_recursion,ect);
++			    desires_recursion,ect,1);
+         return JS_SUCCESS;
+         }
+ 
+@@ -3042,13 +3042,13 @@
+     if((lookfor = js_create(256,1)) == 0) {
+         if(no_fingerprint != 1)
+             udperror(sock,raw,0,0,SERVER_FAIL,
+-                     "can't create lookfor string",2,desires_recursion,ect);
++                     "can't create lookfor string",2,desires_recursion,ect,1);
+         return JS_ERROR;
+         }
+     if((origq = js_create(256,1)) == 0) {
+         js_destroy(lookfor);
+         udperror(sock,raw,0,0,SERVER_FAIL,"can't create origq string",2,
+-			desires_recursion,ect);
++			desires_recursion,ect,1);
+         return JS_ERROR;
+         }
+ 
+@@ -3063,7 +3063,7 @@
+         /* Since TinyDNS also returns NOT_IMPLEMENTED here, no need for
+            a fingerprint check. */
+         udperror(sock,raw,0,lookfor,NOT_IMPLEMENTED,"non-0 opcode",2,
+-			desires_recursion,ect);
++			desires_recursion,ect,1);
+         return JS_SUCCESS;
+         }
+ 
+@@ -3073,7 +3073,7 @@
+        *(raw->string + length + 15) != 1) {
+         if(no_fingerprint != 1)
+             udperror(sock,raw,0,lookfor,NOT_IMPLEMENTED,"Class not 1",2,
+-			    desires_recursion,ect);
++			    desires_recursion,ect,1);
+         return JS_ERROR;
+         }
+ 
+@@ -3538,7 +3538,7 @@
+         else
+ #endif
+             udperror(sock,raw,0,0,REFUSED,
+-            "I'm sorry Dave (recurse attempt)",3,desires_recursion,ect);
++            "I'm sorry Dave (recurse attempt)",3,desires_recursion,ect,1);
+         js_destroy(lookfor); 
+ 	js_destroy(origq); 
+ 	js_destroy(lc);
+@@ -3760,7 +3760,7 @@
+         js_destroy(lc);
+         if(no_fingerprint != 1)
+             udperror(sock,raw,0,lookfor,SERVER_FAIL,
+-                     "serv_fail in proc_query",2,desires_recursion,ect);
++                     "serv_fail in proc_query",2,desires_recursion,ect,1);
+         js_destroy(lookfor);
+         return JS_ERROR;
+ 
+@@ -3769,7 +3769,7 @@
+         js_destroy(lc);
+         if(no_fingerprint != 1)
+             udperror(sock,raw,0,lookfor,NOT_IMPLEMENTED,
+-                     "not_impl in proc_query",2,desires_recursion,ect);
++                     "not_impl in proc_query",2,desires_recursion,ect,1);
+         js_destroy(lookfor);
+         return JS_ERROR;
+ 
+diff -ur maradns-1.2.12.03.orig/server/recursive.c maradns-1.2.12.03/server/recursive.c
+--- maradns-1.2.12.03.orig/server/recursive.c	2006-08-14 15:02:07.000000000 -0500
++++ maradns-1.2.12.03/server/recursive.c	2006-10-07 10:42:54.000000000 -0500
+@@ -128,7 +128,7 @@
+ extern int udperror(int sock,js_string *raw, struct sockaddr_in *from, 
+                     js_string *question,
+ 		    int error,char *why, int min_log_level, int rd_val, 
+-		    conn *ect);
++		    conn *ect,int log_msg);
+ extern int udpnotfound(rr *where, int id, int sock, 
+ 		       struct sockaddr_in *client,js_string *query, 
+ 		       int qtype, int rd_val, conn *ect, 
+@@ -3202,7 +3202,7 @@
+                         return JS_ERROR;
+                         }
+                     udperror(sock,synthesized_header,&client,query,SERVER_FAIL,
+-                             "No reply from remote servers",2,1,0);
++                             "No reply from remote servers",2,1,0,0);
+                     js_destroy(synthesized_header);
+                     }
+ 	        }
+@@ -3236,7 +3236,7 @@
+                 return JS_ERROR;
+                 }
+             udperror(sock,synthesized_header,&client,query,SERVER_FAIL,
+-                 "No reply from remote servers",2,1,0);
++                 "No reply from remote servers",2,1,0,0);
+             js_destroy(synthesized_header);
+             }
+         }
+@@ -3503,7 +3503,7 @@
+             return JS_ERROR;
+             }
+         udperror(sock,synthesized_header,&client,query,FORMAT_ERROR,
+-                 "Didn't spawn thread",2,1,0);
++                 "Didn't spawn thread",2,1,0,0);
+         js_destroy(synthesized_header);
+         return JS_ERROR;
+         }

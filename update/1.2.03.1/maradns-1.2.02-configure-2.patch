@@ -1,0 +1,11 @@
+diff -ur maradns-1.2.03/configure maradns-1.2.03.new/configure
+--- maradns-1.2.03/configure	Sat Jan 14 17:39:18 2006
++++ maradns-1.2.03.new/configure	Sat Jan 14 17:51:08 2006
+@@ -93,6 +93,7 @@
+ 	# Mingw32 doesn't support symlinks
+ 	cp server/MaraBigHash_en.h server/MaraBigHash_locale.h
+ 	cp server/MaraDNS_en.h server/MaraDNS_locale.h
++	cp COPYING 00README.FIRST
+ 	exit 0
+ elif echo $UNAME | grep -i cygwin > /dev/null ; then
+ 	cat $BUILDDIR/Makefile.noflock >> Makefile

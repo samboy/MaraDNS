@@ -1,0 +1,59 @@
+--- maradns-1.3.05/MaraDns.h	2007-01-09 14:16:34.000000000 -0600
++++ maradns-1.3.06/MaraDns.h	2007-06-19 08:38:40.000000000 -0500
+@@ -19,6 +19,14 @@
+ #ifndef MARADNSH_DEFINED
+ #define MARADNSH_DEFINED
+ 
++/* Some constants that are fairly OS specific, concerning the amount of
++ * memory threads can use.  These numbers should be higher than the
++ * maximum possible thread overhead */
++/* The amount of memory used to have threads at all */
++#define THREAD_OVERHEAD 33554432
++/* The amount of memory a single thread will use */
++#define PER_THREAD_MEM 131072
++
+ /* Franky Van Liedekerke's contributions so this can compile on Solaris */
+ #ifdef SOLARIS
+ #ifndef _uint_defined
+--- maradns-1.3.06/server/MaraDNS.c.orig	2007-06-19 08:31:38.000000000 -0500
++++ maradns-1.3.06/server/MaraDNS.c	2007-06-19 08:40:07.000000000 -0500
+@@ -4288,7 +4288,11 @@
+                              * get a remote reply at all */
+     int retry_cycles = 2; /* Number of times to try and contact all of the
+                            * name servers for a given domain */
++    int thread_overhead = THREAD_OVERHEAD; /* The amount of memory we need
++                                            * to allow to be allocated for
++                                            * threads */
+ #else
++    int thread_overhead = 0; /* No memory needed for threads */
+ /* Cygwin doesn't have ipv6 support yet */
+ #ifndef __CYGWIN__
+     struct sockaddr_in6 *clin6;
+@@ -4631,6 +4635,7 @@
+         /* Load the "seed" data in to the DNS cache */
+         counter = init_cache(cache_size,maxprocs,max_glueless,max_q_total,
+                              timeout,verbose_query);
++        thread_overhead += maxprocs * PER_THREAD_MEM;
+         if(counter < 0) {
+             switch(counter) {
+                 case -7:
+@@ -4713,7 +4718,8 @@
+ 	    }
+         }
+     /* END RNG USING CODE */
+-    }
++    } else { /* We can lower the cap of maximum memory usable */
++	thread_overhead = 0; }
+ #else /* AUTHONLY */
+     /* Die right away so an admin isn't scratching their head wondering why
+      * Mara isn't able to recursively resolve hostname */
+@@ -4978,7 +4984,8 @@
+     /* Limit the maximum amount of memory we can allocate, in
+      * bytes */
+     maxprocs = read_numeric_kvar("max_mem",
+-               1048576 + ((cache_size + dns_records_served) * 1536));
++               1048576 + thread_overhead + 
++               ((cache_size + dns_records_served) * 1536));
+     if(maxprocs < 262144 && maxprocs > 0) { maxprocs = 262144; }
+     if(maxprocs > 0) {
+       rlim.rlim_cur = rlim.rlim_max = maxprocs;

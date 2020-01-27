@@ -1,0 +1,30 @@
+Udperror was broken; this fixes it.
+
+--- maradns-1.2.06-orig/server/MaraDNS.c	2006-03-01 23:26:25.000000000 -0800
++++ maradns-1.2.06/server/MaraDNS.c	2006-03-01 23:31:11.000000000 -0800
+@@ -422,7 +422,10 @@
+     header.ra = 0;
+     header.z = 0;
+     header.rcode = error;
+-    header.qdcount = 0;
++    if(question == 0) 
++        header.qdcount = 0;
++    else
++        header.qdcount = 1;
+     header.ancount = 0;
+     header.nscount = 0;
+     header.arcount = 0;
+@@ -435,11 +438,11 @@
+ 
+     /* Append the question, if there is one */
+     if(question != 0) {
+-       if(js_append(question,reply) != JS_SUCCESS) {
++       if(js_append(question,reply) == JS_ERROR) {
+            js_destroy(reply);
+            return JS_ERROR;
+            }
+-       if(js_adduint16(reply,1) != JS_SUCCESS) {
++       if(js_adduint16(reply,1) == JS_ERROR) {
+            js_destroy(reply);
+            return JS_ERROR;
+            }

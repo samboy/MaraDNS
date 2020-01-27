@@ -1,0 +1,16 @@
+MaraDNS follows the syntax of Python 2.2.3, actually (not 2.3.3).  Not
+that it makes any difference, but still.
+
+--- maradns-1.2.05/doc/en/source/mararc.ej.orig	2006-02-21 16:27:32.000000000 -0800
++++ maradns-1.2.05/doc/en/source/mararc.ej	2006-02-21 16:27:53.000000000 -0800
+@@ -8,8 +8,8 @@
+ mararc - Format of the mararc zone file that MaraDNS uses
+ 
+ <h1>MARARC FILE FORMAT</h1>
+-Mararc files use a syntax that is a subset of Python 2.3.3 syntax.  In
+-particular, Python 2.3.3 (and possibly other versions of Python) can read
++Mararc files use a syntax that is a subset of Python 2.2.3 syntax.  In
++particular, Python 2.2.3 (and possibly other versions of Python) can read
+ a properly formatted mararc file without error.
+ <p>
+ Unlike Python, however, a mararc file can only use certain variable names, 

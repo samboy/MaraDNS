@@ -1,0 +1,196 @@
+--- maradns-1.2.12.02/doc/en/source/recursive.ej	2006-03-22 02:00:24.000000000 -0600
++++ maradns-1.2.12.03/doc/en/source/recursive.ej	2006-08-15 12:47:01.000000000 -0500
+@@ -157,13 +157,6 @@
+ They are the best name servers for simple "set and forget" recursive
+ environments.
+ 
+-<!--
+-There are a lot of legitimate objections to the ICANN name servers.  I am
+-not happy that they blocked the existence of the <tt>.xxx</tt> top-level
+-domain.  I also feel that they are too US-centric.  We're commenting this
+-out because religious issues don't belong in a technical document. 
+- -->
+-
+ <p>
+ 
+ It is possible, however, to change the root DNS servers used by setting the
+@@ -216,7 +209,7 @@
+ ipv4_bind_addresses = "localhost"
+ chroot_dir = "/etc/maradns"
+ recursive_acl = "localhost"
+-ipv4_alias["icann-a"] = "198.41.0.4,"
++ipv4_alias["icann-a"] = "198.41.0.4"
+ ipv4_alias["icann-b"] = "192.228.79.201"
+ ipv4_alias["icann-c"] = "192.33.4.12"
+ ipv4_alias["icann-d"] = "128.8.10.90"
+@@ -330,7 +323,7 @@
+ </pre>
+ 
+ Replace 192.168.0.1 with the IP of the machine running the recursive MaraDNS;
+-replace 192.168.0.0/24 (This means "anything which begins with "192.168.0")
++replace 192.168.0.0/24 (This means "anything that begins with 192.168.0")
+ with the IP range allowed to access the recursive DNS server.
+ 
+ <p>
+@@ -347,7 +340,7 @@
+ <p>
+ 
+ More information on having host names for an internal network is available
+-in the <A href=authoritative.html#network>network section of the
++in the <A href="authoritative.html#network">network section of the
+ authoritative document</A>.
+ 
+ <A name=custom>
+--- maradns-1.2.12.02/doc/en/source/glossary.ej	2005-10-03 15:13:46.000000000 -0500
++++ maradns-1.2.12.03/doc/en/source/glossary.ej	2006-08-15 12:40:35.000000000 -0500
+@@ -2,7 +2,7 @@
+ <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+ </HEAD><BODY>
+ 
+-<!-- Copyright 2005 Sam Trenholme
++<!-- Copyright 2005-2006 Sam Trenholme
+ 
+     TERMS
+ 
+@@ -22,80 +22,80 @@
+ <DL>
+ 
+ <A name="authoritative">
+-<DT>Authoritative DNS server</DT>
++<DT><b>Authoritative DNS server</b></DT>
+ <DD>A DNS server which <i>recursive DNS servers</i> contact in order to 
+-<i>resolve</i> a given <i>DNS node</i> </DD>
++<i>resolve</i> a given <i>DNS node</i> <p></DD>
+ 
+ <A name="dns_node">
+-<DT>DNS node</DT>
++<DT><b>DNS node</b></DT>
+ <DD>A name which DNS usually converts in to an IP, such as www.yahoo.com.  
+-Not all DNS nodes have IPs, however.</DD>
++Not all DNS nodes have IPs, however.<p></DD>
+ 
+ <A name="dns_record">
+-<DT>DNS record</DT>
++<DT><b>DNS record</b></DT>
+ <DD>A single piece of DNS data, which can either be data for a DNS node, 
+-or meta-data which DNS uses.</DD>
++or meta-data which DNS uses.<p></DD>
+ 
+ <A name="dns_server">
+-<DT>DNS server</DT>
+-<DD>A program which resolves DNS records</DD>
++<DT><b>DNS server</b></DT>
++<DD>A program which resolves DNS records<p></DD>
+ 
+ <A name="dns_admin">
+-<DT>DNS server administrator</DT>
++<DT><b>DNS server administrator</b></DT>
+ <DD>A person who manages DNS; setting up DNS servers, changing DNS records,
+-and what not.</DD>
++and what not.<p></DD>
+ 
+ <A name="registry">
+-<DT>Domain registry</DT>
++<DT><b>Domain registry</b></DT>
+ <DD>A domain registry is a company that allows one to have their 
+ <i>authoritative DNS servers</i> be contacted by <i>recursive name 
+-servers</i>. </DD>
++servers</i>. <p></DD>
+ 
+ <A name="suffix">
+-<DT>Domain suffix</DT>
++<DT><b>Domain suffix</b></DT>
+ <DD>The part of the domain which is (usually) after the first dot in a 
+ DNS node.  The domain suffix for www.yahoo.com, for example, is yahoo.com. 
+-</DD>
++<p></DD>
+ 
+ <A name="zone">
+-<DT>Domain zone</DT>
++<DT><b>Domain zone</b></DT>
+ <DD>A domain zone is a set of one or more DNS nodes.  All names in a given 
+-domain zone share the same <i>domain suffix</i>. </DD>
++domain zone share the same <i>domain suffix</i>. <p></DD>
+ 
+ <A name="ip">
+-<DT>IP</DT>
++<DT><b>IP</b></DT>
+ <DD>A number which a computer connected to the internet has, similiar to a 
+-phone number. </DD>
++phone number. <p></DD>
+ 
+ <A name="isp">
+-<DT>Internet service provider</DT>
++<DT><b>Internet service provider</b></DT>
+ <DD>An internet service provider (or ISP) is a company that offers
+-access to the internet.</DD>
++access to the internet.<p></DD>
+ 
+ <A name="mta">
+-<DT>Mail Transport Agent</DT>
++<DT><b>Mail Transport Agent</b></DT>
+ <DD>A computer program which accepts incoming SMTP (email) connections,
+-allowing a server to receive email.</DD>
++allowing a server to receive email.<p></DD>
+ 
+ <A name="recursive">
+-<DT>Recursive DNS server</DT>
++<DT><b>Recursive DNS server</b></DT>
+ <DD>A recursive DNS server is a DNS server which contacts other DNS 
+-servers to <i>resolve</i> a given <i>DNS node</i>. </DD>
++servers to <i>resolve</i> a given <i>DNS node</i>. <p></DD>
+ 
+ <A name="resolve">
+-<DT>To resolve</DT>
++<DT><b>To resolve</b></DT>
+ <DD>To convert a <i>DNS node</i>, such as www.yahoo.com, in
+-to an IP, such as 10.17.243.32.</DD>
++to an IP, such as 10.17.243.32.<p></DD>
+ 
+ <A name="serve">
+-<DT>To serve</DT>
++<DT><b>To serve</b></DT>
+ <DD>The action of an authoritative DNS server making DNS nodes available 
+-to recursive DNS servers.</DD>
++to recursive DNS servers.<p></DD>
+ 
+ <A name="static">
+-<DT>Static IP address</DT>
++<DT><b>Static IP address</b></DT>
+ <DD>A static IP address is an IP addresses whose value does not change.
+-Only some internet service providers offer static IP addresses.</DD>
++Only some internet service providers offer static IP addresses.<p></DD>
+ 
+ </DL>
+ 
+--- maradns-1.2.12.02/doc/en/source/update.ej	2006-03-22 02:00:24.000000000 -0600
++++ maradns-1.2.12.03/doc/en/source/update.ej	2006-08-15 13:02:37.000000000 -0500
+@@ -22,9 +22,13 @@
+ <h1>Table of contents</h1>
+ <ul>
+ <li><A href=#1.0>Updating from 1.0 to 1.2</A>
+-<li><A href=#1.2.03>Updating from 1.2.03 to 1.2.07</A>
++<li><A href=#1.2.03>Updating from 1.2.03 to a later 1.2 release</A>
+ </ul>
+ 
++This document is divided in to two parts; anyone upgrading from a
++1.0 release to a recent 1.2 release will need to look over both
++sections of this document.
++
+ <A name=1.0>
+ <h1>Updating from 1.0 to 1.2</h1>
+ </A>
+@@ -112,10 +116,10 @@
+ </pre>
+ 
+ <A name=1.2.03>
+-<h1>Updating from 1.2.03 to 1.2.07</h1>
++<h1>Updating from 1.2.03 to a later 1.2 release</h1>
+ 
+-There are a few minor changes between the 1.2.03 branch and the 1.2.07
+-branch of MaraDNS:
++There are a few minor changes between the 1.2.03 branch and later 1.2
++releases of MaraDNS:
+ 
+ <h3>The special remote queries have been changed</h3>
+ 

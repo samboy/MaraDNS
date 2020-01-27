@@ -1,0 +1,15 @@
+--- maradns-1.3.07.06/server/MaraDNS.c.orig	2007-10-09 08:03:01.000000000 -0500
++++ maradns-1.3.07.06/server/MaraDNS.c	2007-10-09 08:04:01.000000000 -0500
+@@ -4468,7 +4468,12 @@
+       "WARNING: Your system does not allow setting memory allocation limits!");
+             }
+         else {
++#ifdef __CYGWIN__
++            printf(
++      "WARNING: Your system does not allow setting memory allocation limits!");
++#else /* __CYGWIN__ */ 
+             harderror("Unable to set memory allocation limits");
++#endif
+             }
+        } else {
+             printf("MaraDNS maximum memory allocation set to %d bytes\n",

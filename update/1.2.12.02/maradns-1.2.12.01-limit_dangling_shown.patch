@@ -1,0 +1,31 @@
+--- maradns-1.2.12.01/server/MaraBigHash.c	2006-01-21 23:22:01.000000000 -0600
++++ maradns-1.2.12.02/server/MaraBigHash.c	2006-08-06 15:42:57.000000000 -0500
+@@ -48,6 +48,7 @@
+ 
+ extern int log_level;
+ extern int no_cname_warnings;
++int cname_warnings_shown = 0;
+ 
+ 
+ /* Handler to handle warnings.
+@@ -1030,12 +1031,19 @@
+                         if(record != 0 && adata.value != 0)
+                             record->list = adata.value;
+                         }
+-		    else if(no_cname_warnings == 0) {
++		    else if(no_cname_warnings == 0 && 
++			       cname_warnings_shown < 10) {
+ 			printf("Warning: The CNAME record ");
+ 			human_readable_dns_query(query,1);
+ 			printf(" is a dangling CNAME record.\n"
+ "Please read the FAQ entry about FAQ entry about dangling CNAME records.\n");
++			cname_warnings_shown++;
+ 		        }
++		    else if(no_cname_warnings == 0 &&
++			      cname_warnings_shown == 10) {
++		       printf("Warning: More dangling CNAME records exist.\n");
++                       cname_warnings_shown++;
++                       }
+                     } while ((record = record->next) != 0);
+ 	        }
+         } while(mhash_nextkey(bighash,query) != 0);

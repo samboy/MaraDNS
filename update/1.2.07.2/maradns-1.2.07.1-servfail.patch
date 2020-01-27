@@ -1,0 +1,20 @@
+--- maradns-1.2.07.1/server/recursive.c	2006-03-22 00:00:24.000000000 -0800
++++ maradns-1.2.07.2/server/recursive.c	2006-03-28 14:20:55.000000000 -0800
+@@ -3136,7 +3136,7 @@
+                         js_destroy(synthesized_header);
+                         return JS_ERROR;
+                         }
+-                    udperror(sock,synthesized_header,&client,query,FORMAT_ERROR,
++                    udperror(sock,synthesized_header,&client,query,SERVER_FAIL,
+                              "No reply from remote servers",2,1,0);
+                     js_destroy(synthesized_header);
+                     }
+@@ -3165,7 +3165,7 @@
+                 js_destroy(synthesized_header);
+                 return JS_ERROR;
+                 }
+-            udperror(sock,synthesized_header,&client,query,FORMAT_ERROR,
++            udperror(sock,synthesized_header,&client,query,SERVER_FAIL,
+                  "No reply from remote servers",2,1,0);
+             js_destroy(synthesized_header);
+             }

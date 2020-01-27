@@ -1,0 +1,146 @@
+--- maradns-1.2.09/doc/en/webpage/download.embed	2006-06-14 03:17:28.000000000 -0700
++++ maradns-1.2.10/doc/en/webpage/download.embed	2006-06-20 11:50:30.000000000 -0700
+@@ -3,20 +3,20 @@
+ <h1>&iexcl;Download MaraDNS!</h1>
+ 
+ <h2>Stable release</h2>
+-<p>This is the current stable release of MaraDNS, MaraDNS 1.2.07.5
++<p>This is the current stable release of MaraDNS, MaraDNS 1.2.07.6
+ <p>This release is available both at <A 
+-href="http://sourceforge.net/project/showfiles.php?group_id=24033&package_id=16396&release_id=420762">sourceforge.net</A>
++href="http://sourceforge.net/project/showfiles.php?group_id=24033&amp;package_id=16396&amp;release_id=425299">sourceforge.net</A>
+ and on this page.
+ 
+ <p><A 
+-href="download/1.2/1.2.07.5/maradns-1.2.07.5.tar.bz2"><!--
+-                         -->maradns-1.2.07.5.tar.bz2</A>
++href="download/1.2/1.2.07.6/maradns-1.2.07.6.tar.bz2"><!--
++                         -->maradns-1.2.07.6.tar.bz2</A>
+ <p><A 
+-href="download/1.2/1.2.07.5/maradns-1.2.07.5.tar.bz2.sha1.asc">GPG signature</A><p>
++href="download/1.2/1.2.07.6/maradns-1.2.07.6.tar.bz2.sha1.asc">GPG signature</A><p>
+ <p><A 
+-href="download/1.2/1.2.07.5/maradns-1.2.07.5.tar.bz2.rmd.asc">GPG signature
++href="download/1.2/1.2.07.6/maradns-1.2.07.6.tar.bz2.rmd.asc">GPG signature
+ using RIPEMD160 as the digest algorithm</A><p>
+-(released 2006/05/29)
++(released 2006/06/16)
+ 
+ <p>
+ The following are files compressed with LZMA compression, which both compresses
+@@ -25,35 +25,35 @@
+ href="download/1.2/00Uncompress.txt">here</A>.
+ 
+ <p><A 
+-href="download/1.2/1.2.07.5/maradns-1.2.07.5.tar.lzma"><!--
+-                         -->maradns-1.2.07.5.tar.lzma</A>
++href="download/1.2/1.2.07.6/maradns-1.2.07.6.tar.lzma"><!--
++                         -->maradns-1.2.07.6.tar.lzma</A>
+ <p><A 
+-href="download/1.2/1.2.07.5/maradns-1.2.07.5.tar.lzma.sha1.asc">GPG signature</A><p>
++href="download/1.2/1.2.07.6/maradns-1.2.07.6.tar.lzma.sha1.asc">GPG signature</A><p>
+ <p><A 
+-href="download/1.2/1.2.07.5/maradns-1.2.07.5.tar.lzma.rmd.asc">GPG signature
++href="download/1.2/1.2.07.6/maradns-1.2.07.6.tar.lzma.rmd.asc">GPG signature
+ using RIPEMD160 as the digest algorithm</A><p>
+ 
+ <p>
+ For people who prefer a gzip compressed archive:
+ 
+ <p><A 
+-href="download/1.2/1.2.07.5/maradns-1.2.07.5.tar.gz"><!--
+-                         -->maradns-1.2.07.5.tar.gz</A>
++href="download/1.2/1.2.07.6/maradns-1.2.07.6.tar.gz"><!--
++                         -->maradns-1.2.07.6.tar.gz</A>
+ <p><A 
+-href="download/1.2/1.2.07.5/maradns-1.2.07.5.tar.gz.sha1.asc">GPG signature</A><p>
++href="download/1.2/1.2.07.6/maradns-1.2.07.6.tar.gz.sha1.asc">GPG signature</A><p>
+ <p><A 
+-href="download/1.2/1.2.07.5/maradns-1.2.07.5.tar.gz.rmd.asc">GPG signature
++href="download/1.2/1.2.07.6/maradns-1.2.07.6.tar.gz.rmd.asc">GPG signature
+ using RIPEMD160 as the digest algorithm</A><p>
+ 
+ <h3>RPM files</h3>
+-<p><A href="download/1.2/1.2.07.5/maradns-1.2.07.5-1.src.rpm"><!--
+-                               -->maradns-1.2.07.5-1.src.rpm</A></p>
++<p><A href="download/1.2/1.2.07.6/maradns-1.2.07.6-1.src.rpm"><!--
++                               -->maradns-1.2.07.6-1.src.rpm</A></p>
+ <p><i>Greg Swallow fixed the rpm package so that the RPM now builds on
+    CentOS3 and CentOS4, in addition to RedHat 6.2.</i>
+ <p><b>Binary RPM</b> (Built on CentOS 3.7; verified to work in newer Linuxes)
+ </p>
+-<p><A href="download/1.2/1.2.07.5/maradns-1.2.07.5-1.i386.rpm"><!--
+-                               -->maradns-1.2.07.5-1.i386.rpm</A></p>
++<p><A href="download/1.2/1.2.07.6/maradns-1.2.07.6-1.i386.rpm"><!--
++                               -->maradns-1.2.07.6-1.i386.rpm</A></p>
+ 
+ <h3>Windows Binary</h3>
+ <p>I have made a partial port of MaraDNS to Windows.  While this port
+@@ -65,27 +65,27 @@
+ <A href="http://www.cygwin.com">Cygwin</A>.
+ 
+ <p><A 
+-href="download/1.2/1.2.07.5/maradns-1-2-07-5-win32.zip"><!--
+-                         -->maradns-1-2-07-5-win32.zip</A>
++href="download/1.2/1.2.07.6/maradns-1-2-07-6-win32.zip"><!--
++                         -->maradns-1-2-07-6-win32.zip</A>
+ <p><A 
+-href="download/1.2/1.2.07.5/maradns-1-2-07-5-win32.zip.sha1.asc">GPG signature</A><p>
++href="download/1.2/1.2.07.6/maradns-1-2-07-6-win32.zip.sha1.asc">GPG signature</A><p>
+ <p><A 
+-href="download/1.2/1.2.07.5/maradns-1-2-07-5-win32.zip.rmd.asc">GPG signature
++href="download/1.2/1.2.07.6/maradns-1-2-07-6-win32.zip.rmd.asc">GPG signature
+ using RIPEMD160 as the digest algorithm</A><p>
+ 
+ <h3>Slackware Package</h3>
+ 
+ Daniel Zilli has made a Slackware package of maradns, which can be
+ downloaded <A
+-href="download/1.2/3rd_party/maradns-1.2.07.4-i486-2.tgz">here</A>.<p>
++href="download/1.2/3rd_party/maradns-1.2.07.6-i486-3.tgz">here</A>.<p>
+ 
+ <hr>
+ 
+ <h2>Testing release</h2>
+ 
+-I have a 1.2.08 testing release of MaraDNS, which can be downloaded
++I have a 1.2.10 testing release of MaraDNS, which can be downloaded
+ at <A href="http://sourceforge.net/projects/maradns">sourceforge.net</A>
+-and <A href="download/1.2/1.2.08">locally</A>.
++and <A href="download/1.2/1.2.10">locally</A>.
+ 
+ <hr>
+ 
+@@ -94,27 +94,16 @@
+ 1.0.  This release will no longer be supported for anything but critical
+ security fixes after December 21, 2007, and not supported at all after
+ December 21, 2010.
+-<A href="download/maradns-1.0.36.tar.bz2">Get the current 1.0 release</A>,
+-MaraDNS 1.0.37, released 2006/04/07 
++<A href="download/1.0/maradns-1.0.38.tar.bz2">Get the current 1.0 release</A>,
++MaraDNS 1.0.38, released 2006/06/16 
+ (bzip2 compressed).  
+ <p>
+-<A href="download/maradns-1.0.37.tar.bz2.sha1.asc">bzip2 GPG sig</A>
++<A href="download/1.0/maradns-1.0.38.tar.bz2.sha1.asc">bzip2 GPG sig</A>
+ <p>
+-<A href="download/maradns-1.0.37.tar.gz">gzip compressed version</A>
++<A href="download/1.0/maradns-1.0.38.tar.gz">gzip compressed version</A>
+ <p>
+-<A href="download/maradns-1.0.37.tar.gz.sha1.asc">gzip GPG sig</A>
++<A href="download/1.0/maradns-1.0.38.tar.gz.sha1.asc">gzip GPG sig</A>
+ <p>
+-</p><p>
+-<b>Source RPM</b></p>
+-<p><A href="download/maradns-1.0.37-1.src.rpm"><!--
+-                 -->maradns-1.0.37-1.src.rpm</A></p>
+-<p>Note: This RPM only builds with older releases of RedHat.  
+-<p><b>Binary RPM</b> (Built on RedHat 6.2; verified to work in newer Linuxes)
+-</p>
+-<p><A href=download/maradns-1.0.37-1.i386.rpm><!--
+-                 -->maradns-1.0.37-1.i386.rpm</A></p>
+-<em>Note: The binary RPM automatically starts the MaraDNS service when
+-installed.</em>
+ 
+ <hr>
+ 

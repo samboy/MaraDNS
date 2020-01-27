@@ -1,0 +1,12 @@
+--- maradns-1.3.07.04/sqa/regressions/README	2007-08-29 11:30:03.000000000 -0500
++++ maradns-1.3.07.05/sqa/regressions/README	2007-09-09 22:45:46.000000000 -0500
+@@ -2,7 +2,8 @@
+ presence of known MaraDNS bugs that have been fixed.
+ 
+ These tests are run by typing in 'sh ./do.test' in the appropriate
+-directory for the test in question.
++directory for the test in question.  MaraDNS needs to be compiled before
++these tests can be run.
+ 
+ Note that you must be root to run these tests, since they start up maradns
+ and what not.  Note also that these tests can be run on a computer not

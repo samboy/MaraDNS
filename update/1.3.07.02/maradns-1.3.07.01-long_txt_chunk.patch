@@ -1,0 +1,31 @@
+This makes sure we return an error whenever a zone file has a TXT
+record with a chunk that is too long.
+
+--- maradns-1.3.07.01/parse/Csv2_rr_txt.c	2007-02-14 09:25:28.000000000 -0600
++++ maradns-1.3.07.02/parse/Csv2_rr_txt.c	2007-06-27 20:56:22.000000000 -0500
+@@ -364,6 +364,12 @@
+ 					js_destroy(out);
+ 					return 0;
+ 				}
++				if(txt_len > 255) {
++					csv2_error(stream, 
++					"Single TXT chunk too long");
++					js_destroy(out);
++					return 0;
++				}
+ 				*(out->string + txt_len_place) = txt_len;
+ 				chunkcount++;
+ 				txt_len_place = out->unit_count; /* 1 */
+@@ -629,6 +635,12 @@
+ 					js_destroy(out);
+ 					return 0;
+ 				}
++				if(txt_len > 255) {
++					csv2_error(stream, 
++					"Single TXT chunk too long");
++					js_destroy(out);
++					return 0;
++				}
+ 				*(out->string + txt_len_place) = txt_len;
+ 				chunkcount++;
+ 				txt_len_place = out->unit_count; /* 1 */

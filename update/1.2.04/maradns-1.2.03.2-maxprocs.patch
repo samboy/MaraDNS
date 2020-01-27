@@ -1,0 +1,37 @@
+--- maradns-1.2.03.2/server/MaraDNS.c	2006-02-09 11:05:24.000000000 -0800
++++ maradns-1.2.04/server/MaraDNS.c	2006-02-09 11:05:57.000000000 -0800
+@@ -4031,9 +4031,9 @@
+         maxprocs = 64;
+         }
+ 
+-    if(maxprocs > 500) {
+-        maxprocs = 500;
+-        mlog(L_MAXPROC_MAX); /* "Maxprocs can not be greater than 500" */
++    if(maxprocs > 5000) {
++        maxprocs = 5000;
++        mlog(L_MAXPROC_MAX); /* "Maxprocs can not be greater than 5000" */
+         }
+ #ifndef MINGW32
+ #ifndef DARWIN
+--- maradns-1.2.03.2/server/MaraDNS_de.h	2002-07-18 00:52:06.000000000 -0700
++++ maradns-1.2.04/server/MaraDNS_de.h	2006-02-09 11:06:24.000000000 -0800
+@@ -41,7 +41,7 @@
+ #define L_MAXPROC "Problem beim Lesen von maxprocs Wert.\nmaxprocs muss gesetzt werden bevor der MaraDNS Server gestartet wird"
+ #define L_MAXPROC_NUM "Problem beim Konvertieren von maxprocs zu einer Zahl\nDiese Zahl muss ungleich Null sein"
+ #define L_MAXPROC_SET "Kann maximale Anzahl von Prozessen nicht definieren"
+-#define L_MAXPROC_MAX "maxprocs can nicht groesse als 500 sein\nSetze maxprocs auf 500"
++#define L_MAXPROC_MAX "maxprocs can nicht groesse als 5000 sein\nSetze maxprocs auf 5000"
+ #define L_CHROOT_KVAR "Problem beim Lesen von chroot kvar.\nSie muessen chroot_dir setzen, wenn Sie dies als root starten"
+ #define L_CHROOT_NT "Problem beim Erstellen der chroot nt Zeichenkette\nStellen Sie sicher das das chroot Verzeichnis 200 Zeichen or weniger lang ist."
+ #define L_CHROOT_CHANGE "Problem beim Wechsel in chroot Verzeichnis.\nStellen Sie sicher, dass chroot_dir auf ein gueltiges Verzeichnis zeigt"
+--- maradns-1.2.03.2/server/MaraDNS_en.h	2005-12-19 23:58:25.000000000 -0800
++++ maradns-1.2.04/server/MaraDNS_en.h	2006-02-09 11:06:14.000000000 -0800
+@@ -40,7 +40,7 @@
+ #define L_MAXPROC "Problem getting maxprocs value.\nmaxprocs must be set before starting the MaraDNS server"
+ #define L_MAXPROC_NUM "Problem converting maxprocs to a number\nThis must be a non-zero number"
+ #define L_MAXPROC_SET "Unable to set maximum number of processes"
+-#define L_MAXPROC_MAX "maxprocs can not be greater than 500\nSetting maxprocs to 500"
++#define L_MAXPROC_MAX "maxprocs can not be greater than 5000\nSetting maxprocs to 5000"
+ #define L_CHROOT_KVAR "Problem getting chroot kvar.\nYou must have chroot_dir set if you start this as root"
+ #define L_CHROOT_NT "Problem making chroot nt string.\nMake sure the chroot directory is 200 chars or less"
+ #define L_CHROOT_CHANGE "Problem changing to chroot dir.\nMake sure chroot_dir points to a valid directory"

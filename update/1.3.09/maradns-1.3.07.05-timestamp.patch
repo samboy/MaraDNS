@@ -1,0 +1,56 @@
+--- maradns-1.3.07.06/parse/Csv2_database.c.orig	2007-10-17 17:08:20.000000000 -0500
++++ maradns-1.3.07.06/parse/Csv2_database.c	2007-10-17 17:09:12.000000000 -0500
+@@ -197,12 +197,12 @@
+         }
+         t = buf.st_mtime;
+         /* Y2038 workaround */
+-        if(t < 291486313) {
++        if(t < 290805600) {
+             t += 2147483648U;
+             }
+         if(show_synth_soa_serial() != 2) {
+             q = t; /* Type conversion */
+-            q -= 291486313;
++            q -= 290805600;
+             q /= 6; /* Since the SOA serial is a 32-bit value, this
+                        division pushes Y2038-type problems far in to the
+                        future */
+--- maradns-1.3.07.06/qual/qual_timestamp.c.orig	2007-10-17 17:13:42.000000000 -0500
++++ maradns-1.3.07.06/qual/qual_timestamp.c	2007-10-17 17:14:15.000000000 -0500
+@@ -67,7 +67,9 @@
+          if(sys_time == -1) {
+              return JS_ERROR;
+              }
+-         ttime = sys_time - 291486313;
++         ttime = sys_time - 290805600; /* Since you asked: When the
++                                        * Blake's 7 episode Gambit was
++                                        * originally broadcast */
+          }
+     /* Ugh, 32-bit time_t */
+     else {
+@@ -83,19 +85,20 @@
+          /* Here are the magic numbers you need to change on systems
+             with 32-bit time_t values in 2112 (or 2106 on systems with
+             an unsigned time_t):
+-            291486313: When the roll-over happens; right now Mar 28, 1979
++            290805600: When the roll-over happens; right now Mar 20, 1979,
++            when the Blake's 7 episode Gambit was originally broadcast.
+             (this is the current lowest date this code can handle; make
+              changes if travelling in your Tardis)
+              2147483648: This is 2^31 (2**31); change this
+                         to 4294967296 on systems with a 32-bit unsigned
+                         time_t */
+-         else if(sys_time < 291486313) {
+-             /* (2 ** 32) - 291486313 */
+-             ttime = sys_time + 4003480983U;
++         else if(sys_time < 290805600) {
++             /* (2 ** 32) - 290805600 */
++             ttime = sys_time + 4004161696U;
+              num_tries = 0;
+              }
+          else {
+-             ttime = sys_time - 291486313;
++             ttime = sys_time - 290805600;
+              num_tries = 0;
+              }
+          }

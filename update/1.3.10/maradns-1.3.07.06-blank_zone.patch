@@ -1,0 +1,24 @@
+--- maradns-1.3.07.06/parse/Csv2_main.c	2007-10-19 08:52:20.000000000 -0500
++++ maradns-1.3.07.07/parse/Csv2_main.c	2007-11-11 09:50:12.000000000 -0600
+@@ -620,6 +620,11 @@
+                 }
+         }
+         csv2_close(stream);
++	/* If needed, add the SOA record to the zone; this is for
++         * zones with only SOA and NS records */
++	if(state->in_ns == 1) {
++		csv2_add_soa(state);
++	}
+         csv2_zap_add_state(state);
+         return 0;
+ }
+--- maradns-1.3.07.07/sqa/regressions/do.tests.orig	2007-11-11 10:19:07.000000000 -0600
++++ maradns-1.3.07.07/sqa/regressions/do.tests	2007-11-11 10:19:28.000000000 -0600
+@@ -54,6 +54,7 @@
+ TESTS=$TESTS"predator1 predator2 ptr_leak recurse_delegation "
+ TESTS=$TESTS"star_handling_1 star_handling_2 star_handling_leak "
+ TESTS=$TESTS"truncation zoneserver_doc improper_rotation rd_val "
++TESTS=$TESTS"blank_zone "
+ 
+ # Test to make sure synthetic ips in csv2 zone files correctly handle 
+ # MaraDNS bound to private and public IPs

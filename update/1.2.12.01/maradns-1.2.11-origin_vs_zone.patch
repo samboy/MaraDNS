@@ -1,0 +1,163 @@
+diff -ur maradns-orig/doc/en/source/csv2.ej maradns-1.2.12.01/doc/en/source/csv2.ej
+--- maradns-orig/doc/en/source/csv2.ej	2006-07-25 07:51:32.000000000 -0500
++++ maradns-1.2.12.01/doc/en/source/csv2.ej	2006-07-25 08:30:10.000000000 -0500
+@@ -499,6 +499,8 @@
+ percent in a csv2 zone file.  This suffix is called, for historical and 
+ compatibility reasons, "origin".  This is done as the slash command
+ '/origin', taking the new origin as the one argument to this function.
++Note that changing the origin does <i>not</i> change the domain suffix
++used to determine whether a given domain name is authoritative.
+ 
+ <p>
+ 
+diff -ur maradns-orig/parse/Csv2_database.c maradns-1.2.12.01/parse/Csv2_database.c
+--- maradns-orig/parse/Csv2_database.c	2006-07-25 07:51:32.000000000 -0500
++++ maradns-1.2.12.01/parse/Csv2_database.c	2006-07-25 08:11:46.000000000 -0500
+@@ -63,7 +63,7 @@
+  */
+ 
+ csv2_add_state *csv2_init_add_state(js_string *zone) {
+-	js_string *nzone;
++	js_string *nzone, *norigin;
+ 	csv2_add_state *new;
+ 	if(zone->unit_size != 1) {
+ 		return 0;
+@@ -75,13 +75,23 @@
+ 		js_dealloc(new);
+ 		return 0;
+ 	}
++	if((norigin = js_create(zone->unit_count + 1,1)) == 0) {
++		js_dealloc(new);
++		return 0;
++	}
+ 	if(js_copy(zone,nzone) == JS_ERROR) {
+ 		js_destroy(nzone);
+ 		js_dealloc(new);
+ 		return 0;
+ 	}
++	if(js_copy(zone,norigin) == JS_ERROR) {
++		js_destroy(nzone);
++		js_dealloc(new);
++		return 0;
++	}
+ 	new->buffer = 0;
+ 	new->zone = nzone; /* This is the "origin" */
++	new->origin = norigin; /* This is the "origin" */
+ 	new->ostack = 0; /* A pointer to a "stack" or origin values we can
+                           * push or pop */
+ 	new->ostack_height = 0;
+@@ -128,6 +138,11 @@
+ 		js_destroy(x->zone);
+ 		x->zone = 0;
+ 	}
++	/* ...the origin string */
++	if(x->origin != 0) {
++		js_destroy(x->origin);
++		x->origin = 0;
++	}
+ 
+ 	/* And now, finally, get rid of this object, I mean structure */
+ 	js_dealloc(x);
+@@ -278,6 +293,9 @@
+ 	if(state->zone == 0) {
+ 		return JS_ERROR;
+ 	}
++	if(state->origin == 0) {
++		return JS_ERROR;
++	}
+ 	if(js_has_sanity(query) == JS_ERROR) {
+ 		return JS_ERROR;
+ 	}
+diff -ur maradns-orig/parse/Csv2_database.h maradns-1.2.12.01/parse/Csv2_database.h
+--- maradns-orig/parse/Csv2_database.h	2006-07-25 07:51:32.000000000 -0500
++++ maradns-1.2.12.01/parse/Csv2_database.h	2006-07-25 07:59:13.000000000 -0500
+@@ -39,8 +39,11 @@
+ 
+ typedef struct csv2_add_state {
+ 	csv2_rr *buffer;
+-	js_string *zone; /* This is the "origin", in ASCII "name.com." 
+-                          * format */
++	js_string *zone; /* This is the zone that is used for determining
++                          * whether a given name is authoritative or not,
++                          * in ASCII "name.com." format */
++	js_string *origin; /* This is what is used to substitute '%', also
++                            * in ASCII "name.com." format */
+ 	csv2_origin *ostack;
+ 	int ostack_height;
+ 	int rrnum;
+diff -ur maradns-orig/parse/Csv2_parse.c maradns-1.2.12.01/parse/Csv2_parse.c
+--- maradns-orig/parse/Csv2_parse.c	2006-07-25 07:51:32.000000000 -0500
++++ maradns-1.2.12.01/parse/Csv2_parse.c	2006-07-25 08:07:58.000000000 -0500
+@@ -1197,8 +1197,11 @@
+ 	if(state->zone == 0) {
+ 		return JS_ERROR;
+ 	}
++	if(state->origin == 0) {
++		return JS_ERROR;
++	}
+ 
+-	zone = state->zone;
++	zone = state->origin;
+ 
+ 	/* We read look for the beginning of the host name; this is made
+          * more complicated that the "host name" may actually be a
+@@ -1295,7 +1298,8 @@
+ 					return -1;
+ 				}
+ 				n = js_append_dname(n, stream, 3);
+-				if(csv2_convert_percent(n,state->zone) == 0) {
++				if(csv2_convert_percent(n,state->origin) 
++				    == 0) {
+ 					csv2_error(stream,
+ 					"Problem running convert_percent");
+ 					return -1;
+@@ -1305,8 +1309,8 @@
+ 					"Invalid argument for /origin");
+ 					return -1;
+ 				}
+-				js_destroy(state->zone);
+-				state->zone = n;
++				js_destroy(state->origin);
++				state->origin = n;
+ 				zone = n;
+ 			} else if(cmd == 3 && look == 's') {
+ 				js_string *n;
+@@ -1336,7 +1340,8 @@
+ 					return -1;
+ 				}
+ 				n = js_append_dname(n, stream, 3);
+-				if(csv2_convert_percent(n,state->zone) == 0) {
++				if(csv2_convert_percent(n,state->origin) 
++				    == 0) {
+ 					csv2_error(stream,
+ 					"Problem running convert_percent");
+ 					return -1;
+@@ -1364,11 +1369,11 @@
+ 					"js_alloc error");
+ 					return -1;
+ 				}
+-				c->origin = state->zone;
++				c->origin = state->origin;
+ 				c->next = o;
+ 				state->ostack = c;
+-				state->zone = n;
+-				zone = state->zone;
++				state->origin = n;
++				zone = state->origin;
+ 			} else if(cmd == 4 && look == 'p') {
+ 				csv2_origin *o;
+ 				look = csv2_read_unicode(stream);
+@@ -1391,10 +1396,10 @@
+ 				/* OK, pop the top value from the origin
+ 				 * stack and make it the origin value */
+ 				o = state->ostack;
+-				js_destroy(state->zone);
++				js_destroy(state->origin);
+ 				state->ostack = o->next;
+-				state->zone = o->origin;
+-				zone = state->zone;
++				state->origin = o->origin;
++				zone = state->origin;
+ 				js_dealloc(o);
+ 			} else {
+ 				csv2_error(stream,"Invalid slash command");

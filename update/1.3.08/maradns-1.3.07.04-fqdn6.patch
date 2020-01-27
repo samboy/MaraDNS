@@ -1,0 +1,237 @@
+This patch was contributed by Jean-Jacques Sarto, and very slightly changed
+by myself.
+
+- Sam 
+
+--- maradns-1.3.07.04/parse/Csv2_parse.c	2007-09-03 13:53:13.000000000 -0500
++++ maradns-1.3.07.05/parse/Csv2_parse.c	2007-09-03 13:51:57.000000000 -0500
+@@ -30,6 +30,8 @@
+ #define STARWHITIS_STATE 2
+ #define STARWHITIS_END_STATE 3
+ 
++#define WITH_FQDN6
++
+ /* This function is designed to tell us if a given character is one
+  * in a list that we give it
+  *
+@@ -1048,6 +1050,11 @@
+         if(js_qissame("fqdn4",text_rtype) == 1) {
+                 return 65765;
+         }
++#ifdef WITH_FQDN6
++	if(js_qissame("fqdn6",text_rtype) == 1) {
++		return 65766;
++	}
++#endif
+         /* Obscure RR types follow */
+         /* Obscure RFC1035 RR types */
+         if(js_qissame("hinfo",text_rtype) == 1) {
+@@ -1721,6 +1728,13 @@
+                              * PTR record */
+                         rddata = csv2_get_a(stream);
+                         break;
++#ifdef WITH_FQDN6
++		case 65766: /* FQDN6: This is an AAAA record where we
++			          * automagically also make the corresponding
++			          * PTR record */
++			rddata = csv2_get_aaaa(stream);
++			break;
++#endif
+                 /* Obscure RRs follow */
+                 case RR_HINFO:
+                         rddata = csv2_get_txt(stream,2);
+--- maradns-1.3.07.04/parse/Csv2_database.c	2007-09-03 13:53:13.000000000 -0500
++++ maradns-1.3.07.05/parse/Csv2_database.c	2007-09-03 13:51:45.000000000 -0500
+@@ -30,6 +30,8 @@
+ #include <unistd.h>
+ #include <time.h>
+ 
++#define WITH_FQDN6
++
+ /* Some function prototypes so that the overly anal GCC doesn't
+  * generate warnings */
+ js_string *csv2_copy_js(js_string *s);
+@@ -1118,6 +1120,77 @@
+         return ptr_label;
+ }
+ 
++/* Given a binary js_string object with an IP in it (e.g. "127.0.0.1"
++   is, in hexadecimal "7f000001" in the input), create the corresponding
++   ptr label as a Blabel ("\x011\x010\x010\x03127\x07in-addr\x04arpa\x00"
++   in the "7f000001" case). */
++
++#ifdef WITH_FQDN6
++js_string *csv2_make_ptr6_query(js_string *binary_ip) {
++	js_string *ptr_label;
++	int len = 0;
++	int counter = 0;
++
++	/* Sanity check */
++	if(js_length(binary_ip) != 16)
++		return 0;
++
++	ptr_label = js_create(256,1); /* Maximum possible length for this */
++	if(ptr_label == 0) {
++		return 0;
++	}
++
++	for(counter = 15; counter >= 0; counter--) {
++		char a;
++		int b;
++
++		a = (*(binary_ip->string + counter));
++
++		/* low nibble */
++		*(ptr_label->string + len) = 1;
++		len++;
++		b = a & 0x0f;
++		if ( b > 9 ) b += 'a' - 10;
++		else         b += '0';
++		*(ptr_label->string + len) = b;
++		len++;
++	
++		/* high nibble */
++		*(ptr_label->string + len) = 1;
++		len++;
++		b = (a >> 4) & 0x0f;
++		if ( b > 9 ) b += 'a' - 10;
++		else         b += '0';
++		*(ptr_label->string + len) = b;
++		len++;
++	}
++
++	if(len <= 250) {
++		*(ptr_label->string + len)   =  3;  /* "ipv6" length */
++		*(ptr_label->string + len+1) = 'i'; /* "ipv6 */
++		*(ptr_label->string + len+2) = 'p';
++		*(ptr_label->string + len+3) = '6';
++		len += 4;
++	}
++
++	if(len <= 250) {
++		*(ptr_label->string + len) = 4;     /* "arpa" length */
++		*(ptr_label->string + len+1) = 'a'; /* "ipv6 */
++		*(ptr_label->string + len+2) = 'r';
++		*(ptr_label->string + len+3) = 'p';
++		*(ptr_label->string + len+4) = 'a';
++		len += 5;
++	}
++	if(len <= 255) {
++		*(ptr_label->string + len) = 0; /* null to end dlabel */
++		len++;
++	}
++	ptr_label->unit_size=1;
++	ptr_label->unit_count=len;
++	return ptr_label;
++}
++#endif
++
+ /* Function to add an rr in general */
+ /* Note: "query" is a Blabel */
+ int csv2_add_rr_w(csv2_add_state *state, js_string *query,
+@@ -1144,7 +1217,7 @@
+                 return JS_ERROR;
+         }
+         /* A-Z, nicely enough, never happen in a domain length label,
+-           so we can very quickly make this label lower-case */
++	  so we can very quickly make this label lower-case */
+         while(counter < cquery->unit_count) {
+                 if(*(cquery->string + counter) >= 'A' &&
+                    *(cquery->string + counter) <= 'Z') {
+@@ -1170,6 +1243,22 @@
+             js_destroy(cquery);
+             return JS_ERROR;
+             }
++#ifdef WITH_FQDN6
++	if(rtype == 65766 && state->add_method != 3) {
++		js_string *pq;
++		rtype = RR_AAAA;
++		pq = csv2_make_ptr6_query(data);
++		/* This can not infinitely recurse because we change the
++		* rtype from the magic 65766 rtype */
++		csv2_add_rr_w(state,pq,RR_PTR,ttl,cquery); 
++		js_destroy(pq);
++	} else if(rtype == 65766 && state->add_method == 3) {
++		printf("Warning: FQDN6 records are not permitted "
++		       "in the\ndefault zonefile.  This record is ignored.\n");
++		js_destroy(cquery);
++		return JS_ERROR;
++	}
++#endif
+         ret = JS_ERROR; /* This should be set to another value */
+         switch(state->add_method) {
+                 case 1: /* Adding records to MaraDNS-1 style "bighash" */
+--- maradns-1.3.07.04/doc/en/source/csv2.ej	2007-02-14 09:25:28.000000000 -0600
++++ maradns-1.3.07.05/doc/en/source/csv2.ej	2007-09-08 17:52:40.000000000 -0500
+@@ -267,6 +267,38 @@
+ do not know what a csv2_default_zonefile is, you do not have to worry 
+ about this limitation.
+ 
++<h2>FQDN6</h2>
++
++The FQDN6 (short for "Fully Qualified Domain Name for IPv6") record is
++the ipv6 form for the FQDN4 record.  Like the FQDN4 record, this
++record creates both a "forward" and "reverse" DNS record for a given 
++host name.  For example, onoe may have:
++
++<pre>
++x.example.net. AAAA 3ffe:ffff:ffe:501:ffff::b:c:d ~
++d.0.0.0.c.0.0.0.b.0.0.0.f.f.f.f.1.0.5.0.e.f.f.0.f.f.f.f.e.f.f.3 PTR 
++x.example.net. ~
++</pre>
++
++But the above two lines in a zone file can also be represented thusly:
++
++<pre>
++x.example.net. FQDN6 3ffe:ffff:ffe:501:ffff::b:c:d ~
++</pre>
++
++Like FQDN4 records, it is the DNS administrator's duty to make sure
++only a single IP has a FQDN6 record. 
++
++<p>
++
++FQDN6 records are, like FQDN6 records, not permitted in a 
++csv2_default_zonefile.  If you do not know what a csv2_default_zonefile 
++is, you do not have to worry about this limitation.
++
++<p>
++
++FQDN6 records were implemented by Jean-Jacques Sarto.
++
+ <h2>CNAME</h2>
+ 
+ A CNAME record is a pointer to another host name.  The CNAME record, in
+--- maradns-1.3.07.04/doc/en/source/mararc.ej	2007-05-21 06:37:54.000000000 -0500
++++ maradns-1.3.07.05/doc/en/source/mararc.ej	2007-09-08 17:54:45.000000000 -0500
+@@ -399,11 +399,12 @@
+ <li>Stars are allowed at the end of hostnames
+ <li>A SOA record is mandatory
+ <li>NS records are mandatory
+-<li>Neither CNAME nor FQDN4 records are permitted in the zone file
++<li>Neither CNAME, FQDN4, nor FQDN6 records are permitted in the zone 
++    file
+ <li>Delegation NS records are not permitted in the zone file
+ <li>Default zonefiles may not be transferred via zone transfer
+ <li>Both recursion and default zonefiles may not be enabled at the same
+-    time.
++    time
+ </ul>
+ 
+ <h2>csv2_synthip_list</h2>
+--- maradns-1.3.07.04/doc/en/source/faq.embed	2007-03-22 01:31:27.000000000 -0600
++++ maradns-1.3.07.05/doc/en/source/faq.embed	2007-09-08 17:53:59.000000000 -0500
+@@ -225,10 +225,12 @@
+ 
+ <blockquote>
+ <tt>
+-www.example.com. FQDN6 10.2.3.4 ~
++www.example.com. FQDN4 10.2.3.4 ~
+ </tt>
+ </blockquote>
+ 
++There is, for IPV6 users, a corresponding FQDN6 record. <p>
++
+ If you wish to have a PTR (reverse DNS lookup; getting a DNS name from a
+ numeric IP) record work on the internet at large, it is not a simple
+ matter of just adding a record like this to a MaraDNS zonefile.  One also

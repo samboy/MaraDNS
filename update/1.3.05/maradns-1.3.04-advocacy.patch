@@ -1,0 +1,174 @@
+--- maradns-1.3.04/doc/en/webpage/advocacy.embed	2006-12-21 02:34:46.000000000 -0600
++++ maradns-1.3.05/doc/en/webpage/advocacy.embed	2007-03-24 11:43:26.000000000 -0600
+@@ -1,7 +1,7 @@
+ <h2>MaraDNS Advocacy</h2>
+ 
+-This article discusses the advantages of using MaraDNS, and compares 
+-MaraDNS to a number of different DNS servers.
++This article discusses the advantages and disadvantages of using MaraDNS, 
++and compares MaraDNS to a number of different DNS servers.
+ 
+ <h3>Table of contents</h3>
+ <ol>
+@@ -24,11 +24,9 @@
+ MaraDNS has the following advantages:
+ 
+ <ul>
+-<li><b>Secure</b>. MaraDNS has the best <A 
+-href="security.html">security history</A> of
+-any currently maintained DNS server; there have been no exploitable
+-security holes found in a stable release of MaraDNS that were caused by 
+-MaraDNS' code.  
++<li><b>Secure</b>. MaraDNS has a <A 
++href="security.html">security history</A> as good as or better than any
++other DNS server. 
+ <li><b>Supported</b>.
+ MaraDNS has a long history of being maintained and updated.  MaraDNS was 
+ originally created in 2001.  MaraDNS 1.0 was released in 2002
+@@ -55,11 +53,42 @@
+ </ul>
+ 
+ MaraDNS is the best DNS server to use if you need a lightweight, secure,
+-and actively maintained DNS solution.  Many, many DNS server projects
+-have come and gone over the years; to the extent of my knowledge, only
+-BIND, MaraDNS, NSD, and Power DNS are still being actively developed.
+-Some other notable DNS server projects which are not being actively
+-developed:
++and actively maintained DNS solution.  Keep in mind that MaraDNS may not
++be for you.  MaraDNS has the following, ummm, features:
++
++<ul>
++<li>MaraDNS currently spawns a thread for every recursive request that 
++    is not in the cache.  In other words, MaraDNS needs a good thread
++    implementation in order to process a large number of recursive
++    requests.  Make sure your operating system has a robust threading
++    library before using MaraDNS to process a large number of recursive
++    request.                                                        <p>
++
++    I do plan on fixing this, but it requires a complete rewrite of 
++    the recursive code, which will take six months to a year to 
++    implement.
++
++<li>In order to change any DNS records, MaraDNS needs to be restarted.  
++    This is because MaraDNS uses a model that pulls DNS records from memory
++    very quickly.  This will not be addressed until I adress the issue
++    with recursive threads.
++
++<li>MaraDNS currently does not have support for BIND zone files.  I have 
++    been working on this on and off for a few months; I am about
++    to start work on this again and MaraDNS should have BIND zone file
++    support in a month or two.                                     <p>
++ 
++    The way this will be implemented is to have both support for a zone
++    file format that is mostly like BIND's, and a Python script to convert
++    from BIND's zone file format to MaraDNS' zone file format.  All of the
++    code for MaraDNS' BIND-like zone file format has been finished; now all 
++    I have to do is finish the Python script.
++</ul>
++
++Many, many DNS server projects have come and gone over the years; to
++the extent of my knowledge, only BIND, MaraDNS, NSD, and Power DNS are
++still being actively developed.  Some other notable DNS server projects
++which are not being actively developed:
+ 
+ <A name="posadis"> </A>
+ <h3>Posadis</h3>
+@@ -97,7 +126,8 @@
+ 
+ Djbdns has enough issues that I have <A href="#djbdns">an entire section</A> 
+ detailing its problems.  For now, it's enough to point out that djbdns 
+-hasn't changed one iota for over five years. 
++hasn't changed one iota for over five years, and that MaraDNS is more
++secure than DjbDNS.
+ 
+ <A name="etc"> </A>
+ <h3>Moodns, oakdns, etc.</h3>
+@@ -370,27 +400,28 @@
+ 
+ <p>
+ 
+-This is a very practical problem: There are high profile internet
+-sites that djbdns' recursive resolver simply can not resolve.  In order to
+-make djbdns' recursive resolver resolve these sites, after downloading
+-djbdns, you need to find the patch that fixes the broken recursive
+-resolver, apply the patch, and hope the patch doesn't break anything.
+-
+-<p>
+-
+-This isn't the only problem with djbdns' recursive resolver.  Its list
+-of root servers is out of date by five years; two root servers have
+-changed since then.  This makes the recursive server less reliable;
+-fixing this requires changing the configuration by hand, or by applying
+-yet another third-party patch.
++This is a very practical problem; DjbDNS has the following known bugs:
+ 
+-<p>
++<ul>
++<li>There are problems resolving some domains with DjbDNS' resolver.  This
++    is the 'akamai djbdns' problem.
++<li>DjbDNS does not correctly periodically check upstream DNS servers to
++    make sure a given domain has not moved.
++<li>The list of root servers included with DjbDNS is out of date.
++<li>DjbDNS can not compile in Linux without using a special 
++    incantation.
++<li>There is a denial of service problem where a remote attacker can
++    clear DjbDNS' recursive cache by sending a single "packet of death"
++    to a dnscache server.
++</ul>
+ 
+ Installing djbdns is non-trivial; you need to download and install no
+-less than three different packages.  Djbdns will not compile on a modern
+-Linux system; you need to find the incantation to make it compile.
++less than three different packages.  Djbdns will not even compile on a
++modern Linux system without knowing the incantation to make it compile.
+ Compare this to MaraDNS, where installing is as simple as downloading
+-one package and typing in "make; make install".
++one package and typing in "make; make install", or downloading a binary
++package (packages are available for RedHat/CentOS, Debian, FreeBSD,
++NetBSD, Slackware, Windows, and probably other systems).
+ 
+ <p>
+ 
+@@ -431,12 +462,9 @@
+ 
+ Djbdns's license and the author unwillingness to fix bugs limits the
+ options for people supporting djbdns.  For example, when somone pointed
+-out yet another bug with djbdns' recursive resolver on the djbdns mailing
+-list, he was told that people who have this problem that it was "their
+-own fault".  In more detail, if someone has a domain with an provider
+-and, for whatever reason, wants to change providers without their current
+-provider's help, djbdns' cache will incorrectly point to the old provider
+-until the cache program is restarted.
++out the bug with DjbDNS' recursive resolver not checking upstream servers
++for moved domains, he was told that it was "[his]
++own fault" for having this problem.
+ 
+ <p>
+ 
+@@ -449,11 +477,12 @@
+ 
+ <p>
+ 
+-djbdns has a good security record; however, it is not the only dns
+-server with good security.  No stable version of MaraDNS on a non-Linux
+-system has ever had an exploitable security problem.  The one and only
+-denial-of-service problem was caused by Linux's broken TCP/IP stack and
+-not by MaraDNS, and has long since been fixed.
++DjbDNS has a good security record; however, MaraDNS is, in fact, a 
++more secure DNS server.  MaraDNS' codebase has the same level of 
++security as DjbDNS' codebase: There have been remote denial of service
++security problems with both MaraDNS and DjbDNS.  The difference is
++that, with MaraDNS, all known problems have been patched and the code
++has been updated.  BIND version 9 also has a solid security record.
+ 
+ <p>
+ 
+@@ -461,7 +490,7 @@
+ over five years ago.  Since then, the internet has changed and djbdns has
+ not kept up.  Now that BIND9 and MaraDNS have a proven security record,
+ and are both under an open-source license and being actively maintained,
+-there is no longer any reason to use djbdns.
++there is little reason to continue using djbdns.
+ 
+ <hr>
+ 
