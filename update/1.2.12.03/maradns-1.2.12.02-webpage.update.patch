@@ -1,0 +1,193 @@
+--- maradns-1.2.12.02/doc/en/webpage/contact.embed	2006-07-26 10:58:44.000000000 -0500
++++ maradns-1.2.12.03/doc/en/webpage/contact.embed	2006-10-08 13:16:55.000000000 -0500
+@@ -8,6 +8,11 @@
+ <li>The version number of MaraDNS that you are using (this can be obtained
+     by typing in <tt>maradns --version</tt>). 
+ </ul>
++I am constantly working on improving MaraDNS' documentation so that 
++anyone else with the same question can also have their question
++answered.  Therefore, I may answer your question by showing you
++the relevant part of the MaraDNS documentation and asking you what 
++isn't clear about the documentation.
+ <p>My email address is available 
+ <A href="http://www.samiam.org/mailme.php">here</A></p>
+ <p><b>Note</b>: If you are using MaraDNS 1.0, and have a question about
+--- maradns-1.2.12.02/doc/en/webpage/dns_software.embed	2006-05-23 01:13:13.000000000 -0500
++++ maradns-1.2.12.03/doc/en/webpage/dns_software.embed	2006-10-08 13:18:07.000000000 -0500
+@@ -1,7 +1,9 @@
+ <H1>Other DNS software</H1>
+ 
+ <P>
+-This is a list of some other DNS software out there:
++This is a list of some other DNS software out there.  Note that a
++more detailed comparison between MaraDNS and the more notable projects
++listed here is available in the <A href=advocacy.html>advocacy document</A>.
+ </P>
+ 
+ <H2>Freely downloadable DNS servers</H2>
+@@ -73,9 +75,12 @@
+ 
+ <p>
+ 
+-These are DNS server projects which have not released any files for six
+-months or longer, and which never became functioning recursive (caching)
+-DNS servers.
++These are DNS server projects which have not released any files for a
++significant period of time, and are not fully functioning DNS servers
++(either because the program did not have basic DNS functionality when 
++abandoned, the program was not documented before being abandoned, or
++because the program was abandoned so long ago that it is not fully
++functional on today's internet).
+ 
+ <UL>
+ <LI><A href="http://www.digitallumber.com/oak">Oak DNS</A> is a DNS
+@@ -116,6 +121,21 @@
+ 
+ <LI><A href="http://customdns.sourceforge.net">CustomDNS</A> has not released
+     any files since the summer of 2000. 
++</LI>
++
++<LI><A href="http://cr.yp.to/djbdns.html">DjbDNS</A>  DJ Bernstein's DNS
++    package, which has both an authoritative DNS server and a caching
++    nameserver.  No updates for over five years; its 
++    <A href="http://cr.yp.to/distributors.html">license</A> is non-open
++    source so it's illegal to release an updated DjbDNS tarball. 
++    DjbDNS is not open source because open source software allows people
++    to modify software and <i>distribute modified versions of the
++    software</i>.  The code is five years out of date; its built-in list
++    of DNS root servers is outdated and some real-world domains can no
++    longer be resolved by DjbDNS.
++    Full source code provided; no expectation of receiving
++    payment for using the software.  
++</LI>
+ </UL>
+ 
+ <B>Other</B>
+@@ -144,21 +164,6 @@
+ 
+ </UL>
+ 
+-<H2>Semi-libre DNS solutions</H2>
+-
+-<UL>
+-<LI><A href="http://cr.yp.to/djbdns.html">DjbDNS</A>  DJ Bernstein's DNS
+-    package, which has both an authoritative DNS server and a caching
+-    nameserver.  Excellent in all aspects except for its 
+-    <A href="http://cr.yp.to/distributors.html">license</A>.  This 
+-    is being listed as
+-    semi-libre software because open source software allows people
+-    to modify software and <i>distribute modified versions of the
+-    software</i>.  Full source code provided; no expectation of receiving
+-    payment for using the software.  
+-</LI>
+-</ul>
+-
+ <h2>Proprietary DNS solutions</h2>
+ 
+ <em>No, I don't really care to list every single DNS server that exists here.
+--- maradns-1.2.12.02/doc/en/webpage/index.embed	2006-05-23 01:13:13.000000000 -0500
++++ maradns-1.2.12.03/doc/en/webpage/index.embed	2006-10-08 13:16:55.000000000 -0500
+@@ -1,56 +1,42 @@
+-<!-- Verisign stopped their sillyness. 
+-<b>There is a patch to resolve the Verisign issue <A 
+-href=download/patches/maradns-1.0.19-verisign1.patch>here</A></b>
+--->
+-
+ <h2>What is MaraDNS ?</h2>
+ 
+ MaraDNS is a package that implements the Domain Name Service (DNS), an
+-essential internet service.  MaraDNS
+-is intended to be an easy-to-use DNS server for environments where 
+-a DNS server must be secure, and where
+-the server must use the absolute minimum number of resources possible (such
+-as on older PCs and embedded wi-fi routers).
+-MaraDNS was originally created in 2001; MaraDNS 1.0 was released in 2002
+-and MaraDNS 1.2 was released in December of 2005.  MaraDNS has been
+-extensively tested, both with a SQA process and with over three years of
+-real-world use. 
+-<p>
+-MaraDNS has the following design goals:
++essential internet service.  MaraDNS has the following advantages:
++
+ <ul>
+-<li>Ease of use.  While a full authoritative, caching, and recursive
+-DNS server, the 1.2 release only needs a single 3-line configuration
+-file to perform basic recursive DNS service.  MaraDNS is extensively 
+-documented with both man pages and a tutorial.
+-<p>
+-<li> Security-aware programming.  A DNS server needs to be secure.  
+-  MaraDNS has a number of security
+-  features, including:<p></p>
+-  
+-  <ol>
+-  
+-  <li> The code uses a special string library which is resistant to buffer
+-     overflows.<p></p></li>
+-
+-  <li> The code, if started as root, mandates running as an unprivileged user 
+-     in a chroot() jail.<p></p></li>
+-     
+-  </ol><p></p></li>
+-
+-<li> Open-Source.  The 1.0 release of the DNS server is public-domain code;
+-the 1.2 release will be released under a
+-<A href=license.html>two-clause BSD license</A> which is almost
++<li><b>Secure</b>. MaraDNS has the best <A 
++href="security.html">security history</A> of
++any currently maintained DNS server; there have been no exploitable
++security holes found in a stable release of MaraDNS that were caused by 
++MaraDNS' code.  
++<li><b>Supported</b>.
++MaraDNS has a long history of being maintained and updated.  MaraDNS was 
++originally created in 2001.  MaraDNS 1.0 was released in 2002
++and MaraDNS 1.2 was released in December of 2005.  MaraDNS has been
++extensively tested, both with a SQA process and with over four years of
++real-world use.  MaraDNS continues to be fully supported: The most recent
++release was done on August 14, 2006.
++<li><b>Easy to use</b>.  A basic recursive configuration needs only a 
++single three-line configuration file.  A basic authoritative configuration
++needs only a four-line configuration file and a one-line zone file.
++MaraDNS is fully documented, with both easy-to-follow tutorials and a 
++complete and up-to-date reference manual.
++<li><b>Small</b>.  MaraDNS is well suited for embedded applications 
++and other environments where the server must use the absolute minimum 
++number of resources possible.
++MaraDNS' binary is smaller than
++that of any other currently maintained recursive DNS server.
++<li><b>Open Source</b>.  MaraDNS is fully open-source, The license is a
++<A href=license.html>two-clause BSD license</A> that is almost
+ identical to the 
+ <A href="http://www.freebsd.org/copyright/freebsd-license.html">FreeBSD
+ license</A>.
+-<p></p>
+ </li>
+-
+-<li> Simplicity.  This DNS server has the minimum number of features needed to
+-  correctly act as an authoritative and/or recursive name server.<p></p></li>
+-
+ </ul>
+ 
++A full comparison between MaraDNS and other DNS servers is available in the
++<A href="advocacy.html">advocacy document</A>.
++
+ <h2>Mailing list</h2>
+ To join the mailing list, send an email to 
+ <A href="mailto:list-request@maradns.org">list-request@maradns.org</A> with
+--- maradns-1.2.12.02/doc/en/webpage/Makefile	2006-03-10 03:59:45.000000000 -0600
++++ maradns-1.2.12.03/doc/en/webpage/Makefile	2006-10-08 13:16:55.000000000 -0500
+@@ -1,6 +1,6 @@
+ all: changelog.html contact.html dns_software.html download.html \
+ 	faq-1.0.html faq.html index.html license.html notes.html \
+-	roadmap.html security.html
++	roadmap.html security.html advocacy.html
+ 
+ changelog.html: changelog.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page changelog.embed
+@@ -34,3 +34,7 @@
+ 
+ security.html: security.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page security.embed
++
++advocacy.html: advocacy.embed maradns-1.2-top.html maradns-1.2-bottom.html
++	./make.page advocacy.embed
++

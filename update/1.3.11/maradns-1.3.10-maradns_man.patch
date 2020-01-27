@@ -1,0 +1,50 @@
+--- maradns-1.3.11/doc/en/source/maradns.ej.orig	2008-03-23 19:28:58.000000000 -0600
++++ maradns-1.3.11/doc/en/source/maradns.ej	2008-03-23 19:29:59.000000000 -0600
+@@ -64,12 +64,11 @@
+ needs to be set up: The mararc file.
+ <p>
+ In order for MaraDNS to function as an authoritative nameserver, two
+-or more files need to be set up: the mararc file and one or more "csv1" zone
+-files.  
++or more files need to be set up: the mararc file and one or more "csv2"
++(or "csv1") zone files.  
+ <p>
+-The configuration formation of a csv1 zone file can be obtained
+-from the 
+-<b>csv1(5)</b>
++The format of a csv2 zone file can be obtained from the 
++<b>csv2(5)</b>
+ manual page.  The configuration format of the mararc file can be obtained
+ from the
+ <b>mararc(5)</b>
+--- maradns-1.3.10/doc/en/source/duende.ej	2007-10-19 08:54:14.000000000 -0500
++++ maradns-1.3.11/doc/en/source/duende.ej	2008-03-23 19:38:24.000000000 -0600
+@@ -26,7 +26,7 @@
+ <b>duende</b> requires a blank directory named <tt>/etc/maradns/logger</tt> 
+ to run.
+ <p>
+-Should the parent duende process
++Should the parent duende process a
+ HUP signal, <b>duende</b> will restart the child process.  Should the
+ daemonized or logging process received an untrapped HUP signal or exit 
+ with an exit
+@@ -83,7 +83,7 @@
+ Using duende to start maradns, where the mararc file is /etc/mararc.2
+ 
+ <pre>
+-	duende maradns -f /etc/mararc.3
++	duende maradns -f /etc/mararc.2
+ </pre>
+ 
+ Using duende to start zoneserver, where the mararc file is /etc/mararc.4
+--- maradns-1.3.10/doc/en/source/askmara.ej	2005-11-21 17:30:55.000000000 -0600
++++ maradns-1.3.11/doc/en/source/askmara.ej	2008-03-23 20:21:57.000000000 -0600
+@@ -32,7 +32,7 @@
+ <dd>
+ If this is set, <b>askmara</b>, when sending out a query, will not
+ request DNS recursion; in other words, askmara will request that the
+-remote DNS server not contact other DNS server to answer the query in
++remote DNS server not contact other DNS servers to answer the query in
+ question.
+ <dt>query
+ <dd>

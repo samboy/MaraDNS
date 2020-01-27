@@ -1,0 +1,64 @@
+--- maradns-1.2.11/doc/en/source/changelog.embed	2006-07-17 22:50:44.000000000 -0500
++++ maradns-1.2.12.01/doc/en/source/changelog.embed	2006-07-26 10:52:53.000000000 -0500
+@@ -1,5 +1,61 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.12.01:
++<p>
++This is a testing release of MaraDNS.
++<blockquote>
++<ul>
++<li>Memory leak plugged: MaraDNS' resolver was leaking about 300 bytes
++    whenever someone asked for a PTR that pointed to a CNAME that
++    didn't point to a legitimate PTR.
++<li>Vlatko Kosturjak from Croatia has added <tt>chkconfig</tt> support
++    to the RPM spec file.
++<li>Documentation on making MaraDNS a Win32 service added.
++<li>Truncation of records too long to fit in a 512-byte packet now done 
++    in a RFC2181-compliant manner.
++<li>Slash commands added to csv2 zone files: '/serial', which allows the
++    serial for a zone file to be automatically updated whenever the zone 
++    file is edited; '/ttl', which allows the default TTL to be changed;
++    '/origin', which allows the origin to be changed; '/opush' and '/opop'
++    which allow the origin's values to be put on a stack; and '/read',
++    which allows another file to be included in a zonefile.
++<li>Some tidying of the Csv2 parsing code to deallocate unneeded memory
++    resources; this should lower MaraDNS memory usage when a large number
++    of csv2 zone files exist.
++<li>Records stored in the authoritative half are now always marked
++    "authoritative" in the DNS header; records not in a zone will simply
++    not have NS records in the NS/AR section of the answer.
++<li>Download page revamped to be faster and easier to use.
++</ul>
++(2006.07.26)
++</blockquote>
++
++<p>maradns-1.0.39:
++<blockquote>
++<ul>
++<li>Backport of memory leak fix to 1.0 branch of MaraDNS
++</ul>
++(2006.07.24)
++</blockquote>
++
++<p>maradns-1.2.07.8:
++<blockquote>
++<ul>
++<li>Backport of adding infomation about dangling CNAMEs to FAQ from testing
++    branch (see Debian bug #373781)
++<li>Backport of explicit exit 0 added to MaraDNS start/stop script (Debian 
++    bug #374655)
++<li>Backport of 1.2.11 bugfix: We can now have email addresses without 
++    @ (using . instead)
++<li>Memory leak plugged: MaraDNS' resolver was leaking about 300 bytes
++    whenever someone asked for a PTR that pointed to a CNAME that
++    didn't point to a legitimate PTR.
++<li>Vlatko Kosturjak from Croatia has added <tt>chkconfig</tt> support
++    to the RPM spec file.
++</ul>
++(2006.07.24)
++</blockquote>
++
+ <p>maradns-1.2.11:
+ <blockquote>
+ <ul>

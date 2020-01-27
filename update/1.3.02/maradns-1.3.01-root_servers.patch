@@ -1,0 +1,544 @@
+*** maradns-1.3.01/parse/ParseMaraRc.c	2006-12-21 00:34:46.000000000 -0800
+--- maradns-1.3.02/parse/ParseMaraRc.c	2007-01-06 00:33:41.000000000 -0800
+***************
+*** 1,4 ****
+! /* Copyright (c) 2002-2006 Sam Trenholme
+   *
+   * TERMS
+   *
+--- 1,4 ----
+! /* Copyright (c) 2002-2007 Sam Trenholme
+   *
+   * TERMS
+   *
+***************
+*** 522,529 ****
+      if(num == -2)
+          return num;
+  
+!     /* If num is 0 (csv1) or 1 (csv2), then we make the key all lower-case */
+!     if(num <= 1) {
+          int y,z;
+          y = 0;
+          for(z = 0; z < key->unit_count; z++) {
+--- 522,530 ----
+      if(num == -2)
+          return num;
+  
+!     /* If num is 0 (csv1), 1 (csv2), 2 (root_servers), or 3 (upstream_servers),
+!      * then we make the key all lower-case */
+!     if(num <= 3) {
+          int y,z;
+          y = 0;
+          for(z = 0; z < key->unit_count; z++) {
+***************
+*** 533,539 ****
+  		}
+              }
+  	    if(y == 1) {
+! 	        printf("csv%d zone name ",num + 1);
+  		show_esc_stdout(key);
+  		printf(" had upper-case letters.  Converted.\n");
+  		}
+--- 534,548 ----
+  		}
+              }
+  	    if(y == 1) {
+! 		if(num <= 1) {
+! 	            printf("csv%d zone name ",num + 1);
+! 		} else if(num == 2) {
+!                     printf("root_servers name ");
+!                 } else if(num == 3) {
+!                     printf("upstream_servers name ");
+!                 } else {
+!                     printf("unknown num %d name ",num);
+!                 } 
+  		show_esc_stdout(key);
+  		printf(" had upper-case letters.  Converted.\n");
+  		}
+*** maradns-1.3.01/server/recursive.c	2006-12-21 00:34:46.000000000 -0800
+--- maradns-1.3.02/server/recursive.c	2007-01-06 01:24:34.000000000 -0800
+***************
+*** 1,4 ****
+! /* Copyright (c) 2002-2006 Sam Trenholme
+   *
+   * TERMS
+   *
+--- 1,4 ----
+! /* Copyright (c) 2002-2007 Sam Trenholme
+   *
+   * TERMS
+   *
+***************
+*** 4253,4258 ****
+--- 4253,4363 ----
+       return 1;
+       }
+  
++ /* Add a given "root" nameserver for a given zone to the cache.  This is a
++  * non-removable entry; this tells the cache what the nameservers are under
++  * a given sub-tree of the DNS tree.  For example, a nameserver for "com."
++  * will service all of the otherwise uncached requests for DNS names that
++  * end in ".com".  A nameserver for "." is a root nameserver */
++ 
++ int add_hardcoded_ns(js_string *rootns, js_string *rootns_zone) {
++ 
++     int ret = 0;
++     int counter = 0;
++     ipv4pair root_servers[512];
++ 
++     /* Initialize the list of root servers */
++     for(counter=0;counter<511;counter++) {
++         root_servers[counter].ip = 0xffffffff;
++     }
++ 
++     js_string *zone;
++     zone = js_create(256,1);
++     if(zone == 0) {
++         return 0;
++     }
++ 
++     /* Reset the locale so it works with the hash routines */
++     js_set_encode(rootns,1);
++     js_set_encode(rootns_zone,1);
++     js_set_encode(zone,1);
++     
++     /* Convert rootns_zone in to a binary packet with "query type" */
++     ret = -8;
++     if(js_qstr2js(zone,"A") == JS_ERROR)
++         goto cleanup;
++     if(js_append(rootns_zone,zone) == JS_ERROR)
++         goto cleanup;
++     ret = -9;
++     if(hname_2rfc1035(zone) <= 0) {
++ 	printf("\n***************************************\n");
++ 	printf("WARNING: Invalid zone name ");
++         show_esc_stdout(rootns_zone);
++ 	printf("\n(Perhaps you forgot the final dot)\n");
++         printf("Please remove or edit the line from your mararc that looks "
++                "like this:\n\n");
++ 	if(root_or_upstream == 1) {
++ 		printf("upstream");
++ 	} else { 
++ 		printf("root");
++ 	}
++ 	printf("_servers[\"");
++         show_esc_stdout(rootns_zone);
++ 	printf("\"] = \"");
++ 	show_esc_stdout(rootns);
++ 	printf("\"\n\n");
++ 	js_destroy(zone);
++ 	printf("This line is being ignored by MaraDNS\n");
++ 	printf("***************************************\n\n");
++ 	return JS_SUCCESS;
++         }
++     ret = -10;
++     if(js_adduint16(zone,252) == JS_ERROR)
++         goto cleanup;
++     /* Convert the rootns in to a list of ipv4 pairs */
++     ret = -11;
++     if(make_ip_acl(rootns,root_servers,500,0) == JS_ERROR) {
++ 	printf("\n***************************************\n");
++ 	printf("WARNING: Invalid IP list for zone ");
++         show_esc_stdout(rootns_zone);
++         printf("\nPlease remove or edit the line from your mararc that looks "
++                "like this:\n\n");
++ 	if(root_or_upstream == 1) {
++ 		printf("upstream");
++ 	} else { 
++ 		printf("root");
++ 	}
++ 	printf("_servers[\"");
++         show_esc_stdout(rootns_zone);
++ 	printf("\"] = \"");
++ 	show_esc_stdout(rootns);
++ 	printf("\"\n\n");
++ 	js_destroy(zone);
++ 	printf("This line is being ignored by MaraDNS\n");
++ 	printf("***************************************\n\n");
++  	js_destroy(zone);
++ 	return JS_SUCCESS;
++     	}
++     counter = 0;
++     while(root_servers[counter].ip != 0xffffffff) {
++         ret = -12;
++         if(counter > 502)
++             goto cleanup;
++         ret = -13;
++         if(add_closer_ipv4pair(zone,&(root_servers[counter]),APPEND)
++            == JS_ERROR)
++             goto cleanup;
++         counter++;
++         }
++ 
++     js_destroy(zone);
++     return JS_SUCCESS;
++ 
++     cleanup:
++ 	js_destroy(zone);
++ 	return ret;
++ 
++     }
++ 
+  /* Initialize the cache hash for general use
+     Input: maximum number of elements the cache can have,
+            maximum number of threads we are allowed to run
+***************
+*** 4273,4278 ****
+--- 4378,4384 ----
+     -12: Too many elements in the root_servers ACL (shouldn't happen)
+     -13: Problem adding a root nameserver to the cache proper (shoudn't
+          happen);
++    -14: Both root servers and upstream servers are set
+  
+  */
+  
+***************
+*** 4280,4290 ****
+                 int max_q_total, int timeout, int verbose_query_value) {
+      js_string *rootns;
+      js_string *rootns_zone;
+!     ipv4pair root_servers[512];
+      int bits = 1;
+      int exp_counter = 1;
+!     int counter;
+!     int ret;
+  
+      /* initialize the rra_data */
+      if(rra_data == 0) {
+--- 4386,4398 ----
+                 int max_q_total, int timeout, int verbose_query_value) {
+      js_string *rootns;
+      js_string *rootns_zone;
+!     js_string *rzone;
+      int bits = 1;
+      int exp_counter = 1;
+!     int ret = 0;
+!     mhash *root_serv, *upstream_serv; /* A pointer to the hash with data 
+!                                        * for root and upstream servers */
+!     int root_seen = 0;
+  
+      /* initialize the rra_data */
+      if(rra_data == 0) {
+***************
+*** 4313,4322 ****
+      if(max_threads > 0)
+          maximum_num_of_threads = max_threads;
+  
+-     /* Initialize the list of root servers */
+-     for(counter=0;counter<511;counter++)
+-         root_servers[counter].ip = 0xffffffff;
+- 
+      /* Determine the number of bits the hash will need */
+      while(exp_counter <= max_cache_elements) {
+          /* The enterprise version which can handle more than 2^30 elements
+--- 4421,4426 ----
+***************
+*** 4349,4480 ****
+          return -2;
+  
+      /* Initialize the dnscache object */
+!     dnscache = (mhash *)mhash_create(bits); /* 1024+ usable elements, 4096
+!                                              total hash table spots */
+  
+      /* Copy over max_cache_elements to a global variable, so that
+         other routines can see this value */
+      cache_max = max_cache_elements;
+  
+!     /* Set up the root nameserver.  */
+  
+!     if((rootns = js_create(256,1)) == 0)
+          return -3;
+      if((rootns_zone = js_create(256,1)) == 0) {
+          js_destroy(rootns);
+          return -4;
+          }
+  
+-     ret = -5;
+-     if(js_qstr2js(rootns,"root_servers") == JS_ERROR)
+-         goto cleanup;
+-     ret = -6;
+-     if(js_qstr2js(rootns_zone,".") == JS_ERROR)
+-         goto cleanup;
+      /* Set the locale so it works with read_dvar */
+      js_set_encode(rootns,MARA_LOCALE);
+      js_set_encode(rootns_zone,MARA_LOCALE);
+!     ret = -7;
+!     /* If "root_servers" is not set, perhaps they wish to have
+!        "upstream_servers" instead */
+!     if(read_dvar(rootns,rootns_zone,rootns) == JS_ERROR) {
+!         /* Then, perhaps we have an upstream server */
+!         ret = -5;
+!         if(js_qstr2js(rootns,"upstream_servers") == JS_ERROR)
+!             goto cleanup;
+!         ret = -7;
+!         root_or_upstream = 1;
+!         if(read_dvar(rootns,rootns_zone,rootns) == JS_ERROR) {
+! 	    /* Let them know they ar eusing the default servers */
+  	    printf("Using default ICANN root servers\n");
+! 	    root_or_upstream = 0; /* We're using root servers, actually */
+!             /* Have ICANN be the default list of root servers, since
+! 	     * they are the most stable IPs for set-and-forget environments */
+! 	    /* This is the root server list as of 2005/03/30 */
+! 	    if(js_qstr2js(rootns,
+! 			"198.41.0.4"       /* a.root-servers.net (VeriSign) */
+! 			",192.228.79.201"  /* b.root-servers.net (ISI) */
+! 			",192.33.4.12"     /* c.root-servers.net (Cogent) */
+! 			",128.8.10.90"     /* d.root-servers.net (UMaryland) */
+! 			",192.203.230.10"  /* e.root-servers.net (NASA Ames) */
+! 			",192.5.5.241"     /* f.root-servers.net (ISC) */
+! 			",192.112.36.4"    /* g.root-servers.net (DOD NIC) */
+! 			",128.63.2.53"     /* h.root-servers.net (ArmyRU) */
+! 			",192.36.148.17"   /* i.root-servers.net (NORDUnet) */
+! 			",192.58.128.30"   /* j.root-servers.net (VeriSign) */
+! 			",193.0.14.129"    /* k.root-servers.net (Reseaux) */
+! 			",198.32.64.12"    /* l.root-servers.net (IANA) */
+! 			",202.12.27.33"    /* m.root-servers.net (WIDE) */
+!                ) == JS_ERROR) {
+  		    goto cleanup;
+  	        }
+! 	    }
+!         }
+!     /* Reset the locale so it works with the hash routines */
+!     js_set_encode(rootns,1);
+!     js_set_encode(rootns_zone,1);
+!     /* Convert rootns_zone in to a binary packet with "query type" */
+!     ret = -8;
+!     if(js_qstr2js(rootns_zone,"A.") == JS_ERROR)
+!         goto cleanup;
+!     ret = -9;
+!     if(hname_2rfc1035(rootns_zone) <= 0)
+!         goto cleanup;
+!     ret = -10;
+!     if(js_adduint16(rootns_zone,252) == JS_ERROR)
+!         goto cleanup;
+!     /* Convert the rootns in to a list of ipv4 pairs */
+!     ret = -11;
+!     if(make_ip_acl(rootns,root_servers,500,0) == JS_ERROR)
+!         goto cleanup;
+!     counter = 0;
+!     while(root_servers[counter].ip != 0xffffffff) {
+!         ret = -12;
+!         if(counter > 502)
+!             goto cleanup;
+!         ret = -13;
+!         if(add_closer_ipv4pair(rootns_zone,&(root_servers[counter]),APPEND)
+!            == JS_ERROR)
+              goto cleanup;
+!         counter++;
+!         }
+  
+!     /* Thou shalt not have both upstream_servers and root_servers set */
+!     if(root_or_upstream == 1) {
+!         /* If we are using upstream server(s) */
+!         ret = -5;
+!         if(js_qstr2js(rootns,"root_servers") == JS_ERROR)
+!             goto cleanup;
+!         ret = -6;
+!         if(js_qstr2js(rootns_zone,".") == JS_ERROR)
+!             goto cleanup;
+!         ret = -14;
+!         js_set_encode(rootns,MARA_LOCALE);
+!         js_set_encode(rootns_zone,MARA_LOCALE);
+!         if(read_dvar(rootns,rootns_zone,rootns) != JS_ERROR)
+!             goto cleanup;
+!         }
+!     else {
+!         /* Otherwise, if we are using root server(s) */
+!         ret = -5;
+!         if(js_qstr2js(rootns,"upstream_servers") == JS_ERROR)
+!             goto cleanup;
+!         ret = -6;
+!         if(js_qstr2js(rootns_zone,".") == JS_ERROR)
+!             goto cleanup;
+!         ret = -14;
+!         js_set_encode(rootns,MARA_LOCALE);
+!         js_set_encode(rootns_zone,MARA_LOCALE);
+!         if(read_dvar(rootns,rootns_zone,rootns) != JS_ERROR)
+!             goto cleanup;
+          }
+  
+!     js_destroy(rootns);
+!     js_destroy(rootns_zone);
+!     return JS_SUCCESS;
+      cleanup:
+          js_destroy(rootns);
+          js_destroy(rootns_zone);
+          return ret;
+      }
+  
+--- 4453,4569 ----
+          return -2;
+  
+      /* Initialize the dnscache object */
+!     dnscache = (mhash *)mhash_create(bits); 
+  
+      /* Copy over max_cache_elements to a global variable, so that
+         other routines can see this value */
+      cache_max = max_cache_elements;
+  
+!     /* Set up the root nameserver(s).  */
+  
+!     if((rootns = js_create(256,1)) == 0) {
+          return -3;
++         }
+      if((rootns_zone = js_create(256,1)) == 0) {
+          js_destroy(rootns);
+          return -4;
+          }
++     if((rzone = js_create(256,1)) == 0) {
++         js_destroy(rootns);
++         js_destroy(rzone);
++         return -4;
++         }
++ 
++     root_serv = (mhash *)dvar_raw(dq_keyword2n("root_servers"));
++     upstream_serv = (mhash *)dvar_raw(dq_keyword2n("upstream_servers"));
+  
+      /* Set the locale so it works with read_dvar */
+      js_set_encode(rootns,MARA_LOCALE);
+      js_set_encode(rootns_zone,MARA_LOCALE);
+!     /* Both "root_servers" and "upstream_servers" are not set, use
+!      * the default icann servers */
+!     if(root_serv == 0 && upstream_serv == 0) {
+!    	    /* Let them know they are using the default servers */
+  	    printf("Using default ICANN root servers\n");
+! 	    if(js_qstr2js(rootns,ROOT_SERVERS) == JS_ERROR) {
+  		    goto cleanup;
+  	        }
+!              if(js_qstr2js(rootns_zone,".") == JS_ERROR) {
+! 		goto cleanup;
+!              }
+!            
+!     	    ret = add_hardcoded_ns(rootns,rootns_zone);
+              goto cleanup;
+!     }
+!     /* Thou shalt not have both root servers and upstream servers */
+!     else if(root_serv != 0 && upstream_serv != 0) {
+! 	ret = -14;
+!         goto cleanup;
+!     }
+  
+!     /* At this point, one and only one of root_serv and upstream_serv
+!      * are set */
+! 
+!     /* If upstream_servers is set, set root_or_upstream to one
+!      * and treat upstream_serv just like root_serv */
+!     root_or_upstream = 0;
+!     if(upstream_serv != 0) {
+!         root_or_upstream = 1;
+!         root_serv = upstream_serv;
+          }
+  
+!     root_seen = 0;
+!     
+!     /* Now, let's walk through the root_serv hash */
+!     if(mhash_firstkey(root_serv,rzone) == JS_ERROR) {
+! 	ret = JS_ERROR;
+! 	goto cleanup;
+! 	}
+!     do {
+!         js_string *nslist;
+!         nslist = mhash_get_js(root_serv,rzone);
+! 	if(nslist == 0) { /* No elements in the root_servers/upstream_servers
+!                            * list */
+!              break;
+!         }
+!         printf("Adding root nameserver ");
+!         show_esc_stdout(nslist);
+!         printf(" for zone ");
+!         show_esc_stdout(rzone);
+!         printf("\n");
+!         if(js_qissame(".",rzone)) {
+!              root_seen = 1;
+!              }
+!     	ret = add_hardcoded_ns(nslist,rzone);
+!         js_destroy(nslist);
+! 	if(ret != JS_SUCCESS) {
+!              goto cleanup;
+!              }
+! 	} while(mhash_nextkey(root_serv,rzone) != 0);
+! 
+!     if(root_seen == 0) {
+! 	if(root_or_upstream == 1) {
+! 		printf("FATAL ERROR: upstream_servers[\".\"] must be set when");
+!                 printf("\nUsing upstream_servers\n");
+! 		exit(1);
+!       	}
+! 	printf("Using ICANN nameservers for root_servers[\".\"]\n");
+! 	if(js_qstr2js(rootns,ROOT_SERVERS) == JS_ERROR) {
+! 	    	goto cleanup;
+! 	}
+!         if(js_qstr2js(rootns_zone,".") == JS_ERROR) {
+! 		goto cleanup;
+!         }
+!         ret = add_hardcoded_ns(rootns,rootns_zone);
+!         goto cleanup;
+!      
+!     }
+! 	
+!     ret = JS_SUCCESS;
+      cleanup:
+          js_destroy(rootns);
+          js_destroy(rootns_zone);
++         js_destroy(rzone);
+          return ret;
+      }
+  
+*** maradns-1.3.01/MaraDns.h	2006-12-21 00:34:46.000000000 -0800
+--- maradns-1.3.02/MaraDns.h	2007-01-06 00:33:42.000000000 -0800
+***************
+*** 1,4 ****
+! /* Copyright (c) 2002-2006 Sam Trenholme
+   *
+   * TERMS
+   *
+--- 1,4 ----
+! /* Copyright (c) 2002-2007 Sam Trenholme
+   *
+   * TERMS
+   *
+***************
+*** 46,53 ****
+  #define MSG_WAITALL 0x40
+  #endif /* __CYGWIN__ */
+  
+! /* The maximum allowed size of a zone name */
+! #define MAX_ZONE_SIZE 256
+  
+  /* The default UID (User ID) that MaraDNS has; I put this here so packagers 
+     can change this easily.  This should be the 'nobody' user, or, optionally
+--- 46,66 ----
+  #define MSG_WAITALL 0x40
+  #endif /* __CYGWIN__ */
+  
+! /* This is the root server list as of 2007/01/05; the root servers haven't
+!  * been changed since 2004/01/29 */
+! #define ROOT_SERVERS "198.41.0.4"       /* a.root-servers.net (VeriSign) */ \
+!                      ",192.228.79.201"  /* b.root-servers.net (ISI) */ \
+!                      ",192.33.4.12"     /* c.root-servers.net (Cogent) */ \
+!                      ",128.8.10.90"     /* d.root-servers.net (UMaryland) */ \
+!                      ",192.203.230.10"  /* e.root-servers.net (NASA Ames) */ \
+!                      ",192.5.5.241"     /* f.root-servers.net (ISC) */ \
+!                      ",192.112.36.4"    /* g.root-servers.net (DOD NIC) */ \
+!                      ",128.63.2.53"     /* h.root-servers.net (ArmyRU) */ \
+!                      ",192.36.148.17"   /* i.root-servers.net (NORDUnet) */ \
+!                      ",192.58.128.30"   /* j.root-servers.net (VeriSign) */ \
+!                      ",193.0.14.129"    /* k.root-servers.net (Reseaux) */ \
+!                      ",198.32.64.12"    /* l.root-servers.net (IANA) */ \
+!                      ",202.12.27.33"    /* m.root-servers.net (WIDE) */
+  
+  /* The default UID (User ID) that MaraDNS has; I put this here so packagers 
+     can change this easily.  This should be the 'nobody' user, or, optionally
+***************
+*** 117,122 ****
+--- 130,138 ----
+   * disabled, but can be enabled by uncommenting the following line */
+  /* #define ALLOW_NON_ROOT */
+  
++ /* The maximum allowed size of a zone name */
++ #define MAX_ZONE_SIZE 256
++ 
+  #ifndef JS_STRING_INCLUDED
+  #include "libs/JsStr.h"
+  #endif

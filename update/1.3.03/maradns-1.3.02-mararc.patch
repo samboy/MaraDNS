@@ -1,0 +1,95 @@
+--- maradns-1.3.03/doc/en/source/mararc.ej.orig	2007-01-12 21:49:55.000000000 -0800
++++ maradns-1.3.03/doc/en/source/mararc.ej	2007-01-13 10:13:35.000000000 -0800
+@@ -205,32 +205,54 @@
+ <h2>root_servers</h2>
+ 
+ root_servers:  This is a special "dictionary" element that can
+-(currently) only have one element: ".", which points to either
+-an ip, or a pointer to an ipv4 alias which is a listing of root name 
+-servers.
++have multiple elements, where a given element points to either an 
++ip, or a pointer to an ipv4 alias.  For example:
+ 
+ <pre>
+ root_servers["."] = "list_of_servers"
+ </pre>
+ 
+-Where "." is the only allowed array reference for the root servers
+-(this format is used to allow potential future expansion), and
++In this example, "." indicates that this is a listing of root_servers
++that will resolve any name not otherwise listed as a root_servers
++entry.  <p>
++
+ list_of_servers is a list of root name servers in the exact same
+ format as ipv4_aliases.
+ <p>
+ 
+-Note that, while ips in the list of root name servers can have
++The root_servers dictionary array can have multiple elements.  Like csv2
++elements, the names must be valid domain names that end with the
++'.' character.  When there are multiple root_servers elements, the
++element with the most domain name labels that matches the end of 
++the hostname one is searching for is used.
++<p>
++
++For exmaple, let us suppose we have the following root_servers entries:
++
++<pre>
++root_servers["."] = "198.41.0.4"
++root_servers["com."] = "192.5.6.30"
++root_servers["example.net."] = "10.1.2.3,10.2.3.4"
++</pre>
++
++In this example, we use use the name server with the IP 10.1.2.3 or
++10.2.3.4 to start resolving "www.example.net", the name server with the
++IP 192.5.6.30 to start resolving "www.google.com", and the name server
++with the IP 198.41.0.4 to start resolving "www.maradns.org".  
++<p>
++
++Note that, while ips in a listing of root name servers can have
+ netmasks, the netmask portion is ignored.
+ <p>
+ 
+-The root_servers should only point to root servers.  If one wishes to use
++The root_servers should point to root servers.  If one wishes to use
+ MaraDNS as a forwarding name server, which forwards DNS requests on to 
+ another server, use the upstream_servers variable instead.
+ 
+ <h2>upstream_servers</h2>
+ 
+-This is identical to the root_servers variable (can have only one
+-element, the element is a list of ipv4_addresses, the variable is a 
++This is identical to the root_servers variable (can have multiple
++elements, the elements are a list of ipv4_addresses, the variable is a 
+ dictionary variable, etc.), but is used
+ when one wishes to use MaraDNS to query other recursive servers, instead
+ of querying the actual root name servers for an answer.
+@@ -241,16 +263,21 @@
+ attempts to do this.
+ <p>
+ 
+-If you get a syntax error when trying to use upstream_servers, please 
+-search for upstream_servers in the
+-MaraDNS FAQ and read this entry, or look for upstream_servers
+-in the example mararc file below for an example of correct usage
+-of this variable.
++Like root_servers, this is a dictionary variable that can have multiple
++elements.  For example:
++
++<pre>
++upstream_servers["."] = "10.5.6.7"
++upstream_servers["cl."] = "10.2.19.83"
++</pre>
++
++Here, we use 10.2.19.83 to resolve host names that end in "cl", and
++10.5.6.7 to resolve all other host names.
+ 
+ <h2>Final note on dictionary variables</h2>
+ 
+-csv1, csv2, ipv4_alias, and root_servers are currently the only existing
+-dictionary variables.
++csv1, csv2, ipv4_alias, root_servers, and upstream_servers are currently 
++the only existing dictionary variables.
+ 
+ <h1>NORMAL VARIABLE FORMAT</h1>
+ 

@@ -1,0 +1,246 @@
+diff -ur maradns-1.2.12.02.orig/dns/Compress.c maradns-1.2.12.02/dns/Compress.c
+--- maradns-1.2.12.02.orig/dns/Compress.c	2005-10-06 15:58:58.000000000 -0500
++++ maradns-1.2.12.02/dns/Compress.c	2006-08-09 09:38:02.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002 Sam Trenholme
++/* Copyright (c) 2002-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -83,7 +83,7 @@
+     new->uncompressed = uncompressed;
+ 
+     /* Initialize the values which allocate memory */
+-    if((new->compressed = js_create(MAX_COMPRESSED_LEN + 3,1)) == 0) {
++    if((new->compressed = js_create(MAX_COMPRESSED_LEN + 4,1)) == 0) {
+         js_dealloc(new);
+ 	return 0;
+ 	}
+@@ -647,7 +647,7 @@
+ 	return JS_ERROR;
+ 	}
+     state->uncompressed_offset += 2;
+-    if(state->uncompressed_offset >= state->uncompressed->unit_count) {
++    if(state->uncompressed_offset > state->uncompressed->unit_count) {
+         state->valid_state = 0;
+ 	return JS_ERROR;
+ 	}
+@@ -812,6 +812,7 @@
+  */
+ 
+ int compress_get_question(compress_state *state) {
++
+     /* Sanity checks */
+     if(state->valid_state != 1) {
+         return JS_ERROR;
+@@ -821,6 +822,10 @@
+ 	return JS_ERROR;
+ 	}
+ 
++    if(state->number_answers == -2) { /* No questions nor answers */
++	return JS_SUCCESS;
++	}
++
+     /* The domain name question */
+     if(compress_dlabel(state) != JS_SUCCESS) {
+         state->valid_state = 0;
+diff -ur maradns-1.2.12.02.orig/dns/Queries.c maradns-1.2.12.02/dns/Queries.c
+--- maradns-1.2.12.02.orig/dns/Queries.c	2006-07-26 10:58:44.000000000 -0500
++++ maradns-1.2.12.02/dns/Queries.c	2006-08-09 09:38:02.000000000 -0500
+@@ -1000,6 +1000,8 @@
+          * thing */
+ 
+ 	if(hdr.tc == 1 || (ns == 0 && ar == 0)) {
++		hdr.tc = 1;
++		hdr.qdcount = hdr.ancount = hdr.nscount = hdr.arcount = 0;
+ 		make_hdr(&hdr,packet);
+ 		return packet;
+ 	}
+@@ -1008,11 +1010,13 @@
+         count = an + ns + ar;
+ 	offset = 12; /* Beginning of first question */
+ 	/* Jump past all of the questions */
+-        while(qc > 1) {
++        while(qc > 0) {
+ 		int len;
+ 		len = dlabel_length(packet,offset);
+ 		if(len == JS_ERROR) {
+ 			hdr.tc = 1;
++		        hdr.qdcount = hdr.ancount = hdr.nscount = 
++				hdr.arcount = 0;
+ 			make_hdr(&hdr,packet);
+ 			return packet;
+ 		}
+@@ -1020,6 +1024,8 @@
+ 		offset += len;
+ 		if(offset >= packet->unit_count) {
+ 			hdr.tc = 1;
++		        hdr.qdcount = hdr.ancount = hdr.nscount = 
++				hdr.arcount = 0;
+ 			make_hdr(&hdr,packet);
+ 			return packet;
+ 		}
+@@ -1027,11 +1033,13 @@
+ 	}
+ 
+ 	/* Jump past all of the answers except for the last one */	
+-	while(count > 2) {
++	while(count > 1) {
+ 		int len;
+ 		len = dlabel_length(packet,offset);
+ 		if(len == JS_ERROR) {
+ 			hdr.tc = 1;
++		        hdr.qdcount = hdr.ancount = hdr.nscount = 
++				hdr.arcount = 0;
+ 			make_hdr(&hdr,packet);
+ 			return packet;
+ 		}
+@@ -1039,6 +1047,8 @@
+ 		offset += len;
+ 		if(offset + 2 >= packet->unit_count) {
+ 			hdr.tc = 1;
++		        hdr.qdcount = hdr.ancount = hdr.nscount = 
++				hdr.arcount = 0;
+ 			make_hdr(&hdr,packet);
+ 			return packet;
+ 		}
+@@ -1049,6 +1059,8 @@
+ 	        offset += len + 2;
+ 		if(offset >= packet->unit_count) {
+ 			hdr.tc = 1;
++		        hdr.qdcount = hdr.ancount = hdr.nscount = 
++				hdr.arcount = 0;
+ 			make_hdr(&hdr,packet);
+ 			return packet;
+ 		}
+@@ -1065,6 +1077,7 @@
+ 		hdr.nscount = ns;
+ 	} else {		
+ 		hdr.tc = 1;
++		hdr.qdcount = hdr.ancount = hdr.nscount = hdr.arcount = 0;
+ 		make_hdr(&hdr,packet);
+ 		return packet;
+ 	}
+@@ -1075,8 +1088,4 @@
+ 	return packet;
+ 
+ }
+-
+-	
+-	
+-		
+ 		
+diff -ur maradns-1.2.12.02.orig/server/MaraDNS.c maradns-1.2.12.02/server/MaraDNS.c
+--- maradns-1.2.12.02.orig/server/MaraDNS.c	2006-08-09 09:37:33.000000000 -0500
++++ maradns-1.2.12.02/server/MaraDNS.c	2006-08-09 09:39:51.000000000 -0500
+@@ -520,6 +520,7 @@
+     int seen_ptr_record = 0;
+     rr *top = where;
+     int is_auth = 0;
++    int compress_error_happened = 0;
+ 
+     q_header header;
+ 
+@@ -926,40 +927,19 @@
+         goto giveerror;
+         }
+ 
+-    /* Compress "most" and place the compressed data in "ar" */
++    compress_error_happened = 0;
+     if(compress_data(most,ar) == JS_ERROR) {
+-        /* This is a bit of a kludge to work around the news.com.com
+-           problem for the 1.0.00 release */
+-        if(log_level > 2) {
+-            log_lock();
+-            show_timestamp();
+-            printf("%s",L_COMPRESS_ERROR);
+-            /* Compress error */
+-            show_esc_stdout(most);
+-            printf("\n");
+-            log_unlock();
+-            }
+-        if(js_copy(most,ar) == JS_ERROR) {
+-            js_destroy(ar);
+-	    if(client != 0) {
+-                udperror(sock,most,client,0,SERVER_FAIL,"Compress failure",2,
+-			    rd_value,0);
+-	       } else {
+-                udperror(sock,most,0,0,SERVER_FAIL,"Compress failure",2,
+-			    rd_value,ect);
+-                }
+-            js_destroy(most);
+-            return JS_ERROR;
+-            }
+-        }
++        compress_error_happened = 1;
++    }
+ 
+     /* Check to make sure the data fits in under 512 bytes (4096 bytes
+      * if it's a long_packet_ipv4 address) truncate if not */
+-    if(ar->unit_count > 512) {
++    if(ar->unit_count > 512 || compress_error_happened == 1) {
+ 	int x;
+ #ifdef AUTHONLY
+ 	
+-	if(ect->type == 4) { /* If this is an ipv4 connection */
++        /* If this is an ipv4 connection and we didn't get a compress error */
++	if(ect->type == 4 && compress_error_happened == 0) { 
+             struct sockaddr_in *dq;
+ 	    uint32 ip_test;
+ 	    dq = (struct sockaddr_in *)(ect->d);
+@@ -975,16 +955,26 @@
+ #endif
+ 
+ 	for(x = 0; x < 20; x++) {		
++                compress_error_happened = 0;
+ 		/* OK, try to squeeze the packet in by removing records */
+ 		if(squeeze_to_fit(most) == 0) {
+ 			goto giveerror;		
+ 		}
+-		if(compress_data(most,ar) == JS_ERROR) {
++                if(most->unit_count > 12) {
++			if(compress_data(most,ar) == JS_ERROR) {
++				compress_error_happened = 1;
++			}
++			if(ar->unit_count <= 512 && 
++			    compress_error_happened == 0) {
++				break;
++			}
++                } else if(most->unit_count == 12) {
++			if(js_copy(most,ar) == JS_ERROR) {
++				goto giveerror;
++			}
++		} else {
+ 			goto giveerror;
+ 		}
+-		if(ar->unit_count <= 512) {
+-			break;
+-		}
+ 	    }
+         }
+ 
+@@ -992,6 +982,10 @@
+ long_packet_ok:
+ #endif
+ 
++    if(compress_error_happened == 1) {
++	goto giveerror;
++    }
++
+     /* Success! Put out the good data */
+     if(ect == 0) {
+         sendto(sock,ar->string,ar->unit_count,0,
+diff -ur maradns-1.2.12.02.orig/tools/askmara.c maradns-1.2.12.02/tools/askmara.c
+--- maradns-1.2.12.02.orig/tools/askmara.c	2006-06-11 02:16:32.000000000 -0500
++++ maradns-1.2.12.02/tools/askmara.c	2006-08-09 09:38:02.000000000 -0500
+@@ -542,6 +542,10 @@
+     if(read_hdr(uindata,&header) == JS_ERROR)
+         harderror(L_INHEADER_CONV); /* Problem converting inheader */
+ 
++    if(header.tc == 1) {
++	printf("# Remote server said: TRUNCATED\n");
++    }
++
+     /* If not 0, show them the rcode from the remote server */
+     switch(header.rcode) {
+ 	case 1:

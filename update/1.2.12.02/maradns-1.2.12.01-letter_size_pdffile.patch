@@ -1,0 +1,29 @@
+--- maradns-1.2.12.01/doc/en/man/make.pdf	2005-12-06 05:19:23.000000000 -0600
++++ maradns-1.2.12.02/doc/en/man/make.pdf	2006-08-13 21:33:41.000000000 -0500
+@@ -13,9 +13,9 @@
+ 
+ # We don't include the csv1 pages (since csv1 is here for MaraDNS 1.0 
+ # compatibility)
+-groff -mman -rS12 -Tps $( ls *.[1-8] | grep -v csv1 | grep -v getzone \
+-  ) \
+-  > manpage_reference.ps
++groff -mman -rS12 -Tps -P -pletter \
++$( ls *.[1-8] | grep -v csv1 | grep -v getzone | grep -v mqhash \
++  ) > manpage_reference.ps
+ $PS2PDF manpage_reference.ps ../pdf/manpage_reference.pdf
+ rm *.ps
+ 
+--- maradns-1.2.12.01/doc/en/pdf/README	2005-12-06 04:38:45.000000000 -0600
++++ maradns-1.2.12.02/doc/en/pdf/README	2006-08-13 21:34:27.000000000 -0500
+@@ -3,9 +3,6 @@
+ and the annp.tmac macro set which the ej2ps script uses.
+ 
+ The generated PDF files are optimized to print on to Letter paper.  This is
+-set in /usr/share/groff/1.18.1/font/devps/DESC if you wish to make this
+-a4 or what not (look for the line that looks like "papersize /etc/papersize 
+-letter".
++set in doc/en/man/make.pdf if you wish to make this A4 or what not (look 
++for -P -pletter).
+ 
+-Note that this .pdf file is not perfect.  For example, there are problems
+-with spacing, especially with the "fi" character and the quote character.

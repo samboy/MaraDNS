@@ -1,0 +1,17 @@
+--- maradns-1.3.03/server/recursive.c.orig	2007-02-04 21:17:50.000000000 -0800
++++ maradns-1.3.03/server/recursive.c	2007-02-04 21:18:05.000000000 -0800
+@@ -4264,13 +4264,13 @@
+     int ret = 0;
+     int counter = 0;
+     ipv4pair root_servers[512];
++    js_string *zone;
+ 
+     /* Initialize the list of root servers */
+     for(counter=0;counter<511;counter++) {
+         root_servers[counter].ip = 0xffffffff;
+     }
+ 
+-    js_string *zone;
+     zone = js_create(256,1);
+     if(zone == 0) {
+         return 0;

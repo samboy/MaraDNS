@@ -1,0 +1,11 @@
+--- maradns-1.3.05/server/MaraDNS.c	2007-05-21 06:37:54.000000000 -0500
++++ maradns-1.3.06/server/MaraDNS.c	2007-05-24 07:59:57.000000000 -0500
+@@ -3017,6 +3017,8 @@
+               spot_data.datatype == MARA_DNS_LIST) {
+             /* There is a RR phohibiting the star record.  Return
+              * name error */
++       	    be_anal->string--;
++            js_destroy(be_anal);
+             return 1;
+             }
+       	be_anal->string--;

@@ -1,0 +1,123 @@
+--- maradns-1.3.13/doc/en/webpage/index.embed	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.3.14/doc/en/webpage/index.embed	2009-08-01 09:51:03.000000000 -0500
+@@ -17,7 +17,9 @@
+ and MaraDNS 1.2 was released in December of 2005.  MaraDNS has been
+ extensively tested, both with a SQA process and with over four years of
+ real-world use.  MaraDNS continues to be fully supported: The most recent
+-release was done on September 10, 2008.
++release was done on February 13, 2009. Deadwood, the code that will
++become part of MaraDNS 2.0, is being <A 
++href=http://maradns.blogspot.com/search/label/Deadwood>actively developed</A>.
+ <li><b>Easy to use</b>.  A basic recursive configuration needs only a 
+ single three-line configuration file.  A basic authoritative configuration
+ needs only a four-line configuration file and a one-line zone file.
+--- maradns-1.3.13/doc/en/webpage/advocacy.embed	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.3.14/doc/en/webpage/advocacy.embed	2009-08-01 09:45:48.000000000 -0500
+@@ -34,7 +34,7 @@
+ and MaraDNS 1.2 was released in December of 2005.  MaraDNS has been
+ extensively tested, both with a SQA process and with over four years of
+ real-world use.  MaraDNS continues to be fully supported: The most recent
+-release was done on September 10, 2008.
++release was done on February 13, 2009.
+ <li><b>Easy to use</b>.  A basic recursive configuration needs only a 
+ single three-line configuration file.  A basic authoritative configuration
+ needs only a four-line configuration file and a one-line zone file.
+--- maradns-1.3.13/doc/en/webpage/sponsors.embed	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.3.14/doc/en/webpage/sponsors.embed	2009-08-01 09:45:48.000000000 -0500
+@@ -15,6 +15,10 @@
+ <li><A href="http://www.webconquest.com/">WebConquest</A>, who hosts MaraDNS'
+     web page.
+ 
++<li><A href=http://www.chirado.de>Chirado OHG</A>, a German consulting firm
++specializing in the design, implementation, and maintenance of secure
++IT systems and processes that comply with ISO 27001.
++
+ <li>XeroBank, a source of <A href=http://xerobank.com>Internet 
+     Privacy</A> software, who have funded support for giving out IPs when
+     a DNS host does not exist or a remote DNS server does not reply.
+--- maradns-1.3.13/doc/en/webpage/security.embed	2007-10-19 08:54:14.000000000 -0500
++++ maradns-1.3.14/doc/en/webpage/security.embed	2009-08-01 09:45:48.000000000 -0500
+@@ -1,7 +1,8 @@
+ <h1>MaraDNS' security</h1>
+ 
+ <i>For people who just want to quickly get current with MaraDNS' security
+-history should jump to the <A href="#history">history section</A>.</i><p>
++history should jump to the <A href="#history">history section</A>.  Note
++that MaraDNS last reported security problem was on August 29, 2007</i><p>
+ 
+ MaraDNS should be a secure DNS server.
+ 
+--- maradns-1.3.13/doc/en/webpage/contact.embed	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.3.14/doc/en/webpage/contact.embed	2009-08-01 09:52:48.000000000 -0500
+@@ -1,15 +1,32 @@
+ <h1>MaraDNS support</h1>
+-Due to a hectic work schedule, I no longer have time to personally answer
+-MaraDNS support email without being compensated for my time.  I apologize 
+-for any inconvenience caused.  The only
+-MaraDNS email I will answer is security bug reports.
++
++Sponsorship is what makes continued MaraDNS development possible.
++
++<p>
++
++I do not answer MaraDNS support requests sent by private email without
++being compensated for my time. I will discuss rates if you want this
++kind of support or if you send me a support concern via private email.
++
++<p>
++
++This includes non-security bug reports.  I do not have the time to maintain
++a bug tracker for MaraDNS nor handle bug reports sent via private email.  
++Please send MaraDNS non-security bug reports to the MaraDNS mailing list.
++
++<p>
++
++MaraDNS security vulnerability reports, however, will be dealt with
++without charge and kept confidential.
+ 
+ <p>
+ 
+ If you wish help with MaraDNS, please join the MaraDNS mailing list.
+ To join the mailing list, send an email to 
+ <A href="mailto:list-request@maradns.org">list-request@maradns.org</A> with
+-the word "subscribe" in the subject and body of the message.
++the word "subscribe" in the subject and body of the message.  Once
++you join the mailing list, send an email to list@maradns.org with your
++concern.
+ 
+ <p>
+ 
+@@ -22,7 +39,5 @@
+ <p>
+ 
+ Oh, and if you ignore this and <i>still</i> send me a MaraDNS-related
+-support question, I reserve the right to post your support email to
+-the Mara-DNS mailing list so that the community at large can examine
+-your issue.
++support question, I will discuss rates with you via private email.
+ 
+--- maradns-1.3.13/doc/en/webpage/notes.embed	2008-03-24 09:52:27.000000000 -0600
++++ maradns-1.3.14/doc/en/webpage/notes.embed	2009-08-01 09:49:16.000000000 -0500
+@@ -35,3 +35,22 @@
+ <P><A href="dns_software.html">A list of some other DNS server software 
+    available</A>.</P>
+ 
++<h2>Search MaraDNS documentation</h2>
++
++If you wish to search this site, please enter what you
++are looking for in the following box. <p>
++
++<!-- Google Custom Search Element -->
++<div id="cse" style="width:100%;">Loading</div>
++<script src="http://www.google.com/jsapi" type="text/javascript"></script>
++<script type="text/javascript">
++  google.load('search', '1');
++  google.setOnLoadCallback(function(){
++    new google.search.CustomSearchControl().draw('cse');
++  }, true);
++</script>
++<noscript>Please enable JavaScript if you wish to search this site.
++If you do not wish to or can not enable JavaScript, go to <A 
++href=http://google.com>google.com</A> and type in a query like
++"<A href=http://www.google.com.mx/search?q=whatever+site%3Amaradns.org>whatever site:maradns.org</A>"</noscript>
++

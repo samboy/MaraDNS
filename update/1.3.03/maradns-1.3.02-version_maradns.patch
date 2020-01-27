@@ -1,0 +1,98 @@
+--- maradns-1.3.03/server/MaraDNS.c.orig	2007-01-14 16:22:14.000000000 -0800
++++ maradns-1.3.03/server/MaraDNS.c	2007-01-14 16:22:17.000000000 -0800
+@@ -3142,6 +3142,12 @@
+     if(dos_protection_level == 78 ) {
+   	    goto recursive_call;
+     }
++    /* When dos_protection_level is 79, the only authoritative-type thing we
++     * do is report the version number of MaraDNS if they ask for it and have
++     * the authority to get this information */
++    if(dos_protection_level == 79) {
++	    goto report_version;
++    }
+ 
+     /* We don't process RR_ANY records if dos_protection_level is greater
+      * than 13 */
+@@ -3209,7 +3215,8 @@
+     } 
+     
+ 
+-#ifdef VERSION
++report_version:
++
+         /* A TXT query to "version.maradns." will
+            return the version of MaraDNS being run.  This only
+            works if we are not authoritative for "maradns.org", since
+@@ -3221,7 +3228,12 @@
+            && no_fingerprint != 1 && debug_msg_level >= 1) {
+             result_code = easter_egg(header.id,sock,ect,origq,
+                "Tversion.maradns.",RR_TXT,"MaraDNS version ",
+-               VERSION);
++#ifdef VERSION
++               VERSION
++#else
++	       "Broken compile, VERSION not defined"
++#endif /* VERSION */
++            );
+             if(result_code == JS_SUCCESS) {
+                 js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+                 return JS_SUCCESS;
+@@ -3230,7 +3242,12 @@
+                 goto serv_fail;
+                 }
+             }
+-#endif /* VERSION */
++
++    /* At dos_protection_level 79, the only authoritative-type thing we do
++     * is let them see the version number of MaraDNS (see above) */
++    if(dos_protection_level == 79 ) {
++  	    goto recursive_call;
++    }
+ 
+         /* A TXT query to "numthreads.maradns." tells us the number of
+            threads that MaraDNS is running; this is only enabled if
+@@ -4550,6 +4567,11 @@
+         if(make_ip_acl(verbstr,admin_acl,500,0) == JS_ERROR) 
+             harderror("Could not make admin_acl list");
+         }
++    default_dos_level = 78; /* 78: Recursive-only; 0: default when
++                             * there is one or more zonefiles */
++    if(admin_acl[0].ip != 0xffffffff) {
++	default_dos_level = 79; /* 79: Only check for Tversion.maradns. */
++        }
+ 
+     /* Anything after this does not need recursion enabled for the
+        kvar in question to be read */
+@@ -4779,16 +4801,14 @@
+     /* populate_main uses qual timestamps for the csv2 zone files */
+     qual_set_time();
+     value = populate_main(bighash,errors,recursion_enabled);
+-    default_dos_level = 78; /* No authoritative records in cache */
++    /* If we have one or more elements in the cache, we will need to look
++     * through the cache for elements (default_dos_level, in this context,
++     * allows us to save time when doing just recursive queries by not 
++     * bothering with cache lookups) */
+     if(value == JS_SUCCESS) {
+ 	default_dos_level = 0;
+     }
+ 
+-    /* Set the dos_protection_level to see if we disable some features
+-     * to protect us from a denial of service attack. */
+-    dos_protection_level = 
+-	read_numeric_kvar("dos_protection_level",default_dos_level);
+-
+     if(value == JS_ERROR)
+         harderror(L_NOPOPULATE); /* "Error running populate_main program" */
+     else if(value == -2) {
+@@ -4797,6 +4817,11 @@
+         harderror(L_POPULATE_FATAL); /* "This error in populate hash is fatal" */
+         }
+ 
++    /* Set the dos_protection_level to see if we disable some features
++     * to protect us from a denial of service attack. */
++    dos_protection_level = 
++	read_numeric_kvar("dos_protection_level",default_dos_level);
++
+     if(verbstr != 0) { js_destroy(verbstr); }
+     verbstr = read_string_kvar("csv2_default_zonefile");
+     if(verbstr !=0 && js_length(verbstr) > 0) {

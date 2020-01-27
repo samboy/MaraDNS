@@ -1,0 +1,53 @@
+--- maradns-1.3.07.07/MaraDns.h.orig	2007-11-15 19:42:03.000000000 -0600
++++ maradns-1.3.07.07/MaraDns.h	2007-11-15 19:41:06.000000000 -0600
+@@ -54,8 +54,8 @@
+ #define MSG_WAITALL 0x40
+ #endif /* __CYGWIN__ */
+ 
+-/* This is the root server list as of 2007/01/05; the root servers haven't
+- * been changed since 2004/01/29 */
++/* This is the root server list as of 2007/11/15; the root servers were
++ * last changed 2007/11/01 */
+ #define ROOT_SERVERS "198.41.0.4"       /* a.root-servers.net (VeriSign) */ \
+                      ",192.228.79.201"  /* b.root-servers.net (ISI) */ \
+                      ",192.33.4.12"     /* c.root-servers.net (Cogent) */ \
+@@ -67,7 +67,7 @@
+                      ",192.36.148.17"   /* i.root-servers.net (NORDUnet) */ \
+                      ",192.58.128.30"   /* j.root-servers.net (VeriSign) */ \
+                      ",193.0.14.129"    /* k.root-servers.net (Reseaux) */ \
+-                     ",198.32.64.12"    /* l.root-servers.net (IANA) */ \
++                     ",199.7.83.42"     /* l.root-servers.net (IANA) */ \
+                      ",202.12.27.33"    /* m.root-servers.net (WIDE) */
+ 
+ /* The default UID (User ID) that MaraDNS has; I put this here so packagers
+--- maradns-1.3.07.06/doc/en/source/example_full_mararc	2006-03-22 02:00:24.000000000 -0600
++++ maradns-1.3.07.07/doc/en/source/example_full_mararc	2007-11-15 19:45:15.000000000 -0600
+@@ -80,7 +80,7 @@
+ ipv4_alias["icann"]  = "198.41.0.4, 192.228.79.201, 192.33.4.12, 128.8.10.90,"
+ ipv4_alias["icann"] += "192.203.230.10, 192.5.5.241, 192.112.36.4,"
+ ipv4_alias["icann"] += "128.63.2.53, 192.36.148.17, 192.58.128.30,"
+-ipv4_alias["icann"] += "193.0.14.129, 198.32.64.12, 202.12.27.33"
++ipv4_alias["icann"] += "193.0.14.129, 199.7.83.42, 202.12.27.33"
+ 
+ # OpenNIC: http://www.opennic.unrated.net/
+ # Current as of 2005/11/30; these servers change frequently so please
+--- maradns-1.3.07.06/doc/en/source/recursive.ej	2007-02-14 09:25:28.000000000 -0600
++++ maradns-1.3.07.07/doc/en/source/recursive.ej	2007-11-15 19:46:32.000000000 -0600
+@@ -183,7 +183,7 @@
+ ipv4_alias["icann"] += "192.36.148.17,"
+ ipv4_alias["icann"] += "192.58.128.30,"
+ ipv4_alias["icann"] += "193.0.14.129,"
+-ipv4_alias["icann"] += "198.32.64.12,"
++ipv4_alias["icann"] += "199.7.83.42,"
+ ipv4_alias["icann"] += "202.12.27.33"
+ root_servers["."] = "icann"
+ </pre>
+@@ -222,7 +222,7 @@
+ ipv4_alias["icann-i"] = "192.36.148.17"
+ ipv4_alias["icann-j"] = "192.58.128.30"
+ ipv4_alias["icann-k"] = "193.0.14.129"
+-ipv4_alias["icann-l"] = "198.32.64.12"
++ipv4_alias["icann-l"] = "199.7.83.42"
+ ipv4_alias["icann-m"] = "202.12.27.33"
+ ipv4_alias["icann"] = "icann-a,icann-b,icann-c,icann-d,icann-e,icann-f,"
+ ipv4_alias["icann"] += "icann-g,icann-h,icann-i,icann-j,icann-k,icann-l,"

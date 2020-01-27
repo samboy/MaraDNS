@@ -1,0 +1,48 @@
+--- maradns-1.3.07.04/TODO.1.3	2007-08-29 11:30:03.000000000 -0500
++++ maradns-1.3.07.05/TODO.1.3	2007-09-18 16:07:24.000000000 -0500
+@@ -1,8 +1,43 @@
+-Try to find and fix problem with inappropriate RR rotation.  If the bug is
+-truly unreproducable, rewrite the rotation code.
++Documentation:
++
++* Update csv2 tutorials to discuss ~ used to separate records
++
++* bind2csv2.py manpage (mostly done) (DONE) and tutorial (DONE a while ago;
++  almost identical to manpage)
++
++* Update tutorial to talk about alternative root servers for subtrees of
++  DNS space (DONE)
++
++* Update advocacy document; make document in tree current with web page
++  version; update pdnsd (last relase now one year old); note last
++  Posadis release was in 2004; note last MyDNS release in early 2006 (and
++  add mention of MyDNS); note that MaraDNS now has BIND zone file support
++  (via Python script) (DONE)
++
++* Update security document: make document in tree current with web page
++  version; add improper rotation bug report (DONE)
++
++* Talk about 1.2-to-1.3 new features.  Discuss subtrees in recursive space,
++  memory allocation security improvments, etc.
++
++---
++
++1.3.08 code: NAPTR
++
++Let's see: NAPTR.  RR code 35; two 16-bit unsigned numbers; three
++"character-strings" (thingys where you have a single byte indicating
++the length of the string, followed by the actural string.  No worries;
++MaraDNS has code to do all of this); and finally a <domain-name>.
++The <domain-name> is a little tricky, since the compression/decompression
++library will have to deal with them, but this should not be too hard
++(I haven't added a new RR to the compression core since 2002 or so).
++
+ 
+ ---- Already done:
+ 
++Try to find and fix problem with inappropriate RR rotation.  If the bug is
++truly unreproducable, rewrite the rotation code. (DONE; bug found)
++
+ Have a single megascript that does all of the SQA tests and lets us know 
+ that we have passed all of them. (DONE)
+ 

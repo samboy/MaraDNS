@@ -1,0 +1,212 @@
+--- maradns-1.3.03/doc/en/webpage/download.embed	2007-01-09 14:16:34.000000000 -0600
++++ maradns-1.3.04/doc/en/webpage/download.embed	2007-03-22 01:20:55.000000000 -0600
+@@ -3,65 +3,67 @@
+ <h1>&iexcl;Download MaraDNS!</h1>
+ 
+ <h2>Stable release</h2>
+-<p>This is the current stable release of MaraDNS, MaraDNS 1.2.12.04,
+-released November 24, 2006.
++<p>This is the current stable release of MaraDNS, MaraDNS 1.2.12.05,
++released February 17, 2007.
++<!--
+ <p>This release is available both at <A 
+ href="http://sourceforge.net/project/showfiles.php?group_id=24033">sourceforge.net</A>
+ and on this page.
++-->
+ 
+ <p>
+ <table><tr><td>
+ <A 
+-href="download/1.2/1.2.12.04/maradns-1.2.12.04.tar.bz2"><!--
+-                          -->maradns-1.2.12.04.tar.bz2</A>
++href="download/1.2/1.2.12.05/maradns-1.2.12.05.tar.bz2"><!--
++                          -->maradns-1.2.12.05.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.04/maradns-1.2.12.04.tar.bz2.sha1.asc">sig</A><p>
++href="download/1.2/1.2.12.05/maradns-1.2.12.05.tar.bz2.sha.asc">sig</A><p>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.2/1.2.12.04/maradns-1.2.12.04.tar.lzma"><!--
+-                          -->maradns-1.2.12.04.tar.lzma</A>
++href="download/1.2/1.2.12.05/maradns-1.2.12.05.tar.lzma"><!--
++                          -->maradns-1.2.12.05.tar.lzma</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.04/maradns-1.2.12.04.tar.lzma.sha1.asc">sig</A>
++href="download/1.2/1.2.12.05/maradns-1.2.12.05.tar.lzma.sha.asc">sig</A>
+ </td><td>
+ <A href="#lzma">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.2/1.2.12.04/maradns-1.2.12.04.tar.gz"><!--
+-                          -->maradns-1.2.12.04.tar.gz</A>
++href="download/1.2/1.2.12.05/maradns-1.2.12.05.tar.gz"><!--
++                          -->maradns-1.2.12.05.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.04/maradns-1.2.12.04.tar.gz.sha1.asc">sig</A>
++href="download/1.2/1.2.12.05/maradns-1.2.12.05.tar.gz.sha.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+-<A href="download/1.2/1.2.12.04/maradns-1.2.12.04-1.src.rpm"><!--
+-                             -->maradns-1.2.12.04-1.src.rpm</A>
++<A href="download/1.2/1.2.12.05/maradns-1.2.12.05-1.src.rpm"><!--
++                             -->maradns-1.2.12.05-1.src.rpm</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.04/maradns-1.2.12.04-1.src.rpm.sha1.asc">sig</A>
++href="download/1.2/1.2.12.05/maradns-1.2.12.05-1.src.rpm.sha.asc">sig</A>
+ </td><td>
+ <A 
+ href="#srcrpm">info</A>
+ </td></tr><tr><td>
+-<A href="download/1.2/1.2.12.04/maradns-1.2.12.04-1.i386.rpm"><!--
+-                             -->maradns-1.2.12.04-1.i386.rpm</A>
++<A href="download/1.2/1.2.12.05/maradns-1.2.12.05-1.i386.rpm"><!--
++                             -->maradns-1.2.12.05-1.i386.rpm</A>
+ </td><td>
+ <A 
+-   href="download/1.2/1.2.12.04/maradns-1.2.12.04-1.i386.rpm.sha1.asc">sig</A>
++   href="download/1.2/1.2.12.05/maradns-1.2.12.05-1.i386.rpm.sha.asc">sig</A>
+ </td><td>
+ <A 
+ href="#rpm">info</A>
+ </td></tr><tr><td>
+ <A 
+-href="download/1.2/1.2.12.04/maradns-1-2-12-04-win32.zip"><!--
+-                          -->maradns-1-2-12-04-win32.zip</A>
++href="download/1.2/1.2.12.05/maradns-1-2-12-05-win32.zip"><!--
++                          -->maradns-1-2-12-05-win32.zip</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.04/maradns-1-2-12-04-win32.zip.sha1.asc">sig</A>
++href="download/1.2/1.2.12.05/maradns-1-2-12-05-win32.zip.sha.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ </td></tr></table>
+@@ -81,62 +83,62 @@
+ release; one where new features have been added without being throughly
+ tested.  
+ 
+-<p>This is the current testing release of MaraDNS, MaraDNS 1.3.02,
+-released January 9, 2007.
++<p>This is the current testing release of MaraDNS, MaraDNS 1.3.03,
++released February 14, 2007.
+ 
+ <p>
+ <table><tr><td>
+ <A 
+-href="download/1.3/1.3.02/maradns-1.3.02.tar.bz2"><!--
+-                       -->maradns-1.3.02.tar.bz2</A>
++href="download/1.3/1.3.03/maradns-1.3.03.tar.bz2"><!--
++                       -->maradns-1.3.03.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.02/maradns-1.3.02.tar.bz2.sha.asc">sig</A><p>
++href="download/1.3/1.3.03/maradns-1.3.03.tar.bz2.sha.asc">sig</A><p>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.02/maradns-1.3.02.tar.lzma"><!--
+-                       -->maradns-1.3.02.tar.lzma</A>
++href="download/1.3/1.3.03/maradns-1.3.03.tar.lzma"><!--
++                       -->maradns-1.3.03.tar.lzma</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.02/maradns-1.3.02.tar.lzma.sha.asc">sig</A>
++href="download/1.3/1.3.03/maradns-1.3.03.tar.lzma.sha.asc">sig</A>
+ </td><td>
+ <A href="#lzma">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.02/maradns-1.3.02.tar.gz"><!--
+-                       -->maradns-1.3.02.tar.gz</A>
++href="download/1.3/1.3.03/maradns-1.3.03.tar.gz"><!--
++                       -->maradns-1.3.03.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.02/maradns-1.3.02.tar.gz.sha.asc">sig</A>
++href="download/1.3/1.3.03/maradns-1.3.03.tar.gz.sha.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+-<A href="download/1.3/1.3.02/maradns-1.3.02-1.src.rpm"><!--
+-                          -->maradns-1.3.02-1.src.rpm</A>
++<A href="download/1.3/1.3.03/maradns-1.3.03-1.src.rpm"><!--
++                          -->maradns-1.3.03-1.src.rpm</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.02/maradns-1.3.02-1.src.rpm.sha.asc">sig</A>
++href="download/1.3/1.3.03/maradns-1.3.03-1.src.rpm.sha.asc">sig</A>
+ </td><td>
+ <A 
+ href="#srcrpm">info</A>
+ </td></tr><tr><td>
+-<A href="download/1.3/1.3.02/maradns-1.3.02-1.i386.rpm"><!--
+-                          -->maradns-1.3.02-1.i386.rpm</A>
++<A href="download/1.3/1.3.03/maradns-1.3.03-1.i386.rpm"><!--
++                          -->maradns-1.3.03-1.i386.rpm</A>
+ </td><td>
+ <A 
+-   href="download/1.3/1.3.02/maradns-1.3.02-1.i386.rpm.sha.asc">sig</A>
++   href="download/1.3/1.3.03/maradns-1.3.03-1.i386.rpm.sha.asc">sig</A>
+ </td><td>
+ <A 
+ href="#rpm">info</A>
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.02/maradns-1-3-02-win32.zip"><!--
+-                       -->maradns-1-3-02-win32.zip</A>
++href="download/1.3/1.3.03/maradns-1-3-03-win32.zip"><!--
++                       -->maradns-1-3-03-win32.zip</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.02/maradns-1-3-02-win32.zip.sha.asc">sig</A>
++href="download/1.3/1.3.03/maradns-1-3-03-win32.zip.sha.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ 
+@@ -168,12 +170,13 @@
+ <H2>Tools to help verify the sums of MaraDNS (or any other file)</H2>
+ <p>This is a mismash of various cryptographic summing algorithms.  <b>By and
+ large, the programs in this tarball are not public domain</b>
+-<p><A href=download/sums-20011111.tar.bz2>sums-20011111.tar.bz2</A>  This is the
++<p><A href=download/non-maradns/sums-20070214.tar.bz2>sums-20070214.tar.bz2</A>  This is the
+ actual code which performs various cryptographic hashes against the file.
+-(<A href=download/sums-20011111.tar.bz2.asc>PGP signature</A>)
++(<A href=download/non-maradns/sums-20070214.tar.bz2.sha.asc>PGP signature</A>)
+ <p>
+ <A href=download/sums-papers-20010818.tar.bz2>sums-papers-20010818.tar.bz2</A>  
+-This is a collection of papers describing the various cryptographic hashes.
++This is a collection of papers describing some of the various 
++cryptographic hashes.
+ 
+ <H2>Disclaimer</H2>
+ THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
+--- maradns-1.3.03/doc/en/webpage/index.embed	2007-02-14 09:25:28.000000000 -0600
++++ maradns-1.3.04/doc/en/webpage/index.embed	2007-03-22 01:20:55.000000000 -0600
+@@ -15,7 +15,7 @@
+ and MaraDNS 1.2 was released in December of 2005.  MaraDNS has been
+ extensively tested, both with a SQA process and with over four years of
+ real-world use.  MaraDNS continues to be fully supported: The most recent
+-release was done on January 9, 2007.
++release was done on February 17, 2007.
+ <li><b>Easy to use</b>.  A basic recursive configuration needs only a 
+ single three-line configuration file.  A basic authoritative configuration
+ needs only a four-line configuration file and a one-line zone file.
+@@ -37,10 +37,6 @@
+ A full comparison between MaraDNS and other DNS servers is available in the
+ <A href="advocacy.html">advocacy document</A>.
+ 
+-<h2>Blog</h2>
+-MaraDNS now has an <A href="/blog">official blog</A>.  This blog is the 
+-best place to get up to date information about MaraDNS releases.
+-
+ <h2>Mailing list</h2>
+ To join the mailing list, send an email to 
+ <A href="mailto:list-request@maradns.org">list-request@maradns.org</A> with

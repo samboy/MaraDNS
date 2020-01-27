@@ -1,0 +1,169 @@
+--- maradns-1.3.03/doc/en/source/faq.embed	2006-12-21 02:34:46.000000000 -0600
++++ maradns-1.3.04/doc/en/source/faq.embed	2007-02-18 19:52:28.000000000 -0600
+@@ -79,6 +79,20 @@
+ 32. <A href="#synthns">I am transferring a zone from another
+     server, but the NS records are these strange "synth-ip" records.</A>
+ 
++33. <A href="#roothints">Where is the root.hints file?</A>
++
++34. <A href="#autoconf">Are there any plans to use autoconf to build 
++    MaraDNS?</A>
++
++35. <A href="#flags">How do I change the compiler or compile-time flags
++    with MaraDNS' build process?</A>
++
++36. <A href="#makepkg">Will you make a package for the particular Linux 
++    distribution I am using?</A>
++
++37. <A href="#wincrippled">I am using the native Windows port of MaraDNS,
++    and some features are not working.</A>
++
+ </BLOCKQUOTE>
+ <H2>ANSWERS</H2>
+ 
+@@ -816,4 +830,145 @@
+ fetchin 10.1.2.3 with the IP address of the DNS master, and
+ zonefile.csv2 with the name of the zone file MaraDNS loads.
+ 
++<A name=roothints> </A>
++<h2>Where is the root.hints file?</h2>
++
++MaraDNS, unlike BIND, does not need a complicated root.hints file in
++order to have custom root servers.  In order to change the root.hints
++file, add something like this to your mararc file:
++
++<pre>
++root_servers["."] =  "131.161.247.232,"
++root_servers["."] += "208.185.249.250,"
++root_servers["."] += "66.227.42.140,"
++root_servers["."] += "66.227.42.149,"
++root_servers["."] += "65.243.92.254"
++</pre>
++
++Note that there is no "+=" in the first line, and the last line does not
++have a comma at the end.  Read the recursive tutorial document for more
++information. 
++
++<A name=autoconf> </A>
++<h2>Are there any plans to use autoconf to build
++    MaraDNS?</h2>
++
++No.  OK, let me qualify that: I won't do it unless you pay
++me enough money.
++<p>
++
++In more detail, MaraDNS does not use autoconf for the following reasons:
++
++<ul>
++<li>Autoconf is designed to solve a problem that existed in the mid 1990s
++    but does not exist today: A large number of different incompatible C 
++    compilers and libc implementations.  These days, most systems are using 
++    gcc as the compiler and some version of glibc as the libc.  There is
++    no longer a need, for example, to figure out whether a given 
++    implementation of <tt>getopt()</tt> allows '<tt>--</tt>' options.
++    MaraDNS's <tt>./configure</tt> script can be run in only a second or
++    two; compare this to the 3-5 minute process autoconf's <tt>./configure</tt>
++    needs.
++<li>Autoconf leaves GPL-tained files in a program's build tree.  MaraDNS is
++    licensed under a BSD license that is <i>not</i> GPL-compatible, so 
++    MaraDNS can not be distributed with these GPL-licensed files.
++</ul>
++
++This leads us to the next question:
++   
++<A name=flags> </A>
++<h2>How do I change the compiler or compile-time flags
++    with MaraDNS' build process?</h2>
++
++To change the compiler used by MaraDNS:
++
++<ul>
++<li>Run the <tt>./configure</tt> script
++<li>Open up the file <tt>Makefile</tt> with an editor
++<li>Look for a line that starts with <tt>CC</tt>
++<li>If there is no line that starts with <tt>CC</tt>, create one just before
++    the line that starts with <tt>FLAGS</tt>
++<li>Change (or create) that line to look something like <tt>CC=gcc296</tt> 
++    In this example, the 2.96 version of gcc is used to compile MaraDNS.
++<li>Note that it is important to <b>not</b> remove anything from this line
++    you do not understand; doing so will make MaraDNS unable to compile
++    or run.  So, if the CC line looks like 
++    <tt>CC=gcc&nbsp;$(LDFLAGS)&nbsp;-DNO_FLOCK</tt> and you want to compile 
++    with gcc 2.96, change the line to look like 
++    <tt>CC=gcc296&nbsp;$(LDFLAGS)&nbsp;-DNO_FLOCK</tt> retaining the flags 
++    added by the configuration script.
++
++</ul>
++
++Changing compile-time flags is a similar process:
++
++<ul>
++<li>Run the <tt>./configure</tt> script
++<li>Open up the file <tt>Makefile</tt> with an editor
++<li>Look for a line that starts with <tt>FLAGS</tt>
++<li>Change (or create) that line to look something like <tt>FLAGS=-O3</tt> 
++    In this example, MaraDNS is compiled with the -O3 option.
++<li>Note that it is important to <b>not</b> remove anything from this line
++    you do not understand; doing so will make MaraDNS unable to compile
++    or run.  So, if the FLAGS line looks like 
++    <tt>FLAGS=-O2&nbsp;-Wall&nbsp;-DSELECT_PROBLEM</tt> and you want to compile 
++    at optimization level three, change this line to look like 
++    <tt>FLAGS=-O2&nbsp;-Wall&nbsp;-DSELECT_PROBLEM</tt> retaining the flags 
++    added by the configuration script.  <tt>-DSELECT_PROBLEM</tt> for example,
++    is needed in the Linux compile or MaraDNS will have problems with 
++    freezing up.
++</ul>
++
++<A name=makepkg> </A>
++<h2>Will you make a package for the particular Linux
++    distribution I am using?</A>
++
++No.  OK, let me qualify that: I won't do it unless you pay
++me enough money.
++<p>
++
++There are MaraDNS packages for a number of different distributions of
++Linux and other operating systems.   On there MaraDNS site, there is 
++a MaraDNS package for CentOS/Red Hat Enterprise Linux available.  There
++is also usually an up-to-date Slackware package available.  In addition,
++there is a Debian package in the Debian packages collection, a FreeBSD
++port of MaraDNS, a Ubuntu package which is derived from the Debian package,
++and undoubtably other MaraDNS packages floating around the internet.
++<p>
++
++If you wish to have a package for your particular version of Linux (or 
++MacOS X or BSD or...), you can use one of the above packages as a starting
++point for making your package.  For example, other RPM-based distributions
++can use the CentOS RPM package as a baseline (the .spec file is in the
++<tt>build/</tt> directory).  I can not help you with any problems you
++may encounter making this package since I do not have your particular
++version of Linux installed on my computer.
++<p>
++
++As an aside, some of the MaraDNS packages floating around on the internet
++are out of date.  Please make sure, that if you get a third-party package 
++from the internet, the package is for either MaraDNS 1.0.39, MaraDNS 
++1.2.12.05, or MaraDNS 1.3.03.  Older versions of MaraDNS are not
++supported.
++
++<A name=wincrippled> </A>
++<h2>I am using the native Windows port of MaraDNS,
++    and some features are not working.</h2>
++
++Since Windows 32 does not have some features that *NIX OSes have, the native
++Windows port does not have all of the features of the *NIX version of 
++MaraDNS.  In particular, the following features are disabled:
++<ul>
++<li>ipv6
++<li>The <tt>chroot_dir</tt> mararc variable
++<li>The <tt>maradns_gid</tt> and <tt>maradns_uid</tt> mararc variables
++<li>The <tt>maxprocs</tt> mararc variable
++<li>The <tt>synth_soa_serial</tt> can not have a value of 2
++</ul>
++
++If any of the above features are desired, try compiling MaraDNS using
++Cygwin.  Note that the Cygwin port of MaraDNS does not have ipv6 support,
++and that while <tt>chroot_dir</tt> works in Cygwin, it does not have
++the security that the *NIX chroot() call has.
++
+ 

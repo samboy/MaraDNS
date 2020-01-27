@@ -1,0 +1,14 @@
+--- maradns-1.2.12.02/server/recursive.c.orig	2006-07-30 23:26:31.000000000 -0500
++++ maradns-1.2.12.02/server/recursive.c	2006-07-30 23:36:26.000000000 -0500
+@@ -3206,6 +3206,11 @@
+                     js_destroy(synthesized_header);
+                     }
+ 	        }
++	    else if(ptrret != NULL) {
++		 if(js_qstr2js(ptrret,"NotQual") == JS_ERROR) {
++		     return JS_ERROR;
++                     }
++                 }
+             return JS_SUCCESS;
+             }
+         } while(bobbit_label(copy) > 0);

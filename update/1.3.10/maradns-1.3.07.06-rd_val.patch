@@ -1,0 +1,268 @@
+--- maradns-1.3.07.06/server/udpsuccess.c	2007-10-19 08:52:20.000000000 -0500
++++ maradns-1.3.07.07/server/udpsuccess.c	2007-10-25 07:49:33.000000000 -0500
+@@ -38,7 +38,6 @@
+ extern int max_total;
+ extern rr *seenlist[256];
+ extern int seenlist_where;
+-extern int rd_value;
+ extern ipv4pair long_packet[512];
+ 
+ /* If we successfully found a record, spit out that record on the
+@@ -471,7 +470,7 @@
+     header.qr = 1;
+     header.opcode = 0;
+     header.tc = 0;
+-    header.rd = 0;
++    header.rd = rd_val; /* RDBUG udpsuccess */
+     header.ra = 0;
+     header.z = 0;
+     header.rcode = 0; /* No error */
+@@ -571,7 +570,7 @@
+     giveerror:
+         js_destroy(ar);
+         udperror(sock,most,client,0,SERVER_FAIL,"giveerror in udpsuccess",2,
+-                        rd_value,ect,1);
++                        rd_val,ect,1);
+         js_destroy(most);
+ 
+         /* Clean up the seenlist_where list */
+--- maradns-1.3.07.06/server/MaraDNS.c	2007-10-19 08:52:20.000000000 -0500
++++ maradns-1.3.07.07/server/MaraDNS.c	2007-10-25 07:53:01.000000000 -0500
+@@ -118,8 +118,10 @@
+ 
+ rr *ra_data = 0; /* Bogus SOA to give out whenever a SOA request is sent */
+ 
+-int rd_value = 0; /* Whether RD is set to 0 or 1 in replies to
+-                     authoritative queries */
++/*int rd_value = 0;*/ /* Whether RD is set to 0 or 1 in replies to
++                         authoritative queries; disabled because you
++                         shouldn't use global variables in threaded
++                         code */
+ 
+ int dos_protection_level = 0; /* How many features of MaraDNS we're willing
+                                  to give up to make her more immune to
+@@ -470,7 +472,7 @@
+     header.aa = 0; /* Errors are never authoritative (unless they are
+                       NXDOMAINS, which this is not) */
+     header.tc = 0;
+-    header.rd = rd_val;
++    header.rd = rd_val; /* RDBUG udperror */
+     header.ra = 0;
+     header.z = 0;
+     header.rcode = error;
+@@ -809,7 +811,7 @@
+ 
+     /* Make the header a placeholder for now */
+     header.id = id;
+-    header.rd = rd_val;
++    header.rd = rd_val; /* RDBUG udpany */
+     if(make_hdr(&header,most) == JS_ERROR)
+         goto giveerror;
+ 
+@@ -1178,7 +1180,7 @@
+     header.qr = 1;
+     header.opcode = 0;
+     header.tc = 0;
+-    header.rd = 0;
++    header.rd = rd_val; /* RDBUG udpany */
+     header.ra = 0;
+     header.aa = authoritative; /* Currently always 1 */
+     header.z = 0;
+@@ -1204,7 +1206,7 @@
+         js_destroy(ar);
+         js_destroy(ns);
+         udperror(sock,most,client,0,SERVER_FAIL,"compression failure",2,
+-                        rd_value,ect,1);
++                        rd_val,ect,1);
+         js_destroy(most);
+         return JS_ERROR;
+         }
+@@ -1244,7 +1246,7 @@
+         js_destroy(ar);
+         js_destroy(ns);
+         udperror(sock,most,client,0,SERVER_FAIL,"giveerror in udpany",2,
+-                        rd_value,ect,1);
++                        rd_val,ect,1);
+         js_destroy(most);
+ 
+         /* Clean up the seenlist_where list
+@@ -1356,7 +1358,7 @@
+     header.opcode = 0; /* Normal DNS */
+     header.aa = 0; /* DDIP to A translations are never authoritative */
+     header.tc = 0; /* A labels are too short to be truncated */
+-    header.rd = 0; /* Recursion not desired */
++    header.rd = 0; /* Recursion not desired */ /* RDBUG easter egg */
+     header.ra = 0; /* Recursion not available */
+     header.z = 0; /* This must be 0 unless we are EDNS aware (we aren't) */
+     header.rcode = 0; /* Success! */
+@@ -1512,7 +1514,7 @@
+     /* Make the header a placeholder for now */
+     init_header(&header);
+     header.id = id;
+-    header.rd = rd_val;
++    header.rd = rd_val; /* RDBUG udpstar */
+     if(make_hdr(&header,most) == JS_ERROR)
+         goto giveerror;
+ 
+@@ -1654,7 +1656,7 @@
+     header.qr = 1;
+     header.opcode = 0;
+     header.tc = 0; /* To do: truncation handling */
+-    header.rd = 0;
++    header.rd = 0; /* RDBUG udpstar */
+     header.ra = 0;
+     header.z = 0;
+     header.rcode = 0; /* No error */
+@@ -1675,7 +1677,7 @@
+     if(compress_data(most,ar) == JS_ERROR) {
+         js_destroy(ar);
+         udperror(sock,most,client,0,SERVER_FAIL,"compression failure",2,
+-                        rd_value,ect,1);
++                        rd_val,ect,1);
+         js_destroy(most);
+         if(synth_ns_record != 0) { js_destroy(synth_ns_record); }
+         return JS_ERROR;
+@@ -1709,7 +1711,7 @@
+         if(synth_ns_record != 0) { js_destroy(synth_ns_record); }
+         js_destroy(ar);
+         udperror(sock,most,client,0,SERVER_FAIL,"giveerror in udpstar",2,
+-                        rd_value,ect,1);
++                        rd_val,ect,1);
+         js_destroy(most);
+         return JS_ERROR;
+ 
+@@ -1779,7 +1781,7 @@
+ 
+     /* Make the header a placeholder for now */
+     init_header(&header);
+-    header.rd = rd_val;
++    header.rd = rd_val; /* RDBUG udpnotfound */
+     header.id = id;
+     if(make_hdr(&header,most) == JS_ERROR) {
+         js_destroy(most); js_destroy(compressed);
+@@ -1890,7 +1892,7 @@
+     header.qr = 1;
+     header.opcode = 0;
+     header.tc = 0; /* To do: truncation handling */
+-    header.rd = 0;
++    header.rd = 0; /* RDBUG udpnotfound */
+     header.ra = 0;
+     header.z = 0;
+     /* Code that verifies that this host does not exist in
+@@ -1936,7 +1938,7 @@
+     if(compress_data(most,compressed) == JS_ERROR) {
+         js_destroy(compressed);
+         udperror(sock,most,client,0,SERVER_FAIL,"Compression failure",2,
+-                        rd_value,ect,1);
++                        rd_val,ect,1);
+         js_destroy(most);
+         return JS_ERROR;
+         }
+@@ -1967,7 +1969,7 @@
+     giveerror:
+         js_destroy(compressed);
+         udperror(sock,most,client,0,SERVER_FAIL,"giveerror in udpnotfound",2,
+-                        rd_value,ect,1);
++                        rd_val,ect,1);
+         js_destroy(most);
+         return JS_ERROR;
+ 
+@@ -2319,7 +2321,7 @@
+     header.opcode = 0; /* Normal DNS */
+     header.aa = 0; /* DDIP to A translations are never authoritative */
+     header.tc = 0; /* A labels are too short to be truncated */
+-    header.rd = 0; /* Recursion not desired */
++    header.rd = 0; /* Recursion not desired */ /* RDBUG ddip_check */
+     header.ra = 0; /* Recursion not available */
+     header.z = 0; /* This must be 0 unless we are EDNS aware (we aren't) */
+     header.rcode = 0; /* Success! */
+@@ -2414,7 +2416,7 @@
+  */
+ 
+ int hunt_single_query(js_string *query, int id, int sock,
+-                      conn *ect, js_string *question) {
++                      conn *ect, js_string *question, int rd_val) {
+     mhash_e spot_data;
+     int qtype_o, qtype_q;
+     /* js_string *lower; */
+@@ -2432,11 +2434,11 @@
+     if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+         if(qtype_o == RR_A || qtype_q == RR_CNAME) {
+             udpsuccess(spot_data.value,id,sock,0,question,
+-                       spot_data.point,1,rd_value,ect,force_auth);
++                       spot_data.point,1,rd_val,ect,force_auth);
+             }
+         else {
+             udpsuccess(spot_data.value,id,sock,0,question,
+-                       spot_data.point,0,rd_value,ect,force_auth);
++                       spot_data.point,0,rd_val,ect,force_auth);
+              }
+         return JS_SUCCESS;
+         }
+@@ -2517,6 +2519,7 @@
+                                allocated */
+     struct sockaddr_in *z; /* Makes certain ugly declarations readable */
+     int always_not_there = 0;
++    int rd_val = 0;
+ 
+ 
+     /* Sanity checks */
+@@ -2533,7 +2536,7 @@
+         }
+ 
+     /* See if they desire recursion or not */
+-    desires_recursion = rd_value = header.rd;
++    desires_recursion = rd_val = header.rd;
+ 
+     /* We only answer questions (Thanks to Roy Arends for pointing out this
+        security flaw) */
+@@ -2705,7 +2708,7 @@
+     /* OK, start the complicated domain look up routine */
+     /* Look for upper and lower case versions of the query as
+        they asked it */
+-    if(hunt_single_query(lookfor,header.id,sock,ect,origq) != 0) {
++    if(hunt_single_query(lookfor,header.id,sock,ect,origq,rd_val) != 0) {
+         js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+         return JS_SUCCESS;
+         }
+@@ -2720,7 +2723,7 @@
+     if(change_rtype(lookfor,RR_CNAME) == JS_ERROR) {
+         goto serv_fail;
+         }
+-    if(hunt_single_query(lookfor,header.id,sock,ect,origq) != 0) {
++    if(hunt_single_query(lookfor,header.id,sock,ect,origq,rd_val) != 0) {
+         js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+         return JS_SUCCESS;
+         }
+--- maradns-1.3.07.06/sqa/regressions/do.tests	2007-10-19 08:52:19.000000000 -0500
++++ maradns-1.3.07.07/sqa/regressions/do.tests	2007-10-25 07:49:32.000000000 -0500
+@@ -53,7 +53,7 @@
+ TESTS=$TESTS"long.chunk noat_parse_bug noise percent_parse_bug "
+ TESTS=$TESTS"predator1 predator2 ptr_leak recurse_delegation "
+ TESTS=$TESTS"star_handling_1 star_handling_2 star_handling_leak "
+-TESTS=$TESTS"truncation zoneserver_doc improper_rotation "
++TESTS=$TESTS"truncation zoneserver_doc improper_rotation rd_val "
+ 
+ # Test to make sure synthetic ips in csv2 zone files correctly handle 
+ # MaraDNS bound to private and public IPs
+--- maradns-1.3.07.06/sqa/regressions/mararc_n_ipv6_bind_address/do.test	2007-10-04 15:11:10.000000000 -0500
++++ maradns-1.3.07.07/sqa/regressions/mararc_n_ipv6_bind_address/do.test	2007-10-25 09:29:06.000000000 -0500
+@@ -25,7 +25,7 @@
+ sleep 1
+ #../../../tools/askmara Awww.example.com.
+ dig @fecf:aff0::1 www.example.com | grep -v DiG | grep -v WHEN | grep -v time \
+-	| grep -v HEADER
++	| grep -v HEADER | grep -v flags
+ echo done
+ sleep 1
+ killall maradns
+--- maradns-1.3.07.06/sqa/regressions/mararc_n_ipv6_bind_address/output.success	2007-10-04 15:11:19.000000000 -0500
++++ maradns-1.3.07.07/sqa/regressions/mararc_n_ipv6_bind_address/output.success	2007-10-25 09:29:23.000000000 -0500
+@@ -2,7 +2,6 @@
+ ; (1 server found)
+ ;; global options:  printcmd
+ ;; Got answer:
+-;; flags: qr aa; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 1
+ 
+ ;; QUESTION SECTION:
+ ;www.example.com.		IN	A

@@ -1,0 +1,38 @@
+Note: This patch isn't being used; maradns-1.2.12.03-any_case_issue.patch 
+better resolves this issue.
+
+*** maradns-1.2.12.04/server/MaraDNS.c.orig	Tue Nov 21 09:53:12 2006
+--- maradns-1.2.12.04/server/MaraDNS.c	Tue Nov 21 09:58:01 2006
+***************
+*** 3077,3091 ****
+          return JS_ERROR;
+          }
+  
+      /* Copy the original query over to the "original query" string */
+      if(js_copy(lookfor,origq) == JS_ERROR) {
+          goto serv_fail;
+          }
+  
+-     /* Convert the query in to lower-case, since DNS is case-insensitive
+-      * and any attempt to not make it so is buggy */
+-     fold_case(lookfor);
+- 
+      /* Get the type of query the client desires */
+      qtype = get_rtype(origq);
+      if(qtype == JS_ERROR) {
+--- 3077,3091 ----
+          return JS_ERROR;
+          }
+  
++     /* Convert the query in to lower-case, since DNS is case-insensitive
++      * and any attempt to not make it so is buggy */
++     fold_case(lookfor);
++ 
+      /* Copy the original query over to the "original query" string */
+      if(js_copy(lookfor,origq) == JS_ERROR) {
+          goto serv_fail;
+          }
+  
+      /* Get the type of query the client desires */
+      qtype = get_rtype(origq);
+      if(qtype == JS_ERROR) {

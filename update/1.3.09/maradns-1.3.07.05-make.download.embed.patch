@@ -1,0 +1,117 @@
+--- maradns-1.3.07.05/tools/misc/make.download.embed	2007-09-21 07:07:08.000000000 -0500
++++ maradns-1.3.07.06/tools/misc/make.download.embed	2007-10-19 08:49:52.000000000 -0500
+@@ -18,20 +18,27 @@
+ SZIP="1-2-12-08"
+ SDATE="August 29, 2007"
+ SLAKWARE="maradns-1.2.12.08-i486-2.tgz"
++
+ # Beta release
+ BV=1.3
+-BETA=1.3.07.05
+-BZIP="1-3-07-05"
+-BDATE="September 21, 2007"
++BETA=1.3.07.06
++BZIP="1-3-07-06"
++BDATE="October 19, 2007"
++
+ # Development release
+ DV=1.3
+-DEV=1.3.08
+-DZIP="1-3-08"
+-DDATE="September 21, 2007"
++DEV=1.3.09
++DZIP="1-3-09"
++DDATE="October 19, 2007"
++
+ # Legacy release
+ LEGACY=1.0.41
+ LDATE="August 29, 2007"
+ 
++# Name of windows pthreads library source (needs to be included with
++# beta and development releases)
++PTHREADS="pthreads-w32-2-8-0-release.tar.lzma"
++
+ cat << EOF
+ <A NAME=stable> </A>
+ <!-- &iexcl; instead of ¡ because of *@#$ Dillo -->
+@@ -154,24 +161,6 @@
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+-<A href="download/${BV}/${BETA}/maradns-${BETA}-1.src.rpm"><!--
+-                             -->maradns-${BETA}-1.src.rpm</A>
+-</td><td>
+-<A 
+-href="download/${BV}/${BETA}/maradns-${BETA}-1.src.rpm.sha.asc">sig</A>
+-</td><td>
+-<A 
+-href="#srcrpm">info</A>
+-</td></tr><tr><td>
+-<A href="download/${BV}/${BETA}/maradns-${BETA}-1.i386.rpm"><!--
+-                             -->maradns-${BETA}-1.i386.rpm</A>
+-</td><td>
+-<A 
+-   href="download/${BV}/${BETA}/maradns-${BETA}-1.i386.rpm.sha.asc">sig</A>
+-</td><td>
+-<A 
+-href="#rpm">info</A>
+-</td></tr><tr><td>
+ <A 
+ href="download/${BV}/${BETA}/maradns-${BZIP}-win32.zip"><!--
+                           -->maradns-${BZIP}-win32.zip</A>
+@@ -220,24 +209,6 @@
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+-<A href="download/${DV}/${DEV}/maradns-${DEV}-1.src.rpm"><!--
+-                             -->maradns-${DEV}-1.src.rpm</A>
+-</td><td>
+-<A 
+-href="download/${DV}/${DEV}/maradns-${DEV}-1.src.rpm.sha.asc">sig</A>
+-</td><td>
+-<A 
+-href="#srcrpm">info</A>
+-</td></tr><tr><td>
+-<A href="download/${DV}/${DEV}/maradns-${DEV}-1.i386.rpm"><!--
+-                             -->maradns-${DEV}-1.i386.rpm</A>
+-</td><td>
+-<A 
+-href="download/${DV}/${DEV}/maradns-${DEV}-1.i386.rpm.sha.asc">sig</A>
+-</td><td>
+-<A 
+-href="#rpm">info</A>
+-</td></tr><tr><td>
+ <A 
+ href="download/${DV}/${DEV}/maradns-${DZIP}-win32.zip"><!--
+                           -->maradns-${DZIP}-win32.zip</A>
+@@ -249,6 +220,12 @@
+ 
+ </td></tr></table>
+ 
++<h3>Pthreads soruce code</h3>
++
++The Windows port of MaraDNS 1.3 uses the LGPL phtreads library. Source 
++code for this library is available <A 
++href="download/${DV}/${DEV}/${PTHREADS}">here</A>
++
+ <hr>
+ 
+ <h2>Legacy release</h2>
+@@ -331,7 +308,7 @@
+ does not have all of the security nor features of the Linux/UNIX version of
+ MaraDNS, this port allows Windows to have a basic, 
+ reasonably secure DNS client and recursive resolver.  People who want a full 
+-Windows port of MaraDNS can compile MaraDNS on
++Windows port of MaraDNS can compile MaraDNS on</A>
+ <A href="http://www.cygwin.com">Cygwin</A>.
+ EOF
+ 
+@@ -340,7 +317,7 @@
+ <p>
+ <A name="tgz"><b>.tgz</b> A .tgz file is a tar.gz file.  The MaraDNS 
+ .tgz file contains
+-the Slackware package for MaraDNS.
++the Slackware package for MaraDNS.</A>
+ EOF
+ 
+ fi

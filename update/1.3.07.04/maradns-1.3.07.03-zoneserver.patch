@@ -1,0 +1,13 @@
+$NetBSD$
+
+--- maradns/tcp/zoneserver.c.orig	2007-08-12 03:23:13.000000000 +0200
++++ maradns/tcp/zoneserver.c
+@@ -34,7 +34,7 @@
+ #include <errno.h>
+ #include <string.h>
+ #include <time.h>
+-#ifdef __FreeBSD__
++#if defined(__FreeBSD__) || defined(__DragonFly__)
+ #include <sys/time.h>
+ #endif
+ #include <sys/types.h>

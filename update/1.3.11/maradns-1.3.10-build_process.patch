@@ -1,0 +1,1129 @@
+diff -ur maradns-1.3.11/build/aix.mk maradns-1.3.11-jj/build/aix.mk
+--- maradns-1.3.11/build/aix.mk	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/build/aix.mk	2008-02-02 12:24:23.000000000 -0600
+@@ -0,0 +1,6 @@
++CC       = gcc
++CFLAGS  += -DNO_FLOCK
++LDFLAGS  = 
++TLDFLAGS = 
++DEBUG    = -Wall -g
++UBIN     = $(UNIXBIN)
+diff -ur maradns-1.3.11/build/cygwin.mk maradns-1.3.11-jj/build/cygwin.mk
+--- maradns-1.3.11/build/cygwin.mk	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/build/cygwin.mk	2008-02-02 12:24:23.000000000 -0600
+@@ -0,0 +1,6 @@
++CC       = gcc
++CFLAGS  += -O2 -Wall -DNO_FLOCK -pipe
++LDFLAGS  = 
++TLDFLAGS = -lpthread
++DEBUG    = -Wall -g
++UBIN     = $(UNIXBIN)
+diff -ur maradns-1.3.11/build/darwin.mk maradns-1.3.11-jj/build/darwin.mk
+--- maradns-1.3.11/build/darwin.mk	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/build/darwin.mk	2008-02-02 12:24:23.000000000 -0600
+@@ -0,0 +1,6 @@
++CC       = gcc
++CFLAGS  += -O2 -DDARWIN
++LDFLAGS  = 
++TLDFLAGS =
++DEBUG    = -Wall -g
++UBIN     = $(UNIXBIN)
+diff -ur maradns-1.3.11/build/freebsd.mk maradns-1.3.11-jj/build/freebsd.mk
+--- maradns-1.3.11/build/freebsd.mk	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/build/freebsd.mk	2008-02-02 12:24:23.000000000 -0600
+@@ -0,0 +1,6 @@
++CC       = gcc
++CFLAGS  += -O2 -DSELECT_PROBLEM -D_THREAD_SAFE  -DSELECT_PROBLEM -pipe 
++LDFLAGS  = 
++TLDFLAGS = -pthread
++DEBUG    = -Wall -g
++UBIN     = $(UNIXBIN)
+diff -ur maradns-1.3.11/build/linux.mk maradns-1.3.11-jj/build/linux.mk
+--- maradns-1.3.11/build/linux.mk	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/build/linux.mk	2008-02-02 12:24:23.000000000 -0600
+@@ -0,0 +1,6 @@
++CC       = gcc
++CFLAGS  += -Wall -O2 -DSELECT_PROBLEM
++LDFLAGS  = 
++TLDFLAGS = -lpthread
++DEBUG    = -Wall -g
++UBIN     = $(UNIXBIN)
+diff -ur maradns-1.3.11/build/linux-suncc.mk maradns-1.3.11-jj/build/linux-suncc.mk
+--- maradns-1.3.11/build/linux-suncc.mk	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/build/linux-suncc.mk	2008-02-02 12:24:23.000000000 -0600
+@@ -0,0 +1,6 @@
++CC       = /opt/sun/sunstudio12/bin/cc
++CFLAGS  += -DSELECT_PROBLEM
++LDFLAGS  = -L/opt/sun/sunstudio/lib
++TLDFLAGS = -lpthread
++DEBUG    = 
++UBIN     = 
+diff -ur maradns-1.3.11/build/mingw32.mk maradns-1.3.11-jj/build/mingw32.mk
+--- maradns-1.3.11/build/mingw32.mk	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/build/mingw32.mk	2008-02-02 12:24:23.000000000 -0600
+@@ -0,0 +1,5 @@
++CC       = gcc
++CFLAGS  += -Os -DMINGW32 -DMINGW -DNO_FLOCK -pipe  -DNO_INET_ATON
++LDFLAGS  = -lwsock32
++TLDFLAGS = -lpthreadGC2
++DEBUG    = -Wall -g
+diff -ur maradns-1.3.11/build/qnx.mk maradns-1.3.11-jj/build/qnx.mk
+--- maradns-1.3.11/build/qnx.mk	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/build/qnx.mk	2008-02-02 12:24:23.000000000 -0600
+@@ -0,0 +1,6 @@
++CC      = cc
++CFLAGS  += -DQNX
++LDFLAGS  = -l socket
++TLDFLAGS =
++DEEBUG   = -Wall -g
++UBIN     = $(UNIXBIN)
+diff -ur maradns-1.3.11/build/rules.mk maradns-1.3.11-jj/build/rules.mk
+--- maradns-1.3.11/build/rules.mk	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/build/rules.mk	2008-02-02 12:24:23.000000000 -0600
+@@ -0,0 +1,6 @@
++.c.o:
++	@echo Compile $@
++	@$(CC) $(CFLAGS) -c -o $@ $<
++
++LINK =  echo Link $@; \
++        $(CC) $(CFLAGS) $(LDFLAGS) -o $@ $?
+diff -ur maradns-1.3.11/build/sunos-gcc.mk maradns-1.3.11-jj/build/sunos-gcc.mk
+--- maradns-1.3.11/build/sunos-gcc.mk	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/build/sunos-gcc.mk	2008-02-02 12:24:23.000000000 -0600
+@@ -0,0 +1,17 @@
++# For the Sun C compiler use "CC=cc" and "DEBUG="
++
++# This is for gcc
++CC       = gcc
++DEBUG    = -Wall -g
++
++# This if for the Solaris CC
++#CC       = cc
++#DEBUG    = -g
++
++# If you want optimization of code add -fast to the CFLAGS (Sun C Compiler)
++# eg -O2 for gcc
++
++CFLAGS  += -DSOLARIS -DNO_FLOCK
++LDFLAGS  = -lsocket  -lnsl
++TLDFLAGS = -lpthread
++UBIN     = $(UNIXBIN)
+diff -ur maradns-1.3.11/build/sunos.mk maradns-1.3.11-jj/build/sunos.mk
+--- maradns-1.3.11/build/sunos.mk	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/build/sunos.mk	2008-02-02 12:24:23.000000000 -0600
+@@ -0,0 +1,17 @@
++# For the Sun C compiler use "CC=cc" and "DEBUG="
++
++# This is for gcc
++#CC       = gcc
++#DEBUG    = -Wall -g
++
++# This if for the Solaris CC
++CC       = cc
++DEBUG    = -g
++
++# If you want optimization of code add -fast to the CFLAGS (Sun C Compiler)
++# eg -O2 for gcc
++
++CFLAGS  += -DSOLARIS -DNO_FLOCK
++LDFLAGS  = -lsocket  -lnsl
++TLDFLAGS = -lpthread
++UBIN     = $(UNIXBIN)
+diff -ur maradns-1.3.11/build/unsupported.mk maradns-1.3.11-jj/build/unsupported.mk
+--- maradns-1.3.11/build/unsupported.mk	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/build/unsupported.mk	2008-02-02 12:24:23.000000000 -0600
+@@ -0,0 +1,6 @@
++CC       = cc
++CFLAGS  += 
++LDFLAGS  = 
++TLDFLAGS = -lpthread
++DEBUG    = -Wall -g
++UBIN     = $(UNIXBIN)
+diff -ur maradns-1.3.11/configure maradns-1.3.11-jj/configure
+--- maradns-1.3.11/configure	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/configure	2008-02-02 12:24:23.000000000 -0600
+@@ -1,29 +1,45 @@
+ #!/bin/sh
+ 
+ EXITCODE=0
++PREFIX=
+ 
+ if [ $0 != "./configure" ] ; then
+-	echo This script needs to be executed in the directory that
+-	echo contains this script.
+-	exit 1
+-fi
+-
+-# Options: '--authonly'
+-if [ "$1" = '--authonly' ] ; then
+-	AUTHONLY="yes"
+-elif [ -n "$1" ] ; then
+-	echo 'Usage: ./configure [options]'
+-	echo 'Where [options] currently only supports "--authonly" for'
+-	echo 'making an authoritative-only build of MaraDNS'
+-	exit 1
+-fi
++        echo This script needs to be executed in the directory that
++        echo contains this script.
++        exit 1
++fi
++
++while [ $# -gt 0 ]
++do
++        case $1 in
++                --authonly)
++                        AUTHONLY=1
++                        ;;
++                --debug)
++                        DEBUG=1
++                        ;;
++                --prefix)
++                        shift
++                        PFEFIX=$1
++                        ;;
++                *)
++                        echo 'Usage: ./configure [options]'
++                        echo 'Where [options] currently are""--authonly",'
++                        echo 'for making an IPv6 able build of MaraDNS'
++                        echo '"--debug", and "--prefix <install_path>"'
++                        echo 'default for <install_path> is "/usr/local"'
++                        exit 1
++                        ;;
++        esac
++        shift
++done
+ 
+ # Make sure we are running this script from the maradns base directory
+ if [ `pwd | awk -F/ '{print $NF}' | cut -f1 -d-` != "maradns" ] ; then
+-	echo This script needs to be run from the MaraDNS base
+-	echo directory \(the top-level directory created when the
+-	echo MaraDNS tar file was extracted\)
+-	exit 1
++        echo This script needs to be run from the MaraDNS base
++        echo directory \(the top-level directory created when the
++        echo MaraDNS tar file was extracted\)
++        exit 1
+ fi
+ 
+ # Set the directory for the build files
+@@ -42,141 +58,150 @@
+ # VERSION is a one line file in the form "VERSION=0.1.23" (without the
+ # quotes
+ if [ -f VERSION ] ; then
+-	cp VERSION Makefile
++        cp VERSION version.mk
+ elif [ -f $BUILDDIR/VERSION ] ; then
+-	cp $BUILDDIR/VERSION Makefile
++        cp $BUILDDIR/VERSION version.mk
+ else
+-	pwd | awk -F- '{print "VERSION="$NF}' > Makefile
++        pwd | awk -F- '{print "VERSION="$NF}' > version.mk
+ fi
+ 
+ # Set up the informaiton on where and when this version of MaraDNS was
+ # compiled
+ SA="system at"
+ if [ -z "$AUTHONLY" ] ; then
+-	echo COMPILED=\"$UNAME system at `date`\" >> Makefile
+-	echo COMPILED_DEBUG=\"$UNAME system at `date`\ \(Debug\)\" >> Makefile
++        echo COMPILED=\"$UNAME system at `date`\" >> version.mk
++        echo COMPILED_DEBUG=\"$UNAME system at `date`\ \(Debug\)\" >> version.mk
+ else
+-	echo COMPILED=\"$UNAME system at `date` \(authonly\)\" >> Makefile
+-      echo COMPILED_DEBUG=\"$UNAME $SA `date`\ \(Debug authonly\)\" >> Makefile
++        echo COMPILED=\"$UNAME system at `date` \(authonly\)\" >> version.mk
++        echo COMPILED_DEBUG=\"$UNAME $SA `date`\ \(Debug authonly\)\" >> version.mk
+ fi
+ 
+-# Give them a message dependent on what kind of systme they have
+-if echo $UNAME | grep -i linux > /dev/null ; then
+-	cat $BUILDDIR/Makefile.linux >> Makefile
+-	echo It looks like you are using Linux\; just type in \'make\'
+-	EXITCODE=0
+-elif echo $UNAME | grep -i freebsd > /dev/null ; then
+-	cat $BUILDDIR/Makefile.freebsd >> Makefile
+-	echo It looks like you are using FreeBSD\; this should compile
+-	echo fine by typing in \'make\'.  There is an official port here:
+-	echo
+-	echo	http://www.freebsd.org/cgi/cvsweb.cgi/ports/dns/maradns/
+-	echo
+-	echo Which may be on your system here:
+-	echo
+-	echo	/usr/ports/dns/maradns
+-	echo
+-	EXITCODE=0
+-elif echo $UNAME | grep -i openbsd > /dev/null ; then
+-	cat $BUILDDIR/Makefile.freebsd >> Makefile
+-	echo It looks like you are using OpenBSD\; this should compile 
+-	echo fine by typing in \'make\'.
+-	EXITCODE=0
+-elif echo $UNAME | grep -i mingw32 > /dev/null ; then
+-	cat $BUILDDIR/Makefile.mingw32 >> Makefile
+-	echo It looks like you are using MinGW32 \; this is only a partial
+-	echo port of MaraDNS and does not have all of the security features
+-	echo of other ports of MaraDNS.  Only MaraDNS and Askmara will
+-	echo compile.  You need mingw32 and pthreads to compile this.
+-	echo You have been warned.
+-	# We don't support --authonly for the mingw32 port
+-	# Other Makefile changes
+-	cp server/Makefile.mingw32 server/Makefile
+-	cp tools/Makefile.mingw32 tools/Makefile
+-	cp qual/Makefile.threadsafe qual/Makefile
+-	cp dns/Makefile.recursive dns/Makefile
+-	# Mingw32 doesn't support symlinks
+-	cp server/MaraBigHash_en.h server/MaraBigHash_locale.h
+-	cp server/MaraDNS_en.h server/MaraDNS_locale.h
+-	cp COPYING 00README.FIRST
+-	exit 0
+-elif echo $UNAME | grep -i cygwin > /dev/null ; then
+-	cat $BUILDDIR/Makefile.noflock >> Makefile
+-	echo It looks like you are using Cygwin\; this should compile fine
+-	echo by typing in \'make\'.
+-	EXITCODE=0
+-elif echo $UNAME | grep -i AIX > /dev/null ; then
+-	cat $BUILDDIR/Makefile.AIX >> Makefile
+-	echo It looks like you are using AIX\; this should compile fine
+-	echo by typing in \'make\'.
+-	EXITCODE=0
+-elif echo $UNAME | grep -i darwin > /dev/null ; then
+-	cat $BUILDDIR/Makefile.darwin >> Makefile
+-	cp $BUILDDIR/install.darwin $BUILDDIR/install.locations
+-	echo It looks like you are using Darwin \(usually\; Mac OS X\)\;
+-	#echo This should compile fine by typing in \'make\'.
+-	echo You might be able to compile MaraDNS by typing \"make\"
+-	echo \(if you typed in \"make\" before, just type it again\)
+-	echo
+-	echo THIS PORT HAS NOT BEEN FULLY TESTED\; USE AT YOUR OWN RISK
+-	EXITCODE=1
+-# This is a a template for adding support to a new OS for MaraDNS.
+-# Some points: If you port MaraDNS, make sure the underlying OS has
+-# /dev/urandom support or have the default mararc have a
+-# random_seed_file mararc variable pointing to a file with good
+-# randomness.  Make sure this port compiles and installs.  Take
+-# responsibility for people who have problems with this port.
+-elif echo $UNAME | grep -i SomeNewPortOfMaradns > /dev/null ; then
+-	cat $BUILDDIR/Makefile.SomeNewPort >> Makefile
+-	echo It looks like you are using NAME OF OS HERE\; this port has
+-        echo been done by YOUR NAME AND CONTACT INFO HERE\; this should
+- 	echo compile fine by typing in \'make\'.  If you encounter any
+-	echo problems with this port, please contact the person who has
+-	echo done the port before trying to contact the MaraDNS	
+-	echo developer.
+-	# The next line is technically optional, but should be here
+-	EXITCODE=0
+-else
+-	cat $BUILDDIR/Makefile.noflock >> Makefile
+-	echo WARNING WARNING WARNING
+-	echo
+-	echo This is an unknown platform.  MaraDNS may or may not compile
+-	echo on this platform.  If you are able to sucessfully compile
+-	echo and install MaraDNS on this platform, please let me know
+-	echo by contacting me.  My contact info is here:
+-	echo
+-	echo	http://www.maradns.org/contact.html
+-	echo
+-	echo I encourage you to make an official port of MaraDNS for this
+-	echo platform so other users of MaraDNS do not see this obnoxious
+-	echo warning.
+-	echo
+-	echo You might be able to compile MaraDNS by typing \"make\"
+-	echo \(if you typed in \"make\" before, just type it again\)
+-	echo
+-	echo THIS PORT HAS NOT BEEN TESTED\; USE AT YOUR OWN RISK
+-	EXITCODE=1
+-fi
++# Set some variable for later use
++CFG=unsupported.mk       # default configuration file
++SUPPORT=UNSUPPORTED      # OS support type
++V6=1                     # OS support IPv6
++case $UNAME in
++        Linux)          CFG=linux.mk   ; SUPPORT=FULL;    V6=1;;
++        SunOS)          # check for compiler cc/gcc
++                        if cc -flags >/dev/null 2>&1
++                        then
++                                CFG=sunos.mk
++                        else
++                                CFG=sunos-gcc.mk
++                        fi
++                                         SUPPORT=FULL;    V6=1;;
++        QNX)            CFG=qnx.mk     ; SUPPORT=FULL;    V6=1;;
++        *BSD)           CFG=freebsd.mk ; SUPPORT=FULL;    V6=1;;
++        CYGWIN*)        CFG=cygwin.mk  ; SUPPORT=CYGWIN;  V6=0;;
++        MINGW*)         CFG=mingw32.mk ; SUPPORT=MinGW32; V6=0;;
++        *[Aa][Ii][Xx]*) CFG=AIX.mk     ; SUPPORT=FULL;    V6=1;;
++        Darwin)         CFG=darwin.mk  ; SUPPORT=Darwin;  V6=1;;
++esac
++
++# Copy the os dependent mk file
++cp build/$CFG build/os.mk
++
++case $SUPPORT in
++FULL)
++        echo It looks like you are using $UNAME\; this should compile 
++        echo fine by typing in \'make\'.
++        EXITCODE=0
++        ;;
++PARTIAL)
++        echo It looks like you are using $UNAME \; this is only a partial
++        echo port, you may have to modify the file build/$UNAME.mk
++        echo You might be able to compile MaraDNS by typing \"make\"
++        echo \(if you typed in \"make\" before, just type it again\)
++        echo
++        echo THIS PORT HAS NOT BEEN FULLY TESTED\; USE AT YOUR OWN RISK
++        EXITCODE=1
++        ;;
++MinGW32)
++        echo It looks like you are using MinGW32 \; this is only a partial
++        echo port of MaraDNS and does not have all of the security features
++        echo of other ports of MaraDNS.  Only MaraDNS and Askmara will
++        echo compile.  You need mingw32 and pthreads to compile this.
++        echo You have been warned.
++        if [ ! -f server/MaraBigHash_locale ]
++        then
++                cp server/MaraBigHash_en.h server/MaraBigHash_locale.h
++        fi
++        if [ ! -f server/MaraDNS_locale.h ]
++        then
++                cp server/MaraDNS_en.h server/MaraDNS_locale.h
++        fi
++        if [ ! -f 00README-FIRST ]
++        then
++                cp COPYING 00README.FIRST
++        fi
++        EXITCODE=1
++        ;;
++CYGWIN)
++        echo It looks like you are using Cygwin \; this is only a partial
++        echo port of MaraDNS and does not have all of the security features
++        echo of other ports of MaraDNS.  Only MaraDNS and Askmara will
++        echo compile.  You need mingw32 and pthreads to compile this.
++        echo You have been warned.
++        if [ ! -f server/MaraBigHash_locale ]
++        then
++                cp server/MaraBigHash_en.h server/MaraBigHash_locale.h
++        fi
++        if [ ! -f server/MaraDNS_locale.h ]
++        then
++                cp server/MaraDNS_en.h server/MaraDNS_locale.h
++        fi
++        if [ ! -f 00README-FIRST ]
++        then
++                cp COPYING 00README.FIRST
++        fi
++        EXITCODE=1
++        ;;
++Darwin)
++        echo It looks like you are using Darwin \(usually\; Mac OS X\)\;
++        #echo This should compile fine by typing in \'make\'.
++        echo You might be able to compile MaraDNS by typing \"make\"
++        echo \(if you typed in \"make\" before, just type it again\)
++        echo
++        echo THIS PORT HAS NOT BEEN FULLY TESTED\; USE AT YOUR OWN RISK
++        EXITCODE=1
++        ;;
++UNSUPPORTED)
++        echo WARNING WARNING WARNING
++        echo
++        echo This is an unknown platform.  MaraDNS may or may not compile
++        echo on this platform.  If you are able to sucessfully compile
++        echo and install MaraDNS on this platform, please let me know
++        echo by contacting me.  My contact info is here:
++        echo
++        echo        http://www.maradns.org/contact.html
++        echo
++        echo I encourage you to make an official port of MaraDNS for this
++        echo platform so other users of MaraDNS do not see this obnoxious
++        echo warning.
++        echo
++        echo You might be able to compile MaraDNS by typing \"make\"
++        echo \(if you typed in \"make\" before, just type it again\)
++        echo
++        echo THIS PORT HAS NOT BEEN TESTED\; USE AT YOUR OWN RISK
++        EXITCODE=1
++        ;;
++esac
+ 
+ # Set up recursive and authoritative name serving
+-if [ -z "$AUTHONLY" ] ; then
+-	cp server/Makefile.recursive server/Makefile
+-	# FreeBSD uses -pthread instead of -lpthread to compile a
+-	# Pthread program
+-	if echo $UNAME | grep -i freebsd > /dev/null ; then
+-		cat server/Makefile.recursive | \
+-			sed 's/lpthread/pthread/' > server/Makefile
+-	fi
+-	cp qual/Makefile.threadsafe qual/Makefile
+-	cp tcp/Makefile.recursive tcp/Makefile
+-	cp dns/Makefile.recursive dns/Makefile
+-	cp tools/Makefile.recursive tools/Makefile
++if [ -z "$AUTHONLY" -o $V6 = 0 ]
++then
++        > build/config.mk
+ else
+-	cp server/Makefile.authonly server/Makefile
+-	cp qual/Makefile.nothreads qual/Makefile
+-	cp tcp/Makefile.authonly tcp/Makefile
+-	cp dns/Makefile.authonly dns/Makefile
+-	cp tools/Makefile.authonly tools/Makefile
++        echo 'CFLAGS += -DAUTHONLY' > build/config.mk
++        echo 'CFLAGS += -DIPV6' >> build/config.mk
++fi
++if [ "$DEBUG" = 1 ]
++then
++        echo 'CFLAGS += $(DEBUG)' >> build/config.mk
++fi
++if [ "$PREFIX" != "" ]
++then
++        echo "PREFIX = $PREFIX" >> build/config.mk
+ fi
+ 
+ echo
+diff -ur maradns-1.3.11/deadwood-1/Makefile maradns-1.3.11-jj/deadwood-1/Makefile
+--- maradns-1.3.11/deadwood-1/Makefile	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/deadwood-1/Makefile	2008-02-02 12:24:23.000000000 -0600
+@@ -1,3 +1,7 @@
++include ../build/os.mk
++include ../build/config.mk
++include ../build/rules.mk
++
+ OBJS=DwStr.o \
+ 	DwMararc.o \
+ 	DwRadioGatun.o \
+@@ -5,38 +9,38 @@
+ 	DwUdpSocket.o \
+ 	DwSys.o
+ 
+-all:	DwMain DwTcp Test 
++TEST = Test
++
++all:	DwMain DwTcp
++
++DwMain:		DwMain.c $(OBJS) DwStr_functions.h
++	@echo link $@
++	@$(CC) $(CFLAGS) -Wall -o DwMain DwMain.c $(OBJS) $(LDFLAGS)
++
++DwTcp:		DwTcpSocket.c $(OBJS) DwStr_functions.h
++	@echo link $@
++	@$(CC) $(CFLAGS) -DHAVE_MAIN -Wall -o DwTcp DwTcpSocket.c $(OBJS) $(LDFLAGS)
+ 
+ clean:
+-	rm -f Test DwMain DwTcp *.o a.out
++	@rm -f Test DwMain DwTcp *.o a.out *.exe
++
++distclean: clean
+ 
+ DwStr.o:	DwStr.c DwStr.h
+-	$(CC) $(FLAGS) -Wall -c -o DwStr.o DwStr.c
+ 
+ DwMararc.o:	DwMararc.c DwMararc.h 
+-	$(CC) $(FLAGS) -Wall -c -o DwMararc.o DwMararc.c
+ 
+ DwRadioGatun.o:	DwRadioGatun.c DwRadioGatun.h DwStr.h
+-	$(CC) $(FLAGS) -Wall -c -o DwRadioGatun.o DwRadioGatun.c
+ 
+ DwTcpSocket.o:	DwTcpSocket.c DwStr.h
+-	$(CC) $(FLAGS) -Wall -c -o DwTcpSocket.o DwTcpSocket.c
+ 
+ DwUdpSocket.o:	DwUdpSocket.c DwStr.h
+-	$(CC) $(FLAGS) -Wall -c -o DwUdpSocket.o DwUdpSocket.c
+ 
+ DwSocket.o:	DwSocket.c DwStr.h
+-	$(CC) $(FLAGS) -Wall -c -o DwSocket.o DwSocket.c
+ 
+ DwSys.o:	DwSys.c DwStr.h
+-	$(CC) $(FLAGS) -Wall -c -o DwSys.o DwSys.c
+ 
+ Test:		Test.c DwStr.o DwStr.h DwStr_functions.h
+-	$(CC) $(FLAGS) -Wall -o Test Test.c DwStr.o
+-
+-DwMain:		DwMain.c $(OBJS) DwStr_functions.h
+-	$(CC) $(FLAGS) -Wall -o DwMain DwMain.c $(OBJS)
+-
+-DwTcp:		DwTcpSocket.c $(OBJS) DwStr_functions.h
+-	$(CC) $(FLAGS) -DHAVE_MAIN -Wall -o DwTcp DwTcpSocket.c $(OBJS)
++	@echo link $@
++	@$(CC) $(CFLAGS) -Wall -o Test Test.c $(OBJS) $(LDFLAGS)
+ 
+diff -ur maradns-1.3.11/dns/Makefile maradns-1.3.11-jj/dns/Makefile
+--- maradns-1.3.11/dns/Makefile	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/dns/Makefile	2008-02-02 12:24:23.000000000 -0600
+@@ -1,25 +1,24 @@
++include ../build/os.mk
++include ../build/config.mk
++include ../build/rules.mk
++
+ DOBJECTS=Queries.o Compress.o bobbit.o Decompress.o
+ JOBJS=../libs/JsStr.o ../libs/JsStrOS.o ../libs/JsStrCP.o 
+ MHOBJS=../libs/MaraHash.o
+ OBJECTS=$(DOBJECTS) $(JOBJS) $(MHOBJS)
+ 
+-FLAGS = -g -Wall $(DEBUG)
+-#FLAGS = -g $(DEBUG)
+-
+ all: Queries.o Compress.o bobbit.o Decompress.o
+ 
+ clean:
+-	rm -f Queries.o Compress.o bobbit.o Decompress.o
++	@rm -f Queries.o Compress.o bobbit.o Decompress.o
++
++distclean: clean
+ 
+ Queries.o: Queries.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h
+-	$(CC) -c $(FLAGS) -o Queries.o Queries.c 
+ 
+ Compress.o: Compress.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h
+-	$(CC) -c $(FLAGS) -o Compress.o Compress.c 
+ 
+ Decompress.o: Decompress.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h
+-	$(CC) -c $(FLAGS) -o Decompress.o Decompress.c 
+ 
+ bobbit.o: bobbit.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h
+-	$(CC) -c $(FLAGS) -o bobbit.o bobbit.c 
+ 
+diff -ur maradns-1.3.11/libs/Makefile maradns-1.3.11-jj/libs/Makefile
+--- maradns-1.3.11/libs/Makefile	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/libs/Makefile	2008-02-02 12:24:23.000000000 -0600
+@@ -1,31 +1,28 @@
++include ../build/os.mk
++include ../build/config.mk
++include ../build/rules.mk
++
+ OBJECTS = JsStr.o JsStrOS.o JsStrCP.o MaraHash.o
+-#FLAGS = -Wall $(DEBUG)
+-#FLAGS = -g -DDEBUG -DTHREADS
+-#FLAGS = -g $(DEBUG)
+ 
+-all: tests mtest
++all: $(OBJECTS)
+ 
+ clean:
+-	rm -f core $(OBJECTS) tests mtest *.exe
++	@rm -f core $(OBJECTS) tests mtest *.exe
+ 
+ MaraHash.o: JsStr.h MaraHash.c
+-	$(CC) -c $(FLAGS) -o MaraHash.o MaraHash.c 
+ 
+ JsStr.o: JsStr.h JsStr.c
+-	$(CC) -c $(FLAGS) -o JsStr.o JsStr.c 
+ 
+ JsStrOS.o: JsStr.h JsStrOS.c
+-	$(CC) -c $(FLAGS) -o JsStrOS.o JsStrOS.c 
+ 
+ JsStrCP.o: JsStr.h JsStrCP.c
+-	$(CC) -c $(FLAGS) -o JsStrCP.o JsStrCP.c 
+ 
+ mtest: mtest.c $(OBJECTS)
+-	$(CC) $(FLAGS) -o mtest mtest.c $(OBJECTS)
++	@echo build $@
++	@$(CC) $(CFLAGS) -o mtest mtest.c $(OBJECTS) $(LDFLAGS)
+ 
+ tests: tests.c $(OBJECTS)
+-	$(CC) $(FLAGS) -o tests tests.c $(OBJECTS)
++	@echo build $@
++	@$(CC) $(CFLAGS) -o tests tests.c $(OBJECTS) $(LDFLAGS)
+ 
+-#onetime: $(OBJECTS) kiwi.h config.h onetime.c do_scramble.o cryptdate.o
+-#	$(CC) $(FLAGS) -o onetime onetime.c do_scramble.o cryptdate.o
+ 
+diff -ur maradns-1.3.11/Makefile maradns-1.3.11-jj/Makefile
+--- maradns-1.3.11/Makefile	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/Makefile	2008-02-02 12:24:23.000000000 -0600
+@@ -1,15 +1,51 @@
+-# This is a wrapper that runs "./configure ; make"
+-all:
+-	./compile.sh
++include version.mk
++
++DIRS = rng libs tools parse dns tcp server qual
++DWDIRS = deadwood-1 deadwood-2
+ 
+-debug:
+-	./configure ; make debug
++all:
++	@if [ ! -f build/os.mk ]; then ./configure; fi
++	@for DIR in $(DIRS); \
++		do cd $$DIR; make $@ COMPILED=\"$(COMPILED)\" || exit 1; cd .. ; done
++	@cat 00README.FIRST
+ 
+ clean:
+-	./configure ; make clean
++	@if [ ! -f build/os.mk ]; then ./configure; fi
++	@for DIR in $(DIRS) $(DWDIRS); \
++		do cd $$DIR; make $@; cd .. ; done
++	@find . -name output.test -exec rm -f {} \;
+ 
+-uninstall:
+-	./configure ; make uninstall
++distclean:
++	@if [ ! -f build/os.mk ]; then ./configure; fi
++	@make clean
++	@rm -f build/os.mk build/config.mk
++	@rm -f `find . -name rng-32bit-tables.h`
++	@rm -f `find . -name failed`
++	@rm -f `find . -name output.test`
++
++strip:
++	@strip server/maradns tcp/zoneserver tcp/getzone tcp/fetchzone tools/askmara
+ 
+ install:
+-	echo Please compile MaraDNS first
++	VERSION=$(VERSION) ./build/install.sh $(PREFIX)
++
++uninstall:
++	VERSION=$(VERSION) ./build/uninstall.sh $(PREFIX)
++
++build/os.mk:
++	@./configure
++
++dw-1:
++	@if [ ! -f build/os.mk ]; then ./configure; fi
++	@cd deadwood-1; make all
++
++dw-2: 
++	@if [ ! -f build/os.mk ]; then ./configure; fi
++	@cd deadwood-2; make all
++
++test:
++	@cd sqa/regressions; sh do.tests
++
++dw-2-test:
++	@cd deadwood-2/sqa; sh do.tests
++
+diff -ur maradns-1.3.11/parse/Makefile maradns-1.3.11-jj/parse/Makefile
+--- maradns-1.3.11/parse/Makefile	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/parse/Makefile	2008-02-02 12:24:23.000000000 -0600
+@@ -1,3 +1,8 @@
++include ../build/os.mk
++include ../build/config.mk
++include ../build/rules.mk
++
++
+ JOBJS=../libs/JsStr.o ../libs/JsStrOS.o ../libs/JsStrCP.o 
+ MHOBJS=../libs/MaraHash.o
+ POBJ3=Csv2_rr_soa.o Csv2_database.o Csv2_rr_txt.o Csv2_rr_wks.o
+@@ -8,62 +13,50 @@
+ OBJECTS=$(JOBJS) $(MHOBJS) $(POBJECTS) $(DOBJECTS) $(OUTOBJ)
+ EXECS=parsetest parsetest2
+ 
+-#FLAGS = -g -Wall $(DEBUG)
+-#FLAGS = -g $(DEBUG)
+ 
+ all: $(POBJECTS) $(OUTOBJ)
+ 
+ clean:
+-	rm -f $(POBJECTS) core $(EXECS) $(OUTOBJ)
++	@rm -f $(POBJECTS) core $(EXECS) $(OUTOBJ)
++
++distclean: clean
+ 
+ ../libs/tests:
+-	cd libs ; make
++	@cd libs ; make
+ 
+ ParseMaraRc.o: ParseMaraRc.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h ParseMaraRc_en.h
+-	$(CC) -c $(FLAGS) -o ParseMaraRc.o ParseMaraRc.c 
+ 
+ ParseCsv1.o: ParseCsv1.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h
+-	$(CC) -c $(FLAGS) -o ParseCsv1.o ParseCsv1.c 
+ 
+ ParseIpAcl.o: ParseIpAcl.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h
+-	$(CC) -c $(FLAGS) -o ParseIpAcl.o ParseIpAcl.c
+ 
+ Parse_ipv6.o: Parse_ipv6.c ../libs/MaraHash.h
+-	$(CC) -c $(FLAGS) -o Parse_ipv6.o Parse_ipv6.c
+ 
+ Csv2_esc_txt.o: Csv2_esc_txt.c ../libs/JsStr.h
+-	$(CC) -c $(FLAGS) -o Csv2_esc_txt.o Csv2_esc_txt.c
+ 
+ Csv2_main.o: Csv2_main.c ../libs/JsStr.h Csv2_read.h
+-	$(CC) -c $(FLAGS) -o Csv2_main.o Csv2_main.c
+ 
+ Csv2_read.o: Csv2_read.c ../libs/JsStr.h Csv2_read.h
+-	$(CC) -c $(FLAGS) -o Csv2_read.o Csv2_read.c
+ 
+ Csv2_parse.o: Csv2_parse.c ../libs/JsStr.h Csv2_read.h
+-	$(CC) -c $(FLAGS) -o Csv2_parse.o Csv2_parse.c
+ 
+ Csv2_rr_aaaa.o: Csv2_rr_aaaa.c ../libs/JsStr.h Csv2_read.h
+-	$(CC) -c $(FLAGS) -o Csv2_rr_aaaa.o Csv2_rr_aaaa.c
+ 
+ Csv2_rr_wks.o: Csv2_rr_wks.c ../libs/JsStr.h Csv2_read.h
+-	$(CC) -c $(FLAGS) -o Csv2_rr_wks.o Csv2_rr_wks.c
+ 
+ Csv2_rr_a.o: Csv2_rr_a.c ../libs/JsStr.h Csv2_read.h
+-	$(CC) -c $(FLAGS) -o Csv2_rr_a.o Csv2_rr_a.c
+ 
+ Csv2_rr_soa.o: Csv2_rr_soa.c ../libs/JsStr.h Csv2_read.h
+-	$(CC) -c $(FLAGS) -o Csv2_rr_soa.o Csv2_rr_soa.c
+ 
+ Csv2_rr_txt.o: Csv2_rr_txt.c ../libs/JsStr.h Csv2_read.h
+-	$(CC) -c $(FLAGS) -o Csv2_rr_txt.o Csv2_rr_txt.c
+ 
+ Csv2_database.o: Csv2_database.c ../libs/JsStr.h Csv2_read.h
+-	$(CC) -c $(FLAGS) -o Csv2_database.o Csv2_database.c
+ 
+ parsetest: parsetest.c $(OBJECTS) 
+-	$(CC) $(FLAGS) -o parsetest parsetest.c $(OBJECTS) 
++	@echo build $@
++	@$(CC) $(FLAGS) -o parsetest parsetest.c $(OBJECTS) 
+ 
+ parsetest2: parsetest2.c $(OBJECTS) 
+-	$(CC) $(FLAGS) -o parsetest2 parsetest2.c $(OBJECTS) 
++	@echo build $@
++	@$(CC) $(FLAGS) -o parsetest2 parsetest2.c $(OBJECTS) 
+ 
+diff -ur maradns-1.3.11/qual/Makefile maradns-1.3.11-jj/qual/Makefile
+--- maradns-1.3.11/qual/Makefile	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/qual/Makefile	2008-02-02 12:24:23.000000000 -0600
+@@ -1,15 +1,15 @@
++include ../build/os.mk
++include ../build/config.mk
++include ../build/rules.mk
++
+ DOBJECTS=qual_timestamp.o 
+ JOBJS=../libs/JsStr.o ../libs/JsStrOS.o ../libs/JsStrCP.o 
+ OBJECTS=$(DOBJECTS)
+ 
+-#FLAGS = -g -Wall $(DEBUG)
+-#FLAGS = -g $(DEBUG)
+-
+ all: qual_timestamp.o
+ 
+ clean:
+-	rm -f qual_timestamp.o
++	@rm -f qual_timestamp.o
+ 
+ qual_timestamp.o: qual_timestamp.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h
+-	$(CC) -c $(FLAGS) -o qual_timestamp.o qual_timestamp.c 
+ 
+diff -ur maradns-1.3.11/rng/Makefile maradns-1.3.11-jj/rng/Makefile
+--- maradns-1.3.11/rng/Makefile	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/rng/Makefile	2008-02-02 12:24:23.000000000 -0600
+@@ -1,3 +1,8 @@
++include ../build/os.mk
++include ../build/config.mk
++include ../build/rules.mk
++
++
+ # Written because some makes (such as NetBSD's make) do not like the Makefile
+ # the original Rijndael code came with.
+ 
+@@ -5,28 +10,26 @@
+ OBJECTS=$(ROBJECTS)
+ TABLES=rng-32bit-tables.h
+ 
+-#FLAGS = -g -Wall
+-#FLAGS = -g
+ 
+ all: $(ROBJECTS) 
+ 
+ # We don't delete the tables so that people compiling to embedded systems
+ # don't have to deal with a special CC to make the tables.
+ clean:
+-	rm -f $(ROBJECTS) core make_32bit_tables *.exe
++	@rm -f $(ROBJECTS) core make_32bit_tables *.exe
+ 
+ superclean:
+-	rm -f $(ROBJECTS) core make_32bit_tables $(TABLES)
++	@rm -f $(ROBJECTS) core make_32bit_tables $(TABLES)
+ 
+ rng-alg-fst.o: rng-alg-fst.c rng-alg-fst.h $(TABLES)
+-	$(CC) -c $(FLAGS) -o rng-alg-fst.o rng-alg-fst.c
+ 
+ rng-api-fst.o: rng-alg-fst.o rng-api-fst.h 
+-	$(CC) -c $(FLAGS) -o rng-api-fst.o rng-api-fst.c
+ 
+ make_32bit_tables: make_32bit_tables.c
+-	$(CC) -o make_32bit_tables make_32bit_tables.c
++	@echo link $@
++	@$(CC) -o make_32bit_tables make_32bit_tables.c
+ 
+ rng-32bit-tables.h: make_32bit_tables
+-	./make_32bit_tables > rng-32bit-tables.h
++	@echo build $@
++	@./make_32bit_tables > rng-32bit-tables.h
+ 
+diff -ur maradns-1.3.11/server/Makefile maradns-1.3.11-jj/server/Makefile
+--- maradns-1.3.11/server/Makefile	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/server/Makefile	2008-02-02 12:24:23.000000000 -0600
+@@ -1,11 +1,17 @@
+-SOBJECTS=MaraBigHash.o recursive.o timestamp.o read_kvars.o MaraAnyChain.o
++include ../build/os.mk
++include ../build/config.mk
++include ../build/rules.mk
++
++SOBJECTS=MaraBigHash.o recursive.o timestamp.o read_kvars.o MaraAnyChain.o \
++	udpsuccess.o
+ JOBJS=../libs/JsStr.o ../libs/JsStrOS.o ../libs/JsStrCP.o 
+ MHOBJS=../libs/MaraHash.o
+ MJOBJS=../qual/qual_timestamp.o
++POBJ6=../parse/Csv2_rr_wks.o
+ POBJ5=../parse/Csv2_database.o ../parse/Csv2_rr_txt.o ../parse/Csv2_esc_txt.o
+ POBJ3=../parse/Csv2_rr_soa.o ../parse/Csv2_rr_aaaa.o ../parse/Csv2_rr_a.o
+ POBJ2=../parse/Csv2_read.o ../parse/Csv2_main.o ../parse/Csv2_parse.o $(POBJ3)
+-POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2)
++POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2) $(POBJ6)
+ POBJECTS=../parse/ParseMaraRc.o ../parse/ParseCsv1.o $(POBJ4) $(POBJ5)
+ DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o ../dns/Decompress.o
+ ROBJECTS=../rng/rng-api-fst.o ../rng/rng-alg-fst.o
+@@ -13,42 +19,35 @@
+ OBJECTS=$(SOBJECTS) $(XOBJECTS)
+ EXECS=maradns
+ 
+-#FLAGS = -g -Wall
+-#FLAGS = -g -DDEBUG -DCALL_LOCKS
+-#FLAGS = -g -DCALL_LOCKS $(DEBUG)
+-#FLAGS = -g -DDEBUG 
+-#FLAGS = -g -DDEBUG -DNOTHREAD
+-#FLAGS = -g $(DEBUG) -DNOTHREAD -DDEBUG
+-#FLAGS = -g -DDEBUG_MEMORY $(DEBUG) 
+-#FLAGS = -g $(DEBUG) 
+-#FLAGS = -g -Wall $(DEBUG) $(DEFINES)
+-
+ all: $(EXECS)
+ 
++maradns: MaraDNS.o $(OBJECTS)
++	@echo Link $@
++	@$(CC) -o maradns MaraDNS.o $(OBJECTS) $(LDFLAGS) $(TLDFLAGS)
++
+ clean:
+-	rm -f $(SOBJECTS) core $(EXECS) simple maradns.authonly *.exe
++	@rm -f $(SOBJECTS) MaraDNS.o core $(EXECS) simple maradns.authonly *.exe
+ 
+ libs/tests:
+-	cd libs ; make
++	@cd libs ; make
+ 
+ read_kvars.o: read_kvars.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h
+-	$(CC) -c $(FLAGS) -o read_kvars.o read_kvars.c
+ 
+ MaraBigHash.o: MaraBigHash.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h MaraBigHash_locale.h
+-	$(CC) -c $(FLAGS) -o MaraBigHash.o MaraBigHash.c 
+ 
+ recursive.o: recursive.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h
+-	$(CC) -c $(FLAGS) -o recursive.o recursive.c 
+ 
+ timestamp.o: timestamp.c MaraDNS_locale.h
+-	$(CC) -c $(FLAGS) -o timestamp.o timestamp.c
+ 
+ MaraAnyChain.o: MaraAnyChain.c
+-	$(CC) -c $(FLAGS) -o MaraAnyChain.o MaraAnyChain.c
+ 
+-maradns: MaraDNS.c $(OBJECTS) MaraDNS_locale.h
+-	$(CC) $(FLAGS) -DVERSION=\"$(VERSION)\" -DCOMPILED=\"$(COMPILED)\" -o maradns MaraDNS.c $(OBJECTS) -lpthread
++udpsuccess.o: udpsuccess.c
++
++MaraDNS.o: MaraDNS.c MaraDNS_locale.h
++	@echo Compile $@
++	@$(CC) $(CFLAGS) -DVERSION=\"$(VERSION)\" -DCOMPILED=\"$(COMPILED)\" -c -o MaraDNS.o MaraDNS.c
+ 
+ simple: simple.c $(XOBJECTS) MaraDNS_locale.h
+-	$(CC) $(FLAGS) -DVERSION=\"$(VERSION)\" -DCOMPILED=\"$(COMPILED)\" -o simple $(OBJECTS) simple.c 
++	@echo link $@
++	@$(CC) $(LDFLAGS) -DVERSION=\"$(VERSION)\" -DCOMPILED=\"$(COMPILED)\" -o simple $(OBJECTS) simple.c 
+ 
+diff -ur maradns-1.3.11/sqa/Makefile maradns-1.3.11-jj/sqa/Makefile
+--- maradns-1.3.11/sqa/Makefile	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/sqa/Makefile	2008-02-02 12:24:23.000000000 -0600
+@@ -1,3 +1,8 @@
++include ../build/os.mk
++include ../build/config.mk
++include ../build/rules.mk
++
++
+ JOBJS=../libs/JsStr.o ../libs/JsStrOS.o ../libs/JsStrCP.o 
+ MHOBJS=../libs/MaraHash.o 
+ DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o ../dns/Decompress.o 
+@@ -7,29 +12,32 @@
+ OBJECTS=$(JOBJS) $(MHOBJS) $(DOBJECTS) $(ROBJECTS) $(POBJECTS) $(SOBJECTS)
+ EXECS=asktest qr.test aaaatest dead_host_simulate sendudp sendnoise
+ 
+-FLAGS = -g $(DEBUG)
+-#FLAGS = -g -DDEBUG
+-
+ all: $(EXECS)
+ 
+ clean:
+-	rm -f core $(EXECS)
++	@rm -f core $(EXECS)
+ 
+ asktest: asktest.c ../tools/askmara_labels_en.h $(OBJECTS) 
+-	$(CC) $(FLAGS) -o asktest asktest.c $(OBJECTS) 
++	@echo link $@
++	@$(CC) $(FLAGS) -o asktest asktest.c $(OBJECTS) 
+ 
+ sendudp: sendudp.c ../tools/askmara_labels_en.h $(OBJECTS) 
+-	$(CC) $(FLAGS) -o sendudp sendudp.c $(OBJECTS) 
++	@echo link $@
++	@$(CC) $(FLAGS) -o sendudp sendudp.c $(OBJECTS) 
+ 
+ sendnoise: sendnoise.c ../tools/askmara_labels_en.h $(OBJECTS) 
+-	$(CC) $(FLAGS) -o sendnoise sendnoise.c $(OBJECTS) 
++	@echo link $@
++	@$(CC) $(FLAGS) -o sendnoise sendnoise.c $(OBJECTS) 
+ 
+ qr.test: qr.test.c ../tools/askmara_labels_en.h $(OBJECTS) 
+-	$(CC) $(FLAGS) -o qr.test qr.test.c $(OBJECTS) 
++	@echo link $@
++	@$(CC) $(FLAGS) -o qr.test qr.test.c $(OBJECTS) 
+ 
+ aaaatest: aaaatest.c ../tools/askmara_labels_en.h $(OBJECTS) 
+-	$(CC) $(FLAGS) -o aaaatest aaaatest.c $(OBJECTS) 
++	@echo link $@
++	@$(CC) $(FLAGS) -o aaaatest aaaatest.c $(OBJECTS) 
+ 
+ dead_host_simulate: dead_host_simulate.c $(OBJECTS) 
+-	$(CC) $(FLAGS) -o dead_host_simulate dead_host_simulate.c $(OBJECTS) 
++	@echo link $@
++	@$(CC) $(FLAGS) -o dead_host_simulate dead_host_simulate.c $(OBJECTS) 
+ 
+diff -ur maradns-1.3.11/tcp/Makefile maradns-1.3.11-jj/tcp/Makefile
+--- maradns-1.3.11/tcp/Makefile	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/tcp/Makefile	2008-02-02 12:24:23.000000000 -0600
+@@ -1,11 +1,17 @@
++include ../build/os.mk
++include ../build/config.mk
++include ../build/rules.mk
++
++
+ JOBJS=../libs/JsStr.o ../libs/JsStrOS.o ../libs/JsStrCP.o 
+ MJOBJS=../qual/qual_timestamp.o
+ MHOBJS=../libs/MaraHash.o
+ DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o ../dns/Decompress.o
++POBJ6=../parse/Csv2_rr_wks.o
+ POBJ5=../parse/Csv2_database.o ../parse/Csv2_rr_txt.o ../parse/Csv2_esc_txt.o
+ POBJ3=../parse/Csv2_rr_soa.o ../parse/Csv2_rr_aaaa.o ../parse/Csv2_rr_a.o
+ POBJ2=../parse/Csv2_read.o ../parse/Csv2_main.o ../parse/Csv2_parse.o $(POBJ3)
+-POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2)
++POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2) $(POBJ6)
+ POBJECTS=../parse/ParseMaraRc.o ../parse/ParseCsv1.o $(POBJ4) $(POBJ5)
+ OBJECTS=../parse/ParseCsv1.o ../parse/ParseMaraRc.o ../parse/ParseIpAcl.o
+ SOBJECTS=../server/timestamp.o ../server/MaraBigHash.o ../server/read_kvars.o \
+@@ -14,22 +20,24 @@
+ TCPOBJS=libtcp.o
+ OBJECTS=$(JOBJS) $(MHOBJS) $(MJOBJS) $(DOBJECTS) $(POBJECTS) $(SOBJECTS) \
+ 	$(TCPOBJS)
+-EXECS=getzone zoneserver fetchzone
+-
+-FLAGS = -g -Wall $(DEBUG)
+-#FLAGS = -g $(DEBUG)
++# Not for MINGW32 getzone fetchzone
++UNIXBIN=getzone zoneserver fetchzone
++EXECS=  $(UBIN)
+ 
+ all: $(EXECS)
+ 
+-clean:
+-	rm -f core $(EXECS) $(TCPOBJS) *.exe
+-
+ getzone: getzone.c $(OBJECTS) 
+-	$(CC) $(FLAGS) -o getzone getzone.c $(OBJECTS)
++	@echo compile and link $@
++	@$(CC) $(CFLAGS) -o getzone getzone.c $(OBJECTS) $(LDFLAGS) $(LDFLAGS)
+ 
+ fetchzone: fetchzone.c $(OBJECTS) 
+-	$(CC) $(FLAGS) -o fetchzone fetchzone.c $(OBJECTS) 
++	@echo compile and link $@
++	@$(CC) $(CFLAGS) -o fetchzone fetchzone.c $(OBJECTS)  $(LDFLAGS)
+ 
+ zoneserver: zoneserver.c zoneserver_en.h $(OBJECTS)
+-	$(CC) $(FLAGS) -DVERSION=\"$(VERSION)\" -o zoneserver zoneserver.c $(OBJECTS) $(RNGOBJS)
++	@echo compile and link $@
++	@$(CC) $(CFLAGS) -DVERSION=\"$(VERSION)\" -o zoneserver zoneserver.c $(OBJECTS) $(RNGOBJS) $(LDFLAGS)
++
++clean:
++	@rm -f core $(EXECS) $(TCPOBJS) *.exe
+ 
+diff -ur maradns-1.3.11/tools/Makefile maradns-1.3.11-jj/tools/Makefile
+--- maradns-1.3.11/tools/Makefile	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/tools/Makefile	2008-02-02 12:24:23.000000000 -0600
+@@ -0,0 +1,42 @@
++include ../build/os.mk
++include ../build/config.mk
++include ../build/rules.mk
++
++
++JOBJS=../libs/JsStr.o ../libs/JsStrOS.o ../libs/JsStrCP.o 
++MHOBJS=../libs/MaraHash.o
++DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o ../dns/Decompress.o
++SOBJECTS=../server/timestamp.o
++OUTOBJ=../parse/Csv2_esc_txt.o
++OBJECTS=$(JOBJS) $(MHOBJS) $(DOBJECTS) $(SOBJECTS)
++ROBJECTS=../rng/rng-alg-fst.o ../rng/rng-api-fst.o
++POBJECTS=../parse/ParseCsv1.o ../parse/ParseMaraRc.o 
++Q=$(ROBJECTS) $(POBJECTS)
++#### Make rule so we don't compile benchmark and duende with mingw32
++UNIXBIN=benchmark duende
++EXECS=askmara askmara-tcp strip.control $(UBIN)
++
++all: $(EXECS)
++
++askmara: askmara.c askmara_labels_en.h $(OBJECTS) $(Q) $(OUTOBJ)
++	@echo compile and link $@
++	@$(CC) $(CFLAGS) -o askmara askmara.c $(OBJECTS) $(Q) $(OUTOBJ) $(LDFLAGS)
++
++askmara-tcp: askmara-tcp.c askmara_labels_en.h $(OBJECTS) $(ROBJECTS) $(POBJECTS)
++	@echo compile and link $@
++	@$(CC) $(CFLAGS) -o askmara-tcp askmara-tcp.c $(OBJECTS) $(ROBJECTS) $(POBJECTS) $(LDFLAGS)
++
++benchmark: benchmark.c askmara_labels_en.h $(OBJECTS) $(POBJECTS)
++	@echo compile and link $@
++	@$(CC) $(CFLAGS) -o benchmark benchmark.c $(OBJECTS) $(POBJECTS) $(LDFLAGS)
++
++duende: duende.c 
++	@echo compile and link $@
++	@$(CC) $(CFLAGS) -o duende duende.c $(LDFLAGS)
++
++strip.control: strip.control.c
++	@echo compile and link $@
++	@$(CC) $(CFLAGS) -o strip.control strip.control.c $(LDFLAGS)
++
++clean:
++	@rm -f core $(EXECS) *.exe *.o
+diff -ur maradns-1.3.11/utf8/Makefile maradns-1.3.11-jj/utf8/Makefile
+--- maradns-1.3.11/utf8/Makefile	2008-02-02 12:24:18.000000000 -0600
++++ maradns-1.3.11-jj/utf8/Makefile	2008-02-02 12:24:23.000000000 -0600
+@@ -1,29 +1,32 @@
++include ../build/os.mk
++include ../build/rules.mk
++include ../build/config.mk
++
+ UOBJECTS=Utf8.o
+ JOBJS=../libs/JsStr.o ../libs/JsStrOS.o ../libs/JsStrCP.o 
+ MHOBJS=../libs/MaraHash.o
+ OBJECTS=$(UOBJECTS) $(JOBJS) $(MHOBJS)
+ EXECS=utf8test l1toutf8 utf8tol1 lcol
+ 
+-FLAGS = -g $(DEBUG)
+-#FLAGS = -g $(DEBUG)
+-
+ all: $(EXECS)
+ 
+-clean:
+-	rm -f $(UOBJECTS) core $(EXECS)
+-
+ Utf8.o: Utf8.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h
+-	$(CC) -c $(FLAGS) -o Utf8.o Utf8.c 
+ 
+ utf8test: utf8test.c $(OBJECTS) 
+-	$(CC) $(FLAGS) -o utf8test utf8test.c $(OBJECTS) 
++	@echo link $@
++	@$(CC) $(FLAGS) -o utf8test utf8test.c $(OBJECTS) 
+ 
+ l1toutf8: l1toutf8.c
+-	$(CC) $(FLAGS) -o l1toutf8 l1toutf8.c
++	@echo link $@
++	@$(CC) $(FLAGS) -o l1toutf8 l1toutf8.c
+ 
+ utf8tol1: utf8tol1.c
+-	$(CC) $(FLAGS) -o utf8tol1 utf8tol1.c
++	@echo link $@
++	@$(CC) $(FLAGS) -o utf8tol1 utf8tol1.c
+ 
+ lcol: lcol.c
+-	$(CC) $(FLAGS) -o lcol lcol.c
++	@echo link $@
++	@$(CC) $(FLAGS) -o lcol lcol.c
+ 
++clean:
++	@rm -f $(UOBJECTS) core $(EXECS)

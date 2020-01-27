@@ -1,0 +1,22 @@
+--- maradns-1.3.07.01/doc/en/source/changelog.embed	2007-06-20 22:46:00.000000000 -0500
++++ maradns-1.3.07.02/doc/en/source/changelog.embed	2007-06-29 14:26:06.000000000 -0500
+@@ -1,5 +1,19 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.3.07.02:</p>
++This is a beta testing release of MaraDNS.
++<blockquote>
++<ul>
++<li>Bugfix: askmara no longer goes in to an infinite loop when it
++    receives an invalid TXT record
++<li>Bugfix: csv2 parser now makes sure that TXT chunks are no longer
++    than 255 characters in all cases.
++<li>SQA regressions added: RFC2181 compliant truncation, askmara bug,
++    csv2 parser long TXT chunk bug.
++</ul>
++(2007.06.29)
++</blockquote>
++
+ <p>maradns-1.3.07.01:</p>
+ This is a beta testing release of MaraDNS.
+ <blockquote>

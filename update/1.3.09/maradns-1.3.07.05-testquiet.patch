@@ -1,0 +1,73 @@
+--- maradns-1.3.07.05/sqa/regressions/long.chunk/do.test	2007-06-29 14:32:31.000000000 -0500
++++ maradns-1.3.07.06/sqa/regressions/long.chunk/do.test	2007-09-29 18:37:38.000000000 -0500
+@@ -3,7 +3,7 @@
+ # This tests to make sure we return an error whenever a TXT chunk is
+ # too long
+ 
+-killall maradns # Don't run this test on Solaris
++killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+ cat > mararc << EOF
+ chroot_dir="$( pwd )"
+ ipv4_bind_addresses="127.0.0.1"
+@@ -26,6 +26,6 @@
+ # OK, test the server
+ ../../../server/maradns -f mararc &
+ sleep 5
+-killall maradns
++killall maradns > /dev/null 2>&1
+ rm mararc
+ rm db.example.com
+--- maradns-1.3.07.05/sqa/regressions/ptr_leak/do.test	2007-08-29 11:30:03.000000000 -0500
++++ maradns-1.3.07.06/sqa/regressions/ptr_leak/do.test	2007-09-29 18:37:38.000000000 -0500
+@@ -30,6 +30,6 @@
+ kill $( ps auxw | grep maradns | grep -v grep | awk '{print $2}' )
+ sleep 1
+ # Linux specific; this does bad things on Solaris
+-killall maradns
++killall maradns > /dev/null 2>&1
+ 
+ 
+--- maradns-1.3.07.05/sqa/regressions/truncation/do.test	2007-08-16 08:35:43.000000000 -0500
++++ maradns-1.3.07.06/sqa/regressions/truncation/do.test	2007-09-29 18:37:53.000000000 -0500
+@@ -2,7 +2,7 @@
+ 
+ # This tests for RFC2181 compliant truncation
+ 
+-killall maradns # Don't run this test on Solaris
++killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
+ cat > mararc << EOF
+ chroot_dir="$( pwd )"
+ ipv4_bind_addresses="127.0.0.1"
+@@ -26,5 +26,5 @@
+ echo
+ ../../../tools/askmara Tt6.example.com.
+ sleep 1
+-killall maradns
++killall maradns > /dev/null 2>&1
+ rm mararc
+--- maradns-1.3.07.05/sqa/regressions/mararc_d_upstream_servers/do.test	2007-09-09 22:31:32.000000000 -0500
++++ maradns-1.3.07.06/sqa/regressions/mararc_d_upstream_servers/do.test	2007-09-29 18:37:38.000000000 -0500
+@@ -67,5 +67,4 @@
+ rm mararc4
+ rm db.root
+ rm db.example
+-rm db.net
+ 
+--- maradns-1.3.07.05/sqa/regressions/loc/do.test	2007-08-29 11:30:03.000000000 -0500
++++ maradns-1.3.07.06/sqa/regressions/loc/do.test	2007-09-29 18:37:38.000000000 -0500
+@@ -21,6 +21,6 @@
+ sleep 1
+ dig @127.0.0.1 example.com loc | grep 123 | awk '{$1=$1;print $0}'
+ sleep 1
+-killall maradns
++killall maradns > /dev/null 2>&1
+ rm mararc
+ rm db.example.com
+--- maradns-1.3.07.05/sqa/regressions/bad_query/README	2007-08-19 18:09:00.000000000 -0500
++++ maradns-1.3.07.06/sqa/regressions/bad_query/README	2007-09-29 18:43:15.000000000 -0500
+@@ -9,3 +9,5 @@
+ 
+ When fixed: 1.2.12.03
+ 
++NOTE: Should something break DNS recursion, this is the first SQA test case
++      to fail.

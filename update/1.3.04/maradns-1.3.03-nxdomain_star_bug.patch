@@ -1,0 +1,172 @@
+--- maradns-Q.20070226.1/server/MaraDNS.c	2007-02-26 14:27:26.000000000 -0600
++++ maradns-1.3.04/server/MaraDNS.c	2007-03-14 10:07:13.000000000 -0600
+@@ -2273,6 +2273,8 @@
+  *                           query the scope of the SOA reply
+  *                        3: Called from recursive half, please make
+  *                           query the scope of the SOA reply
++ *                        4-7: Same as 0-3, but also always return a
++ *                             "not there" instead of a NXDOMAIN
+  *
+  * Output: JS_ERROR on error, JS_SUCCESS on success
+  *
+@@ -2290,6 +2292,12 @@
+     int len_inet = sizeof(struct sockaddr);
+ 
+     q_header header;
++    int always_not_there = 0;
++    if(recursive_call >= 4) {
++	recursive_call -= 4;
++        always_not_there = 4;
++    }
++
+     /* Initialize the js_string objects */
+     if((most = js_create(1024,1)) == 0)
+         return JS_ERROR;
+@@ -2417,7 +2425,9 @@
+     /* Code that verifies that this host does not exist in
+        any class.  If so, then we give them a rcode of NXDOMAIN_RCODE.
+        Otherwise, we give them a rcode of 0 */
+-    if(recursive_call == 1 || recursive_call == 3) {
++    if(always_not_there == 4) {
++	header.rcode = 0; /* "not there" */
++    } else if(recursive_call == 1 || recursive_call == 3) {
+     /* For the recursive half, we just copy over the rcode from the
+        reply the remote server gives us */
+         if(where->rcode == 3) {
+@@ -2994,6 +3004,7 @@
+     unsigned int mem_usage; /* The amount of memory a maradns process has
+                                allocated */
+     struct sockaddr_in *z; /* Makes certain ugly declarations readable */
++    int always_not_there = 0;
+ 
+ 
+     /* Sanity checks */
+@@ -3530,9 +3541,9 @@
+     }
+ 
+     /* Remmy's issue: If we have any recordtype for a given record, we don't
+-       look for a star record with the same name.  This emulates BIND's
+-       behavior for star records and strictly follows RFC1034 section
+-       4.3.3 */
++     * look for a star record with the same name.  This emulates BIND's
++     * behavior for star records and strictly follows RFC1034 section
++     * 4.3.3 */
+     if(bind_star_handling == 1) {
+         if(js_copy(origq,lookfor) == JS_ERROR)
+             goto serv_fail;
+@@ -3545,9 +3556,10 @@
+ 	}
+ 	spot_data = mhash_get(bighash,lookfor); 
+ 	if(spot_data.value != 0 && spot_data.datatype == MARA_DNS_LIST) {
++	    always_not_there = 4;
+ 	    goto skip_starwhitis;
+             }
+-    }
++        }
+ 
+     /* Maybe it is a star record they are looking for */
+ 
+@@ -3573,24 +3585,44 @@
+         return JS_SUCCESS;
+         }
+ 
++    /* When bind_star_handling is set, we never incorrectly return a
++     * NXDOMAIN if there is a star record with the given name */
++    if(bind_star_handling == 1) {
++        int rtype_saver;
++        rtype_saver = get_rtype(lookfor);
++	if(change_rtype(lookfor,RR_ANY) == JS_ERROR) {
++	    goto serv_fail;
++        }
++        spot_data = mhash_get(bighash,lookfor);
++        if(spot_data.value != 0 && spot_data.datatype == MARA_DNS_LIST) {
++            always_not_there = 4;
++            } 
++        if(change_rtype(lookfor,rtype_saver) == JS_ERROR) {
++            goto serv_fail;
++            }
++        }
++
+     /* OK, maybe there is a star record "above".  In other words,
+        handle the case when they ask for foo.bar.example.com and we have
+        a record for *.example.com */
+     while(bobbit_starlabel(lookfor) > 0) {
++        int rtype_saver = 1;
++        if(bind_star_handling == 1) {
++            rtype_saver = get_rtype(lookfor);
++        }
+         spot_data = mhash_get(bighash,lookfor);
+         point = spot_data.value;
+         if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+ 
+             /* Optional strict RFC1034 section 4.3.3 compliance */
+             if(bind_star_handling == 1) {
+-                int rtype_saver;
+-                rtype_saver = get_rtype(lookfor);
+ 	        if(change_rtype(lookfor,RR_ANY) == JS_ERROR) {
+ 		    goto serv_fail;
+                 }
+                 spot_data = mhash_get(bighash,lookfor);
+                 if(spot_data.value != 0 && 
+                      spot_data.datatype == MARA_DNS_LIST) {
++                    always_not_there = 4;
+                     goto skip_starwhitis;
+                 }
+                 if(change_rtype(lookfor,rtype_saver) == JS_ERROR) {
+@@ -3603,6 +3635,22 @@
+             js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+             return JS_SUCCESS;
+             }
++        else {
++            /* Make sure we don't incorrectly return a NXDOMAIN */
++            if(bind_star_handling == 1) {
++	        if(change_rtype(lookfor,RR_ANY) == JS_ERROR) {
++		    goto serv_fail;
++                }
++                spot_data = mhash_get(bighash,lookfor);
++                if(spot_data.value != 0 && 
++                     spot_data.datatype == MARA_DNS_LIST) {
++                    always_not_there = 4;
++                }
++                if(change_rtype(lookfor,rtype_saver) == JS_ERROR) {
++                    goto serv_fail;
++                }
++              }
++            }
+         }
+ 
+     /* Perhaps they have a star record which points to a CNAME (yes,
+@@ -3718,7 +3766,8 @@
+ 		js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+ 		return JS_ERROR;
+ 	        }
+-	udpnotfound(point,header.id,sock,0,origq,0,desires_recursion,ect,0);
++	udpnotfound(point,header.id,sock,0,origq,0,desires_recursion,ect,
++                    always_not_there);
+ 	js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+ 	return JS_SUCCESS;
+         }
+@@ -3757,7 +3806,8 @@
+     /* Currently, MaraDNS will not support star records for NS
+        subdelegation.  Code in ParseCsv1.c warns the user of this fact. */
+ 
+-    udpnotfound(nxstore,header.id,sock,0,origq,0,desires_recursion,ect,0);
++    udpnotfound(nxstore,header.id,sock,0,origq,0,desires_recursion,ect,
++                always_not_there);
+     js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+ 
+     return JS_SUCCESS;
+--- maradns-Q.20070226.1/doc/en/source/mararc.ej	2007-02-26 14:27:26.000000000 -0600
++++ maradns-1.3.04/doc/en/source/mararc.ej	2007-03-14 10:12:36.000000000 -0600
+@@ -360,6 +360,11 @@
+ 
+ <p>
+ 
++In addition, if there is a star record that could match any given record
++type, when bind_star_handling is 1, it makes sure that MaraDNS
++does not incorrectly return a NXDOMAIN (RFC 4074 section 4.2).
++<p>
++
+ MaraDNS will exit with a fatal error if <tt>bind_star_handling</tt> has
+ any value besides 0 or 1.
+ 

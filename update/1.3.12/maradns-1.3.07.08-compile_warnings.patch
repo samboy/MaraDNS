@@ -1,0 +1,30 @@
+--- maradns-1.3.07.08/libs/JsStrOS.c	2007-12-25 13:14:46.000000000 -0600
++++ maradns-1.3.07.09/libs/JsStrOS.c	2008-08-03 11:54:14.000000000 -0500
+@@ -581,8 +581,12 @@
+     if(count % js->unit_size != 0)
+         return JS_ERROR;
+ #ifndef MINGW32
+-    if(count < 0 || count > SSIZE_MAX)
++    if(count < 0 || count > 1048576)
+         return JS_ERROR;
++#if (SSIZE_MAX < 1048576)
++    if(count > SSIZE_MAX)
++        return JS_ERROR;
++#endif /* SSIZE_MAX small */
+ #else
+     if(count < 0 || count > 1024)
+         return JS_ERROR;
+@@ -625,8 +629,12 @@
+ 
+     to_write = js->unit_size * js->unit_count;
+ #ifndef MINGW32
+-    if(to_write < 0 || to_write > SSIZE_MAX)
++    if(to_write < 0 || to_write > 1048576)
++        return JS_ERROR;
++#if (SSIZE_MAX < 1048576)
++    if(to_write > SSIZE_MAX)
+         return JS_ERROR;
++#endif /* SSIZE_MAX small */
+ #else
+     if(to_write < 0 || to_write > 1024)
+         return JS_ERROR;

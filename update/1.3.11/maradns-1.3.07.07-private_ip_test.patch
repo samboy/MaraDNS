@@ -1,0 +1,26 @@
+Jean-Jacques Sarton pointed out that we need to configure the loopback
+addresses this way to get things to work in Fedora.
+
+--- maradns-1.3.10/sqa/regressions/private_ips/do.test	2007-09-29 17:44:24.000000000 -0500
++++ maradns-1.3.11/sqa/regressions/private_ips/do.test	2007-12-06 17:36:46.000000000 -0600
+@@ -22,10 +22,8 @@
+ www.% A 10.1.2.3
+ EOF
+ 
+-ADD=""
+ for ITEM in $(echo $IPS | tr ',' ' ') ; do
+-	ifconfig lo $ADD $ITEM
+-	ADD="add"
++	ip ad ad $ITEM/32 dev lo
+ done
+ 
+ # OK, test the server
+@@ -39,7 +37,7 @@
+ rm db.example.com
+ 
+ for ITEM in $(echo $IPS | tr ',' ' ') ; do
+-	ifconfig lo del $ITEM
++	ip ad del $ITEM/32 dev lo
+ done
+ 
+ done

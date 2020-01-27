@@ -1,0 +1,234 @@
+--- maradns-1.3.12/tools/misc/make.download.embed	2008-03-24 09:52:27.000000000 -0600
++++ maradns-1.3.13/tools/misc/make.download.embed	2009-02-12 16:46:06.000000000 -0600
+@@ -14,26 +14,26 @@
+ 
+ # Stable release
+ SV=1.3
+-STABLE=1.3.07.08
+-SZIP="1-3-07-08"
+-SDATE="December 25, 2007"
++STABLE=1.3.07.09
++SZIP="1-3-07-09"
++SDATE="August 4, 2008"
+ 
+ # Previous Stable release
+ PV=1.2
+-PREV=1.2.12.09
+-PZIP="1-2-12-09"
+-PDATE="December 14, 2007"
++PREV=1.2.12.10
++PZIP="1-2-12-10"
++PDATE="August 4, 2008"
+ SLAKWARE="maradns-1.2.12.08-i486-2.tgz"
+ 
+ # Development release
+ DV=1.3
+-DEV=1.3.11
+-DZIP="1-3-11"
+-DDATE="March 24, 2008"
++DEV=1.3.12
++DZIP="1-3-12"
++DDATE="September 10, 2008"
+ 
+ # Name of windows pthreads library source (needs to be included with
+ # win32 releases)
+-PTHREADS="pthreads-w32-2-8-0-release.tar.lzma"
++PTHREADS="pthreads-w32-2-8-0-release.tar.gz"
+ 
+ cat << EOF
+ <A NAME=stable> </A>
+@@ -87,128 +87,135 @@
+ </td></tr></table>
+ <hr>
+ 
+-<h2>Previous stable release</h2>
++<h2>Development release</h2>
+ 
+-This is the previous stable branch of MaraDNS; this release will be 
+-supported with critical and maintenance updates until December 31, 2010.
+-Doesn't have BIND zone file support, nor a couple of other features,
+-but otherwise similar to the stable release of MaraDNS. <p>
++This is a development release.  This is where new features get added
++to MaraDNS; new features have often not been fully tested so <b>use 
++this release at your own risk</b>.
+ 
+-<p>This is the previous stable release of MaraDNS, MaraDNS ${PREV},
+-released ${PDATE}.
++<p>This is the current development release of MaraDNS, MaraDNS ${DEV},
++released ${DDATE}.  One can also download the <A 
++href=download/${DV}/snap>snapshot release</A>.
+ 
+ <p>
+ <table><tr><td>
+ <A 
+-href="download/${PV}/${PREV}/maradns-${PREV}.tar.bz2"><!--
+-                          -->maradns-${PREV}.tar.bz2</A>
++href="download/${DV}/${DEV}/maradns-${DEV}.tar.bz2"><!--
++                          -->maradns-${DEV}.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/${PV}/${PREV}/maradns-${PREV}.tar.bz2.sha.asc">sig</A><p>
++href="download/${DV}/${DEV}/maradns-${DEV}.tar.bz2.sha.asc">sig</A><p>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/${PV}/${PREV}/maradns-${PREV}.tar.lzma"><!--
+-                          -->maradns-${PREV}.tar.lzma</A>
++href="download/${DV}/${DEV}/maradns-${DEV}.tar.lzma"><!--
++                          -->maradns-${DEV}.tar.lzma</A>
+ </td><td>
+ <A 
+-href="download/${PV}/${PREV}/maradns-${PREV}.tar.lzma.sha.asc">sig</A>
++href="download/${DV}/${DEV}/maradns-${DEV}.tar.lzma.sha.asc">sig</A>
+ </td><td>
+ <A href="#lzma">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/${PV}/${PREV}/maradns-${PREV}.tar.gz"><!--
+-                          -->maradns-${PREV}.tar.gz</A>
++href="download/${DV}/${DEV}/maradns-${DEV}.tar.gz"><!--
++                          -->maradns-${DEV}.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/${PV}/${PREV}/maradns-${PREV}.tar.gz.sha.asc">sig</A>
++href="download/${DV}/${DEV}/maradns-${DEV}.tar.gz.sha.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+ <A 
+-href="download/${PV}/${PREV}/maradns-${PZIP}-win32.zip"><!--
+-                          -->maradns-${PZIP}-win32.zip</A>
++href="download/${DV}/${DEV}/maradns-${DZIP}-win32.zip"><!--
++                          -->maradns-${DZIP}-win32.zip</A>
+ </td><td>
+ <A 
+-href="download/${PV}/${PREV}/maradns-${PZIP}-win32.zip.sha.asc">sig</A>
++href="download/${DV}/${DEV}/maradns-${DZIP}-win32.zip.sha.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ 
+ </td></tr></table>
+-EOF
+ 
+-if [ ! -z "$SLAKWARE" ] ; then
+-	cat << EOF
+-<h3>Contributed packages</h3>
++<h3>Pthreads soruce code</h3>
+ 
+-<A
+-href="download/1.2/3rd_party/${SLAKWARE}"><!--
+-                          -->${SLAKWARE}</A> 
+-<A href="#tgz">info</A>
+-EOF
++The Windows port of MaraDNS 1.3 uses the LGPL phtreads library. Source 
++code for this library is available <A 
++href="download/${PTHREADS}">here</A>
+ 
+-fi
++<hr>
+ 
+-cat << EOF
+-<h2>Development release</h2>
++<h2>Deadwood</h2>
+ 
+-This is a development release.  This is where new features get added
+-to MaraDNS; new features have often not been fully tested so <b>use 
+-this release at your own risk</b>.
++Deadwood is the code that will eventually become MaraDNS' next recursive
++resolver; it can be looked at <A href=deadwood/>by clicking on this link</A>
+ 
+-<p>This is the current development release of MaraDNS, MaraDNS ${DEV},
+-released ${DDATE}.  One can also download the <A 
+-href=download/${DV}/snap>snapshot release</A>.
++<hr>
++
++<h2>Previous stable release</h2>
++
++This is the previous stable branch of MaraDNS; this release will be 
++supported with critical and maintenance updates until December 31, 2010.
++Doesn't have BIND zone file support, nor a couple of other features,
++but otherwise similar to the stable release of MaraDNS. <p>
++
++<p>This is the previous stable release of MaraDNS, MaraDNS ${PREV},
++released ${PDATE}.
+ 
+ <p>
+ <table><tr><td>
+ <A 
+-href="download/${DV}/${DEV}/maradns-${DEV}.tar.bz2"><!--
+-                          -->maradns-${DEV}.tar.bz2</A>
++href="download/${PV}/${PREV}/maradns-${PREV}.tar.bz2"><!--
++                          -->maradns-${PREV}.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/${DV}/${DEV}/maradns-${DEV}.tar.bz2.sha.asc">sig</A><p>
++href="download/${PV}/${PREV}/maradns-${PREV}.tar.bz2.sha.asc">sig</A><p>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/${DV}/${DEV}/maradns-${DEV}.tar.lzma"><!--
+-                          -->maradns-${DEV}.tar.lzma</A>
++href="download/${PV}/${PREV}/maradns-${PREV}.tar.lzma"><!--
++                          -->maradns-${PREV}.tar.lzma</A>
+ </td><td>
+ <A 
+-href="download/${DV}/${DEV}/maradns-${DEV}.tar.lzma.sha.asc">sig</A>
++href="download/${PV}/${PREV}/maradns-${PREV}.tar.lzma.sha.asc">sig</A>
+ </td><td>
+ <A href="#lzma">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/${DV}/${DEV}/maradns-${DEV}.tar.gz"><!--
+-                          -->maradns-${DEV}.tar.gz</A>
++href="download/${PV}/${PREV}/maradns-${PREV}.tar.gz"><!--
++                          -->maradns-${PREV}.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/${DV}/${DEV}/maradns-${DEV}.tar.gz.sha.asc">sig</A>
++href="download/${PV}/${PREV}/maradns-${PREV}.tar.gz.sha.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+ <A 
+-href="download/${DV}/${DEV}/maradns-${DZIP}-win32.zip"><!--
+-                          -->maradns-${DZIP}-win32.zip</A>
++href="download/${PV}/${PREV}/maradns-${PZIP}-win32.zip"><!--
++                          -->maradns-${PZIP}-win32.zip</A>
+ </td><td>
+ <A 
+-href="download/${DV}/${DEV}/maradns-${DZIP}-win32.zip.sha.asc">sig</A>
++href="download/${PV}/${PREV}/maradns-${PZIP}-win32.zip.sha.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ 
+ </td></tr></table>
++EOF
+ 
+-<h3>Pthreads soruce code</h3>
++if [ ! -z "$SLAKWARE" ] ; then
++	cat << EOF
++<h3>Contributed packages</h3>
+ 
+-The Windows port of MaraDNS 1.3 uses the LGPL phtreads library. Source 
+-code for this library is available <A 
+-href="download/${DV}/${DEV}/${PTHREADS}">here</A>
++<A
++href="download/1.2/3rd_party/${SLAKWARE}"><!--
++                          -->${SLAKWARE}</A> 
++<A href="#tgz">info</A>
++EOF
+ 
+-<hr>
++fi
+ 
++cat << EOF
+ <h2>Other</h2>
+ <p><A href=changelog.html>View the changelog</A></p>
+ 
+@@ -291,4 +298,3 @@
+ EOF
+ 
+ fi
+-

@@ -1,0 +1,21 @@
+--- maradns-1.3.02/sqa/Makefile	2003-01-22 00:22:37.000000000 -0800
++++ maradns-1.3.03/sqa/Makefile	2007-02-14 06:26:32.000000000 -0800
+@@ -5,7 +5,7 @@
+ ROBJECTS=../rng/rng-api-fst.o ../rng/rng-alg-fst.o
+ SOBJECTS=../server/timestamp.o
+ OBJECTS=$(JOBJS) $(MHOBJS) $(DOBJECTS) $(ROBJECTS) $(POBJECTS) $(SOBJECTS)
+-EXECS=asktest qr.test aaaatest dead_host_simulate sendudp
++EXECS=asktest qr.test aaaatest dead_host_simulate sendudp sendnoise
+ 
+ FLAGS = -g $(DEBUG)
+ #FLAGS = -g -DDEBUG
+@@ -21,6 +21,9 @@
+ sendudp: sendudp.c ../tools/askmara_labels_en.h $(OBJECTS) 
+ 	$(CC) $(FLAGS) -o sendudp sendudp.c $(OBJECTS) 
+ 
++sendnoise: sendnoise.c ../tools/askmara_labels_en.h $(OBJECTS) 
++	$(CC) $(FLAGS) -o sendnoise sendnoise.c $(OBJECTS) 
++
+ qr.test: qr.test.c ../tools/askmara_labels_en.h $(OBJECTS) 
+ 	$(CC) $(FLAGS) -o qr.test qr.test.c $(OBJECTS) 
+ 

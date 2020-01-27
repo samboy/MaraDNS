@@ -1,0 +1,111 @@
+--- maradns-1.3.07.07/server/functions_server.h.orig	2007-10-25 08:30:19.000000000 -0500
++++ maradns-1.3.07.07/server/functions_server.h	2007-10-25 08:30:44.000000000 -0500
+@@ -366,4 +366,5 @@
+ 
+ int udpsuccess(rr *where, int id, int sock, struct sockaddr_in *client,
+                js_string *query, void **rotate_point, int show_cname_a,
+-               int rd_val, conn *ect, int force_authoritative);
++               int rd_val, conn *ect, int force_authoritative, int
++               ra_value);
+--- maradns-1.3.07.07/server/MaraDNS.c.orig	2007-10-25 08:26:23.000000000 -0500
++++ maradns-1.3.07.07/server/MaraDNS.c	2007-10-25 08:30:58.000000000 -0500
+@@ -2434,11 +2434,11 @@
+     if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+         if(qtype_o == RR_A || qtype_q == RR_CNAME) {
+             udpsuccess(spot_data.value,id,sock,0,question,
+-                       spot_data.point,1,rd_val,ect,force_auth);
++                       spot_data.point,1,rd_val,ect,force_auth,0);
+             }
+         else {
+             udpsuccess(spot_data.value,id,sock,0,question,
+-                       spot_data.point,0,rd_val,ect,force_auth);
++                       spot_data.point,0,rd_val,ect,force_auth,0);
+              }
+         return JS_SUCCESS;
+         }
+@@ -2995,7 +2995,7 @@
+ #endif
+         /* We return a NS server delegation */
+         udpsuccess(spot_data.value,header.id,sock,0,origq,spot_data.point,
+-                        0,desires_recursion,ect,0);
++                        0,desires_recursion,ect,0,0);
+         js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+         return JS_SUCCESS;
+         }
+@@ -3050,7 +3050,7 @@
+         if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+             /* We return a NS server delegation */
+             udpsuccess(spot_data.value,header.id,sock,0,origq,
+-                       spot_data.point,0,desires_recursion,ect,0);
++                       spot_data.point,0,desires_recursion,ect,0,0);
+             js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+             return JS_SUCCESS;
+             }
+--- maradns-1.3.07.07/server/recursive.c.orig	2007-10-25 08:26:48.000000000 -0500
++++ maradns-1.3.07.07/server/recursive.c	2007-10-25 08:30:07.000000000 -0500
+@@ -144,7 +144,7 @@
+ extern int udpsuccess(rr *where, int id, int sock, struct sockaddr_in
+                       *client, js_string *query, void **rotate_point,
+                       int show_cname_a, int rd_val, conn *ect,
+-                      int force_authoritative);
++                      int force_authoritative, int ra_value);
+ extern int mhash_add_ip();
+ extern int mhash_put_data();
+ 
+@@ -2525,7 +2525,7 @@
+             }
+         else {
+             udpsuccess(value,id,sock,&client,query,rotate_point,
+-                       cname_answer,1,0,0);
++                       cname_answer,1,0,0,1);
+             }
+         }
+     else if(ipret != NULL) { /* If we are simply changint the value of
+@@ -3356,7 +3356,7 @@
+                 log_unlock();
+                 }
+             udpsuccess(spot_data.value,id,sock,&client,query,
+-                       spot_data.point,0,1,0,0);
++                       spot_data.point,0,1,0,0,1);
+             big_unlock();
+             return JS_SUCCESS;
+             }
+@@ -3439,10 +3439,10 @@
+                     }
+                 if(original_rtype > 0)
+                     udpsuccess(spot_data.value,id,sock,&client,query,
+-                               spot_data.point,original_rtype,1,0,0);
++                               spot_data.point,original_rtype,1,0,0,1);
+                 else
+                     udpsuccess(spot_data.value,id,sock,&client,query,
+-                               spot_data.point,0,1,0,0);
++                               spot_data.point,0,1,0,0,1);
+         big_unlock();
+                 return JS_SUCCESS;
+                 }
+--- maradns-1.3.07.07/server/udpsuccess.c.orig	2007-10-25 08:26:40.000000000 -0500
++++ maradns-1.3.07.07/server/udpsuccess.c	2007-10-25 08:29:15.000000000 -0500
+@@ -53,12 +53,13 @@
+           authoritative bit is determined by looking at the data in where.
+           If 1, the record is always marked in the DNS headers as
+           "authoritative".
++	  The value to give the "RA" bit.
+    Output: JS_ERROR on error, JS_SUCCESS on success
+ */
+ 
+ int udpsuccess(rr *where, int id, int sock, struct sockaddr_in *client,
+                js_string *query, void **rotate_point, int show_cname_a,
+-               int rd_val, conn *ect, int force_authoritative) {
++               int rd_val, conn *ect, int force_authoritative,int ra_value) {
+     js_string *most = 0; /* Most of the data */
+     js_string *ar = 0; /* Then the additional records */
+ 
+@@ -471,7 +472,7 @@
+     header.opcode = 0;
+     header.tc = 0;
+     header.rd = rd_val; /* RDBUG udpsuccess */
+-    header.ra = 0;
++    header.ra = ra_value;
+     header.z = 0;
+     header.rcode = 0; /* No error */
+     header.qdcount = 1;

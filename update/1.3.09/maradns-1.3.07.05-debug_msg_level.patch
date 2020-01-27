@@ -1,0 +1,11 @@
+--- maradns-1.3.07.06/server/MaraDNS.c.orig	2007-09-29 21:42:48.000000000 -0500
++++ maradns-1.3.07.06/server/MaraDNS.c	2007-09-29 21:47:44.000000000 -0500
+@@ -2772,7 +2772,7 @@
+ 
+     /* At dos_protection_level 79, the only authoritative-type thing we do
+      * is let them see the version number of MaraDNS (see above) */
+-    if(dos_protection_level == 79 ) {
++    if(dos_protection_level == 79 && debug_msg_level <= 1) {
+   	    goto recursive_call;
+     }
+ 

@@ -1,0 +1,22 @@
+--- maradns-1.2.12.02/parse/Csv2_rr_wks.c	2006-07-17 22:50:44.000000000 -0500
++++ maradns-1.2.12.03/parse/Csv2_rr_wks.c	2006-08-15 21:36:34.000000000 -0500
+@@ -345,8 +345,8 @@
+ /* This gets an integer from the data stream; we use the multiply factor to
+  * allow semi-decimal fractions; If the multiply factor is 0, then the number
+  * is a standard integer.  If the factor is 1, we can have precisely one 
+- * number after the decimal; 1.1 becomes "11" and 32.6 becomes "326".  If the
+- * factor is two 1.23 becomes "123" */
++ * number after the decimal; 1.1 becomes "11", 6.0 becomes "60", and 32.6 
++ * becomes "326".  If the factor is two 1.23 becomes "123" */
+ 
+ int32 csv2_get_int(csv2_read *stream, int mulfactor) {
+ 	int out = 0;
+@@ -568,7 +568,7 @@
+ 		return 0;
+ 	}
+ 	*(out->string) = 0;
+-	/* Placeholder: Make size and both precisions 0x11 */
++	/* Set the size and both precisions */
+ 	*(out->string + 1) = size & 0xff;	
+ 	*(out->string + 2) = hpre & 0xff;	
+ 	*(out->string + 3) = vpre & 0xff;	

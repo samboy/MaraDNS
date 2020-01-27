@@ -1,0 +1,30 @@
+--- maradns-1.2.12.02/server/MaraDNS.c.orig	2006-08-13 13:35:37.000000000 -0500
++++ maradns-1.2.12.02/server/MaraDNS.c	2006-08-13 13:40:35.000000000 -0500
+@@ -4359,6 +4359,14 @@
+     if(synth_soa_serial < 1 || synth_soa_serial > 2) {
+         harderror("Fatal: synth_soa_serial must be 1 or 2\n");
+         }
++#ifdef MINGW32
++    /* Mingw32 doesn't have gmtime_r, so this has to puke.  Just ignore 
++     * that stupid dnsreport.com warning if you're using the win32 port */
++    if(synth_soa_serial == 2) {
++     harderror("Fatal: synth_soa_serial can not be 2 with the Windows port\n");
++    }
++#endif /* MINGW32 */
++        
+     verbstr = read_string_kvar("synth_soa_origin"); 
+     if(verbstr != 0 && js_length(verbstr) > 0) {
+         synth_soa_origin = js_create(256,1);
+--- maradns-1.2.12.01/doc/en/source/mararc.ej	2006-06-21 03:59:30.000000000 -0500
++++ maradns-1.2.12.02/doc/en/source/mararc.ej	2006-08-13 19:58:54.000000000 -0500
+@@ -754,6 +754,10 @@
+ this set to 1 (the default value).  Having this set to 2 can result in
+ updated zone files not being seen by slave DNS servers.
+ 
++<p>
++Note that synth_soa_serial can only have a value of 1 on the native
++Windows port.
++
+ <h2>tcp_convert_acl</h2>
+ This only applies to the zoneserver (general DNS-over-TCP) program.
+ <p>

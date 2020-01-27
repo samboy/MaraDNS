@@ -1,0 +1,33 @@
+--- maradns-1.3.04/server/recursive.c.orig	2007-02-23 22:56:45.000000000 -0600
++++ maradns-1.3.04/server/recursive.c	2007-02-23 23:00:41.000000000 -0600
+@@ -381,6 +381,7 @@
+     /* OK, now that we have removed all pointers to this record, remove
+        the record itself */
+     if(zap->nukable_hp >= 1) {
++	printf("DEBUG: Zap zap->hash_point at address %p\n",zap->hash_point);
+         js_destroy(zap->hash_point);
+         }
+     return js_dealloc(zap);
+@@ -698,7 +699,8 @@
+         if(remember->zap != NULL) {
+             /* A nukable_hp value of 2 means that the query is a
+                separate js_string object that also needs to be nuked */
+-            if(remember->zap->nukable_hp == 2) {
++            if(remember->zap->nukable_hp == 2) {	
++		printf("DEBUG: Removing query at address %p\n",remember->query);
+                 js_destroy(remember->query);
+ 		}
+             remove_fila(remember->zap);
+@@ -1303,8 +1305,11 @@
+ 
+     /* If appropriate, have data->query point to the newly created hash
+        element */
+-    if(use_immutable_key == 1)
++    if(use_immutable_key == 1) {
+         data->query = mhash_copy_immutable_key(hash,query);
++	printf("DEBUG: add_zap is %d\n",add_zap);
++	printf("DEBUG: Copying query; giving it address %p\n",data->query);
++	}
+ 
+     /* Also, set up the place where this is on the "zap" list (The list
+        the custodian uses to zap [get rid of] records) */

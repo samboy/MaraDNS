@@ -1,0 +1,112 @@
+*** maradns-1.3.02/parse/Csv2_parse.c	2007-01-09 12:16:34.000000000 -0800
+--- maradns-1.3.03/parse/Csv2_parse.c	2007-01-11 22:40:21.000000000 -0800
+***************
+*** 445,450 ****
+--- 445,458 ----
+  		return FATAL_CSV2_READ;
+  	}
+  
++ 	/* Allow hostnames to start with '.' */
++         if(options == 1 && in == '.') {
++ 		return csv2_tilde_processing(stream);
++ 	}
++ 
++ 	/* If this character is not OK (is not a character we're looking for)
++          * and is not a delimiter (whitespace, comment, or |), then it's an 
++          * error */
+  	if(in != -328 && !csv2_is_delimiter(in)) {
+  		csv2_error(stream,"Unexpected character");
+  		return FATAL_CSV2_READ;
+***************
+*** 497,502 ****
+--- 505,514 ----
+  			   "Host name must be at the beginning of a line");
+  			return FATAL_CSV2_READ;
+  		}
++ 		/* Allow hostnames to start with '.' */
++         	else if(options == 1 && in == '.') {
++ 			return csv2_tilde_processing(stream);
++ 		}
+  		else if(in == '|') {
+  		   if(pipe_already_seen == 1) {
+  			csv2_error(stream,
+***************
+*** 663,668 ****
+--- 675,685 ----
+  	return (csv2_is_text(in) || in == '*' || in == '%' || in == '/');
+  }
+  
++ /* Match on [0-9a-zA-Z\-\_\*\%] or anything utf-8 */
++ int csv2_is_starwhitis_ordot(int32 in) {
++ 	return (csv2_is_text(in) || in == '*' || in == '%' || in == '.');
++ }
++ 
+  /* Process number: Process a number that is coming in on the input stream
+   * Input: The stream we want to get the number from (we've already seen
+   *        the first digit of said number)
+***************
+*** 694,710 ****
+  
+  js_string *process_dname(csv2_read *stream, int starwhitis) {
+  	js_string *o;
+! 	/* int32 look;
+! 	int x; */
+  
+  	/* Get 1st character; we use a sub function so we can use the
+  	 * same code as process_something */
+! 	o = process_1stchar(stream,csv2_is_starwhitis,"Z");
+  	if(o == 0) {
+  		return 0;
+  	}
+  
+! 	return js_append_dname(o, stream, starwhitis);
+  }
+  
+  /* We make this a separate function so that process_mbox in Csv2.rr_soa
+--- 711,738 ----
+  
+  js_string *process_dname(csv2_read *stream, int starwhitis) {
+  	js_string *o;
+! 	js_string *ret;
+  
+  	/* Get 1st character; we use a sub function so we can use the
+  	 * same code as process_something */
+! 	o = process_1stchar(stream,csv2_is_starwhitis_ordot,"Z");
+  	if(o == 0) {
+  		return 0;
+  	}
+  
+! 	ret = js_append_dname(o, stream, starwhitis);
+! 
+! 	if(o->unit_count > 1 && *(o->string + 1) == '.' && o->unit_count != 2){
+! 		csv2_error(stream,"Dot can only be at beginning of hostname"
+!                            " for root ('.') hostname");
+! 		return 0;
+! 	}
+! 
+! 	if(o->unit_count == 2 && *(o->string + 1) == '.') {
+! 		return o;
+! 	}
+! 	return ret;
+! 
+  }
+  
+  /* We make this a separate function so that process_mbox in Csv2.rr_soa
+***************
+*** 727,733 ****
+  	look = csv2_justread(stream);
+  
+  	/* See if we have a %; this means we read no more */
+! 	if(look == '%' && starwhitis != 4 && starwhitis != 5) {
+  		if(csv2_read_unicode(stream) == FATAL_CSV2_READ) {
+  			js_destroy(o);
+  			return 0;
+--- 755,762 ----
+  	look = csv2_justread(stream);
+  
+  	/* See if we have a %; this means we read no more */
+! 	if((look == '%' && starwhitis != 4 && starwhitis != 5) ||
+!            look == '.') {
+  		if(csv2_read_unicode(stream) == FATAL_CSV2_READ) {
+  			js_destroy(o);
+  			return 0;

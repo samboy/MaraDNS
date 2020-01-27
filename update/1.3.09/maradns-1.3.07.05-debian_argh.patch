@@ -1,0 +1,19 @@
+--- maradns-1.3.07.05/doc/en/webpage/Makefile	2006-10-08 18:32:42.000000000 -0500
++++ maradns-1.3.07.06/doc/en/webpage/Makefile	2007-09-22 17:32:32.000000000 -0500
+@@ -1,6 +1,6 @@
+ all: changelog.html contact.html dns_software.html download.html \
+ 	faq-1.0.html faq.html index.html license.html notes.html \
+-	roadmap.html security.html advocacy.html
++	roadmap.html security.html advocacy.html debian.html
+ 
+ changelog.html: changelog.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page changelog.embed
+@@ -38,3 +38,8 @@
+ advocacy.html: advocacy.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page advocacy.embed
+ 
++# Added 2007.09.22: Web page tell Debian users to upgrade their version
++# of MaraDNS
++debian.html: debian.embed maradns-1.2-top.html maradns-1.2-bottom.html
++	./make.page debian.embed
++

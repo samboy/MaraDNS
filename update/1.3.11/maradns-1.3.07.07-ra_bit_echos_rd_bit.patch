@@ -1,0 +1,33 @@
+If MaraDNS is compiled as a recursive DNS server, we will have the RA
+bit echo the RD bit for non-recursive calls.  This errs on the side
+of having the RA bit set when sometimes recursion is not available
+(such as if the client doesn't have permission to do recursion, or
+if a recursively-compiled DNS server is only serving authoritative
+records), but this stops Dig from whining that recursion isn't
+available.
+
+--- maradns-1.3.07.07/server/MaraDNS.c	2007-11-26 11:20:32.000000000 -0600
++++ maradns-1.3.07.08/server/MaraDNS.c	2007-12-12 12:12:41.000000000 -0600
+@@ -2433,12 +2433,22 @@
+     /* If found, give back the response */
+     if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+         if(qtype_o == RR_A || qtype_q == RR_CNAME) {
++#ifdef AUTHONLY
+             udpsuccess(spot_data.value,id,sock,0,question,
+                        spot_data.point,1,rd_val,ect,force_auth,0);
++#else
++            udpsuccess(spot_data.value,id,sock,0,question,
++                       spot_data.point,1,rd_val,ect,force_auth,rd_val);
++#endif /* AUTHONLY */
+             }
+         else {
++#ifdef AUTHONLY
+             udpsuccess(spot_data.value,id,sock,0,question,
+                        spot_data.point,0,rd_val,ect,force_auth,0);
++#else
++            udpsuccess(spot_data.value,id,sock,0,question,
++                       spot_data.point,0,rd_val,ect,force_auth,rd_val);
++#endif /* AUTHONLY */
+              }
+         return JS_SUCCESS;
+         }

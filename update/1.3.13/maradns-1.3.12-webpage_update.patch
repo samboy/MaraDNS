@@ -1,0 +1,538 @@
+--- maradns-1.3.12/doc/en/webpage/advocacy.embed	2008-03-24 09:52:27.000000000 -0600
++++ maradns-1.3.13/doc/en/webpage/advocacy.embed	2009-02-07 13:40:51.000000000 -0600
+@@ -34,7 +34,7 @@
+ and MaraDNS 1.2 was released in December of 2005.  MaraDNS has been
+ extensively tested, both with a SQA process and with over four years of
+ real-world use.  MaraDNS continues to be fully supported: The most recent
+-release was done on December 25, 2007.
++release was done on September 10, 2008.
+ <li><b>Easy to use</b>.  A basic recursive configuration needs only a 
+ single three-line configuration file.  A basic authoritative configuration
+ needs only a four-line configuration file and a one-line zone file.
+--- maradns-1.3.12/doc/en/webpage/contact.embed	2008-03-24 09:52:27.000000000 -0600
++++ maradns-1.3.13/doc/en/webpage/contact.embed	2009-02-07 13:40:51.000000000 -0600
+@@ -1,80 +1,28 @@
+ <h1>MaraDNS support</h1>
+-Please read all of this page before you send me an email asking for
+-MaraDNS support.
+-<p>
+-
+-The <b>only</b> supported MaraDNS versions are:
+-<ul>
+-<li>MaraDNS 1.0.41
+-<li>MaraDNS 1.2.12.08
+-<li>MaraDNS 1.2.12.09
+-<li>MaraDNS 1.3.07.08
+-<li>The most recent <A 
+-href="http://www.maradns.org/download/1.3/snap/200802">development 
+-snapshot</A> of MaraDNS.
+-</ul>
+-
+-The version number of MaraDNS you are using can be obtained by typing
+-in <tt>maradns --version</tt>.
+-<p>
++Due to a hectic work schedule, I no longer have time to personally answer
++MaraDNS support email without being compensated for my time.  I apologize 
++for any inconvenience caused.  The only
++MaraDNS email I will answer is security bug reports.
+ 
+-<b>Debian and Ubuntu users:</b> The version of MaraDNS Debian
+-and Ubuntu uses may not be supported by me.  Please read <A
+-href=debian.html>this page</A> for information on upgrading to a supported
+-release of MaraDNS. <p>
+-
+-If you have obtained an older version of MaraDNS from another third-party
+-software repository, please let me know where you got MaraDNS so I can
+-contact the people in charge of the offending repository and ask them
+-to either update or remove MaraDNS.
+ <p>
+ 
+-Be sure to include the following information in your email:
+-<ul>
+-<li>A copy of your <tt>mararc</tt> file (this is usually <tt>/etc/mararc</tt>)
+-<li>A copy of any relavant zone files (these can usually be found in the
+-    <tt>/etc/maradns</tt> directory)
+-<li>The version number of MaraDNS that you are using (this can be obtained
+-    by typing in <tt>maradns --version</tt>). 
+-<li>The operating system that you are running MaraDNS under.
+-</ul>
+-
+-Messages about concerns with an unsupported version of MaraDNS or without 
+-all of the above information will be sent back to the sender, asking for
+-more information or for the sender to update MaraDNS.
+-<p>
+-
+-If you are using MaraDNS 1.0.41, and have a question about
+-how to configure MaraDNS, please 
+-<A href="http://www.maradns.org/tutorial/1.2/update.html">upgrade to 
+-MaraDNS 1.2</A>.  MaraDNS 1.2 has
+-a number of usability improvments over 1.0, and is much easier to configure.
+-There is still a <A href="http://www.maradns.org/faq-1.0.html">FAQ for
+-MaraDNS 1.0 available</A>.  You may also be able to get help by posting your
+-question to the MaraDNS mailing list.
+-<p>
++If you wish help with MaraDNS, please join the MaraDNS mailing list.
++To join the mailing list, send an email to 
++<A href="mailto:list-request@maradns.org">list-request@maradns.org</A> with
++the word "subscribe" in the subject and body of the message.
+ 
+-If you are using 1.0 and have a security bug to report, please feel free to 
+-report
+-it; I will continue to fix 
+-MaraDNS 1.0 security bugs (should any arise) until December 21, 2010.
+ <p>
+ 
+-I am constantly working on improving MaraDNS' documentation so that 
+-anyone else with the same question can also have their question
+-answered.  Therefore, I may answer your question by showing you
+-the relevant part of the MaraDNS documentation and asking you what 
+-isn't clear about the documentation.
+-<p>
++If you have a security report, my email address is available 
++<A href="http://www.samiam.org/mailme.php">here</A>.  Note that
++I am aware of the July 2008 cache poison attack, and that 
++<A href=http://maradns.blogspot.com/2008/07/maradns-is-immune-to-new-cache.html>MaraDNS
++is immune</A>.
+ 
+-It may take me up to two weeks to reply to a given support question.  
+-<b>Please be patient</b>.  If you don't get a reply after two weeks, feel
+-free to resend your support request.
+ <p>
+ 
+-Again, <b>I will not answer questions that do not tell me which version
+-of MaraDNS you are using, that do not contain your mararc and relevant zone 
+-files, and that do not tell me which operating system you are using</b>.
+-My email address is available 
+-<A href="http://www.samiam.org/mailme.php">here</A></p>
++Oh, and if you ignore this and <i>still</i> send me a MaraDNS-related
++support question, I reserve the right to post your support email to
++the Mara-DNS mailing list so that the community at large can examine
++your issue.
+ 
+--- maradns-1.3.12/doc/en/webpage/debian.embed	2007-10-19 08:54:14.000000000 -0500
++++ maradns-1.3.13/doc/en/webpage/debian.embed	2009-02-07 13:40:51.000000000 -0600
+@@ -6,7 +6,7 @@
+ has improved MaraDNS.<p>
+ 
+ However, because of Debian's policies, their "Stable" version of MaraDNS
+-is usually an outdated version of MaraDNS containing bugs that I
++is usually an outdated version of MaraDNS that contains bugs that I
+ have since fixed.  I do not support these outdated versions of MaraDNS,
+ and request that Debian users upgrade to the current stable version of
+ MaraDNS before sending me bug reports or asking for technical support.
+@@ -54,7 +54,7 @@
+ <li>	Once MaraDNS is compiled, make sure to stop the MaraDNS daemon:
+ 	
+ <blockquote><tt>
+-		sudo /etc/init.d/maradns stop
++		/etc/init.d/maradns stop
+ </tt></blockquote>
+ 
+ <li>	Now, replace the outdated MaraDNS program that comes with 
+@@ -68,10 +68,11 @@
+ <li>	Restart the MaraDNS daemon:
+ 
+ <blockquote><tt>
+-		sudo /etc/init.d/maradns start
++		/etc/init.d/maradns start
+ </tt></blockquote>
+ 
+ </ul> At this point, your MaraDNS daemon is now the fully supported 
+ version of MaraDNS.  If you continue to have the bug or concern after 
+ upgrading to the latest 1.2 release, please let us know so we can begin 
+ to resolve the issue.
++
+--- maradns-1.3.12/doc/en/webpage/dns_software.embed	2008-03-24 09:52:27.000000000 -0600
++++ maradns-1.3.13/doc/en/webpage/dns_software.embed	2009-02-07 13:40:51.000000000 -0600
+@@ -26,20 +26,32 @@
+ software.  
+ </LI>
+ 
++<LI><A href="http://unbound.net">Unbound</A> is a recursive-only DNS
++    server. </LI>
++
++<LI><A href="http://www.thekelleys.org.uk/dnsmasq/doc.html">DnsMasq</A>
++    is a non-recursive caching DNS server. </LI>
++
++<LI><A href="http://www.maradns.org/deadwood">My own Deadwood project</A>
++    is another non-recursive caching DNS server. </LI>
++
++
+ <LI><A href="http://cr.yp.to/djbdns.html">DjbDNS</A>  DJ Bernstein's DNS
+     package, which has both an authoritative DNS server and a caching
+     nameserver.  It is now public domain software, no longer under
+-    a restrictive license.
++    a restrictive license.  I don't like DjbDNS myself: It's out of
++    date and no one has bothered to make a currently maintained fork of it.
+ </LI>
+ 
+ <LI><A href="http://freshmeat.net/projects/pdnsd/">pdnsd</A> is a 
+-    recursive caching DNS server.  Paul Rombouts is the current maintainer
+-    of this program.
++    recursive caching DNS server.  Paul Rombouts is (was?) the current 
++    maintainer of this program.
+ </LI>
+ 
+ <LI><A href="http://posadis.sourceforge.net">Posadis</A> is another DNS
+     server project, similiar to MaraDNS.  This server is now both
+-    a resolving and an authoritative DNS server.
++    a resolving and an authoritative DNS server.  Hasn't been updated in
++    a while.
+ </LI>
+ 
+ </UL>
+--- maradns-1.3.12/doc/en/webpage/faq-1.0.embed	2007-10-19 08:54:14.000000000 -0500
++++ maradns-1.3.13/doc/en/webpage/faq-1.0.embed	2009-02-07 13:40:51.000000000 -0600
+@@ -39,7 +39,7 @@
+ 
+ 13. <A href="#jsstr">What string library does MaraDNS use?</A><P>
+ 
+-14. <A href="#license2">Why is MaraDNS public domain instead of BSD or GPL 
++14. <A href="#license">Why is MaraDNS public domain instead of BSD or GPL 
+     licensed?</A><P>
+ 
+ 15. <A href="#whythreads">Why does MaraDNS use a multi-threaded model?</A><P>
+@@ -296,7 +296,7 @@
+ are in the folder <tt>doc/man</tt> of the <A href="download.html">MaraDNS
+ distribution</A>
+ 
+-<a name="license2"> </a>
++<a name="license"> </a>
+ <H2>14. Why is MaraDNS public domain instead of BSD or GPL licensed?</H2>
+ 
+ <p>The post-1.0.xx releases of MaraDNS are, in fact, under a simple
+--- maradns-1.3.12/doc/en/webpage/faq.embed	2007-05-21 06:37:54.000000000 -0500
++++ maradns-1.3.13/doc/en/webpage/faq.embed	2009-02-07 13:40:51.000000000 -0600
+@@ -96,7 +96,13 @@
+ 38. <A href="#startupfail">MaraDNS isn't starting up</A><p>
+ 
+ 39. <A href="#releases">You make a lot of releases of MaraDNS; at our
+-    ISP/IT department, updating software is non-trivial.</A>
++    ISP/IT department, updating software is non-trivial.</A><p>
++
++40. <A href="#nxdomain">I have star records in my zones, and am having
++    problems with NXDOMAINs/IPV6 resolution</A><p>
++
++41. <A href="#blankzone">I have a zone with only SOA/NS records, and the
++    zone is not working.</A>
+ 
+ </BLOCKQUOTE>
+ <H2>ANSWERS</H2>
+@@ -222,7 +228,7 @@
+ file:
+ <blockquote>
+ <tt>
+-4.3.2.10.in-addr.arpa. PTR www.example.com. ~
++4.3.2.10.in-addr.arpa. PTR www.example.com.
+ </tt>
+ </blockquote>
+ <p>
+@@ -233,7 +239,7 @@
+ 
+ <blockquote>
+ <tt>
+-www.example.com. FQDN6 10.2.3.4 ~
++www.example.com. FQDN4 10.2.3.4
+ </tt>
+ </blockquote>
+ 
+@@ -270,7 +276,7 @@
+ 
+ <blockquote>
+ <pre>
+-timeout_seconds = 5 
++timeout_seconds = 5
+ </pre>
+ </blockquote>
+ 
+@@ -671,7 +677,7 @@
+ DNS server's database, such as:
+ 
+ <pre>
+-	google.example.com. CNAME www.google.com. ~
++	google.example.com. CNAME www.google.com.
+ </pre>
+ 
+ <p>
+@@ -681,8 +687,8 @@
+ www.google.com, and render the above record like this:
+ 
+ <pre>
+-	google.example.com. CNAME www.google.com. ~
+-	www.google.com. CNAME 66.102.7.104 ~
++	google.example.com. CNAME www.google.com.
++	www.google.com. CNAME 66.102.7.104
+ </pre>
+ 
+ <p>
+@@ -691,7 +697,7 @@
+ output:
+ 
+ <pre>
+-	google.example.com. CNAME www.google.com. ~
++	google.example.com. CNAME www.google.com.
+ </pre>
+ 
+ Some stub resolvers will be unable to resolve google.example.com as
+@@ -751,9 +757,9 @@
+ And a <tt>db.example.com</tt> file that looks like this:
+ 
+ <pre>
+-www.example.com. 	10.1.2.3 ~
+-joe.example.com. 	NS ns.joe.example.com. ~
+-ns.joe.example.com.	A 10.1.2.4 ~
++www.example.com. 	10.1.2.3
++joe.example.com. 	NS ns.joe.example.com.
++ns.joe.example.com.	A 10.1.2.4
+ </pre>
+ 
+ Next, you are trying to find out why www.joe.example.com is not
+@@ -801,13 +807,13 @@
+ 
+ <pre>
+ example.net. +600 soa ns1.example.net. hostmaster@example.net 
+-10 10800 3600 604800 1080 ~
+-example.net. +600 mx 10 mail.example.net. ~
+-example.net. +600 a 10.2.3.5 ~
+-example.net. +600 ns ns1.example.net. ~
+-example.net. +600 ns ns3.example.net. ~
+-mail.example.net. +600 a 10.2.3.7 ~
+-www.example.net. +600 a 10.2.3.11 ~
++10 10800 3600 604800 1080
++example.net. +600 mx 10 mail.example.net.
++example.net. +600 a 10.2.3.5
++example.net. +600 ns ns1.example.net.
++example.net. +600 ns ns3.example.net.
++mail.example.net. +600 a 10.2.3.7
++www.example.net. +600 a 10.2.3.11
+ </pre>
+ 
+ Then the NS records will be "synth-ip" records.
+@@ -818,13 +824,13 @@
+ 
+ <pre>
+ example.net. +600 soa ns1.example.net. hostmaster@example.net 
+-10 10800 3600 604800 1080 ~
+-example.net. +600 ns ns1.example.net. ~
+-example.net. +600 ns ns3.example.net. ~
+-example.net. +600 mx 10 mail.example.net. ~
+-example.net. +600 a 10.2.3.5 ~
+-mail.example.net. +600 a 10.2.3.7 ~
+-www.example.net. +600 a 10.2.3.11 ~
++10 10800 3600 604800 1080
++example.net. +600 ns ns1.example.net.
++example.net. +600 ns ns3.example.net.
++example.net. +600 mx 10 mail.example.net.
++example.net. +600 a 10.2.3.5
++mail.example.net. +600 a 10.2.3.7
++www.example.net. +600 a 10.2.3.11
+ </pre>
+ 
+ This will remove the "synth-ip" records.
+@@ -961,8 +967,8 @@
+ 
+ As an aside, some of the MaraDNS packages floating around on the internet
+ are out of date.  Please make sure, that if you get a third-party package 
+-from the internet, the package is for either MaraDNS 1.0.40, MaraDNS 
+-1.2.12.05, or MaraDNS 1.3.04.  Older versions of MaraDNS are not
++from the internet, the package is for either MaraDNS 1.0.41, MaraDNS 
++1.2.12.08, or MaraDNS 1.3.07.06.  Older versions of MaraDNS are not
+ supported.
+ 
+ <A name=wincrippled> </A>
+@@ -977,7 +983,7 @@
+ <li>The <tt>chroot_dir</tt> mararc variable
+ <li>The <tt>maradns_gid</tt> and <tt>maradns_uid</tt> mararc variables
+ <li>The <tt>maxprocs</tt> mararc variable
+-<li>The <tt>synth_soa_serial</tt> can not have a value of 2
++<li>The <tt>synth_soa_serial</tt> variable can not have a value of 2
+ </ul>
+ 
+ If any of the above features are desired, try compiling MaraDNS using
+@@ -1014,12 +1020,13 @@
+ 
+ <p>
+ 
+-In August of 2006, I stabilized the 1.2 branch and only three updates 
++In August of 2006, I stabilized the 1.2 branch and only six updates 
+ have been done since then.  Unless there is a critical bug, I only update
+ the 1.2 branch approximately once every three months or so.
+ 
+ <p>
+- go to a great deal of effort to make sure MaraDNS releases are as
++
++I go to a great deal of effort to make sure MaraDNS releases are as
+ painless to update as possible.  I ensure configuration file format
+ compatibility, even between major versions of MaraDNS.  With the exception
+ of configuration file parser bugfixes, MaraDNS 1.0 configuration files
+@@ -1041,4 +1048,46 @@
+ have known security problems, and need to be patched before put on a public
+ internet server.
+ 
++<A name=nxdomain> </A>
++
++<h2>I have star records in my zones, and am having problems with 
++NXDOMAINs/IPV6 resolution</h2>
++
++MaraDNS 1.2 needs to be told to strictly follow the RFCs concerning 
++NXDOMAINs and star records.  Make sure to update to the latest
++version of MaraDNS 1.2, then add this line to your <tt>mararc</tt>
++file:
++
++<blockquote><tt>
++	bind_star_handling = 2
++</tt></blockquote>
++
++This will make MaraDNS strictly follow the RFCs when resolving star
++records.  This problem has also been fixed in MaraDNS 1.3 without
++needing the above line in your mararc file.
++
++<A name=blankzone> </A>
++
++<h2>I have a zone with only SOA/NS records, and the zone is not working.</h2>
++
++MaraDNS 1.2 has a bug where it does not correctly process zones without
++any "normal" records.  For example, suppose a zone like this:
++
++<pre>
++% SOA localhost. root@localhost. 1 7200 600 1209600 3600
++% NS localhost.
++</pre>
++
++This zone will not work until some non-SOA/NS record is added, such
++as in this zone file:
++
++<pre>
++% SOA localhost. root@localhost. 1 7200 600 1209600 3600
++% NS localhost.
++foo.% TXT 'MaraDNS 1.2 needs this record.'
++</pre>
++
++This bug has been fixed in MaraDNS 1.3; since this is not a critical bug
++(there is a perfectly good workaround), this bug will not be fixed in
++MaraDNS 1.2.
+ 
+--- maradns-1.3.12/doc/en/webpage/index.embed	2008-03-24 09:52:27.000000000 -0600
++++ maradns-1.3.13/doc/en/webpage/index.embed	2009-02-07 13:40:51.000000000 -0600
+@@ -6,14 +6,18 @@
+ <ul>
+ <li><b>Secure</b>. MaraDNS has a <A   
+ href="security.html">security history</A> as good as or better than any
+-other DNS server. 
++other DNS server.  For example, MaraDNS has <i>always</i> randomized, using
++a secure random number generator, the Query ID and source port of DNS queries;
++and <A 
++href="http://maradns.blogspot.com/2008/07/maradns-is-immune-to-new-cache.html">
++was never vulnerable to the "new" cache poisoning attack</A>.
+ <li><b>Supported</b>.
+ MaraDNS has a long history of being maintained and updated.  MaraDNS was 
+ originally created in 2001.  MaraDNS 1.0 was released in 2002
+ and MaraDNS 1.2 was released in December of 2005.  MaraDNS has been
+ extensively tested, both with a SQA process and with over four years of
+ real-world use.  MaraDNS continues to be fully supported: The most recent
+-release was done on December 25, 2007.
++release was done on September 10, 2008.
+ <li><b>Easy to use</b>.  A basic recursive configuration needs only a 
+ single three-line configuration file.  A basic authoritative configuration
+ needs only a four-line configuration file and a one-line zone file.
+@@ -41,11 +45,15 @@
+ the word "subscribe" in the subject and body of the message.
+ <p>
+ Mailing list archives are here:
+-<A href="http://marc.10east.com/?l=maradns-list">Archive #1</A>,
+-<A href="http://hotaru.chaosring.org/~sam/archive.txt">Archive #2</A>.
++<A href="http://woodlane.webconquest.com/pipermail/list/">Archive #1</A>,
++<A href="http://marc.10east.com/?l=maradns-list">Archive #2</A>.
+ 
+ <H2>Special Thanks</H2>
+ 
+ I would like to thank <A href="http://www.webconquest.com/">WebConquest</A> for
+ hosting MaraDNS.org's web page.
+ 
++I would like to thank my various sponsors for helping fund MaraDNS development,
++including XeroBank, a source of <A href=http://xerobank.com>Internet 
++Privacy</A> software.
++
+--- maradns-1.3.12/doc/en/webpage/license.embed	2008-03-24 09:52:27.000000000 -0600
++++ maradns-1.3.13/doc/en/webpage/license.embed	2009-02-07 13:40:51.000000000 -0600
+@@ -1,9 +1,9 @@
+-<h2>MaraDNS license</h2>
++<h2>MaraDNS 1.2 license</h2>
+ 
+ MaraDNS' license is as follows:
+ 
+ <blockquote>
+-Copyright (c) 2002-2008 Sam Trenholme and others
++Copyright (c) 2002-2009 Sam Trenholme and others
+ <p>
+ TERMS
+ <p>
+--- maradns-1.3.12/doc/en/webpage/sponsors.embed	2009-02-07 13:52:52.000000000 -0600
++++ maradns-1.3.13/doc/en/webpage/sponsors.embed	2009-02-07 13:52:30.000000000 -0600
+@@ -0,0 +1,28 @@
++<h1>MaraDNS sponsors</h1>
++
++MaraDNS is a completely free open-source package that anyone can download,
++use, and look at or modify the source code of without restriction.  It
++is available under an <A href=license.html>open-source license</A>.
++
++<p>
++
++MaraDNS development and support is non-trivial and can not continue unless
++MaraDNS is sponsored.  MaraDNS has received donations to help fund its
++development from a number of generous sponsors, including:
++
++<ul>
++
++<li><A href="http://www.webconquest.com/">WebConquest</A>, who hosts MaraDNS'
++    web page.
++
++<li>XeroBank, a source of <A href=http://xerobank.com>Internet 
++    Privacy</A> software, who have funded support for giving out IPs when
++    a DNS host does not exist or a remote DNS server does not reply.
++
++</ul>
++
++Other sponsors have also helped MaraDNS development; if you have 
++sponsored MaraDNS and are not listed here, I apologize for the oversight
++and will add your name to this list if you <A href=contact.html>send me
++an email</A>
++
+--- maradns-1.3.12/doc/en/webpage/Makefile	2007-10-19 08:54:14.000000000 -0500
++++ maradns-1.3.13/doc/en/webpage/Makefile	2009-02-07 13:55:13.000000000 -0600
+@@ -1,6 +1,6 @@
+ all: changelog.html contact.html dns_software.html download.html \
+ 	faq-1.0.html faq.html index.html license.html notes.html \
+-	roadmap.html security.html advocacy.html debian.html
++	sponsors.html security.html advocacy.html debian.html
+ 
+ changelog.html: changelog.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page changelog.embed
+@@ -29,6 +29,8 @@
+ notes.html: notes.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page notes.embed
+ 
++# Removed 2009.02.07: Out of date and replaced with sponsors page;
++# current MaraDNS information is at the MaraDNS blog
+ roadmap.html: roadmap.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page roadmap.embed
+ 
+@@ -43,3 +45,7 @@
+ debian.html: debian.embed maradns-1.2-top.html maradns-1.2-bottom.html
+ 	./make.page debian.embed
+ 
++# Added 2009.02.07: Web page thanking people for sponsoring MaraDNS
++sponsors.html: sponsors.embed maradns-1.2-top.html maradns-1.2-bottom.html
++	./make.page sponsors.embed
++
+--- maradns-1.3.12/doc/en/webpage/maradns-1.2-top.html	2007-02-14 09:25:27.000000000 -0600
++++ maradns-1.3.13/doc/en/webpage/maradns-1.2-top.html	2009-02-07 14:07:41.000000000 -0600
+@@ -44,7 +44,7 @@
+ 	<a href="notes.html">Documentation</a>
+ 	<a href="/blog">Blog</a>
+ 	<a href="changelog.html">Changelog</a>
+-	<a href="roadmap.html">Roadmap</a>
++	<a href="sponsors.html">Sponsors</a>
+ 	<a href="contact.html">Contact</a>
+ </div> <!-- maradns-l -->
+ <script type="text/javascript">

@@ -1,0 +1,49 @@
+--- maradns-1.3.07.06/doc/en/source/changelog.embed	2007-10-19 08:52:20.000000000 -0500
++++ maradns-1.3.07.07/doc/en/source/changelog.embed	2007-11-25 13:50:19.000000000 -0600
+@@ -1,5 +1,46 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.3.10:</p>
++This is a development release of MaraDNS.
++<blockquote>
++<ul>
++<li><tt>deadwood-1</tt> now has TCP, IPv6, Windows, and ip-based filtering
++    support.
++<li>Work in progress: Caching-only non-recusive DNS server in 
++    <tt>deadwood-2</tt> directory.  Not done, but the underlying
++    caching has has been completed, includes the ability to
++    delete elements not recently accessed, and can read and write
++    the cache to a file.
++<li>Fixed bug where MaraDNS did not correctly echo the rd bit the
++    client sent us.
++<li>The RA bit in the header is cleared when sending an authoritative
++    answer, and set when sending a recursive answer.  Thanks to Jan Hrdonka
++    for the bug report.
++<li>Allow there to be CSV2 zone files with nothing but SOA and NS records.
++    Again, thanks to Jan Hrdonka for the bug report.
++<li>One of the ICANN root servers has just changed, and is updated in 
++    the MaraDNS code.
++</ul>
++(2007.11.26)
++</blockquote>
++
++<p>maradns-1.3.07.07:</p>
++This is a beta testing release of MaraDNS.
++<blockquote>
++<ul>
++<li>Fixed bug where MaraDNS did not correctly echo the rd bit the
++    client sent us.
++<li>The RA bit in the header is cleared when sending an authoritative
++    answer, and set when sending a recursive answer.  Thanks to Jan Hrdonka
++    for the bug report.
++<li>Allow there to be CSV2 zone files with nothing but SOA and NS records.
++    Again, thanks to Jan Hrdonka for the bug report.
++<li>One of the ICANN root servers has just changed, and is updated in
++    the MaraDNS code.
++</ul>
++(2007.11.26)
++</blockquote>
++
+ <p>maradns-1.3.09:</p>
+ This is a development release of MaraDNS.
+ <blockquote>

@@ -1,0 +1,90 @@
+Fix up some non-Linux issues; submitted by Jean-Jacques Sarton.
+
+- Sam
+
+diff -ru maradns-Q.20071217.1/libs/JsStr.h maradns-J.20071217.1/libs/JsStr.h
+--- maradns-Q.20071217.1/libs/JsStr.h	2007-12-17 16:29:39.000000000 +0100
++++ maradns-J.20071217.1/libs/JsStr.h	2007-12-20 10:51:02.000000000 +0100
+@@ -13,6 +13,13 @@
+ #ifndef JS_STRING_INCLUDED
+ #define JS_STRING_INCLUDED
+ 
++#ifdef QNX
++#include <stdint.h>
++typedef uint32_t u_int32_t;
++typedef uint16_t u_int16_t;
++#undef SOLARIS
++#endif
++
+ /* Solaris needs u_int32_t and u_int16_t defined */
+ #ifdef SOLARIS
+ #ifndef _uint_defined
+@@ -31,6 +38,10 @@
+ #endif /* _uint_defined */
+ #endif /* MINGW32 */
+ 
++#ifdef SOLARIS
++#include <sys/file.h>
++#endif
++
+ /* Needed for u_int32_t */
+ #include <sys/types.h>
+ 
+diff -ru maradns-Q.20071217.1/MaraDns.h maradns-J.20071217.1/MaraDns.h
+--- maradns-Q.20071217.1/MaraDns.h	2007-12-17 16:29:39.000000000 +0100
++++ maradns-J.20071217.1/MaraDns.h	2007-12-20 10:58:27.000000000 +0100
+@@ -27,15 +27,15 @@
+ /* The amount of memory a single thread will use */
+ #define PER_THREAD_MEM 262144
+ 
+-/* Franky Van Liedekerke's contributions so this can compile on Solaris */
++#ifdef QNX
++#undef SOLARIS
++#include <stdint.h>
++#include <arpa/inet.h>
++#endif
++
+ #ifdef SOLARIS
+-#ifndef _uint_defined
+-typedef unsigned int u_int32_t;
+-typedef unsigned short u_int16_t;
+-#define _uint_defined
+-#endif /* _uint_defined */
+-#define       INADDR_NONE             0xffffffff
+-#endif /* SOLARIS */
++#include <stdint.h>
++#endif
+ 
+ /* Mingw32 */
+ #ifdef MINGW32
+diff -ru maradns-Q.20071217.1/tools/askmara-tcp.c maradns-J.20071217.1/tools/askmara-tcp.c
+--- maradns-Q.20071217.1/tools/askmara-tcp.c	2007-12-17 16:29:40.000000000 +0100
++++ maradns-J.20071217.1/tools/askmara-tcp.c	2007-12-20 10:52:25.000000000 +0100
+@@ -224,6 +224,7 @@
+         if( inet_pton(AF_INET6, server_address, &server.sin6_addr) < 1) {
+             harderror(L_MAL_IP);
+             }
++        len_inet = sizeof(struct sockaddr_in6);
+         }
+     else {
+         if((s = socket(PF_INET,SOCK_STREAM,0)) == -1)
+@@ -232,6 +233,7 @@
+         ((struct sockaddr_in*)&server)->sin_port = htons(DNS_PORT);
+         if((((struct sockaddr_in*)&server)->sin_addr.s_addr = inet_addr(server_address)) == INADDR_NONE)
+             harderror(L_MAL_IP);
++        len_inet = sizeof(struct sockaddr_in);
+         }
+ #else
+     if((s = socket(PF_INET,SOCK_STREAM,0)) == -1)
+@@ -245,9 +247,9 @@
+     server.sin_port = htons(DNS_PORT);
+     if((server.sin_addr.s_addr = inet_addr(server_address)) == INADDR_NONE)
+         harderror(L_MAL_IP);
++    len_inet = sizeof(struct sockaddr_in);
+ #endif
+ 
+-    len_inet = sizeof(server);
+ 
+     id = gen_id(argv[1 + verbose_mode]);
+     /* Format a DNS request */
+

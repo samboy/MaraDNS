@@ -1,0 +1,21 @@
+--- maradns-1.3.07.05/doc/en/webpage/security.embed	2007-09-21 07:07:08.000000000 -0500
++++ maradns-1.3.07.06/doc/en/webpage/security.embed	2007-09-22 17:45:42.000000000 -0500
+@@ -130,12 +130,12 @@
+ 
+ <p>
+ 
+-There have been eight security problems found: Six fairly major, and two
+-minor security bugs.  There was also a major security problem caused
+-by broken behavior in Linux's kernel that affected stable versions
+-of MaraDNS.  There are also theoretical (less than minor) security
+-problems caused by some research in to AES' implementation on modern
+-cached processors which have been addressed.
++There have been eight security problems found: Five fairly major, and
++three minor security bugs.  There was also a major security problem
++caused by broken behavior in Linux's kernel that affected stable
++versions of MaraDNS.  There are also theoretical (less than minor)
++security problems caused by some research in to AES' implementation on
++modern cached processors which have been addressed.
+ 
+ <p>
+ 

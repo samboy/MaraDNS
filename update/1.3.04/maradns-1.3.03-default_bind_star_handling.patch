@@ -1,0 +1,51 @@
+--- maradns-1.3.04/server/MaraDNS.c.orig	2007-03-14 09:55:04.000000000 -0600
++++ maradns-1.3.04/server/MaraDNS.c	2007-03-14 09:57:33.000000000 -0600
+@@ -4344,7 +4344,7 @@
+      foo.example.com exists)
+      If this is any other value, exit with a fatal error
+      */
+-     bind_star_handling = read_numeric_kvar("bind_star_handling",0);
++     bind_star_handling = read_numeric_kvar("bind_star_handling",1);
+      if(bind_star_handling < 0 || bind_star_handling > 1) {
+          harderror("bind_star_handling must have a value of 0 or 1");
+      } 
+--- maradns-Q.20070226.1/doc/en/source/update.ej	2007-02-14 09:25:28.000000000 -0600
++++ maradns-1.3.04/doc/en/source/update.ej	2007-03-14 10:04:14.000000000 -0600
+@@ -193,6 +193,8 @@
+ <A name=1.2.12>
+ <h1>Updating from 1.2.12 to a 1.3 release</h1>
+ 
++<h3>Updates to the csv2 parser</h3>
++
+ In MaraDNS 1.3, some changes have been made to the csv2 parser.  In
+ particular:
+ 
+@@ -292,5 +294,16 @@
+ recurse_delegation = 1
+ </pre>
+ 
++<h3>bind_star_handling</h3>
++
++<tt>bind_star_handling</tt> is a variable that determines whether MaraDNS
++should be strictly RFC compliant with regard to star records.  In 
++MaraDNS 1.2, the default value for this was 0.  In MaraDNS 1.3,
++the default value is 1.  If, for some reason, the older non-RFC compliant
++behavior is desired, add this line to your <tt>mararc</tt> file:
++
++<pre>
++bind_star_handling = 0
++</pre>
+ </BODY></HTML>
+ 
+--- maradns-1.3.04/doc/en/source/mararc.ej.orig	2007-03-14 10:13:36.000000000 -0600
++++ maradns-1.3.04/doc/en/source/mararc.ej	2007-03-14 10:14:06.000000000 -0600
+@@ -355,8 +355,7 @@
+ </ul>
+ 
+ If the BIND behavior is desired, set <tt>bind_star_handling</tt> to 1.  
+-Otherwise, set this to 0 (the default value if this is not set at all
+-in the <tt>mararc</tt> file).  
++Otherwise, set this to 0.  In MaraDNS 1.3, this has a default value of 1.
+ 
+ <p>
+ 

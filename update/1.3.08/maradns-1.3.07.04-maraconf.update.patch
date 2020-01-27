@@ -1,0 +1,59 @@
+--- maradns-1.3.07.04/tools/maraconf.sh	2006-10-08 18:32:42.000000000 -0500
++++ maradns-1.3.07.05/tools/maraconf.sh	2007-09-14 21:40:23.000000000 -0500
+@@ -6,9 +6,11 @@
+ # from Sam Trenholme.						#	
+ # License: BSD - http://www.maradns.org/license.html		#	
+ #								#
+-# v1.2.12.03 - 17/08/2006		  			#
++# v1.2.12.08 - 14/09/2007		  			#
+ ###								#
+ # ChangeLog							#
++# v1.2.12.08							#
++# - Tiny bug fixes						#
+ #								#
+ # v1.2.12.03							#
+ # - I cleaned up andimproved all the code. Especially           #
+@@ -416,7 +418,7 @@
+ 
+ # create the mararc
+ cat << EOF > $TMP/$MARARC
+-# The addresses MaraDSN bind to.
++# The addresses MaraDNS bind to.
+ ipv4_bind_addresses = "$IPADD"
+ 
+ # Addresses allowed to perform recursive queries.
+@@ -567,7 +569,7 @@
+ 		
+ 		# Ask again.
+ 		while [ -z "$opt" ] ; do
+-		read -p echo -n "Do you want to setup an other NS record? (y/n) " YN
++		read -p "Do you want to setup an other NS record? (y/n) " YN
+ 			case "$YN" in
+ 				y|Y) 
+ 				# Here we go again.
+@@ -623,7 +625,7 @@
+ 		
+ 		# Ask again.
+ 		while [ -z "$opt" ] ; do
+-		read -p echo -n "Do you want to setup an other MX record? (y/n) " YN
++		read -p "Do you want to setup an other MX record? (y/n) " YN
+ 			case "$YN" in
+ 				y|Y) 
+ 				# Here we go again.
+@@ -855,6 +857,7 @@
+   	;;
+   	*)	echo "Please type in a number between 0-2." 1>&2
+ 		sleep 2s
++		start
+   	;;
+     esac	
+ }
+@@ -887,7 +890,7 @@
+ 
+ # Menu.
+ DECOLINE="+--------------------------------+"
+-VERSION="v1.2.12.03           "
++VERSION="v1.2.12.08           "
+ 
+ case "$1" in
+ 	-s|--start)

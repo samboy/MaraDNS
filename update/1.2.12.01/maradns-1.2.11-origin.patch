@@ -1,0 +1,110 @@
+diff -ur maradns-orig/parse/Csv2_parse.c maradns-1.2.12/parse/Csv2_parse.c
+--- maradns-orig/parse/Csv2_parse.c	2006-07-23 14:45:29.000000000 -0500
++++ maradns-1.2.12/parse/Csv2_parse.c	2006-07-23 17:37:16.000000000 -0500
+@@ -1260,9 +1260,45 @@
+ 				}
+ 				state->default_ttl = newttl;
+ 			} else if(cmd == 2 && look == 'g') {
+-				/* CODE HERE: Make sure it ends with 'en\s' */
+-				csv2_error(stream,"/origin not implemented");
+-				return -1; /* placeholder */
++				js_string *n;
++				if(csv2_read_unicode(stream) != 'i') {
++					csv2_error(stream,
++					    "Invalid slash command");
++					return -1;
++				}
++				if(csv2_read_unicode(stream) != 'n') {
++					csv2_error(stream,
++					    "Invalid slash command");
++					return -1;
++				}
++				look = csv2_read_unicode(stream);
++				if(!csv2_is_delimiter(look)) {
++					csv2_error(stream,
++					    "Invalid slash command");
++					return -1;
++				}
++				if(csv2_get_1st(stream,csv2_is_dchar,0) !=
++				    JS_SUCCESS) {
++					csv2_error(stream, 
++					"Invalid argument for /origin");
++					return -1;
++				}
++				n = process_1stchar(stream,
++				        csv2_is_starwhitis,0);
++				if(n == 0) {
++					csv2_error(stream, 
++					"Error processing /origin");
++					return -1;
++				}
++				n = js_append_dname(n, stream, 4);
++				if(n == 0) {
++					csv2_error(stream, 
++					"Invalid argument for /origin");
++					return -1;
++				}
++				js_destroy(state->zone);
++				state->zone = n;
++				zone = n;
+ 			} else {
+ 				csv2_error(stream,"Invalid slash command");
+ 				return -1;
+--- maradns-orig/doc/en/source/csv2.ej	2006-07-23 14:45:29.000000000 -0500
++++ maradns-1.2.12/doc/en/source/csv2.ej	2006-07-23 17:50:05.000000000 -0500
+@@ -493,6 +493,39 @@
+ e.ttl.example.com.       10.0.0.5
+ </pre>
+ 
++<h2>Origin</h2>
++
++It is possible to change the host name suffix that is used to substitute the
++percent in a csv2 zone file.  This suffix is called, for historical and 
++compatibility reasons, "origin".  This is done as the slash command
++'/origin', taking the new origin as the one argument to this function.
++
++<p>
++
++Here is one example usage of the '/origin' slash command:
++
++<pre>
++/origin example.com.
++www.% 10.1.0.1
++% MX 10 mail.%
++mail.% 10.1.0.2
++/origin example.org.
++www.% 10.2.0.1
++% MX 10 mail.%
++mail.% 10.2.0.2
++</pre>
++
++Which is equivalent to:
++
++<pre>
++www.example.com. 10.1.0.1
++example.com. MX 10 mail.example.com.
++mail.example.com. 10.1.0.2
++www.example.org. 10.2.0.1
++example.org. MX 10 mail.example.org.
++mail.example.org. 10.2.0.2
++</pre>
++
+ <h1>EXAMPLE ZONE FILE</h1>
+ 
+ <pre>
+--- maradns-orig/parse/Csv2_parse.c	2006-07-24 21:04:51.000000000 -0500
++++ maradns-1.2.12/parse/Csv2_parse.c	2006-07-24 22:58:46.000000000 -0500
+@@ -1290,7 +1290,12 @@
+ 					"Error processing /origin");
+ 					return -1;
+ 				}
+-				n = js_append_dname(n, stream, 4);
++				n = js_append_dname(n, stream, 3);
++				if(csv2_convert_percent(n,state->zone) == 0) {
++					csv2_error(stream,
++					"Problem running convert_percent");
++					return -1;
++				}
+ 				if(n == 0) {
+ 					csv2_error(stream, 
+ 					"Invalid argument for /origin");

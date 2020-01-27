@@ -1,0 +1,49 @@
+--- maradns-1.2.12.03/doc/en/source/mararc.ej	2006-08-14 16:02:08.000000000 -0400
++++ maradns-1.2.12.04/doc/en/source/mararc.ej	2006-11-21 09:44:51.000000000 -0500
+@@ -289,7 +289,6 @@
+ <ul>
+ <li>The version number of MaraDNS running 
+ <li>The number of threads MaraDNS has 
+-<li>The amount of memory MaraDNS uses
+ <li>MaraDNS' internal timestamp value
+ </ul>
+ 
+@@ -394,10 +393,13 @@
+ query will return the 
+ number of threads that MaraDNS is currently running, and a 
+ Tcache-elements.maradns.
+-query will return the number of elements in MaraDNS' cache.  If
+-MaraDNS is compiled with debugging information on, a 
++query will return the number of elements in MaraDNS' cache.  
++<p>
++If MaraDNS is compiled with debugging information on, a 
+ Tmemusage.maradns. query will return the amount of memory MaraDNS has
+-allocated.
++allocated.  Note that the overhead for tracking memory usage is considerable
++and that compiling MaraDNS with "make debug" will greatly slow down MaraDNS.
++A debug build of MaraDNS is <b>not</b> reccomended for production use.
+ <p>
+ When set to three or higher, a Ttimestamp.maradns. query will return, in 
+ seconds since the UNIX epoch, the timestamp for the system MaraDNS
+--- maradns-1.2.12.04/server/MaraDNS.c.orig	2006-11-21 09:45:23.000000000 -0500
++++ maradns-1.2.12.04/server/MaraDNS.c	2006-11-21 09:46:08.000000000 -0500
+@@ -3261,7 +3261,8 @@
+            else {
+                result_code = easter_egg(header.id,sock,ect,origq,
+                 "Tmemusage.maradns.",RR_TXT,"Memory usage unknown; ",
+-                "try compiling with make debug");
++                "try compiling with make debug (note that this will greatly"
++                " slow down MaraDNS)");
+                }
+            if(result_code == JS_SUCCESS) {
+                js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+@@ -3300,7 +3301,8 @@
+            else {
+                result_code = easter_egg(header.id,sock,ect,origq,
+                 "Tmemusage.maradns.",RR_TXT,"Memory usage unknown; ",
+-                "try compiling with make debug");
++                "try compiling with make debug (note that this will greatly"
++                " slow down MaraDNS)");
+                }
+            if(result_code == JS_SUCCESS) {
+                js_destroy(lookfor); js_destroy(origq); js_destroy(lc);

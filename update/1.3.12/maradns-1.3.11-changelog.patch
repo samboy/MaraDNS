@@ -1,0 +1,65 @@
+--- maradns-1.3.11/doc/en/source/changelog.embed	2008-03-24 09:52:27.000000000 -0600
++++ maradns-1.3.12/doc/en/source/changelog.embed	2008-09-09 06:40:07.000000000 -0500
+@@ -1,5 +1,53 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.3.12:</p>
++This is the development branch of MaraDNS.
++<blockquote>
++<ul>
++<li>Deadwood 2 updated to version Deadwood-2.02
++<li>When sending a "host not here" reply, the RD and RA bits in the
++    header were incorrectly set.  Fixed.  I would like to thank 
++    Dr. Volker Jaenisch for not only pointing out this bug, but supplying
++    a patch to fix it.
++<li>A compile-time warning when compiling with GCC 4.1 removed.
++<li>mararc_n_verbose_query SQA regression updated to be more stable.
++</ul>
++(2008.09.09)
++</blockquote>
++
++<p>maradns-1.3.07.09:</p>
++This is the stable branch of MaraDNS.  
++<blockquote>
++<ul>
++<li>When sending a "host not here" reply, the RD and RA bits in the
++    header were incorrectly set.  Fixed.  I would like to thank 
++    Dr. Volker Jaenisch for not only pointing out this bug, but supplying
++    a patch to fix it.
++<li>A compile-time warning when compiling with GCC 4.1 removed.
++<li>mararc_n_verbose_query SQA regression updated to be more stable.
++</ul>
++Note: MaraDNS has <i>always</i> used random query IDs and source port 
++randomization generated using a cryptographically strong random number
++generator and was never vulnerable to the "new" DNS spoofing attack.<p>
++(2008.08.04)
++</blockquote>
++
++<p>maradns-1.2.12.10:</p>
++This is the previous stable branch of MaraDNS; only critical bug fixes
++are applied to this branch.
++<blockquote>
++<ul>
++<li>When sending a "host not here" reply, the RD and RA bits in the
++    header were incorrectly set.  Fixed.  I would like to thank 
++    Dr. Volker Jaenisch for not only pointing out this bug, but supplying
++    a patch to fix it.
++</ul>
++Note: MaraDNS has <i>always</i> used random query IDs and source port 
++randomization generated using a cryptographically strong random number
++generator and was never vulnerable to the "new" DNS spoofing attack.<p>
++(2008.08.04)
++</blockquote>
++
+ <p>maradns-1.3.11:</p>
+ This is a development release of MaraDNS.
+ <blockquote>
+@@ -48,7 +96,7 @@
+ always have an up-to-date .spec file.
+ <blockquote>
+ <ul>
+-<li>Backport of ICANN root server list update
++<li>Backpot of ICANN root server list update
+ <li>Update to Daniel's <tt>maraconf.sh</tt> script
+ <li>Updates to the FAQ
+ <li>Bugfix: segfault when zoneserver was given bad IP in mararc file

@@ -1,0 +1,13 @@
+--- maradns-1.3.07.08/server/MaraDNS.c	2007-12-25 13:14:46.000000000 -0600
++++ maradns-1.3.07.09/server/MaraDNS.c	2008-08-03 11:44:37.000000000 -0500
+@@ -1892,8 +1892,8 @@
+     header.qr = 1;
+     header.opcode = 0;
+     header.tc = 0; /* To do: truncation handling */
+-    header.rd = 0; /* RDBUG udpnotfound */
+-    header.ra = 0;
++    header.rd = rd_val; /* RDBUG udpnotfound */
++    header.ra = rd_val;
+     header.z = 0;
+     /* Code that verifies that this host does not exist in
+        any class.  If so, then we give them a rcode of NXDOMAIN_RCODE.

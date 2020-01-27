@@ -1,0 +1,117 @@
+--- maradns-1.3.13/tools/misc/make.download.embed	2009-02-13 02:18:31.000000000 -0600
++++ maradns-1.3.14/tools/misc/make.download.embed	2009-04-26 11:19:02.000000000 -0500
+@@ -18,6 +18,10 @@
+ SZIP="1-3-07-09"
+ SDATE="August 4, 2008"
+ 
++# Deadwood release
++DW=2.3.02
++DWZ="2-3-02"
++
+ # Previous Stable release
+ PV=1.2
+ PREV=1.2.12.10
+@@ -27,9 +31,8 @@
+ 
+ # Development release
+ DV=1.3
+-DEV=1.3.12
+-DZIP="1-3-12"
+-DDATE="September 10, 2008"
++DEV=1.3.13
++DDATE="February 13, 2009"
+ 
+ # Name of windows pthreads library source (needs to be included with
+ # win32 releases)
+@@ -48,6 +51,7 @@
+ and on this page.
+ 
+ <p>
++
+ <table><tr><td>
+ <A 
+ href="download/${SV}/${STABLE}/maradns-${STABLE}.tar.bz2"><!--
+@@ -85,6 +89,37 @@
+ </td><td>
+ <A href="#zip">info</A>
+ </td></tr></table>
++
++<hr>
++
++<h2>Deadwood</h2>
++
++Deadwood is the code that will eventually become MaraDNS' next recursive
++resolver; right now it is a stable and functioning non-recursive cache.
++Deadwood, unlike MaraDNS, does not need threads to resolve queries, and
++has features MaraDNS' recursive cache doesn't have, such as "resurrections"
++and the ability to read and write the cache to disk.
++
++<table><tr><td>
++<A 
++href="deadwood/deadwood-${DW}.tar.bz2"><!--
++                          -->deadwood-${DW}.tar.bz2</A>
++</td><td>
++<A 
++href="deadwood/deadwood-${DW}.tar.bz2.asc">sig</A><p>
++</td><td>
++<A href="#bz2">info</A> 
++</td></tr><tr><td>
++<A 
++href="deadwood/Deadwood-${DWZ}-win32.zip"><!--
++                          -->Deadwood-${DWZ}-win32.zip</A>
++</td><td>
++<A 
++href="deadwood/Deadwood-${DWZ}-win32.zip.asc">sig</A>
++</td><td>
++<A href="#zip">info</A>
++</td></tr></table>
++
+ <hr>
+ 
+ <h2>Development release</h2>
+@@ -109,15 +144,6 @@
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/${DV}/${DEV}/maradns-${DEV}.tar.lzma"><!--
+-                          -->maradns-${DEV}.tar.lzma</A>
+-</td><td>
+-<A 
+-href="download/${DV}/${DEV}/maradns-${DEV}.tar.lzma.sha.asc">sig</A>
+-</td><td>
+-<A href="#lzma">info</A> 
+-</td></tr><tr><td>
+-<A 
+ href="download/${DV}/${DEV}/maradns-${DEV}.tar.gz"><!--
+                           -->maradns-${DEV}.tar.gz</A>
+ </td><td>
+@@ -125,16 +151,6 @@
+ href="download/${DV}/${DEV}/maradns-${DEV}.tar.gz.sha.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+-</td></tr><tr><td>
+-<A 
+-href="download/${DV}/${DEV}/maradns-${DZIP}-win32.zip"><!--
+-                          -->maradns-${DZIP}-win32.zip</A>
+-</td><td>
+-<A 
+-href="download/${DV}/${DEV}/maradns-${DZIP}-win32.zip.sha.asc">sig</A>
+-</td><td>
+-<A href="#zip">info</A>
+-
+ </td></tr></table>
+ 
+ <h3>Pthreads soruce code</h3>
+@@ -145,12 +161,6 @@
+ 
+ <hr>
+ 
+-<h2>Deadwood</h2>
+-
+-Deadwood is the code that will eventually become MaraDNS' next recursive
+-resolver; it can be looked at <A href=deadwood/>by clicking on this link</A>
+-
+-<hr>
+ 
+ <h2>Previous stable release</h2>
+ 

@@ -1,0 +1,85 @@
+--- maradns-1.3.14/tcp/zoneserver.c.orig	2009-02-24 12:22:45.000000000 -0600
++++ maradns-1.3.14/tcp/zoneserver.c	2009-02-24 12:22:53.000000000 -0600
+@@ -76,6 +76,8 @@
+    to */
+ int udp_forward_server = 0;
+ 
++int dns_port = 53; /* The default port for the zoneserver to listen on */
++
+ int no_cname_warnings = 1; /* So we can link to MaraBigHash.o */
+ 
+ /* Signal handler for handling the exit of a child */
+@@ -247,7 +249,7 @@
+     return 12;
+     }
+ 
+-/* Bind to TCP port 53.
++/* Bind to TCP dns_port.
+    Input: pointer to socket to bind on, js_string with the dotted-decimal
+           ip address to bind to
+    Output: JS_ERROR on error, JS_SUCCESS on success
+@@ -281,7 +283,7 @@
+     /* Choose an IP and port to bind to */
+     memset(&dns_tcp,0,sizeof(dns_tcp));
+     dns_tcp.sin_family = AF_INET;
+-    dns_tcp.sin_port = htons(53);
++    dns_tcp.sin_port = htons(dns_port);
+     if((dns_tcp.sin_addr.s_addr = ip) == INADDR_NONE)
+         return JS_ERROR;
+ 
+@@ -299,7 +301,7 @@
+     if(listen(*sock,250) == -1)
+         return JS_ERROR;
+ 
+-    /* We are now on TCP port 53.  Leave */
++    /* We are now on TCP dns_port.  Leave */
+     return JS_SUCCESS;
+     }
+ 
+@@ -1166,10 +1168,18 @@
+ 
+         mlog(L_CHROOT_SUCCESS); /* "Root directory changed" */
+ 
+-        /* Bind to port 53
++        /* Bind to dns_port
+            To Do: use capset to give us privledged bind abilities without
+                   needing to be root.
+         */
++
++        /* Set the dns_port */
++        dns_port = read_numeric_kvar("dns_port",53);
++        if(dns_port < 1 || dns_port > 65530) {
++            harderror("dns_port must be between 1 and 65530");
++            exit(1);
++        }
++
+         if(inetd != 1) { /* If we are a standalone server */
+             ipv4pair *bind_addresses;
+             int bind_address_iterate;
+@@ -1214,7 +1224,7 @@
+                             dup2(stream1[1],2); /* Stderr redirection */
+                             if(tcpbind(&sock,
+                         bind_addresses[bind_address_iterate].ip) == JS_ERROR)
+-                            harderror(L_BIND); /* "Problem binding to port 53.\nMost likely, another process is already listening on port 53" */
++                            harderror(L_BIND); /* "Problem binding to dns_port.\nMost likely, another process is already listening on dns_port" */
+                             break;
+                     }
+                     bind_address_iterate++;
+@@ -1268,7 +1278,7 @@
+             }
+             if(libtcp_create_bind_addrs() == JS_ERROR)
+                 harderror("libtcp_create_synthip_addrs");
+-            mlog(L_SOCKET_SUCCESS);  /* "Socket opened on TCP port 53" */
++            mlog(L_SOCKET_SUCCESS);  /* "Socket opened on TCP dns_port" */
+             }
+ 
+         /* Drop the elevated privileges */
+@@ -1425,7 +1435,7 @@
+           7: Both zone transfer and forward with recursion enabled
+         */
+         if(verbose >= 2)
+-            mlog(L_WAITING); /* "Awaiting data on port 53" */
++            mlog(L_WAITING); /* "Awaiting data on dns_port" */
+         connection = gettcp(&sock,zonetransfer_acl,tcpconvert_acl,
+                      recursive_acl,500,&permissions);
+         if(connection == JS_ERROR)

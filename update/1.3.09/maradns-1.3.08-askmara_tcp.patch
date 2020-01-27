@@ -1,0 +1,58 @@
+--- maradns-1.3.08/tools/askmara-tcp.c	2007-09-21 07:07:49.000000000 -0500
++++ maradns-1.3.09/tools/askmara-tcp.c	2007-10-12 09:00:30.000000000 -0500
+@@ -473,6 +473,23 @@
+                    L_DOT,*(uindata->string + *place + 2),
+                    L_DOT,*(uindata->string + *place + 3),L_NEWLINE,L_NEWLINE);
+             }
++        else if(rr_hdr.type == RR_AAAA) {
++            unsigned short *p;
++            if(uindata->unit_count < *place + 16)
++                return JS_ERROR;
++            /* Display the IP of the data */
++            /* Display the IP of the data */
++            p = (unsigned short*)(uindata->string + *place);
++            printf("%s%d%x:%x:%x:%x:%x:%x:%x:%x%s%s",L_IP,*(uindata->string + *place),
++                       htons(*(p + 0 )),
++                       htons(*(p + 1)),
++                       htons(*(p + 2)),
++                       htons(*(p + 3)),
++                       htons(*(p + 4)),
++                       htons(*(p + 5)),
++                       htons(*(p + 6)),
++                       htons(*(p + 7)),L_NEWLINE,L_NEWLINE);
++            }
+         else if(rr_hdr.type == RR_TXT) {
+             printf("%s",L_TXT); /* Text String */
+             read_txt(uindata,mx.exchange,*place);
+@@ -592,6 +609,7 @@
+     escape_stdout(rr_hdr.name);
+     /* We also show the type if this is an unsupported record type */
+     if(rr_hdr.type != RR_A &&
++       rr_hdr.type != RR_AAAA &&
+        rr_hdr.type != RR_NS &&
+        rr_hdr.type != RR_CNAME &&
+        rr_hdr.type != RR_SOA &&
+@@ -642,6 +660,23 @@
+                L_DOT,*(uindata->string + *place + 2),
+                L_DOT,*(uindata->string + *place + 3));
+         }
++    else if(rr_hdr.type == RR_AAAA) {
++        unsigned short *p;
++        if(uindata->unit_count < *place + 16)
++            return JS_ERROR;
++        /* Display the IP of the data */
++        /* Display the IP of the data */
++        p = (unsigned short*)(uindata->string + *place);
++        printf("|%x:%x:%x:%x:%x:%x:%x:%x\n",
++                   htons(*(p + 0 )),
++                   htons(*(p + 1)),
++                   htons(*(p + 2)),
++                   htons(*(p + 3)),
++                   htons(*(p + 4)),
++                   htons(*(p + 5)),
++                   htons(*(p + 6)),
++                   htons(*(p + 7)));
++        }
+     else if(rr_hdr.type == RR_TXT) {
+         printf("|");
+         read_txt(uindata,mx.exchange,*place);

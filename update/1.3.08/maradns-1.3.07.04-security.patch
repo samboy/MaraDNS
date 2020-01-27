@@ -1,0 +1,65 @@
+--- maradns-1.3.07.04/doc/en/webpage/security.embed	2007-05-21 06:37:54.000000000 -0500
++++ maradns-1.3.07.05/doc/en/webpage/security.embed	2007-09-20 21:55:00.000000000 -0500
+@@ -125,24 +125,17 @@
+ <A name=history> </A>
+ <h2>The security history of MaraDNS</h2>
+ 
+-No stable version of MaraDNS on a non-Linux system has ever had an 
+-exploitable security problem.  To clarify: "stable version" is a
+-version that has been marked stable on the <A 
+-href="http://www.maradns.org/download.html">MaraDNS download page</A>
+-(all Maradns 1.0 releases; Maradns 1.2.00, 1.2.01, 1.2.03.x, 1.2.07.x, 
+-and 1.2.12.x); "exploitable" means that the problem is one where a
+-a practical exploit would be reasonably easy to perform.  The issues
+-I'm not considering "exploitable" are the cryptographic cache sniffing
+-issues.
+-
+-<p>
+-There have been four security problems found with non-stable 
+-versions of MaraDNS:  Two fairly major, and two minor security bugs. 
+-There was also a major security problem caused by broken behavior 
+-in Linux's kernel that affected stable versions of MaraDNS. 
+-There are also theoretical (less than minor) security problems caused by 
+-some research in to AES' implementation on modern cached processors which
+-have been addressed.
++MaraDNS has never had a security problem worse than remote denial
++of service.
++
++<p>
++
++There have been eight security problems found: Six fairly major, and two
++minor security bugs.  There was also a major security problem caused
++by broken behavior in Linux's kernel that affected stable versions
++of MaraDNS.  There are also theoretical (less than minor) security
++problems caused by some research in to AES' implementation on modern
++cached processors which have been addressed.
+ 
+ <p>
+ 
+@@ -302,5 +295,25 @@
+ <p>
+ 
+ Impact: Remote denial of service.
+-</ol>
+ 
++<li>
++MaraDNS would leak about 300 bytes whenever a specially crafted DNS packet
++(either one with a non-0 Opcode, or a non-1 Class) was sent to the server.
++This leak would have
++allowed an attacker to cause MaraDNS to allocate an arbitrary large
++amount of memory by sending a very large number of invalid DNS
++packers to the server running MaraDNS.  This affected the 1.2 and
++1.3 branches of MaraDNS, and was fixed in MaraDNS 1.2.12.06
++and the 1.3.05 releases of MaraDNS.
++<p>
++
++Impact: Remote denial of service.
++
++<li>
++A CNAME record in MaraDNS' authoritative database could be corrupted by
++someone sending a specially crafted DNS packet.  This affected the 1.0, 1.2,
++and 1.3 branches of MaraDNS, and was fixed in MaraDNS 1.0.41, 1.2.12.08, and
++1.3.07.04.
++<p>
++Impact: Remote denial of service.
++</ol>

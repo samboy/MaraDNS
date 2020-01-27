@@ -1,0 +1,9 @@
+--- maradns-1.3.05/doc/en/Makefile	2005-11-29 23:22:04.000000000 -0600
++++ maradns-1.3.06/doc/en/Makefile	2007-06-18 23:02:36.000000000 -0500
+@@ -1,5 +1,4 @@
+-all: faq.txt faq.html QuickStart credits.txt changelog.txt files.txt \
+-     changelog.html download.html
++all: faq.txt faq.html QuickStart credits.txt changelog.txt files.txt 
+ 
+ clean:
+ 	rm -f faq.txt faq.html QuickStart changelog.txt changelog.html \

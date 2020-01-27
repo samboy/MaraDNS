@@ -1,0 +1,52 @@
+Contributed by Boris Dorès this last summer; this modified Zoneserver to kill
+all of its children.
+
+diff -ruN maradns-1.2.12.02/tcp/zoneserver.c maradns-1.2.12.02-kill/tcp/zoneserver.c
+--- maradns-1.2.12.02/tcp/zoneserver.c	2006-07-18 05:50:44.000000000 +0200
++++ maradns-1.2.12.02-kill/tcp/zoneserver.c	2006-08-29 12:00:05.000000000 +0200
+@@ -77,6 +77,12 @@
+         num_children--;
+ }
+ 
++/* Signal handler for termination of the root process */
++void handle_term() {
++    killpg(getpgrp(), SIGTERM);
++    exit(0);
++}
++
+ /* Print out log messages
+    Input: Null-terminated string with the message to log
+    Output: JS_SUCCESS on success, JS_ERROR on error
+@@ -98,6 +104,7 @@
+ 
+ void harderror(char *why) {
+     printf("%s%s%s",L_FATAL,why,LF); /* "Fatal error: ", why, "\n" */
++    killpg(getpgrp(), SIGTERM); /* Don't leave orphaned children */
+     exit(3);
+     }
+ 
+@@ -992,6 +999,13 @@
+     int synth_soa_serial;
+     js_string *synth_soa_origin;
+ 
++    /* Kill children processes when we are signaled */
++    if(setpgrp()) {
++        printf(strerror(errno)); /* harderror() would kill the group which may not be correct yet */
++        return 3;
++    }
++    signal(SIGTERM,handle_term);
++
+     /* Initialize the strings (allocate memory for them, etc.) */
+     if((mararc_loc = js_create(256,1)) == 0)
+         harderror(L_MLC); /* "Could not create mararc_loc string" */
+@@ -1156,7 +1170,9 @@
+ 		    if(pipe(stream1) != 0) 
+ 			    harderror("Pipe()'s broken");
+ 		    /* if((child[bind_address_iterate] = fork())) { * Parent */
+-		    if((pid = fork())) { /* Parent */
++		    if((pid = fork())) { /* Parent or error */
++	            if(pid < 0)
++	                harderror("Could not fork");
+ 			    close(stream1[1]);
+ 			    fcntl(stream1[0],F_SETFL,O_NONBLOCK);
+ 			    /* The following might not be portable */

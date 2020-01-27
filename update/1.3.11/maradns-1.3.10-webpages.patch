@@ -1,0 +1,284 @@
+--- maradns-1.3.10/doc/en/webpage/index.embed	2007-09-21 07:07:48.000000000 -0500
++++ maradns-1.3.11/doc/en/webpage/index.embed	2008-01-31 14:49:57.000000000 -0600
+@@ -13,7 +13,7 @@
+ and MaraDNS 1.2 was released in December of 2005.  MaraDNS has been
+ extensively tested, both with a SQA process and with over four years of
+ real-world use.  MaraDNS continues to be fully supported: The most recent
+-release was done on September 21, 2007.
++release was done on December 25, 2007.
+ <li><b>Easy to use</b>.  A basic recursive configuration needs only a 
+ single three-line configuration file.  A basic authoritative configuration
+ needs only a four-line configuration file and a one-line zone file.
+--- maradns-1.3.10/doc/en/webpage/notes.embed	2007-02-14 09:25:28.000000000 -0600
++++ maradns-1.3.11/doc/en/webpage/notes.embed	2008-01-31 14:50:27.000000000 -0600
+@@ -1,5 +1,5 @@
+ <h2>MaraDNS tutorial</h2>
+-A tutorial for using MaraDNS 1.2 is available 
++A tutorial for using MaraDNS is available 
+ <A href="tutorial/tutorial.html">here</A>.
+ 
+ <h2>MaraDNS FAQ</h2>
+--- maradns-1.3.10/doc/en/webpage/dns_software.embed	2007-10-19 08:54:14.000000000 -0500
++++ maradns-1.3.11/doc/en/webpage/dns_software.embed	2008-01-31 14:48:39.000000000 -0600
+@@ -26,6 +26,12 @@
+ software.  
+ </LI>
+ 
++<LI><A href="http://cr.yp.to/djbdns.html">DjbDNS</A>  DJ Bernstein's DNS
++    package, which has both an authoritative DNS server and a caching
++    nameserver.  It is now public domain software, no longer under
++    a restrictive license.
++</LI>
++
+ <LI><A href="http://freshmeat.net/projects/pdnsd/">pdnsd</A> is a 
+     recursive caching DNS server.  Paul Rombouts is the current maintainer
+     of this program.
+@@ -113,7 +119,7 @@
+     <p>
+     I have made a
+     <A href="moodns-20021011.tar.bz2">tarball available</A> for people who
+-    do not want to bother with a CVS checkout.</p>
++    do not want to bother with a CVS checkout.
+ </LI>
+ <LI><A href="http://sourceforge.net/projects/dents">Dents</A> is a DNS
+     server that showed a lot of promise.  Unfortunatly, no files have been
+@@ -129,19 +135,6 @@
+     any files since the summer of 2000. 
+ </LI>
+ 
+-<LI><A href="http://cr.yp.to/djbdns.html">DjbDNS</A>  DJ Bernstein's DNS
+-    package, which has both an authoritative DNS server and a caching
+-    nameserver.  No updates for over five years; its 
+-    <A href="http://cr.yp.to/distributors.html">license</A> is non-open
+-    source so it's illegal to release an updated DjbDNS tarball. 
+-    DjbDNS is not open source because open source software allows people
+-    to modify software and <i>distribute modified versions of the
+-    software</i>.  The code is five years out of date; its built-in list
+-    of DNS root servers is outdated and some real-world domains can no
+-    longer be resolved by DjbDNS.
+-    Full source code provided; no expectation of receiving
+-    payment for using the software.  
+-</LI>
+ </UL>
+ 
+ <B>Other</B>
+--- maradns-1.3.10/doc/en/webpage/advocacy.embed	2007-09-21 07:07:48.000000000 -0500
++++ maradns-1.3.11/doc/en/webpage/advocacy.embed	2008-01-31 14:47:55.000000000 -0600
+@@ -34,7 +34,7 @@
+ and MaraDNS 1.2 was released in December of 2005.  MaraDNS has been
+ extensively tested, both with a SQA process and with over four years of
+ real-world use.  MaraDNS continues to be fully supported: The most recent
+-release was done on August 14, 2006.
++release was done on December 25, 2007.
+ <li><b>Easy to use</b>.  A basic recursive configuration needs only a 
+ single three-line configuration file.  A basic authoritative configuration
+ needs only a four-line configuration file and a one-line zone file.
+@@ -127,10 +127,8 @@
+ 
+ <h3>Djbdns</h3>
+ 
+-Djbdns has enough issues that I have <A href="#djbdns">an entire section</A> 
+-detailing its problems.  For now, it's enough to point out that djbdns 
+-hasn't changed one iota for over five years, and that MaraDNS is more
+-secure than DjbDNS.
++Djbdns appears to now be public domain code, so I will need to rewrite the
++section on DjbDNS.
+ 
+ <A name="etc"> </A>
+ <h3>Moodns, oakdns, etc.</h3>
+@@ -366,44 +364,62 @@
+ 
+ <A name=djbdns> </A>
+ <h3>Djbdns</h3>
++This is a very polarizing nameserver; people either love
++DjbDNS or hate it.  
+ 
+-Now that I have discussed all of the actively maintained open-source
+-DNS servers and touched on many of the DNS servers no longer being actively
+-maintained, I will now discuss in depth the most popular DNS server no
+-longer undergoing active maintainence: Djbdns.
++<p>I have always felt it was an excellent piece of
++software hapmered by a not-quite-Open Source license.  DJB, however, has
++very recently (December 28, 2007) made DjbDNS public domain, so I no longer
++have any real issues with the package.  
+ 
+ <p>
+ 
+-It is very difficult for me to be critical of djbdns.  Djbdns came out at
+-a time when the only other viable name server was the very insecure BIND8.
+-It allowed people who needed a DNS server to have a secure solution at
+-a time when BIND had security patches released almost monthly.  I myself
+-have used it to keep installations I administered at the time secure.
++Note that DJB himself
++hasn't updated the software for over seven years (except for the license).
++The software, notably, has one unpatched security bug (see below), and
++its list of root servers is out of date.
+ 
+ <p>
+ 
+-In addition, Dr. Bernstein, djbdns' author, has written a number of 
+-documents about keeping DNS secure which were very valuable during 
+-the design phase of MaraDNS, and have undoubtably improved MaraDNS'
+-security.  I have a good deal of respect for Dr. Bernstein's coding
+-abilities.
++One issue I have with DjbDNS is that it is a little more difficult
++to set up than it should be.  Three packages have to be downloaded (less
++if you install DjbDNS in a non-standard way) and set up before you can
++run DjbDNS.  In addition, DjbDNS has to be patched.  The security hole
++has to be patched, of course (it's a very small patch), and another
++small patch has to be applied before it can compile in Linux.  
++The configuration process is sometimes difficult and requires a 
++different way of looking at software--a lot of people don't care
++for it.
+ 
+ <p>
+ 
+-That said, djbdns has a number of issues which make it not practical to
+-deploy on new installations.
++The authoritative nameserver emphasizes simplicity in the C code; in
++particular, the parser for zone files isn't too sophisticated and the zone
++files are unattractive for people used to BIND zone files.  Unlike BIND,
++the zone file allows arbitrary RRs not directly supported by tinydns
++(the name of DjbDNS' authoritative half) to be added to zones. (MaraDNS
++also has this capability).
+ 
+ <p>
+ 
+-Djbdns has not changed one iota for over five years.  In addition, it is
+-not legal to distribute a changed version of djbdns.  This is the number
+-one problem with djbdns: Djbdns is <b>not</b> open source.  Its license is
+-not compatible with one fundamental pillar of open source: The right to
+-distribute modified versions of a program.
++The recursive server (dnscache) is somewhat unique among DNS servers.
++It is the only DNS server I know of that has a small footprint and
++doesn't use threads to make recursive queries.  I am working on adding
++this capability to MaraDNS, but until I finish my work, dnscache has a
++monopoly on the market for a small, non-threaded recursive DNS server.
+ 
+ <p>
++One nice thing is that there are
++a lot of third party patches for DjbDNS available.  Want support for
++the LOC record?  It's not available (in a human-readable form) in tinydns'
++zone file format, but there is a patch to change that.  Want IPv6?  Again, 
++it's available as a patch.
++Many patches can be found at <A
++href=http://tinydns.org>tinydns.org</A>.
+ 
+-This is a very practical problem; DjbDNS has the following known bugs:
++<p>
++
++Here are some known bugs that DjbDNS has: 
+ 
+ <ul>
+ <li>There are problems resolving some domains with DjbDNS' resolver.  This
+@@ -424,85 +440,6 @@
+ <A href="http://marc.info/?l=djbdns&amp;m=104804013229536&amp;w=2">patch</A></font></sup>
+ </ul>
+ 
+-Installing djbdns is non-trivial; you need to either download and install
+-no less than three different packages, or hunt on the internet for the
+-non-official way to install djbdns using less packages.  Djbdns will not
+-even compile on a modern Linux system without knowing the incantation
+-to make it compile.  Compare this to MaraDNS, where installing is as
+-simple as downloading one package and typing in "make; make install", or
+-downloading a binary package (packages are available for RedHat/CentOS,
+-Debian, FreeBSD, NetBSD, Slackware, Windows, and probably other systems).
+-
+-<p>
+-
+-Once djbdns is installed, you will find some directories in the root
+-of your filesystem that weren't there before.  This breaks UNIX and
+-Linux standards on how the filesystem can be organized.
+-
+-<p>
+-
+-All of these issues could be fixed if Dr. Bernstein had released djbdns
+-under an open-source compatible license.  I understand that such modified
+-versions of djbdns may introduce security problems that Dr. Bernstein's
+-code does not have.  The solution is simple: Distribute djbdns under a
+-LaTeX license, which is open source compatible and would require modified
+-versions of djbdns to be called something besides djbdns.
+-
+-<p>
+-
+-There are a number of programs which are still being actively maintained
+-long after the original author stopped contributing to the project.  The
+-fvwm project is still thriving even though Rob Nation stopped working 
+-on the project over 12 years ago.  When Atheos development stopped, 
+-its users forked the code and started the Syllable project.  Both Perl
+-and Python are no longer being actively worked on by their primary 
+-developers; most, if not all, code changes now come from other people.
+-It is a shame that Dr. Bernstein does not allow djbdns to have the same
+-development.
+-
+-<p>
+-
+-This wouldn't be so bad if djbdns was being actively manintained and bug
+-were being fixed.  Dr. Bernstein, as far as I can tell, has no intention
+-to fix any issues with djbdns.  He acts too arrogantly to acknowledge
+-that his programs have bugs, much less fix his bugs--I have never seen
+-him admit any of his programs has a bug.
+-
+-<p>
+-
+-Djbdns's license and the author unwillingness to fix bugs limits the
+-options for people supporting djbdns.  For example, when somone pointed
+-out the bug with DjbDNS' recursive resolver not checking upstream servers
+-for moved domains, he was told that it was "[his]
+-own fault" for having this problem.
+-
+-<p>
+-
+-This goes back to the djbdns license; the person who blamed the user for
+-a djbdns problem really had no other choice.  He could not patch djbdns
+-and distribute a modified djbdns to fix the issue.  While he could made
+-a patch available, the number of djbdns users who would actually apply
+-the patch is next-to-zero.  Since Dr. Bernstein has abandoned djbdns,
+-there is no system in place to allow people to fix issues with djbdns.
+-
+-<p>
+-
+-DjbDNS has a good security record; however, MaraDNS is, in fact, a 
+-more secure DNS server.  MaraDNS' codebase has the same level of 
+-security as DjbDNS' codebase: There have been remote denial of service
+-security problems with both MaraDNS and DjbDNS.  The difference is
+-that, with MaraDNS, all known problems have been patched and the code
+-has been updated.  BIND version 9 also has a solid security record.
+-
+-<p>
+-
+-Djbdns was the best DNS option available when it came out.  That was
+-over five years ago.  Since then, the internet has changed and djbdns has
+-not kept up.  Now that BIND9 and MaraDNS have a proven security record,
+-and are both under an open-source license and being actively maintained,
+-there is little reason to continue using djbdns.
+-
+-<hr>
+ 
+ <h3>Conclusion</h3>
+ 
+--- maradns-1.3.11/doc/en/webpage/dns_software.embed.orig	2008-02-17 06:04:42.000000000 -0600
++++ maradns-1.3.11/doc/en/webpage/dns_software.embed	2008-02-17 06:04:54.000000000 -0600
+@@ -119,7 +119,7 @@
+     <p>
+     I have made a
+     <A href="moodns-20021011.tar.bz2">tarball available</A> for people who
+-    do not want to bother with a CVS checkout.
++    do not want to bother with a CVS checkout.</p>
+ </LI>
+ <LI><A href="http://sourceforge.net/projects/dents">Dents</A> is a DNS
+     server that showed a lot of promise.  Unfortunatly, no files have been
+--- maradns-1.3.11/doc/en/webpage/license.embed.orig	2008-02-17 06:05:59.000000000 -0600
++++ maradns-1.3.11/doc/en/webpage/license.embed	2008-02-17 06:06:23.000000000 -0600
+@@ -1,9 +1,9 @@
+-<h2>MaraDNS 1.2 license</h2>
++<h2>MaraDNS license</h2>
+ 
+ MaraDNS' license is as follows:
+ 
+ <blockquote>
+-Copyright (c) 2002-2005 Sam Trenholme
++Copyright (c) 2002-2008 Sam Trenholme and others
+ <p>
+ TERMS
+ <p>

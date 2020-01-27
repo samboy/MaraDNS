@@ -1,0 +1,8 @@
+--- maradns-1.2.12.02/parse/Csv2_main.c.orig	2006-08-13 11:37:40.000000000 -0500
++++ maradns-1.2.12.02/parse/Csv2_main.c	2006-08-13 11:52:06.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004 Sam Trenholme
++/* Copyright (c) 2004-2006 Sam Trenholme
+  *
+  * TERMS
+  *

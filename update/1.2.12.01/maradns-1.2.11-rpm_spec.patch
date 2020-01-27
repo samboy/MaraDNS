@@ -1,0 +1,68 @@
+--- maradns-1.2.11/build/maradns-1.2.11.spec	2006-07-17 22:50:44.000000000 -0500
++++ maradns-1.2.12.01/build/maradns-1.2.12.01.spec	2006-07-26 10:52:21.000000000 -0500
+@@ -1,12 +1,12 @@
+ Summary: An authoritative and recursive DNS server made with security in mind
+ Name: maradns
+-Version: 1.2.11
++Version: 1.2.12.01
+ Release: 1
+ License: BSD (Two-clause)
+ Group: Networking/Daemons
+-Source: http://www.maradns.org/download/1.2/1.2.11/maradns-1.2.11.tar.bz2
+-Source1: maradns-1.2.11.tar.bz2.sha1.asc
+-Source2: maradns-1.2.11.tar.bz2.rmd.asc
++Source: http://www.maradns.org/download/1.2/1.2.12.01/maradns-1.2.12.01.tar.bz2
++Source1: maradns-1.2.12.01.tar.bz2.sha1.asc
++Source2: maradns-1.2.12.01.tar.bz2.rmd.asc
+ Patch0: maradns-1.1.59-rpm.patch
+ BuildRoot: /var/tmp/%{name}-buildroot
+ 
+@@ -49,7 +49,7 @@
+ 
+ %files
+ %defattr(-,root,root)
+-%doc /usr/doc/maradns-1.2.11/*
++%doc /usr/doc/maradns-1.2.12.01/*
+ 
+ /usr/sbin/maradns
+ /usr/sbin/zoneserver
+@@ -75,6 +75,16 @@
+ %config /etc/rc.d/init.d/maradns
+ %config /etc/rc.d/init.d/maradns.zoneserver
+ 
++%post
++CHKCONFIGPARM="--add maradns"
++if [ -x "/sbin/chkconfig" ]; then
++	"/sbin/chkconfig" $CHKCONFIGPARM
++elif [ -x "/usr/sbin/chkconfig" ]; then
++	"/usr/sbin/chkconfig" $CHKCONFIGPARM
++else
++	echo "No chkconfig found. Chkconfig skipped."
++fi
++
+ %preun
+ # End all instances of MaraDNS
+ echo Sending all MaraDNS processes the TERM signal
+@@ -87,7 +97,22 @@
+   cut -f1 -d: | xargs kill -9 > /dev/null 2>&1
+ echo MaraDNS should have been stopped
+ 
++CHKCONFIGPARM="--del maradns"
++if [ -x "/sbin/chkconfig" ]; then
++	"/sbin/chkconfig" $CHKCONFIGPARM
++elif [ -x "/usr/sbin/chkconfig" ]; then
++	"/usr/sbin/chkconfig" $CHKCONFIGPARM
++else
++	echo "No chkconfig found. Chkconfig skipped."
++fi
++
+ %changelog
++* Tue Jul 25 2006 Sam Trenholme <sam+i55e6bt@chaosring.org>
++- MaraDNS rpm package updated for version 1.2.12.01
++
++* Sun Jul 16 2006 Vlatko Kosturjak <kost@linux.hr>
++- Added support for chkconfig
++
+ * Fri Jun 23 2006 Sam Trenholme <sam+i55e6bt@chaosring.org>
+ - MaraDNS rpm package updated for version 1.2.11
+ 

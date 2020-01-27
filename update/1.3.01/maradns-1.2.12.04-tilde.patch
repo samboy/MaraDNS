@@ -1,0 +1,2358 @@
+*** maradns-1.3.01/tcp/zoneserver.c.orig	2006-12-20 01:36:22.000000000 -0800
+--- maradns-1.3.01/tcp/zoneserver.c	2006-12-20 01:36:22.000000000 -0800
+***************
+*** 65,70 ****
+--- 65,73 ----
+  int num_children = 0;
+  /* Another global variable: How many times they have run srng() before */
+  int srng_place = 0;
++ /* Yet another global variable: How csv2 zone files handle the tilde
++  * character */
++ int csv2_tilde_handling = 2;
+  /* The last global variable: The IP of the UDP server we forward queries
+     to */
+  int udp_forward_server = 0;
+***************
+*** 1088,1093 ****
+--- 1091,1104 ----
+      /* Limit the maximum number of processes */
+      maxprocs = read_numeric_kvar("maxprocs",128);
+  
++     /* Determine how csv2 zone files will handle the tilde character */
++     csv2_tilde_handling = read_numeric_kvar("csv2_tilde_handling",2);
++     if(csv2_tilde_handling < 0 || csv2_tilde_handling > 3) {
++ 	harderror("csv2_tilde_handling "
++ 	          "must have a value between 0 and 3");
++ 	exit(1);
++         }
++ 
+      /* If we have both maxprocs and max_tcp_procs defined, the zone server
+         will use max_tcp_procs. */
+      if(js_qstr2js(kvar_query,"max_tcp_procs") == JS_ERROR)
+*** maradns-1.3.01/tcp/getzone.c.orig	2006-12-20 01:36:22.000000000 -0800
+--- maradns-1.3.01/tcp/getzone.c	2006-12-20 01:36:22.000000000 -0800
+***************
+*** 38,43 ****
+--- 38,45 ----
+  #include "../parse/functions_parse.h"
+  
+  int no_cname_warnings = 1; /* So we can link to MaraBigHash.o */
++ int csv2_tilde_handling = 0; /* For some reason, we link to the
++                               * csv2 parser */
+  
+  void harderror(char *why) {
+      printf("%s%s%s%s",LF,L_FATAL_COMMENT,why,LF); /* "\n", "# Fatal error: ", why, "\n" */
+*** maradns-1.3.01/tcp/fetchzone.c.orig	2006-12-20 01:36:22.000000000 -0800
+--- maradns-1.3.01/tcp/fetchzone.c	2006-12-20 01:36:22.000000000 -0800
+***************
+*** 1,4 ****
+! /* Copyright (c) 2002-2005 Sam Trenholme
+   *
+   * TERMS
+   *
+--- 1,4 ----
+! /* Copyright (c) 2002-2006 Sam Trenholme
+   *
+   * TERMS
+   *
+***************
+*** 41,46 ****
+--- 41,48 ----
+  #include "../parse/Csv2_functions.h"
+  
+  int no_cname_warnings = 1; /* So we can link to MaraBigHash.o */
++ int csv2_tilde_handling = 0; /* For some reason, we link to the
++                               * csv2 parser */
+  
+  void harderror(char *why) {
+      printf("%s%s%s%s",LF,L_FATAL_COMMENT,why,LF); /* "\n", "# Fatal error: ", why, "\n" */
+***************
+*** 290,296 ****
+  		    safe_esc_stdout(soa.mname);
+                      *(soa.rname->string) = ' ';
+  		    safe_esc_stdout(soa.rname);
+! 		    printf(" %u %d %d %d %u\n",soa.serial,(int)soa.refresh,
+  		           (int)soa.retry,(int)soa.expire,soa.minimum);
+                      break;
+  		case RR_A:
+--- 292,298 ----
+  		    safe_esc_stdout(soa.mname);
+                      *(soa.rname->string) = ' ';
+  		    safe_esc_stdout(soa.rname);
+! 		    printf(" %u %d %d %d %u ~ \n",soa.serial,(int)soa.refresh,
+  		           (int)soa.retry,(int)soa.expire,soa.minimum);
+                      break;
+  		case RR_A:
+***************
+*** 303,309 ****
+                      safe_esc_stdout(rr.name);
+  		    rr.name->string--;
+  		    rr.name->unit_count++;
+! 		    printf(" +%u a %d.%d.%d.%d\n",rr.ttl,*(get->string),
+  		           *(get->string + 1),*(get->string + 2), 
+  			   *(get->string + 3));
+                      break;
+--- 305,311 ----
+                      safe_esc_stdout(rr.name);
+  		    rr.name->string--;
+  		    rr.name->unit_count++;
+! 		    printf(" +%u a %d.%d.%d.%d ~ \n",rr.ttl,*(get->string),
+  		           *(get->string + 1),*(get->string + 2), 
+  			   *(get->string + 3));
+                      break;
+***************
+*** 333,339 ****
+  		    rr.name->unit_count++;
+  		    printf(" +%u mx %d",rr.ttl,preference);
+  		    safe_esc_stdout(mxexpand);
+! 		    printf("%s",LF); /* "\n" */
+                      js_destroy(mxexpand);
+  		    break;
+                  case RR_TXT:
+--- 335,341 ----
+  		    rr.name->unit_count++;
+  		    printf(" +%u mx %d",rr.ttl,preference);
+  		    safe_esc_stdout(mxexpand);
+! 		    printf(" ~ %s",LF); /* "\n" */
+                      js_destroy(mxexpand);
+  		    break;
+                  case RR_TXT:
+***************
+*** 354,360 ****
+  		    escape_stdout_csv2(get);
+  		    get->unit_count++;
+  		    get->string--;
+! 		    printf("%s",LF); /* "\n" */
+  		    break;
+                  case RR_NS:
+  		case RR_PTR:
+--- 356,362 ----
+  		    escape_stdout_csv2(get);
+  		    get->unit_count++;
+  		    get->string--;
+! 		    printf(" ~ %s",LF); /* "\n" */
+  		    break;
+                  case RR_NS:
+  		case RR_PTR:
+***************
+*** 384,390 ****
+  				    break;
+  		    }
+  		    safe_esc_stdout(get);
+! 		    printf("%s",LF); /* "\n" */
+  		    break;
+  	        default:
+  		failover:
+--- 386,392 ----
+  				    break;
+  		    }
+  		    safe_esc_stdout(get);
+! 		    printf(" ~ %s",LF); /* "\n" */
+  		    break;
+  	        default:
+  		failover:
+***************
+*** 400,406 ****
+  		    rr.name->unit_count++;
+  		    printf(" +%u raw %u ",rr.ttl,rr.type);
+                      escape_stdout_csv2(get);
+! 		    printf("%s",LF); /* "\n" */
+                  }
+              place += rr.rdlength;
+  	    header.ancount--; 
+--- 402,408 ----
+  		    rr.name->unit_count++;
+  		    printf(" +%u raw %u ",rr.ttl,rr.type);
+                      escape_stdout_csv2(get);
+! 		    printf(" ~ %s",LF); /* "\n" */
+                  }
+              place += rr.rdlength;
+  	    header.ancount--; 
+*** maradns-1.2.12.04/parse/Csv2_read.h	2006-07-26 08:58:44.000000000 -0700
+--- maradns-1.3.01/parse/Csv2_read.h	2006-12-20 01:36:22.000000000 -0800
+***************
+*** 18,24 ****
+  
+  #include <stdio.h>
+  
+! #define FATAL_CSV2_READ -219
+  /* Headers for a csv2_read state */
+  
+  typedef struct csv2_file {
+--- 18,24 ----
+  
+  #include <stdio.h>
+  
+! #define FATAL_CSV2_READ -164
+  /* Headers for a csv2_read state */
+  
+  typedef struct csv2_file {
+***************
+*** 32,37 ****
+--- 32,40 ----
+  	char *filename;
+  	csv2_file *stack;
+  	char context[19];
++         char chars_allowed;
++         char tilde_seen;
++ 	char tilde_handling;
+  	int stack_height;
+  	int cplace;
+  	int mnum;
+*** maradns-1.2.12.04/parse/Csv2_read.c	2006-08-14 13:02:08.000000000 -0700
+--- maradns-1.3.01/parse/Csv2_read.c	2006-12-20 01:36:22.000000000 -0800
+***************
+*** 34,39 ****
+--- 34,40 ----
+   */
+  
+  csv2_read *csv2_open(js_string *filename) { 
++ 	extern int csv2_tilde_handling;
+  	csv2_read *out;
+  	int c;
+  
+***************
+*** 65,70 ****
+--- 66,80 ----
+  	for(c = 0 ; c < 19 ; c++) {
+  		out->context[c] = 0;
+  	}
++         out->tilde_seen = 0;
++         out->tilde_handling = csv2_tilde_handling;
++         if(csv2_tilde_handling == 0) {
++             out->chars_allowed = 1; /* Tilde allowed; left curly brace not
++                                      * allowed */
++         } else {
++             out->chars_allowed = 0; /* Neither tilde nor left curly brace
++                                      * allowed */
++         }
+  	out->linenum = 1;
+  	out->justread = -328; /* Make this a magic "beginning of file" 
+                                   number */
+***************
+*** 171,199 ****
+  			}
+  			return -2; /* End of file */
+  		}
+! 		if(out == '{') { /* Reserved for macro processing */
+  			/* Right now, return an error */
+  			csv2_error(file, "The '{' character is currently not "
+! 			           "allowed in zone files.\nPlease use an "
+  				   "unquoted \\x7b "
+  				   "if you need this character in a txt or "
+  				   "raw record.\nSee the csv2_txt man page "
+  				   "for more information.");
+- 			/*file->mnum = -1; / * "NO MACROS YET" * /
+- 			file->mplace = 0;
+- 			do {
+- 				out = getc(file->reading);
+- 				file->context[file->cplace++] = out;
+- 				if(file->cplace == 19) { file->cplace = 0; }
+- 				if(out == '\n') {
+- 					file->linenum++;
+- 				}
+- 			} while(out != '}' && out != EOF &&
+- 					!feof(file->reading));
+- 			file->justread = '*';
+- 			return '*';*/
+  		}
+! 		else { 
+  			file->justread = out;
+  			return out;
+  		}
+--- 181,210 ----
+  			}
+  			return -2; /* End of file */
+  		}
+! 
+!                 if(out == '~' && file->tilde_seen < 10) {
+!            		(file->tilde_seen)++;
+!                 }
+! 
+! 		if(out == '{' && 
+!                    (file->chars_allowed & 2) != 2) { /* Reserved for macro processing */
+  			/* Right now, return an error */
+  			csv2_error(file, "The '{' character is currently not "
+! 			         "allowed there in zone files.\nPlease use an "
+  				   "unquoted \\x7b "
+  				   "if you need this character in a txt or "
+  				   "raw record.\nSee the csv2_txt man page "
+  				   "for more information.");
+  		}
+! 		else if(out == '~' && 
+!                    (file->chars_allowed & 1) != 1) { /* Record separator */
+! 			csv2_error(file, "The '~' character is currently not "
+! 			         "allowed there in zone files.\nPlease use an "
+! 				   "unquoted \\x7e "
+! 				   "if you need this character in a txt or "
+! 				   "raw record.\nSee the csv2_txt man page "
+! 				   "for more information.");
+! 		} else { 
+  			file->justread = out;
+  			return out;
+  		}
+***************
+*** 383,385 ****
+--- 394,426 ----
+  	return file->unicode;
+  }
+  
++ /* Method to allow tilde characters */
++ void csv2_allow_tilde(csv2_read *file) {
++ 	file->chars_allowed |= 1;
++ }
++ 
++ /* Method to forbid tilde characters */ 
++ void csv2_forbid_tilde(csv2_read *file) {
++ 	file->chars_allowed &= 0x7e;
++ }
++ 
++ /* Method to allow left curly brace characters */
++ void csv2_allow_leftbrace(csv2_read *file) {
++ 	file->chars_allowed |= 2;
++ }
++ 
++ /* Method to forbid left curly brace characters */
++ void csv2_forbid_leftbrace(csv2_read *file) {
++ 	file->chars_allowed &= 0x7d;
++ }
++ 
++ /* Method to get whether we have seen a tilde or not */
++ int csv2_tilde_seen(csv2_read *file) {
++ 	return file->tilde_seen;
++ }
++ 
++ /* Method to reset whether we have seen a tilde */
++ void csv2_reset_tilde_seen(csv2_read *file) {
++ 	file->tilde_seen = 0;
++ }
++ 
+*** maradns-1.2.12.04/parse/Csv2_parse.c	2006-07-26 08:58:44.000000000 -0700
+--- maradns-1.3.01/parse/Csv2_parse.c	2006-12-20 01:40:15.000000000 -0800
+***************
+*** 323,334 ****
+  
+  /* process_comment: Process a comment that we find in the input stream */
+  void process_comment(csv2_read *stream) {
+! 	int in;
+  	do {
+  		in = csv2_readchar(stream);
+  	} while(in != '\n' && in != '\r' && in != -2 /* EOF */);
+  }
+  
+  /* csv2_get_1st: Read whitespace, process comments, 
+   * Output: error on unacceptable 
+   * errors, -2 on EOF, 
+--- 323,407 ----
+  
+  /* process_comment: Process a comment that we find in the input stream */
+  void process_comment(csv2_read *stream) {
+! 	int in, q;
+!         q = 1;
+! 
+  	do {
+  		in = csv2_readchar(stream);
++ 		/* Only the first tilde is considered a tilde */
++ 		if(in == '~' && q != 1) {
++ 			(stream->tilde_seen)--;
++ 		}
++                 q++;
++                 if(q > 5000) {
++                         csv2_error(stream,"Comment too long");
++ 			return;
++                 }
+  	} while(in != '\n' && in != '\r' && in != -2 /* EOF */);
+  }
+  
++ /* Handler for processing things before the beginning of a RR; this
++  * is used for tilde verification, etc. */
++ int csv2_tilde_processing(csv2_read *stream) {
++ 	/* See how many tildes we have seen (if we were, indeed, before
++          * a RR, and not at the beginning of the file before the first
++          * RR) */
++ 	int permitted = 0; /* Number of tildes expected before RR:
++                             * 0: No tildes
++                             * 1: One tilde
++                             * -2: Zero or one tilde */
++ 	int seen; /* Number of tildes seen */
++ 	seen = csv2_tilde_seen(stream);
++ 	
++         if(stream->tilde_handling > 100) {
++ 		switch(stream->tilde_handling) { 
++ 			case 101:
++ 				permitted = 0;
++ 				break;
++ 			case 102:
++ 				permitted = -2;
++ 				break;
++ 			case 103:
++ 				permitted = 1;
++ 				break;
++ 		}
++ 		if(seen > 1) {
++ 			csv2_error(stream,"A maximum of one tilde is allowed "
++ 			"between records.\nIf you need tildes, set "
++                         "csv2_tilde_handling to 0");
++ 			return JS_ERROR;
++ 		}
++ 		if(permitted != -2 && seen != permitted) {
++ 			if(permitted == 0) {
++ 				csv2_error(stream,"No tildes allowed "
++                                            "between RRs");
++ 			} else if (permitted == 1) {
++ 				csv2_error(stream,"You must have one tilde "
++                                            "(~) between RRs");
++ 			}
++ 			return JS_ERROR;
++ 		}
++ 		if(permitted == -2) {
++ 			if(seen == 1) {
++ 				stream->tilde_handling = 103; /* Mandatory ~ */
++ 			} else {
++ 				stream->tilde_handling = 101; /* No tildes */
++ 			}
++ 		}
++ 		/* No tilde anywhere else in the RR */
++ 		csv2_forbid_tilde(stream);
++ 	}
++         /* If this is the first record, increment 
++          * tilde_handling by 100 to mark that we have
++          * now seen the first record (tildes are not
++          * separating records until after the first
++          * one) */
++         else if(stream->tilde_handling > 0 && stream->tilde_handling < 20) {
++                	stream->tilde_handling += 100;
++         }
++         return JS_SUCCESS;
++ }
++ 
+  /* csv2_get_1st: Read whitespace, process comments, 
+   * Output: error on unacceptable 
+   * errors, -2 on EOF, 
+***************
+*** 336,344 ****
+   * is_ok: what helper function we use to see what 
+   * is an acceptable first character,
+   * options: 0 default
+!  *          1 We must be at the beginning of the file or immediately after
+!  *            a carriage return or line feed for this function to 
+!  *            not return an error
+   *          2 We must have at last one whitespace character between this
+   *            item and the last item we looked at */
+  int csv2_get_1st(csv2_read *stream, int (*is_ok)(int32 in), int options) {
+--- 409,415 ----
+   * is_ok: what helper function we use to see what 
+   * is an acceptable first character,
+   * options: 0 default
+!  *          1 We are before a dlabel (probably after a record)
+   *          2 We must have at last one whitespace character between this
+   *            item and the last item we looked at */
+  int csv2_get_1st(csv2_read *stream, int (*is_ok)(int32 in), int options) {
+***************
+*** 362,368 ****
+  	/* We're OK if we're at the beginning of a file and options is 1
+  	 * (see above for what the various options mean */
+  	if(options == 1 && in == -328 && is_ok(in)) {
+! 		return JS_SUCCESS;
+  	}
+  
+  	if(options == 2 && is_ok(in)) {
+--- 433,439 ----
+  	/* We're OK if we're at the beginning of a file and options is 1
+  	 * (see above for what the various options mean */
+  	if(options == 1 && in == -328 && is_ok(in)) {
+! 		return csv2_tilde_processing(stream);
+  	}
+  
+  	if(options == 2 && is_ok(in)) {
+***************
+*** 380,385 ****
+--- 451,472 ----
+  		pipe_already_seen = 1;
+  	}
+  
++         /* OK, if we are before a RR, we either allow or not allow a
++          * tilde based on the tilde_handling value */
++         if(options == 1 && stream->tilde_handling > 100) {
++ 		switch(stream->tilde_handling) {
++ 			case 101: /* No tildes anywhere */
++ 				csv2_forbid_tilde(stream);
++ 				break;
++ 			case 102: /* Maybe allow tildes */
++ 			case 103: /* Mandate tildes */
++ 				csv2_allow_tilde(stream);
++ 				break;
++ 		}
++ 	/* Reset the count of the number of tildes we have seen */
++ 	csv2_reset_tilde_seen(stream);
++ 	}
++ 
+  	for(x = 0; x < 10000; x++) {
+  		lastin = in;
+  		in = csv2_read_unicode(stream);
+***************
+*** 400,406 ****
+  		else if(options == 1 && (lastin == '\r' || lastin == '\n' 
+                          || lastin == -328 /* Beginning of file */) &&
+  				is_ok(in)) {
+! 			return JS_SUCCESS;
+  		}
+  		else if(options == 1 && is_ok(in)) {
+  			csv2_error(stream,
+--- 487,493 ----
+  		else if(options == 1 && (lastin == '\r' || lastin == '\n' 
+                          || lastin == -328 /* Beginning of file */) &&
+  				is_ok(in)) {
+! 			return csv2_tilde_processing(stream);
+  		}
+  		else if(options == 1 && is_ok(in)) {
+  			csv2_error(stream,
+***************
+*** 416,427 ****
+--- 503,522 ----
+  		        pipe_already_seen = 1;
+  		   }
+  		}
++ 		/* ~ is allowed before a hostname */
++ 		else if(in == '~' && options == 1 && 
++                         stream->tilde_handling > 100) {
++ 			continue;
++ 		}
+  		/* Everything else besides delimiters is a syntax error */
+  		else if(!csv2_is_delimiter(in)) {
+  			csv2_error(stream,"Unexpected character");
+  			return FATAL_CSV2_READ;
+  		}
+  		if(in == -2) {
++                         if(options == 1) {
++                                 return csv2_tilde_processing(stream);
++                         }
+  			return JS_SUCCESS;
+  		}
+  	}
+***************
+*** 1556,1561 ****
+--- 1651,1663 ----
+  		case RR_X25:
+  		case RR_ISDN:
+  		case RR_SPF:
++                         if(stream->tilde_handling == 2 ||
++                            stream->tilde_handling == 102) {
++                             csv2_error(stream,"I'm sorry, that record can "
++                             "not be the first record unless "
++                             "csv2_tilde_handling is set.");
++                             break;
++                         }
+  			rddata = csv2_get_txt(stream,0);
+  			break;
+  		case RR_MG:
+***************
+*** 1587,1592 ****
+--- 1689,1701 ----
+  			rddata = csv2_get_txt(stream,2);
+                          break;
+  		case RR_WKS:
++                         if(stream->tilde_handling == 2 ||
++                            stream->tilde_handling == 102) {
++                             csv2_error(stream,"I'm sorry, that record can "
++                             "not be the first record unless "
++                             "csv2_tilde_handling is set.");
++                             break;
++                         }
+  			rddata = csv2_get_wks(stream);
+  			break;
+  		case RR_MD:
+***************
+*** 1611,1616 ****
+--- 1720,1732 ----
+  			rddata = csv2_get_txt(stream,3);
+  			break;
+  		case RR_LOC:
++                         if(stream->tilde_handling == 2 ||
++                            stream->tilde_handling == 102) {
++                             csv2_error(stream,"I'm sorry, that record can "
++                             "not be the first record unless "
++                             "csv2_tilde_handling is set.");
++                             break;
++                         }
+  			rddata = csv2_get_loc(stream);
+  			break;
+  		default:
+*** maradns-1.2.12.04/parse/Csv2_functions.h	2006-07-26 08:58:44.000000000 -0700
+--- maradns-1.3.01/parse/Csv2_functions.h	2006-12-20 01:36:22.000000000 -0800
+***************
+*** 287,289 ****
+--- 287,296 ----
+  /* Some more Csv2_read.c functions */
+  int csv2_push_file(csv2_read *file, js_string *filename);
+  int csv2_pop_file(csv2_read *file);
++ void csv2_allow_tilde(csv2_read *file);
++ void csv2_forbid_tilde(csv2_read *file);
++ void csv2_allow_leftbrace(csv2_read *file);
++ void csv2_forbid_leftbrace(csv2_read *file);
++ int csv2_tilde_seen(csv2_read *file);
++ void csv2_reset_tilde_seen(csv2_read *file);
++ 
+*** maradns-1.3.01/doc/en/source/mararc.ej.orig	2006-12-20 01:36:22.000000000 -0800
+--- maradns-1.3.01/doc/en/source/mararc.ej	2006-12-20 01:36:22.000000000 -0800
+***************
+*** 377,382 ****
+--- 377,410 ----
+  addresses will discard the non-routable IP addresses, and a list with
+  rfc1918 and localhost addresses will discard the localhost addresses.
+  
++ <h2>csv2_tilde_handling</h2>
++ 
++ How the csv2 zone file parser handles tildes (the ~ character) in csv2
++ zone files.  This is a numeric record, with a possible value between 0
++ and 3 (four possible values).  The way the csv2 parser acts at different
++ csv2_tilde_handling levels:
++ 
++ <ul>
++ 
++ <li>0) The csv2 parser behaves the same as it does in MaraDNS 1.2: The
++ tilde has no special significance to the parser.
++ 
++ <li>1) A tilde is not allowed anywhere in a csv2 zone file.
++ 
++ <li>2) A tilde is only allowed between records in a csv2 zone file.  If
++     a tilde is between the first record and the second record, a tilde
++     is required to be between all records.  Otherwise, a tilde is not allowed
++     anywhere in a csv2 zone file.  The first record can not
++     be a TXT, WKS, or LOC record.
++ 
++ <li>3) A tilde is required to be between all records in a csv2 zone file.
++ 
++ </ul>
++ 
++ The default value for csv2_tilde_handling is 2; this allows compatibility
++ with all 1.2 zone files without tildes while allowing zone files to be 
++ updated to use the tilde to separate resource records.
++ 
+  <h2>debug_msg_level</h2>
+  
+  This is a number indicating what level of information about a running 
+*** maradns-1.2.12.04/doc/en/source/example_csv2	2006-06-11 00:16:32.000000000 -0700
+--- maradns-1.3.01/doc/en/source/example_csv2	2006-12-20 01:36:22.000000000 -0800
+***************
+*** 3,10 ****
+  # First of all, csv2 zone files do not need an SOA record; however, if
+  # one is provided, we will make it the SOA record for our zone
+  # The SOA record needs to be the first record in the zone if provided
+  
+! #% 	SOA	% email@% 1 7200 3600 604800 1800
+  
+  # Second of all, csv2 zone files do not need authoritative NS records.
+  # If they aren't there, MaraDNS will synthesize them, based on the IP
+--- 3,12 ----
+  # First of all, csv2 zone files do not need an SOA record; however, if
+  # one is provided, we will make it the SOA record for our zone
+  # The SOA record needs to be the first record in the zone if provided
++ # This is a commented out record and disabled; when enabling the record,
++ # make the + symbol a tilde (shift+` on US keyboards)
+  
+! #% 	SOA	% email@% 1 7200 3600 604800 1800 +
+  
+  # Second of all, csv2 zone files do not need authoritative NS records.
+  # If they aren't there, MaraDNS will synthesize them, based on the IP
+***************
+*** 12,77 ****
+  # Mara is bound to both public and private IPs, only the public IPs will
+  # be synthesized as NS records)
+  
+! #% 	NS 	a.%
+! #%	NS	b.%
+  
+  # Here are some A (ipv4 address) records; since this is the most
+  # common field, the zone file format allows a compact representation
+  # of it.
+! a.example.net. 	10.10.10.10
+  # Here, you can see that a single name, "b.example.net." has multiple IPs
+  # This can be used as a primitive form of load balancing; MaraDNS will
+  # rotate the IPs so that first IP seen by a DNS client changes every time
+  # a query for "b.example.net." is made
+! b.example.net.  10.10.10.11
+! b.example.net.  10.10.10.12
+  
+  # We can have the label in either case; it makes no difference
+! Z.EXAMPLE.NET. 	10.2.3.4
+! Y.EXAMPLE.net.  10.3.4.5
+  
+  # We can use the percent shortcut.  When the percent shortcut is present,
+  # it indicates that the name in question should terminate with the name
+  # of the zone we are processing.
+! percent.%	a 		10.9.8.7
+  
+  # And we can have star records
+! #*.example.net.  A		10.11.12.13
+  
+  # We can have a ttl in a record; however the ttl needs a '+' before it:
+  # Note that the ttl has to be in seconds, and is before the RTYPE
+! d.example.net. +86400 A 10.11.12.13
+  
+  f.example.net. # As you can see, records can span multiple lines
+!         	A 	10.2.19.83
+  
+  # This allows well-commented records, like this:
+  c.example.net. 		# Our C class machine
+          +86400  	# This record is stored for one day
+          A       	# A record
+!         10.1.1.1 	# Where we are
+  
+  # We can even have something similiar to csv1 if we want...
+! e.example.net.|+86400|a|10.2.3.4
+! h.example.net.|a|10.9.8.7
+  # Here, we see we can specify the ttl but not the rtype if desired
+! g.example.net.|+86400|10.11.9.8
+  
+  # Here is a MX record
+! % mx 10 mail.%
+! mail.% +86400 IN A 10.22.23.24
+  
+  # We even have a bit of ipv6 support
+! a.example.net. 		aaaa 	3ffe:ffff:1:2:3::4:f
+  
+  # Not to mention support for SRV records
+! _http._tcp.%    srv   0 0 80 a.%
+  
+  # TXT records, naturally
+! example.net.    txt 'This is some text'
+  
+  # Starting with MaraDNS 1.2.08, there is also support for SPF records,
+  # which are identical to TXT records.  See RFC4408 for more details.
+! example.net.    spf 'v=spf1 +mx a:colo.example.com/28 -all'
+  
+  
+--- 14,82 ----
+  # Mara is bound to both public and private IPs, only the public IPs will
+  # be synthesized as NS records)
+  
+! # Again, when uncommenting this record, make the plus symbol a tilde
+! 
+! #% 	NS 	a.% +
+! #%	NS	b.% +
+  
+  # Here are some A (ipv4 address) records; since this is the most
+  # common field, the zone file format allows a compact representation
+  # of it.
+! a.example.net. 	10.10.10.10 ~
+  # Here, you can see that a single name, "b.example.net." has multiple IPs
+  # This can be used as a primitive form of load balancing; MaraDNS will
+  # rotate the IPs so that first IP seen by a DNS client changes every time
+  # a query for "b.example.net." is made
+! b.example.net.  10.10.10.11 ~
+! b.example.net.  10.10.10.12 ~
+  
+  # We can have the label in either case; it makes no difference
+! Z.EXAMPLE.NET. 	10.2.3.4 ~
+! Y.EXAMPLE.net.  10.3.4.5 ~
+  
+  # We can use the percent shortcut.  When the percent shortcut is present,
+  # it indicates that the name in question should terminate with the name
+  # of the zone we are processing.
+! percent.%	a 		10.9.8.7 ~
+  
+  # And we can have star records
+! #*.example.net.  A		10.11.12.13 ~
+  
+  # We can have a ttl in a record; however the ttl needs a '+' before it:
+  # Note that the ttl has to be in seconds, and is before the RTYPE
+! d.example.net. +86400 A 10.11.12.13 ~
+  
+  f.example.net. # As you can see, records can span multiple lines
+!         	A 	10.2.19.83 ~
+  
+  # This allows well-commented records, like this:
+  c.example.net. 		# Our C class machine
+          +86400  	# This record is stored for one day
+          A       	# A record
+!         10.1.1.1 	# Where we are 
+!         ~               # End of record
+  
+  # We can even have something similiar to csv1 if we want...
+! e.example.net.|+86400|a|10.2.3.4|~
+! h.example.net.|a|10.9.8.7|~
+  # Here, we see we can specify the ttl but not the rtype if desired
+! g.example.net.|+86400|10.11.9.8|~
+  
+  # Here is a MX record
+! % mx 10 mail.% ~
+! mail.% +86400 IN A 10.22.23.24 ~
+  
+  # We even have a bit of ipv6 support
+! a.example.net. 		aaaa 	3ffe:ffff:1:2:3::4:f ~
+  
+  # Not to mention support for SRV records
+! _http._tcp.%    srv   0 0 80 a.% ~
+  
+  # TXT records, naturally
+! example.net.    txt 'This is some text' ~
+  
+  # Starting with MaraDNS 1.2.08, there is also support for SPF records,
+  # which are identical to TXT records.  See RFC4408 for more details.
+! example.net.    spf 'v=spf1 +mx a:colo.example.com/28 -all' ~
+  
+  
+*** maradns-1.2.12.04/doc/en/source/faq.embed	2006-11-24 03:44:29.000000000 -0800
+--- maradns-1.3.01/doc/en/source/faq.embed	2006-12-20 01:36:22.000000000 -0800
+***************
+*** 200,206 ****
+  file:
+  <blockquote>
+  <tt>
+! 4.3.2.10.in-addr.arpa. PTR www.example.com.
+  </tt>
+  </blockquote>
+  <p>
+--- 200,206 ----
+  file:
+  <blockquote>
+  <tt>
+! 4.3.2.10.in-addr.arpa. PTR www.example.com. ~
+  </tt>
+  </blockquote>
+  <p>
+***************
+*** 211,217 ****
+  
+  <blockquote>
+  <tt>
+! www.example.com. FQDN6 10.2.3.4
+  </tt>
+  </blockquote>
+  
+--- 211,217 ----
+  
+  <blockquote>
+  <tt>
+! www.example.com. FQDN6 10.2.3.4 ~
+  </tt>
+  </blockquote>
+  
+***************
+*** 248,254 ****
+  
+  <blockquote>
+  <pre>
+! timeout_seconds = 5
+  </pre>
+  </blockquote>
+  
+--- 248,254 ----
+  
+  <blockquote>
+  <pre>
+! timeout_seconds = 5 
+  </pre>
+  </blockquote>
+  
+***************
+*** 643,649 ****
+  DNS server's database, such as:
+  
+  <pre>
+! 	google.example.com. CNAME www.google.com.
+  </pre>
+  
+  <p>
+--- 643,649 ----
+  DNS server's database, such as:
+  
+  <pre>
+! 	google.example.com. CNAME www.google.com. ~
+  </pre>
+  
+  <p>
+***************
+*** 653,660 ****
+  www.google.com, and render the above record like this:
+  
+  <pre>
+! 	google.example.com. CNAME www.google.com.
+! 	www.google.com. CNAME 66.102.7.104
+  </pre>
+  
+  <p>
+--- 653,660 ----
+  www.google.com, and render the above record like this:
+  
+  <pre>
+! 	google.example.com. CNAME www.google.com. ~
+! 	www.google.com. CNAME 66.102.7.104 ~
+  </pre>
+  
+  <p>
+***************
+*** 663,669 ****
+  output:
+  
+  <pre>
+! 	google.example.com. CNAME www.google.com.
+  </pre>
+  
+  Some stub resolvers will be unable to resolve google.example.com as
+--- 663,669 ----
+  output:
+  
+  <pre>
+! 	google.example.com. CNAME www.google.com. ~
+  </pre>
+  
+  Some stub resolvers will be unable to resolve google.example.com as
+***************
+*** 723,731 ****
+  And a <tt>db.example.com</tt> file that looks like this:
+  
+  <pre>
+! www.example.com. 	10.1.2.3
+! joe.example.com. 	NS ns.joe.example.com.
+! ns.joe.example.com.	A 10.1.2.4
+  </pre>
+  
+  Next, you are trying to find out why www.joe.example.com is not
+--- 723,731 ----
+  And a <tt>db.example.com</tt> file that looks like this:
+  
+  <pre>
+! www.example.com. 	10.1.2.3 ~
+! joe.example.com. 	NS ns.joe.example.com. ~
+! ns.joe.example.com.	A 10.1.2.4 ~
+  </pre>
+  
+  Next, you are trying to find out why www.joe.example.com is not
+***************
+*** 773,785 ****
+  
+  <pre>
+  example.net. +600 soa ns1.example.net. hostmaster@example.net 
+! 10 10800 3600 604800 1080
+! example.net. +600 mx 10 mail.example.net.
+! example.net. +600 a 10.2.3.5
+! example.net. +600 ns ns1.example.net.
+! example.net. +600 ns ns3.example.net.
+! mail.example.net. +600 a 10.2.3.7
+! www.example.net. +600 a 10.2.3.11
+  </pre>
+  
+  Then the NS records will be "synth-ip" records.
+--- 773,785 ----
+  
+  <pre>
+  example.net. +600 soa ns1.example.net. hostmaster@example.net 
+! 10 10800 3600 604800 1080 ~
+! example.net. +600 mx 10 mail.example.net. ~
+! example.net. +600 a 10.2.3.5 ~
+! example.net. +600 ns ns1.example.net. ~
+! example.net. +600 ns ns3.example.net. ~
+! mail.example.net. +600 a 10.2.3.7 ~
+! www.example.net. +600 a 10.2.3.11 ~
+  </pre>
+  
+  Then the NS records will be "synth-ip" records.
+***************
+*** 790,802 ****
+  
+  <pre>
+  example.net. +600 soa ns1.example.net. hostmaster@example.net 
+! 10 10800 3600 604800 1080
+! example.net. +600 ns ns1.example.net.
+! example.net. +600 ns ns3.example.net.
+! example.net. +600 mx 10 mail.example.net.
+! example.net. +600 a 10.2.3.5
+! mail.example.net. +600 a 10.2.3.7
+! www.example.net. +600 a 10.2.3.11
+  </pre>
+  
+  This will remove the "synth-ip" records.
+--- 790,802 ----
+  
+  <pre>
+  example.net. +600 soa ns1.example.net. hostmaster@example.net 
+! 10 10800 3600 604800 1080 ~
+! example.net. +600 ns ns1.example.net. ~
+! example.net. +600 ns ns3.example.net. ~
+! example.net. +600 mx 10 mail.example.net. ~
+! example.net. +600 a 10.2.3.5 ~
+! mail.example.net. +600 a 10.2.3.7 ~
+! www.example.net. +600 a 10.2.3.11 ~
+  </pre>
+  
+  This will remove the "synth-ip" records.
+*** maradns-1.2.12.04/doc/en/source/csv2.ej	2006-07-26 08:58:44.000000000 -0700
+--- maradns-1.3.01/doc/en/source/csv2.ej	2006-12-20 01:36:22.000000000 -0800
+***************
+*** 1,5 ****
+  <HEAD>
+! <TH>CSV2 5 "June 2004" MARADNS "MaraDNS reference"</TH>
+  <DTWIDTH>3</DTWIDTH>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+  </HEAD>
+--- 1,5 ----
+  <HEAD>
+! <TH>CSV2 5 "December 2006" MARADNS "MaraDNS reference"</TH>
+  <DTWIDTH>3</DTWIDTH>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+  </HEAD>
+***************
+*** 7,25 ****
+  <h1>NAME</h1>
+  csv2 - Description of the csv2 zone file that MaraDNS uses
+  <h1>DESCRIPTION</h1>
+! The csv2 zone file format is the new zone file format for MaraDNS 1.2.
+  This zone file format uses any kind of whitespace (space, tab, and carriage
+! return), or the '|' character, to deliminate fields.  The zone file parser
+! is smart enough to know how many fields the record data for a given record
+! type needs; once all the fields for a given record type is processed,
+! the parser parses the next entry it sees as the name for the next
+! record to process.
+  <p>
+  
+  This zone file format has records in the following form:
+  
+  <blockquote>
+! name [+ttl] [rtype] rdata
+  </blockquote>
+  
+  The name is the name of the record we will add, such as "www.example.net.".
+--- 7,40 ----
+  <h1>NAME</h1>
+  csv2 - Description of the csv2 zone file that MaraDNS uses
+  <h1>DESCRIPTION</h1>
+! The csv2 zone file format is the zone file format introduced in MaraDNS 1.2.
+  This zone file format uses any kind of whitespace (space, tab, and carriage
+! return), or the '|' character, to deliminate fields.  i
+! 
+! <h2>Tilde delimination</h2>
+! 
+! In MaraDNS 1.3, the tilde ('~') character is used to deliminate records
+! in csv2 zone files; in order to maintain maximum compatibility with
+! MaraDNS 1.2 zone files, this feature is only enabled if a tilde is
+! placed between the first and second record.  Otherwise, tildes are
+! not allowed in zone files at all.
+! 
+  <p>
+  
++ Most MaraDNS 1.2 csv2 zone files without the tilde character are completely
++ compatible with the 1.3 csv2 parser unless csv2_tilde_handling
++ is set.  All MaraDNS 1.2 csv2 zone files will parse in MaraDNS 1.3
++ if csv2_tilde_handling has a value of 0.  MaraDNS 1.2, starting with
++ 1.2.12.04, also supports the csv2_tilde_handling variable (as long as it
++ has a value of 0); this allows the same configuration and zone files to
++ be used in both MaraDNS 1.2 and MaraDNS 1.3.
++ 
++ <h2>Resource record format</h2>
++ 
+  This zone file format has records in the following form:
+  
+  <blockquote>
+! name [+ttl] [rtype] rdata ~
+  </blockquote>
+  
+  The name is the name of the record we will add, such as "www.example.net.".
+***************
+*** 38,45 ****
+  
+  The zone file supports comments; comments are specified by having a '#' 
+  anywhere between fields or records; when a '#' is seen, the csv2 parser 
+! ignores any character it sees (with the exception of the '{' character,
+! which is not currently allowed in csv2 zone files) until a newline.  
+  A '#' can usually be placed inside a field, and indicates the end of a 
+  field when placed there.
+  <p>
+--- 53,60 ----
+  
+  The zone file supports comments; comments are specified by having a '#' 
+  anywhere between fields or records; when a '#' is seen, the csv2 parser 
+! ignores any character it sees (with the exception of the '{' and '~' 
+! characters, neither of which is allowed in comments) until a newline.  
+  A '#' can usually be placed inside a field, and indicates the end of a 
+  field when placed there.
+  <p>
+***************
+*** 54,62 ****
+  the IP for the record.  Examples:
+  
+  <pre>
+! a.example.net.              10.11.12.13
+! b.example.net.        A     10.11.12.14
+! c.example.net. +64000 A     10.11.12.15
+  </pre>
+  
+  <h2>PTR</h2>
+--- 69,77 ----
+  the IP for the record.  Examples:
+  
+  <pre>
+! a.example.net.              10.11.12.13 ~
+! b.example.net.        A     10.11.12.14 ~
+! c.example.net. +64000 A     10.11.12.15 ~
+  </pre>
+  
+  <h2>PTR</h2>
+***************
+*** 66,74 ****
+  for the record in question.  Examples:
+  
+  <pre>
+! 13.12.11.10.in-addr.arpa.        PTR    a.example.net.
+! 14.12.11.10.in-addr.arpa.        PTR    b.example.net.
+! 15.12.11.10.in-addr.arpa. +64000 PTR    c.example.net.
+  </pre>
+  
+  <h2>MX</h2>
+--- 81,89 ----
+  for the record in question.  Examples:
+  
+  <pre>
+! 13.12.11.10.in-addr.arpa.        PTR    a.example.net. ~
+! 14.12.11.10.in-addr.arpa.        PTR    b.example.net. ~
+! 15.12.11.10.in-addr.arpa. +64000 PTR    c.example.net. ~
+  </pre>
+  
+  <h2>MX</h2>
+***************
+*** 81,88 ****
+  "10.11.12.16":
+  
+  <pre>
+! example.net.      MX   10 mail.example.net.
+! mail.example.net.      10.11.12.16
+  </pre>
+  
+  <h2>AAAA</h2>
+--- 96,103 ----
+  "10.11.12.16":
+  
+  <pre>
+! example.net.      MX   10 mail.example.net. ~
+! mail.example.net.      10.11.12.16 ~
+  </pre>
+  
+  <h2>AAAA</h2>
+***************
+*** 94,100 ****
+  the v6 IP. Example:
+  
+  <pre>
+! a.example.net.   AAAA    3ffe:ffff:ffe:501:ffff::b:c:d
+  </pre>
+  
+  <h2>SRV</h2>
+--- 109,115 ----
+  the v6 IP. Example:
+  
+  <pre>
+! a.example.net.   AAAA    3ffe:ffff:ffe:501:ffff::b:c:d ~
+  </pre>
+  
+  <h2>SRV</h2>
+***************
+*** 104,110 ****
+  please refer to RFC 2782.  Example:
+  
+  <pre>
+! _http._tcp.% SRV 0 0 80 a.%
+  </pre>
+  
+  <h2>NS</h2>
+--- 119,125 ----
+  please refer to RFC 2782.  Example:
+  
+  <pre>
+! _http._tcp.% SRV 0 0 80 a.% ~
+  </pre>
+  
+  <h2>NS</h2>
+***************
+*** 119,126 ****
+  field:  The name of the name server machine.  Example:
+  
+  <pre>
+! example.net.    NS    ns1.example.net.
+! example.net.    NS    ns2.example.net.
+  </pre>
+  
+  <h2>SOA</h2>
+--- 134,141 ----
+  field:  The name of the name server machine.  Example:
+  
+  <pre>
+! example.net.    NS    ns1.example.net. ~
+! example.net.    NS    ns2.example.net. ~
+  </pre>
+  
+  <h2>SOA</h2>
+***************
+*** 136,142 ****
+  Example:
+  
+  <pre>
+! x.org. SOA x.org. email@x.org. 1 7200 3600 604800 1800
+  </pre>
+  
+  The serial numeric field may be replaced by the string '/serial'; this
+--- 151,157 ----
+  Example:
+  
+  <pre>
+! x.org. SOA x.org. email@x.org. 1 7200 3600 604800 1800 ~
+  </pre>
+  
+  The serial numeric field may be replaced by the string '/serial'; this
+***************
+*** 146,152 ****
+  edited.  Here is how this special field looks in a SOA record:
+  
+  <pre>
+! x.org. SOA x.org. email@x.org. /serial 7200 3600 604800 1800
+  </pre>
+  
+  The '/serial' string is case-sensitive; only '/serial' in all lower
+--- 161,167 ----
+  edited.  Here is how this special field looks in a SOA record:
+  
+  <pre>
+! x.org. SOA x.org. email@x.org. /serial 7200 3600 604800 1800 ~
+  </pre>
+  
+  The '/serial' string is case-sensitive; only '/serial' in all lower
+***************
+*** 163,169 ****
+  quotes, as follows:
+  
+  <pre>
+! example.com. TXT 'This is an example text field'
+  </pre>
+  
+  Any binary data can be specified; see the <b>csv2_txt(5)</b> manual page
+--- 178,184 ----
+  quotes, as follows:
+  
+  <pre>
+! example.com. TXT 'This is an example text field' ~
+  </pre>
+  
+  Any binary data can be specified; see the <b>csv2_txt(5)</b> manual page
+***************
+*** 183,189 ****
+  syntax is:
+  
+  <pre>
+! RAW [numeric rtype] [data] 
+  </pre>
+  
+  The numeric rtype is a decimal number.
+--- 198,204 ----
+  syntax is:
+  
+  <pre>
+! RAW [numeric rtype] [data] ~
+  </pre>
+  
+  The numeric rtype is a decimal number.
+***************
+*** 195,201 ****
+  the following example:
+  
+  <pre>
+! example.com. RAW 40 \x10\x01\x02'Kitchen sink'\x40' data'
+  </pre>
+  
+  The above example is a "Kitchen Sink" RR with a "meaning" of 16, a "coding"
+--- 210,216 ----
+  the following example:
+  
+  <pre>
+! example.com. RAW 40 \x10\x01\x02'Kitchen sink'\x40' data' ~
+  </pre>
+  
+  The above example is a "Kitchen Sink" RR with a "meaning" of 16, a "coding"
+***************
+*** 219,232 ****
+  x.example.net:
+  
+  <pre>
+! x.example.net. A 10.3.28.79
+! 79.28.3.10.in-addr.arpa. PTR x.example.net.
+  </pre>
+  
+  But the above two lines in a zone file can also be represented thusly:
+  
+  <pre>
+! x.example.net. FQDN4 10.3.28.79
+  </pre>
+  
+  Note that the csv2 parser does not bother to check that any given IP
+--- 234,247 ----
+  x.example.net:
+  
+  <pre>
+! x.example.net. A 10.3.28.79 ~
+! 79.28.3.10.in-addr.arpa. PTR x.example.net. ~
+  </pre>
+  
+  But the above two lines in a zone file can also be represented thusly:
+  
+  <pre>
+! x.example.net. FQDN4 10.3.28.79 ~
+  </pre>
+  
+  Note that the csv2 parser does not bother to check that any given IP
+***************
+*** 277,283 ****
+  Example:
+  
+  <pre>
+! example.com. HINFO 'Intel Pentium III';'CentOS Linux 3.7'
+  </pre>
+  
+  This resource record is not actively used--the IANA
+--- 292,298 ----
+  Example:
+  
+  <pre>
+! example.com. HINFO 'Intel Pentium III';'CentOS Linux 3.7' ~
+  </pre>
+  
+  This resource record is not actively used--the IANA
+***************
+*** 297,303 ****
+  SSH, HTTP (web), and NNTP server:
+  
+  <pre>
+! example.net. WKS 10.1.2.3 6 22,80,119
+  </pre>
+  
+  MaraDNS only allows up to 10 different port numbers in a WKS record,
+--- 312,318 ----
+  SSH, HTTP (web), and NNTP server:
+  
+  <pre>
+! example.net. WKS 10.1.2.3 6 22,80,119 ~
+  </pre>
+  
+  MaraDNS only allows up to 10 different port numbers in a WKS record,
+***************
+*** 315,329 ****
+  Example:
+  
+  <pre>
+! example.net. MD a.example.net.
+! example.net. MF b.example.net.
+  </pre>
+  
+  Is equivalent to:
+  
+  <pre>
+! example.net. MX 0 a.example.net.
+! example.net. MX 10 b.example.net.
+  </pre>
+  
+  <h2>MB, MG, MINFO, and MR</h2>
+--- 330,344 ----
+  Example:
+  
+  <pre>
+! example.net. MD a.example.net. ~
+! example.net. MF b.example.net. ~
+  </pre>
+  
+  Is equivalent to:
+  
+  <pre>
+! example.net. MX 0 a.example.net. ~
+! example.net. MX 10 b.example.net. ~
+  </pre>
+  
+  <h2>MB, MG, MINFO, and MR</h2>
+***************
+*** 335,344 ****
+  like:
+  
+  <pre>
+! example.net. MB mail.example.net.
+! example.net. MG mg@example.net.
+! example.net. MINFO rm@example.net. re@example.net.
+! example.net. MR mr@example.net.
+  </pre>
+  
+  More information about these records can be found in RFC1035.
+--- 350,359 ----
+  like:
+  
+  <pre>
+! example.net. MB mail.example.net. ~
+! example.net. MG mg@example.net. ~
+! example.net. MINFO rm@example.net. re@example.net. ~
+! example.net. MR mr@example.net. ~
+  </pre>
+  
+  More information about these records can be found in RFC1035.
+***************
+*** 362,374 ****
+  If used, here is how the records would look in a csv2 zone file:
+  
+  <pre>
+! example.net. AFSDB 1 afsdb.example.net.
+! example.net. RP rp@example.net. rp.example.net.
+! example.net. RP rp2@example.net. .
+! example.net. X25 311061700956
+! example.net. ISDN 150862028003217
+! example.net. ISDN 150862028003217;004
+! example.net. RT 10 relay.example.net.
+  </pre>
+  
+  <h2>NSAP and NSAP-PTR</h2>
+--- 377,389 ----
+  If used, here is how the records would look in a csv2 zone file:
+  
+  <pre>
+! example.net. AFSDB 1 afsdb.example.net. ~
+! example.net. RP rp@example.net. rp.example.net. ~
+! example.net. RP rp2@example.net. . ~
+! example.net. X25 311061700956 ~
+! example.net. ISDN 150862028003217 ~
+! example.net. ISDN 150862028003217;004 ~
+! example.net. RT 10 relay.example.net. ~
+  </pre>
+  
+  <h2>NSAP and NSAP-PTR</h2>
+***************
+*** 388,395 ****
+  If used, here is how the records would look in a csv2 zone file:
+  
+  <pre>
+! example.net. NSAP 0x47.0005.80.005a00.0000.0001.e133.ffffff000162.00
+! example.net. NSAP-PTR nsap.example.net.
+  </pre>
+  
+  <h2>PX</h2>
+--- 403,410 ----
+  If used, here is how the records would look in a csv2 zone file:
+  
+  <pre>
+! example.net. NSAP 0x47.0005.80.005a00.0000.0001.e133.ffffff000162.00 ~
+! example.net. NSAP-PTR nsap.example.net. ~
+  </pre>
+  
+  <h2>PX</h2>
+***************
+*** 398,404 ****
+  this in a CSV2 zone file:
+  
+  <pre>
+! example.net. PX 15 px1.example.net. px2.example.net.
+  </pre>
+  
+  <h2>GPOS</h2>
+--- 413,419 ----
+  this in a CSV2 zone file:
+  
+  <pre>
+! example.net. PX 15 px1.example.net. px2.example.net. ~
+  </pre>
+  
+  <h2>GPOS</h2>
+***************
+*** 417,423 ****
+  Example:
+  
+  <pre>
+! example.net. GPOS '-98.6502';'19.283';'2134'
+  </pre>
+  
+  More information about this record can be found in RFC1712.
+--- 432,438 ----
+  Example:
+  
+  <pre>
+! example.net. GPOS '-98.6502';'19.283';'2134' ~
+  </pre>
+  
+  More information about this record can be found in RFC1712.
+***************
+*** 446,452 ****
+  Example:
+  
+  <pre>
+! example.net. LOC 19 31 2.123 N 98 3 4 W 2000m 2m 4m 567m
+  </pre>
+  
+  <h1>SLASH COMMANDS</h1>
+--- 461,467 ----
+  Example:
+  
+  <pre>
+! example.net. LOC 19 31 2.123 N 98 3 4 W 2000m 2m 4m 567m ~
+  </pre>
+  
+  <h1>SLASH COMMANDS</h1>
+***************
+*** 455,462 ****
+  zone files can also have special slash commands.  These slash commands,
+  with the exception of the '/serial' slash command (see "SOA" above),
+  can only be placed where the name for a record would be placed.
+! Note that slash commands are case-sensitive, and the command in 
+! question must be in all-lower-case.
+  
+  <p>
+  
+--- 470,478 ----
+  zone files can also have special slash commands.  These slash commands,
+  with the exception of the '/serial' slash command (see "SOA" above),
+  can only be placed where the name for a record would be placed.
+! Like resource records, a tilde is to be placed after the
+! slash command.  Note also that slash commands are case-sensitive, and 
+! the command in question must be in all-lower-case.
+  
+  <p>
+  
+***************
+*** 484,496 ****
+  seconds, and e.ttl.example.com will have a TTL of 7200 seconds:
+  
+  <pre>
+! a.ttl.example.com.       10.0.0.1
+! /ttl 3600
+! b.ttl.example.com.       10.0.0.2
+! c.ttl.example.com. +9600 10.0.0.3
+! d.ttl.example.com.       10.0.0.4
+! /ttl 7200
+! e.ttl.example.com.       10.0.0.5
+  </pre>
+  
+  <h2>Origin</h2>
+--- 500,512 ----
+  seconds, and e.ttl.example.com will have a TTL of 7200 seconds:
+  
+  <pre>
+! a.ttl.example.com.       10.0.0.1 ~
+! /ttl 3600 ~
+! b.ttl.example.com.       10.0.0.2 ~
+! c.ttl.example.com. +9600 10.0.0.3 ~
+! d.ttl.example.com.       10.0.0.4 ~
+! /ttl 7200 ~
+! e.ttl.example.com.       10.0.0.5 ~
+  </pre>
+  
+  <h2>Origin</h2>
+***************
+*** 507,540 ****
+  Here is one example usage of the '/origin' slash command:
+  
+  <pre>
+! /origin example.com.
+! www.% 10.1.0.1
+! % MX 10 mail.%
+! mail.% 10.1.0.2
+! /origin example.org.
+! www.% 10.2.0.1
+! % MX 10 mail.%
+! mail.% 10.2.0.2
+  </pre>
+  
+  Which is equivalent to:
+  
+  <pre>
+! www.example.com. 10.1.0.1
+! example.com. MX 10 mail.example.com.
+! mail.example.com. 10.1.0.2
+! www.example.org. 10.2.0.1
+! example.org. MX 10 mail.example.org.
+! mail.example.org. 10.2.0.2
+  </pre>
+  
+  It is also possible to make the current origin be part of the new origin:
+  
+  <pre>
+! /origin example.com.
+! % 10.3.2.1 # example.com now has IP 10.3.2.1
+! /origin mail.%
+! % 10.3.2.2 # mail.example.com now has IP 10.3.2.2
+  </pre>
+  
+  <h2>Opush and Opop</h2>
+--- 523,556 ----
+  Here is one example usage of the '/origin' slash command:
+  
+  <pre>
+! /origin example.com. ~
+! www.% 10.1.0.1 ~
+! % MX 10 mail.% ~
+! mail.% 10.1.0.2 ~
+! /origin example.org. ~
+! www.% 10.2.0.1 ~
+! % MX 10 mail.% ~
+! mail.% 10.2.0.2 ~
+  </pre>
+  
+  Which is equivalent to:
+  
+  <pre>
+! www.example.com. 10.1.0.1 ~
+! example.com. MX 10 mail.example.com. ~
+! mail.example.com. 10.1.0.2 ~
+! www.example.org. 10.2.0.1 ~
+! example.org. MX 10 mail.example.org. ~
+! mail.example.org. 10.2.0.2 ~
+  </pre>
+  
+  It is also possible to make the current origin be part of the new origin:
+  
+  <pre>
+! /origin example.com. ~
+! % 10.3.2.1 ~ # example.com now has IP 10.3.2.1
+! /origin mail.% ~
+! % 10.3.2.2 ~ # mail.example.com now has IP 10.3.2.2
+  </pre>
+  
+  <h2>Opush and Opop</h2>
+***************
+*** 550,566 ****
+  For example:
+  
+  <pre>
+! /origin example.com.
+! /opush mail.% # origin is now mail.example.com; example.com is on stack
+! a.% 10.4.0.1 # a.mail.example.com has IP 10.4.0.1
+! /opush web.example.com. # mail.example.com and example.com are on stack
+! a.% 10.5.0.1 # a.web.example.com has IP 10.5.0.1
+! b.% 10.5.0.2 # b.web.example.com has IP 10.5.0.2
+! /opop # origin is now mail.example.com again
+! b.% 10.4.0.2 # b.mail.example.com has IP 10.4.0.2
+! /opop # origin is now example.com
+! % MX 10 a.mail.% # example.com. MX 10 a.mail.example.com.
+! % MX 20 b.mail.% # example.com. MX 20 b.mail.example.com.
+  </pre>
+  
+  The opush/opop stack can have up to seven elements on it.
+--- 566,582 ----
+  For example:
+  
+  <pre>
+! /origin example.com. ~
+! /opush mail.% ~ # origin is now mail.example.com; example.com is on stack
+! a.% 10.4.0.1 ~ # a.mail.example.com has IP 10.4.0.1
+! /opush web.example.com. ~ # mail.example.com and example.com are on stack
+! a.% 10.5.0.1 ~ # a.web.example.com has IP 10.5.0.1
+! b.% 10.5.0.2 ~ # b.web.example.com has IP 10.5.0.2
+! /opop ~ # origin is now mail.example.com again
+! b.% 10.4.0.2 ~ # b.mail.example.com has IP 10.4.0.2
+! /opop ~ # origin is now example.com
+! % MX 10 a.mail.% ~ # example.com. MX 10 a.mail.example.com.
+! % MX 20 b.mail.% ~ # example.com. MX 20 b.mail.example.com.
+  </pre>
+  
+  The opush/opop stack can have up to seven elements on it.
+***************
+*** 584,599 ****
+  Let us suppose that we have the following in a zone file:
+  
+  <pre>
+! mail.foo.example.com. 10.3.2.1
+! /read foo
+! foo.example.com. MX 10 mail.foo.example.com.
+  </pre>
+  
+  And a file foo with the following contents:
+  
+  <pre>
+! foo.example.com. 10.1.2.3
+! foo.example.com. TXT 'Foomatic!'
+  </pre>
+  
+  Then foo.example.com will have an A record with the value 10.1.2.3, a
+--- 600,615 ----
+  Let us suppose that we have the following in a zone file:
+  
+  <pre>
+! mail.foo.example.com. 10.3.2.1 ~
+! /read foo ~
+! foo.example.com. MX 10 mail.foo.example.com. ~
+  </pre>
+  
+  And a file foo with the following contents:
+  
+  <pre>
+! foo.example.com. 10.1.2.3 ~
+! foo.example.com. TXT 'Foomatic!' ~
+  </pre>
+  
+  Then foo.example.com will have an A record with the value 10.1.2.3, a
+***************
+*** 608,651 ****
+  example, let us suppose db.example.com looks like this:
+  
+  <pre>
+! /origin foo.example.com.
+! % TXT 'Foomatic!'
+! /read foo
+! % MX 10 mail.foo.example.com.
+  </pre>
+  
+  And the file foo looks like this:
+  
+  <pre>
+! % 10.1.2.3
+! /origin mail.%
+! % 10.3.2.1
+  </pre>
+  
+  Then the following records will be created:
+  
+  <pre>
+! foo.example.com.      TXT   'Foomatic!'
+! foo.example.com.      A     10.1.2.3
+! mail.foo.example.com. A     10.3.2.1
+! mail.foo.example.com. MX 10 mail.foo.example.com.
+  </pre>
+  
+  To have something that works like '$INCLUDE filename' in a RFC1035
+  master file, do the following:
+  
+  <pre>
+! /opush %
+! /read filename
+! /opop
+  </pre>
+  
+  Or, for that matter, the equivalent of '$INCLUDE filename neworigin':
+  
+  <pre>
+! /opush neworigin.
+! /read filename
+! /opop
+  </pre>
+  
+  <h1>EXAMPLE ZONE FILE</h1>
+--- 624,667 ----
+  example, let us suppose db.example.com looks like this:
+  
+  <pre>
+! /origin foo.example.com. ~
+! % TXT 'Foomatic!' ~
+! /read foo ~
+! % MX 10 mail.foo.example.com. ~
+  </pre>
+  
+  And the file foo looks like this:
+  
+  <pre>
+! % 10.1.2.3 ~
+! /origin mail.% ~
+! % 10.3.2.1 ~
+  </pre>
+  
+  Then the following records will be created:
+  
+  <pre>
+! foo.example.com.      TXT   'Foomatic!' ~
+! foo.example.com.      A     10.1.2.3 ~
+! mail.foo.example.com. A     10.3.2.1 ~
+! mail.foo.example.com. MX 10 mail.foo.example.com. ~
+  </pre>
+  
+  To have something that works like '$INCLUDE filename' in a RFC1035
+  master file, do the following:
+  
+  <pre>
+! /opush % ~
+! /read filename ~
+! /opop ~
+  </pre>
+  
+  Or, for that matter, the equivalent of '$INCLUDE filename neworigin':
+  
+  <pre>
+! /opush neworigin. ~
+! /read filename ~
+! /opop ~
+  </pre>
+  
+  <h1>EXAMPLE ZONE FILE</h1>
+*** maradns-1.2.12.04/doc/en/source/csv2_txt.ej	2005-12-13 14:52:53.000000000 -0800
+--- maradns-1.3.01/doc/en/source/csv2_txt.ej	2006-12-20 01:36:22.000000000 -0800
+***************
+*** 25,42 ****
+  this:
+  
+  <pre>
+! a.example.com. TXT 'This is some text'
+  </pre>
+  
+! It is also possible, with two notable exceptions, to place any byte with
+  a value less than 0x80 (128) between quotes.  If there are any bytes
+  with a value of 0x80 or more, the data must be UTF-8 encoded Unicode.
+  <hibit>
+  For example:
+  
+  <pre>
+! b.example.com. TXT 'This is some text
+! with a linefeed in it, and an example UTF-8 character: I ♥ MaraDNS'
+  </pre>
+   
+  (If your font does not have this Unicode symbol, it is a heart)
+--- 25,41 ----
+  this:
+  
+  <pre>
+! a.example.com. TXT 'This is some text' ~
+  </pre>
+  
+! It is also possible, to place almost any byte with
+  a value less than 0x80 (128) between quotes.  If there are any bytes
+  with a value of 0x80 or more, the data must be UTF-8 encoded Unicode.
+  <hibit>
+  For example:
+  
+  <pre>
+! b.example.com. TXT 'This is an example UTF-8 character: I ♥ MaraDNS'
+  </pre>
+   
+  (If your font does not have this Unicode symbol, it is a heart)
+***************
+*** 44,52 ****
+  
+  <p>
+  
+! The two ASCII characters not allowed in quotes are the ' character, and the
+! '{' character.  See BACKSLASH ESCAPE SEQUENCES below for information on
+! adding these characters to TXT or RAW fields.
+  
+  <h2>UNQUOTED DATA</h2>
+  
+--- 43,52 ----
+  
+  <p>
+  
+! The ASCII characters not allowed in quotes are the ' character, the
+! '|' character, the '~' (tilde) character, and the '#' character.  See 
+! BACKSLASH ESCAPE SEQUENCES below for information on adding these 
+! characters to TXT or RAW fields.
+  
+  <h2>UNQUOTED DATA</h2>
+  
+***************
+*** 77,83 ****
+  <h2>BACKSLASH ESCAPE SEQUENCES</h2>
+  
+  In order to accommodate storing non-UTF-8 high bit characters, the
+! single quote character, the '{' character, and to permit multi-line
+  TXT/RAW records (with comments allowed mid-record), the TXT/RAW RR allows
+  backslashes.  These backslashes only have significance <i>outside</i>
+  of quoted text; if they are placed inside single quotes, they are not
+--- 77,84 ----
+  <h2>BACKSLASH ESCAPE SEQUENCES</h2>
+  
+  In order to accommodate storing non-UTF-8 high bit characters, the
+! single quote character, the '|', '~', and '#' characters, and to permit 
+! multi-line
+  TXT/RAW records (with comments allowed mid-record), the TXT/RAW RR allows
+  backslashes.  These backslashes only have significance <i>outside</i>
+  of quoted text; if they are placed inside single quotes, they are not
+***************
+*** 161,177 ****
+  perl -e 'print "A Perl of a TXT record!\n"'
+  </pre>
+  
+! To render the '{' character, use the escape sequence \x7b (outside of
+  quotes).  For example:
+  
+  <pre>
+! h1.example.com. TXT 'for(a=0;a<10;a++)'\x7b'printf("%d\n",a);sleep(1)}'
+  </pre>
+  
+  Produces this record:
+  
+  <pre>
+! for(a=0;a<10;a++){printf("%d\n",a);sleep(1)}
+  </pre>
+  
+  <h2>MULTI-LINE AND COMMENTED RECORDS</h2>
+--- 162,202 ----
+  perl -e 'print "A Perl of a TXT record!\n"'
+  </pre>
+  
+! To render the '~' character, use the escape sequence \x7e (outside of
+  quotes).  For example:
+  
+  <pre>
+! h1.example.com. TXT 'http://ocf.berkeley.edu/'\x7e'set'
+  </pre>
+  
+  Produces this record:
+  
+  <pre>
+! http://ocf.berkeley.edu/~set
+! </pre>
+! 
+! To render the '|' character, use the escape sequence \x7c:
+! 
+! <pre>
+! h2.example.com. TXT 'ls '\x7c' more'
+! </pre>
+! 
+! Produces this record:
+! 
+! <pre>
+! ls | more
+! </pre>
+! 
+! To render the '#' character, use the escape sequence \x23:
+! 
+! <pre>
+! h3.example.com. TXT 'Press '\x23' for customer service'
+! </pre>
+! 
+! Produces this record:
+! 
+! <pre>
+! Press # for customer service
+  </pre>
+  
+  <h2>MULTI-LINE AND COMMENTED RECORDS</h2>
+*** maradns-1.3.01/server/MaraDNS.c.orig	2006-12-20 01:36:22.000000000 -0800
+--- maradns-1.3.01/server/MaraDNS.c	2006-12-20 01:36:22.000000000 -0800
+***************
+*** 129,134 ****
+--- 129,136 ----
+  
+  int dns_port = 53; /* The default port for the server to listen on */
+  
++ int csv2_tilde_handling = 2; /* How to parse tildes in CSV2 zone files */
++ 
+  /* A list of who is and who is not allowed to make recursive DNS queries */
+  ipv4pair recurse_acl[512];
+  /* A list of the ipv4 IP addresses we bind MaraDNS to (the netmask portion is
+***************
+*** 4762,4771 ****
+  #endif /* ALLOW_NON_ROOT */
+          }
+  
+!     /* Make sure that if csv2_tilde_handling is set, it has a value of 0 */
+!     if(read_numeric_kvar("csv2_tilde_handling",0) != 0) {
+!         harderror("For MaraDNS 1.2.12, csv2_tilde_handling, if set,\n"
+!                   "must have a value of 0");
+          exit(1);
+          }
+  
+--- 4764,4775 ----
+  #endif /* ALLOW_NON_ROOT */
+          }
+  
+!     csv2_tilde_handling = read_numeric_kvar("csv2_tilde_handling",2);
+! 
+!     /* Make sure that if csv2_tilde_handling is set, it has a value 0-3 */
+!     if(csv2_tilde_handling < 0 || csv2_tilde_handling > 3) {
+!         harderror("csv2_tilde_handling "
+!                   "must have a value between 0 and 3");
+          exit(1);
+          }
+  
+*** maradns-1.2.12.04/server/functions_server.h	2006-06-11 00:16:32.000000000 -0700
+--- maradns-1.3.01/server/functions_server.h	2006-12-20 01:36:22.000000000 -0800
+***************
+*** 248,254 ****
+   * pointed to 
+   * Output: JS_SUCCESS on success, JS_ERROR on error 
+   */
+-     
+  int any_add_rr(mhash *hash, js_string *query, rr *data);
+  
+  /* Remove an element from the ANY chain in the big hash 
+--- 248,253 ----
+***************
+*** 256,276 ****
+   *        Pointer to data which we are now removing, query with this
+   *        data
+   * Output: JS_ERROR on error, JS_SUCCESS on success */
+- 
+  int any_zap_rr(mhash *hash, js_string *query, rr *data);
+  
+  /* Handler to handle fatal errors.
+     Input: Pointer to null-terminalted string with fatal error
+     Output: MaraDNS exits
+  */
+- 
+  void harderror(char *why);
+  
+  /* In recursive.c: Set how we handle the case of not being able to
+     contact any remote servers when making a recursive query.  0: Drop
+     the packet on the floor.  1: Send the client a "server fail" error.
+     2: Send the client a "this host does not exist" reply. */
+- 
+  int init_handle_noreply(int value);
+  
+  #ifndef AUTHONLY
+--- 255,272 ----
+***************
+*** 286,292 ****
+     output: JS_ERROR on error, JS_SUCCESS on success, 0 if the label is
+             a star record already
+  */
+- 
+  int make_starlabel(js_string *js);
+  
+  /* Given a domain-label ending with (or without) a star record ('_'),
+--- 282,287 ----
+***************
+*** 300,306 ****
+             zero-length already, number of labels including star otherwise
+             (130 if we don't know how many labels there are)
+  */
+- 
+  int bobbit_starlabel_end(js_string *js);
+  
+  /* Given a domain-label starting with a star record ('_') change this label
+--- 295,300 ----
+***************
+*** 311,320 ****
+     output: JS_ERROR on error, JS_SUCCESS on success, 0 if the label is
+             zero-length already
+  */
+- 
+  int bobbit_starlabel(js_string *js);
+  
+  #ifndef AUTHONLY
+  int init_retry_cycles(int in);
+  #endif /* AUTHONLY */
+  
+--- 305,316 ----
+     output: JS_ERROR on error, JS_SUCCESS on success, 0 if the label is
+             zero-length already
+  */
+  int bobbit_starlabel(js_string *js);
+  
+  #ifndef AUTHONLY
+  int init_retry_cycles(int in);
+  #endif /* AUTHONLY */
+  
++ /* Set the upstream_port; the port we use to contact to remote DNS
++  * servers */
++ int set_upstream_port(int num);
+*** maradns-1.2.12.04/doc/en/source/authoritative.ej	2006-11-24 03:44:29.000000000 -0800
+--- maradns-1.3.01/doc/en/source/authoritative.ej	2006-12-20 18:49:33.000000000 -0800
+***************
+*** 178,193 ****
+  # are simple name-to-ip translations.  In other words, we have one
+  # record which states "The IP for exmaple.com. is 10.10.10.12" and
+  # another that states "The IP for www.example.com. is 10.10.10.12"
+! example.com. 10.10.10.12
+! www.example.com. 10.10.10.12
+  
+  # We also need to set up an IP for the machine that serves email for
+  # example.com.  Becuase of how DNS is designed, we both need
+  # a record which states "The machine which handles mail for
+  # exmaple.com is called mail1.example.com" and a record which states
+  # "The IP address for mail1.example.com is 10.10.10.15":
+! example.com. MX 10 mail1.example.com.
+! mail1.example.com. 10.10.10.15
+  </pre>
+  
+  Now, to adapt this file to another zone, we need to simply make the
+--- 178,193 ----
+  # are simple name-to-ip translations.  In other words, we have one
+  # record which states "The IP for exmaple.com. is 10.10.10.12" and
+  # another that states "The IP for www.example.com. is 10.10.10.12"
+! example.com. 10.10.10.12 ~
+! www.example.com. 10.10.10.12 ~
+  
+  # We also need to set up an IP for the machine that serves email for
+  # example.com.  Becuase of how DNS is designed, we both need
+  # a record which states "The machine which handles mail for
+  # exmaple.com is called mail1.example.com" and a record which states
+  # "The IP address for mail1.example.com is 10.10.10.15":
+! example.com. MX 10 mail1.example.com. ~
+! mail1.example.com. 10.10.10.15 ~
+  </pre>
+  
+  Now, to adapt this file to another zone, we need to simply make the
+***************
+*** 214,225 ****
+  server, one would have records like this:
+  
+  <pre>
+! example.com.      NS    ns1.example.com.
+! ns1.example.com.        10.10.10.19
+! example.com.            10.10.10.19
+! www.example.com.        10.10.10.19
+! example.com.      MX 10 mail1.example.com.
+! mail1.example.com.      10.10.10.19
+  </pre>
+  
+  Translated in english, the above lines say:
+--- 214,225 ----
+  server, one would have records like this:
+  
+  <pre>
+! example.com.      NS    ns1.example.com. ~
+! ns1.example.com.        10.10.10.19 ~
+! example.com.            10.10.10.19 ~
+! www.example.com.        10.10.10.19 ~
+! example.com.      MX 10 mail1.example.com. ~
+! mail1.example.com.      10.10.10.19 ~
+  </pre>
+  
+  Translated in english, the above lines say:
+***************
+*** 281,289 ****
+  For example:
+  
+  <pre>
+! www.example.com.	10.10.10.10
+! www.example.com.	10.10.10.11
+! www.example.com.	10.10.10.12
+  </pre>
+  
+  In this example, a query to <tt>www.example.com</tt> will return a list of
+--- 281,289 ----
+  For example:
+  
+  <pre>
+! www.example.com.	10.10.10.10 ~
+! www.example.com.	10.10.10.11 ~
+! www.example.com.	10.10.10.12 ~
+  </pre>
+  
+  In this example, a query to <tt>www.example.com</tt> will return a list of
+***************
+*** 313,328 ****
+  <pre>
+  # We have two records which handle the serving of web pages.  These
+  # are simple name-to-ip translations.
+! %     10.10.10.12
+! www.% 10.10.10.12
+  
+  # We also need to set up an IP for the machine that serves email for
+  # our zone.  Becuase of how DNS is designed, we both need
+  # a record which states "The machine which handles mail for
+  # out zone is called mail1.<zone name>" and a record which states
+  # "The IP address for mail1.<zone name> is 10.10.10.15":
+! % MX  10 mail1.example.com.
+! mail1.%  10.10.10.15
+  </pre>
+  
+  This zone file would function identically to the first example zone file
+--- 313,328 ----
+  <pre>
+  # We have two records which handle the serving of web pages.  These
+  # are simple name-to-ip translations.
+! %     10.10.10.12 ~
+! www.% 10.10.10.12 ~
+  
+  # We also need to set up an IP for the machine that serves email for
+  # our zone.  Becuase of how DNS is designed, we both need
+  # a record which states "The machine which handles mail for
+  # out zone is called mail1.<zone name>" and a record which states
+  # "The IP address for mail1.<zone name> is 10.10.10.15":
+! % MX  10 mail1.example.com. ~
+! mail1.%  10.10.10.15 ~
+  </pre>
+  
+  This zone file would function identically to the first example zone file
+***************
+*** 386,397 ****
+  <pre>
+  # Querying the server with the IP 127.0.0.1
+  # Question: Nexample.com.
+! example.com. +86400 ns <b>synth-ip-0a010203.example.com.</b>
+! example.com. +86400 ns <b>synth-ip-0a040506.example.com.</b>
+  # NS replies:
+  # AR replies:
+! #synth-ip-0a010203.example.com. +86400 a <b>10.1.2.3</b>
+! #synth-ip-0a040506.example.com. +86400 a <b>10.4.5.6</b>
+  </pre>
+  
+  The names for the name servers we wish to submit to the registrar are the
+--- 386,397 ----
+  <pre>
+  # Querying the server with the IP 127.0.0.1
+  # Question: Nexample.com.
+! example.com. +86400 ns <b>synth-ip-0a010203.example.com.</b> ~
+! example.com. +86400 ns <b>synth-ip-0a040506.example.com.</b> ~
+  # NS replies:
+  # AR replies:
+! #synth-ip-0a010203.example.com. +86400 a <b>10.1.2.3</b> ~
+! #synth-ip-0a040506.example.com. +86400 a <b>10.4.5.6</b> ~
+  </pre>
+  
+  The names for the name servers we wish to submit to the registrar are the
+***************
+*** 518,526 ****
+  mararc file, the file <tt>db.example.com</tt>, which looks like this:
+  
+  <pre>
+! mascota.%       10.1.2.3
+! paloma.%        10.5.6.7
+! vela.%          10.9.8.4
+  </pre>
+  
+  See <A href=#percent>above</A> for an explanation of what the <tt>%</tt>
+--- 518,526 ----
+  mararc file, the file <tt>db.example.com</tt>, which looks like this:
+  
+  <pre>
+! mascota.%       10.1.2.3 ~
+! paloma.%        10.5.6.7 ~
+! vela.%          10.9.8.4 ~
+  </pre>
+  
+  See <A href=#percent>above</A> for an explanation of what the <tt>%</tt>
+***************
+*** 539,572 ****
+  # "example.com." (this is the name of the machine in charge of
+  # example.com), "hostmaster@example.com." (the email address of the
+  # person in charge of example.com.)
+! example.com.    SOA     example.com. hostmaster@example.com.
+  # The following numbers, part of the SOA record, give some technical
+  # information about transferring information about this zone to other
+  # DNS servers.  If you use rsync to share zone files, these numbers
+  # do not need to be worried about.
+!                         1 7200 3600 604800 1800
+  
+  # NS records.  If a zone doesn't have NS record, MaraDNS will, again
+  # synthesize appropriate NS records for a given zone.  This is a list
+  # of all of the DNS servers that have the example.com zone file.
+! example.com. NS ns1.example.com.
+! example.com. NS ns2.example.com.
+  
+  # The NS records above need IPs.  Note that "A" (this is an IP) is
+  # optional
+! ns1.example.com.  A 10.1.2.3
+! ns2.example.com.  A 10.4.5.6
+  
+  # Now that we have the SOA and NS records taken care of (again, MaraDNS
+  # will automatically take care of these records if they are not in a
+  # zone), we can add the records for the zone in question
+  
+  # mascota.example.com. has the IP address 10.1.2.3
+! mascota.example.com.    A       10.1.2.3
+  # mascota.example.com. has the IP address 10.5.6.7
+! paloma.example.com.     A       10.5.6.7
+  # mascota.example.com. has the IP address 10.9.8.4
+! vela.example.com.       A       10.9.8.4
+  </pre>
+  
+  Information on setting up a recursive server so that these names are private 
+--- 539,572 ----
+  # "example.com." (this is the name of the machine in charge of
+  # example.com), "hostmaster@example.com." (the email address of the
+  # person in charge of example.com.)
+! example.com.    SOA     example.com. hostmaster@example.com. ~
+  # The following numbers, part of the SOA record, give some technical
+  # information about transferring information about this zone to other
+  # DNS servers.  If you use rsync to share zone files, these numbers
+  # do not need to be worried about.
+!                         1 7200 3600 604800 1800 ~
+  
+  # NS records.  If a zone doesn't have NS record, MaraDNS will, again
+  # synthesize appropriate NS records for a given zone.  This is a list
+  # of all of the DNS servers that have the example.com zone file.
+! example.com. NS ns1.example.com. ~
+! example.com. NS ns2.example.com. ~
+  
+  # The NS records above need IPs.  Note that "A" (this is an IP) is
+  # optional
+! ns1.example.com.  A 10.1.2.3 ~
+! ns2.example.com.  A 10.4.5.6 ~
+  
+  # Now that we have the SOA and NS records taken care of (again, MaraDNS
+  # will automatically take care of these records if they are not in a
+  # zone), we can add the records for the zone in question
+  
+  # mascota.example.com. has the IP address 10.1.2.3
+! mascota.example.com.    A       10.1.2.3 ~
+  # mascota.example.com. has the IP address 10.5.6.7
+! paloma.example.com.     A       10.5.6.7 ~
+  # mascota.example.com. has the IP address 10.9.8.4
+! vela.example.com.       A       10.9.8.4 ~
+  </pre>
+  
+  Information on setting up a recursive server so that these names are private 
+*** maradns-1.3.01/doc/en/source/csv2.ej.orig	2006-12-20 20:17:19.000000000 -0800
+--- maradns-1.3.01/doc/en/source/csv2.ej	2006-12-20 20:34:18.000000000 -0800
+***************
+*** 54,62 ****
+  The zone file supports comments; comments are specified by having a '#' 
+  anywhere between fields or records; when a '#' is seen, the csv2 parser 
+  ignores any character it sees (with the exception of the '{' and '~' 
+! characters, neither of which is allowed in comments) until a newline.  
+! A '#' can usually be placed inside a field, and indicates the end of a 
+! field when placed there.
+  <p>
+  
+  The following record types are supported; a description of the record data
+--- 54,69 ----
+  The zone file supports comments; comments are specified by having a '#' 
+  anywhere between fields or records; when a '#' is seen, the csv2 parser 
+  ignores any character it sees (with the exception of the '{' and '~' 
+! characters) until a newline.  A '#' can usually be placed inside a field, 
+! and indicates the end of a field when placed there.
+! <p>
+! 
+! A '{' character can never be placed in a comment.  I '~' character normally
+! can not be placed in a comment; the only time it can be placed in a comment
+! is between resource records.  If the '~' character is placed immediately
+! after the initial '#' character, the '~' is used as a resource record
+! delimiter.  Otherwise, the '~' character has no meta-significance.
+! 
+  <p>
+  
+  The following record types are supported; a description of the record data
+*** maradns-1.3.01/parse/Csv2_parse.c.orig	2006-12-20 22:58:59.000000000 -0800
+--- maradns-1.3.01/parse/Csv2_parse.c	2006-12-20 23:07:20.000000000 -0800
+***************
+*** 431,437 ****
+  		return JS_SUCCESS;
+  	}
+  	/* We're OK if we're at the beginning of a file and options is 1
+! 	 * (see above for what the various options mean */
+  	if(options == 1 && in == -328 && is_ok(in)) {
+  		return csv2_tilde_processing(stream);
+  	}
+--- 431,437 ----
+  		return JS_SUCCESS;
+  	}
+  	/* We're OK if we're at the beginning of a file and options is 1
+! 	 * (before the first RR) */
+  	if(options == 1 && in == -328 && is_ok(in)) {
+  		return csv2_tilde_processing(stream);
+  	}
+***************
+*** 453,459 ****
+  
+          /* OK, if we are before a RR, we either allow or not allow a
+           * tilde based on the tilde_handling value */
+!         if(options == 1 && stream->tilde_handling > 100) {
+  		switch(stream->tilde_handling) {
+  			case 101: /* No tildes anywhere */
+  				csv2_forbid_tilde(stream);
+--- 453,459 ----
+  
+          /* OK, if we are before a RR, we either allow or not allow a
+           * tilde based on the tilde_handling value */
+!         if(options == 1) {
+  		switch(stream->tilde_handling) {
+  			case 101: /* No tildes anywhere */
+  				csv2_forbid_tilde(stream);
+***************
+*** 478,484 ****
+--- 478,495 ----
+  		}
+  		/* # for comments */
+  		if(in == '#') {
++ 			int ttt;
++ 			ttt = 0;	
++ 			if(options == 1 && 
++                             (stream->tilde_handling == 2 ||
++                              stream->tilde_handling == 3)) {
++ 				ttt = 1;	
++ 				csv2_allow_tilde(stream);
++ 			}
+  			process_comment(stream);
++ 			if(ttt == 1) {
++ 				csv2_forbid_tilde(stream);
++ 			}
+  			in = '\n';
+  		}
+  		else if(options != 1 && is_ok(in)) {

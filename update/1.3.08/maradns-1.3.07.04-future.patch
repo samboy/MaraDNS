@@ -1,0 +1,21 @@
+--- maradns-1.3.07.04/parse/ParseMaraRc.c	2007-09-12 08:46:15.000000000 -0500
++++ maradns-1.3.07.05/parse/ParseMaraRc.c	2007-09-12 08:45:03.000000000 -0500
+@@ -334,13 +334,14 @@
+ 
+ /* Keywords that are dictionaries in the MaraDNS rc file */
+ 
+-#define DKEYCOUNT 5
++#define DKEYCOUNT 6
+ 
+ char *dkeywords[DKEYCOUNT] = {
+         "csv1", "csv2",
+-        "root_servers",
+-        "upstream_servers",
+-        "ipv4_alias" };
++        "root_servers", 
++        "upstream_servers", 
++        "ipv4_alias",
++        "future" };
+ 
+ mhash *dvar[DKEYCOUNT];
+ 

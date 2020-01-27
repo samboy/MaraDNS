@@ -1,0 +1,12 @@
+Thanks to Paul Wankadia for pointing out that I forgot to do this.
+
+--- maradns-1.2.11/parse/Csv2_main.c	2005-12-05 16:24:05.000000000 -0600
++++ maradns-Q.20060721.1/parse/Csv2_main.c	2006-07-21 23:37:46.000000000 -0500
+@@ -609,6 +609,7 @@
+ 			break;
+ 		}
+ 	}
++	csv2_close(stream);
+ 	return 0;
+ }
+ 

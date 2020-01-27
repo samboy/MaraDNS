@@ -1,0 +1,11 @@
+--- maradns-1.3.07.04/tools/ej/ej2txt	2006-11-24 05:44:29.000000000 -0600
++++ maradns-1.3.08/tools/ej/ej2txt	2007-09-16 13:24:37.000000000 -0500
+@@ -19,6 +19,7 @@
+ fi
+ 
+ $CMD $1 > $TMP/$$.html
+-links -dump $TMP/$$.html
++links -dump-width 70 -dump -no-references $TMP/$$.html | awk '
++	{gsub(/\[[0-9]+\]/,"");print}' 
+ rm $TMP/$$.html
+ 

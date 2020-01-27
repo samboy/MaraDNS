@@ -1,0 +1,110 @@
+--- maradns-1.3.05/doc/en/webpage/download.embed	2007-05-21 06:37:55.000000000 -0500
++++ maradns-1.3.06/doc/en/webpage/download.embed	2007-06-19 08:57:13.000000000 -0500
+@@ -66,14 +66,12 @@
+ <A href="#zip">info</A>
+ </td></tr></table>
+ 
+-<!--
+ <h3>Contributed packages</h3>
+ 
+ <A
+-href="download/1.2/3rd_party/maradns-1.2.12.04-i486-3.tgz">
+-                             maradns-1.2.12.04-i486-3.tgz</A> 
++href="download/1.2/3rd_party/maradns-1.2.12.06-i486-1.tgz">
++                             maradns-1.2.12.06-i486-1.tgz</A> 
+ <A href="#tgz">info</A>
+--->
+ <hr>
+ 
+ <h2>Testing release</h2>
+@@ -82,62 +80,62 @@
+ release; one where new features have been added without being throughly
+ tested.  
+ 
+-<p>This is the current testing release of MaraDNS, MaraDNS 1.3.05,
+-released May 21, 2007.
++<p>This is the current testing release of MaraDNS, MaraDNS 1.3.06,
++released June 19, 2007.
+ 
+ <p>
+ <table><tr><td>
+ <A 
+-href="download/1.3/1.3.05/maradns-1.3.05.tar.bz2"><!--
+-                       -->maradns-1.3.05.tar.bz2</A>
++href="download/1.3/1.3.06/maradns-1.3.06.tar.bz2"><!--
++                       -->maradns-1.3.06.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.05/maradns-1.3.05.tar.bz2.sha.asc">sig</A><p>
++href="download/1.3/1.3.06/maradns-1.3.06.tar.bz2.sha.asc">sig</A><p>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.05/maradns-1.3.05.tar.lzma"><!--
+-                       -->maradns-1.3.05.tar.lzma</A>
++href="download/1.3/1.3.06/maradns-1.3.06.tar.lzma"><!--
++                       -->maradns-1.3.06.tar.lzma</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.05/maradns-1.3.05.tar.lzma.sha.asc">sig</A>
++href="download/1.3/1.3.06/maradns-1.3.06.tar.lzma.sha.asc">sig</A>
+ </td><td>
+ <A href="#lzma">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.05/maradns-1.3.05.tar.gz"><!--
+-                       -->maradns-1.3.05.tar.gz</A>
++href="download/1.3/1.3.06/maradns-1.3.06.tar.gz"><!--
++                       -->maradns-1.3.06.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.05/maradns-1.3.05.tar.gz.sha.asc">sig</A>
++href="download/1.3/1.3.06/maradns-1.3.06.tar.gz.sha.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+-<A href="download/1.3/1.3.05/maradns-1.3.05-1.src.rpm"><!--
+-                          -->maradns-1.3.05-1.src.rpm</A>
++<A href="download/1.3/1.3.06/maradns-1.3.06-1.src.rpm"><!--
++                          -->maradns-1.3.06-1.src.rpm</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.05/maradns-1.3.05-1.src.rpm.sha.asc">sig</A>
++href="download/1.3/1.3.06/maradns-1.3.06-1.src.rpm.sha.asc">sig</A>
+ </td><td>
+ <A 
+ href="#srcrpm">info</A>
+ </td></tr><tr><td>
+-<A href="download/1.3/1.3.05/maradns-1.3.05-1.i386.rpm"><!--
+-                          -->maradns-1.3.05-1.i386.rpm</A>
++<A href="download/1.3/1.3.06/maradns-1.3.06-1.i386.rpm"><!--
++                          -->maradns-1.3.06-1.i386.rpm</A>
+ </td><td>
+ <A 
+-   href="download/1.3/1.3.05/maradns-1.3.05-1.i386.rpm.sha.asc">sig</A>
++   href="download/1.3/1.3.06/maradns-1.3.06-1.i386.rpm.sha.asc">sig</A>
+ </td><td>
+ <A 
+ href="#rpm">info</A>
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.05/maradns-1-3-05-win32.zip"><!--
+-                       -->maradns-1-3-05-win32.zip</A>
++href="download/1.3/1.3.06/maradns-1-3-06-win32.zip"><!--
++                       -->maradns-1-3-06-win32.zip</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.05/maradns-1-3-05-win32.zip.sha.asc">sig</A>
++href="download/1.3/1.3.06/maradns-1-3-06-win32.zip.sha.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ 
+@@ -227,6 +225,5 @@
+ <A href="http://www.cygwin.com">Cygwin</A>.
+ <p>
+ <A name="tgz"><b>.tgz</b> A .tgz file is a tar.gz file.  The MaraDNS 
+-.tgz file contains
+-the Slackware package for MaraDNS.
++.tgz file contains the Slackware package for MaraDNS.
+ 

@@ -1,0 +1,82 @@
+*** maradns-1.2.12.03/libs/JsStrOS.c	Tue Feb 21 03:32:16 2006
+--- maradns-1.2.12.04/libs/JsStrOS.c	Sun Nov 12 12:56:49 2006
+***************
+*** 1,6 ****
+! /* Public domain code by Sam Trenholme 2000-2002 */
+! /* Routines that interface between the string library and the underlying
+!    OS */
+  
+  /* Headers for the underlying OS calls */
+  #include <stdlib.h>
+--- 1,20 ----
+! /* Copyright (c) 2002-2006 Sam Trenholme
+!  *
+!  * TERMS
+!  *
+!  * Redistribution and use in source and binary forms, with or without
+!  * modification, are permitted provided that the following conditions
+!  * are met:
+!  *
+!  * 1. Redistributions of source code must retain the above copyright
+!  *    notice, this list of conditions and the following disclaimer.
+!  * 2. Redistributions in binary form must reproduce the above copyright
+!  *    notice, this list of conditions and the following disclaimer in the
+!  *    documentation and/or other materials provided with the distribution.
+!  *
+!  * This software is provided 'as is' with no guarantees of correctness or
+!  * fitness for purpose.
+!  */
+  
+  /* Headers for the underlying OS calls */
+  #include <stdlib.h>
+***************
+*** 57,63 ****
+         the hash table is a linked list, which has the address and number of
+         bytes allocated for each piece of allocated memory */
+  
+!     (int)hash_index = (void *)data;
+      hash_index %= HASH_SIZE;
+  #ifdef THREADS
+      pthread_mutex_lock(&alloc_lock);
+--- 71,77 ----
+         the hash table is a linked list, which has the address and number of
+         bytes allocated for each piece of allocated memory */
+  
+!     hash_index = (int)data;
+      hash_index %= HASH_SIZE;
+  #ifdef THREADS
+      pthread_mutex_lock(&alloc_lock);
+***************
+*** 132,138 ****
+         the hash table is a linked list, which has the address and number of
+         bytes allocated for each piece of allocated memory */
+  
+!     (int)hash_index = (void *)data;
+      hash_index %= HASH_SIZE;
+      /* Set up the string used to tell people why this memory was
+         allocated */
+--- 146,152 ----
+         the hash table is a linked list, which has the address and number of
+         bytes allocated for each piece of allocated memory */
+  
+!     hash_index = (int)data;
+      hash_index %= HASH_SIZE;
+      /* Set up the string used to tell people why this memory was
+         allocated */
+***************
+*** 214,220 ****
+  #ifdef THREADS
+      pthread_mutex_lock(&alloc_lock);
+  #endif /* THREADS */
+!     (int)hash_index = (void *)pointer;
+      hash_index %= HASH_SIZE;
+      if(lt_hash[hash_index].allocated_memory == pointer) {
+          lpoint = lt_hash[hash_index].next;
+--- 228,234 ----
+  #ifdef THREADS
+      pthread_mutex_lock(&alloc_lock);
+  #endif /* THREADS */
+!     hash_index = (int)pointer;
+      hash_index %= HASH_SIZE;
+      if(lt_hash[hash_index].allocated_memory == pointer) {
+          lpoint = lt_hash[hash_index].next;

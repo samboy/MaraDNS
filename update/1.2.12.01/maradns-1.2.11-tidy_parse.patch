@@ -1,0 +1,180 @@
+diff -ur maradns-1.2.12/parse/Csv2_database.c maradns-tidy/parse/Csv2_database.c
+--- maradns-1.2.12/parse/Csv2_database.c	2006-07-25 02:35:26.000000000 -0500
++++ maradns-tidy/parse/Csv2_database.c	2006-07-25 02:32:05.000000000 -0500
+@@ -95,6 +95,48 @@
+ 	return new;
+ }
+ 
++void csv2_zap_add_state(csv2_add_state *x) {
++	int a = 0;
++	csv2_origin *v, *q;
++	csv2_rr *y, *z;
++
++	/* Get rid of the origin stack */
++	v = x->ostack;
++	while(v != 0 && a < 10000) {
++		js_destroy(v->origin);
++		q = v->next;
++		js_dealloc(v);
++		v = q;
++		a++;
++	}
++	a = 0;
++
++	/* Get rid of the buffer of rrs */
++	y = x->buffer;
++	while(y != 0 && a < 10000) {
++		js_destroy(y->query);
++		js_destroy(y->data);
++		z = y->next;
++		js_dealloc(y);
++		y = z;
++		a++;
++	}
++	a = 0;
++
++	/* Get rid of the zone string */
++	if(x->zone != 0) {
++		js_destroy(x->zone);
++		x->zone = 0;
++	}
++
++	/* And now, finally, get rid of this object, I mean structure */
++	js_dealloc(x);
++}
++	
++/* Function to clean up the memory used by a given csv2_add_state; if this
++ * were object-oriented, this function would be the deconstructor for the
++ * csv2_add_state */
++
+ /* Function to set the big hash we point to 
+  * Input: Pointer to hash
+  * Output: JS_ERROR on error; JS_SUCCESS on success */
+@@ -120,7 +162,8 @@
+ /* Function that closes out the state for processing parsed records;
+  * JS_ERROR on error, JS_SUCCESS on success */
+ int csv2_close_state(csv2_add_state *state) {
+-	return js_dealloc(state);
++	csv2_zap_add_state(state);
++	return JS_SUCCESS;
+ }
+ 
+ /* Function that uses stat() to determine the timestamp to put in the
+@@ -851,6 +894,10 @@
+ 		ret = JS_SUCCESS; 
+ 	}
+ 	if(ret != JS_ERROR) {
++		js_dealloc(state->buffer->query); /* This is copied in
++                                                     csv2_add_rr_w */
++		js_dealloc(state->buffer->data); /* We finally copy this in 
++                                                  * mhash_put_rr/mhash_add_rr */
+ 		js_dealloc(state->buffer);
+ 		state->buffer = save;
+ 	}
+diff -ur maradns-1.2.12/parse/Csv2_functions.h maradns-tidy/parse/Csv2_functions.h
+--- maradns-1.2.12/parse/Csv2_functions.h	2006-07-25 02:35:26.000000000 -0500
++++ maradns-tidy/parse/Csv2_functions.h	2006-07-25 02:08:54.000000000 -0500
+@@ -48,6 +48,10 @@
+  */
+ csv2_add_state *csv2_init_add_state(js_string *zone);
+ 
++/* This function releases the memory resources that the csv2_add_state
++ * x is using up */
++void csv2_zap_add_state(csv2_add_state *x);
++
+ /* Function to set the big hash we point to 
+  * Input: Pointer to hash
+  * Output: JS_ERROR on error; JS_SUCCESS on success */
+diff -ur maradns-1.2.12/parse/Csv2_main.c maradns-tidy/parse/Csv2_main.c
+--- maradns-1.2.12/parse/Csv2_main.c	2006-07-25 02:35:26.000000000 -0500
++++ maradns-tidy/parse/Csv2_main.c	2006-07-25 02:35:08.000000000 -0500
+@@ -450,6 +450,7 @@
+ 		printf("Error opening ");
+ 		show_esc_stdout(filename);
+ 		printf("\n");
++		csv2_zap_add_state(state);
+ 		return 0;
+ 	}
+ 
+@@ -472,25 +473,34 @@
+ 		unsigned char get[3];
+ 		if(csv2_tcp_spit_soa(state, connect, header, zone) 
+ 				== JS_ERROR) {
++			csv2_zap_add_state(state);
+ 			return JS_ERROR;
+ 		}
+ 		/* Determine how long the next query will be */
+ 		if(connect == 1) { /* STDIN for inetd hack */
+-			if(read(0,get,2) != 1)
++			if(read(0,get,2) != 1) {
++				csv2_zap_add_state(state);
+ 				return JS_ERROR;
++			}
+ 		} else {
+-			if(recv(connect,get,2,0) != 2)
++			if(recv(connect,get,2,0) != 2) {
++				csv2_zap_add_state(state);
+ 				return JS_ERROR;
++			}
+ 		}
+ 		length = (get[0] & 0xff) << 8 | (get[1] & 0xff);
+ 		/* Pretend to get the next, actual, query */
+ 		while(length > 0) {
+ 			if(connect == 1) { /* STDIN; for inetd hack */
+-				if(read(0,get,1) != 1)
++				if(read(0,get,1) != 1) {
++					csv2_zap_add_state(state);
+ 					return JS_ERROR;
++				}
+ 			} else {
+-				if(recv(connect,get,1,MSG_WAITALL) != 1)
++				if(recv(connect,get,1,MSG_WAITALL) != 1) {
++					csv2_zap_add_state(state);
+ 					return JS_ERROR;
++				}
+ 			}
+ 			length--;
+ 		}
+@@ -506,6 +516,7 @@
+ 	/* Second, flush the buffer out */
+ 	if(csv2_tcp_spit_buffer(state,connect,header,zone) == JS_ERROR) {
+ 		js_dealloc(soa_save);
++		csv2_zap_add_state(state);
+ 		return JS_ERROR;
+ 	}
+ 
+@@ -524,6 +535,7 @@
+ 		if(csv2_tcp_spit_buffer(state,connect,header,zone) == 
+ 				JS_ERROR) {
+ 			js_dealloc(soa_save);
++			csv2_zap_add_state(state);
+ 			return JS_ERROR;
+ 		}
+ 
+@@ -537,8 +549,10 @@
+ 	if(csv2_tcp_spit_data(state,connect,header,zone,3,soa_save) 
+ 			== JS_ERROR) {
+ 		js_dealloc(soa_save);
++		csv2_zap_add_state(state);
+ 		return JS_ERROR;
+ 	}
++	csv2_zap_add_state(state);
+ 	return JS_SUCCESS;	
+ 
+ }
+@@ -599,6 +613,7 @@
+ 		printf("Error opening ");
+ 		show_esc_stdout(filename);
+ 		printf("\n");
++		csv2_zap_add_state(state);
+ 		return 0;
+ 	}
+ 
+@@ -610,6 +625,7 @@
+ 		}
+ 	}
+ 	csv2_close(stream);
++	csv2_zap_add_state(state);
+ 	return 0;
+ }
+ 

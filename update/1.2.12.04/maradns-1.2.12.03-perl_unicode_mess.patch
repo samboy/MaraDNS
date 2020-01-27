@@ -1,0 +1,59 @@
+--- maradns-1.2.12.03/tools/ej/ej2man	2006-06-21 03:59:30.000000000 -0500
++++ maradns-1.2.12.04/tools/ej/ej2man	2006-10-25 21:40:23.000000000 -0500
+@@ -16,18 +16,11 @@
+ # Perl at /usr/local/bin/perl then anywhere else in the user's path.
+ 
+ #!/usr/local/bin/perl
+-
+ # Convert an ej-formatted doc in to a man page
+ # Input: First argument or standard input
+ # Output: Standard output
+ 
+-# Determine the version of Perl we are using
+-$vers=sprintf("%vd",$^V);
+-# 5.8.0 needs the following line
+-if($vers =~ /5.8.0/) {
+-    print "Sorry, this verion of Perl is broken with Unicode characters\n";
+-    exit 1;
+-    }
++$FILENAME = shift || "/////";
+ 
+ # Tmp dir (used for running iconv on non-8859-1 pages)
+ $TMP = $ENV{'HOME'} . "/tmp";
+@@ -39,7 +32,26 @@
+ 
+ # Read in the doc
+ 
+-while(<>){$doc .= $_}
++# This makes the script happy when run with both Perl 5.8.0 and
++# Perl 5.8.8; basically 5.8.0 had a lot of unhappy Unicode bugs
++# and so they changed the behavior for later releases.  It is possible
++# to make a Unicode-happy script that runs unchanged Unicode-happy
++# on both 5.8.0 and 5.8.8, but the contortions I had to do were
++# amazing.
++
++# I would like to thank all of the helpful people in the newsgroup
++# comp.lang.perl.misc for their assistance; I couldn't have done it
++# without them.
++
++use utf8;
++if($FILENAME ne "/////") {
++    close(STDIN);
++    open(STDIN,"< $FILENAME");
++    }
++
++binmode(STDIN,":utf8");
++
++while(<STDIN>){$doc .= $_}
+ 
+ #$* = 1; # Match multiple lines
+ 
+@@ -227,7 +239,7 @@
+ 	       $parts[$hack] =~ s/\'/\\\(aq/g;
+                # Handle the á character (Debian's lint complains if the 
+                # man page has raw hi-bit characters)
+-               $parts[$hack] =~ s|á|\\\(\'a|g;
++               $parts[$hack] =~ s|\xc3\xa1|\\\(\'a|g;
+ 	       $body .= $parts[$hack];
+ 	       $body .= ".fi\n";
+ 	       }

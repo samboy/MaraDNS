@@ -1,0 +1,53 @@
+--- maradns-1.2.12.02/parse/Csv2_main.c.orig	2006-08-13 13:43:32.000000000 -0500
++++ maradns-1.2.12.02/parse/Csv2_main.c	2006-08-13 13:31:06.000000000 -0500
+@@ -77,17 +77,11 @@
+ 		return -1;
+ 	}
+ 
+-	/* Allocate the filename string */
+-	if((filename = js_create(256,1)) == 0) {
+-		return -1;
+-	}
+-
+ 	/* Point to the first key in the hash */
+ 
+ 	/* Handle the case of csv2 = {} and nothing else in the mararc file */
+ 	if(mhash_firstkey(csv2s,zone) == 0) {
+ 		js_destroy(zone);
+-		js_destroy(filename);
+ 		return 0;
+ 	}
+ 
+@@ -109,6 +103,7 @@
+ 		}
+ 	} while(mhash_nextkey(csv2s,zone) != 0);	
+ 
++        js_destroy(zone);
+ 	return 0;
+ 
+ }
+--- maradns-1.2.12.02/parse/Csv2_read.c.orig	2006-08-13 13:50:02.000000000 -0500
++++ maradns-1.2.12.02/parse/Csv2_read.c	2006-08-13 13:51:10.000000000 -0500
+@@ -103,6 +103,8 @@
+ 		v = w;
+ 		a++;
+ 	}
++
++        js_dealloc(file->filename);
+ 		
+ 	if(js_dealloc(file) != JS_SUCCESS) {
+ 		return JS_ERROR;
+--- maradns-1.2.12.02/parse/Csv2_database.c.orig	2006-08-13 14:03:57.000000000 -0500
++++ maradns-1.2.12.02/parse/Csv2_database.c	2006-08-13 14:04:06.000000000 -0500
+@@ -912,9 +912,9 @@
+ 		ret = JS_SUCCESS; 
+ 	}
+ 	if(ret != JS_ERROR) {
+-		js_dealloc(state->buffer->query); /* This is copied in
++		js_destroy(state->buffer->query); /* This is copied in
+                                                      csv2_add_rr_w */
+-		js_dealloc(state->buffer->data); /* We finally copy this in 
++		js_destroy(state->buffer->data); /* We finally copy this in 
+                                                   * mhash_put_rr/mhash_add_rr */
+ 		js_dealloc(state->buffer);
+ 		state->buffer = save;

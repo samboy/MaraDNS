@@ -1,0 +1,37 @@
+--- maradns-1.3.11/tcp/zoneserver.c.orig	2008-01-28 21:04:42.000000000 -0600
++++ maradns-1.3.11/tcp/zoneserver.c	2008-01-28 21:06:19.000000000 -0600
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2007 Sam Trenholme and Albert Lee
++/* Copyright (c) 2002-2008 Sam Trenholme and Albert Lee
+  *
+  * TERMS
+  *
+@@ -1021,7 +1021,7 @@
+     js_string *synth_soa_origin;
+ 
+     /* Kill children processes when we are signaled */
+-    if(setpgrp()) {
++    if(setpgid(0,0)) {
+         printf(strerror(errno)); /* harderror() would kill the group which may not be correct yet */
+         return 3;
+     }
+--- maradns-1.3.11/server/MaraDNS.c.orig	2008-01-28 21:05:43.000000000 -0600
++++ maradns-1.3.11/server/MaraDNS.c	2008-01-28 21:06:49.000000000 -0600
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2007 Sam Trenholme
++/* Copyright (c) 2002-2008 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -3785,11 +3785,9 @@
+     int verbose_query = 0;
+     struct sockaddr client;
+     struct sockaddr_in *clin = 0; /* So we can log the IP */
+-#ifndef DARWIN
+ #ifndef MINGW32
+     struct rlimit rlim;
+ #endif /* MINGW32 */
+-#endif /* DARWIN */
+     int have_ipv6_address = 0;
+     int default_dos_level = 78; /* 78: Recursive-only; 0: default when
+                                  * there is one or more zonefiles */

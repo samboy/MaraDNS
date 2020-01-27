@@ -1,0 +1,318 @@
+#!/bin/sh -e
+
+# This script updates MaraDNS 1.3
+
+# To run this script, make sure that this script is in the directory
+# containing the tarball for the version of MaraDNS you wish to update, and
+# all of the patches are in a directory entitled 'patches'.
+
+# For example, to update MaraDNS 1.3.02 to 1.3.03, make sure 
+# maradns-1.3.02.tar.lzma is in the same directory as this script, and
+# that the directory containing this script has a directory called
+# "patches/" which has all of the maradns-1.2.02*.patch files.
+
+# You will need to have lzma 4.27 on your system to run this script
+# Do not use a newer version of lzma; the flags changed
+
+# Get the current and next version number
+
+CURRENT=${0%%-*}
+CURRENT=${CURRENT##*/}
+NEXT=${0##*-}
+
+# The revision number; in the case of having multiple snapshots a day,
+# the revision number can be incremented so as to minimize confusion
+# This is only done when more than one snapshop is uploaded to the
+# maradns.org server in a given day.
+REVISION=.1
+
+# Make a clean CURRENT install, which we rename NEXT
+rm -fr maradns-$CURRENT 2> /dev/null
+rm -fr maradns-$NEXT 2> /dev/null
+echo extracting tarball
+cat maradns-$CURRENT.tar.lzma | lzma d -si -so | tar xf -
+if [ $? != 0 ] ; then
+	echo run this from the correct directory
+	exit 1
+fi
+rm -fr maradns-$NEXT*
+mv maradns-$CURRENT maradns-$NEXT
+cd maradns-$NEXT
+
+# The patches
+
+mkdir update/$NEXT
+#cp ../patches/maradns-$CURRENT* update/$NEXT
+# Since the 1.3.07.XX and post-1.3.07 1.3 releases are somewhat parallel,
+# the two branches will share patches for a while, with the post-1.3.07
+# features and chanfes only applied to that branch
+cp ../patches/maradns* update/$NEXT
+
+# This is one of the few places where we will need to change anything
+# in this script from version to version
+
+echo applying patches
+
+# Patch #1: Upgrade webpage to tell Debian users how to upgrade to a 
+# supported version of MaraDNS
+patch -p1 < update/$NEXT/maradns-1.3.07.05-debian_argh.patch 
+
+# Patch #2: Update security document (The issue with sending a zillion packets
+# to a MaraDNS server to make it non-responsive is a minor, not major issue)
+patch -p1 < update/$NEXT/maradns-1.3.07.05-security.patch
+
+# Patch #3: Update the roadmap document
+patch -p1 < update/$NEXT/maradns-1.3.07.05-roadmap.patch
+
+# Patch #4: Update the script that updates the download document to
+# include a link to the Win32 Pthreads source
+patch -p1 < update/$NEXT/maradns-1.3.07.05-make.download.embed.patch
+
+# Patch #5: Clarify how logging is done in the duende document
+patch -p1 < update/$NEXT/maradns-1.3.07.05-duende_doc.patch
+
+# Patch #6: Update the COPYING document for 2007 (I should have done this
+# 10 months ago)
+patch -p1 < update/$NEXT/maradns-1.3.07.05-copying_year.patch
+
+# Patch #7: Update the relevant makes to add the coding style document
+patch -p1 < update/$NEXT/maradns-1.3.07.05-coding_style.patch
+
+# Patch #8: Add some new SQA tests
+patch -p1 < update/$NEXT/maradns-1.3.07.05-newtests.patch
+
+# Patch #9: Remove spurious messages seen when doing SQA test suite
+patch -p1 < update/$NEXT/maradns-1.3.07.05-testquiet.patch
+
+# Patch #10: Make sure askmara correctly escapes the hash character
+#            in TXT records (no longer allowed there)
+patch -p1 < update/$NEXT/maradns-1.3.08-escape_hash.patch
+
+# Patch #11: Make Dillo happily parse the various MaraDNS webpage
+patch -p1 < update/$NEXT/maradns-1.3.07.05-webpage.parse.patch
+
+# Patch #12: Fix problems with debug_msg_level and Ttimestamp.maradns.
+patch -p1 < update/$NEXT/maradns-1.3.08-debug_msg_level.patch
+
+# Patch #13: Get dns_port to work again
+patch -p1 < update/$NEXT/maradns-1.3.08-dns_port.patch
+
+# Patch #14: Update the the mararc man page
+patch -p1 < update/$NEXT/maradns-1.3.07.05-mararc.patch
+
+# Patch #15: AIX support contributed by Alfred Reibenschuh
+cp build/Makefile.noflock build/Makefile.AIX
+patch -p1 < update/$NEXT/maradns-1.3.07.05-aix.patch
+
+# Patch #16: Have MaraDNS successfully compile with configured with
+# --authonly again
+patch -p1 < update/$NEXT/maradns-1.3.07.05-authonly_compile.patch
+
+# Patch #17: Update TODO file
+patch -p1 < update/$NEXT/maradns-1.3.07.05-todo.patch
+
+# Patch #18: Roy's bug report running MaraDNS 1.3 in cygwin
+patch -p1 < update/$NEXT/maradns-1.3.07.05-cygwin.patch
+
+# Patch #19: Remove warning when MaraDNS is compiled with --authonly
+patch -p1 < update/$NEXT/maradns-1.3.07.05-authonly_warning.patch
+
+# Patch #20: Make sure the 'verbstr' string is reset to 0 whenever
+# deallocated
+patch -p1 < update/$NEXT/maradns-1.3.07.05-verbstr_zap.patch
+
+# Patch #21: Update askmara-tcp to have IPV6 support (contributed by
+#            Mr. Sarton)
+patch -p1 < update/$NEXT/maradns-1.3.08-askmara_tcp.patch
+
+# Patch #22: Update askmara to actually work with ipv6 (contributed by
+#            Mr. Sarton) and make the appropriate changes to the 
+#            configure script
+patch -p1 < update/$NEXT/maradns-1.3.08-askmara.patch
+
+# Patch #23: Update askmara-tcp to have support for ipv6 sockets
+patch -p1 < update/$NEXT/maradns-1.3.08-askmara_tcp_ipv6.patch
+
+# Patch #24: Update timestamps to use the broadcast of the Blake's 7
+#            episode as the epoch
+patch -p1 < update/$NEXT/maradns-1.3.07.05-timestamp.patch
+
+# Patch #25: Make sure the zoneserver handles the case of libtcp_bind_address
+#            returning a 0 correctly (Found by Mr. Sarton)
+patch -p1 < update/$NEXT/maradns-1.3.07.05-zoneserver-check.patch
+
+# Patch: Update changelog (this is always done)
+#patch -p1 < update/$NEXT/maradns-$CURRENT-changelog.patch
+patch -p1 < update/$NEXT/maradns-1.3.07.05-changelog.patch
+
+# Patch: Update download link (this is always done)
+#patch -p1 < update/$NEXT/maradns-$CURRENT-download.patch
+patch -p1 < update/$NEXT/maradns-1.3.07.05-download.patch
+
+# Patch: Update RPM spec file (this is no longer done; we now
+# have a script make the .spec file)
+#patch -p1 < update/$NEXT/maradns-$CURRENT-rpm_spec.patch
+#mv build/maradns-$CURRENT.spec build/maradns-$NEXT.spec
+# We will just have a script make the spec file
+cp ../newfiles/make.maradns.spec tools/misc
+rm build/maradns-$CURRENT.spec
+tools/misc/make.maradns.spec $NEXT > build/maradns-$NEXT.spec
+
+# Other release-specific fixes and changes go here
+
+# Tell Debian users how to upgrade to the lastest stable version of MaraDNS
+# so they can get technical support
+cp ../newfiles/debian.embed doc/en/webpage
+cp ../newfiles/README.Debian .
+cp ../newfiles/coding_style.ej doc/en/source
+
+# New tests 
+cd sqa/regressions
+# Make sure synthetic IPs for nameservers are correctly 
+# generated when MaraDNS has both public and private IPs.
+tar xjf ../../../newfiles/private_ips.tar.bz2
+# Make sure "future" mararc variable works
+tar xjf ../../../newfiles/future.tar.bz2
+# Test all documented mararc variables
+tar xjf ../../../newfiles/mararc_n.tar.bz2
+# Add version of script to test MaraDNS when configured/compiled with
+# '--authonly' set
+cp ../../../newfiles/do.tests.authonly .
+cd ../..
+
+# Move some older sqa tests to old
+cd sqa
+mkdir old
+mv 1.2* old
+mv au* ax* com* csv* mararc* old-* root* sim* sr* test* tut* \
+	y* z* old/
+cd ..
+
+# Copy over the Deadwood project, which will eventually be an extensive
+# rewrite of MaraDNS (starting with the recursive core)
+cp -a ../deadwood-1 .
+
+# Copy over the version of this script that updates 1.3.07.05 (so people
+# looking at the snapshots can see what is being changed in the beta-test
+# branch)
+cp ../1.3.07.05-to-1.3.07.06 update/$NEXT
+
+# Copy over the authonly makefile for the tools/ directory, so we can have
+# ipv6 support for the askmara tool
+cp ../newfiles/Makefile.authonly tools/
+mv tools/Makefile tools/Makefile.recursive
+
+# Add a note we no longer make .rpm files
+cp ../newfiles/README.RedHat .
+
+# Anything below this line normally is not changed between MaraDNS versions
+
+# Convert tabs in code to spaces, since this is inconsistant in different
+# programs
+echo removing tabs from source files
+if true ; then
+	for a in $( find . -type f -name \*.[ch] ) ; do 
+		col -x < $a > foo
+		mv foo $a
+	done
+fi
+
+echo updating documentation
+# Update the documentation
+cd doc/en
+make
+cd man
+make
+cd ../examples
+make
+cd ../tutorial
+make
+cd ../text
+make
+cd ../webpage
+make
+# Go back to the maradns dir
+cd ../../..
+
+rm CHANGELOG
+ln -s doc/en/changelog.txt CHANGELOG
+
+# Go one level higher than the toplevel directory to copy this script
+# over
+cd ..
+
+# Put this script in the "build" directory
+cp $0 maradns-$NEXT/update/$NEXT
+
+if [ "$1" != "go" ] && [ "$1" != "snap" ] && [ "$1" != "work" ] ; then
+	echo OK, maradns-$NEXT built.  Confirm this compiles and	
+	echo perform basic regression before re-running this to make
+	echo the tarballs.  Once you have tested this, rerun this 
+	echo script as: \"$0 go\" or as \"$0 snap\" 
+        echo to make a daily snapshot
+	exit 0
+fi
+
+if [ "$1" = "work" ] ; then
+	cat maradns-$CURRENT.tar.lzma | lzma d -si -so | tar xf -
+	echo OK, both maradns-$CURRENT and maradns-$NEXT made\; you
+	echo now can make more patches as needed.  
+	exit 0
+fi
+
+# Build the tarballs
+echo making new tarballs
+
+if [ "$1" = "snap" ] ; then
+	SNAP=Q.$( date +%Y%m%d )$REVISION
+	rm -fr maradns-$SNAP
+	mv maradns-$NEXT maradns-$SNAP
+	tar cjf maradns-$SNAP.tar.bz2 maradns-$SNAP
+	exit 0
+else
+	SNAP=$NEXT
+	tar cjf maradns-$SNAP.tar.bz2 maradns-$SNAP
+	tar czf maradns-$SNAP.tar.gz maradns-$SNAP
+
+	# All of the compression we actually use was originally written by 
+	# Igor Pavlov for the 7-zip compression suite
+	echo shrinking .gz tarball
+	advdef -z -4 maradns-$SNAP.tar.gz
+fi
+
+echo using exotic compression
+tar cf maradns-$SNAP.tar maradns-$SNAP
+
+echo lzma compression \(this will take about 5 minutes\)
+date
+# To decompress: cat file.tar.lzma | lzma d -si -so | tar xvf -
+# -d20 makes the file almost as small as -d22, but uses 1/4 of the memory
+# (only a little over one meg needed for decompression)
+lzma e maradns-$SNAP.tar maradns-$SNAP.tar.lzma -a2 -d20 -fb255
+date
+echo
+
+# Clean up the uncompressed tarball
+rm maradns-$SNAP.tar
+
+exit 0
+
+# The other exotic compressors can't be run in a pipeline
+
+echo 7zip compression
+date
+7za a maradns-$SNAP.tar.7z maradns-$SNAP.tar
+date
+echo
+
+echo paq6 compression \(This will take 2\-3 minutes\)
+date
+paq6v2 -2 maradns-$SNAP.tar.pq6 maradns-$SNAP.tar
+date
+echo
+
+echo rzip compression
+date
+rzip maradns-$SNAP.tar
+date
+echo

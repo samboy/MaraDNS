@@ -1,0 +1,13 @@
+--- maradns-1.2.11/server/recursive.c	2006-07-17 22:50:44.000000000 -0500
++++ maradns-1.2.12/server/recursive.c	2006-07-23 20:15:13.000000000 -0500
+@@ -2132,6 +2132,10 @@
+                 js_destroy(jsip); /* Since this is always created */
+                 }
+             else {
++		/* Lets plug this memory leak */
++		if(ptrq != 0) {
++			js_destroy(ptrq);
++		}
+                 /* If we don't add jsip to the cache, we need to clear the
+                    memory it uses */
+                 js_destroy(jsip);

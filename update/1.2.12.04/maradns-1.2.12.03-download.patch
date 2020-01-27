@@ -1,0 +1,107 @@
+--- maradns-1.2.12.03/doc/en/webpage/download.embed	2006-10-08 19:32:42.000000000 -0400
++++ maradns-1.2.12.04/doc/en/webpage/download.embed	2006-11-24 06:40:25.000000000 -0500
+@@ -3,8 +3,8 @@
+ <h1>&iexcl;Download MaraDNS!</h1>
+ 
+ <h2>Stable release</h2>
+-<p>This is the current stable release of MaraDNS, MaraDNS 1.2.12.03,
+-released October 8, 2006.
++<p>This is the current stable release of MaraDNS, MaraDNS 1.2.12.04,
++released November 24, 2006.
+ <p>This release is available both at <A 
+ href="http://sourceforge.net/project/showfiles.php?group_id=24033">sourceforge.net</A>
+ and on this page.
+@@ -12,56 +12,56 @@
+ <p>
+ <table><tr><td>
+ <A 
+-href="download/1.2/1.2.12.03/maradns-1.2.12.03.tar.bz2"><!--
+-                          -->maradns-1.2.12.03.tar.bz2</A>
++href="download/1.2/1.2.12.04/maradns-1.2.12.04.tar.bz2"><!--
++                          -->maradns-1.2.12.04.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.03/maradns-1.2.12.03.tar.bz2.sha1.asc">sig</A><p>
++href="download/1.2/1.2.12.04/maradns-1.2.12.04.tar.bz2.sha1.asc">sig</A><p>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.2/1.2.12.03/maradns-1.2.12.03.tar.lzma"><!--
+-                          -->maradns-1.2.12.03.tar.lzma</A>
++href="download/1.2/1.2.12.04/maradns-1.2.12.04.tar.lzma"><!--
++                          -->maradns-1.2.12.04.tar.lzma</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.03/maradns-1.2.12.03.tar.lzma.sha1.asc">sig</A>
++href="download/1.2/1.2.12.04/maradns-1.2.12.04.tar.lzma.sha1.asc">sig</A>
+ </td><td>
+ <A href="#lzma">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.2/1.2.12.03/maradns-1.2.12.03.tar.gz"><!--
+-                          -->maradns-1.2.12.03.tar.gz</A>
++href="download/1.2/1.2.12.04/maradns-1.2.12.04.tar.gz"><!--
++                          -->maradns-1.2.12.04.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.03/maradns-1.2.12.03.tar.gz.sha1.asc">sig</A>
++href="download/1.2/1.2.12.04/maradns-1.2.12.04.tar.gz.sha1.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+-<A href="download/1.2/1.2.12.03/maradns-1.2.12.03-1.src.rpm"><!--
+-                             -->maradns-1.2.12.03-1.src.rpm</A>
++<A href="download/1.2/1.2.12.04/maradns-1.2.12.04-1.src.rpm"><!--
++                             -->maradns-1.2.12.04-1.src.rpm</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.03/maradns-1.2.12.03-1.src.rpm.sha1.asc">sig</A>
++href="download/1.2/1.2.12.04/maradns-1.2.12.04-1.src.rpm.sha1.asc">sig</A>
+ </td><td>
+ <A 
+ href="#srcrpm">info</A>
+ </td></tr><tr><td>
+-<A href="download/1.2/1.2.12.03/maradns-1.2.12.03-1.i386.rpm"><!--
+-                             -->maradns-1.2.12.03-1.i386.rpm</A>
++<A href="download/1.2/1.2.12.04/maradns-1.2.12.04-1.i386.rpm"><!--
++                             -->maradns-1.2.12.04-1.i386.rpm</A>
+ </td><td>
+ <A 
+-   href="download/1.2/1.2.12.03/maradns-1.2.12.03-1.src.rpm.sha1.asc">sig</A>
++   href="download/1.2/1.2.12.04/maradns-1.2.12.04-1.src.rpm.sha1.asc">sig</A>
+ </td><td>
+ <A 
+ href="#rpm">info</A>
+ </td></tr><tr><td>
+ <A 
+-href="download/1.2/1.2.12.03/maradns-1-2-12-03-win32.zip"><!--
+-                          -->maradns-1-2-12-03-win32.zip</A>
++href="download/1.2/1.2.12.04/maradns-1-2-12-04-win32.zip"><!--
++                          -->maradns-1-2-12-04-win32.zip</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.12.03/maradns-1-2-12-03-win32.zip.sha1.asc">sig</A>
++href="download/1.2/1.2.12.04/maradns-1-2-12-04-win32.zip.sha1.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ </td></tr></table>
+@@ -69,8 +69,8 @@
+ <h3>Contributed packages</h3>
+ 
+ <A
+-href="download/1.2/3rd_party/maradns-1.2.12.02-i486-2.tgz"><!--
+-                          -->maradns-1.2.12.02-i486-2.tgz</A> 
++href="download/1.2/3rd_party/maradns-1.2.12.03-i486-3.tgz"><!--
++                          -->maradns-1.2.12.03-i486-3.tgz</A> 
+ <A href="#tgz">info</A>
+ 
+ <hr>
+@@ -95,7 +95,6 @@
+ 
+ <h2>Other</h2>
+ <p><A href=changelog.html>View the changelog</A></p>
+-<A href="download/1.1/old/">1.1.xx releases of MaraDNS</A>
+ 
+ <H2>Tools to help verify the sums of MaraDNS (or any other file)</H2>
+ <p>This is a mismash of various cryptographic summing algorithms.  <b>By and

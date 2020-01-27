@@ -1,0 +1,14 @@
+--- maradns-1.3.10/sqa/regressions/askmara.bug/bad.packet.c	2007-11-26 11:48:20.000000000 -0600
++++ maradns-1.3.11/sqa/regressions/askmara.bug/bad.packet.c	2007-12-06 20:23:29.000000000 -0600
+@@ -61,10 +61,10 @@
+ main() {
+         int a, b;
+         int len_inet;
+-        int foo;
+         struct sockaddr_in dns_udp;
+         int sock;
+         char in[512];
++        int foo = sizeof(in);
+         int localhost = 0x7f000001; /* 127.0.0.1 */
+         int leni = sizeof(struct sockaddr);
+ 

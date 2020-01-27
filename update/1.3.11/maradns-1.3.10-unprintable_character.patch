@@ -1,0 +1,28 @@
+If there is an unprintable control character in a zone file, warn the
+user.
+
+--- maradns-1.3.11/parse/Csv2_read.c.orig	2008-03-23 18:40:33.000000000 -0600
++++ maradns-1.3.11/parse/Csv2_read.c	2008-03-23 18:48:12.000000000 -0600
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004-2006 Sam Trenholme
++/* Copyright (c) 2004-2006,2008 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -169,6 +169,16 @@
+         if(file->mnum == 0) {
+ read_char:
+                 out = getc(file->reading);
++                /* If there is an unprintable control character, warn the
++                 * user; note this may cause a spurious errors to be given 
++                 * to the user if they use some bizarre encoding in zone
++                 * file comments.  Just use Unicode or iso-8859-whatever
++                 * for your zone file comments. */
++                if(out < 32 && out >= 0 && out != '\t' && out != '\r' 
++                   && out != '\n') {
++			printf("Warning: Unprintable character in zone file"
++                               ": %02x\n",out);
++                }
+                 file->context[file->cplace++] = out;
+                 if(file->cplace == 19) { file->cplace = 0; }
+                 if(out == '\n') {

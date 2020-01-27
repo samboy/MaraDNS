@@ -1,0 +1,92 @@
+--- maradns-1.3.07.05/doc/en/source/mararc.ej	2007-05-21 06:37:54.000000000 -0500
++++ maradns-1.3.07.06/doc/en/source/mararc.ej	2007-09-30 15:17:18.000000000 -0500
+@@ -274,11 +274,6 @@
+ Here, we use 10.2.19.83 to resolve host names that end in "cl", and
+ 10.5.6.7 to resolve all other host names.
+ 
+-<h2>Final note on dictionary variables</h2>
+-
+-csv1, csv2, ipv4_alias, root_servers, and upstream_servers are currently 
+-the only existing dictionary variables.
+-
+ <h1>NORMAL VARIABLE FORMAT</h1>
+ 
+ Normal variables.  These are variables that can only take
+@@ -490,7 +485,7 @@
+ This is the port that MaraDNS listens on.  This is usually 53 (the
+ default value), but certain unusual MaraDNS setups (such as when resolving
+ dangling CNAME records on but a single IP) may need to have a different
+-valur for this.
++value for this.
+ 
+ <h2>dos_protection_level</h2>
+ If this is set to a non-zero value, certain features of MaraDNS will be
+@@ -506,17 +501,17 @@
+ 
+ <ul>
+ 
+-<li>A dos_protection_level of 1 or above disables getting MaraDNS status
+-    information remotely
++<li>A dos_protection_level between 1 and 78 (inclusive) disables getting 
++    MaraDNS status information remotely.
+ 
+ <li>A dos_protection_level of 8 or above disables CNAME lookups.
+ 
+ <li>A dos_protection_level or 12 or above diables delegation NS records.
+ 
+-<li>A dos_protection_level of 14 or above disables ANY record processing
++<li>A dos_protection_level of 14 or above disables ANY record processing.
+ 
+ <li>A dos_protection_level of 18 or above disables star record processing
+-    at the beginning of hostnames (default zonefiles still work, however)
++    at the beginning of hostnames (default zonefiles still work, however).
+ 
+ <li>A dos_protection_level of 78 disables all authoritative processing,
+     including default zonefiles; recursive lookups still work.
+@@ -645,24 +640,6 @@
+ 
+ <p> The default value for this variable is 8.
+ 
+-<h2>max_glueless_level</h2>
+-Maximum glueless level allowed when performing recursive lookups.  The
+-default value is 10.  
+-<p>
+-
+-This is the maximum number of times MaraDNS will "go back to the root 
+-servers" in order to find out the IP of a name server for which we do
+-not have a glue IP for, or to find out the A value for a given CNAME
+-record.  
+-
+-<h2>max_queries_total</h2>
+-Maximum number of queries to perform when performing recursive lookups.  The
+-default value is 32.  
+-<p>
+-
+-This is the maximum number of times MaraDNS will send a query to 
+-nameservers in order to find out the answer to a DNS question.
+-
+ <h2>max_tcp_procs</h2>
+ max_tcp_procs: The (optional) maximum number of processes the zone
+ server is allowed to run.
+@@ -735,21 +712,6 @@
+ should be passed on with a TTL of zero.  This, unfortunatly, breaks some
+ stub resolvers (such as Mozilla's stub resolver).
+ 
+-<h2>no_fingerprint</h2>
+-no_fingerprint: Flag that allows MaraDNS to be harder to detect.
+-<p>
+-
+-Some people do not feel it is appropriate to have some information,
+-such as the version number of MaraDNS being run, be publicly
+-available.
+-<p>
+-
+-The default value is 0.
+-<p>
+-
+-By setting no_fingerprint to 1, it is possible to have MaraDNS not
+-reveal this information publicly.
+-
+ <h2>random_seed_file</h2>
+ randsom_seed_file:  The file from which we read 16 bytes from to
+ get the 128-bit seed for the secure pseudo random number generator.

@@ -1,0 +1,76 @@
+--- maradns-1.2.12.01/doc/en/webpage/security.embed	2006-05-23 01:13:13.000000000 -0500
++++ maradns-1.2.12.02/doc/en/webpage/security.embed	2006-08-06 16:30:36.000000000 -0500
+@@ -87,9 +87,8 @@
+ Some known security problems are avoided: MaraDNS does not use printf() in
+ a manner which would make format string vulnerabilities possible; MaraDNS
+ does not use any of the potentially dangerous globing functions; and
+-MaraDNS will not have signal handlers until I can figure out a way to make
+-sure that the DNS server is not vulnerable to the known security pitfalls
+-of poor signal handler construction.
++MaraDNS signal handlers are very short, avoiding the problems caused by
++poor signal handler construction.
+ 
+ <p>
+ 
+@@ -107,6 +106,14 @@
+ 
+ <p>
+ 
++MaraDNS uses a minimum number of external libraries.  This minimizes 
++the impact of insecure code not under MaraDNS' direct control causing
++security problems with MaraDNS.  This stops MaraDNS from having the
++kind of remote full-control exploit BIND9 had when it linked to an
++insecure version of the OpenSSL library.
++
++<p>
++
+ MaraDNS also mandates that the server is run as an unprivileged user, and
+ strongly encourages MaraDNS to be run in a chroot() environment.  In
+ addition, the DNS cache uses a separate data structure than the local DNS
+@@ -118,12 +125,24 @@
+ <A name=history> </A>
+ <h2>The security history of MaraDNS</h2>
+ 
+-There have been a few security problems found with MaraDNS: two fairly 
+-major, and one minor security bug.  There was also a major security problem
+-caused by broken behavior in Linux's kernel, a minor security problem in
+-the <tt>fetchzone</tt> tool in the 1.1/1.2 branch of MaraDNS, and 
+-some theoretical (less than minor) security problems caused by some 
+-research in to AES' implementation on modern cached processors.
++No stable version of MaraDNS on a non-Linux system has ever had an 
++exploitable security problem.  To clarify: "stable version" is a
++version that has been marked stable on the <A 
++href="http://www.maradns.org/download.html">MaraDNS download page</A>
++(all Maradns 1.0 releases; Maradns 1.2.00, 1.2.01, 1.2.03.x, 1.2.07.x, 
++and 1.2.12.x); "exploitable" means that the problem is one where a
++a practical exploit would be reasonably easy to perform.  The issues
++I'm not considering "exploitable" are the cryptographic cache sniffing
++issues.
++
++<p>
++There have been four security problems found with non-stable 
++versions of MaraDNS:  Two fairly major, and two minor security bugs. 
++There was also a major security problem caused by broken behavior 
++in Linux's kernel that affected stable versions of MaraDNS. 
++There are also theoretical (less than minor) security problems caused by 
++some research in to AES' implementation on modern cached processors which
++have been addressed.
+ 
+ <p>
+ 
+@@ -249,11 +268,13 @@
+ the algorithm from which MaraDNS' secure random number generator is 
+ derived.  I have responded to this issue by tweaking MaraDNS' secure
+ random number generator to essentially not leak sensitive key data
+-via cache lookups.  
++via cache lookups.  These changes were done for MaraDNS 1.0.35 and
++1.1.56.
+ 
+ <p>
+ 
+-<A href="http://www.maradns.org/download/patches/maradns-1.0.34-rng.patch">Patch
++<A 
++href="http://www.maradns.org/download/patches/maradns-1.0.34-rng.patch">Patch
+ which describes the issue and how I work around it</A>
+ 
+ <p>

@@ -1,0 +1,21 @@
+--- maradns-1.3.12/doc/en/source/changelog.embed	2008-09-09 06:40:19.000000000 -0500
++++ maradns-1.3.13/doc/en/source/changelog.embed	2009-02-12 16:48:02.000000000 -0600
+@@ -1,5 +1,18 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.3.13:</p>
++This is the development branch of MaraDNS.
++<blockquote>
++<ul>
++<li>private_ips test revamped to work in a stock CentOS 5.2 install
++<li>New parameter added <tt>notthere_ip</tt> (Sponsored by XenoBank who  
++    offer <A href=http://xenobank.com>internet privacy</A> via a web
++    browser that automagically uses the TOR network for web browsing)
++<li><tt>mqhash</tt> updated to also use Radio Gatun hash (in 32-bit mode).
++</ul>
++(2009.02.??)
++</blockquote>
++
+ <p>maradns-1.3.12:</p>
+ This is the development branch of MaraDNS.
+ <blockquote>

@@ -1,0 +1,216 @@
+--- maradns-1.3.07.05/doc/en/webpage/download.embed	2007-09-21 07:07:08.000000000 -0500
++++ maradns-1.3.07.06/doc/en/webpage/download.embed	2007-10-19 08:51:47.000000000 -0500
+@@ -65,68 +65,57 @@
+ </td><td>
+ <A href="#zip">info</A>
+ </td></tr></table>
++<h3>Contributed packages</h3>
++
++<A
++href="download/1.2/3rd_party/maradns-1.2.12.08-i486-2.tgz"><!--
++                          -->maradns-1.2.12.08-i486-2.tgz</A> 
++<A href="#tgz">info</A>
++<hr>
+ 
+ <h2>Beta testing release</h2>
+ 
+ This is a beta testing release.  The only changes before this release
+ is declared stable will be bug fixes and documentation changes.
+ 
+-<p>This is the current beta testing release of MaraDNS, MaraDNS 1.3.07.05,
+-released September 21, 2007.
++<p>This is the current beta testing release of MaraDNS, MaraDNS 1.3.07.06,
++released October 19, 2007.
+ 
+ <p>
+ <table><tr><td>
+ <A 
+-href="download/1.3/1.3.07.05/maradns-1.3.07.05.tar.bz2"><!--
+-                          -->maradns-1.3.07.05.tar.bz2</A>
++href="download/1.3/1.3.07.06/maradns-1.3.07.06.tar.bz2"><!--
++                          -->maradns-1.3.07.06.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.07.05/maradns-1.3.07.05.tar.bz2.sha.asc">sig</A><p>
++href="download/1.3/1.3.07.06/maradns-1.3.07.06.tar.bz2.sha.asc">sig</A><p>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.07.05/maradns-1.3.07.05.tar.lzma"><!--
+-                          -->maradns-1.3.07.05.tar.lzma</A>
++href="download/1.3/1.3.07.06/maradns-1.3.07.06.tar.lzma"><!--
++                          -->maradns-1.3.07.06.tar.lzma</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.07.05/maradns-1.3.07.05.tar.lzma.sha.asc">sig</A>
++href="download/1.3/1.3.07.06/maradns-1.3.07.06.tar.lzma.sha.asc">sig</A>
+ </td><td>
+ <A href="#lzma">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.07.05/maradns-1.3.07.05.tar.gz"><!--
+-                          -->maradns-1.3.07.05.tar.gz</A>
++href="download/1.3/1.3.07.06/maradns-1.3.07.06.tar.gz"><!--
++                          -->maradns-1.3.07.06.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.07.05/maradns-1.3.07.05.tar.gz.sha.asc">sig</A>
++href="download/1.3/1.3.07.06/maradns-1.3.07.06.tar.gz.sha.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+-<A href="download/1.3/1.3.07.05/maradns-1.3.07.05-1.src.rpm"><!--
+-                             -->maradns-1.3.07.05-1.src.rpm</A>
+-</td><td>
+ <A 
+-href="download/1.3/1.3.07.05/maradns-1.3.07.05-1.src.rpm.sha.asc">sig</A>
++href="download/1.3/1.3.07.06/maradns-1-3-07-06-win32.zip"><!--
++                          -->maradns-1-3-07-06-win32.zip</A>
+ </td><td>
+ <A 
+-href="#srcrpm">info</A>
+-</td></tr><tr><td>
+-<A href="download/1.3/1.3.07.05/maradns-1.3.07.05-1.i386.rpm"><!--
+-                             -->maradns-1.3.07.05-1.i386.rpm</A>
+-</td><td>
+-<A 
+-   href="download/1.3/1.3.07.05/maradns-1.3.07.05-1.i386.rpm.sha.asc">sig</A>
+-</td><td>
+-<A 
+-href="#rpm">info</A>
+-</td></tr><tr><td>
+-<A 
+-href="download/1.3/1.3.07.05/maradns-1-3-07-05-win32.zip"><!--
+-                          -->maradns-1-3-07-05-win32.zip</A>
+-</td><td>
+-<A 
+-href="download/1.3/1.3.07.05/maradns-1-3-07-05-win32.zip.sha.asc">sig</A>
++href="download/1.3/1.3.07.06/maradns-1-3-07-06-win32.zip.sha.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ 
+@@ -137,67 +126,55 @@
+ to MaraDNS; new features have often not been fully tested so <b>use 
+ this release at your own risk</b>.
+ 
+-<p>This is the current development release of MaraDNS, MaraDNS 1.3.08,
+-released September 21, 2007.
++<p>This is the current development release of MaraDNS, MaraDNS 1.3.09,
++released October 19, 2007.
+ 
+ <p>
+ <table><tr><td>
+ <A 
+-href="download/1.3/1.3.08/maradns-1.3.08.tar.bz2"><!--
+-                          -->maradns-1.3.08.tar.bz2</A>
++href="download/1.3/1.3.09/maradns-1.3.09.tar.bz2"><!--
++                          -->maradns-1.3.09.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.08/maradns-1.3.08.tar.bz2.sha.asc">sig</A><p>
++href="download/1.3/1.3.09/maradns-1.3.09.tar.bz2.sha.asc">sig</A><p>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.08/maradns-1.3.08.tar.lzma"><!--
+-                          -->maradns-1.3.08.tar.lzma</A>
++href="download/1.3/1.3.09/maradns-1.3.09.tar.lzma"><!--
++                          -->maradns-1.3.09.tar.lzma</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.08/maradns-1.3.08.tar.lzma.sha.asc">sig</A>
++href="download/1.3/1.3.09/maradns-1.3.09.tar.lzma.sha.asc">sig</A>
+ </td><td>
+ <A href="#lzma">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.3/1.3.08/maradns-1.3.08.tar.gz"><!--
+-                          -->maradns-1.3.08.tar.gz</A>
++href="download/1.3/1.3.09/maradns-1.3.09.tar.gz"><!--
++                          -->maradns-1.3.09.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/1.3/1.3.08/maradns-1.3.08.tar.gz.sha.asc">sig</A>
++href="download/1.3/1.3.09/maradns-1.3.09.tar.gz.sha.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+-<A href="download/1.3/1.3.08/maradns-1.3.08-1.src.rpm"><!--
+-                             -->maradns-1.3.08-1.src.rpm</A>
+-</td><td>
+ <A 
+-href="download/1.3/1.3.08/maradns-1.3.08-1.src.rpm.sha.asc">sig</A>
++href="download/1.3/1.3.09/maradns-1-3-09-win32.zip"><!--
++                          -->maradns-1-3-09-win32.zip</A>
+ </td><td>
+ <A 
+-href="#srcrpm">info</A>
+-</td></tr><tr><td>
+-<A href="download/1.3/1.3.08/maradns-1.3.08-1.i386.rpm"><!--
+-                             -->maradns-1.3.08-1.i386.rpm</A>
+-</td><td>
+-<A 
+-href="download/1.3/1.3.08/maradns-1.3.08-1.i386.rpm.sha.asc">sig</A>
+-</td><td>
+-<A 
+-href="#rpm">info</A>
+-</td></tr><tr><td>
+-<A 
+-href="download/1.3/1.3.08/maradns-1-3-08-win32.zip"><!--
+-                          -->maradns-1-3-08-win32.zip</A>
+-</td><td>
+-<A 
+-href="download/1.3/1.3.08/maradns-1-3-08-win32.zip.sha.asc">sig</A>
++href="download/1.3/1.3.09/maradns-1-3-09-win32.zip.sha.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ 
+ </td></tr></table>
+ 
++<h3>Pthreads soruce code</h3>
++
++The Windows port of MaraDNS 1.3 uses the LGPL phtreads library. Source 
++code for this library is available <A 
++href="download/1.3/1.3.09/pthreads-w32-2-8-0-release.tar.lzma">here</A>
++
+ <hr>
+ 
+ <h2>Legacy release</h2>
+@@ -280,5 +257,9 @@
+ does not have all of the security nor features of the Linux/UNIX version of
+ MaraDNS, this port allows Windows to have a basic, 
+ reasonably secure DNS client and recursive resolver.  People who want a full 
+-Windows port of MaraDNS can compile MaraDNS on
++Windows port of MaraDNS can compile MaraDNS on</A>
+ <A href="http://www.cygwin.com">Cygwin</A>.
++<p>
++<A name="tgz"><b>.tgz</b> A .tgz file is a tar.gz file.  The MaraDNS 
++.tgz file contains
++the Slackware package for MaraDNS.</A>
+--- maradns-1.3.07.05/doc/en/webpage/contact.embed	2007-09-21 07:07:08.000000000 -0500
++++ maradns-1.3.07.06/doc/en/webpage/contact.embed	2007-10-19 08:51:21.000000000 -0500
+@@ -15,10 +15,15 @@
+ in <tt>maradns --version</tt>.
+ <p>
+ 
+-If you have obtained an older version of MaraDNS from a third-party
++<b>Debian and Ubuntu users:</b> The version of MaraDNS Debian
++and Ubuntu uses is problably not supported by me.  Please read <A
++href=debian.html>this page</A> for information on upgrading to a supported
++release of MaraDNS. <p>
++
++If you have obtained an older version of MaraDNS from another third-party
+ software repository, please let me know where you got MaraDNS so I can
+ contact the people in charge of the offending repository and ask them
+-to either update or remove MaraDNS.  
++to either update or remove MaraDNS.
+ <p>
+ 
+ Be sure to include the following information in your email:
+@@ -68,4 +73,3 @@
+ My email address is available 
+ <A href="http://www.samiam.org/mailme.php">here</A></p>
+ 
+-</p>

@@ -1,0 +1,127 @@
+--- maradns-1.3.07.04/doc/en/webpage/advocacy.embed	2007-05-21 06:37:54.000000000 -0500
++++ maradns-1.3.07.05/doc/en/webpage/advocacy.embed	2007-09-20 21:20:13.000000000 -0500
+@@ -9,6 +9,7 @@
+ <li><A href="#posadis">Posadis</A>
+ <li><A href="#pdnsd">Pdnsd</A>
+ <li><A href="#dents">Dents</A>
++<li><A href="#mydns">MyDNS</A>
+ <li><A href="#etc">Other abandoned DNS servers</A>
+ <li><A href="#bind9">BIND version 9</A>
+ <li><A href="#oldbind">Older versions of BIND</A>
+@@ -73,16 +74,9 @@
+     very quickly.  This will not be addressed until I adress the issue
+     with recursive threads.
+ 
+-<li>MaraDNS currently does not have support for BIND zone files.  I have 
+-    been working on this on and off for a few months; I am about
+-    to start work on this again and MaraDNS should have BIND zone file
+-    support in a month or two.                                     <p>
+- 
+-    The way this will be implemented is to have both support for a zone
+-    file format that is mostly like BIND's, and a Python script to convert
+-    from BIND's zone file format to MaraDNS' zone file format.  All of the
+-    code for MaraDNS' BIND-like zone file format has been finished; now all 
+-    I have to do is finish the Python script.
++<li>MaraDNS has support for BIND zone files only in the beta-test
++    branch, using a Python script to convert zone files from BIND's format
++    to MaraDNS' BIND-like format.  
+ </ul>
+ 
+ Many, many DNS server projects have come and gone over the years; to
+@@ -97,8 +91,8 @@
+ was superior to MaraDNS' 1.0 zone file format.  It also has some graphical
+ programs which MaraDNS doesn't have at all.  Alas, there have been some
+ problems with the program crashing, and some serious security problems with
+-the underlying code.  The program does not appear to be actively developed
+-any more, so these problems may never be resolved.
++the underlying code.  The last release for this program was in 2004,
++so these problems will probably never be resolved.
+ 
+ <A name="pdnsd"> </A>
+ 
+@@ -107,7 +101,8 @@
+ Pdnsd is an excellent little caching name server that predates MaraDNS.
+ Years ago, the principal author stopped actively maintaining Pdnsd.  
+ Another person is currently maintaining Pdnsd; the last release was
+-done fairly recently.  I have heard that pdnsd has some stability problems.
++done in the fall of 2006.  I have heard that pdnsd has some stability 
++problems.
+ 
+ <p>
+ 
+@@ -122,6 +117,14 @@
+ and stopped developing.  It was not a usable DNS server when this 
+ happened.
+ 
++<A name="mydns"> </A>
++<h3>MyDNS</h3>
++
++MyDNS is a one-trick-pony DNS server, which allows people to convert 
++information from a MySQL database in to DNS records.  The last release was
++in January of 2006.  People who want to use a SQL database with DNS are
++probably better off using PowerDNS.
++
+ <h3>Djbdns</h3>
+ 
+ Djbdns has enough issues that I have <A href="#djbdns">an entire section</A> 
+@@ -223,8 +226,8 @@
+ BIND, to its credit, does have a number of features which I haven't
+ yet implemented in MaraDNS.  BIND supports standard RFC-compliant zone
+ files.  While MaraDNS' csv2 zone file format is mostly BIND-like, there
+-are differences that make the two zone files incompatible.  I am
+-writing a converter and MaraDNS will soon have full RFC
++are differences that make the two zone files incompatible.  I have 
++written a converter and MaraDNS, in the beta-test branch, has BIND
+ zone file support.   BIND, of course, also has full support for being
+ a DNS slave, including NOTIFY and IXFR support--features which I may
+ eventually add to MaraDNS.
+@@ -315,7 +318,7 @@
+ a drop-in replacment.  Like BIND, NSD has a cryptic configuration 
+ format.  There does not appear to be any reported security problems
+ with NSD, but, then again, making a secure authoritative-only DNS server 
+-is easier thank making a secure authoritative + recusive DNS server.
++is easier than making a secure authoritative + recusive DNS server.
+ 
+ <p>
+ 
+@@ -404,24 +407,31 @@
+ 
+ <ul>
+ <li>There are problems resolving some domains with DjbDNS' resolver.  This
+-    is the 'akamai djbdns' problem.
++    is the 'akamai djbdns' problem. 
++<sup><font size=-2><A href="http://marc.theaimsgroup.com/?l=djbdns&amp;m=113733374006571">ref</A></font></sup>
+ <li>DjbDNS does not correctly periodically check upstream DNS servers to
+     make sure a given domain has not moved.
++<sup><font size=-2><A href="http://marc.info/?l=djbdns&amp;m=113898636032186&amp;w=2">ref</A></font></sup>
+ <li>The list of root servers included with DjbDNS is out of date.
++<sup><font size=-2><A href="http://securepoint.com/lists/html/djbdns/2007-03/msg00001.html">ref</A></font></sup>
+ <li>DjbDNS can not compile in Linux without using a special 
+-    incantation.
++    incantation. 
++<sup><font size=-2><A href="http://djbware.csi.hu/patches/djbdns-1.05.errno.patch">patch</A></font></sup>
+ <li>There is a denial of service problem where a remote attacker can
+     clear DjbDNS' recursive cache by sending a single "packet of death"
+     to a dnscache server.
++<sup><font size=-2><A href="http://marc.info/?l=djbdns&amp;m=104796742521473&amp;w=2">ref</A> 
++<A href="http://marc.info/?l=djbdns&amp;m=104804013229536&amp;w=2">patch</A></font></sup>
+ </ul>
+ 
+-Installing djbdns is non-trivial; you need to download and install no
+-less than three different packages.  Djbdns will not even compile on a
+-modern Linux system without knowing the incantation to make it compile.
+-Compare this to MaraDNS, where installing is as simple as downloading
+-one package and typing in "make; make install", or downloading a binary
+-package (packages are available for RedHat/CentOS, Debian, FreeBSD,
+-NetBSD, Slackware, Windows, and probably other systems).
++Installing djbdns is non-trivial; you need to either download and install
++no less than three different packages, or hunt on the internet for the
++non-official way to install djbdns using less packages.  Djbdns will not
++even compile on a modern Linux system without knowing the incantation
++to make it compile.  Compare this to MaraDNS, where installing is as
++simple as downloading one package and typing in "make; make install", or
++downloading a binary package (packages are available for RedHat/CentOS,
++Debian, FreeBSD, NetBSD, Slackware, Windows, and probably other systems).
+ 
+ <p>
+ 

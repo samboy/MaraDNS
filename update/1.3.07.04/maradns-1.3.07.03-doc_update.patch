@@ -1,0 +1,46 @@
+--- maradns-1.3.07.03/doc/en/source/zoneserver.ej	2005-12-08 14:46:49.000000000 -0600
++++ maradns-1.3.07.04/doc/en/source/zoneserver.ej	2007-08-20 09:58:11.000000000 -0500
+@@ -23,6 +23,21 @@
+ <b>mararc(5)</b> manual page.  In particular, the zoneserver uses the
+ zone_transfer_acl, tcp_convert_acl, tcp_convert_server, bind_address, and
+ recursive_acl mararc parameters.
++<h1>EXAMPLE MARARC FILE</h1>
++In this example mararc file, which is used both by maradns and zoneserver,
++we allow 10.1.2.3, 10.1.14.7, and 192.168.116.{any} to transfer zones, and
++we allow anyone on the internet to perform TCP queries.  The only zone
++served in this example is example.com:
++<pre>
++ipv4_bind_addresses = "10.1.1.1" # Our IP
++tcp_convert_server = "10.1.1.1" # IP of UDP DNS server
++tcp_convert_acl = "0.0.0.0/0" # Anyone may do DNS-over-TCP
++chroot_dir = "/etc/maradns" # Where zone files are
++csv2 = {} # Initialize list of zone files
++csv2["example.com."] = "db.example.com" # example.com zone file
++# The next line is a list of who can transfer zones from us
++zone_transfer_acl = "10.1.2.3, 10.1.14.7, 192,168.116.0/24"
++</pre>
+ <h1>SEE ALSO</h1>
+ The man pages <b>maradns(8)</b> and <b>mararc(5)</b>
+ <P>
+--- maradns-1.3.07.03/doc/en/source/tutorial.ej	2007-06-20 22:46:00.000000000 -0500
++++ maradns-1.3.07.04/doc/en/source/tutorial.ej	2007-08-20 09:59:07.000000000 -0500
+@@ -58,7 +58,7 @@
+ <LI><A href=dangling.html>How to resolve "dangling" CNAME records</A>
+ <LI><A href=troubleshoot.html>MaraDNS troubleshooting guide</A>
+ <li><A href=bind2csv2.html>How to convert BIND zone files in to 
+-    MaraDNS-compatable zone files.
++    MaraDNS-compatable zone files.</A>
+ </UL>
+ 
+ <h2>Man pages</h2>
+--- maradns-1.3.07.03/doc/en/tutorial/Makefile	2007-06-20 22:46:00.000000000 -0500
++++ maradns-1.3.07.04/doc/en/tutorial/Makefile	2007-08-20 10:04:12.000000000 -0500
+@@ -22,7 +22,7 @@
+ man.fetchzone.html: ../source/fetchzone.ej
+ 	../../../tools/ej/ej2html ../source/fetchzone.ej > man.fetchzone.html
+ 
+-man.zoneserver.html: ../source/fetchzone.ej
++man.zoneserver.html: ../source/zoneserver.ej
+ 	../../../tools/ej/ej2html ../source/zoneserver.ej > \
+ 	    man.zoneserver.html
+ 

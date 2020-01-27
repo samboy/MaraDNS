@@ -1,0 +1,373 @@
+diff -ur maradns-Q.20060725.1/parse/Csv2_functions.h maradns-1.2.12.01/parse/Csv2_functions.h
+--- maradns-Q.20060725.1/parse/Csv2_functions.h	2006-07-25 14:14:38.000000000 -0500
++++ maradns-1.2.12.01/parse/Csv2_functions.h	2006-07-26 09:41:10.000000000 -0500
+@@ -284,3 +284,6 @@
+ js_string *csv2_get_hex(csv2_read *stream);
+ js_string *csv2_get_loc(csv2_read *stream);
+ 
++/* Some more Csv2_read.c functions */
++int csv2_push_file(csv2_read *file, js_string *filename);
++int csv2_pop_file(csv2_read *file);
+diff -ur maradns-Q.20060725.1/parse/Csv2_parse.c maradns-1.2.12.01/parse/Csv2_parse.c
+--- maradns-Q.20060725.1/parse/Csv2_parse.c	2006-07-25 14:14:38.000000000 -0500
++++ maradns-1.2.12.01/parse/Csv2_parse.c	2006-07-26 09:42:28.000000000 -0500
+@@ -550,6 +550,11 @@
+ 	return (csv2_is_text(in) || in == '%');
+ }
+ 
++/* Match on [0-9a-zA-Z\-\_\.] or anything utf-8 */
++int csv2_is_fchar(int32 in) {
++	return (csv2_is_text(in) || in == '.');
++}
++
+ /* Match on [0-9a-zA-Z\-\_\*\%] or anything utf-8 */
+ int csv2_is_starwhitis(int32 in) {
+ 	return (csv2_is_text(in) || in == '*' || in == '%');
+@@ -1064,6 +1069,31 @@
+ 	return ret;
+ }
+ 
++/* Your generic swiss-army-knife "get a stream of characters from the
++ * file and make a js_string out of it function"; bascially, we use
++ * a pointer to the is_ok function to determine what characters we put
++ * in the output string, then we get that string from the stream (skipping
++ * whitespace, etc.) */
++
++js_string *csv2_get_something(csv2_read *stream, int (*is_ok)(int32 in)) {
++	js_string *o;
++	
++	if(csv2_get_1st(stream,is_ok,0) != JS_SUCCESS) {
++		return 0;
++	}
++
++	if((o = process_something(stream,is_ok)) == 0) {
++		return 0;
++	}
++
++	return o;
++}
++
++/* We can use the above function to get things like filenames */
++js_string *csv2_get_filename(csv2_read *stream) {
++	return csv2_get_something(stream,csv2_is_fchar);
++}
++	
+ /* Get a record that is in DNAME form; 0 is error;
+  * this function is currently *not* called anywhere
+  */
+@@ -1233,6 +1263,8 @@
+ 				cmd = 1; /* ttl */
+ 			} else if(look == 'o') {
+ 				cmd = 2; /* origin */
++			} else if(look == 'r') {
++				cmd = 5; /* read */
+ 			} else {
+ 				csv2_error(stream,"Invalid slash command");
+ 				return -1; /* error */
+@@ -1242,7 +1274,7 @@
+ 			if(cmd == 2 && look == 'p') { /* opush/opop */
+ 				cmd = 3; /* opush */
+ 			} else if((cmd == 1 && look != 't') || (cmd == 2 &&
+-                            look != 'r')) {
++                            look != 'r') || (cmd == 5 && look != 'e')) {
+ 				csv2_error(stream,"Invalid slash command");
+ 				return -1;
+ 			}
+@@ -1251,7 +1283,8 @@
+ 			if(cmd == 3 && look == 'o') {
+ 				cmd = 4; /* opop */
+ 			} else if((cmd == 1 && look != 'l') || (cmd == 2 &&
+- 			    look != 'i') || (cmd == 3 && look != 'u')) {
++ 			    look != 'i') || (cmd == 3 && look != 'u') ||
++                            (cmd == 5 && look != 'a')) {
+ 				csv2_error(stream,"Invalid slash command");
+ 				return -1;
+ 			}
+@@ -1401,6 +1434,17 @@
+ 				state->origin = o->origin;
+ 				zone = state->origin;
+ 				js_dealloc(o);
++			} else if(cmd == 5 && look == 'd') {
++				js_string *filename;
++				look = csv2_read_unicode(stream);
++				if(!csv2_is_delimiter(look)) {
++					csv2_error(stream,
++					    "Invalid slash command");
++					return -1;
++				}
++				filename = csv2_get_filename(stream);
++				csv2_push_file(stream,filename);
++				js_destroy(filename);
+ 			} else {
+ 				csv2_error(stream,"Invalid slash command");
+ 				return -1;
+diff -ur maradns-Q.20060725.1/parse/Csv2_read.c maradns-1.2.12.01/parse/Csv2_read.c
+--- maradns-Q.20060725.1/parse/Csv2_read.c	2005-11-16 02:03:56.000000000 -0600
++++ maradns-1.2.12.01/parse/Csv2_read.c	2006-07-26 09:36:59.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004-2005 Sam Trenholme
++/* Copyright (c) 2004-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -57,6 +57,8 @@
+ 	}
+ 
+ 	/* Initialize all of the fields */
++	out->stack = 0;
++	out->stack_height = 0;
+ 	out->mnum = 0;
+ 	out->mplace = 0;
+ 	out->cplace = 0;
+@@ -86,10 +88,21 @@
+  */
+ 
+ int csv2_close(csv2_read *file) {
++	csv2_file *v, *w;
++	int a = 0;
+ 	if(fclose(file->reading) != 0) {
+ 		return JS_ERROR;
+ 	}
+ 
++	v = file->stack;
++	while(v != 0 && a < 1000) {
++		w = v->next;
++		fclose(v->reading);
++		js_dealloc(v);
++		v = w;
++		a++;
++	}
++		
+ 	if(js_dealloc(file) != JS_SUCCESS) {
+ 		return JS_ERROR;
+ 	}
+@@ -141,6 +154,7 @@
+ 
+ 	/* If we are not inside a macro, we just read from the file */
+ 	if(file->mnum == 0) {
++read_char:
+ 		out = getc(file->reading);
+ 		file->context[file->cplace++] = out;
+ 		if(file->cplace == 19) { file->cplace = 0; }
+@@ -148,6 +162,10 @@
+ 			file->linenum++;
+ 		}
+ 		if(out == EOF) {
++			if(file->stack != 0) {
++				csv2_pop_file(file);
++				goto read_char;
++			}
+ 			return -2; /* End of file */
+ 		}
+ 		if(out == '{') { /* Reserved for macro processing */
+@@ -259,6 +277,90 @@
+ 	return JS_SUCCESS;
+ }
+ 
++/* Take the current file being read, push that file on the stack, and open
++ * up a new file.  If opening the new file fails, we just keep reading
++ * from the old file */
++
++int csv2_push_file(csv2_read *file, js_string *filename) {
++	csv2_file *o;
++	char *nf;
++	FILE *nfd;
++
++	if(file->stack_height > 7) {
++		return 0;
++	}
++
++	if(filename == 0) {
++		return 0;
++	}
++
++	if(filename->unit_size != 1) {
++		return 0;
++	}
++
++	if((nf = js_alloc(filename->unit_count + 3,1)) == 0) {
++		return 0;
++	}
++
++	if(js_js2str(filename,nf,filename->unit_count + 1) == 
++			JS_ERROR) {
++		js_dealloc(nf);
++		return 0;
++	}
++
++	if((nfd = fopen(nf,"rb")) == 0) {
++		js_dealloc(nf);
++		return 0;
++	}
++
++	if((o = js_alloc(1,sizeof(csv2_file) + 1)) == 0) {
++		js_dealloc(nf);
++		fclose(nfd);
++		return 0;
++	}
++
++	o->filename = file->filename;
++	o->reading = file->reading;
++	o->next = file->stack;
++	file->stack = o;
++	file->filename = nf;
++	file->reading = nfd;
++	file->stack_height++;
++
++	return JS_SUCCESS;
++
++}
++
++/* This does the opposite of the push operation above: This closes the file
++ * we're currently reading and pops the file from the top of the stack.
++ */
++
++int csv2_pop_file(csv2_read *file) {
++	csv2_file *v;
++	fclose(file->reading);
++	
++	js_dealloc(file->filename);
++	v = file->stack;
++
++	if(v == 0) {
++		csv2_error(file,"Trying to pop from empty stack");
++		return 0;
++	}
++
++	file->reading = v->reading;
++	file->filename = v->filename;
++	file->stack = v->next;
++	file->stack_height--;
++	if(file->stack_height < 0) {
++		csv2_error(file,"Trying to pop from empty stack");
++		return 0;
++	}
++	js_dealloc(v);
++
++	return JS_SUCCESS;
++}
++	
++	
+ /* Method to set the "last read" unicode character in the input stream */
+ int csv2_set_unicode(csv2_read *file, int32 in) {
+ 	if(file->ok_to_read != 1) {
+diff -ur maradns-Q.20060725.1/parse/Csv2_read.h maradns-1.2.12.01/parse/Csv2_read.h
+--- maradns-Q.20060725.1/parse/Csv2_read.h	2005-12-05 16:20:19.000000000 -0600
++++ maradns-1.2.12.01/parse/Csv2_read.h	2006-07-26 09:36:59.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004 Sam Trenholme
++/* Copyright (c) 2004-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -21,10 +21,18 @@
+ #define FATAL_CSV2_READ -219
+ /* Headers for a csv2_read state */
+ 
++typedef struct csv2_file {
++	FILE *reading;
++	char *filename;
++	struct csv2_file *next;
++} csv2_file;
++
+ typedef struct csv2_read {
+ 	FILE *reading;
+ 	char *filename;
++	csv2_file *stack;
+ 	char context[19];
++	int stack_height;
+ 	int cplace;
+ 	int mnum;
+ 	int mplace;
+--- maradns-Q.20060725.1/doc/en/source/csv2.ej	2006-07-25 14:14:38.000000000 -0500
++++ maradns-1.2.12.01/doc/en/source/csv2.ej	2006-07-26 10:08:17.000000000 -0500
+@@ -565,6 +565,89 @@
+ 
+ The opush/opop stack can have up to seven elements on it.
+ 
++<h2>Read</h2>
++
++The '/read' slash commands allows one to have the contents of another
++file in a zone.  The '/read' command takes a single argument: A filename
++that one wishes to read.  The filename is only allowed to have letters, 
++numbers, the '-' character, the '_' character, and the '.' character in it.
++
++<p>
++
++The file needs to be in the same directory as the zone file.  The file will
++be read with the same privileges as the zone file; content in the file
++should come from a trusted source or be controlled by the system 
++administrator.
++
++<p>
++
++Let us suppose that we have the following in a zone file:
++
++<pre>
++mail.foo.example.com. 10.3.2.1
++/read foo
++foo.example.com. MX 10 mail.foo.example.com.
++</pre>
++
++And a file foo with the following contents:
++
++<pre>
++foo.example.com. 10.1.2.3
++foo.example.com. TXT 'Foomatic!'
++</pre>
++
++Then foo.example.com will have an A record with the value 10.1.2.3, a
++TXT value of 'Foomatic!', and a MX record with priority 10 pointing to
++mail.foo.example.com.  mail.foo.example.com will have the IP 10.3.2.1.
++
++<p>
++
++Note that no pre-processing nor post-processing of the origin is done
++by the '/read' command; should the file read change the origin, this
++changed value will affect any records after the '/read' command.  For
++example, let us suppose db.example.com looks like this:
++
++<pre>
++/origin foo.example.com.
++% TXT 'Foomatic!'
++/read foo
++% MX 10 mail.foo.example.com.
++</pre>
++
++And the file foo looks like this:
++
++<pre>
++% 10.1.2.3
++/origin mail.%
++% 10.3.2.1
++</pre>
++
++Then the following records will be created:
++
++<pre>
++foo.example.com.      TXT   'Foomatic!'
++foo.example.com.      A     10.1.2.3
++mail.foo.example.com. A     10.3.2.1
++mail.foo.example.com. MX 10 mail.foo.example.com.
++</pre>
++
++To have something that works like '$INCLUDE filename' in a RFC1035
++master file, do the following:
++
++<pre>
++/opush %
++/read filename
++/opop
++</pre>
++
++Or, for that matter, the equivalent of '$INCLUDE filename neworigin':
++
++<pre>
++/opush neworigin.
++/read filename
++/opop
++</pre>
++
+ <h1>EXAMPLE ZONE FILE</h1>
+ 
+ <pre>

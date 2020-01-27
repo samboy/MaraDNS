@@ -1,0 +1,11 @@
+--- maradns-1.3.05/doc/en/source/default_zonefile.ej.orig	2007-05-13 22:35:38.000000000 -0500
++++ maradns-1.3.05/doc/en/source/default_zonefile.ej	2007-05-13 22:35:46.000000000 -0500
+@@ -55,7 +55,7 @@
+ www.* A 10.10.10.10
+ 
+ # Here is a MX record
+-* MX mail.example.com.
++* MX 10 mail.example.com.
+ </pre>
+ 
+ Here, "example.com" is replaced with the name of the zone server running

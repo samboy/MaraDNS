@@ -1,0 +1,10 @@
+--- maradns-1.3.07.05/parse/Csv2_rr_wks.c.orig	2007-09-19 17:12:54.000000000 -0500
++++ maradns-1.3.07.05/parse/Csv2_rr_wks.c	2007-09-19 17:13:16.000000000 -0500
+@@ -240,6 +240,7 @@
+ 		/* Mailbox label */
+ 		if(csv2_get_1st(stream,csv2_is_alphanum_ordot,0) != 
+                     JS_SUCCESS) {
++			js_destroy(out);
+ 			return 0;
+ 		}
+ 		if((name = process_mbox(stream)) == 0) {

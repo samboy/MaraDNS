@@ -1,0 +1,87 @@
+--- maradns-1.2.12.01/doc/en/webpage/download.embed	2006-07-26 10:58:44.000000000 -0500
++++ maradns-1.2.12.02/doc/en/webpage/download.embed	2006-08-14 15:01:42.000000000 -0500
+@@ -3,7 +3,8 @@
+ <h1>&iexcl;Download MaraDNS!</h1>
+ 
+ <h2>Stable release</h2>
+-<p>This is the current stable release of MaraDNS, MaraDNS 1.2.07.8
++<p>This is the current stable release of MaraDNS, MaraDNS 1.2.12.02,
++released August 14, 2006.
+ <p>This release is available both at <A 
+ href="http://sourceforge.net/project/showfiles.php?group_id=24033&amp;package_id=16396&amp;release_id=434257">sourceforge.net</A>
+ and on this page.
+@@ -11,56 +12,56 @@
+ <p>
+ <table><tr><td>
+ <A 
+-href="download/1.2/1.2.07.8/maradns-1.2.07.8.tar.bz2"><!--
+-                         -->maradns-1.2.07.8.tar.bz2</A>
++href="download/1.2/1.2.12.02/maradns-1.2.12.02.tar.bz2"><!--
++                          -->maradns-1.2.12.02.tar.bz2</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.07.8/maradns-1.2.07.8.tar.bz2.sha1.asc">sig</A><p>
++href="download/1.2/1.2.12.02/maradns-1.2.12.02.tar.bz2.sha1.asc">sig</A><p>
+ </td><td>
+ <A href="#bz2">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.2/1.2.07.8/maradns-1.2.07.8.tar.lzma"><!--
+-                         -->maradns-1.2.07.8.tar.lzma</A>
++href="download/1.2/1.2.12.02/maradns-1.2.12.02.tar.lzma"><!--
++                          -->maradns-1.2.12.02.tar.lzma</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.07.8/maradns-1.2.07.8.tar.lzma.sha1.asc">sig</A>
++href="download/1.2/1.2.12.02/maradns-1.2.12.02.tar.lzma.sha1.asc">sig</A>
+ </td><td>
+ <A href="#lzma">info</A> 
+ </td></tr><tr><td>
+ <A 
+-href="download/1.2/1.2.07.8/maradns-1.2.07.8.tar.gz"><!--
+-                         -->maradns-1.2.07.8.tar.gz</A>
++href="download/1.2/1.2.12.02/maradns-1.2.12.02.tar.gz"><!--
++                          -->maradns-1.2.12.02.tar.gz</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.07.8/maradns-1.2.07.8.tar.gz.sha1.asc">sig</A>
++href="download/1.2/1.2.12.02/maradns-1.2.12.02.tar.gz.sha1.asc">sig</A>
+ </td><td>
+ <A href="#gz">info</A>
+ </td></tr><tr><td>
+-<A href="download/1.2/1.2.07.8/maradns-1.2.07.8-1.src.rpm"><!--
+-                                -->maradns-1.2.07.8-1.src.rpm</A>
++<A href="download/1.2/1.2.12.02/maradns-1.2.12.02-1.src.rpm"><!--
++                             -->maradns-1.2.12.02-1.src.rpm</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.07.8/maradns-1.2.07.8-1.src.rpm.sha1.asc">sig</A>
++href="download/1.2/1.2.12.02/maradns-1.2.12.02-1.src.rpm.sha1.asc">sig</A>
+ </td><td>
+ <A 
+ href="#srcrpm">info</A>
+ </td></tr><tr><td>
+-<A href="download/1.2/1.2.07.8/maradns-1.2.07.8-1.i386.rpm"><!--
+-                            -->maradns-1.2.07.8-1.i386.rpm</A>
++<A href="download/1.2/1.2.12.02/maradns-1.2.12.02-1.i386.rpm"><!--
++                             -->maradns-1.2.12.02-1.i386.rpm</A>
+ </td><td>
+ <A 
+-   href="download/1.2/1.2.07.8/maradns-1.2.07.8-1.src.rpm.sha1.asc">sig</A>
++   href="download/1.2/1.2.12.02/maradns-1.2.12.02-1.src.rpm.sha1.asc">sig</A>
+ </td><td>
+ <A 
+ href="#rpm">info</A>
+ </td></tr><tr><td>
+ <A 
+-href="download/1.2/1.2.07.8/maradns-1-2-07-8-win32.zip"><!--
+-                         -->maradns-1-2-07-8-win32.zip</A>
++href="download/1.2/1.2.12.02/maradns-1-2-12-02-win32.zip"><!--
++                          -->maradns-1-2-12-02-win32.zip</A>
+ </td><td>
+ <A 
+-href="download/1.2/1.2.07.8/maradns-1-2-07-8-win32.zip.sha1.asc">sig</A>
++href="download/1.2/1.2.12.02/maradns-1-2-12-02-win32.zip.sha1.asc">sig</A>
+ </td><td>
+ <A href="#zip">info</A>
+ </td></tr></table>
