@@ -15,5 +15,5 @@ sleep 1
 ../../../tools/askmara Tversion.maradns. | sed 's/3\.4[0-9\.]*//' | \
 	sed 's/Q[0-9\.]*//'
 sleep 1
-killall maradns
+killall maradns > /dev/null 2>&1
 rm mararc

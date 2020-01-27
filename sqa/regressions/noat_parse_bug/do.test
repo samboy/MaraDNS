@@ -25,6 +25,6 @@ sleep 1
 ../../../tools/askmara Awww.example.com.
 ../../../tools/askmara Sexample.com.
 sleep 1
-killall maradns
+killall maradns > /dev/null 2>&1
 rm mararc
 rm db.example.com

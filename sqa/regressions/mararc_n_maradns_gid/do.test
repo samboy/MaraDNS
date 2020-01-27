@@ -23,6 +23,6 @@ sleep 1
 echo
 ps -eo '%u %U %G %c' | grep maradns
 sleep 1
-killall maradns
+killall maradns > /dev/null 2>&1
 rm mararc
 rm db.example.com

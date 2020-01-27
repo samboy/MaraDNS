@@ -39,7 +39,7 @@ echo
 echo
 echo
 sleep 1
-killall maradns
+killall maradns > /dev/null 2>&1
 
 done
 

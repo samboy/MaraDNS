@@ -23,7 +23,7 @@ echo
 ../../../tools/askmara Awwwz.example.com. | awk '{print $6 < 2007090100}'
 echo
 sleep 1
-killall maradns
+killall maradns > /dev/null 2>&1
 rm mararc
 rm db.example.com
 

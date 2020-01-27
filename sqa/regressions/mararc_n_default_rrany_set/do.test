@@ -26,7 +26,7 @@ EOF
 sleep 1
 ../../../tools/askmara Zwww.example.com.
 sleep 1
-killall maradns
+killall maradns > /dev/null 2>&1
 
 done 
 

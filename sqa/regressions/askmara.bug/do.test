@@ -11,6 +11,6 @@ sleep 1
 ../../../tools/askmara -t 1 Tt1.example.com. > /dev/null
 ../../../tools/askmara -t 1 Tt1.example.com. 
 sleep 1
-killall bad.packet
+killall bad.packet > /dev/null 2>&1
 sleep 1
 rm bad.packet

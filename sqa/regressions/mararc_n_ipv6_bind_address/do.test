@@ -29,7 +29,7 @@ dig @fd4d:6172:6144:4e53::1 www.example.com | grep -v DiG | grep -v WHEN | \
 	grep -v 'WARNING: recursion requested'
 echo done
 sleep 1
-killall maradns
+killall maradns > /dev/null 2>&1
 rm mararc
 rm db.example.com
 

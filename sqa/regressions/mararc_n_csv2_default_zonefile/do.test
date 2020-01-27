@@ -25,6 +25,6 @@ sleep 1
 ../../../tools/askmara Aexample.net.
 ../../../tools/askmara Afoo.bar.example.org.
 sleep 1
-killall maradns
+killall maradns > /dev/null 2>&1
 rm mararc
 rm db.default

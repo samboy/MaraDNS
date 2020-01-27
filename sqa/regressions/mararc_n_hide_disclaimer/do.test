@@ -13,5 +13,5 @@ EOF
 # OK, test the server
 ../../../server/maradns -f mararc &
 sleep 5
-killall maradns
+killall maradns > /dev/null 2>&1
 rm mararc

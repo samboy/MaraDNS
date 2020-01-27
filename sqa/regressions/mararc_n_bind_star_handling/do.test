@@ -41,7 +41,7 @@ echo bind_star_handling is ${LEVEL}
 ../../../tools/askmara @a.a.b.example.net.
 echo
 sleep 1
-killall maradns
+killall maradns > /dev/null 2>&1
 
 done
 

@@ -22,7 +22,7 @@ echo $LEVEL
 ../../../tools/askmara Ttimestamp.maradns. | sed 's/: [0-9][0-9]*//'
 echo
 sleep 1
-killall maradns
+killall maradns > /dev/null 2>&1
 rm mararc
 
 done

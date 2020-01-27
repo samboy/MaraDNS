@@ -31,7 +31,7 @@ sleep 1
 ../../../tools/askmara Awww.example.com. > /dev/null
 
 sleep 1
-killall maradns
+killall maradns > /dev/null 2>&1
 rm mararc
 
 done

@@ -20,6 +20,6 @@ EOF
 sleep 1
 ../../../tools/askmara Awwwz.example.com. | awk '{print $4}'
 sleep 1
-killall maradns
+killall maradns > /dev/null 2>&1
 rm mararc
 rm db.example.com
