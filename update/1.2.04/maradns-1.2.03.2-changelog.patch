@@ -1,0 +1,32 @@
+--- maradns-1.2.03.2/doc/en/source/changelog.embed	2006-02-02 14:18:07.000000000 -0800
++++ maradns-1.2.04/doc/en/source/changelog.embed	2006-02-09 11:41:07.000000000 -0800
+@@ -1,5 +1,29 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.04:
++<p>
++This is a testing (potentially unstable) release of MaraDNS.
++<blockquote>
++<ul>
++<li>Cygwin fix: <tt>chroot()</tt> and <tt>setuid()</tt> do not effectively
++    work on Cygwin; MaraDNS updated to not use these calls in Cygwin.  
++    This makes the Cygwin release not have all of the security of a 
++    native UNIX version of MaraDNS.
++<li>RPM updates: Spec file made current; mararc for RPM updated for MaraDNS
++    1.2; RPM updated by Greg Swallow to compile on CentOS 3 and 4.
++<li>Updates to the recursive code to make MaraDNS run better when used 
++    by a large ISP:
++    <ol>
++    <li>TTL determining code updated
++    <li>Two minor typos fixed
++    <li>Custodian tweaked to work better under high load
++    <li><tt>maxprocs</tt> can now be as high as 5000
++    <li><tt>min_visible_ttl</tt> mararc variable added
++    </ol>
++</ul>
++(2006.02.09)
++</blockquote>
++
+ <p>maradns-1.2.03.2:
+ <blockquote>
+ <ul>

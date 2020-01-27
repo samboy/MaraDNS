@@ -1,0 +1,142 @@
+This fixes a bug that Christian Klossek reported with ANY DNS queries.
+
+This also updates some of the comments, and removes some of the commented
+out debugging.
+
+--- maradns-1.2.02/server/MaraDNS.c	2006-01-02 08:59:33.000000000 -0800
++++ maradns-1.2.03/server/MaraDNS.c	2006-01-11 23:45:58.000000000 -0800
+@@ -970,6 +970,9 @@
+           to add records to the authority (ns) section, the real query name
+ 	  (used in the case of star records, otherwise 0.)
+    Output: JS_ERROR on error, JS_SUCCESS on success
++
++   NOTE: This routine is only called from udpany and is only used to
++         process ANY queries.
+ */
+ 
+ int add_answer(rr *where,js_string *most, js_string *ns, js_string *ar,
+@@ -1027,7 +1030,7 @@
+     while(where != 0) {
+         /* Increment the number of answers -or- ns records */
+         if(first_rr_type != RR_NS && where->rr_type == RR_NS && 
+-			max_answers != 1) {
++			max_answers == 0) {
+ 
+             /* Due to the data structure MaraDNS currently uses, the behavior
+                is buggy if we round-robin rotate data when we allow more than
+@@ -1056,6 +1059,13 @@
+             a_count++; /* Counter so we don't exceed the maximum number
+                           of records allowed to be seen in a chain */
+             total_count++;
++            /* This allows us to have multiple records for a given RTYPE
++               when an ANY query is made */
++            if(where->rr_type == RR_NS && first_rr_type != RR_NS &&
++               max_answers != 0) {
++                in_ns = 1;
++                goto max_answers_skip;
++                }
+             (*ancount)++; /* This goes in the header of the reply */
+             /* Append the name for this answer to the answer */
+ 	    if(starwhitis == 0 && /* We don't do following if this fails */
+@@ -1083,12 +1093,13 @@
+             if(js_append(where->data,most) == JS_ERROR) {
+                 goto giveerror;
+                 }
++max_answers_skip:
+ 	    if(max_answers == 1) {
+-		/*printf("leaving....\n");*//*DEBUG*/
+ 		return JS_SUCCESS;
+ 	        }
+             }
+-        else if(a_count < max_chain && total_count < max_total) {
++        else if(a_count < max_chain && total_count < max_total &&
++                max_answers == 0) {
+             a_count++; total_count++; /* The counters that make sure we do
+                                          not have more than, say, eight
+                                          records for a given answer */
+@@ -1117,7 +1128,7 @@
+             }
+         /* If there is an IP, and this is *not* a CNAME record,
+            append the IP of the answer to the AR section */
+-        if(where->ip != 0 && where->rr_type != RR_CNAME) {
++        if(where->ip != 0 && where->rr_type != RR_CNAME && max_answers == 0) {
+             ipwhere = where->ip;
+             ar_count = 0; /* Reset for each instance of showing AR
+                              records */
+@@ -1266,20 +1277,17 @@
+     /* Start synthesizing the reply */
+     /* Look for the list of all of the answers */
+     spot_data = mhash_get(bighash,query);
+-    /*printf("DEBUG: %p %d\n",spot_data.value,spot_data.datatype);*//*DEBUG*/
+     /* If found, use this list for all of the answers */
+     if(spot_data.value != 0 && spot_data.datatype == MARA_DNS_LIST) {
+ 	int counter;
+ 	answer = (rr_list *)spot_data.value;
+ 	found = 1;
+ 	for(counter = 0; counter < 100; counter++) {
+-	    /*printf("1007: %p %p\n",answer->data,answer->next);*//*DEBUG*/
+             if(add_answer(answer->data,most,ns,ar,&(header.ancount),
+                    &(header.nscount),&(header.arcount),1,
+-                   spot_data.point,0,1) == JS_ERROR) {
++                   spot_data.point,0,2) == JS_ERROR) {
+ 		goto giveerror;
+ 	        }
+-	    /*show_esc_stdout(most); printf("\n");*//*DEBUG*/
+ 	    answer = answer->next;
+ 	    if(answer == 0) 
+ 		    break;
+@@ -2474,7 +2482,13 @@
+ 
+ /* Given a query, a record type to query, and whether we have
+  * already found a record in question, do an ANY lookup for
+- * the query in question */
++ * the query in question 
++ *
++ * Note: This is only called from udpany, and only when using the
++ *       old ANY handling code (still used by the recursive resolver);
++ *       this particular routine can probably be sucessfully pruned at 
++ *       this point.
++ */
+ 
+ int starwhitis_seek_any(js_string *query, int rr_type, int found,
+ 		q_header *head, rr **w, int *a,
+@@ -3440,8 +3454,6 @@
+         /* Again, restore the original query */
+         if(js_copy(origq,lookfor) == JS_ERROR)
+             goto serv_fail;
+-        /*show_esc_stdout(lookfor);*/ /* DEBUG */
+-        /*printf("\n");*/ /* DEBUG */
+         /* Now, start lopping off the dlabels from the *end* of the hostname */
+         while((labels = bobbit_starlabel_end(lookfor)) > 0) {
+ 	    /* I like to know just how many labels we really have;
+@@ -4442,30 +4454,8 @@
+             default_zonefile_enabled = 1;
+     }
+ 
+-    /*DEBUG: Show them what elements have been added to the big hash */
+-    /*(disabled)*/ /*
+-    printf("Viewing the bighash\n");
+-    if(mhash_firstkey(bighash,verbstr) == JS_SUCCESS) {
+-        do {
+-	    show_esc_stdout(verbstr);
+-	    printf(" DNS query: ");
+-	    human_readable_dns_query(verbstr,0);
+-	    printf("\n");
+-        } while (mhash_nextkey(bighash,verbstr) == JS_SUCCESS);
+-    } else {
+-	printf("WARNING: Can't get first key in big hash\n");
+-    }*/
+-    /* END DEBUG */
+     mlog(L_RRS_LOADED);  /* "All RRs have been loaded" */
+ 
+-    /* Enable signal handler for SIGPIPE */
+-    /* (Signals disabled until I can determine if the "signal race
+-       condition" attack affects MaraDNS) */
+-    /*signal(SIGPIPE,handle_sigpipe);*/
+-    /* Some other catchable signals */
+-    /*signal(SIGALRM,handle_signal);*/
+-    /*signal(SIGUSR1,handle_signal);*/
+-    /*signal(SIGUSR2,handle_signal);*/
+     /* Right now, all we do after getting a HUP signal is exit with a code
+        of 8.  The static DNS database is too tangley for me to figure out 
+        how to clear all of the memory it uses quickly; there is too much 

@@ -1,0 +1,13 @@
+Another typo fixed by an admin who uses MaraDNS in production at a
+big ISP.
+
+--- maradns-1.2.03.2/server/recursive.c	2006-02-09 00:19:22.000000000 -0800
++++ maradns-1.2.04/server/recursive.c	2006-02-09 00:19:58.000000000 -0800
+@@ -1086,7 +1086,6 @@
+     data->ptr = 0;
+     data->seen = 0;
+     data->zap = 0;
+-    data->expire = data->ttl = data->authoritative = 0;
+ 
+     /* Store the simple data in the rr data */
+     data->authoritative = authoritative;

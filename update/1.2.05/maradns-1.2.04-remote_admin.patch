@@ -1,0 +1,157 @@
+--- maradns-1.2.05.orig/libs/JsStrOS.c	2005-12-05 12:53:28.000000000 -0800
++++ maradns-1.2.05/libs/JsStrOS.c	2006-02-20 23:33:43.000000000 -0800
+@@ -47,6 +47,9 @@
+     unsigned int hash_index,counter;
+     lt_hash_spot *new,*point;
+ #endif /* DEBUG */
++    /* Sanity check: Never allow this; makes C act buggy */
++    if(unit_size == 0 || unit_count == 0) 
++        return 0;
+     data = (void *)malloc(unit_count * unit_size);
+ #ifdef DEBUG
+     /* If debug is set, we have a 64k element hash table which uses the low 
+--- maradns-1.2.05.orig/parse/ParseMaraRc.c	2006-02-20 22:18:21.000000000 -0800
++++ maradns-1.2.05/parse/ParseMaraRc.c	2006-02-20 22:21:19.000000000 -0800
+@@ -31,7 +31,7 @@
+ 
+ /* Keywords that are non-dictionary strings in Mara's rc file */
+ 
+-#define KEYCOUNT 44
++#define KEYCOUNT 45
+ 
+ char *keywords[KEYCOUNT] = {
+         "bind_address", /* IPv4 Addresses to bind to (old name) */
+@@ -119,6 +119,8 @@
+         "bind_star_handling", /* Whether or not to handle star records the 
+                                  way BIND does */
+         "admin_acl", /* List of IPs allowed to administrate MaraDNS */
++        "remote_admin", /* Whether verbose_level can be remotely
++                         * set while MaraDNS is running */
+         "zone_transfer_acl" /* ACL of IPs allowed to perform zone transfers */
+         };
+ 
+--- maradns-1.2.05.orig/server/MaraDNS.c	2006-02-20 22:18:21.000000000 -0800
++++ maradns-1.2.05/server/MaraDNS.c	2006-02-20 23:35:54.000000000 -0800
+@@ -118,6 +118,11 @@
+ 
+ int bind_star_handling = 0; /* Handle star records the same way BIND does */
+ 
++int remote_admin = 0; /* Whether remote administration (currently, 
++                         changing the verbose_level while MaraDNS is
++                         running is the only thing that can be changed
++                         remotely) is allowed.  Default off */
++
+ /* A list of who is and who is not allowed to make recursive DNS queries */
+ ipv4pair recurse_acl[512];
+ /* A list of the ipv4 IP addresses we bind MaraDNS to (the netmask portion is
+@@ -3029,6 +3034,7 @@
+ 
+     /* Franky's request to have "administrative IPs", finally implemented 
+      * after almost four years */
++
+     if(check_ipv4_acl(ip,admin_acl) != 1) {
+             goto skip_easter_egg;
+     } 
+@@ -3186,6 +3192,54 @@
+            }
+ #endif /* AUTHONLY */
+ 
++/* A TXT query to [0-9].verbose_level.maradns. (where [0-9] is a number
++   between 0 and 9) sets the verbose_level to the number in question.  
++   This is only allowed if remote_admin is set to one */
++       if(origq->unit_count == 27 && *(origq->string) == 1
++          && no_fingerprint != 1 && remote_admin == 1) {
++           int new_verbose_level;
++           char *query_string;
++           new_verbose_level = *(origq->string + 1) - '0';
++           if(new_verbose_level < 0 || new_verbose_level > 9) {
++               goto skip_easter_egg;
++               }
++           /* Allocate a string to put the verbose_level in */
++           if((num_string = js_alloc(4,1)) == 0) {
++               js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
++               return JS_ERROR;
++               }
++           *num_string = new_verbose_level + '0';
++           *(num_string + 1) = 0;
++           if((query_string = js_alloc(37,1)) == 0) {
++               js_dealloc(num_string);
++               js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
++               return JS_ERROR;
++               }
++           if(strncpy(query_string,"T0.verbose_level.maradns.",29) == 0) {
++               js_dealloc(query_string);
++               js_dealloc(num_string);
++               js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
++               return JS_ERROR;
++               }
++           *(query_string + 1) = '0' + new_verbose_level;
++           result_code = easter_egg(header.id,sock,ect,origq,
++            query_string,RR_TXT,"Verbose level is now ",num_string);
++           js_dealloc(num_string);
++           js_dealloc(query_string);
++           if(result_code == JS_SUCCESS) {
++               log_level = new_verbose_level; 
++               printf("Verbose_level remotely set to %d\n",new_verbose_level); 
++#ifndef AUTHONLY
++               init_rlog_level(new_verbose_level); 
++#endif
++               js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
++               return JS_SUCCESS;
++               }
++           if(result_code == JS_ERROR) {
++               goto serv_fail;
++               }
++           }
++
+ skip_easter_egg:
+ 
+     /* If dos_protection_level is greater than 11, then we don't
+@@ -4083,6 +4137,20 @@
+          harderror("bind_star_handling must have a value of 0 or 1");
+      } 
+ 
++     /* remote_admin: Whether we allow remote administration.  Currently,
++        the only remote administration allowed is to change the
++        verbose_level while MaraDNS is running.  I am allowing this
++        under limited circumstances (your IP *must* be on the
++        admin_acl list for this to work) because this will help
++        debug some wonkeyness which happens when MaraDNS is very heavily
++        loaded (1200 queries a second in large datacenters).  I personally
++        think the wonkeyness is because the underlying kernel is overloaded,
++        but this will allow more comprehensive debugging */
++     remote_admin = read_numeric_kvar("remote_admin",0);
++     if(remote_admin < 0 || remote_admin > 1) {
++         harderror("remote_admin must have a value of 0 or 1");
++     } 
++
+     /* Set the timestamp type */
+     timestamp_type = read_numeric_kvar("timestamp_type",5);
+     set_timestamp(timestamp_type);
+--- maradns-1.2.05.orig/doc/en/source/mararc.ej	2006-02-20 23:52:00.000000000 -0800
++++ maradns-1.2.05/doc/en/source/mararc.ej	2006-02-21 00:03:01.000000000 -0800
+@@ -654,6 +654,24 @@
+ The format of this string is identical to the format of an ipv4_alias
+ entry.
+ 
++<h2>remote_admin</h2>
++remote_admin: Whether we allow <tt>verbose_level</tt> to be changed
++after MaraDNS is started.
++<p>
++
++If <tt>remote_admin</tt> is set to 1, and <tt>admin_acl</tt> is set,
++any and all IPs listed in <tt>admin_acl</tt> will be able to 
++reset the value of <tt>verbose_level</tt> from any value between 0
++and 9 via a TXT query in the form of <tt>5.verbose_level.maradns.</tt>
++What this will do is set <tt>verbose_query</tt> to the value in the
++first digit of the query.  
++<p>
++
++This is useful when wishing to temporarily increase the 
++<tt>verbose_level</tt> to find out why a given host name is not
++resolving, then decreasing <tt>verbose_level</tt> so as to minimize
++the size of MaraDNS' log.
++
+ <h2>spammers</h2>
+ spammers: A list of DNS servers which the recursive resolver will
+ not query.

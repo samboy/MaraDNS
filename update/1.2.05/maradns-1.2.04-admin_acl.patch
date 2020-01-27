@@ -1,0 +1,143 @@
+--- maradns-1.2.05.orig/parse/ParseMaraRc.c	2006-02-18 11:46:19.000000000 -0800
++++ maradns-1.2.05/parse/ParseMaraRc.c	2006-02-18 11:53:32.000000000 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2005 Sam Trenholme
++/* Copyright (c) 2002-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -31,7 +31,7 @@
+ 
+ /* Keywords that are non-dictionary strings in Mara's rc file */
+ 
+-#define KEYCOUNT 43
++#define KEYCOUNT 44
+ 
+ char *keywords[KEYCOUNT] = {
+         "bind_address", /* IPv4 Addresses to bind to (old name) */
+@@ -118,6 +118,7 @@
+                                record */
+         "bind_star_handling", /* Whether or not to handle star records the 
+                                  way BIND does */
++        "admin_acl", /* List of IPs allowed to administrate MaraDNS */
+         "zone_transfer_acl" /* ACL of IPs allowed to perform zone transfers */
+         };
+ 
+--- maradns-1.2.05.orig/server/MaraDNS.c	2006-02-18 11:46:19.000000000 -0800
++++ maradns-1.2.05/server/MaraDNS.c	2006-02-18 12:11:58.000000000 -0800
+@@ -133,6 +133,11 @@
+ ipv4pair long_packet[512];
+ #endif
+ 
++/* A list of IPs allowed to administrate MaraDNS (See MaraDNS' version
++ * number, see how many threads are running, the number of processes running,
++ * etc.). */
++ipv4pair admin_acl[512];
++
+ /* Some global variables so that the user can change the SOA origin (MINFO) 
+  * and the format of the SOA serial number if needed */
+ js_string *synth_soa_origin = 0;
+@@ -2819,17 +2824,13 @@
+     int have_authority = 0; /* Do we have authority for this record?
+                                (must be 1 to return a NXDOMAIN) */
+     rr *point = 0;
+-#ifndef AUTHONLY
+     uint32 ip; 
+-#endif
+     int desires_recursion = 0; /* Do they desire recursion? */
+     char *num_string = 0; /* The string to put the number of thread running
+                              in */
+     unsigned int mem_usage; /* The amount of memory a maradns process has
+                                allocated */
+-#ifndef AUTHONLY
+     struct sockaddr_in *z; /* Makes certain ugly declarations readable */
+-#endif
+ 
+     /* Sanity checks */
+     if(js_has_sanity(raw) == JS_ERROR)
+@@ -2960,10 +2961,12 @@
+         goto not_impl;
+         }
+ 
+-#ifndef AUTHONLY
+-    /* See if they have permission to perform a recursive query */
++    /* Set 'ip' to have the ip they are using MaraDNS from */
+     z = (struct sockaddr_in *)ect->d;
+     ip = htonl((z->sin_addr).s_addr);
++
++#ifndef AUTHONLY
++    /* See if they have permission to perform a recursive query */
+     has_recursive_authority = check_recursive_acl(ip);
+     if(has_recursive_authority == JS_ERROR)
+         goto serv_fail;
+@@ -3024,7 +3027,12 @@
+     /* If dos_protection_level is one or higher, we don't process
+      * any of the messages one can get about MaraDNS */
+ 
+-    /* CODE HERE: Franky's request to have "administrative IPs" */
++    /* Franky's request to have "administrative IPs", finally implemented 
++     * after almost four years */
++    if(check_ipv4_acl(ip,admin_acl) != 1) {
++            goto skip_easter_egg;
++    } 
++    
+     if(dos_protection_level > 0) {
+ 	    goto skip_easter_egg;
+     }
+@@ -4298,6 +4306,16 @@
+     }
+ #endif /* AUTHONLY */
+ 
++    /* Set up the list of IPs allowed to look at (and possibly change)
++     * MaraDNS' internal information */
++    for(counter = 0; counter < 511; counter++)
++	admin_acl[counter].ip = 0xffffffff;
++    verbstr = read_string_kvar("admin_acl");
++    if(verbstr != 0 && js_length(verbstr) > 0) {
++        if(make_ip_acl(verbstr,admin_acl,500,0) == JS_ERROR) 
++            harderror("Could not make admin_acl list");
++        }
++
+     /* Anything after this does not need recursion enabled for the
+        kvar in question to be read */
+ 
+--- maradns-1.2.05.orig/doc/en/source/mararc.ej	2006-02-18 11:46:19.000000000 -0800
++++ maradns-1.2.05/doc/en/source/mararc.ej	2006-02-18 12:25:15.000000000 -0800
+@@ -274,6 +274,22 @@
+ this: "10.1.2.3, 10.1.2.4, 127.0.0.1"
+ <p>
+ 
++<h2>admin_acl</h2>
++
++This is a list of ip/netmask pairs that are allowed to get certain
++administrative information about MaraDNS, including:
++<ul>
++<li>The version number of MaraDNS running 
++<li>The number of threads MaraDNS has 
++<li>The amount of memory MaraDNS uses
++<li>MaraDNS' internal timestamp value
++</ul>
++
++Note that this information is not available unless
++the mararc variable debug_msg_level is sufficiently high.
++See the information on debug_msg_level below for details on this
++and on the TXT queries sent to get the above information. 
++
+ <h2>bind_address</h2>
+ 
+ bind_address:  The IP address to give the MaraDNS server.
+@@ -361,10 +377,12 @@
+ will be made public.  
+ <p>
+ When set to one (the default), or higher, a 
+-Terre-con-erre-cigarro.maradns.org.  query will return the version
++Terre-con-erre-cigarro.maradns.org. (TXT query for 
++"erre-con-erre-cigarro.maradns.org.") query will return the version
+ number of MaraDNS.  
+ <p>
+-When set to two or higher, a Tnumthreads. query will return the 
++When set to two or higher, a Tnumthreads. (TXT query for "numthreads.") 
++query will return the 
+ number of threads that MaraDNS is currently running, and a Tcache-elements.
+ query will return the number of elements in MaraDNS' cache.  If
+ MaraDNS is compiled with debugging information on, a 

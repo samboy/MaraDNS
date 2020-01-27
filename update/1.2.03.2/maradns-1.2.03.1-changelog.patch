@@ -1,0 +1,18 @@
+--- maradns-1.2.03.1/doc/en/source/changelog.embed	2006-01-21 21:22:01.000000000 -0800
++++ maradns-1.2.03.2/doc/en/source/changelog.embed	2006-02-02 12:26:24.000000000 -0800
+@@ -1,5 +1,15 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.03.2:
++<blockquote>
++<ul>
++<li>Hotfix: Re-apply fix for broken Linux 2.6 kernel behavior which causes
++    MaraDNS to freeze.
++<li>Mingw32: Have the binaries stripped
++</ul>
++(2006.02.02)
++</blockquote>
++
+ <p>maradns-1.2.03.1:
+ <blockquote>
+ <ul>

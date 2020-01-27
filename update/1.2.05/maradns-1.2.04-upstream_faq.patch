@@ -1,0 +1,30 @@
+--- maradns-1.2.04/doc/en/source/faq.embed	2006-02-09 12:00:39.000000000 -0800
++++ maradns-1.2.05/doc/en/source/faq.embed	2006-02-09 23:14:56.000000000 -0800
+@@ -60,6 +60,9 @@
+ 
+ 25. <A href=#scability>How scalable is MaraDNS?</A><p>
+ 
++26. <A href=#upstream_d>I am having problems setting 
++    <tt>upstream_servers</tt></A>
++
+ </BLOCKQUOTE>
+ <H2>ANSWERS</H2>
+ 
+@@ -494,4 +497,17 @@
+ As can be seen, MaraDNS will process 1 or 100000 domains in the same amount
+ of time, once the domain names are loaded in to memory.  
+ 
++<A name=upstream_d>
++<h2>26. I am having problems setting <tt>upstream_servers</tt></h2>
++</A>
++
++The <tt>upstream_servers</tt> mararc variable is set thusly:
++
++<blockquote>
++<tt>upstream_servers["."] = "10.3.28.79, 10.2.19.83"</tt>
++</blockquote>
++
++Note the <tt>["."]</tt>.  The reason for this is so future versions
++of MaraDNS may have more fine-grained control over the 
++<tt>upstream_servers</tt> and <tt>root_servers</tt> values.
+ 

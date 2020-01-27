@@ -1,0 +1,11 @@
+--- maradns-1.2.03-orig/build/Makefile.mingw32	2005-12-05 14:28:44.000000000 -0800
++++ maradns-1.2.03/build/Makefile.mingw32	2006-01-12 16:52:10.000000000 -0800
+@@ -27,7 +27,7 @@
+ #Q="DEFINES=-DSELECT_PROBLEM"
+ 
+ # FreeBSD needs some special flags to compile MaraDNS
+-CC="gcc -O -DMINGW32 -DNO_FLOCK"
++CC="gcc -O2 -DMINGW32 -DNO_FLOCK"
+ M=CC=$(CC) 
+ V="VERSION=$(VERSION)"
+ 

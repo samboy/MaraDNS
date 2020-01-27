@@ -1,0 +1,25 @@
+--- maradns-1.2.04/doc/en/source/csv2.ej	2006-02-14 23:04:12.000000000 -0800
++++ maradns-1.2.05/doc/en/source/csv2.ej	2006-02-14 23:21:42.000000000 -0800
+@@ -216,6 +216,22 @@
+ have multiple entries in the corresponding PTR record, which is 
+ usually not the desired behavior.
+ 
++<p>
++
++FQDN4 records are not permitted in a csv2_default_zonefile.
++
++<h2>CNAME</h2>
++
++A CNAME record is a pointer to another host name.  The CNAME record, in
++MaraDNS, affects any record type not already specified for a given host 
++name.  While MaraDNS allows CNAME and non-CNAME records to share the
++same host name, this is considered bad practice and is not compatible
++with some other DNS servers.
++
++<p>
++
++CNAME records are not permitted in a csv2_default_zonefile.
++
+ <h1>EXAMPLE ZONE FILE</h1>
+ 
+ <pre>

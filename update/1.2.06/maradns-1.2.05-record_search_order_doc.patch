@@ -1,0 +1,28 @@
+--- maradns-1.2.05/doc/en/source/default_zonefile.ej	2006-02-21 01:32:15.000000000 -0800
++++ maradns-1.2.06/doc/en/source/default_zonefile.ej	2006-02-21 16:38:23.000000000 -0800
+@@ -85,5 +85,25 @@
+ will be more lightweight than running other DNS servers when there are
+ a large number of domains and only a few web servers processing the domains.
+ 
++<h2>Record searching order</h2>
++
++When the default zonefile is enabled, MaraDNS searches for records
++in the following order:
++
++<ul>
++<li>MaraDNS first searches for any non-wildcard records in non-default
++  zone files.
++<li>MaraDNS then searches for wildcard records in non-default zone files
++  (records with a star at the beginning of them).
++<li>Should no records be found, MaraDNS then looks for records with
++  stars at the end of them.  MaraDNS does this by removing the final
++  field from a domain name until a match is found.  For example, if
++  someone sends MaraDNS a request for "www.mx.example.com", we will
++  first look for "www.mx.example.*" in the default zone file, followed
++  by looking for "www.mx.*", followed by "www.*", and finally "*".  
++</ul>
++
++
++
+ </BODY>
+ 

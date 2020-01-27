@@ -1,0 +1,218 @@
+diff -ur maradns-1.2.06.orig/doc/en/examples/example_full_mararc maradns-1.2.06/doc/en/examples/example_full_mararc
+--- maradns-1.2.06.orig/doc/en/examples/example_full_mararc	2005-11-30 13:06:29.000000000 -0800
++++ maradns-1.2.06/doc/en/examples/example_full_mararc	2006-02-25 18:53:58.000000000 -0800
+@@ -138,7 +138,7 @@
+ # of random numbers, but can also be a fixed file if your OS does not have
+ # a decent random number generator (make sure the contents of that file is
+ # random and with 600 perms, owned by root, since we read the file *before*
+-# dropping root privledges)
++# dropping root privileges)
+ 
+ #random_seed_file = "/dev/urandom"
+ 
+diff -ur maradns-1.2.06.orig/doc/en/source/example_full_mararc maradns-1.2.06/doc/en/source/example_full_mararc
+--- maradns-1.2.06.orig/doc/en/source/example_full_mararc	2005-11-30 13:01:51.000000000 -0800
++++ maradns-1.2.06/doc/en/source/example_full_mararc	2006-02-25 18:54:00.000000000 -0800
+@@ -138,7 +138,7 @@
+ # of random numbers, but can also be a fixed file if your OS does not have
+ # a decent random number generator (make sure the contents of that file is
+ # random and with 600 perms, owned by root, since we read the file *before*
+-# dropping root privledges)
++# dropping root privileges)
+ 
+ #random_seed_file = "/dev/urandom"
+ 
+Sólo en maradns-1.2.06.orig/doc/en: text
+Sólo en maradns-1.2.06.orig/doc/en: tutorial
+Sólo en maradns-1.2.06.orig/doc/en: webpage
+diff -ur maradns-1.2.06.orig/doc/fr/examples/example_mararc maradns-1.2.06/doc/fr/examples/example_mararc
+--- maradns-1.2.06.orig/doc/fr/examples/example_mararc	2002-10-24 09:16:19.000000000 -0700
++++ maradns-1.2.06/doc/fr/examples/example_mararc	2006-02-25 18:54:03.000000000 -0800
+@@ -137,7 +137,7 @@
+ # a fixed file if your OS does not have a decent random number 
+ # generator (make sure the contents of that file is random and 
+ # with 600 perms, owned by root, since we read the file *before*
+-# dropping root privledges)
++# dropping root privileges)
+ 
+ # random_seed_file = "/dev/urandom"
+ 
+diff -ur maradns-1.2.06.orig/doc/fr/man/mararc.5 maradns-1.2.06/doc/fr/man/mararc.5
+--- maradns-1.2.06.orig/doc/fr/man/mararc.5	2002-11-18 00:12:13.000000000 -0800
++++ maradns-1.2.06/doc/fr/man/mararc.5	2006-02-25 18:54:03.000000000 -0800
+@@ -605,7 +605,7 @@
+ # a fixed file if your OS does not have a decent random number 
+ # generator (make sure the contents of that file is random and 
+ # with 600 perms, owned by root, since we read the file *before*
+-# dropping root privledges)
++# dropping root privileges)
+ 
+ # random_seed_file = "/dev/urandom"
+ 
+diff -ur maradns-1.2.06.orig/doc/fr/source/example_mararc maradns-1.2.06/doc/fr/source/example_mararc
+--- maradns-1.2.06.orig/doc/fr/source/example_mararc	2002-11-18 00:12:13.000000000 -0800
++++ maradns-1.2.06/doc/fr/source/example_mararc	2006-02-25 18:54:03.000000000 -0800
+@@ -137,7 +137,7 @@
+ # a fixed file if your OS does not have a decent random number 
+ # generator (make sure the contents of that file is random and 
+ # with 600 perms, owned by root, since we read the file *before*
+-# dropping root privledges)
++# dropping root privileges)
+ 
+ # random_seed_file = "/dev/urandom"
+ 
+diff -ur maradns-1.2.06.orig/doc/fr/tutorial/man.mararc.html maradns-1.2.06/doc/fr/tutorial/man.mararc.html
+--- maradns-1.2.06.orig/doc/fr/tutorial/man.mararc.html	2002-11-18 00:12:13.000000000 -0800
++++ maradns-1.2.06/doc/fr/tutorial/man.mararc.html	2006-02-25 18:54:03.000000000 -0800
+@@ -587,7 +587,7 @@
+ # a fixed file if your OS does not have a decent random number 
+ # generator (make sure the contents of that file is random and 
+ # with 600 perms, owned by root, since we read the file *before*
+-# dropping root privledges)
++# dropping root privileges)
+ 
+ # random_seed_file = "/dev/urandom"
+ 
+diff -ur maradns-1.2.06.orig/server/MaraDNS.c maradns-1.2.06/server/MaraDNS.c
+--- maradns-1.2.06.orig/server/MaraDNS.c	2006-02-25 18:52:41.000000000 -0800
++++ maradns-1.2.06/server/MaraDNS.c	2006-02-25 18:54:05.000000000 -0800
+@@ -4511,7 +4511,7 @@
+ #endif /* AUTHONLY */
+ 
+ #ifndef MINGW32
+-        /* Drop the elevated privledges */
++        /* Drop the elevated privileges */
+         /* First, change the GID */
+         gid = read_numeric_kvar("maradns_gid",MARADNS_DEFAULT_GID);
+ #ifndef __CYGWIN__
+@@ -4533,7 +4533,7 @@
+         if(setuid(0) == 0)
+             sys_harderror(L_STILL_ROOT);  /* "We seem to still be root" */
+ 
+-        mlog(L_DROP_SUCCESS); /* "Root privledges dropped" */
++        mlog(L_DROP_SUCCESS); /* "Root privileges dropped" */
+ #endif /* __CYGWIN__ */
+ #endif /* MINGW32 */
+ 
+diff -ur maradns-1.2.06.orig/server/MaraDNS_en.h maradns-1.2.06/server/MaraDNS_en.h
+--- maradns-1.2.06.orig/server/MaraDNS_en.h	2006-02-09 12:00:39.000000000 -0800
++++ maradns-1.2.06/server/MaraDNS_en.h	2006-02-25 18:54:05.000000000 -0800
+@@ -53,7 +53,7 @@
+ #define L_BADUID "maradns_uid is less than 10 or not a number.\nThis uid must have a value of 10 or more"
+ #define L_NODROP "Could not drop root uid"
+ #define L_STILL_ROOT "We seem to still be root"
+-#define L_DROP_SUCCESS "Root privledges dropped"
++#define L_DROP_SUCCESS "Root privileges dropped"
+ #define L_BEROOT "Problem binding to port 53.\nYou should run this as root"
+ #define L_NOBIGHASH "Could not create big hash"
+ #define L_NOPOPULATE "Error running populate_main program.  Please read the MaraDNS FAQ"
+diff -ur maradns-1.2.06.orig/sqa/dead_host_simulate.c maradns-1.2.06/sqa/dead_host_simulate.c
+--- maradns-1.2.06.orig/sqa/dead_host_simulate.c	2003-01-11 22:52:43.000000000 -0800
++++ maradns-1.2.06/sqa/dead_host_simulate.c	2006-02-25 18:54:05.000000000 -0800
+@@ -80,13 +80,13 @@
+     if(bind(s,(struct sockaddr *)&dns_udp,len_inet) == -1)
+         harderror("Binding problem--must be root");
+     
+-    /* Drop elevated privledges */
++    /* Drop elevated privileges */
+     if(setuid(99) != 0)
+         harderror("setuid failed");
+ 
+     /* Make sure they are dropped */
+     if(setuid(0) == 0)
+-        harderror("we still have root privledges!");
++        harderror("we still have root privileges!");
+ 
+     /* loop to handle requests */
+     for(;;) {
+diff -ur maradns-1.2.06.orig/test/rtest.c maradns-1.2.06/test/rtest.c
+--- maradns-1.2.06.orig/test/rtest.c	2003-01-11 22:53:58.000000000 -0800
++++ maradns-1.2.06/test/rtest.c	2006-02-25 18:54:07.000000000 -0800
+@@ -89,13 +89,13 @@
+     if(bind(s,(struct sockaddr *)&dns_udp,len_inet) == -1)
+         harderror("Binding problem--must be root");
+     
+-    /* Drop elevated privledges */
++    /* Drop elevated privileges */
+     if(setuid(99) != 0)
+         harderror("setuid failed");
+ 
+     /* Make sure they are dropped */
+     if(setuid(0) == 0)
+-        harderror("we still have root privledges!");
++        harderror("we still have root privileges!");
+ 
+     /* loop to handle requests */
+     for(;;) {
+diff -ur maradns-1.2.06.orig/test/test_zoneserver.c maradns-1.2.06/test/test_zoneserver.c
+--- maradns-1.2.06.orig/test/test_zoneserver.c	2003-01-11 22:54:20.000000000 -0800
++++ maradns-1.2.06/test/test_zoneserver.c	2006-02-25 18:54:07.000000000 -0800
+@@ -240,9 +240,9 @@
+         exit(1);
+         }
+ 
+-    /* Drop root privledges */
++    /* Drop root privileges */
+     if(setuid(99) != 0) {
+-        printf("Could not drop root privledges\n");
++        printf("Could not drop root privileges\n");
+ 	exit(1);
+ 	}
+ 
+diff -ur maradns-1.2.06.orig/test/timestamp.c maradns-1.2.06/test/timestamp.c
+--- maradns-1.2.06.orig/test/timestamp.c	2003-01-11 22:54:26.000000000 -0800
++++ maradns-1.2.06/test/timestamp.c	2006-02-25 18:54:07.000000000 -0800
+@@ -855,7 +855,7 @@
+         zjlog(L_BIND2ADDR,bind_address); /* "Binding to address " */
+         mlog(L_BIND_SUCCESS);  /* "Socket opened on UDP port 53" */
+ 
+-        /* Drop the elevated privledges */
++        /* Drop the elevated privileges */
+         /* First, change the GID */
+         if(js_qstr2js(kvar_query,"maradns_gid") == JS_ERROR)
+             harderror(L_KVAR_Q); /* "Could not create kvar_query" */
+@@ -880,7 +880,7 @@
+         if(setuid(0) == 0)
+             sys_harderror(L_STILL_ROOT);  /* "We seem to still be root" */
+ 
+-        mlog(L_DROP_SUCCESS); /* "Root privledges dropped" */
++        mlog(L_DROP_SUCCESS); /* "Root privileges dropped" */
+ 
+         }
+     else {
+diff -ur maradns-1.2.06.orig/tools/duende.c maradns-1.2.06/tools/duende.c
+--- maradns-1.2.06.orig/tools/duende.c	2006-01-02 08:59:33.000000000 -0800
++++ maradns-1.2.06/tools/duende.c	2006-02-25 18:54:07.000000000 -0800
+@@ -69,7 +69,7 @@
+     /* Open up the sys log */
+     openlog(name,0,LOG_DAEMON);
+ 
+-    /* Drop all privledges */
++    /* Drop all privileges */
+     if(chdir(DUENDE_CHROOT_DIR) != 0) {
+        syslog(LOG_ALERT,"Can not enter chroot directory %s",DUENDE_CHROOT_DIR);
+ 	syslog(LOG_ALERT,"%s","We can not log daemon output");
+diff -ur maradns-1.2.06.orig/update/1.2.04/maradns-1.2.03.2-cygwin.patch maradns-1.2.06/update/1.2.04/maradns-1.2.03.2-cygwin.patch
+--- maradns-1.2.06.orig/update/1.2.04/maradns-1.2.03.2-cygwin.patch	2006-02-09 12:00:39.000000000 -0800
++++ maradns-1.2.06/update/1.2.04/maradns-1.2.03.2-cygwin.patch	2006-02-25 18:54:08.000000000 -0800
+@@ -42,7 +42,7 @@
+ @@ -4430,10 +4437,15 @@
+              sys_harderror(L_STILL_ROOT);  /* "We seem to still be root" */
+  
+-         mlog(L_DROP_SUCCESS); /* "Root privledges dropped" */
++         mlog(L_DROP_SUCCESS); /* "Root privileges dropped" */
+ +#endif /* __CYGWIN__ */
+  #endif /* MINGW32 */
+  
+diff -ur maradns-1.2.06.orig/update/1.2.04/maradns-1.2.03.2-rpm.mararc.patch maradns-1.2.06/update/1.2.04/maradns-1.2.03.2-rpm.mararc.patch
+--- maradns-1.2.06.orig/update/1.2.04/maradns-1.2.03.2-rpm.mararc.patch	2006-02-09 12:00:39.000000000 -0800
++++ maradns-1.2.06/update/1.2.04/maradns-1.2.03.2-rpm.mararc.patch	2006-02-25 18:54:08.000000000 -0800
+@@ -61,7 +61,7 @@
+ -# of random numbers, but can also be a fixed file if your OS does not have
+ -# a decent random number generator (make sure the contents of that file is
+ -# random and with 600 perms, owned by root, since we read the file *before*
+--# dropping root privledges)
++-# dropping root privileges)
+ -
+ -random_seed_file = "/dev/urandom"
+ -

@@ -1,0 +1,128 @@
+--- maradns-1.2.01/configure	2006-01-01 12:00:26.000000000 -0800
++++ maradns-1.2.02/configure	2006-01-02 08:34:17.000000000 -0800
+@@ -1,5 +1,7 @@
+ #!/bin/sh
+ 
++EXITCODE=0
++
+ if [ $0 != "./configure" ] ; then
+ 	echo This script needs to be executed in the directory that
+ 	echo contains this script.
+@@ -13,7 +15,7 @@
+ 	echo 'Usage: ./configure [options]'
+ 	echo 'Where [options] currently only supports "--authonly" for'
+ 	echo 'making an authoritative-only build of MaraDNS'
+-	exit 0
++	exit 1
+ fi
+ 
+ # Make sure we are running this script from the maradns base directory
+@@ -62,6 +64,7 @@
+ if echo $UNAME | grep -i linux > /dev/null ; then
+ 	cat $BUILDDIR/Makefile.linux >> Makefile
+ 	echo It looks like you are using Linux\; just type in \'make\'
++	EXITCODE=0
+ elif echo $UNAME | grep -i freebsd > /dev/null ; then
+ 	cat $BUILDDIR/Makefile.freebsd >> Makefile
+ 	echo It looks like you are using FreeBSD\; this should compile
+@@ -72,6 +75,12 @@
+ 	echo Which may be on your system here:
+ 	echo
+ 	echo	/usr/ports/dns/maradns
++	echo
++	echo You might be able to compile MaraDNS by typing \"make\"
++	echo \(if you typed in \"make\" before, just type it again\)
++	echo
++	echo THIS PORT HAS NOT BEEN FULLY TESTED\; USE AT YOUR OWN RISK
++	EXITCODE=1
+ elif echo $UNAME | grep -i mingw32 > /dev/null ; then
+ 	cat $BUILDDIR/Makefile.mingw32 >> Makefile
+ 	echo It looks like you are using MinGW32 \; this is only a partial
+@@ -93,11 +102,17 @@
+ 	cat $BUILDDIR/Makefile.noflock >> Makefile
+ 	echo It looks like you are using Cygwin\; this should compile fine
+ 	echo by typing in \'make\'.
++	EXITCODE=0
+ elif echo $UNAME | grep -i darwin > /dev/null ; then
+ 	cat $BUILDDIR/Makefile.darwin >> Makefile
+ 	cp $BUILDDIR/install.darwin $BUILDDIR/install.locations
+ 	echo It looks like you are using Darwin \(usually\; Mac OS X\)\;
+-	echo This should compile fine by typing in \'make\'.
++	#echo This should compile fine by typing in \'make\'.
++	echo You might be able to compile MaraDNS by typing \"make\"
++	echo \(if you typed in \"make\" before, just type it again\)
++	echo
++	echo THIS PORT HAS NOT BEEN FULLY TESTED\; USE AT YOUR OWN RISK
++	EXITCODE=1
+ # This is a a template for adding support to a new OS for MaraDNS.
+ # Some points: If you port MaraDNS, make sure the underlying OS has
+ # /dev/urandom support or have the default mararc have a
+@@ -112,31 +127,28 @@
+ 	echo problems with this port, please contact the person who has
+ 	echo done the port before trying to contact the MaraDNS	
+ 	echo developer.
++	# The next line is technically optional, but should be here
++	EXITCODE=0
+ else
+-	cp build/Makefile.unsupported Makefile
+-	echo The system you are trying to compile MaraDNS 1.2 on is not an
+-	echo officially supported platform for MaraDNS.  Most likely, MaraDNS
+-	echo will compile and run fine on this system once this configure script
+-	echo has been modified.  However, since I can not test a compile of
+-	echo MaraDNS on this system, I can not support running MaraDNS on this
+-	echo system.
+-	echo
+-	echo If you wish to take responsibility for porting MaraDNS to this 
+-	echo system, send me an email.  My email address can be found on my
+-	echo webpage:
+-	echo
+-	echo	http://www.samiam.org
+-	echo
+-	echo I am also willing to port MaraDNS to any system that someone 
+-	echo is willing to give me a non-root account on \(with the exception 
+-	echo of SCO/UnixWare\)
+-	echo	
+-	echo MaraDNS\' license \(in the file COPYING\) allows you to modify 
+-	echo MaraDNS to compile on your system.  You may also distribute 
+-	echo modified versions of MaraDNS without asking for permission.  
+-	echo I would probably even link to any such modified versions of 
+-	echo MaraDNS from the maradns.org website.
+-	exit 0
++	cat $BUILDDIR/Makefile.noflock >> Makefile
++	echo WARNING WARNING WARNING
++	echo
++	echo This is an unknown platform.  MaraDNS may or may not compile
++	echo on this platform.  If you are able to sucessfully compile
++	echo and install MaraDNS on this platform, please let me know
++	echo by contacting me.  My contact info is here:
++	echo
++	echo	http://www.maradns.org/contact.html
++	echo
++	echo I encourage you to make an official port of MaraDNS for this
++	echo platform so other users of MaraDNS do not see this obnoxious
++	echo warning.
++	echo
++	echo You might be able to compile MaraDNS by typing \"make\"
++	echo \(if you typed in \"make\" before, just type it again\)
++	echo
++	echo THIS PORT HAS NOT BEEN TESTED\; USE AT YOUR OWN RISK
++	EXITCODE=1
+ fi
+ 
+ # Set up recursive and authoritative name serving
+@@ -159,4 +171,5 @@
+ fi
+ 
+ echo
++exit $EXITCODE
+ 
+--- maradns-1.2.01/Makefile	2005-12-21 00:02:24.000000000 -0800
++++ maradns-1.2.02/Makefile	2006-01-02 08:32:39.000000000 -0800
+@@ -1,6 +1,6 @@
+ # This is a wrapper that runs "./configure ; make"
+ all:
+-	./configure ; make
++	./compile.sh
+ 
+ debug:
+ 	./configure ; make debug

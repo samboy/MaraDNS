@@ -1,0 +1,36 @@
+--- maradns-1.2.04/doc/en/source/changelog.embed	2006-02-09 12:00:39.000000000 -0800
++++ maradns-1.2.05/doc/en/source/changelog.embed	2006-02-21 00:07:31.000000000 -0800
+@@ -1,5 +1,33 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.05:
++<p>
++This is a testing (possibly unstable) release of MaraDNS.
++<blockquote>
++<ul>
++<li>Added faq entry about setting <tt>upstream_servers</tt>
++<li>Removed three unimplemented (or never documented and disabled) 
++    <tt>mararc</tt> variables: <tt>tuzona_inetd</tt>, 
++    <tt>win9x_service<tt>, and <tt>resurrections<tt>.
++<li>Out-of-bailiwick authoritative records now no longer have an
++    authority section.
++<li>New csv2 record type "FQDN4"; this is an A record which
++    automatically makes the corresponding PTR record.
++<li>CNAME records now mentioned in csv2 man page.
++<li>Improved error message for a hostname that doesn't end in a '.' (or
++    '%').
++<li>Added <tt>admin_acl</tt> mararc variable, to limit the IPs that
++    can see MaraDNS' version number (and debug information about
++    MaraDNS' internal state when <tt>debug_msg_level</tt> is set).
++<li>Added <tt>remote_admin</tt> mararc variable, which allows
++    IPs listed in <tt>admin_acl</tt> to remotely change the 
++    amount of information logged by MaraDNS.  This is mainly for
++    debugging problems on high-traffic sites where a full log is
++    too large (and slows things down too much) to be practical.
++</ul>
++(2006.02.21)
++</blockquote>
++
+ <p>maradns-1.2.04:
+ <p>
+ This is a testing (potentially unstable) release of MaraDNS.

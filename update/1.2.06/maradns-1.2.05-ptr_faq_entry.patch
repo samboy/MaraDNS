@@ -1,0 +1,30 @@
+--- maradns-1.2.05/doc/en/source/faq.embed	2006-02-22 11:14:31.000000000 -0800
++++ maradns-1.2.06/doc/en/source/faq.embed	2006-02-22 11:13:55.000000000 -0800
+@@ -176,12 +176,24 @@
+ <H2>7. How do I set up reverse DNS on MaraDNS?</H2>
+ </A>
+ 
+-By using PTR (pointer) records.  For example, the PTR record which performs
+-the reverse DNS lookup for the ip 1.2.3.4 looks like this in a CSV2 zone
++Reverse DNS (sometimes called "reverse mapping") is set up by using 
++PTR (pointer) records.  For example, the PTR record which performs
++the reverse DNS lookup for the ip 10.2.3.4 looks like this in a CSV2 zone
+ file:
+ <blockquote>
+ <tt>
+-4.3.2.1.in-addr.arpa. PTR www.example.com.
++4.3.2.10.in-addr.arpa. PTR www.example.com.
++</tt>
++</blockquote>
++<p>
++
++It is also possible, on MaraDNS 1.2.05 and more recent releases, to
++use a special "FQDN4" which automatically sets up the reverse
++mapping of a given record:
++
++<blockquote>
++<tt>
++www.example.com. FQDN6 10.2.3.4
+ </tt>
+ </blockquote>
+ 

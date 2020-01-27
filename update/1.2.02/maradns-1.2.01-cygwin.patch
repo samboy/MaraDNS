@@ -1,0 +1,84 @@
+diff -ur maradns-1.2.02/build/Makefile.noflock maradns-1.2.02-cygwin/build/Makefile.noflock
+--- maradns-1.2.02/build/Makefile.noflock	2005-11-22 22:02:44.000000000 -0800
++++ maradns-1.2.02-cygwin/build/Makefile.noflock	2005-12-31 13:52:34.000000000 -0800
+@@ -23,7 +23,8 @@
+ # LDFLAGS=-L/usr/ucblib -lucb -lxnet
+ # end the Solaris section
+ # Non-Solaris version of "M"
+-M="VERSION=$(VERSION)" DEBUG=-DNO_FLOCK 
++M="CC=$(CC) -O2 -Wall" DEBUG=-DNO_FLOCK 
++V="VERSION=$(VERSION)"
+ 
+ # Debug
+ D="VERSION=$(VERSION)" DEBUG="-DDEBUG -DNO_FLOCK"
+@@ -32,10 +33,10 @@
+ FLAGS = -g 
+ 
+ all: 
+-	cd libs ; make $(M) ; cd ../dns ; make $(M) ; cd ../rng ; make $(M) ; cd ../parse ; make $(M) ; cd ../qual ; make $(M) ; cd ../server ; make $(M) COMPILED=\"$(COMPILED)\" ; cd ../tools ; make $(M) ; cd ../tcp ; make $(M) ; cat ../00README.FIRST
++	cd libs ; make $(M) ; cd ../dns ; make $(M) ; cd ../rng ; make $(M) ; cd ../parse ; make $(M) ; cd ../qual ; make $(M) ; cd ../server ; make $(M) $(V) COMPILED=\"$(COMPILED)\" ; cd ../tools ; make $(M) ; cd ../tcp ; make $(M) $(V) ; cat ../00README.FIRST
+ 
+ debug: 
+-	cd libs ; make $(D) DEBUG="-DDEBUG -DTHREADS" ; cd ../dns ; make $(D) ; cd ../rng ; make $(D) ; cd ../parse ; make $(D) ; cd ../qual ; make $(D) ; cd ../server ; make $(D) COMPILED=\"$(COMPILED_DEBUG)\" ; cd ../tools ; make $(D) ; cd ../tcp ; make $(D) ; cat ../00README.FIRST
++	cd libs ; make $(D) DEBUG="-DDEBUG -DTHREADS" ; cd ../dns ; make $(D) ; cd ../rng ; make $(D) ; cd ../parse ; make $(D) ; cd ../qual ; make $(D) ; cd ../server ; make $(D) $(V) COMPILED=\"$(COMPILED_DEBUG)\" ; cd ../tools ; make $(D) ; cd ../tcp ; make $(D) $(V) ; cat ../00README.FIRST
+ 
+ clean:
+ 	rm -f $(OBJECTS) core $(EXECS) ; cp build/Makefile.w Makefile ; cd dns ; make clean ; cd ../libs ; make clean ; cd ../parse ; make clean ; cd ../server ; make clean ; cd ../test ; make clean ; cd ../tools ; make clean ; cd misc ; make clean ; cd ../../utf8 ; make clean ; cd ../tcp ; make clean ; cd ../rng ; make clean ; cd ../sqa ; make clean ; cd ../qual ; make clean # ; cd .. ; find . -type d | grep .deps | xargs rm -fr ; find . -name '*.o' | xargs rm
+diff -ur maradns-1.2.02/tools/askmara-tcp.c maradns-1.2.02-cygwin/tools/askmara-tcp.c
+--- maradns-1.2.02/tools/askmara-tcp.c	2005-12-31 13:13:34.000000000 -0800
++++ maradns-1.2.02-cygwin/tools/askmara-tcp.c	2005-12-31 14:02:10.000000000 -0800
+@@ -439,9 +439,9 @@
+             printf("%s%s",L_NEWLINE,L_S_RNAME); /* SOA rname */
+             escape_stdout(soa.rname);
+             printf("%s%s%u%s",L_NEWLINE,L_S_SERIAL,soa.serial,L_NEWLINE);
+-            printf("%s%d%s",L_S_REFRESH,soa.refresh,L_NEWLINE);
+-            printf("%s%d%s",L_S_RETRY,soa.retry,L_NEWLINE);
+-            printf("%s%d%s",L_S_EXPIRE,soa.expire,L_NEWLINE);
++            printf("%s%d%s",L_S_REFRESH,(int)soa.refresh,L_NEWLINE);
++            printf("%s%d%s",L_S_RETRY,(int)soa.retry,L_NEWLINE);
++            printf("%s%d%s",L_S_EXPIRE,(int)soa.expire,L_NEWLINE);
+             printf("%s%u%s",L_S_MINIMUM,soa.minimum,L_NEWLINE);
+             }
+         else if(rr_hdr.type == RR_MX) {
+@@ -610,9 +610,9 @@
+         printf("|"); /* SOA rname */
+         escape_stdout(soa.rname);
+         printf("|%u",soa.serial);
+-        printf("|%d",soa.refresh);
+-        printf("|%d",soa.retry);
+-        printf("|%d",soa.expire);
++        printf("|%d",(int)soa.refresh);
++        printf("|%d",(int)soa.retry);
++        printf("|%d",(int)soa.expire);
+         printf("|%u\n",soa.minimum);
+         }
+     else if(rr_hdr.type == RR_MX) {
+diff -ur maradns-1.2.02/tools/askmara.c maradns-1.2.02-cygwin/tools/askmara.c
+--- maradns-1.2.02/tools/askmara.c	2005-12-31 13:13:34.000000000 -0800
++++ maradns-1.2.02-cygwin/tools/askmara.c	2005-12-31 14:01:22.000000000 -0800
+@@ -474,9 +474,9 @@
+             printf("%s%s",L_NEWLINE,L_S_RNAME); /* SOA rname */
+             escape_stdout(soa.rname);
+             printf("%s%s%u%s",L_NEWLINE,L_S_SERIAL,soa.serial,L_NEWLINE);
+-            printf("%s%d%s",L_S_REFRESH,soa.refresh,L_NEWLINE);
+-            printf("%s%d%s",L_S_RETRY,soa.retry,L_NEWLINE);
+-            printf("%s%d%s",L_S_EXPIRE,soa.expire,L_NEWLINE);
++            printf("%s%d%s",L_S_REFRESH,(int)soa.refresh,L_NEWLINE);
++            printf("%s%d%s",L_S_RETRY,(int)soa.retry,L_NEWLINE);
++            printf("%s%d%s",L_S_EXPIRE,(int)soa.expire,L_NEWLINE);
+             printf("%s%u%s",L_S_MINIMUM,soa.minimum,L_NEWLINE);
+             }
+         else if(rr_hdr.type == RR_MX) {
+@@ -646,9 +646,9 @@
+         escape_stdout(soa.mname);
+         escape_stdout(soa.rname);
+         printf(" %u",soa.serial);
+-        printf(" %d",soa.refresh);
+-        printf(" %d",soa.retry);
+-        printf(" %d",soa.expire);
++        printf(" %d",(int)soa.refresh);
++        printf(" %d",(int)soa.retry);
++        printf(" %d",(int)soa.expire);
+         printf(" %u\n",soa.minimum);
+         }
+     else if(rr_hdr.type == RR_MX) {

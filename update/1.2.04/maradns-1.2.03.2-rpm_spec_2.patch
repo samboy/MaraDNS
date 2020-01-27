@@ -1,0 +1,112 @@
+--- maradns-1.2.03.1/build/maradns-1.2.00.spec	2006-02-02 11:57:33.000000000 -0800
++++ maradns-1.2.04/build/maradns-1.2.04.spec	2006-02-02 12:01:56.000000000 -0800
+@@ -1,13 +1,13 @@
+ Summary: An authoritative and recursive DNS server made with security in mind
+ Name: maradns
+ Version: 1.2.04
+-Release: 1
+-Copyright: BSD (Two-clause)
++Release: 1
++License: BSD (Two-clause)
+ Group: Networking/Daemons
+ Source: http://www.maradns.org/download/1.2/1.2.04/maradns-1.2.04.tar.bz2
++Source1: maradns-1.2.04.tar.bz2.sha1.asc
++Source2: maradns-1.2.04.tar.bz2.rmd.asc
+ Patch0: maradns-1.1.59-rpm.patch
+-Patch1: maradns-1.2.04.tar.bz2.sha1.asc
+-Patch2: maradns-1.2.04.tar.bz2.rmd.asc
+ BuildRoot: /var/tmp/%{name}-buildroot
+ 
+ %description
+@@ -29,18 +29,18 @@
+ 
+ %install
+ rm -fr $RPM_BUILD_ROOT/
+-mkdirhier $RPM_BUILD_ROOT/usr/sbin
+-mkdirhier $RPM_BUILD_ROOT/usr/bin
+-mkdirhier $RPM_BUILD_ROOT/usr/doc
+-mkdirhier $RPM_BUILD_ROOT/usr/man/man8
+-mkdirhier $RPM_BUILD_ROOT/usr/man/man1
+-mkdirhier $RPM_BUILD_ROOT/usr/man/man5
+-mkdirhier $RPM_BUILD_ROOT/etc
+-mkdirhier $RPM_BUILD_ROOT/etc/maradns
+-mkdirhier $RPM_BUILD_ROOT/etc/rc.d
+-mkdirhier $RPM_BUILD_ROOT/etc/rc.d/init.d
+-mkdirhier $RPM_BUILD_ROOT/etc/rc.d/rc3.d
+-mkdirhier $RPM_BUILD_ROOT/etc/rc.d/rc5.d
++mkdir -p $RPM_BUILD_ROOT/usr/sbin
++mkdir -p $RPM_BUILD_ROOT/usr/bin
++mkdir -p $RPM_BUILD_ROOT/usr/doc
++mkdir -p $RPM_BUILD_ROOT/usr/man/man8
++mkdir -p $RPM_BUILD_ROOT/usr/man/man1
++mkdir -p $RPM_BUILD_ROOT/usr/man/man5
++mkdir -p $RPM_BUILD_ROOT/etc
++mkdir -p $RPM_BUILD_ROOT/etc/maradns
++mkdir -p $RPM_BUILD_ROOT/etc/rc.d
++mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
++mkdir -p $RPM_BUILD_ROOT/etc/rc.d/rc3.d
++mkdir -p $RPM_BUILD_ROOT/etc/rc.d/rc5.d
+ make install
+ cp build/rpm.mararc $RPM_BUILD_ROOT/etc/mararc
+ 
+@@ -49,7 +49,7 @@
+ 
+ %files
+ %defattr(-,root,root)
+-%doc doc/
++%doc /usr/doc/maradns-1.2.04/*
+ 
+ /usr/sbin/maradns
+ /usr/sbin/zoneserver
+@@ -57,21 +57,22 @@
+ /usr/bin/fetchzone
+ /usr/bin/askmara
+ /usr/bin/duende
+-/usr/man/man1/askmara.1
+-/usr/man/man1/getzone.1
+-/usr/man/man1/fetchzone.1
+-/usr/man/man8/maradns.8
+-/usr/man/man8/zoneserver.8
+-/usr/man/man8/duende.8
+-/usr/man/man5/csv1.5
+-/usr/man/man5/csv2.5
+-/usr/man/man5/csv2_txt.5
+-/usr/man/man5/mararc.5
++/usr/man/man1/askmara.1*
++/usr/man/man1/getzone.1*
++/usr/man/man1/fetchzone.1*
++/usr/man/man8/maradns.8*
++/usr/man/man8/zoneserver.8*
++/usr/man/man8/duende.8*
++/usr/man/man5/csv1.5*
++/usr/man/man5/csv2.5*
++/usr/man/man5/csv2_txt.5*
++/usr/man/man5/mararc.5*
+ /etc/rc.d/rc3.d/S60maradns
+ /etc/rc.d/rc5.d/S60maradns
+ %config /etc/mararc
+ %config /etc/maradns/db.example.net
+ %config /etc/rc.d/init.d/maradns
++%config /etc/rc.d/init.d/maradns.zoneserver
+ 
+ %preun
+ # End all instances of MaraDNS
+@@ -86,6 +87,18 @@
+ echo MaraDNS should have been stopped
+ 
+ %changelog
++* Thu Feb  9 2006 Sam Trenholme <sam+i55e6bt@chaosring.org>
++- MaraDNS rpm package updated for version 1.2.04
++
++* Fri Jan 27 2006 Greg Swallow <gregswallow@skynetonline.ca>
++- changed mkdirhier to mkdir -p (mkdirhier requires xorg-x11)
++- changed Copyright to License
++- changed Patch1/2 to Source1/2 - not patches
++- added * to usr/man/* file listings
++- Changed doc dir to the correct one
++- added file listing for maradns.zoneserver
++- No functional changes - builds on Centos4 now
++
+ * Sat Jan 21 2006 Sam Trenholme <sam+i55e6bt@chaosring.org>
+ - MaraDNS rpm package updated for version 1.2.03.1
+ 

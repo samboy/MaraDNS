@@ -1,0 +1,21 @@
+--- maradns-1.2.04/doc/en/source/faq.embed	2006-02-14 01:43:44.000000000 -0800
++++ maradns-1.2.05/doc/en/source/faq.embed	2006-02-14 01:44:25.000000000 -0800
+@@ -511,3 +511,18 @@
+ of MaraDNS may have more fine-grained control over the 
+ <tt>upstream_servers</tt> and <tt>root_servers</tt> values.
+ 
++<p>
++
++Note that the <tt>upstream_servers</tt> variable needs to be initialized
++before being used via <tt>upstream_servers = {}</tt> (the reason for this
++is so that a mararc file has 100% Python-compatible syntax).  A complete
++mararc file that uses <tt>upstream_servers</tt> may look like this:
++
++<pre>
++ipv4_bind_addresses = "127.0.0.1"
++chroot_dir = "/etc/maradns"
++recursive_acl = "127.0.0.1/8"
++upstream_servers = {}
++upstream_servers["."] = "10.1.2.3, 10.2.4.6"
++</pre>
++

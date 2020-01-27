@@ -1,0 +1,55 @@
+This patch:
+
+* Stops AXFR and IXFR records from being allowed to be in a zone via
+  the RAW record (ANY records have already been blocked).
+
+* Gives the user a useful error message (instead of just a vague error)
+  when they try to add an ANY, IXFR, or AXFR record to a zone.
+
+--- maradns-1.2.02/parse/Csv2_parse.c	2005-11-22 18:02:35.000000000 -0800
++++ maradns-1.2.03/parse/Csv2_parse.c	2006-01-15 11:42:53.000000000 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004 Sam Trenholme
++/* Copyright (c) 2004-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -1189,7 +1189,18 @@
+ 		default:
+ 			if(rtype >= 100000 && rtype <= 165535) {
+ 				rtype -= 100000;
+-				rddata = csv2_get_raw(stream);
++				if(rtype == RR_ANY) {
++					csv2_error(stream,
++				  "ANY (255) record type isn't for data");
++                                } else if(rtype == 251) {
++					csv2_error(stream,
++				  "IXFR (251) record type isn't for data");
++                                } else if(rtype == 252) {
++					csv2_error(stream,
++				  "AXFR (252) record type isn't for data");
++                                } else {
++				    rddata = csv2_get_raw(stream);
++				}
+ 			} else {
+ 				csv2_error(stream,"Unsupported RTYPE");
+ 			}
+--- maradns-1.2.02/server/MaraBigHash.c	2006-01-01 12:00:26.000000000 -0800
++++ maradns-1.2.03/server/MaraBigHash.c	2006-01-15 11:34:07.000000000 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2005 Sam Trenholme
++/* Copyright (c) 2002-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -1153,6 +1153,10 @@
+     if(qtype == RR_ANY)
+ 	return JS_ERROR;
+ 
++    /* Nor are we allowed to add "AXFR" nor "IXFR" data to the bighash */
++    if(qtype == 251 /* IXFR */ || qtype == 252 /* AXFR */) 
++        return JS_ERROR;
++
+     /* See if the data is authoritative or not */
+     /* Change the type so the two strings are the same */
+     if(change_rtype(zone,qtype) == JS_ERROR) {

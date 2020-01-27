@@ -1,0 +1,26 @@
+Updating this list is almost a monthly ritual.  This info is based on 
+http://www.opennic.unrated.net/tld-root.txt with 2006022201 as the SOA
+serial number.
+
+diff -ur maradns-1.2.06.orig/doc/en/source/recursive.ej maradns-1.2.06/doc/en/source/recursive.ej
+--- maradns-1.2.06.orig/doc/en/source/recursive.ej	2006-02-22 11:28:23.000000000 -0800
++++ maradns-1.2.06/doc/en/source/recursive.ej	2006-02-22 11:31:46.000000000 -0800
+@@ -242,7 +242,7 @@
+ <p>
+ 
+ Here is what a configuration file which uses OpenNIC's glue root servers
+-as the root servers.  This list is current as of December 3, 2005; note
++as the root servers.  This list is current as of February 22, 2006; note
+ that OpenNIC frequently changes these IPs and you need to verify that
+ these IPs are current at <A 
+ href=http://www.opennic.unrated.net/>http://www.opennic.unrated.net/</A>.
+@@ -260,7 +260,9 @@
+ ipv4_alias["opennic"] += "66.227.42.140,"
+ ipv4_alias["opennic"] += "66.227.42.149,"
+ ipv4_alias["opennic"] += "64.81.44.251,"
++ipv4_alais["opennic"] += "216.87.84.214,"
+ ipv4_alias["opennic"] += "208.185.249.251,"
++ipv4_alias["opennic"] += "131.161.247.231,"
+ # This is the last line, so no comma at the end
+ ipv4_alias["opennic"] += "65.243.92.254"
+ # Considering how often alternate root DNS server lists change or disappear,

@@ -1,0 +1,46 @@
+From: Sam Trenholme <sam+i7tq5rg@chaosring.org>
+To: list@maradns.org
+Subject: [MARA] Patch to fix spurious dangling CNAME warnings
+X-PGP-Fingerprint: D167 252A 18BC D011 7CB4  6CA8 0BE8 D6AE 1E61 FCA6
+X-PGP-Note: The above fingerprint is for the MaraDNS signing key
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Alex Kapranoff (the person responsible for the FreeBSD port of MaraDNS)
+pointed out that MaraDNS sometimes gives out spurious dangling CNAME 
+warnings.  Working with him; he came up with a recipe to reproduce the
+problem; at that point I was able to to find and fix the issue in 
+question. [1]
+
+The attached patch resolves this issue.  I will be releasing MaraDNS
+1.2.01 in early 2006.
+
+I would like to thank Alex for both finding this bug and for the FreeBSD
+port of MaraDNS.
+
+If anyone else sees anything unusual with MaraDNS, or just has general
+usability questions, please let me know.
+
+- Sam
+
+[1] Since you asked, it was because the code that linked CNAME records to
+    what the CNAME points to did not stop linking records after the last
+    CNAME, and would link NS records.  Since NS records do have the field
+    for linking CNAME records, the code was making never-used links for 
+    these records.  2006's C++ rewrite will have two classes: A class for
+    RRs, and a derived class for CNAME RRs.  Only the CNAME-specific class
+    will have this special field, letting bugs like this be more easily 
+    caught.
+
+diff -ur maradns-1.2.00/server/MaraBigHash.c maradns-1.2.01/server/MaraBigHash.c
+--- maradns-1.2.00/server/MaraBigHash.c	2005-12-05 13:04:01.000000000 -0800
++++ maradns-1.2.01/server/MaraBigHash.c	2005-12-28 13:38:02.000000000 -0800
+@@ -1020,6 +1020,8 @@
+                 do {
+                     if(answer_ip_query(qtype,record->data,a_query) == JS_ERROR)
+                         continue;
++                    if(record->rr_type != RR_CNAME)
++                        break;
+                     if(change_rtype(a_query,RR_ANY) == JS_ERROR)
+                         continue;
+                     adata = mhash_get(bighash,a_query);

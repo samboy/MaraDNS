@@ -1,0 +1,17 @@
+This patch increases MaraDNS' performance when used on a high-traffic
+ISP; what this patch does is cause the custodian to run for less time
+more frequently; when the cache fills, this patch causes MaraDNS to 
+delete 1% of the records at the bottom of the cache instead of deleting
+8% of the records at the bottom of the cache less frequently.
+
+--- maradns-1.2.03.2/server/recursive.c	2006-02-09 00:46:08.000000000 -0800
++++ maradns-1.2.04/server/recursive.c	2006-02-09 01:01:51.000000000 -0800
+@@ -506,7 +506,7 @@
+         counter--;
+         }
+ 
+-    custodian_mode--;
++    custodian_mode -= 8;
+     return JS_SUCCESS;
+ 
+     }

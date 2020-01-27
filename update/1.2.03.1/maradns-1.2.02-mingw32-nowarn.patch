@@ -1,0 +1,50 @@
+--- maradns-1.2.02/server/functions_server.h	Thu Oct  6 05:15:10 2005
++++ maradns-1.2.03/server/functions_server.h	Sat Jan 14 18:05:44 2006
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2005 Sam Trenholme
++/* Copyright (c) 2002-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -42,8 +42,12 @@
+            js_string with host name they are looking for
+    Output: JS_ERROR on error, JS_SUCCESS on success
+ */
++#ifndef MINGW32
+ int launch_thread(int id, int sock,
+                   struct sockaddr_in client, js_string *query);
++#else
++int launch_thread();
++#endif
+ 
+ /* Populate the main assosciative array (the one where the raw UDP query is
+    the key and the value is the answer) with the data from the various
+--- maradns-1.2.03/server/MaraDNS.c.orig	Sat Jan 14 18:05:28 2006
++++ maradns-1.2.03/server/MaraDNS.c	Sat Jan 14 18:06:52 2006
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002-2005 Sam Trenholme
++/* Copyright (c) 2002-2006 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -3895,8 +3895,8 @@
+ 	      *csv2_synthip_address = 0,
+ 	      *ipv4_bind_address = 0, *incoming = 0, 
+ 	      *uncomp = 0, *verbstr = 0;
+-    unsigned char chroot_zt[255];
+ #ifndef MINGW32
++    unsigned char chroot_zt[255];
+     uid_t uid;
+     gid_t gid;
+ #endif
+@@ -4613,8 +4613,10 @@
+                 }
+             }
+         /* Delay the processing the request, as needed */
++#ifndef MINGW32
+         if(debug_delay > 0)
+             sleep(debug_delay);
++#endif
+ 	/* Process the query */
+         proc_query(uncomp,&ect,sock_num);
+ 	/* Free the memory used by the ect structure */

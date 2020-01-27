@@ -1,0 +1,18 @@
+--- maradns-1.2.05.orig/doc/en/source/mararc.ej	2006-02-18 11:19:55.000000000 -0800
++++ maradns-1.2.05/doc/en/source/mararc.ej	2006-02-18 11:40:21.000000000 -0800
+@@ -783,6 +783,15 @@
+ 
+ <p> The default value for this variable is 1.
+ 
++<h2>verbose_query</h2>
++verbose_query: Whether to verbosely output all DNS queries that the
++recursive DNS server receives.  If this is set to 1, then all recursive
++queries sent to MaraDNS will be logged.  
++
++<p>
++
++This is mainly used for debugging.
++
+ <h2>zone_transfer_acl</h2>
+ zone_transfer_acl: List of ips allowed to perform zone transfers
+ with the zone server

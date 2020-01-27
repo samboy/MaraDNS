@@ -1,0 +1,36 @@
+--- maradns-1.2.04/doc/en/source/default_zonefile.ej	2006-02-15 14:07:06.000000000 -0800
++++ maradns-1.2.05/doc/en/source/default_zonefile.ej	2006-02-15 14:06:21.000000000 -0800
+@@ -15,9 +15,8 @@
+ 
+ <p>
+ 
+-A default zonefile is a zone file where stars can be at the end of
+-hostnames.  The reason for this file is because MaraDNS needs to have
+-restrictions which normal zone files do not have:
++A default zonefile is a CSV2 zone file where stars can be at the end of
++hostnames.  There are a few restrictions with default zone files:
+ 
+ <ul>
+ <li>A SOA record is mandatory
+@@ -28,7 +27,10 @@
+ </ul>
+ 
+ It also is not possible to run recursion on a server that uses a
+-default zonefile.  
++default zonefile.  With the exception of these restrictions, and the
++ability to have a '*' at the end of a hostname (or simply the catch-all
++wildcard hostname '*'), a csv2 default zone file functions like a normal
++csv2 zone file.
+ 
+ <p>
+ 
+@@ -47,7 +49,9 @@
+ # of it.
+ 
+ * 10.10.10.10
++
+ # The A record can be specified explicitly, but doesn't need to be
++# E.g. the above line could have been written '* A 10.10.10.10'
+ www.* A 10.10.10.10
+ 
+ # Here is a MX record

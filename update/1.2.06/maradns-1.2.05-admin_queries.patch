@@ -1,0 +1,182 @@
+This patch updates the admin-specific special DNS queries to
+all end with "maradns".  E.G. the old way to get the MaraDNS version
+number was a TXT query to "erre-con-erre-cigarro.maradns.org."; the
+new way is a TXT query to "version.maradns.".
+
+--- maradns-1.2.05/server/MaraDNS.c	2006-02-21 01:32:16.000000000 -0800
++++ maradns-1.2.06/server/MaraDNS.c	2006-02-21 02:00:24.000000000 -0800
+@@ -3032,6 +3032,10 @@
+     /* If dos_protection_level is one or higher, we don't process
+      * any of the messages one can get about MaraDNS */
+ 
++    if(dos_protection_level > 0) {
++	    goto skip_easter_egg;
++    }
++
+     /* Franky's request to have "administrative IPs", finally implemented 
+      * after almost four years */
+ 
+@@ -3039,22 +3043,19 @@
+             goto skip_easter_egg;
+     } 
+     
+-    if(dos_protection_level > 0) {
+-	    goto skip_easter_egg;
+-    }
+ 
+ #ifdef VERSION
+-        /* A TXT query to "erre-con-erre-cigarro.maradns.org" will
++        /* A TXT query to "version.maradns." will
+            return the version of MaraDNS being run.  This only
+            works if we are not authoritative for "maradns.org", since
+            the real "erre-con-erre-cigarro.maradns.org" says
+            "MaraDNS version number not available" in the TXT record.
+            Note: This is disabled if no_fingerprint is 1 or if
+            debug_msg_level is less than one */
+-        if(origq->unit_count == 37 && *(origq->string) == 21
++        if(origq->unit_count == 19 && *(origq->string) == 7
+            && no_fingerprint != 1 && debug_msg_level >= 1) {
+             result_code = easter_egg(header.id,sock,ect,origq,
+-               "Terre-con-erre-cigarro.maradns.org.",RR_TXT,"MaraDNS version ",
++               "Tversion.maradns.",RR_TXT,"MaraDNS version ",
+                VERSION);
+             if(result_code == JS_SUCCESS) {
+                 js_destroy(lookfor); js_destroy(origq); js_destroy(lc);
+@@ -3066,12 +3067,12 @@
+             }
+ #endif /* VERSION */
+ 
+-        /* A TXT query to "numthreads." tells us the number of
++        /* A TXT query to "numthreads.maradns." tells us the number of
+            threads that MaraDNS is running; this is only enabled if
+            no_fingerprint is 0 and if debug_msg_level is 2 or greater
+         */
+ #ifndef AUTHONLY
+-       if(origq->unit_count == 14 && *(origq->string) == 10
++       if(origq->unit_count == 22 && *(origq->string) == 10
+           && no_fingerprint != 1 && debug_msg_level >= 2) {
+            /* Allocate a string to put the number of threads running in */
+            if((num_string = js_alloc(32,1)) == 0) {
+@@ -3080,7 +3081,7 @@
+                }
+            snprintf(num_string,10,"%d",how_many_threads());
+            result_code = easter_egg(header.id,sock,ect,origq,
+-            "Tnumthreads.",RR_TXT,"Number threads running: ",
++            "Tnumthreads.maradns.",RR_TXT,"Number threads running: ",
+             num_string);
+            js_dealloc(num_string);
+            if(result_code == JS_SUCCESS) {
+@@ -3093,11 +3094,11 @@
+            }
+ #endif /* AUTHONLY */
+ 
+-        /* A TXT query to "memusage." tells us the number of
++        /* A TXT query to "memusage.maradns." tells us the number of
+            threads that MaraDNS is running; this is only enabled if
+            no_fingerprint is 0 and if debug_msg_level is 2 or greater
+         */
+-       if(origq->unit_count == 12 && *(origq->string) == 8
++       if(origq->unit_count == 20 && *(origq->string) == 8
+           && no_fingerprint != 1 && debug_msg_level >= 2) {
+            /* Allocate a string to put the number of threads running in */
+            mem_usage = js_tell_memory_allocated();
+@@ -3108,13 +3109,13 @@
+                    }
+                snprintf(num_string,14,"%d",mem_usage);
+                result_code = easter_egg(header.id,sock,ect,origq,
+-                "Tmemusage.",RR_TXT,"Memory usage, in bytes: ",
++                "Tmemusage.maradns.",RR_TXT,"Memory usage, in bytes: ",
+                 num_string);
+                js_dealloc(num_string);
+                }
+            else {
+                result_code = easter_egg(header.id,sock,ect,origq,
+-                "Tmemusage.",RR_TXT,"Memory usage unknown; ",
++                "Tmemusage.maradns.",RR_TXT,"Memory usage unknown; ",
+                 "try compiling with make debug");
+                }
+            if(result_code == JS_SUCCESS) {
+@@ -3126,11 +3127,11 @@
+                }
+            }
+ 
+-        /* A TXT query to "timestamp." tells us the time
++        /* A TXT query to "timestamp.maradns." tells us the time
+            on the system MaraDNS is running on; this is only enabled if
+            no_fingerprint is 0 and if debug_msg_level is 2 or greater
+         */
+-       if(origq->unit_count == 13 && *(origq->string) == 9
++       if(origq->unit_count == 21 && *(origq->string) == 9
+           && no_fingerprint != 1 && debug_msg_level >= 3) {
+ 	   qual_timestamp the_time;
+            /* Allocate a string to put the number of threads running in */
+@@ -3147,13 +3148,13 @@
+                    snprintf(num_string,14,"%d",(int)the_time);
+ 		   }
+                result_code = easter_egg(header.id,sock,ect,origq,
+-                "Ttimestamp.",RR_TXT,"Timestamp: ",
++                "Ttimestamp.maradns.",RR_TXT,"Timestamp: ",
+                 num_string);
+                js_dealloc(num_string);
+                }
+            else {
+                result_code = easter_egg(header.id,sock,ect,origq,
+-                "Tmemusage.",RR_TXT,"Memory usage unknown; ",
++                "Tmemusage.maradns.",RR_TXT,"Memory usage unknown; ",
+                 "try compiling with make debug");
+                }
+            if(result_code == JS_SUCCESS) {
+@@ -3165,12 +3166,12 @@
+                }
+            }
+ 
+-        /* A TXT query to "cache-elements." tells us the number of
++        /* A TXT query to "cache-elements.maradns." tells us the number of
+            elements in the DNS cache; this is only enabled if
+            no_fingerprint is 0 and if debug_msg_level is 2 or greater
+         */
+ #ifndef AUTHONLY
+-       if(origq->unit_count == 18 && *(origq->string) == 14
++       if(origq->unit_count == 26 && *(origq->string) == 14
+           && no_fingerprint != 1 && debug_msg_level >= 2) {
+            /* Allocate a string to put the number of threads running in */
+            if((num_string = js_alloc(32,1)) == 0) {
+@@ -3179,7 +3180,7 @@
+                }
+            snprintf(num_string,10,"%d",cache_elements());
+            result_code = easter_egg(header.id,sock,ect,origq,
+-            "Tcache-elements.",RR_TXT,"Elements in DNS cache: ",
++            "Tcache-elements.maradns.",RR_TXT,"Elements in DNS cache: ",
+             num_string);
+            js_dealloc(num_string);
+            if(result_code == JS_SUCCESS) {
+--- maradns-1.2.05/doc/en/source/mararc.ej	2006-02-21 01:32:16.000000000 -0800
++++ maradns-1.2.06/doc/en/source/mararc.ej	2006-02-21 02:05:55.000000000 -0800
+@@ -377,19 +377,21 @@
+ will be made public.  
+ <p>
+ When set to one (the default), or higher, a 
+-Terre-con-erre-cigarro.maradns.org. (TXT query for 
+-"erre-con-erre-cigarro.maradns.org.") query will return the version
++Tversion.maradns. (TXT query for 
++"version.maradns.") query will return the version
+ number of MaraDNS.  
+ <p>
+-When set to two or higher, a Tnumthreads. (TXT query for "numthreads.") 
++When set to two or higher, a Tnumthreads.maradns.
++(TXT query for "numthreads.maradns.") 
+ query will return the 
+-number of threads that MaraDNS is currently running, and a Tcache-elements.
++number of threads that MaraDNS is currently running, and a 
++Tcache-elements.maradns.
+ query will return the number of elements in MaraDNS' cache.  If
+ MaraDNS is compiled with debugging information on, a 
+-Tmemusage. query will return the amount of memory MaraDNS has
++Tmemusage.maradns. query will return the amount of memory MaraDNS has
+ allocated.
+ <p>
+-When set to three or higher, a Ttimestamp. query will return, in 
++When set to three or higher, a Ttimestamp.maradns. query will return, in 
+ seconds since the UNIX epoch, the timestamp for the system MaraDNS
+ is running on.
+ <br>

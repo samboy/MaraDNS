@@ -1,0 +1,38 @@
+--- maradns-1.2.01/doc/en/source/changelog.embed	2006-01-01 12:00:26.000000000 -0800
++++ maradns-1.2.02/doc/en/source/changelog.embed	2006-01-02 08:39:48.000000000 -0800
+@@ -1,5 +1,26 @@
+ <H1>MaraDNS changelog</H1>
+ 
++<p>maradns-1.2.02:
++This is a beta-test potentially unstable release, since the changes 
++are significant enough to warrant full testing before declaring this
++as stable as previous 1.2 releases of MaraDNS.
++<blockquote>
++<ul>
++<li>Changed build process to have consistent compile-time flags in
++    all directories, and to allow people on unsupported platforms to
++    compile MaraDNS after they look at obnoxious error message.
++<li>Fixed all of the compile-time warnings this change brought out.
++<li>Added a new mararc variable, <tt>bind_star_handling</tt> for people
++    who want full BIND compatibility with star records.
++<li>Documentation updates: <tt>bind_star_handling</tt> documented, 
++    <tt>SOURCE.FILES</tt> made current.
++<li>Copyright notice updated for 2006
++<li>.gz tarball now optimized by Igor Pavlov and Andrea Mazzoleni's 
++    <tt>advdef</tt> program; this reduces size of .gz tarball by about 5%
++</ul>
++(2006.01.02)
++</blockquote>
++
+ <p>maradns-1.2.01:
+ <blockquote>
+ <ul>
+@@ -8,7 +29,7 @@
+     make the patches part of the 1.2 release.
+ <li>Updated dangling CNAME document to clarify that typos can also cause
+     the dangling CNAME warning.
+-<li>Updated the tarball building process of MaraDNS to have use Igor
++<li>Updated the tarball building process of MaraDNS to also use Igor
+     Pavlov's LZMA compression to make a compressed MaraDNS tarball which 
+     is both smaller and extracts faster than the bzip2 tarball.
+ <li>Fixed spurious dangling CNAME warning bug which Alex Kapranoff found.

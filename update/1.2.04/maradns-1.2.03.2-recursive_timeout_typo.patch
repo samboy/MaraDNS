@@ -1,0 +1,14 @@
+This typo was discovered by someone using MaraDNS in production use at a big
+ISP.
+
+--- maradns-1.2.03.2/server/recursive.c	2006-01-21 21:22:01.000000000 -0800
++++ maradns-1.2.04/server/recursive.c	2006-02-09 00:13:39.000000000 -0800
+@@ -4163,7 +4163,7 @@
+ 
+     /* Set the maximum time to wait for another DNS server */
+     timeout_seconds = 2;
+-    if(timeout_seconds > 0)
++    if(timeout > 0)
+         timeout_seconds = timeout;
+ 
+     /* Set the maximum number of threads */

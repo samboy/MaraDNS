@@ -1,0 +1,1407 @@
+--- maradns-1.2.06-orig/server/MaraDNS.c	2006-03-10 00:33:28.000000000 -0800
++++ maradns-1.2.06/server/MaraDNS.c	2006-03-10 00:45:13.000000000 -0800
+@@ -155,6 +155,12 @@
+ 	return synth_soa_serial;
+ }
+ 
++/* Define log_lock(); and log_unlock(); for authonly use */
++#ifdef AUTHONLY
++#define log_lock()
++#define log_unlock()
++#endif /* AUTHONLY */
++
+ /* Debug routine that shows an IP in dotted decimal format on the
+    standard output.
+    Input:  A uint32 ip
+@@ -186,8 +192,11 @@
+ 
+ /* Signal handler for SIGPIPE, so we don't terminate */
+ void handle_sigpipe() {
+-    if(log_level > 1)
++    if(log_level > 1) {
++        log_lock();
+         printf("%s%s",L_CAUGHT_PIPE,L_N); /* "Caught SIGPIPE" */
++        log_unlock();
++        }
+     return;
+     }
+ 
+@@ -201,8 +210,11 @@
+ 
+ /* Signal handler for other signals */
+ void handle_signal() {
+-    if(log_level > 1)
++    if(log_level > 1) {
++        log_lock();
+         printf("%s%s",L_CAUGHT_SIG,L_N); /* "Caught Signal" */
++        log_unlock();
++        }
+     return;
+     }
+ 
+@@ -227,12 +239,14 @@
+ 
+     if(logmessage == 0)
+         return JS_ERROR;
++    log_lock();
+     show_timestamp();
+     printf("%s%s%s",L_LOG,logmessage,L_N);
+           /* "Log: ", logmessage, "\n" */
+ 
+     /* Unbuffered output */
+     fflush(stdout);
++    log_unlock();
+ 
+     return JS_SUCCESS;
+     }
+@@ -249,12 +263,14 @@
+     if(log_level == 0)
+         return JS_SUCCESS;
+ 
++    log_lock();
+     printf("%s",L_LOG); /* "Log: " */
+     ret = show_esc_stdout(logmessage);
+     printf("%s",L_N); /* "\n" */
+ 
+     /* Unbuffered output */
+     fflush(stdout);
++    log_unlock();
+ 
+     return ret;
+     }
+@@ -269,12 +285,14 @@
+         return JS_SUCCESS;
+     if(left == 0)
+         return JS_ERROR;
++    log_lock();
+     printf("%s%s",L_LOG,left); /* "Log: ", left */
+     ret = show_esc_stdout(right);
+     printf("%s",L_N); /* "\n" */
+ 
+     /* Unbuffered output */
+     fflush(stdout);
++    log_unlock();
+ 
+     return ret;
+     }
+@@ -892,11 +910,15 @@
+     if(compress_data(most,ar) == JS_ERROR) {
+         /* This is a bit of a kludge to work around the news.com.com
+            problem for the 1.0.00 release */
+-        show_timestamp();
+-        printf("%s",L_COMPRESS_ERROR);
+-        /* Compress error */
+-        show_esc_stdout(most);
+-        printf("\n");
++        if(log_level > 2) {
++            log_lock();
++            show_timestamp();
++            printf("%s",L_COMPRESS_ERROR);
++            /* Compress error */
++            show_esc_stdout(most);
++            printf("\n");
++            log_unlock();
++            }
+         if(js_copy(most,ar) == JS_ERROR) {
+             js_destroy(ar);
+ 	    if(client != 0) {
+@@ -1812,7 +1834,7 @@
+ 			js_destroy(out);
+ 			return 0;
+ 		}
+-		printf("point %d length %d\n",point,length);
++		/* printf("point %d length %d\n",point,length); */
+ 		point += length + 1;
+ 		if(point > dname_they_wanted->unit_count) {
+ 			js_destroy(out);
+@@ -3232,7 +3254,9 @@
+            js_dealloc(query_string);
+            if(result_code == JS_SUCCESS) {
+                log_level = new_verbose_level; 
++               log_lock();
+                printf("Verbose_level remotely set to %d\n",new_verbose_level); 
++               log_unlock();
+ #ifndef AUTHONLY
+                init_rlog_level(new_verbose_level); 
+ #endif
+@@ -4675,6 +4699,7 @@
+ 		}
+ #endif /* __CYGWIN__ */
+ #endif
++		log_lock();
+                 show_timestamp();
+                 printf("%s ","Query from");
+ 		if(ect.type == 4) {
+@@ -4692,14 +4717,17 @@
+                 printf("has decompression error: ");
+                 show_esc_stdout(incoming);
+                 printf("\n");
++                log_unlock();
+                 }
+             continue;
+             }
+         if(log_level >= 5) {
++            log_lock();
+             show_timestamp();
+             printf("Decompressed packet: ");
+             show_esc_stdout(uncomp);
+             printf("\n");
++            log_unlock();
+             }
+         if(log_level >= 3 && uncomp->unit_count > 12) {
+             /* Show them the query */
+@@ -4715,6 +4743,7 @@
+ #endif
+                 hname_translate(incoming,value);
+                 /* Yes, I know, put these in the "to localize" header file */
++                log_lock();
+                 show_timestamp();
+                 printf("%s: ","Query from");
+ 		if(ect.type == 4) {
+@@ -4732,6 +4761,7 @@
+                 printf(" ");
+                 js_show_stdout(incoming);
+                 printf("\n");
++                log_unlock();
+                 }
+             }
+         /* Delay the processing the request, as needed */
+--- maradns-1.2.06-orig/server/recursive.c	2006-03-10 00:33:28.000000000 -0800
++++ maradns-1.2.06/server/recursive.c	2006-03-10 00:51:41.000000000 -0800
+@@ -58,7 +58,7 @@
+ /* The locks used for multithreaded purposes */
+ pthread_mutex_t big_lock = PTHREAD_MUTEX_INITIALIZER;
+ int in_big_lock = 0;
+-pthread_mutex_t log_lock = PTHREAD_MUTEX_INITIALIZER;
++pthread_mutex_t logwrite_lock = PTHREAD_MUTEX_INITIALIZER;
+ pthread_mutex_t rng_lock = PTHREAD_MUTEX_INITIALIZER;
+ pthread_mutex_t thr_lock = PTHREAD_MUTEX_INITIALIZER;
+ 
+@@ -176,12 +176,12 @@
+ /* A list of spam-friendly DNS servers (e.g. azmalink.net, etc.) */
+ ipv4pair spammers[512];
+ 
+-void logwrite_lock() {
+-    pthread_mutex_lock(&log_lock);
++void log_lock() {
++    pthread_mutex_lock(&logwrite_lock);
+     }
+     
+-void logwrite_unlock() {
+-    pthread_mutex_unlock(&log_lock);
++void log_unlock() {
++    pthread_mutex_unlock(&logwrite_lock);
+     }
+     
+ void do_big_lock() {
+@@ -191,10 +191,10 @@
+     
+ void big_unlock() {
+     if(in_big_lock != 1) {
+-        logwrite_lock();
++        log_lock();
+         show_timestamp();
+ 	printf("WARNING: Attempting to unlock when not locked\n");
+-        logwrite_unlock();
++        log_unlock();
+ 	return;
+ 	}
+     in_big_lock = 0;
+@@ -469,12 +469,12 @@
+         bye = zap->record;
+ 
+         if(rlog_level >= 4) {
+-	    logwrite_lock();
++	    log_lock();
+             show_timestamp();
+             printf("Custodian is zapping record ");
+             show_esc_stdout(zap->hash_point);
+             printf(" at %p\n",zap->record);
+-	    logwrite_unlock();
++	    log_unlock();
+             }
+ 
+         /* Remove the pointer to this hash element */
+@@ -631,10 +631,10 @@
+ 
+     if(depth > 32) {
+         if(rlog_level >= 4) {
+-	    logwrite_lock();
++	    log_lock();
+ 	    show_timestamp();
+ 	    printf(" unlinking depth exceeded\n");
+-	    logwrite_unlock();
++	    log_unlock();
+ 	    }
+         return JS_ERROR; /* Maximum allowed depth is 32 */
+ 	}
+@@ -642,11 +642,11 @@
+     while(fatma != 0) {
+ 
+         if(rlog_level >= 4) {
+-	    logwrite_lock();
++	    log_lock();
+             show_timestamp();
+ 	    printf("Unlinking RR at %p, depth %d, next %p\n",fatma,depth,
+ 	           fatma->next);
+-	    logwrite_unlock();
++	    log_unlock();
+ 	    }
+ 
+         if(fatma->ip != 0)
+@@ -655,18 +655,18 @@
+         /* We normally do not destroy fatma->query because that js string
+            object has normally already been destroyed */
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Destroying data at %p\n",fatma->data);
+-            logwrite_unlock();
++            log_unlock();
+             }
+         js_destroy(fatma->data);
+         if(fatma->ptr != 0) {
+             if(rlog_level >= 4) {
+-                logwrite_lock();
++                log_lock();
+                 show_timestamp();
+                 printf("Destroying ptr at %p\n",fatma->ptr);
+-                logwrite_unlock();
++                log_unlock();
+                 }
+             js_destroy(fatma->ptr);
+             }
+@@ -674,10 +674,10 @@
+            separate js_string object that also needs to be nuked */
+         if(fatma->zap == NULL && depth >= 1) {
+             if(rlog_level >= 4) {
+-                logwrite_lock();
++                log_lock();
+                 show_timestamp();
+                 printf("Destroying query at %p\n",fatma->query);
+-                logwrite_unlock();
++                log_unlock();
+                 }
+             js_destroy(fatma->query);
+             }
+@@ -693,10 +693,10 @@
+             }
+ 
+         if(rlog_level >= 4) {
+-	    logwrite_lock();
++	    log_lock();
+ 	    show_timestamp();
+ 	    printf("Destroying remember at %p\n",remember);
+-	    logwrite_unlock();
++	    log_unlock();
+ 	    }
+ 
+         js_dealloc(remember);
+@@ -1082,12 +1082,12 @@
+         return JS_ERROR;
+ 
+     if(rlog_level >= 4) {
+-        logwrite_lock();
++        log_lock();
+         show_timestamp();
+         printf("Adding RR/psudo-NXDOMAIN ");
+         show_esc_stdout(query);
+         printf(" to cache at %p\n",data);
+-        logwrite_unlock();
++        log_unlock();
+         }
+ 
+     /* First, clear out all the fields */
+@@ -1224,11 +1224,11 @@
+            currently there */
+         if(action == OVERWRITE || spot_data.datatype == MARA_DNS_NS) {
+             if(rlog_level >= 4) {
+-		logwrite_lock();
++		log_lock();
+                 show_timestamp();
+                 printf("Element already in hash at %p, zapping\n",
+ 		       spot_data.value);
+-		logwrite_unlock();
++		log_unlock();
+                 }
+ 
+             if(add_zap == 0)
+@@ -1258,11 +1258,11 @@
+             }
+         else if(action == 2) { /* Append */
+             if(rlog_level >= 4) {
+-		logwrite_lock();
++		log_lock();
+                 show_timestamp();
+                 printf("Appending element in hash at %p\n",
+ 		       spot_data.value);
+-		logwrite_unlock();
++		log_unlock();
+                 }
+             point = spot_data.value;
+             while(point->next != NULL)
+@@ -1302,12 +1302,12 @@
+         data->zap = new_fila(data,0,zap_query,2);
+ 
+     if(rlog_level >= 4) {
+-	logwrite_lock();
++	log_lock();
+         show_timestamp();
+         printf("Sucessfully added ");
+         show_esc_stdout(query);
+         printf(" to cache at %p\n",data);
+-	logwrite_unlock();
++	log_unlock();
+         }
+ 
+     return JS_SUCCESS;
+@@ -1498,12 +1498,12 @@
+     if(remote_ip == 0xffffffff || remote_ip == 0) { /* 255.255.255.255
+                                                        and 0.0.0.0 */
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Invalid ip ");
+             debug_show_ip(remote_ip);
+             printf(" rejected\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         return JS_ERROR;
+         }
+@@ -1511,7 +1511,7 @@
+     /* End variable declaration, begin code */
+ 
+     if(rlog_level >= 4) {
+-        logwrite_lock();
++        log_lock();
+         show_timestamp();
+         printf("Querying DNS server with ip ");
+         debug_show_ip(remote_ip);
+@@ -1520,7 +1520,7 @@
+         printf(" with bailiwick ");
+         show_esc_stdout(bailiwick);
+         printf("\n");
+-        logwrite_unlock();
++        log_unlock();
+         }
+ 
+     /* Make sure they are not a spammer.  If they are, return an error */
+@@ -1529,11 +1529,11 @@
+         if((remote_ip & (spammers[counter]).mask) ==
+             ((spammers[counter]).ip & (spammers[counter]).mask)) {
+             if(rlog_level >= 4) {
+-                logwrite_lock();
++                log_lock();
+                 show_timestamp();
+                 debug_show_ip(remote_ip);
+                 printf(" is a DNS server we won't talk to\n");
+-                logwrite_unlock();
++                log_unlock();
+                 }
+             return JS_ERROR; /* We do not welcome replies from spam-friendly
+                                 DNS servers */
+@@ -1548,29 +1548,29 @@
+     /* Allocate memory for some strings */
+     if((indata = js_create(512,1)) == 0) {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Unable to allocate indata string\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         return JS_ERROR;
+ 	}
+     if((uindata = js_create(2048,1)) == 0) {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Unable to allocate uindata string\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         js_destroy(indata);
+         return JS_ERROR;
+         }
+     if((outdata = js_create(512,1)) == 0) {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Unable to allocate outdata string\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         js_destroy(indata);
+         js_destroy(uindata);
+@@ -1583,10 +1583,10 @@
+     server.sin_port = htons(53);
+     if((server.sin_addr.s_addr = htonl(remote_ip)) == INADDR_NONE) {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Failure running htonl\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         goto cleanup;
+ 	}
+@@ -1624,28 +1624,28 @@
+     /* Make a beginning of a DNS query from that header */
+     if(make_hdr(&header,outdata) == JS_ERROR) {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Failure running make_hdr\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         goto cleanup;
+ 	}
+     if(js_append(query,outdata) == JS_ERROR) {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Failure running js_append\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         goto cleanup;
+ 	}
+     if(js_adduint16(outdata,1) == JS_ERROR) { /* Adding class to query */
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Failure running js_adduint16\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         goto cleanup;
+ 	}
+@@ -1659,10 +1659,10 @@
+     /* Create a UDP client socket */
+     if((s = socket(AF_INET,SOCK_DGRAM,0)) == -1) {
+         if(rlog_level >= 2) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("WARNING: Failure creating socket\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         goto cleanup;
+ 	}
+@@ -1673,10 +1673,10 @@
+     /* Try 10 times just in case the port is already bound */
+     do {
+         if(rlog_level >= 4 && counter > 0) {
+-	    logwrite_lock();
++	    log_lock();
+ 	    show_timestamp();
+ 	    printf("Bind failed, trying again\n");
+-	    logwrite_unlock();
++	    log_unlock();
+ 	    }
+         /* XXX read some kvars which determine the range of this 
+ 	   (V1.2 feature) */
+@@ -1688,10 +1688,10 @@
+     if(counter >= 10) {
+         close(s);
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Failure binding, giving up\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         goto cleanup;
+ 	}
+@@ -1705,10 +1705,10 @@
+     if(counter < 0) {
+         close(s);
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Sendto failure\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         goto cleanup;
+         }
+@@ -1724,10 +1724,10 @@
+     do_big_lock();
+     if(n == -1)  /* select error */ {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Select error\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         close(s);
+         goto cleanup;
+@@ -1735,10 +1735,10 @@
+     if(n == 0) /* Timeout */ {
+         close(s);
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Timeout contacting remote nameserver\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         goto minus2;
+         }
+@@ -1754,10 +1754,10 @@
+                          (socklen_t *)&len_inet)) < 0) {
+         close(s);
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("recvfrom error\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         goto minus3;
+         }
+@@ -1767,29 +1767,29 @@
+     indata->unit_count = count;
+     if(decompress_data(indata,uindata) == JS_ERROR) {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Decompress failure: ");
+ 	    show_esc_stdout(indata);
+ 	    printf("\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         goto minus3;
+         } 
+     if(rlog_level >= 5) {
+-        logwrite_lock();
++        log_lock();
+ 	show_timestamp();
+ 	printf("Decompressed packet: ");
+ 	show_esc_stdout(uindata);
+ 	printf("\n");
+-	logwrite_unlock();
++	log_unlock();
+ 	}
+     if(read_hdr(uindata,&header) == JS_ERROR) {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("read_hdr failure\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         goto minus3;
+ 	}
+@@ -1816,10 +1816,10 @@
+ 
+     if(header.id != sid) {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Bad id from remote server (possible spoof attempt)\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         goto cleanup;
+ 	}
+@@ -1829,10 +1829,10 @@
+        keen on resolving macslash.net */
+     if(header.rcode != 0 && header.rcode != 3) {
+         if(rlog_level >= 4) {
+-	    logwrite_lock();
++	    log_lock();
+ 	    show_timestamp();
+ 	    printf("Bad rcode from remote server\n");
+-	    logwrite_unlock();
++	    log_unlock();
+ 	    }
+         goto cleanup;
+ 	}
+@@ -1844,10 +1844,10 @@
+         len = dlabel_length(uindata,offset);
+         if(len == JS_ERROR) {
+             if(rlog_level >= 4) {
+-                logwrite_lock();
++                log_lock();
+                 show_timestamp();
+                 printf("Bad dlabel_length\n");
+-                logwrite_unlock();
++                log_unlock();
+                 }
+             goto cleanup;
+ 	    }
+@@ -1874,10 +1874,10 @@
+             len = dlabel_length(uindata,offset);
+             if(len == JS_ERROR) {
+                 if(rlog_level >= 4) {
+-                    logwrite_lock();
++                    log_lock();
+                     show_timestamp();
+                     printf("Bad dlabel_length\n");
+-                    logwrite_unlock();
++                    log_unlock();
+                     }
+                 goto cleanup;
+ 		}
+@@ -1889,10 +1889,10 @@
+                 substring_issame_case(uindata,offset,len,query);
+             if(return_code_check == JS_ERROR) {
+                 if(rlog_level >= 4) {
+-                    logwrite_lock();
++                    log_lock();
+                     show_timestamp();
+                     printf("Bad return_code_check\n");
+-                    logwrite_unlock();
++                    log_unlock();
+                     }
+                 goto cleanup;
+ 		}
+@@ -1903,28 +1903,28 @@
+                 cname_original_record = get_rtype(query);
+                 if(cname_original_record == JS_ERROR) {
+                     if(rlog_level >= 4) {
+-                        logwrite_lock();
++                        log_lock();
+                         show_timestamp();
+                         printf("Bad cname_original_record\n");
+-                        logwrite_unlock();
++                        log_unlock();
+                         }
+                     goto cleanup;
+ 		    }
+                 if(change_rtype(query,RR_CNAME) == JS_ERROR) {
+                     if(rlog_level >= 4) {
+-                        logwrite_lock();
++                        log_lock();
+                         show_timestamp();
+                         printf("change_rtype problem\n");
+-                        logwrite_unlock();
++                        log_unlock();
+                         }
+                     goto cleanup;
+ 		    }
+                 if(substring_issame_case(uindata,offset,len,query) != 1) {
+                     if(rlog_level >= 4) {
+-                        logwrite_lock();
++                        log_lock();
+                         show_timestamp();
+                         printf("substring_issame_case problem\n");
+-                        logwrite_unlock();
++                        log_unlock();
+                         }
+                     goto minus2;
+ 		    }
+@@ -1944,10 +1944,10 @@
+ 
+             if(ttl == JS_ERROR) {
+                 if(rlog_level >= 4) {
+-                    logwrite_lock();
++                    log_lock();
+                     show_timestamp();
+                     printf("bad ttl\n");
+-                    logwrite_unlock();
++                    log_unlock();
+                     }
+                 goto minus2;
+ 		}
+@@ -1967,10 +1967,10 @@
+             rdlength = js_readuint16(uindata,offset);
+             if(rdlength == JS_ERROR) {
+                 if(rlog_level >= 4) {
+-                    logwrite_lock();
++                    log_lock();
+                     show_timestamp();
+                     printf("bad rdlength\n");
+-                    logwrite_unlock();
++                    log_unlock();
+                     }
+                 goto minus2;
+ 		}
+@@ -1984,10 +1984,10 @@
+             /* Determine the IP that the CNAME record points to */
+             if((jsip = js_create(256,1)) == 0) {
+                 if(rlog_level >= 4) {
+-                    logwrite_lock();
++                    log_lock();
+                     show_timestamp();
+                     printf("bad jsip\n");
+-                    logwrite_unlock();
++                    log_unlock();
+                     }
+                 goto cleanup;
+ 		}
+@@ -2008,10 +2008,10 @@
+                        the A record attached to the CNAME */
+                     if(js_copy(spot->data,jsip) == JS_ERROR) {
+                         if(rlog_level >= 4) {
+-                            logwrite_lock();
++                            log_lock();
+                             show_timestamp();
+                             printf("bad js_copy\n");
+-                            logwrite_unlock();
++                            log_unlock();
+                             }
+                         goto cleanup_jsip;
+                         }
+@@ -2024,10 +2024,10 @@
+                     if(is_arpa_address == 1) {
+                         if(js_adduint16(jsip,RR_PTR) == JS_ERROR) {
+                             if(rlog_level >= 4) {
+-                                logwrite_lock();
++                                log_lock();
+                                 show_timestamp();
+                                 printf("bad js_adduint16 RR_PTR\n");
+-                                logwrite_unlock();
++                                log_unlock();
+                                 }
+                             goto cleanup_jsip;
+                             }
+@@ -2035,12 +2035,12 @@
+                             goto cleanup_jsip;
+                             }
+                         if(rlog_level >= 4) {
+-                            logwrite_lock();
++                            log_lock();
+                             show_timestamp();
+                             printf("About to recursively chase ptr ");
+                                     show_esc_stdout(jsip);
+                                     printf("\n");
+-                            logwrite_unlock();
++                            log_unlock();
+                             }
+                         if(recurse_call(0,0,dummy,jsip,0,0,0,ptrq) ==
+                            JS_ERROR) {
+@@ -2052,10 +2052,10 @@
+                     else {
+                         if(js_adduint16(jsip,RR_A) == JS_ERROR) {
+                             if(rlog_level >= 4) {
+-                                logwrite_lock();
++                                log_lock();
+                                 show_timestamp();
+                                 printf("bad js_adduint16 RR_A\n");
+-                                logwrite_unlock();
++                                log_unlock();
+                                 }
+                             goto cleanup_jsip;
+                             }
+@@ -2092,10 +2092,10 @@
+             if(cname_original_record != 0) {
+                 if(change_rtype(query,cname_original_record) == JS_ERROR) {
+                     if(rlog_level >= 4) {
+-                        logwrite_lock();
++                        log_lock();
+                         show_timestamp();
+                         printf("bad change_rtype return code\n");
+-                        logwrite_unlock();
++                        log_unlock();
+                         }
+                     goto cleanup;
+ 		    }
+@@ -2556,13 +2556,13 @@
+     tcount_unlock();
+ 
+     if(rlog_level >= 4) {
+-        logwrite_lock();
++        log_lock();
+         show_timestamp();
+ 	tcount_lock();
+         printf("In thread; ready to begin recursion; Threads in use: %d\n",
+ 	num_of_threads_running);
+ 	tcount_unlock();
+-        logwrite_unlock();
++        log_unlock();
+         }
+ 
+     do_big_lock();
+@@ -2571,13 +2571,13 @@
+     big_unlock();
+ 
+     if(rlog_level >= 4) {
+-        logwrite_lock();
++        log_lock();
+         show_timestamp();
+ 	tcount_lock();
+         printf("Ready to terminate thread; threads in use %d\n",
+ 	num_of_threads_running);
+ 	tcount_unlock();
+-        logwrite_unlock();
++        log_unlock();
+         }
+ 
+     js_destroy(req->query);
+@@ -2626,11 +2626,11 @@
+     if(queries_sent > max_queries_total ||
+        glueless_level > max_glueless_level) {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             show_esc_stdout(query);
+             printf(" queries_total/glueless_level exceeded\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         return JS_ERROR;
+         }
+@@ -2654,11 +2654,11 @@
+     qtype = get_rtype(query);
+     if(qtype == RR_ANY) {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             show_esc_stdout(query);
+             printf(" is an ANY query\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         /* Make sure the RR_A and RR_NS are placed in the dns cache */
+         change_rtype(query,RR_A);
+@@ -2703,12 +2703,12 @@
+ 
+     /* Look for query in cache */
+     if(rlog_level >= 4) {
+-        logwrite_lock();
++        log_lock();
+         show_timestamp();
+         printf("Looking for ");
+         show_esc_stdout(lower);
+         printf(" in cache\n");
+-        logwrite_unlock();
++        log_unlock();
+         }
+     spot_data = mhash_get(dnscache,lower);
+ 
+@@ -2716,11 +2716,11 @@
+        answer */
+     if(spot_data.value != 0 && spot_data.datatype == MARA_DNS_NEG) {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             show_esc_stdout(lower);
+             printf(" found in cache (psudo-NXDOMAIN) at %p\n",spot_data.value);
+-            logwrite_unlock();
++            log_unlock();
+             }
+         if(give_answer(spot_data.value,spot_data.datatype,spot_data.point,
+                        ipret,ptrret,query,lower,id,sock,client,queries_sent,
+@@ -2732,11 +2732,11 @@
+     /* Return cached data if found */
+     if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             show_esc_stdout(lower);
+             printf(" found in cache (RR) at %p\n",spot_data.value);
+-            logwrite_unlock();
++            log_unlock();
+             }
+         if(give_answer(spot_data.value,spot_data.datatype,spot_data.point,
+                        ipret,ptrret,query,lower,id,sock,client,queries_sent,
+@@ -2753,11 +2753,11 @@
+     spot_data = mhash_get(dnscache,copy);
+     if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             show_esc_stdout(lower);
+             printf(" found in cache (CNAME RR) at %p\n",spot_data.value);
+-            logwrite_unlock();
++            log_unlock();
+             }
+         if(give_answer(spot_data.value,spot_data.datatype,spot_data.point,
+                        ipret,ptrret,query,
+@@ -2769,11 +2769,11 @@
+ 
+ 
+     if(rlog_level >= 4) {
+-        logwrite_lock();
++        log_lock();
+         show_timestamp();
+         show_esc_stdout(lower);
+         printf(" not found in cache\n");
+-        logwrite_unlock();
++        log_unlock();
+         }
+ 
+     /* If we still haven't found something, perhaps a lower-case version of
+@@ -2782,12 +2782,12 @@
+     /* If we could fold the case, look for a lower-case version of the same */
+     if(case_folded == 1) {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Looking for ");
+             show_esc_stdout(lower);
+             printf(" (lowercase)\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         spot_data = mhash_get(dnscache,lower);
+ 
+@@ -2795,12 +2795,12 @@
+            answer */
+         if(spot_data.value != 0 && spot_data.datatype == MARA_DNS_NEG) {
+             if(rlog_level >= 4) {
+-                logwrite_lock();
++                log_lock();
+                 show_timestamp();
+                 show_esc_stdout(lower);
+                 printf(" found (lowercase psudo-NXDOMAIN) at %p\n",
+                        spot_data.value);
+-                logwrite_unlock();
++                log_unlock();
+                 }
+             if(give_answer(spot_data.value,spot_data.datatype,
+                        spot_data.point,ipret,ptrret,query,
+@@ -2813,11 +2813,11 @@
+         /* Return cached data if found */
+         if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+             if(rlog_level >= 4) {
+-                logwrite_lock();
++                log_lock();
+                 show_timestamp();
+                 show_esc_stdout(lower);
+                 printf(" found (lowercase RR) at %p\n",spot_data.value);
+-                logwrite_unlock();
++                log_unlock();
+                 }
+             if(give_answer(spot_data.value,spot_data.datatype,
+                        spot_data.point,ipret,ptrret,query,
+@@ -2836,11 +2836,11 @@
+         spot_data = mhash_get(dnscache,copy);
+         if(spot_data.value != 0 && spot_data.datatype == MARA_DNSRR) {
+             if(rlog_level >= 4) {
+-                logwrite_lock();
++                log_lock();
+                 show_timestamp();
+                 show_esc_stdout(lower);
+                 printf(" found (CNAME lowercase RR) at %p\n",spot_data.value);
+-                logwrite_unlock();
++                log_unlock();
+                 }
+             if(give_answer(spot_data.value,spot_data.datatype,spot_data.point,
+                        ipret,ptrret,query,copy,id,sock,client,queries_sent,
+@@ -2850,11 +2850,11 @@
+             }
+ 
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             show_esc_stdout(lower);
+             printf(" not found in cache either\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+ 
+         }
+@@ -2872,12 +2872,12 @@
+        the data we are seeking */
+     do {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Looking for ");
+             show_esc_stdout(copy);
+             printf(" in cache (NS referral)\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+ 
+         spot_data = mhash_get(dnscache,copy);
+@@ -2889,12 +2889,12 @@
+             js_copy(copy,lower);
+             if(fold_case(lower) == JS_SUCCESS) { /* If we can fold the case */
+                 if(rlog_level >= 4) {
+-                    logwrite_lock();
++                    log_lock();
+                     show_timestamp();
+                     printf("Looking for ");
+                     show_esc_stdout(lower);
+                     printf(" in cache (lowercase NS ref)\n");
+-                    logwrite_unlock();
++                    log_unlock();
+                     }
+                 spot_data = mhash_get(dnscache,lower);
+                 if(spot_data.value != 0 && spot_data.datatype == MARA_DNS_NS)
+@@ -2906,14 +2906,14 @@
+         if(spot_data.value != 0 && spot_data.datatype == MARA_DNS_NS) {
+             cpoint = spot_data.value;
+             if(rlog_level >= 4) {
+-                logwrite_lock();
++                log_lock();
+                 show_timestamp();
+                 if(case_folded_found == 1)
+                     show_esc_stdout(lower);
+                 else
+                     show_esc_stdout(copy);
+                 printf(" found at %p\n",spot_data.value);
+-                logwrite_unlock();
++                log_unlock();
+                 }
+             move_to_top(cpoint->zap);
+             /* If the data expires (is not 0), and the data has expired... */
+@@ -2922,14 +2922,14 @@
+                 /* Make the read-only lock a read-write lock */
+ 
+                 if(rlog_level >= 4) {
+-		    logwrite_lock();
++		    log_lock();
+                     show_timestamp();
+                     if(case_folded_found == 1)
+                         show_esc_stdout(lower);
+                     else
+                         show_esc_stdout(copy);
+                     printf(" at %p has expired, zapping\n",spot_data.value);
+-		    logwrite_unlock();
++		    log_unlock();
+                     }
+ 
+                 if(case_folded_found == 0)
+@@ -2950,7 +2950,7 @@
+                original */
+ 
+             if(rlog_level >= 4) {
+-                logwrite_lock();
++                log_lock();
+                 show_timestamp();
+                 printf("Making cpoint copy of ");
+                 if(case_folded_found == 1)
+@@ -2958,7 +2958,7 @@
+                 else
+                     show_esc_stdout(copy);
+                 printf(" at %p\n",spot_data.value);
+-                logwrite_unlock();
++                log_unlock();
+                 }
+ 
+             if((local_c = js_alloc(1,sizeof(closer))) == 0)
+@@ -3217,22 +3217,22 @@
+        set up and launch a thread. */
+     do_big_lock();
+     if(rlog_level >= 4) {
+-        logwrite_lock();
++        log_lock();
+         show_timestamp();
+         printf("Looking for ");
+         show_esc_stdout(query);
+         printf(" in DNS cache\n");
+-        logwrite_unlock();
++        log_unlock();
+         }
+     spot_data = mhash_get(dnscache,query);
+     if(spot_data.value != 0 && (spot_data.datatype == MARA_DNSRR ||
+        spot_data.datatype == MARA_DNS_NEG)) {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             show_esc_stdout(query);
+             printf(" found at %p\n",spot_data.value);
+-            logwrite_unlock();
++            log_unlock();
+             }
+         lookatrr = spot_data.value;
+         move_to_top(lookatrr->zap);
+@@ -3244,20 +3244,20 @@
+            INCOMPLETE_CNAME_LIFETIME))) {
+             /* Do almost nothing */
+             if(rlog_level >= 4) {
+-		logwrite_lock();
++		log_lock();
+                 show_timestamp();
+                 show_esc_stdout(query);
+                 printf(" has expired at %p\n",spot_data.value);
+-		logwrite_unlock();
++		log_unlock();
+                 }
+             }
+         else if(spot_data.datatype == MARA_DNS_NEG) {
+             if(rlog_level >= 4) {
+-		logwrite_lock();
++		log_lock();
+                 show_timestamp();
+                 show_esc_stdout(query);
+                 printf(" is a psudo-NXDOMAIN at %p\n",spot_data.value);
+-		logwrite_unlock();
++		log_unlock();
+                 }
+             udpnotfound(lookatrr,id,sock,&client,query,0,1,0,1);
+ 	    big_unlock();
+@@ -3265,11 +3265,11 @@
+             }
+         else {
+             if(rlog_level >= 4) {
+-		logwrite_lock();
++		log_lock();
+                 show_timestamp();
+                 show_esc_stdout(query);
+                 printf(" is an RR at %p\n",spot_data.value);
+-		logwrite_unlock();
++		log_unlock();
+                 }
+             udpsuccess(spot_data.value,id,sock,&client,query,
+                        spot_data.point,0,1,0);
+@@ -3279,11 +3279,11 @@
+         }
+     else {
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             show_esc_stdout(query);
+             printf(" not found in cache\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         }
+ 
+@@ -3301,12 +3301,12 @@
+             return JS_ERROR;
+             }
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("Looking for ");
+             show_esc_stdout(query);
+             printf(" in DNS cache (CNAME lookup)\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         spot_data = mhash_get(dnscache,query);
+         if(spot_data.value != 0 && (spot_data.datatype == MARA_DNSRR ||
+@@ -3321,21 +3321,21 @@
+                INCOMPLETE_CNAME_LIFETIME))) {
+                 /* Do almost nothing */
+                 if(rlog_level >= 4) {
+-                    logwrite_lock();
++                    log_lock();
+                     show_timestamp();
+                     show_esc_stdout(query);
+                     printf(" has expired (CNAME) at %p\n",spot_data.value);
+-                    logwrite_unlock();
++                    log_unlock();
+                     }
+                 }
+             else if(spot_data.datatype == MARA_DNS_NEG) {
+                 if(rlog_level >= 4) {
+-                    logwrite_lock();
++                    log_lock();
+                     show_timestamp();
+                     show_esc_stdout(query);
+                     printf(" is a psudo-NXDOMAIN (CNAME) at %p\n",
+                            spot_data.value);
+-                    logwrite_unlock();
++                    log_unlock();
+                     }
+                 udpnotfound(lookatrr,id,sock,&client,query,0,1,0,1);
+                 big_unlock();
+@@ -3343,11 +3343,11 @@
+                 }
+             else {
+                 if(rlog_level >= 4) {
+-                    logwrite_lock();
++                    log_lock();
+                     show_timestamp();
+                     show_esc_stdout(query);
+                     printf(" is an RR (CNAME) at %p\n",spot_data.value);
+-                    logwrite_unlock();
++                    log_unlock();
+                     }
+                 if(change_rtype(query,original_rtype) == JS_ERROR) {
+                     big_unlock();
+@@ -3365,11 +3365,11 @@
+             }
+         else {
+             if(rlog_level >= 4) {
+-                logwrite_lock();
++                log_lock();
+                 show_timestamp();
+                 show_esc_stdout(query);
+                 printf(" not found in cache (CNAME)\n");
+-                logwrite_unlock();
++                log_unlock();
+                 }
+             }
+         }
+@@ -3379,10 +3379,10 @@
+         return JS_ERROR;
+ 
+     if(rlog_level >= 4) {
+-        logwrite_lock();
++        log_lock();
+         show_timestamp();
+         printf("initializing thread\n");
+-        logwrite_unlock();
++        log_unlock();
+         }
+ 
+     /* We need to create some thread-safe data structures.
+@@ -3418,10 +3418,10 @@
+         tcount_unlock();
+         js_dealloc(req); js_destroy(copy);
+         if(rlog_level >= 4) {
+-            logwrite_lock();
++            log_lock();
+             show_timestamp();
+             printf("too many threads running\n");
+-            logwrite_unlock();
++            log_unlock();
+             }
+         /* Return a "server fail" error message if we can not spawn
+            a thread.  We need to synthesize a header to do this */
+@@ -3444,10 +3444,10 @@
+     recurse_thread(req);
+ #else
+     if(rlog_level >= 4) {
+-        logwrite_lock();
++        log_lock();
+         show_timestamp();
+         printf("About to launch thread...\n");
+-        logwrite_unlock();
++        log_unlock();
+         }
+     /* Set up the attributes for the thread.  Make this a detached
+        thread because we don't look at the return value (the thread
+@@ -3535,12 +3535,12 @@
+     /* Add the data to the hash */
+ 
+     if(rlog_level >= 4) {
+-	logwrite_lock();
++	log_lock();
+         show_timestamp();
+         printf("Adding ");
+         show_esc_stdout(zone);
+         printf(" to cache at %p (jsddip)\n",close);
+-	logwrite_unlock();
++	log_unlock();
+         }
+ 
+     /* See if the data is already there.  If so, act based on the value
+@@ -3576,10 +3576,10 @@
+                     point = point->next;
+                 point->next = close;
+                 if(rlog_level >= 4) {
+-		    logwrite_lock();
++		    log_lock();
+                     show_timestamp();
+                     printf("That's an append\n");
+-		    logwrite_unlock();
++		    log_unlock();
+                     }
+                 return JS_SUCCESS;
+ 
+@@ -3651,12 +3651,12 @@
+     /* Add the data to the hash */
+ 
+     if(rlog_level >= 4) {
+-	logwrite_lock();
++	log_lock();
+         show_timestamp();
+         printf("Adding ");
+         show_esc_stdout(zone);
+         printf(" to cache at %p (ipv4pair)\n",close);
+-	logwrite_unlock();
++	log_unlock();
+         }
+ 
+     /* See if the data is already there.  If so, act based on the value
+@@ -3692,10 +3692,10 @@
+                     point = point->next;
+                 point->next = close;
+                 if(rlog_level >= 4) {
+-		    logwrite_lock();
++		    log_lock();
+                     show_timestamp();
+                     printf("That's an append\n");
+-		    logwrite_unlock();
++		    log_unlock();
+                     }
+                 return JS_SUCCESS;
+             /* XXX to do: mask */
+@@ -3772,12 +3772,12 @@
+     close->zap = 0;
+ 
+     if(rlog_level >= 4) {
+-	logwrite_lock();
++	log_lock();
+         show_timestamp();
+         printf("Adding ");
+         show_esc_stdout(zone);
+         printf(" to cache at %p (js)\n",close);
+-	logwrite_unlock();
++	log_unlock();
+         }
+ 
+     /* Add the data to the hash */
+@@ -3805,10 +3805,10 @@
+                     point = point->next;
+                 point->next = close;
+                 if(rlog_level >= 4) {
+-		    logwrite_lock();
++		    log_lock();
+                     show_timestamp();
+                     printf("That's an append\n");
+-		    logwrite_unlock();
++		    log_unlock();
+                     }
+                 js_destroy(zone_copy);
+                 return JS_SUCCESS;
+@@ -3996,12 +3996,12 @@
+     close->zap = 0;
+ 
+     if(rlog_level >= 4) {
+-	logwrite_lock();
++	log_lock();
+         show_timestamp();
+         printf("Adding ");
+         show_esc_stdout(zone);
+         printf(" to cache at %p (jsip)\n",close);
+-	logwrite_unlock();
++	log_unlock();
+         }
+ 
+     /* Add the data to the hash */
+--- maradns-1.2.06.orig/server/functions_server.h	2006-03-10 00:53:39.000000000 -0800
++++ maradns-1.2.06/server/functions_server.h	2006-03-10 00:56:26.000000000 -0800
+@@ -273,3 +273,10 @@
+ 
+ int init_handle_noreply(int value);
+ 
++#ifndef AUTHONLY
++/* Lock the writing of log messages */
++void log_lock();
++void log_unlock();
++#endif /* AUTHONLY */
++
++

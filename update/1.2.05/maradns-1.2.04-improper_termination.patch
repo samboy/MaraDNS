@@ -1,0 +1,15 @@
+--- maradns-1.2.05/parse/Csv2_parse.c.orig	2006-02-14 23:39:21.000000000 -0800
++++ maradns-1.2.05/parse/Csv2_parse.c	2006-02-14 23:43:41.000000000 -0800
+@@ -764,6 +764,12 @@
+ 			process_comment(stream);
+ 			return o;
+ 		}
++		else if(csv2_is_delimiter(look)) {
++			csv2_error(stream,"Improper termination of label\n"
++"Label must end with '.' or '%' (A '*' is allowed in csv2_default_zonefile)");
++			js_destroy(o);
++			return 0;
++		}
+ 		else {
+ 			csv2_error(stream,"Unexpected character");
+ 			js_destroy(o);
