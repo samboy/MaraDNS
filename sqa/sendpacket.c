@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
         int maxd;      /* select() */
         struct timeval tv;  /* select() */
         int n; /* Select() return value */
-	int z,y;
+        int z,y;
 
         ip = get_ip(argc, argv);
         sock = get_port(ip,argv,&dns_udp);
@@ -122,23 +122,23 @@ int main(int argc, char **argv) {
         /* Get data from UDP port 53 */
         len_inet = sizeof(dns_udp);
 
-	/* Get packet to send */
-	z = 0;
-	while(!feof(stdin)) {
-		y = getc(stdin);
-		if(!feof(stdin) && z < PACKET_LEN) {
-			p[z] = y;
-			z++;
-		}
-	}
+        /* Get packet to send */
+        z = 0;
+        while(!feof(stdin)) {
+                y = getc(stdin);
+                if(!feof(stdin) && z < PACKET_LEN) {
+                        p[z] = y;
+                        z++;
+                }
+        }
 
-	printf("%d\n",z);
-	
-	y = sendto(sock,p,z,0,(struct sockaddr *)&dns_udp,len_inet);
+        printf("%d\n",z);
 
-	if(y >= 0) {
-        	printf("Packet sent\n");
-	} else {
-		printf("Error sending packet\n");
-	}
+        y = sendto(sock,p,z,0,(struct sockaddr *)&dns_udp,len_inet);
+
+        if(y >= 0) {
+                printf("Packet sent\n");
+        } else {
+                printf("Error sending packet\n");
+        }
 }

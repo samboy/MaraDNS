@@ -1103,7 +1103,7 @@ int read_mararc(js_string *fileloc,js_string *errorstr,int *errorret) {
             js_qstr2js(errorstr,L_FILEMAKE_FATAL); /* "Fatal error creating file" */
             return JS_ERROR;
             }
-	file->buffer = 0;
+        file->buffer = 0;
     }
 
     /* Initialize values */

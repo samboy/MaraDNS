@@ -274,9 +274,9 @@ int csv2_tcp_spit_data(csv2_add_state *state, int connect, q_header *header,
                 else {
                         point = soa;
                 }
-		/* Newer versions of Dig whine if the initial question is 
+                /* Newer versions of Dig whine if the initial question is
                  * not an AXFR RR type */
-		if(type != RR_AXFR && type != 4) {
+                if(type != RR_AXFR && type != 4) {
                     if(js_append(point->query,reply) == JS_ERROR) {
                         js_dealloc(h_copy);
                         js_destroy(reply);
@@ -288,12 +288,12 @@ int csv2_tcp_spit_data(csv2_add_state *state, int connect, q_header *header,
                         return JS_ERROR;
                     }
                 } else {
-		    if(js_append(soa->query,reply) == JS_ERROR) {
+                    if(js_append(soa->query,reply) == JS_ERROR) {
                         js_dealloc(h_copy); js_destroy(reply); return JS_ERROR;
-		    }
+                    }
                     if(js_adduint16(reply,RR_AXFR) == JS_ERROR) {
                         js_dealloc(h_copy); js_destroy(reply); return JS_ERROR;
-		}}
+                }}
         } else { /* Shouldn't get here... */
                 js_dealloc(h_copy);
                 js_destroy(reply);
@@ -519,8 +519,8 @@ int csv2_parse_zone_zoneserver(js_string *zone,
         soa_save = copy_csv2_rr(state->buffer);
 
         /* Second, flush the buffer out */
-        if(csv2_tcp_spit_buffer(state,connect,header,zone,soa_save) 
-			== JS_ERROR) {
+        if(csv2_tcp_spit_buffer(state,connect,header,zone,soa_save)
+                        == JS_ERROR) {
                 js_dealloc(soa_save);
                 csv2_zap_add_state(state);
                 return JS_ERROR;
