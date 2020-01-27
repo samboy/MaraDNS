@@ -105,7 +105,7 @@ TESTS=$TESTS"private_ips "
 
 for test in $TESTS ; do
 	cd $test
-	sh ./do.test > output.test
+	sh ./do.test > output.test 2> /dev/null
 	sleep 2
 	if ! cmp output.success output.test > /dev/null 2>&1 ; then
 		echo test $test failed
