@@ -3,7 +3,8 @@
 I have updated things so that the Git version of MaraDNS is the 
 authoritative “One source of truth” for MaraDNS’s source code.
 MaraDNS’s Git tree is now hosted at 
-[GitHub](https://github.com/samboy/MaraDNS) and 
+[GitHub](https://github.com/samboy/MaraDNS),
+[GitLab](https://gitlab.com/maradns/maradns), and 
 [SourceHut](https://git.sr.ht/~samiam/MaraDNS).  The Git code is
 converted in to tarballs (with full Git history) which can be
 downloaded at [Sourceforge](https://sourceforge.net/projects/maradns/)
