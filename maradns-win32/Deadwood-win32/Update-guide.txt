@@ -1,3 +1,9 @@
+Deadwood 3.5.0002 no longer needs to use mkSecretTxt.exe nor a file
+named secret.txt to get entropy.  Instead, it uses CryptAcquireContext()
+to get random numbers.
+
+---
+
 Deadwood 3.4.01 and Deadwood 3.4.02 do not change any Deadwood code 
 relative to Deadwood 3.3.03.
 

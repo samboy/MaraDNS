@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2019 Sam Trenholme
+/* Copyright (c) 2007-2020 Sam Trenholme
  *
  * TERMS
  *
@@ -26,6 +26,8 @@
 #ifndef MINGW
 #include <grp.h>
 #include <signal.h>
+#else
+#include <wincrypt.h>
 #endif /* MINGW */
 
 #include "DwSocket.h"
@@ -593,6 +595,9 @@ void noise_to_rng(uint8_t *noise, int len) {
                 dw_fatal("error initializing rng_seed");
         }
 
+        /* Make sure we are generating random numbers which differ */
+        dw_log_hex("Random number test: ",dwr_rng(rng_seed),128);
+
         if(z != 0) {
                 dw_destroy(z);
                 z = 0;
@@ -603,26 +608,35 @@ void noise_to_rng(uint8_t *noise, int len) {
  * random_seed_file and get between 16 bytes and the desired length from
  * said file, putting the entropy in the noise pointer */
 void get_entropy_from_seedfile(uint8_t *noise,int len) {
+#ifdef MINGW
+        /* To make life easier for Windows users, we no longer
+         * require them to make a secret.txt file before running
+         * Deadwood */
+        HCRYPTPROV CryptContext;
+        int b;
+        b = CryptAcquireContext(&CryptContext, NULL, NULL, PROV_RSA_FULL,
+                CRYPT_VERIFYCONTEXT);
+        if(b != 1) {
+                dw_fatal("Can not call CryptAcquireContext");
+        }
+        b = CryptGenRandom(CryptContext, 32, noise);
+        if(b != 1) {
+                dw_fatal("Can not call CryptGenRandom");
+        }
+        CryptReleaseContext(CryptContext,0);
+#else /* MINGW */
         char *filename = 0;
         int zap = 0;
         int seed = -1;
 
         if(key_s[DWM_S_random_seed_file] == 0) {
-#ifdef MINGW
-                filename = "secret.txt"; /* Default filename */
-#else /* MINGW */
                 filename = "/dev/urandom"; /* Default filename */
-#endif /* MINGW */
         } else {
                 filename = (char *)dw_to_cstr(key_s[DWM_S_random_seed_file]);
                 zap = 1;
         }
 
-#ifdef MINGW
-        seed = open(filename, O_RDONLY|O_BINARY);
-#else /* MINGW */
         seed = open(filename, O_RDONLY);
-#endif /* MINGW */
         if(seed == -1) {
                 dw_log_3strings("Fatal error opening random seed file ",
                        filename,"",1);
@@ -641,7 +655,7 @@ void get_entropy_from_seedfile(uint8_t *noise,int len) {
                 filename = 0;
         }
         close(seed);
-
+#endif /* MINGW */
 }
 
 /* Initialize random number generator.  Note that some bytes of the "noise"

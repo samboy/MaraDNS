@@ -31,9 +31,6 @@ bind_address="127.0.0.1"
 # The IPs allowed to connect and use the cache
 recursive_acl = "127.0.0.1/16"
 
-# The file containing a hard-to-guess secret
-random_seed_file = "secret.txt" 
-
 # This is the file Deadwood uses to read the cache to and from disk
 cache_file = "dw_cache_bin"
 
