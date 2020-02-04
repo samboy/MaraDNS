@@ -194,7 +194,7 @@ hash_magic_number
    keep the hash generator somewhat random and immune to certain
    types of attacks. In Deadwood 3.0, entropy for the hash function
    is created by looking at the contents of /dev/urandom
-   (CryptAcquireContext() on Windows machines) and the current timestamp. 
+   (CryptGenRandom() on Windows machines) and the current timestamp. 
    This parameter is only here so older configuration files do not break
    in Deadwood 3.0.
 
@@ -354,7 +354,7 @@ ns_glueless_type
 random_seed_file
 
    Note that this is not used in Windows, which instead uses
-   the CryptAcquireContext() call to get entropy.
+   the CryptGenRandom() call to get entropy.
 
    This is a file that contains random numbers, and is used as a
    seed for the cryptographically strong random number generator.
@@ -363,7 +363,7 @@ random_seed_file
 
    Note that the hash compression function obtains some of its
    entropy before parsing the mararc file, and is hard-coded to get
-   entropy from /dev/urandom (CryptAcquireContext() on Windows 
+   entropy from /dev/urandom (CryptGenRandom() on Windows 
    systems).  Most other entropy used by Deadwood comes from the 
    file pointed to by random_seed_file.
 
@@ -645,7 +645,7 @@ verbose_level
    (otherwise it is possible to forge DNS packets).
 
    The Windows port of Deadwood uses the Windows-specific
-   CryptAcquireContext() call to generate random bits.
+   CryptGenRandom() call to generate random bits.
 
    Note that Deadwood is not protected from someone on the same
    network viewing packets sent by Deadwood and sending forged
@@ -668,8 +668,8 @@ verbose_level
 
    If using a precompiled binary of Deadwood, please ensure that
    the system has /dev/urandom support (on Windows system, 
-   Deadwood uses CryptAcquireContext() get get random bits);
-   Deadwood, at runtime, uses /dev/urandom (CryptAcquireContext() 
+   Deadwood uses CryptGenRandom() get get random bits);
+   Deadwood, at runtime, uses /dev/urandom (CryptGenRandom() 
    in Windows) as a hardcoded path to get entropy (along with the 
    timestamp) for the hash algorithm.
 

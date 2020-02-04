@@ -5,8 +5,8 @@ MaraDNS changelog
 
      * Documentation and other updates and cleanups.
      * Windows port no longer needs to have secret.txt file to run; the
-       Deadwood Windows port now uses the Windows call
-       CryptAcquireContext() to get entropy.
+       Deadwood Windows port now uses the Windows call CryptGenRandom() 
+       to get entropy.
 
      (2020-02-03)
 
