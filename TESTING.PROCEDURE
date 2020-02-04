@@ -2,7 +2,7 @@ The testing is done with a shell script.
 
 Required: Git, valgrind, gcc, make, etc.
 
-Testing platfor: CentOS 7
+Testing platform: CentOS 7
 
 To test:
 
