@@ -3,3 +3,6 @@ This is a list of commits which have passed the automated tests:
 Commit bd5719f9b475ab2f7a306aa9e91b6f7bb445c9c6 passes all tests
 commit 34c5437c00ab73166ba5c095c6f4ecfd954593fc passes all tests
 commit 9ca8b8d2bd9bbd7af3dd0210e07693cf630f7784 passes all tests
+commit 1996cacd764e793be0f2d047bd7e910de7e135ab passes all tests
+commit 080062a54531fd94443461c30f658ffdaf7f80a3 passes all tests
+commit db09084f07ca220bc392ebafb69a1c73dc3c5d1c passes all tests
