@@ -27,6 +27,7 @@
 #include <grp.h>
 #include <signal.h>
 #else
+#include <winsock.h>
 #include <wincrypt.h>
 #endif /* MINGW */
 
