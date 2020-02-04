@@ -104,7 +104,9 @@ void set_add_constant() {
         add_constant ^= dwr_rng(quick_n_dirty);
         add_constant ^= (dwr_rng(quick_n_dirty) << 15);
         dwr_zap(quick_n_dirty);
+#ifndef MINGW
         fclose(in);
+#endif /* MINGW */
 
         return;
 
