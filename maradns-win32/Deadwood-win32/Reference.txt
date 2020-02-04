@@ -354,7 +354,7 @@ ns_glueless_type
 random_seed_file
 
    Note that this is not used in Windows, which instead uses
-   the CryptAcquireContext() to get entropy.
+   the CryptAcquireContext() call to get entropy.
 
    This is a file that contains random numbers, and is used as a
    seed for the cryptographically strong random number generator.
