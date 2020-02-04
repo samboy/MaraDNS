@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2014 Sam Trenholme
+/* Copyright (c) 2007-2020 Sam Trenholme
  *
  * TERMS
  *
@@ -24,6 +24,9 @@
 #include <stdint.h>
 #include <stdio.h> /* For reading and writing the hash to a file */
 #include <time.h>
+#ifdef MINGW
+#include <wincrypt.h> /* Windows only; *NIX has /dev/random */
+#endif
 
 #include "DwHash.h"
 /* The default value for the multiply constant is a 31-bit random prime
@@ -46,23 +49,17 @@ extern int64_t the_time;
  * information in a table */
 
 /* Called before reading dwood3rc, this sets add_constant based on
- * secret.txt in Windows and /dev/urandom in Unix */
+ * CryptGenRandom in Windows and /dev/urandom in Unix */
 void set_add_constant() {
         FILE *in = 0;
         dwr_rg *quick_n_dirty = 0;
         dw_str *seedit = 0;
         int counter = 0;
         time_t timestamp = 0;
-
 #ifdef MINGW
-        in = fopen("secret.txt","rb");
-#else
-        in = fopen("/dev/urandom","rb");
-#endif /* MINGW */
-
-        if(in == 0) {
-                goto catch_set_add_constant;
-        }
+        HCRYPTPROV CryptContext;
+        int b;
+#endif
 
         seedit = dw_create(14);
 
@@ -71,9 +68,28 @@ void set_add_constant() {
         }
 
         seedit->len = 11;
+
+#ifdef MINGW
+        b = CryptAcquireContext(&CryptContext, NULL, NULL, PROV_RSA_FULL,
+                CRYPT_VERIFYCONTEXT);
+        if(b != 1) {
+                goto catch_set_add_constant;
+        }
+        b = CryptGenRandom(CryptContext, 8, seedit->str);
+        if(b != 1) {
+                goto catch_set_add_constant;
+        }
+        CryptReleaseContext(CryptContext,0);
+#else
+        in = fopen("/dev/urandom","rb");
+
+        if(in == 0) {
+                goto catch_set_add_constant;
+        }
         for(counter = 0; counter < 8; counter++) {
                 *(seedit->str + counter) = getc(in);
         }
+#endif /* MINGW */
         timestamp = time(0);
         *(seedit->str + 8) = (timestamp & 0xff);
         *(seedit->str + 9) = (timestamp & 0xff00) >> 8;
