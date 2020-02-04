@@ -1,5 +1,15 @@
 MaraDNS changelog
 
+   maradns-3.5.0002:
+   This is a stable release of MaraDNS:
+
+     * Documentation and other updates and cleanups.
+     * Windows port no longer needs to have secret.txt file to run; the
+       Deadwood Windows port now uses the Windows call
+       CryptAcquireContext() to get entropy.
+
+     (2020-02-03)
+
    maradns-3.5.0001:
    This is a stable release of MaraDNS:
 
