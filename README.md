@@ -8,7 +8,8 @@ MaraDNS’s Git tree is now hosted at
 [Bitbucket](https://bitbucket.org/maradns/maradns/),
 and 
 [SourceHut](https://git.sr.ht/~samiam/MaraDNS)
-(Please use GitHub for bug reports).  The Git code is
+(Please use GitHub for bug reports).  The Git code is,
+every time a new MaraDNS release is made,
 converted in to tarballs (with full Git history) which can be
 downloaded at [Sourceforge](https://sourceforge.net/projects/maradns/)
 and [MaraDNS’s web page](https://maradns.samiam.org/download.html).
