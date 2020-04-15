@@ -25,4 +25,4 @@ curl https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts | \
 		BEGIN {print "reject_aaaa = 1"
 		       print "ip4 = {}"
 		       print "maximum_cache_elements = 100000"}
-		{print "ip4[\"" $1 ".\"] = \"172.31.23.17\""}'
+		{print "ip4[\"" $1 ".\"] = \"X\""}'

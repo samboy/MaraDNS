@@ -589,7 +589,7 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                 answer[6] = answer[7] = answer[8] = answer[10] = answer[11] =0;
                 /* Copy over ID */
                 sendto(sock,(void *)answer,
-                                orig_len+40,0,(struct sockaddr *)&client,
+                                orig_len+40,0,(struct sockaddr *)client,
                                 c_len);
                 free(answer);
                 /* END copy paste */
