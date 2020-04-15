@@ -571,6 +571,7 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
         cache_type = dw_fetch_u8(value,-1);
         if(cache_type == TYPE_BLACKLIST_ENTRY) {
                 if(tcp_num != -1 || orig_packet == 0) {
+			ret = 2;
                         goto catch_get_reply_from_cache; 
                 }
                     
