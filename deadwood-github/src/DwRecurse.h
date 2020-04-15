@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2011 Sam Trenholme
+/* Copyright (c) 2009-2020 Sam Trenholme
  *
  * TERMS
  *
@@ -79,6 +79,7 @@ typedef struct {
 #define TYPE_ERROR 20
 #define TYPE_UPSTREAM_REFER 22 /* Upstream server; set RD and stop here */
 #define TYPE_ANSWER_IN_AR 23 /* Answer only in AR section of reply */
+#define TYPE_BLACKLIST_ENTRY 24 /* One-byte blacklist entry */
 /* These won't be used by Deadwood, but may be useful if I ever
  * expand DwHash to support for datatypes for elements besides
  * strings.

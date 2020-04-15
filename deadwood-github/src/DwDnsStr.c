@@ -475,13 +475,20 @@ catch_dwc_ttl_age:
 void dwc_process(dw_hash *cache, dw_str *query, uint8_t action) {
         dw_str *fetch = 0;
         int32_t ttl = 0;
+	int cache_type = 0;
+
+        /* Check to see if this is a blacklist entry */
+        fetch = dwh_get(cache,query,0,1);
+        if(fetch == 0) {
+                goto catch_dwc_process;
+        }
+        cache_type = dw_fetch_u8(fetch,-1);
+        if(cache_type == TYPE_BLACKLIST_ENTRY) {
+                goto catch_dwc_process;
+        }
 
         /* TTL aging */
         if(key_n[DWM_N_ttl_age] == 1 && (action & 0x02) == 2) {
-                fetch = dwh_get(cache,query,0,1);
-                if(fetch == 0) {
-                        goto catch_dwc_process;
-                }
                 ttl = dwh_get_ttl(cache,query);
                 if(ttl == -1) {
                         goto catch_dwc_process;
@@ -490,9 +497,10 @@ void dwc_process(dw_hash *cache, dw_str *query, uint8_t action) {
                         goto catch_dwc_process;
                 }
                 dwh_add(cache,query,fetch,-2,1);
-                dw_destroy(fetch);
-                fetch = 0;
-        }
+	}
+
+        dw_destroy(fetch);
+        fetch = 0;
 
         /* RR rotation */
         if(key_n[DWM_N_max_ar_chain] == 1 && (action & 0x01) == 1) {

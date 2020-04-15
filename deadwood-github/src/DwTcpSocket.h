@@ -66,7 +66,8 @@ void tcp_to_udp(int b);
  * from the cache */
 int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                          SOCKET sock, int32_t id, int resurrect,
-                         int tcp_num, dw_str *orig_query, ip_addr_T *from_ip);
+                         int tcp_num, dw_str *orig_query, ip_addr_T *from_ip,
+                         unsigned char *orig_packet, int orig_len);
 
 /* Given a connection we will send on, try and send the connection on.
    If we're unable to send the connection on, see if we have an

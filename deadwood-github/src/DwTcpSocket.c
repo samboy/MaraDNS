@@ -274,7 +274,7 @@ void tcp_to_udp(int b) {
         orig_query = dw_copy(query);
         dwc_lower_case(query);
 
-        if(get_reply_from_cache(query,0,0,local_id,0,b,orig_query,0) != 1) {
+        if(get_reply_from_cache(query,0,0,local_id,0,b,orig_query,0,0,0) != 1){
                 /* If not cached, make the buffer a UDP connection upstream */
                 forward_local_udp_packet(1,local_id,0,0,
                         (void *)tcp_pend[b].buffer,tcp_pend[b].wanted,b,

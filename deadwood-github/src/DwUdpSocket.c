@@ -536,7 +536,8 @@ catch_make_dns_packet:
 int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                          SOCKET sock, int32_t id, int resurrect,
                          int tcp_num, dw_str *orig_query,
-                         ip_addr_T *from_ip) {
+                         ip_addr_T *from_ip, unsigned char *orig_packet,
+                         int orig_len) {
         dw_str *value = 0; /* Element in cache */
         dw_str *comp = 0; /* Compressed DNS packet */
         dw_str *packet = 0;
@@ -568,6 +569,32 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                 goto catch_get_reply_from_cache;
         }
         cache_type = dw_fetch_u8(value,-1);
+        if(cache_type == TYPE_BLACKLIST_ENTRY) {
+                if(tcp_num != -1 || orig_packet == 0) {
+                        goto catch_get_reply_from_cache; 
+                }
+                    
+                /* This is a copy paste from get_local_udp_packet */
+                unsigned char *answer;
+                answer = make_synth_not_there_answer(orig_packet,&orig_len,0);
+
+                /* Flag this as an answer */
+                answer[2] |= 0x80;
+
+                /* Flag RA bit because, well, recursion is available */
+                answer[3] |= 0x80;
+
+                /* One "NS" record; no other records */
+                answer[9] = 1;
+                answer[6] = answer[7] = answer[8] = answer[10] = answer[11] =0;
+                /* Copy over ID */
+                sendto(sock,(void *)answer,
+                                orig_len+40,0,(struct sockaddr *)&client,
+                                c_len);
+                free(answer);
+                /* END copy paste */
+                return 1;
+        }
         if(cache_type != TYPE_TRUNCATED &&
                         cache_type != TYPE_TRUNCATED_NXDOMAIN) {
                 comp = dwc_compress(query,value);
@@ -647,7 +674,7 @@ void try_forward_local_udp_packet(SOCKET sock, int32_t local_id,
          * "resurrected" cache entry */
         if(resurrections == 1 &&
            get_reply_from_cache(query, client, sock, local_id, 1, tcp_num,
-                        orig_query, from_ip) == 1) {
+                        orig_query, from_ip, 0, 0) == 1) {
                 dw_log_string("Resurrected from cache",11);
                 return; /* Resurrected entry; we're done */
         }
@@ -746,8 +773,9 @@ void get_local_udp_packet(SOCKET sock) {
         if(query == 0) {
                 goto catch_get_local_udp_packet;
         }
+        /* Is answer in cache? */
         if(get_reply_from_cache(query, &client, sock, local_id, 0, -1,
-                        orig_query, &from_ip) == 1) { /* Is answer in cache */
+                        orig_query, &from_ip, packet, len) == 1) { 
                 goto catch_get_local_udp_packet; /* In cache; we're done */
         }
         if(dwx_cname_in_cache(orig_query, query, &client, &from_ip, local_id,
@@ -1088,7 +1116,7 @@ int send_reply_from_cache(unsigned char *a, ssize_t count, int b, int l) {
 
         get_reply_from_cache(query,&client,rem[b].local[l]->from_socket,
                         rem[b].local[l]->local_id, 0,-1,
-                        rem[b].local[l]->orig_query, 0);
+                        rem[b].local[l]->orig_query, 0, 0, 0);
 
 catch_send_reply_from_cache:
         if(query != 0) {
