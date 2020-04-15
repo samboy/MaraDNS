@@ -253,7 +253,7 @@ void tcp_process_data(int b) {
  * the cache or send upstream via UDP */
 void tcp_to_udp(int b) {
         int32_t local_id = -1;
-        int grfc_val = 0;
+        int val = 0;
         dw_str *query = 0, *orig_query = 0;
 
         local_id = get_dns_qid((void *)tcp_pend[b].buffer, tcp_pend[b].wanted,
