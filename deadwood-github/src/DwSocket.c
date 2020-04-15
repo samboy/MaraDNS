@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2019 Sam Trenholme
+/* Copyright (c) 2007-2020 Sam Trenholme
  * IPv6 code by Jean-Jacques Sarton
  *
  * TERMS
@@ -658,6 +658,7 @@ int process_ip4_params() {
                 *cache_key = 0, *cache_data = 0;
         char *ip_human = 0;
         int a = 0, out = 0;
+	dw_log_string("Begin processing of ip4",100);
         for(a=0;a<200000;a++) {
                 key = dwm_dict_nextkey(DWM_D_ip4,lastkey);
                 dw_destroy(lastkey);
@@ -670,7 +671,8 @@ int process_ip4_params() {
                 cache_data = make_synth_ip4(rawname, ip_human, 30);
                 if(value == 0 || rawname == 0 || ip_human == 0 ||
                                 cache_data == 0) {
-                        dw_log_dwstr_str(" ",value," is ip4 entry name",0);
+			dw_log_dwstr("Problem processing ",key,0);
+                        dw_log_dwstr("With ip4 value ",value,0);
                         dw_fatal("Fatal error processing ip4 entry");
                 }
                 cache_key = dw_create(rawname->len + 3);
@@ -695,6 +697,7 @@ int process_ip4_params() {
         if(a == 200000) {
                 dw_fatal("Too many ip4 entries, limit 200,000");
         }
+	dw_log_string("End processing of ip4",100);
         return out;
 }
 
