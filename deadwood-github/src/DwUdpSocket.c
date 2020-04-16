@@ -542,7 +542,7 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
         dw_str *comp = 0; /* Compressed DNS packet */
         dw_str *packet = 0;
         socklen_t c_len = sizeof(struct sockaddr_in);
-        int ret = -1, type = 0, cache_type = 0;
+        int ret = -1, type = 0, cache_type = 0, blacklisted = 0;
 
         if(client == 0) {
                 goto catch_get_reply_from_cache;
@@ -561,7 +561,23 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                 dw_log_ip(
         "Attempt to get MX record (possible spam zombie) from IP",from_ip,3);
                 return 1;
-        }
+        } else if(type == RR_AAAA) { /* Blacklist affects both IPv4 and IPv6 */
+                dw_str *value_ipv4 = 0; /* IPv4 record in cache (A record */
+                if(dw_put_u16(query, RR_A, -3) == -1) { 
+                        goto catch_get_reply_from_cache;
+                }
+                value_ipv4 = dwh_get(cache,query,resurrect,1);
+                if(value_ipv4 != 0) {
+                        if(dw_fetch_u8(value,-1) == TYPE_BLACKLIST_ENTRY) {
+                                blacklisted = 1;
+                        }
+                        dw_destroy(value_ipv4);
+                }
+                if(dw_put_u16(query, RR_AAAA, -3) == -1) { 
+                        goto catch_get_reply_from_cache;
+                }
+        }                
+
         dwc_process(cache,query,3); /* RR rotation, TTL aging, etc. */
         value = dwh_get(cache,query,resurrect,1);
         if(value == 0) {
@@ -569,7 +585,7 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                 goto catch_get_reply_from_cache;
         }
         cache_type = dw_fetch_u8(value,-1);
-        if(cache_type == TYPE_BLACKLIST_ENTRY) {
+        if(cache_type == TYPE_BLACKLIST_ENTRY || blacklisted == 1) {
                 if(tcp_num != -1 || orig_packet == 0) {
 			ret = 2;
                         goto catch_get_reply_from_cache; 
