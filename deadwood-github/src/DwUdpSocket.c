@@ -568,7 +568,7 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                 }
                 value_ipv4 = dwh_get(cache,query,resurrect,1);
                 if(value_ipv4 != 0) {
-                        if(dw_fetch_u8(value,-1) == TYPE_BLACKLIST_ENTRY) {
+                        if(dw_fetch_u8(value_ipv4,-1) == TYPE_BLACKLIST_ENTRY){
                                 blacklisted = 1;
                         }
                         dw_destroy(value_ipv4);
