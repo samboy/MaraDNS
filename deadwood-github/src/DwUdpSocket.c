@@ -578,13 +578,15 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                 }
         }                
 
-        dwc_process(cache,query,3); /* RR rotation, TTL aging, etc. */
-        value = dwh_get(cache,query,resurrect,1);
-        if(value == 0) {
-                dw_log_dwstr("Nothing found for ",query,100);
-                goto catch_get_reply_from_cache;
+        if(blacklisted == 0) {
+                dwc_process(cache,query,3); /* RR rotation, TTL aging, etc. */
+                value = dwh_get(cache,query,resurrect,1);
+                if(value == 0) {
+                        dw_log_dwstr("Nothing found for ",query,100);
+                        goto catch_get_reply_from_cache;
+                }
+                cache_type = dw_fetch_u8(value,-1);
         }
-        cache_type = dw_fetch_u8(value,-1);
         if(cache_type == TYPE_BLACKLIST_ENTRY || blacklisted == 1) {
                 if(tcp_num != -1 || orig_packet == 0) {
 			ret = 2;
