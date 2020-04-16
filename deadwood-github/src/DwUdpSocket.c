@@ -610,7 +610,8 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                                 c_len);
                 free(answer);
                 /* END copy paste */
-                return 1;
+                ret = 1;
+                goto catch_get_reply_from_cache;
         }
         if(cache_type != TYPE_TRUNCATED &&
                         cache_type != TYPE_TRUNCATED_NXDOMAIN) {
