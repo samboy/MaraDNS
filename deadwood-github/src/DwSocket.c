@@ -659,7 +659,7 @@ int process_ip4_params() {
         char *ip_human = 0;
         int a = 0, out = 0;
 	dw_log_string("Begin processing of ip4",100);
-        for(a=0;a<200000;a++) {
+        for(a=0;a<500000;a++) {
                 key = dwm_dict_nextkey(DWM_D_ip4,lastkey);
                 dw_destroy(lastkey);
                 if(key == 0) { /* End of dictionary */
@@ -711,8 +711,8 @@ int process_ip4_params() {
                         free(ip_human);
                 }
         }
-        if(a == 200000) {
-                dw_fatal("Too many ip4 entries, limit 200,000");
+        if(a >= 500000) {
+                dw_fatal("Too many ip4 entries, limit 500,000");
         }
 	dw_log_string("End processing of ip4",100);
         return out;
@@ -723,7 +723,7 @@ int process_ip6_params() {
         dw_str *lastkey = 0, *key = 0, *value = 0, *rawname = 0,
                 *cache_key = 0, *cache_data = 0;
         int a = 0, out = 0;
-        for(a=0;a<200000;a++) {
+        for(a=0;a<20000;a++) {
                 key = dwm_dict_nextkey(DWM_D_ip6,lastkey);
                 dw_destroy(lastkey);
                 if(key == 0) { /* End of dictionary */
@@ -754,8 +754,9 @@ int process_ip6_params() {
                 dw_destroy(cache_key);
                 dw_destroy(cache_data);
         }
-        if(a == 200000) {
-                dw_fatal("Too many ip6 entries, limit 200,000");
+        if(a >= 20000) {
+                dw_fatal("Too many ip6 entries, limit 20,000.\n"
+                         "Use ip4[\"evil.example.com\"] = \"X\" instead.");
         }
         return out;
 }

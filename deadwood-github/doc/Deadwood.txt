@@ -25,6 +25,8 @@
      * Built-in dnswall functionality
      * The ability to assign names to IPv4 IPs as specified in
        one's dwood3rc file.
+     * The ability to quickly load and use a large blacklist of
+       names to not resolve.
 
                         COMMAND LINE ARGUMENTS
 
@@ -209,6 +211,18 @@ ip4
 
    Note that a given name can only resolve to a single IP, and that
    the records have a fixed TTL of 30 seconds.
+
+   It is also possible to use ip4 to set up a blacklist by using
+   "X" for the IP. When this is done, an IPv4 request for a given
+   hostname results in a synthetic "this name does not exist"
+   response. In addition, the corresponding IPv6 request will also
+   return that "name does not exist" reply. For example:
+
+ ip4 = {}
+ ip4["evil.example.com."] = "X"
+
+   Here, both the IPv4 and the IPv6 query for "evil.example.com"
+   will not resolve in Deadwood.
 
 ip6
 

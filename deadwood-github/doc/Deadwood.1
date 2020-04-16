@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Mon Apr  1 07:29:46 2019
+.\" Last updated Wed Apr 15 21:26:28 2020
 .\"
 .TH DEADWOOD 1 "August 2009" DEADWOOD "Deadwood reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -66,6 +66,10 @@ Built-in dnswall functionality
 *
 The ability to assign names to IPv4 IPs as specified in one\(aqs
 dwood3rc file.
+.TP 2
+*
+The ability to quickly load and use a large blacklist of names to
+not resolve.
 .PP
 .SH "COMMAND LINE ARGUMENTS"
 .PP
@@ -322,6 +326,24 @@ ip4["kabah.foo."] = "10.11.11.11"
 
 Note that a given name can only resolve to a single IP, and that the
 records have a fixed TTL of 30 seconds.
+.PP
+It is also possible to use ip4 to set up a blacklist by using "X" for
+the IP. When this is done, an IPv4 request for a given hostname results
+in a synthetic "this name does not exist" response. In addition, the
+corresponding IPv6 request will
+.I "also"
+return that "name does not
+exist" reply. For example:
+
+.nf
+ip4 = {}
+ip4["evil.example.com."] = "X"
+.fi
+
+Here, both the IPv4
+.I "and"
+the IPv6 query for "evil.example.com"
+will not resolve in Deadwood.
 .PP
 .in -3
 \fBip6\fR
