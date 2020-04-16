@@ -168,7 +168,8 @@ else
 	cp tcp/Makefile.ipv6 tcp/Makefile
 	cp dns/Makefile.authonly dns/Makefile
 	cp tools/Makefile.ipv6 tools/Makefile
-	cp deadwood-*/src/Makefile.ipv6 deadwood-*/src/Makefile
+	deadwood_dir=$(ls --directory deadwood-*)
+	cp ${deadwood_dir}/src/Makefile.ipv6 ${deadwood_dir}/src/Makefile
 fi
 
 echo
