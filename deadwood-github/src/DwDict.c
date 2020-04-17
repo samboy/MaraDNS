@@ -1,4 +1,4 @@
-/* Copyright (c) 2009, 2011 Sam Trenholme
+/* Copyright (c) 2009-2020 Sam Trenholme
  *
  * TERMS
  *
@@ -111,3 +111,7 @@ dw_str *dwd_nextkey(dwd_dict *hash, dw_str *key) {
         return 0;
 }
 
+/* How many elements does this dictionary have? */
+int32_t dwd_size(dwd_dict *hash) {
+	return hash->size;
+}	

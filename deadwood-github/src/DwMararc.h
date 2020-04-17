@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2019 Sam Trenholme
+/* Copyright (c) 2007-2020 Sam Trenholme
  *
  * TERMS
  *
@@ -246,6 +246,9 @@ int dwm_parse_mararc(char *name);
  * the dictionary variable we are seeking a given value for, given the
  * dictionary variable and the key inside that variable) */
 dw_str *dwm_dict_fetch(int num, dw_str *key);
+
+/* How many elements does a given MaraRC dictionary have? */
+int32_t dwm_dict_size(int num);
 
 /* For a given dictionary variable, and a key, return (as a *copied* dw_str
  * object) the next key or 0 if we're at the last key.  If the key given to

@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2015 Sam Trenholme
+/* Copyright (c) 2007-2020 Sam Trenholme
  *
  * TERMS
  *
@@ -622,9 +622,7 @@ dw_str *dwm_dict_fetch(int num, dw_str *key) {
         if(num >= KEY_D_COUNT) {
                 return 0;
         }
-
         return dwd_fetch(key_d[num],key);
-
 }
 
 /* For a given dictionary variable, and a key, return (as a *copied* dw_str
@@ -635,6 +633,14 @@ dw_str *dwm_dict_nextkey(int num, dw_str *key) {
                 return 0;
         }
         return dwd_nextkey(key_d[num],key);
+}
+
+/* How many elements does a given MaraRC dictionary have? */
+int32_t dwm_dict_size(int num) {
+        if(num >= KEY_D_COUNT) {
+                return -1;
+        }
+        return dwd_size(key_d[num]);
 }
 
 /* Based on the actions done, set the appropriate Mararc parameters */
