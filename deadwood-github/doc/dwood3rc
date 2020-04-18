@@ -17,10 +17,6 @@ chroot_dir = "/etc/deadwood" # Directory we run program from (not used in Win32)
 #
 # These are commented out; if upstream_servers is not set, Deadwood will
 # act as a recursive DNS server
-#
-# Please note that each upstream_servers entry takes up space in Deadwood's
-# cache and that maximum_cache_elements will need to be increased to store
-# a large number of these entries.
 #upstream_servers = {}
 #upstream_servers["."]="8.8.8.8, 8.8.4.4" # Servers we connect to
 
@@ -35,9 +31,6 @@ chroot_dir = "/etc/deadwood" # Directory we run program from (not used in Win32)
 #root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
 #root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
 #root_servers["phish.example.com."]="10.254.254.254"
-# Please note that each root_servers entry takes up space in Deadwood's
-# cache and that maximum_cache_elements will need to be increased to store
-# a large number of these entries.
 
 recursive_acl = "127.0.0.1/16" # Who is allowed to use the cache
 
