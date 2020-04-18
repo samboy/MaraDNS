@@ -2,7 +2,8 @@
 # text file parser.
 
 # If you wish to use this program to cache from other recursive servers
-# instead of the Quad9 servers, uncomment the following lines
+# instead of the Quad9 servers, uncomment the following lines.
+# Replace the IPs if needed.
 #upstream_servers = {}
 #upstream_servers["."]="8.8.8.8, 8.8.4.4" # Servers we connect to
 
