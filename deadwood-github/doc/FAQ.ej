@@ -15,7 +15,7 @@
 5. <A href="#05">Deadwood sends out a lot of queries</A><p>
 6. <A href="#06">Steve Gibson's DNS benchmark reports that Deadwood 
                  is dropping a lot of DNS packets</A><p>
-7. <A href="#07">Can Deadwood blacklist by domain?</A><p>
+7. <A href="#07">Can Deadwood blacklist by name?</A><p>
 8. <A href="#08">Does Deadwood have DNSSEC support?</A><p>
 9. <A href="#09">Records added to the cache when the timestamp is set
                  to 1970 do not expire</A><p>
@@ -121,42 +121,32 @@ drops very few (if any) DNS packets sent to it.  Namebench is available at
 available at http://code.google.com/p/namebench/
 
 <A name="07"> </A>
-<h2>Can Deadwood blacklist by domain?</h2>
+<h2>Can Deadwood blacklist by name?</h2>
 
-Yes; Deadwood can blacklist up to about 20,000 domains.
+Yes; Deadwood can blacklist up to 500,000 names.
 <p>
 
-To blacklist a domain, add a line like this to the dwood3rc file:
+To blacklist a name, add a line like this to the dwood3rc file:
 
 <pre>
-upstream_servers["example.com."] = "192.168.255.255"
+ip4["scam.example.com."] = "X"
 </pre>
 
-Replace "example.com." with the domain to be blacklisted, and replace 
-"192.168.255.255" with an IP that is either:
+Replace "scam.example.com." with the domain to be blacklisted.
 
-<ul>
+<p>
 
-<li>Guaranteed to be unreachable from the server running Deadwood.  In this
-    case, any attempt to reach a blacklisted domain will result in Deadwood
-    timing out and eventually returning a "SERVER FAIL" error message.
-
-<li>Running a DNS server that always returns the same IP to a given DNS
-    query.  This can be set up by using "csv2_default_zonefile" in MaraDNS,
-    running "microdns" (included in MaraDNS' source tree), or even by running 
-    "nanodns".
-
-</ul>
-
-Deadwood uses a hash to store these blacklisted domains, and should be able
-to store thousands of such domains without significant slowdown.
-Please note that each root_servers and upstream_servers
-entry takes up space in Deadwood's cache and that maximum_cache_elements
-will need to be increased to store a large number of blacklisted domains.
+Deadwood uses a hash to store these blacklisted domains, and is able
+to store tens of thousands of such domains without significant slowdown.
 <p>
 
 If it is more convenient to store the domains in separate files, this can be
 done using Deadwood's "execfile" mechanism.
+<p>
+
+Note that older versions of Deadwood needed to increase the
+maximum_cache_elements value to store these; as of Deadwood 3.5.0004,
+this is no longer true.
 
 <A name="08"> </A>
 <h2>Does Deadwood have DNSSEC support?</h2>
