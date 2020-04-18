@@ -328,10 +328,9 @@ maximum_cache_elements
    for Windows XP and other operating systems will have different
    memory allocation numbers.
 
-   Please note that each root_servers and upstream_servers entry
-   takes up space in Deadwood's cache and that
-   maximum_cache_elements will need to be increased to store a
-   large number of these entries.
+   Please note that, as of Deadwood 3.5.0004, is is no longer
+   needed to increase maximum_cache_elements to store
+   upstream_server and root_server entries.
 
 maxprocs
 
@@ -467,9 +466,9 @@ root_servers
    which DNS servers to connect to to get an answer closer to our
    desired answer.
 
-   Please note that each root_servers entry takes up space in
-   Deadwood's cache and that maximum_cache_elements will need to be
-   increased to store a large number of these entries.
+   Please note that, as of Deadwood 3.5.0004, is is no longer
+   needed to increase maximum_cache_elements to store root_server
+   entries.
 
 tcp_listen
 
@@ -555,9 +554,9 @@ upstream_servers
  9.9.9.9
  149.112.112.112
 
-   Please note that each upstream_servers entry takes up space in
-   Deadwood's cache and that maximum_cache_elements will need to be
-   increased to store a large number of these entries.
+   Please note that, as of Deadwood 3.5.0004, is is no longer
+   needed to increase maximum_cache_elements to store
+   upstream_server entries.
 
 verbose_level
 

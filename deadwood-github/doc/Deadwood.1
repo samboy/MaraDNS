@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Wed Apr 15 21:26:28 2020
+.\" Last updated Sat Apr 18 01:58:57 2020
 .\"
 .TH DEADWOOD 1 "August 2009" DEADWOOD "Deadwood reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -464,10 +464,9 @@ Windows XP and other operating systems will have different memory
 allocation
 numbers.
 .PP
-Please note that each root_servers and upstream_servers
-entry takes up space in Deadwood\(aqs cache and that
-maximum_cache_elements
-will need to be increased to store a large number of these entries.
+Please note that, as of Deadwood 3.5.0004, is is no longer needed
+to increase maximum_cache_elements to store upstream_server and
+root_server entries.
 .PP
 .in -3
 \fBmaxprocs\fR
@@ -632,11 +631,8 @@ not give us complete answers to DNS questions, but merely tell
 us which DNS servers to connect to to get an answer closer to
 our desired answer.
 .PP
-Please note that each root_servers entry takes up space in
-Deadwood\(aqs
-cache and that maximum_cache_elements will need to be increased to
-store
-a large number of these entries.
+Please note that, as of Deadwood 3.5.0004, is is no longer needed
+to increase maximum_cache_elements to store root_server entries.
 .PP
 .in -3
 \fBtcp_listen\fR
@@ -741,11 +737,8 @@ upstream_servers to use the https://quad9.net servers, as follows:
 149.112.112.112
 .fi
 .PP
-Please note that each upstream_servers entry takes up space in
-Deadwood\(aqs
-cache and that maximum_cache_elements will need to be increased to
-store
-a large number of these entries.
+Please note that, as of Deadwood 3.5.0004, is is no longer needed
+to increase maximum_cache_elements to store upstream_server entries.
 .PP
 .in -3
 \fBverbose_level\fR
