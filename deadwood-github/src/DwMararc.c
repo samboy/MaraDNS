@@ -646,6 +646,9 @@ int32_t dwm_dict_size(int num) {
         if(out < 0) {
                 return 0;
         }
+        if(out > 16777216) {
+                return 16777216;
+        }
         return out;
 }
 

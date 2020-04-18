@@ -125,6 +125,12 @@ void dwh_process_mararc_params() {
         int32_t possible_magic_number;
 
         cache_size = get_key_n(DWM_N_maximum_cache_elements,32,16777216,-1);
+        cache_size += dwm_dict_size(DWM_D_upstream_servers);
+        cache_size += dwm_dict_size(DWM_D_root_servers);
+        cache_size += dwm_dict_size(DWM_D_ip4);
+        cache_size += dwm_dict_size(DWM_D_ip6);
+
+        dw_log_number("Cache will have ",cache_size," elements in it",7);
 
         /* Since magic_number is set in DwRandPrime.h, we reset it from
          * dwood2rc this way */

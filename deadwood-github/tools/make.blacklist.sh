@@ -24,5 +24,5 @@ curl https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts | \
 		tr -dc 'a-z0-9\-\.\n' | sort -u | awk '
 		BEGIN {print "reject_aaaa = 1"
 		       print "ip4 = {}"
-		       print "maximum_cache_elements = 100000"}
+		      }
 		{print "ip4[\"" $1 ".\"] = \"X\""}'
