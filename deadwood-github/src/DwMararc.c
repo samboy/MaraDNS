@@ -635,12 +635,18 @@ dw_str *dwm_dict_nextkey(int num, dw_str *key) {
         return dwd_nextkey(key_d[num],key);
 }
 
-/* How many elements does a given MaraRC dictionary have? */
+/* How many elements does a given MaraRC dictionary have?   Note that
+ * error returns 0 (not -1) */
 int32_t dwm_dict_size(int num) {
-        if(num >= KEY_D_COUNT) {
-                return -1;
+	int32_t out = 0;
+        if(num < 0 || num >= KEY_D_COUNT) {
+                return 0;
         }
-        return dwd_size(key_d[num]);
+        out = dwd_size(key_d[num]);
+        if(out < 0) {
+                return 0;
+        }
+        return out;
 }
 
 /* Based on the actions done, set the appropriate Mararc parameters */

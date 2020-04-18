@@ -113,5 +113,8 @@ dw_str *dwd_nextkey(dwd_dict *hash, dw_str *key) {
 
 /* How many elements does this dictionary have? */
 int32_t dwd_size(dwd_dict *hash) {
+        if(hash == 0) {
+                return -1;
+        }
 	return hash->size;
 }	
