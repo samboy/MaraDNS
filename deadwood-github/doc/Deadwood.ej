@@ -369,9 +369,9 @@ numbers.
 
 <p>
 
-Please note that each root_servers and upstream_servers
-entry takes up space in Deadwood's cache and that maximum_cache_elements
-will need to be increased to store a large number of these entries.
+Please note that, as of Deadwood 3.5.0004, is is no longer needed
+to increase maximum_cache_elements to store upstream_server and
+root_server entries.
 
 <h2>maxprocs</h2>
 This is the maximum number of pending remote UDP connections
@@ -499,9 +499,8 @@ our desired answer.
 
 <p>
 
-Please note that each root_servers entry takes up space in Deadwood's
-cache and that maximum_cache_elements will need to be increased to store
-a large number of these entries.
+Please note that, as of Deadwood 3.5.0004, is is no longer needed
+to increase maximum_cache_elements to store root_server entries.
 
 <h2>tcp_listen</h2>
 In order to enable DNS-over-TCP, this variable must be set and have
@@ -595,9 +594,8 @@ upstream_servers to use the https://quad9.net servers, as follows:
 
 <p>
 
-Please note that each upstream_servers entry takes up space in Deadwood's
-cache and that maximum_cache_elements will need to be increased to store
-a large number of these entries.
+Please note that, as of Deadwood 3.5.0004, is is no longer needed
+to increase maximum_cache_elements to store upstream_server entries.
 
 <h2>verbose_level</h2>
 This determines how many messages are logged on standard output; larger
