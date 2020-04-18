@@ -2,28 +2,18 @@
 # text file parser.
 
 # If you wish to use this program to cache from other recursive servers
-# instead of doing its own recursion, uncomment the following lines
-#
-# Please note that each upstream_servers entry takes up space in Deadwood's
-# cache and that maximum_cache_elements will need to be increased to store
-# a large number of these entries.
+# instead of the Quad9 servers, uncomment the following lines
 #upstream_servers = {}
 #upstream_servers["."]="8.8.8.8, 8.8.4.4" # Servers we connect to
 
-# It is also possible to use other root servers or to blacklist
-# a phising website.  However, to do this, root_servers needs to be
-# defined.  For example, to blacklist the domain "phish.example.com":
+# It is also possible to use ICANN root servers.  However, to do this, 
+# root_servers needs to be defined.  
 #root_servers = {}
-# ICANN DNS root servers (Deadwood default if both root_servers and 
-# upstream_servers are not defined)
+# ICANN DNS root servers 
 #root_servers["."]="198.41.0.4, 199.9.14.201, 192.33.4.12, 199.7.91.13,"
 #root_servers["."]+="192.203.230.10, 192.5.5.241, 192.112.36.4, "
 #root_servers["."]+="198.97.190.53, 192.36.148.17, 192.58.128.30, "
 #root_servers["."]+="193.0.14.129, 199.7.83.42, 202.12.27.33"
-#root_servers["phish.example.com."]="10.254.254.254"
-# Please note that each root_servers entry takes up space in Deadwood's
-# cache and that maximum_cache_elements will need to be increased to store
-# a large number of these entries.
 
 # The IP this program has 
 bind_address="127.0.0.1"
@@ -52,6 +42,8 @@ cache_file = "dw_cache_bin"
 ip4 = {}
 ip4["maradns.foo."] = "10.10.10.10"
 ip4["kabah.foo."] = "10.11.11.11"
+# Blacklist a bad site; this blocks resolution for both IPv4 and IPv6
+ip4["phish.example.com."] = "X"
 
 # We can also use a similar syntax to have bogus IPv6 addresses.
 # We don't use standard notation for IPv6 addresses.  Instead, we
