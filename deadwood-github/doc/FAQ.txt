@@ -17,7 +17,7 @@ INDEX
      6. Steve Gibson's DNS benchmark reports that Deadwood is
      dropping a lot of DNS packets
 
-     7. Can Deadwood blacklist by domain?
+     7. Can Deadwood blacklist by name?
 
      8. Does Deadwood have DNSSEC support?
 
@@ -115,37 +115,26 @@ of DNS packets
    Namebench is available at available at
    http://code.google.com/p/namebench/
 
-Can Deadwood blacklist by domain?
+Can Deadwood blacklist by name?
 
-   Yes; Deadwood can blacklist up to about 20,000 domains.
+   Yes; Deadwood can blacklist up to 500,000 names.
 
-   To blacklist a domain, add a line like this to the dwood3rc
-   file:
+   To blacklist a name, add a line like this to the dwood3rc file:
 
- upstream_servers["example.com."] = "192.168.255.255"
+ ip4["scam.example.com."] = "X"
 
-   Replace "example.com." with the domain to be blacklisted, and
-   replace "192.168.255.255" with an IP that is either:
+   Replace "scam.example.com." with the domain to be blacklisted.
 
-     * Guaranteed to be unreachable from the server running
-       Deadwood. In this case, any attempt to reach a blacklisted
-       domain will result in Deadwood timing out and eventually
-       returning a "SERVER FAIL" error message.
-     * Running a DNS server that always returns the same IP to a
-       given DNS query. This can be set up by using
-       "csv2_default_zonefile" in MaraDNS, running "microdns"
-       (included in MaraDNS' source tree), or even by running
-       "nanodns".
-
-   Deadwood uses a hash to store these blacklisted domains, and
-   should be able to store thousands of such domains without
-   significant slowdown. Please note that each root_servers and
-   upstream_servers entry takes up space in Deadwood's cache and
-   that maximum_cache_elements will need to be increased to store a
-   large number of blacklisted domains.
+   Deadwood uses a hash to store these blacklisted domains, and is
+   able to store tens of thousands of such domains without
+   significant slowdown.
 
    If it is more convenient to store the domains in separate files,
    this can be done using Deadwood's "execfile" mechanism.
+
+   Note that older versions of Deadwood needed to increase the
+   maximum_cache_elements value to store these; as of Deadwood
+   3.5.0004, this is no longer true.
 
 Does Deadwood have DNSSEC support?
 
