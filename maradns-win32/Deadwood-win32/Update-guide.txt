@@ -1,3 +1,9 @@
+Deadwood 3.5.0004 no longer needs to have maximum_cache_elements
+increased to store upstream_servers, root_servers, ip4, ip6, or
+blacklist entries.
+
+---
+
 Deadwood 3.5.0002 no longer needs to use mkSecretTxt.exe nor a file
 named secret.txt to get entropy.  Instead, it uses CryptAcquireContext()
 to get random numbers.

@@ -317,11 +317,6 @@ maximum_cache_elements
    for Windows XP and other operating systems will have different
    memory allocation numbers.
 
-   Please note that each root_servers and upstream_servers entry
-   takes up space in Deadwood's cache and that
-   maximum_cache_elements will need to be increased to store a
-   large number of these entries.
-
 maxprocs
 
    This is the maximum number of pending remote UDP connections
@@ -459,10 +454,6 @@ root_servers
    which DNS servers to connect to to get an answer closer to our
    desired answer.
 
-   Please note that each root_servers entry takes up space in
-   Deadwood's cache and that maximum_cache_elements will need to be
-   increased to store a large number of these entries.
-
 tcp_listen
 
    In order to enable DNS-over-TCP, this variable must be set and
@@ -543,10 +534,6 @@ upstream_servers
    If neither root_servers nor upstream_servers are set, Deadwood
    sets root_servers to use the https://quad9.net upstream servers, 
    9.9.9.9 and 149.112.112.112.
-
-   Please note that each upstream_servers entry takes up space in
-   Deadwood's cache and that maximum_cache_elements will need to be
-   increased to store a large number of these entries.
 
 verbose_level
 
