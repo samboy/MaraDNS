@@ -638,7 +638,7 @@ dw_str *dwm_dict_nextkey(int num, dw_str *key) {
 /* How many elements does a given MaraRC dictionary have?   Note that
  * error returns 0 (not -1) */
 int32_t dwm_dict_size(int num) {
-	int32_t out = 0;
+        int32_t out = 0;
         if(num < 0 || num >= KEY_D_COUNT) {
                 return 0;
         }

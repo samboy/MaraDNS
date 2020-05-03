@@ -116,5 +116,5 @@ int32_t dwd_size(dwd_dict *hash) {
         if(hash == 0) {
                 return -1;
         }
-	return hash->size;
-}	
+        return hash->size;
+}

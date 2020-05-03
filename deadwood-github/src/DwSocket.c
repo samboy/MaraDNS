@@ -658,7 +658,7 @@ int process_ip4_params() {
                 *cache_key = 0, *cache_data = 0;
         char *ip_human = 0;
         int a = 0, out = 0;
-	dw_log_string("Begin processing of ip4",100);
+        dw_log_string("Begin processing of ip4",100);
         for(a=0;a<500000;a++) {
                 key = dwm_dict_nextkey(DWM_D_ip4,lastkey);
                 dw_destroy(lastkey);
@@ -667,26 +667,26 @@ int process_ip4_params() {
                 }
                 value = dwm_dict_fetch(DWM_D_ip4,key);
                 rawname = dw_dnsname_convert(key);
-                if(value != 0 && value->len == 1 && value->str !=0 && 
+                if(value != 0 && value->len == 1 && value->str !=0 &&
                                 *(value->str) == 'X') {
                         cache_data = dw_create(2);
                         if(dw_addchar(TYPE_BLACKLIST_ENTRY,cache_data) == -1) {
-			        dw_log_dwstr("Problem processing ",key,0);
+                                dw_log_dwstr("Problem processing ",key,0);
                                 dw_log_dwstr("With ip4 value ",value,0);
                                 dw_fatal("Fatal error processing ip4 entry");
-                        } 
+                        }
                         ip_human = 0;
                 } else {
                         ip_human = (char *)dw_to_cstr(value);
                         if(ip_human == 0) {
-			        dw_log_dwstr("Problem processing ",key,0);
+                                dw_log_dwstr("Problem processing ",key,0);
                                 dw_log_dwstr("With ip4 value ",value,0);
                                 dw_fatal("Fatal error processing ip4 entry");
                         }
                         cache_data = make_synth_ip4(rawname, ip_human, 30);
                 }
                 if(value == 0 || rawname == 0 || cache_data == 0) {
-			dw_log_dwstr("Problem processing ",key,0);
+                        dw_log_dwstr("Problem processing ",key,0);
                         dw_log_dwstr("With ip4 value ",value,0);
                         dw_fatal("Fatal error processing ip4 entry");
                 }
@@ -714,7 +714,7 @@ int process_ip4_params() {
         if(a >= 500000) {
                 dw_fatal("Too many ip4 entries, limit 500,000");
         }
-	dw_log_string("End processing of ip4",100);
+        dw_log_string("End processing of ip4",100);
         return out;
 }
 

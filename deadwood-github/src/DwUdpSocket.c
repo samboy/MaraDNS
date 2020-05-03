@@ -563,7 +563,7 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                 return 1;
         } else if(type == RR_AAAA) { /* Blacklist affects both IPv4 and IPv6 */
                 dw_str *value_ipv4 = 0; /* IPv4 record in cache (A record */
-                if(dw_put_u16(query, RR_A, -3) == -1) { 
+                if(dw_put_u16(query, RR_A, -3) == -1) {
                         goto catch_get_reply_from_cache;
                 }
                 value_ipv4 = dwh_get(cache,query,resurrect,1);
@@ -573,10 +573,10 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                         }
                         dw_destroy(value_ipv4);
                 }
-                if(dw_put_u16(query, RR_AAAA, -3) == -1) { 
+                if(dw_put_u16(query, RR_AAAA, -3) == -1) {
                         goto catch_get_reply_from_cache;
                 }
-        }                
+        }
 
         if(blacklisted == 0) {
                 dwc_process(cache,query,3); /* RR rotation, TTL aging, etc. */
@@ -589,10 +589,10 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
         }
         if(cache_type == TYPE_BLACKLIST_ENTRY || blacklisted == 1) {
                 if(tcp_num != -1 || orig_packet == 0) {
-			ret = 2;
-                        goto catch_get_reply_from_cache; 
+                        ret = 2;
+                        goto catch_get_reply_from_cache;
                 }
-                    
+
                 /* This is a copy paste from get_local_udp_packet */
                 unsigned char *answer;
                 answer = make_synth_not_there_answer(orig_packet,&orig_len,0);
@@ -795,7 +795,7 @@ void get_local_udp_packet(SOCKET sock) {
         }
         /* Is answer in cache? */
         if(get_reply_from_cache(query, &client, sock, local_id, 0, -1,
-                        orig_query, &from_ip, packet, len) == 1) { 
+                        orig_query, &from_ip, packet, len) == 1) {
                 goto catch_get_local_udp_packet; /* In cache; we're done */
         }
         if(dwx_cname_in_cache(orig_query, query, &client, &from_ip, local_id,

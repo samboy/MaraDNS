@@ -475,7 +475,7 @@ catch_dwc_ttl_age:
 void dwc_process(dw_hash *cache, dw_str *query, uint8_t action) {
         dw_str *fetch = 0;
         int32_t ttl = 0;
-	int cache_type = 0;
+        int cache_type = 0;
 
         /* Check to see if this is a blacklist entry */
         fetch = dwh_get(cache,query,0,1);
@@ -497,7 +497,7 @@ void dwc_process(dw_hash *cache, dw_str *query, uint8_t action) {
                         goto catch_dwc_process;
                 }
                 dwh_add(cache,query,fetch,-2,1);
-	}
+        }
 
         dw_destroy(fetch);
         fetch = 0;

@@ -281,7 +281,7 @@ void tcp_to_udp(int b) {
                 dw_destroy(orig_query);
                 return;
         }
-                
+
         if(val != 1) {
                 /* If not cached, make the buffer a UDP connection upstream */
                 forward_local_udp_packet(1,local_id,0,0,
