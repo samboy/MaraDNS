@@ -22,7 +22,7 @@ EOF
 curl https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts | \
 	grep '0.0.0.0' | tr -d '"' | awk '{print $2}' | \
 		tr -dc 'a-z0-9\-\.\n' | sort -u | awk '
-		BEGIN {print "reject_aaaa = 1"
+		BEGIN {
 		       print "ip4 = {}"
 		      }
 		{print "ip4[\"" $1 ".\"] = \"X\""}'
