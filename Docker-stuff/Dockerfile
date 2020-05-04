@@ -3,7 +3,9 @@
 
 FROM centos:8
 
-RUN yum -y update && yum -y install gcc && yum -y install git 
-RUN yum -y install make
+RUN yum -y update && yum -y install gcc && yum -y install git && \
+	yum -y install make && cd /tmp && git clone \
+	https://github.com/samboy/MaraDNS && cd MaraDNS && \
+	./configure && make
 
 CMD ["/bin/bash"]
