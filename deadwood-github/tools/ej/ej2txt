@@ -5,8 +5,13 @@
 
 TMP=$HOME/tmp
 LINKS=$( which elinks )
+LYNX=0
 if [ -z "$LINKS" ] ; then
-	LINKS=links
+	LINKS=$( which links )
+fi
+if [ -z "$LINKS" ] ; then
+	LINKS=$( which lynx )
+	LYNX=1
 fi
 
 if which ej2html > /dev/null 2>&1 ; then
@@ -25,6 +30,10 @@ else
 fi
 
 $CMD $1 > $TMP/$$.html
-$LINKS -dump-width 70 -dump -no-references -no-numbering $TMP/$$.html 
+if [ "$LYNX" < 1 ] ; then
+	$LINKS -dump-width 70 -dump -no-references -no-numbering $TMP/$$.html 
+else
+	lynx -dump -nolist $TMP/$$.html
+fi
 rm $TMP/$$.html
 
