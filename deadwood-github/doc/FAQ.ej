@@ -160,8 +160,11 @@ compensated for my work.
 expire</h2>
 
 This bug was fixed in Deadwood 3.2.02; Deadwood now rejects entries
-in the hash that expire in the far future (the issue was that 1970
-to Deadwood looks like the far future to make the program Y2038-compliant).
+in the hash that expire in the far future.  The issue was that,
+on non-Windows systems with 32-bit time_t, 1970
+to Deadwood looks like the far future to make the 
+program Y2038-compliant (The Windows port, while a 32-bit binary,
+gets its time from 64-bit timestamps since 2011).
 
 <A name="10"> </A>
 <h2>I get the error message "Unknown dwood3rc string parameter"</h2>
