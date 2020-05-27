@@ -1,7 +1,0 @@
-The Windows 32-bit binary maradns.exe is now deprecated.  It will no longer
-be supported come June 21, 2023, and will no longer be updated except
-for critical security issues.
-
-Please note that Deadwood continues to remain fully supported in
-Windows; this *only* affects the non-recursive authoritative server
-(which I do not think anyone still runs as this 32-bit Windows binary).
