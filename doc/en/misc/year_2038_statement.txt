@@ -6,3 +6,8 @@ date in to the future.
 On 32-bit systems, MaraDNS will work fine until at least 2106 (Mara should 
 work fine until 2115.)
 
+On 32-bit Windows systems, Deadwood uses Windows 64-bit timestamps to get 
+the time.  
+
+The Windows 32-bit compile of MaraDNS will no longer fully function
+come January 19, 2038.

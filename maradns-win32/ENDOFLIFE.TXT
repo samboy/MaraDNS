@@ -1,0 +1,3 @@
+The Windows 32-bit binary maradns.exe is now deprecated.  It will no longer
+be supported come June 21, 2023, and will no longer be updated except
+for critical security issues.
