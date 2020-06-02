@@ -26,6 +26,10 @@ fi
 BIN="$PREFIX/bin/"
 # The location of the server programs
 SBIN="$PREFIX/sbin/"
+# Cygwin doesn't have a /usr/local/sbin so we have this workaround
+if [ ! -d "$SBIN" ] ; then
+	SBIN="$PREFIX/bin/"
+fi
 # The directory to put man pages which describe the end-user programs
 MAN1="$PREFIX/man/man1/"
 # The directory to put man pages which describe configuration file formats
