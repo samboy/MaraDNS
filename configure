@@ -116,6 +116,12 @@ elif echo $UNAME | grep -i cygwin > /dev/null ; then
 	echo Note that Deadwood will not compile\; use the pre-built
 	echo Windows service in the maradns-win32/ directory.  This
 	echo service is built using mingw.
+	echo
+	echo To start MaraDNS \(authoritative\) as a service:
+	echo 
+	echo cygrunsrv.exe --install MaraDNS --path /usr/local/bin/maradns.exe
+	echo cygrunsrv.exe -S MaraDNS
+	echo
 	EXITCODE=0
 # This is a a template for adding support to a new OS for MaraDNS.
 # Some points: If you port MaraDNS, make sure the underlying OS has
