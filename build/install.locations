@@ -30,6 +30,10 @@ SBIN="$PREFIX/sbin/"
 if [ ! -d "$SBIN" ] ; then
 	SBIN="$PREFIX/bin/"
 fi
+# If all else fails, just make the location
+if [ ! -d "$SBIN" ] ; then
+	mkdir -p "$SBIN"
+fi
 # The directory to put man pages which describe the end-user programs
 MAN1="$PREFIX/man/man1/"
 # The directory to put man pages which describe configuration file formats
@@ -49,21 +53,33 @@ DOCS="$PREFIX/doc/maradns-$VERSION"
 if [ ! -d $MAN1 ] ; then
         # Then try this location instead
 	MAN1="$PREFIX/share/man/man1"
-	if [ ! -d $MAN1 ] ; then
+	if [ ! -d "$MAN1" ] ; then
 		MAN1="/usr/local/share/man/man1"
+	fi
+	# Cygwin workaround: Make man directory as needed
+	if [ ! -d "$MAN1" ] ; then
+		mkdir -p "$MAN1"
 	fi
 fi
 # Do the same with the MAN5 and MAN8 directories
 if [ ! -d $MAN5 ] ; then
 	MAN5="$PREFIX/share/man/man5"
-	if [ ! -d $MAN5 ] ; then
+	if [ ! -d "$MAN5" ] ; then
 		MAN5="/usr/local/share/man/man5"
+	fi
+	# Cygwin workaround: Make man directory as needed
+	if [ ! -d "$MAN5" ] ; then
+		mkdir -p "$MAN5"
 	fi
 fi
 if [ ! -d $MAN8 ] ; then
 	MAN8="$PREFIX/share/man/man8"
-	if [ ! -d $MAN8 ] ; then
+	if [ ! -d "$MAN8" ] ; then
 		MAN8="/usr/local/share/man/man8"
+	fi
+	# Cygwin workaround: Make man directory as needed
+	if [ ! -d "$MAN8" ] ; then
+		mkdir -p "$MAN8"
 	fi
 fi
 
