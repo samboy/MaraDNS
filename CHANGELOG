@@ -1,3 +1,4 @@
+
 MaraDNS changelog
 
    maradns-3.5.0005:
@@ -6,8 +7,8 @@ MaraDNS changelog
      * MaraDNS is now fully supported in Cygwin
      * Windows port of MaraDNS no longer includes maradns.exe; we instead
        tell people how to compile MaraDNS in Cygwin. Note We continue to
-       fully support Deadwood for Windows, which is a full Windows service
-       (unlike the old maradns.exe).
+       fully support Deadwood for Windows, which is a proper Windows
+       service (unlike the old maradns.exe).
      * Dockerfile now creates Docker image with working instance of
        MaraDNS. This is still a work in progress; one currently needs to
        enter the Docker container to change MaraDNS configuration files.
@@ -201,4 +202,3 @@ root_servers["."]+="202.12.27.33"
        defaults to 4 instead of 10
 
      (2015.01.24)
-
