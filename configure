@@ -56,7 +56,7 @@ if echo $USE_GIT | grep 3.5 > /dev/null ; then
 elif [ -e .git ] || [ "$USE_GIT" = "master" ] ; then
 	git log -1 > git.commit 2> /dev/null || echo unknown > git.commit
         head -1 git.commit | awk '
-                {print "VERSION=git-"$2}' > VERSION
+                {print "VERSION=git-" substr($2,1,10)}' > VERSION
 fi
 # Looks like github sometimes scrubs symlinks
 if [ ! -e server/MaraDNS_locale.h ] ; then
