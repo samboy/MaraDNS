@@ -1,0 +1,27 @@
+== How to run MaraDNS in Cygwin ==
+
+Since MaraDNS no longer includes the authoritative-only maradns.exe 
+program, I have made sure MaraDNS can compile and run in Cygwin.
+
+To compile and run MaraDNS:
+
+* Go to https://cygwin.com/ and download and install Cygwin
+* When installing Cygwin, be sure to install both "gcc" and "make"
+* Get the source code for MaraDNS
+* From the MaraDNS-3.5.{version} directory, where {version} is the number
+  0005 or higher, type in the following commands from the Cygwin command
+  prompt:
+
+	./configure ; make ; make install
+	cygrunsrv.exe --install MaraDNS --path /usr/local/bin/maradns.exe
+	cygrunsrv.exe -S MaraDNS
+
+* MaraDNS now runs as a service.  One may edit /etc/mararc (e.g.
+  C:\Cygwin64\etc\mararc as seen from Windows) and the files in
+  /etc/maradns to add or remove zones from MaraDNS.
+
+Note that Deadwood remains a native Windows service, and there are no
+plans to change that.  This change affects *only* the old native build
+of MaraDNS (which, unlike Deadwood, was never made a proper Windows
+service, and had Y2038 issues).
+
