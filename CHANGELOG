@@ -1,12 +1,46 @@
 MaraDNS changelog
 
+   maradns-3.5.0005:
+   This is a stable release of MaraDNS:
+
+     * MaraDNS is now fully supported in Cygwin
+     * Windows port of MaraDNS no longer includes maradns.exe; we instead
+       tell people how to compile MaraDNS in Cygwin. Note We continue to
+       fully support Deadwood for Windows, which is a full Windows service
+       (unlike the old maradns.exe).
+     * Dockerfile now creates Docker image with working instance of
+       MaraDNS. This is still a work in progress; one currently needs to
+       enter the Docker container to change MaraDNS configuration files.
+     * Version number fixed when compiling a MaraDNS release.
+
+     (2020-06-02)
+
+   maradns-3.5.0004:
+   This is a stable release of MaraDNS:
+
+     * maximum_cache_elements no longer needs to include blacklist, root
+       server, upstream server, or synthetic IP elements.
+     * Documentation updates, mainly for maximum_cache_elements change
+
+     (2020-04-18)
+
+   maradns-3.5.0003:
+   This is a stable release of MaraDNS:
+
+     * Added support for blacklists as per GitHub issue #69 and GitHub
+       issue #70
+     * Minimize memory usage of blacklists by allowing the same entry to
+       be used for IPv4 and IPv6
+
+     (2020-04-16)
+
    maradns-3.5.0002:
    This is a stable release of MaraDNS:
 
      * Documentation and other updates and cleanups.
      * Windows port no longer needs to have secret.txt file to run; the
-       Deadwood Windows port now uses the Windows call CryptGenRandom() 
-       to get entropy.
+       Deadwood Windows port now uses the Windows call CryptGenRandom() to
+       get entropy.
 
      (2020-02-03)
 
@@ -167,3 +201,4 @@ root_servers["."]+="202.12.27.33"
        defaults to 4 instead of 10
 
      (2015.01.24)
+
