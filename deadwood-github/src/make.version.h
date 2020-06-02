@@ -6,14 +6,15 @@
 if pwd | awk -F/ '{print $(NF - 1)}' | awk -F- '{print $2}
 		' | grep 3.5 > /dev/null ; then
 	pwd | awk -F/ '{print $(NF - 1)}' | awk -F- '
-		{print "#define VERSION \""$2"\""}' > version.h
+		{print "#define VERSION \"" $2 "\""}' > version.h
 	exit 0
 fi
 
 # Otherwise, pull the version number from the git log
 if git log -1 > git.commit ; then
         head -1 git.commit | awk '
-                {print "#define VERSION \"git-"$NF"\""}' > version.h
+                {print "#define VERSION \"git-" substr($NF,1,10) "\""}
+		' > version.h
         exit 0
 fi
 
