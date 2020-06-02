@@ -49,10 +49,14 @@ UNAME=`uname -s`
 
 # Now that this is in github, pull the version number from the git log
 USE_GIT=$( pwd | cut -f2 -d- )
-if [ -e .git ] || [ "$USE_GIT" = "master" ] ; then
+# However, since 3.5 releases are copies of the Git tree, make sure
+# we have the correct version there
+if echo $USE_GIT | grep 3.5 > /dev/null ; then
+	echo $USE_GIT > VERSION
+elif [ -e .git ] || [ "$USE_GIT" = "master" ] ; then
 	git log -1 > git.commit 2> /dev/null || echo unknown > git.commit
         head -1 git.commit | awk '
-                {print "VERSION=git-"$NF}' > VERSION
+                {print "VERSION=git-"$2}' > VERSION
 fi
 # Looks like github sometimes scrubs symlinks
 if [ ! -e server/MaraDNS_locale.h ] ; then
