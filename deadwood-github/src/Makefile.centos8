@@ -64,7 +64,7 @@ DwUdpSocket.o:	DwUdpSocket.c DwStr.h DwSocket.h
 DwSocket.o:	DwSocket.c DwStr.h DwSocket.h
 	$(CC) $(FLAGS) -Wall -c -o DwSocket.o DwSocket.c
 
-DwSys.o:	DwSys.c DwStr.h
+DwSys.o:	DwSys.c DwStr.h version.h
 	$(CC) $(FLAGS) -Wall -c -o DwSys.o DwSys.c
 
 RandomPrime:	RandomPrime.c
