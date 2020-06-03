@@ -1,4 +1,4 @@
-# Makefile for Deadwood-2 (CentOS 5; may work with other other Linux and
+# Makefile for Deadwood-2 (CentOS 8; may work with other other Linux and
 # *NIX systems)
 
 # The compiler that makes programs designed to run on the machine 
