@@ -9,10 +9,10 @@ if [ -z "$VERSION" ] ; then
 fi
 
 git clone https://github.com/samboy/MaraDNS/
-cd MaraDNS/deadwood-github/src
-./make.version.h
-cp Makefile.sl6 Makefile
-cd ../../..
+#cd MaraDNS/deadwood-github/src
+#./make.version.h
+#cp Makefile.sl6 Makefile
+#cd ../../..
 mv MaraDNS/maradns-win32 \
 	MaraDNS/maradns-3-5-${VERSION}-win32/
 mv MaraDNS maradns-3.5.${VERSION}/
