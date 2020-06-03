@@ -88,6 +88,8 @@ fi
 # Give them a message dependent on what kind of system they have
 if echo $UNAME | grep -i linux > /dev/null ; then
 	cat $BUILDDIR/Makefile.linux >> Makefile
+	DEADWOOD="$( echo deadwood-*/src )"
+	cp ${DEADWOOD}/Makefile.centos8 ${DEADWOOD}/Makefile
 	echo It looks like you are using Linux\; just type in \'make\'
 	EXITCODE=0
 elif echo $UNAME | grep -i mingw32 > /dev/null ; then
@@ -110,6 +112,8 @@ elif echo $UNAME | grep -i mingw32 > /dev/null ; then
 	exit 0
 elif echo $UNAME | grep -i cygwin > /dev/null ; then
 	cat $BUILDDIR/Makefile.noflock >> Makefile
+	DEADWOOD="$( echo deadwood-*/src )"
+	cp ${DEADWOOD}/Makefile.centos8 ${DEADWOOD}/Makefile
 	echo It looks like you are using Cygwin\; this will compile fine
 	echo by typing in \'make\'.
 	echo
