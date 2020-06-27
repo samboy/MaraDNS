@@ -65,8 +65,14 @@ starting Deadwood) as the configuration file.
 The Deadwood configuration file is modeled after Python 2's syntax.  Any 
 valid Deadwood configuration file should also correctly parse in both 
 Python 2.4.3 and Python 2.6.6.  If any configuration file does correctly
-parse in Deadwood but raises a syntax error in Python, this is a bug that
+parse in Deadwood but raises a syntax error in Python 2, this is a bug that
 should be fixed.
+
+<p>
+
+Note that Deadwood configuration files are <i>not</i> always Python 3
+compatible; while Python 2 is no longer officially supported, Deadwood
+will retain its configuration file format.
 
 <p>
 
