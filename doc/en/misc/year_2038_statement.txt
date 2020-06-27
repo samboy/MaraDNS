@@ -4,10 +4,15 @@ the 32-bit timestamp in to a 64-bit timestamp, which pushes the rollover
 date in to the future.
 
 On 32-bit systems, MaraDNS will work fine until at least 2106 (Mara should 
-work fine until 2115.)
+work fine until 2115.) if the time stamp rolls over (if dates after
+January 19, 2038 are shown as dates in the early 1900s).  Note that while
+Windows XP Posix 32-bit timestamps roll over to the early 1900s, Windows
+10 Posix 32-bit timestamps instead return an error after January 19, 2038.
 
-On 32-bit Windows systems, Deadwood uses Windows 64-bit timestamps to get 
-the time.  
+While a 32-bit compile, the Deadwood Windows port uses Windows 
+64-bit timestamps to get the time.  
 
 The Windows 32-bit compile of MaraDNS will no longer fully function
-come January 19, 2038.
+come January 19, 2038.  This compile stopped being supported in
+2020; instead, Windows users who want authoritative MaraDNS are directed
+to use Cygwin to compile MaraDNS.
