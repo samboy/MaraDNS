@@ -792,7 +792,7 @@ int dwm_parse_file(char *name) {
                 a = dwm_parse_line(look);
                 if(a == -3) {
                         dwm_fatal("incomplete last line");
-                } 
+                }
                 if(a != 0 && a != 1) {
                         dwm_fatal("deadwoodrc parse error");
                 }
