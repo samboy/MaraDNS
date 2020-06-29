@@ -97,7 +97,7 @@ Y: A-Za-z		R: \r
 And here is the specified state machine for mararc processing.  This
 state machine is run for each line in the mararc file
 
-Start of line:                       a: Hb Y1c Wxb Rxp T;
+Start of line:                       a: Hb Y1c Wa Rxp T;
 In comment:                          b: Xb Rxp T;
 Reading mararc parameter:            c: B1c Wd =e [f +g (y
 Whitespace after mararc parameter:   d: Wd =e [f +g
@@ -122,7 +122,6 @@ At carriage return:                  xp: T;
 At left paren:			     y: Qz
 In filename for execfile:	     z: I7z Qxa
 Quote after execfile filename:	     xa: )k
-After whitespace in line:            xb: Hb Wxb Y1c Rxp T;
 
 Once a line is processed, we then look at the value of variable 1 (the 
 mararc parameter):
