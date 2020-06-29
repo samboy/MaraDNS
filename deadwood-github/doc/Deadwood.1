@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Sat Apr 18 01:58:57 2020
+.\" Last updated Mon Jun 29 01:10:44 2020
 .\"
 .TH DEADWOOD 1 "August 2009" DEADWOOD "Deadwood reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -90,30 +90,14 @@ starting Deadwood) as the configuration file.
 .SH "CONFIGURATION FILE FORMAT"
 .PP
 The Deadwood configuration file is modeled after Python 2\(aqs syntax.
-Any
-valid Deadwood configuration file should also correctly parse in both
-Python 2.4.3 and Python 2.6.6. If any configuration file does correctly
-parse in Deadwood but raises a syntax error in Python, this is a bug
-that
-should be fixed.
+However, since Deadwood 2 is no longer supported by the Python
+Software Foundation, and since Deadwood configuration files can
+sometimes
+fail to parse in Python 3, Deadwood does not strictly follow Python 2
+syntax.
 .PP
-This in mind, whitespace is significant; Deadwood parameters must be in
-the leftmost column with no leading whitespace. This is a valid line
-(as long as there are no spaces to its left):
-
-.nf
-recursive_acl = "127.0.0.1/16"
-.fi
-
-The following line, however, will raise a parse error:
-
-.nf
- recursive_acl = "127.0.0.1/16"
-.fi
-
-Observe the space to the left of the "recusive_acl" string in the
-incorrectly
-formatted line.
+In particular, leading whitespace is allowed in Deadwood configuration
+files.
 .SH "PARAMETER TYPES"
 .PP
 Deadwood has three different parameter types:
