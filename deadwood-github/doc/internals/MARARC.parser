@@ -8,7 +8,7 @@ A alpha: The letters A through Z, a through z, and the _ character
 
 B alphanum: The letters A-Z, a-z, the _ character, and the numbers 0-9
 
-Y alphastart: The lettera A through Z, and a through z
+Y alphastart: The letters A through Z, and a through z
 
 [ leftbrace: The [ character
 
@@ -63,7 +63,6 @@ We also have eight actions:
 5: Add the character we are looking at to variable 5
 6: Add the character we are looking at to variable 6
 7: Add the character we are looking at to variable 7
-8: Return a fatal error stating that leading whitespace is not allowed
 ;: End the processing of the current line successfully
 
 The variables are:
@@ -123,7 +122,7 @@ At carriage return:                  xp: T;
 At left paren:			     y: Qz
 In filename for execfile:	     z: I7z Qxa
 Quote after execfile filename:	     xa: )k
-After whitespace in line:            xb: Hb Wxb Y8xb Rxp T;
+After whitespace in line:            xb: Hb Wxb Y1c Rxp T;
 
 Once a line is processed, we then look at the value of variable 1 (the 
 mararc parameter):

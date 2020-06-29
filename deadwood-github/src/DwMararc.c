@@ -748,9 +748,6 @@ int dwm_parse_line(FILE *look) {
                 if(action == 10) { /* Terminate */
                         ret = 0; /* Line parsed */
                         break; /* Now we need to set the keys */
-                } else if(action == 8) {
-                        ret = -4; /* Fatal: No leading whitespace */
-                        goto catch_dwm_parse_line;
                 } else if(action > 0 && action < 10) {
                         dwm_do_action(ch,action,actions);
                 }
@@ -795,9 +792,7 @@ int dwm_parse_file(char *name) {
                 a = dwm_parse_line(look);
                 if(a == -3) {
                         dwm_fatal("incomplete last line");
-                } else if(a == -4) {
-                        dwm_fatal("leading whitespace not allowed");
-                }
+                } 
                 if(a != 0 && a != 1) {
                         dwm_fatal("deadwoodrc parse error");
                 }

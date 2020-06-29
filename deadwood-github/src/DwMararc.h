@@ -225,7 +225,7 @@ char *key_n_names[KEY_N_COUNT + 1] = {
                     "y Qz\n" \
                     "z I7z Qxa\n" \
                     "xa )k\n" \
-                    "xb Hb Wxb Y8xb Rxp T;\n"
+                    "xb Hb Wxb Y1c Rxp T;\n"
 
 /* A tokenized single state in the finite state machine */
 typedef struct {
