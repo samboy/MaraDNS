@@ -156,6 +156,7 @@ for PAIR in $TESTS ; do
 				# exit 1
 				echo TEST FAILURE
 				FAILS="$TEST $FAILS"
+				exit 1 # Something stuck on port 53
 			else
 				echo trying again
 			fi
