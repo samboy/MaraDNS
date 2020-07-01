@@ -25,9 +25,6 @@ if ! id | grep root > /dev/null 2>&1 ; then
 	exit 1
 fi
 
-# Some tests use the older makefile location
-cp ../Deadwood/Makefile.centos8 ../Deadwood/Makefile.sl6
-
 SQADIR=$(pwd)
 export CC=gcc
 

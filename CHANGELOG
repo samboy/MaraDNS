@@ -1,6 +1,15 @@
 
 MaraDNS changelog
 
+   maradns-3.5.0006:
+   This is a stable release of MaraDNS:
+
+     * Deadwood configuration files can not have leading space in them.
+       Deadwood no longer uses a subset of Python2 syntax, since Python2
+       is now post-End of life.
+
+     (2020-07-01)
+
    maradns-3.5.0005:
    This is a stable release of MaraDNS:
 
