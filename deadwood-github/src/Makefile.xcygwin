@@ -1,5 +1,4 @@
-# Makefile for Deadwood-2 (CentOS 8; may work with other other Linux and
-# *NIX systems)
+# Makefile for Deadwood-3 on Cygwin
 
 # The compiler that makes programs designed to run on the machine 
 # compiling.  When cross-compiling, we still need to compile and
