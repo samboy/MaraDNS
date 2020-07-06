@@ -254,16 +254,16 @@ fi
 #fi
 #rm output.test
 
-# dwood2rc_s_ip_blacklist
+# dwood2rc_s_ip_blocklist
 #cd $SQADIR
-#cd dwood2rc_s_ip_blacklist
+#cd dwood2rc_s_ip_blocklist
 #sh ./do.test > output.test 2> /dev/null
 #sleep 2
 #if ! cmp output.success output.test > /dev/null 2>&1 ; then
-#	echo test dwood2rc_s_ip_blacklist failed
+#	echo test dwood2rc_s_ip_blocklist failed
 #	exit 1
 #else
-#	echo test dwood2rc_s_ip_blacklist succeeded
+#	echo test dwood2rc_s_ip_blocklist succeeded
 #fi
 #rm output.test
 

@@ -32,7 +32,7 @@ EOF
 #../../../server/maradns -f mararc-IPv6 &
 sleep 1
 
-# Now, make sure Deadwood's ip_blacklist works
+# Now, make sure Deadwood's ip_blocklist works
 
 for BLOCKLIST in 10.222.33.44 fd4d:6172:6144:4e53::3 ; do
 
@@ -42,7 +42,7 @@ bind_address="fd4d:6172:6144:4e53::1"
 upstream_servers = {}
 upstream_servers["."]="fd4d:6172:6144:4e53::2"
 recursive_acl="::1/128, fd4d:6172:6144:4e53::0/32"
-ip_blacklist="${BLACKLIST}"
+ip_blocklist="${BLACKLIST}"
 filter_rfc1918 = 0
 EOF
 
