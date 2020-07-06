@@ -99,8 +99,8 @@ char *key_s_names[KEY_S_COUNT + 1] = {
         "cache_file", /* File with a copy of Deadwood's cache */
 	"ip_blacklist", /* Older name for ip_blocklist, kept to not break
                          * dwood3rc files */
-        "ip_blocklist"  /* If an answer has any of these IPs, make it a
-                         * "not there" answer */
+        "ip_blocklist",  /* If an answer has any of these IPs, make it a
+                          * "not there" answer */
         0 };
 
 char *key_d_names[KEY_D_COUNT + 1] = {
