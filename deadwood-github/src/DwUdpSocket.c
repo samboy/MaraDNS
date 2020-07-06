@@ -561,7 +561,7 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                 dw_log_ip(
         "Attempt to get MX record (possible spam zombie) from IP",from_ip,3);
                 return 1;
-        } else if(type == RR_AAAA) { /* Blacklist affects both IPv4 and IPv6 */
+        } else if(type == RR_AAAA) { /* Blocklist affects both IPv4 and IPv6 */
                 dw_str *value_ipv4 = 0; /* IPv4 record in cache (A record */
                 if(dw_put_u16(query, RR_A, -3) == -1) {
                         goto catch_get_reply_from_cache;

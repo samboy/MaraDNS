@@ -32,6 +32,7 @@
 #define DWM_S_random_seed_file 4
 #define DWM_S_cache_file 5
 #define DWM_S_ip_blacklist 6
+#define DWM_S_ip_blocklist 7
 
 /* mararc dictionary parameters */
 #define DWM_D_upstream_servers 0
@@ -72,7 +73,7 @@
 #define DWM_N_max_ttl 29
 
 /* Number of string parameters in the mararc file */
-#define KEY_S_COUNT 7
+#define KEY_S_COUNT 8
 /* Number of dictionary parameters in the mararc file */
 #define KEY_D_COUNT 4
 /* Number of numeric parameters in the mararc file */
@@ -96,7 +97,9 @@ char *key_s_names[KEY_S_COUNT + 1] = {
         "random_seed_file", /* File with seed/key for random number
                              * generator */
         "cache_file", /* File with a copy of Deadwood's cache */
-        "ip_blacklist", /* If an answer has any of these IPs, make it a
+	"ip_blacklist", /* Older name for ip_blocklist, kept to not break
+                         * dwood3rc files */
+        "ip_blocklist"  /* If an answer has any of these IPs, make it a
                          * "not there" answer */
         0 };
 
