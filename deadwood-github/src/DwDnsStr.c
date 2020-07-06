@@ -477,7 +477,7 @@ void dwc_process(dw_hash *cache, dw_str *query, uint8_t action) {
         int32_t ttl = 0;
         int cache_type = 0;
 
-        /* Check to see if this is a blacklist entry */
+        /* Check to see if this is a blocklist entry */
         fetch = dwh_get(cache,query,0,1);
         if(fetch == 0) {
                 goto catch_dwc_process;
@@ -528,7 +528,7 @@ catch_dwc_process:
 /* Called by dwc_has_bad_ip, this sees if a given IPv4 or IPv6 IP is good
  * or bad.  0 if it's good, 1 if it's bad */
 
-int dwc_check_ip(dwd_dict *blacklist_hash, dw_str *ip) {
+int dwc_check_ip(dwd_dict *blocklist_hash, dw_str *ip) {
         uint32_t ipc = 0;
 
         if(ip == 0) {
@@ -567,12 +567,12 @@ int dwc_check_ip(dwd_dict *blacklist_hash, dw_str *ip) {
         }
 #endif /* NO_FILTER_RFC1918 */
 
-        if(blacklist_hash == 0) {
+        if(blocklist_hash == 0) {
                 return 0;
         }
 
         /* Maybe it's an IP/IP6 we don't want to see replies with */
-        if(dwd_fetch(blacklist_hash,ip) != 0) {
+        if(dwd_fetch(blocklist_hash,ip) != 0) {
                 return 1;
         }
 
@@ -581,9 +581,9 @@ int dwc_check_ip(dwd_dict *blacklist_hash, dw_str *ip) {
 }
 
 
-/* See if an IP in our answer is blacklisted.  1 if it is, 0 if it's not or
+/* See if an IP in our answer is blocklisted.  1 if it is, 0 if it's not or
  * we got an error */
-int dwc_has_bad_ip(dw_str *answer, dwd_dict *blacklist_hash) {
+int dwc_has_bad_ip(dw_str *answer, dwd_dict *blocklist_hash) {
         dns_string *look = 0;
         dw_str *ip = 0;
         int counter = 0;
@@ -603,7 +603,7 @@ int dwc_has_bad_ip(dw_str *answer, dwd_dict *blacklist_hash) {
                 if(type == 1 /* A record */ ) {
                         ip = dw_substr(answer,
                                 look->an[(counter * 2) + 1] + 10,4,1);
-                        if(dwc_check_ip(blacklist_hash,ip) != 0) {
+                        if(dwc_check_ip(blocklist_hash,ip) != 0) {
                                 dw_log_dwstrip(
 "IP blocked. Check filter_rfc1918 or ip_blacklist to allow IP ",
                                                 ip,10);
@@ -616,7 +616,7 @@ int dwc_has_bad_ip(dw_str *answer, dwd_dict *blacklist_hash) {
                 } else if(type == 28 /* AAAA record */) {
                         ip = dw_substr(answer,
                                 look->an[(counter * 2) + 1] + 10,16,1);
-                        if(dwc_check_ip(blacklist_hash,ip) != 0) {
+                        if(dwc_check_ip(blocklist_hash,ip) != 0) {
                                 dwc_zap_dns_str(look);
                                 dw_destroy(ip);
                                 return 1;

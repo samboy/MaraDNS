@@ -592,7 +592,7 @@ void dwm_dict_add(int num, dw_str *key, dw_str *value, int todo) {
                         dw_destroy(check);
                         /* I am tempted to make this fatal but will not since
                          * it could make managing large anti-phish/malware
-                         * blacklists harder */
+                         * blocklists harder */
                         /*dw_fatal(
                             "Dictionary elements must be defined only once");*/
                 }

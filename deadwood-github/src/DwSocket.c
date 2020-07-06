@@ -73,7 +73,7 @@ int_fast32_t maradns_uid = 99;
 int_fast32_t maradns_gid = 99;
 int_fast32_t max_ttl = 86400;
 int num_retries = 5;
-dwd_dict *blacklist_dict = 0;
+dwd_dict *blocklist_dict = 0;
 
 #ifdef MINGW
 u_long dont_block = 0;
@@ -844,7 +844,7 @@ void process_mararc_params() {
                 dw_fatal("Could not allocate rem!");
         }
 
-        blacklist_dict = make_ip_dict(key_s[DWM_S_ip_blacklist]);
+        blocklist_dict = make_ip_dict(key_s[DWM_S_ip_blacklist]);
 
         if(bind != 0) {
                 dw_destroy(bind);

@@ -59,7 +59,7 @@ extern int num_retries;
 extern int32_t max_ttl;
 
 /* Other mararc parameters */
-extern dwd_dict *blacklist_dict;
+extern dwd_dict *blocklist_dict;
 
 #ifdef MINGW
 /* Needed for the Windows way of making a socket non-blocking */
@@ -542,7 +542,7 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
         dw_str *comp = 0; /* Compressed DNS packet */
         dw_str *packet = 0;
         socklen_t c_len = sizeof(struct sockaddr_in);
-        int ret = -1, type = 0, cache_type = 0, blacklisted = 0;
+        int ret = -1, type = 0, cache_type = 0, blocklisted = 0;
 
         if(client == 0) {
                 goto catch_get_reply_from_cache;
@@ -569,7 +569,7 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                 value_ipv4 = dwh_get(cache,query,resurrect,1);
                 if(value_ipv4 != 0) {
                         if(dw_fetch_u8(value_ipv4,-1) == TYPE_BLACKLIST_ENTRY){
-                                blacklisted = 1;
+                                blocklisted = 1;
                         }
                         dw_destroy(value_ipv4);
                 }
@@ -578,7 +578,7 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                 }
         }
 
-        if(blacklisted == 0) {
+        if(blocklisted == 0) {
                 dwc_process(cache,query,3); /* RR rotation, TTL aging, etc. */
                 value = dwh_get(cache,query,resurrect,1);
                 if(value == 0) {
@@ -587,7 +587,7 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                 }
                 cache_type = dw_fetch_u8(value,-1);
         }
-        if(cache_type == TYPE_BLACKLIST_ENTRY || blacklisted == 1) {
+        if(cache_type == TYPE_BLACKLIST_ENTRY || blocklisted == 1) {
                 if(tcp_num != -1 || orig_packet == 0) {
                         ret = 2;
                         goto catch_get_reply_from_cache;
@@ -894,7 +894,7 @@ int cache_dns_reply(unsigned char *packet, int count, int b, int truncated) {
                 if(decomp == 0) {
                         goto catch_cache_dns_reply;
                 }
-                if(dwc_has_bad_ip(decomp,blacklist_dict)) {
+                if(dwc_has_bad_ip(decomp,blocklist_dict)) {
                         ret = -2; /* Tell caller we need synth "not there" */
                         goto catch_cache_dns_reply;
                 }

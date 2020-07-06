@@ -61,11 +61,11 @@ int dwc_rr_rotate(dw_str *in, int32_t *out_start, int32_t *out_end);
 /* Process an entry in the cache: Perform RR rotation, TTL aging, etc. */
 void dwc_process(dw_hash *cache, dw_str *query, uint8_t action);
 
-/* Public method for IP blacklist management */
+/* Public method for IP blocklist management */
 
-/* See if an IP in our answer is blacklisted.  1 if it is, 0 if it's not or
+/* See if an IP in our answer is blocklisted.  1 if it is, 0 if it's not or
  * we got an error */
-int dwc_has_bad_ip(dw_str *answer, dwd_dict *blacklist_hash);
+int dwc_has_bad_ip(dw_str *answer, dwd_dict *blocklist_hash);
 
 /* Convert any upper case letters in a DNS query in to lower case letters;
  * This modifies the "query" string in place */
