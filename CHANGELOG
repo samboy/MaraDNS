@@ -28,7 +28,7 @@ MaraDNS changelog
    maradns-3.5.0004:
    This is a stable release of MaraDNS:
 
-     * maximum_cache_elements no longer needs to include blacklist, root
+     * maximum_cache_elements no longer needs to include blocklist, root
        server, upstream server, or synthetic IP elements.
      * Documentation updates, mainly for maximum_cache_elements change
 
@@ -37,9 +37,9 @@ MaraDNS changelog
    maradns-3.5.0003:
    This is a stable release of MaraDNS:
 
-     * Added support for blacklists as per GitHub issue #69 and GitHub
+     * Added support for blocklists as per GitHub issue #69 and GitHub
        issue #70
-     * Minimize memory usage of blacklists by allowing the same entry to
+     * Minimize memory usage of blocklists by allowing the same entry to
        be used for IPv4 and IPv6
 
      (2020-04-16)
