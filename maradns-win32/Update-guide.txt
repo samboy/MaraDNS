@@ -1,6 +1,11 @@
+Deadwood 3.5.0007 now prefers to use ip_blocklist instead of 
+ip_blacklist.  The older ip_blacklist name still works as before.
+
+--
+
 Deadwood 3.5.0004 no longer needs to have maximum_cache_elements
 increased to store upstream_servers, root_servers, ip4, ip6, or
-blacklist entries.
+blocklist entries.
 
 ---
 
@@ -120,7 +125,7 @@ upstream_servers["example.net."] = "192.168.1.1"
 
     I was tempted to make this fatal, but decided not to because making this
     fatal would make it more difficult to manage large anti-phish/malware
-    blacklists.
+    blocklists.
 
   * It is no longer permitted to initialize root_servers or upstream_servers
     more than once. This will now raise an error:

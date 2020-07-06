@@ -37,7 +37,7 @@ handle_overload = 1
 #hash_magic_number = 1629222941
 
 # Disable certain IPs in upstream replies
-#ip_blacklist = "10.1.2.3, 10.1.2.4"
+#ip_blocklist = "10.1.2.3, 10.1.2.4"
 
 # User-id Deadwood runs as
 maradns_uid = 99

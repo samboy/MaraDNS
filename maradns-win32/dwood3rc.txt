@@ -27,7 +27,7 @@ cache_file = "dw_cache_bin"
 
 # This is a list of IPs that, if we get them in a DNS reply, we convert
 # the reply in to a "not there" answer.  
-#ip_blacklist = "10.222.33.44, 10.222.3.55"
+#ip_blocklist = "10.222.33.44, 10.222.3.55"
 
 # By default, for security reasons, Deadwood does not allow IPs in the
 # 192.168.x.x, 172.[16-31].x.x, 10.x.x.x, 127.x.x.x, 169.254.x.x,
