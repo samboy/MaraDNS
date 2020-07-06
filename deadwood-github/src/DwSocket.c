@@ -670,7 +670,7 @@ int process_ip4_params() {
                 if(value != 0 && value->len == 1 && value->str !=0 &&
                                 *(value->str) == 'X') {
                         cache_data = dw_create(2);
-                        if(dw_addchar(TYPE_BLACKLIST_ENTRY,cache_data) == -1) {
+                        if(dw_addchar(TYPE_BLOCKLIST_ENTRY,cache_data) == -1) {
                                 dw_log_dwstr("Problem processing ",key,0);
                                 dw_log_dwstr("With ip4 value ",value,0);
                                 dw_fatal("Fatal error processing ip4 entry");

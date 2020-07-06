@@ -483,7 +483,7 @@ void dwc_process(dw_hash *cache, dw_str *query, uint8_t action) {
                 goto catch_dwc_process;
         }
         cache_type = dw_fetch_u8(fetch,-1);
-        if(cache_type == TYPE_BLACKLIST_ENTRY) {
+        if(cache_type == TYPE_BLOCKLIST_ENTRY) {
                 goto catch_dwc_process;
         }
 

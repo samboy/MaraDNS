@@ -568,7 +568,7 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                 }
                 value_ipv4 = dwh_get(cache,query,resurrect,1);
                 if(value_ipv4 != 0) {
-                        if(dw_fetch_u8(value_ipv4,-1) == TYPE_BLACKLIST_ENTRY){
+                        if(dw_fetch_u8(value_ipv4,-1) == TYPE_BLOCKLIST_ENTRY){
                                 blocklisted = 1;
                         }
                         dw_destroy(value_ipv4);
@@ -587,7 +587,7 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                 }
                 cache_type = dw_fetch_u8(value,-1);
         }
-        if(cache_type == TYPE_BLACKLIST_ENTRY || blocklisted == 1) {
+        if(cache_type == TYPE_BLOCKLIST_ENTRY || blocklisted == 1) {
                 if(tcp_num != -1 || orig_packet == 0) {
                         ret = 2;
                         goto catch_get_reply_from_cache;
