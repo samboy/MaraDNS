@@ -21,7 +21,7 @@
      * Built-in dnswall functionality
      * The ability to assign names to IPv4 IPs as specified in one's
        dwood3rc file.
-     * The ability to quickly load and use a large blacklist of names to
+     * The ability to quickly load and use a large blocklist of names to
        not resolve.
 
                              COMMAND LINE ARGUMENTS
@@ -73,6 +73,7 @@ upstream_servers["."]="8.8.8.8, 8.8.4.4"
      * cache_file (string)
      * chroot_dir (string)
      * ip_blacklist (string)
+     * ip_blocklist (string)
      * ipv4_bind_addresses (string)
      * random_seed_file (string)
      * recursive_acl (string)
@@ -182,7 +183,7 @@ ip4["kabah.foo."] = "10.11.11.11"
    Note that a given name can only resolve to a single IP, and that the
    records have a fixed TTL of 30 seconds.
 
-   It is also possible to use ip4 to set up a blacklist by using "X" for
+   It is also possible to use ip4 to set up a blocklist by using "X" for
    the IP. When this is done, an IPv4 request for a given hostname results
    in a synthetic "this name does not exist" response. In addition, the
    corresponding IPv6 request will also return that "name does not exist"
@@ -203,7 +204,7 @@ ip6 = {}
 ip6["maradns.foo."] = "fd4d617261444e530000000000001234"
 ip6["kabah.foo."] = "FD4D617261444E53__00__00__002345"
 
-ip_blacklist
+ip_blocklist
 
    This is a list of IPs that we do not allow to be in the answer to a DNS
    request. The reason for this is to counteract the practice some ISPs
@@ -211,6 +212,10 @@ ip_blacklist
    controlled by the ISP; this results in possible security issues.
 
    This parameter only accepts individual IPs, and does not use netmasks.
+
+   Note that this parameter used to be called ip_blacklist; while the
+   ip_blacklist name still works as before, ip_blocklist is the current
+   name.
 
 maradns_uid
 
@@ -685,7 +690,7 @@ maximum_cache_elements = 60000
 # with a given IP back in to a "not there" IP.  If any of the IPs
 # listed below are in a DNS answer, Deadwood converts the answer
 # in to a "not there"
-#ip_blacklist = "10.222.33.44, 10.222.3.55"
+#ip_blocklist = "10.222.33.44, 10.222.3.55"
 
 # By default, for security reasons, Deadwood does not allow IPs in
 # the 192.168.x.x, 172.[16-31].x.x, 10.x.x.x, 127.x.x.x,
