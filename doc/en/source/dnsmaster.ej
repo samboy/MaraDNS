@@ -20,6 +20,14 @@
 
 <H1>Having MaraDNS be a master DNS server</H1>
 
+<i>I should point out here that "master" and "slave" is somewhat outdated
+wording.  The more modern wording, "primary" and "replica", is more
+accurate.  However, since this document was written back when "master" 
+and "slave" was standard terminology, and since the relevant DNS RFCs 
+MaraDNS is based on use the words "master" and "slave", this document 
+uses that wording.</i>
+<p>
+
 A master (sometimes called primary) DNS server is a DNS server that 
 other DNS servers can automatically transfer zone files from.  There are
 limitations to this way of transferring zone files; zone files transferred
