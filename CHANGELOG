@@ -1,6 +1,19 @@
 
 MaraDNS changelog
 
+   maradns-3.5.0007:
+   This is a stable release of MaraDNS:
+
+     * Update name of "ip_blacklist" to be "ip_blocklist".  The
+       old name "ip_blacklist" still works (and I have no plans to 
+       remove it), but "ip_blocklist" is more up to date.
+     * Note in some older documents that while "primary" and "replica"
+       are more up to date ways of saying "master" and "slave", the
+       documents will, in the interest of compatibility, retain the 
+       "master" and "slave" wording.
+
+     (2020-07-07)
+
    maradns-3.5.0006:
    This is a stable release of MaraDNS:
 
