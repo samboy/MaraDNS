@@ -1,3 +1,12 @@
+   I should point out here that "master" and "slave" is somewhat 
+   outdated wording.  The more modern wording, "primary" and 
+   "replica", is more accurate.  However, since this document was 
+   written back when "master" and "slave" was standard terminology, 
+   since other mainstream DNS servers still use the "master" and 
+   "slave" terminology, and since the relevant DNS RFCs MaraDNS is 
+   based on use the words "master" and "slave", this document
+   uses that wording.
+
                  Having MaraDNS be a slave DNS server
 
    MaraDNS does not have direct support for being a slave DNS
