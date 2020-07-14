@@ -33,7 +33,7 @@ clean:
 		core ; \
 		./make.version.h ; if [ -e /dev/urandom ] ; \
 			then rm DwRandPrime.h  ; \
-			cc RandomPrime.c ; ./a.exe > DwRandPrime.h ; rm a.out \
+			cc RandomPrime.c ; ./a.exe > DwRandPrime.h ; rm a.exe \
 		; fi 
 
 version.h:	
