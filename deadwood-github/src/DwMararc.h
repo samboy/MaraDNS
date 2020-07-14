@@ -203,7 +203,7 @@ char *key_n_names[KEY_N_COUNT + 1] = {
 /* The actual state machine that we use to parse a MaraRC file; this is
  * described in the file doc/internals/MARARC.parser */
 
-#define dwm_machine "a Hb Y1c Wa Rxp T;\n" \
+#define dwm_machine "a Hb Y1c Wa Rxp T; _xb\n" \
                     "b Xb Rxp T;\n" \
                     "c B1c Wd =e [f +g (y\n" \
                     "d Wd =e [f +g\n" \
@@ -227,7 +227,13 @@ char *key_n_names[KEY_N_COUNT + 1] = {
                     "xp T;\n" \
                     "y Qz\n" \
                     "z I7z Qxa\n" \
-                    "xa )k\n"
+                    "xa )k\n" \
+                    "xb rxc\n" \
+                    "xc exd\n" \
+                    "xd mxe\n" \
+                    "xe =xf\n" \
+                    "xf {xg\n" \
+                    "xg }k Xxg Txg Rxg\n"
 
 /* A tokenized single state in the finite state machine */
 typedef struct {
