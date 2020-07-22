@@ -97,7 +97,7 @@ char *key_s_names[KEY_S_COUNT + 1] = {
         "random_seed_file", /* File with seed/key for random number
                              * generator */
         "cache_file", /* File with a copy of Deadwood's cache */
-	"ip_blacklist", /* Older name for ip_blocklist, kept to not break
+        "ip_blacklist", /* Older name for ip_blocklist, kept to not break
                          * dwood3rc files */
         "ip_blocklist",  /* If an answer has any of these IPs, make it a
                           * "not there" answer */

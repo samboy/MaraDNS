@@ -846,16 +846,16 @@ void process_mararc_params() {
 
         if(key_s[DWM_S_ip_blocklist] != 0 &&
            key_s[DWM_S_ip_blacklist] != 0) {
-		dw_fatal(
+                dw_fatal(
              "Both ip_blacklist and ip_blocklist are set.  Use ip_blocklist.");
-	}
-	if(key_s[DWM_S_ip_blocklist] != 0) {
-        	blocklist_dict = make_ip_dict(key_s[DWM_S_ip_blocklist]);
-	} else if(key_s[DWM_S_ip_blacklist] != 0) {
-		/* Legacy name, kept so dwood3rc files do not break */
-		dw_log_string("ip_blacklist is now ip_blocklist",100);
-        	blocklist_dict = make_ip_dict(key_s[DWM_S_ip_blacklist]);
-	}
+        }
+        if(key_s[DWM_S_ip_blocklist] != 0) {
+                blocklist_dict = make_ip_dict(key_s[DWM_S_ip_blocklist]);
+        } else if(key_s[DWM_S_ip_blacklist] != 0) {
+                /* Legacy name, kept so dwood3rc files do not break */
+                dw_log_string("ip_blacklist is now ip_blocklist",100);
+                blocklist_dict = make_ip_dict(key_s[DWM_S_ip_blacklist]);
+        }
 
         if(bind != 0) {
                 dw_destroy(bind);
