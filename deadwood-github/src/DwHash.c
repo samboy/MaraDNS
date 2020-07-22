@@ -1086,6 +1086,7 @@ dw_hash *dwh_read_hash(char *filename) {
         dw_hash *new = 0;
         dw_element *ele = 0;
         int32_t max = 0, counter = 0;
+	int32_t ll = key_n[DWM_N_verbose_level];
 
         if(filename == 0) {
                 return 0;
@@ -1093,11 +1094,13 @@ dw_hash *dwh_read_hash(char *filename) {
 
         handle = fopen(filename,"rb");
         if(handle == 0) {
-                dw_log_3strings("Could not open hash at ",filename,
-                                " for reading",1);
+		if(ll >= 10) {
+                	dw_log_3strings("Could not open hash at ",filename,
+                        	        " for reading",1);
 #ifndef MINGW
-                perror("System said");
+           	     perror("System said");
 #endif /* MINGW */
+		}
                 return 0;
         }
 
