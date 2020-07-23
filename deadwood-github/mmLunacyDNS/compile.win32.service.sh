@@ -16,4 +16,4 @@ cd ../lunacy/
 make
 cd ../mmLunacyDNS/
 gcc -Os -DMINGW -c -o mmLunacyDNS.o mmLunacyDNS.c
-gcc -Os -o mmLunacyDNS mmLunacyDNS.o ../src/liblua.a -lm -lwsock32
+gcc -Os -o mmLunacyDNS mmLunacyDNS.o ../lunacy/liblua.a -lm -lwsock32
