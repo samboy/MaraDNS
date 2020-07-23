@@ -1,4 +1,4 @@
-/* Copyright (c) 2009 Sam Trenholme and Marko Njezic
+/* Copyright (c) 2009 Sam Trenholme 
  *
  * TERMS
  *
