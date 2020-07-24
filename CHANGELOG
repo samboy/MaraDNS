@@ -1,16 +1,42 @@
 
 MaraDNS changelog
 
+   maradns-3.5.0008:
+   This is a stable release of MaraDNS:
+
+     * Add new program: mmLunacyDNS.  This is an updated version of the
+       microdns program, a program which always return the same IP for 
+       any DNS query given to it, with Lua scripting support (so we
+       can customize what gets logged, return different IPs for 
+       different queries, and ignore non-IPv4 IP address queries).
+       The program can also run as a Windows service.  The script can
+       only return IPv4 IP addresses or ignore queries, but it’s quite
+       flexible given those limitations.
+     * Since mmLunacyDNS has Lua support, we now include the full source
+       of my fork of Lua 5.1, “Lunacy”.  The reason why I am using an
+       older version of Lua is because this is the version of Lua 
+       supported by LuaJIT, and I like having the option of increasing
+       performance with LuaJIT without breaking existing Lua-based
+       configuration files.
+     * I have added the ability to have multiline comments to Deadwood
+       configuration files by using _rem={ at the beginning of a line;
+       this indicates that a comment should continue until a } character
+       is seen.  The reason for the unusual syntax is so that we can have
+       multi-line comments in script files which are compatible with
+       Deadwood, Lua, and Python.
+
+     (2020-07-??)
+
    maradns-3.5.0007:
    This is a stable release of MaraDNS:
 
-     * Update name of "ip_blacklist" to be "ip_blocklist".  The
+     * Update name of “ip_blacklist” to be “ip_blocklist”.  The
        old name "ip_blacklist" still works (and I have no plans to 
-       remove it), but "ip_blocklist" is more up to date.
-     * Note in some older documents that while "primary" and "replica"
-       are more up to date ways of saying "master" and "slave", the
+       remove it), but “ip_blocklist” is more up to date.
+     * Note in some older documents that while “primary” and “replica”
+       are more up to date ways of saying “master” and “slave”, the
        documents will, in the interest of compatibility, retain the 
-       "master" and "slave" wording.
+       “master” and “slave” wording.
 
      (2020-07-07)
 
