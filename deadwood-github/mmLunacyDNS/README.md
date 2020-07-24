@@ -44,7 +44,7 @@ mmLunacyDNS binds to.  `bindIp` is a top-level global variable.
 
 Once it binds to the IP, every time mmLunacyDNS gets a query, it
 runs the lua function processQuery, which takes as its input a
-table with two members:
+table with the following members:
 
 * `mmQuery`: This is the DNS name requested, in the form of a string
   like `caulixtla.com.` or `samiam.org.` (observe the dot at the end of 
