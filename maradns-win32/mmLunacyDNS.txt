@@ -29,6 +29,10 @@ table with two members:
   list of DNS query type numbers is available at
   https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml
   1 is "A", i.e. a request for an IPv4 IP address.
+* mmFromIP: This is a string containing, in human-readable format, the
+  IP the query came from.  The string will look like "10.9.8.7".
+* mmFromIPtype: This is the number 4
+
 
 The processQuery function returns as its output a table with two
 parameters:

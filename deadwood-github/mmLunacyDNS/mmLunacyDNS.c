@@ -325,7 +325,7 @@ void runServer(lua_State *L) {
         int a, len_inet;
         SOCKET sock;
         char in[515];
-        socklen_t foo = sizeof(in);
+        socklen_t lenthing = sizeof(in);
         struct sockaddr_in dns_udp;
         uint32_t ip = 0; /* 0.0.0.0; default bind IP */
         int leni = sizeof(struct sockaddr);
@@ -350,13 +350,26 @@ void runServer(lua_State *L) {
         while(serverRunning == 1) {
 		char query[500];
 		int qLen = -1;
+		uint32_t fromIp; /* Who sent us a query */
+		char fromString[128]; /* String of sending IP */
                 /* Get data from UDP port 53 */
                 len_inet = recvfrom(sock,in,255,0,(struct sockaddr *)&dns_udp,
-                        &foo);
+                        &lenthing);
                 /* Roy Arends check: We only answer questions */
                 if(len_inet < 3 || (in[2] & 0x80) != 0x00) {
                         continue;
                 }
+		// IPv6 support is left as an exercise for the reader
+		if(dns_udp.sin_family != AF_INET) {
+			continue;
+		}
+		fromIp = dns_udp.sin_addr.s_addr;
+		fromIp = ntohl(fromIp);
+		snprintf(fromString,120,"%d.%d.%d.%d",fromIp >> 24,
+			(fromIp & 0xff0000) >> 16,
+			(fromIp & 0xff00) >> 8,
+			fromIp & 0xff);
+		log_it(fromString);
 
                 /* Prepare the reply */
                 if(len_inet > 12 && in[5] == 1) {
@@ -384,6 +397,18 @@ void runServer(lua_State *L) {
 			// t["mmQtype"] is a number with the query type
 			lua_pushstring(L,"mmQtype");
 			lua_pushinteger(L,(lua_Integer)qType);
+			lua_settable(L, -3);
+			
+			// t["mmFromIP"] is the IP the query came from,
+			// in the form of a human-readable string
+			lua_pushstring(L,"mmFromIP");
+			lua_pushstring(L,fromString);
+			lua_settable(L, -3);
+
+			// t["mmFromIPtype"] is a number with the number
+			// 4, for IPv4
+			lua_pushstring(L,"mmFromIPtype");
+			lua_pushinteger(L,(lua_Integer)4);
 			lua_settable(L, -3);
 
 			if (lua_pcall(L, 1, 1, 0) == 0) {
@@ -433,6 +458,7 @@ int main(int argc, char **argv) {
 	lua_State *L;
 	char *look;
 
+        printf("mmLunacyDNS version 2020-07-24 starting\n\n");
 	// Get bindIp and returnIp from Lua script
 	if(argc == 1) {
 		log_it("Only debug (interactive) mode supported.");
@@ -691,7 +717,7 @@ int main(int argc, char **argv) {
                         svc_install_service();
                 }
         } else {
-                printf("mmLunacyDNS version 2020-07-23\n\n");
+                printf("mmLunacyDNS version 2020-07-24\n\n");
                 printf(
 	            "mmLunacyDNS is a DNS server that is a Windows service\n\n"
                     "To install this service:\n\n\tmmLunacyDNS --install\n\n"
