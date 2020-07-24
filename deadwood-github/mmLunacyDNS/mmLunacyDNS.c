@@ -87,6 +87,7 @@ void log_it(char *message) {
 	} else {
 		fprintf(LOG,"NULL string\n",message);
 	}
+	fflush(LOG);
 }
 #endif /* MINGW */
 	
@@ -369,7 +370,6 @@ void runServer(lua_State *L) {
 			(fromIp & 0xff0000) >> 16,
 			(fromIp & 0xff00) >> 8,
 			fromIp & 0xff);
-		log_it(fromString);
 
                 /* Prepare the reply */
                 if(len_inet > 12 && in[5] == 1) {
