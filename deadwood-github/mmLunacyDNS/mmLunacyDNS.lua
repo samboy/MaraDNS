@@ -7,7 +7,7 @@ function processQuery(mmAll) -- Called for every DNS query received
   mmDNS.log("Got IPv4 query for " .. mmAll.mmQuery .. " from " ..
             mmAll.mmFromIP .. " type " .. 
             string.format("%d",mmAll.mmFromIPtype)) 
-  if string.match(mmAll.mmQuery,'.com.$') then
+  if string.match(mmAll.mmQuery,'%.com%.$') then
     return {mm1Type = "A", mm1Data = "10.1.1.1"} -- Answer for anything.com
   end
   return {mm1Type = "A", mm1Data = "10.1.2.3"} -- Answer for anything not .com
