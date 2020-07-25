@@ -31,7 +31,7 @@ MaraDNS changelog
        multi-line comments in script files which are compatible with
        Deadwood, Lua, and Python.
 
-     (2020-07-??)
+     (2020-07-24)
 
    maradns-3.5.0007:
    This is a stable release of MaraDNS:
