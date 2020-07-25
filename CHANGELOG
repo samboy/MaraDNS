@@ -18,6 +18,13 @@ MaraDNS changelog
        supported by LuaJIT, and I like having the option of increasing
        performance with LuaJIT without breaking existing Lua-based
        configuration files.
+     * Deadwood logging update: Only note if can not open cache when
+       verbose_level is 10 or more (since this is mostly harmless).
+       This is a non-fatal error which can be safely ignored. The cache 
+       file just keeps copies of previously resolved DNS names around 
+       between invocations of Deadwood; if the cache file can’t be read, 
+       then DNS resolution might be a bit slower for some names after 
+       starting up Deadwood, but everything will be OK.
      * I have added the ability to have multiline comments to Deadwood
        configuration files by using _rem={ at the beginning of a line;
        this indicates that a comment should continue until a } character
