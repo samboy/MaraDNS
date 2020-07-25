@@ -139,7 +139,7 @@ static int db_getinfo (lua_State *L) {
     treatstackoption(L, L1, "func");
   return 1;  /* return table */
 }
-    
+
 
 static int db_getlocal (lua_State *L) {
   int arg;
@@ -316,8 +316,8 @@ static int db_debug (lua_State *L) {
 }
 
 
-#define LEVELS1	12	/* size of the first part of the stack */
-#define LEVELS2	10	/* size of the second part of the stack */
+#define LEVELS1 12      /* size of the first part of the stack */
+#define LEVELS2 10      /* size of the second part of the stack */
 
 static int db_errorfb (lua_State *L) {
   int level;

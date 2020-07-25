@@ -23,15 +23,15 @@
 #include "lstring.h"
 #include "lundump.h"
 
-#define PROGNAME	"luac"		/* default program name */
-#define	OUTPUT		PROGNAME ".out"	/* default output file */
+#define PROGNAME        "luac"          /* default program name */
+#define OUTPUT          PROGNAME ".out" /* default output file */
 
-static int listing=0;			/* list bytecodes? */
-static int dumping=1;			/* dump bytecodes? */
-static int stripping=0;			/* strip debug information? */
-static char Output[]={ OUTPUT };	/* default output file name */
-static const char* output=Output;	/* actual output file name */
-static const char* progname=PROGNAME;	/* actual program name */
+static int listing=0;                   /* list bytecodes? */
+static int dumping=1;                   /* dump bytecodes? */
+static int stripping=0;                 /* strip debug information? */
+static char Output[]={ OUTPUT };        /* default output file name */
+static const char* output=Output;       /* actual output file name */
+static const char* progname=PROGNAME;   /* actual program name */
 
 static void fatal(const char* message)
 {
@@ -65,7 +65,7 @@ static void usage(const char* message)
  exit(EXIT_FAILURE);
 }
 
-#define	IS(s)	(strcmp(argv[i],s)==0)
+#define IS(s)   (strcmp(argv[i],s)==0)
 
 static int doargs(int argc, char* argv[])
 {
@@ -74,31 +74,31 @@ static int doargs(int argc, char* argv[])
  if (argv[0]!=NULL && *argv[0]!=0) progname=argv[0];
  for (i=1; i<argc; i++)
  {
-  if (*argv[i]!='-')			/* end of options; keep it */
+  if (*argv[i]!='-')                    /* end of options; keep it */
    break;
-  else if (IS("--"))			/* end of options; skip it */
+  else if (IS("--"))                    /* end of options; skip it */
   {
    ++i;
    if (version) ++version;
    break;
   }
-  else if (IS("-"))			/* end of options; use stdin */
+  else if (IS("-"))                     /* end of options; use stdin */
    break;
-  else if (IS("-l"))			/* list */
+  else if (IS("-l"))                    /* list */
    ++listing;
-  else if (IS("-o"))			/* output file */
+  else if (IS("-o"))                    /* output file */
   {
    output=argv[++i];
    if (output==NULL || *output==0) usage(LUA_QL("-o") " needs argument");
    if (IS("-")) output=NULL;
   }
-  else if (IS("-p"))			/* parse only */
+  else if (IS("-p"))                    /* parse only */
    dumping=0;
-  else if (IS("-s"))			/* strip debug information */
+  else if (IS("-s"))                    /* strip debug information */
    stripping=1;
-  else if (IS("-v"))			/* show version */
+  else if (IS("-v"))                    /* show version */
    ++version;
-  else					/* unknown option */
+  else                                  /* unknown option */
    usage(argv[i]);
  }
  if (i==argc && (listing || !dumping))

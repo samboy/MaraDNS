@@ -202,8 +202,8 @@ static int math_rand16 (lua_State *L) {
   if(rg_place == 0) {
     rg_num = rgi(rg_mill, rg_belt, &rg_phase);
     // Fix endian; swap 16-bit parts
-    rg_num = ((rg_num & 0xff) << 8 | (rg_num & 0xff00) >> 8 | 
-              (rg_num & 0xff0000) << 8 | (rg_num & 0xff000000) >> 8); 
+    rg_num = ((rg_num & 0xff) << 8 | (rg_num & 0xff00) >> 8 |
+              (rg_num & 0xff0000) << 8 | (rg_num & 0xff000000) >> 8);
     rg_place = 1;
   } else {
     rg_num >>= 16;
@@ -213,8 +213,8 @@ static int math_rand16 (lua_State *L) {
   lua_pushnumber(L, r);  /* Number between 0 and 1 */
   return 1;
 }
-   
-  
+
+
 static int math_random (lua_State *L) {
   if(rg_phase == 0) {
     rgl(rg_mill, rg_belt, "1234");
@@ -222,7 +222,7 @@ static int math_random (lua_State *L) {
   }
   /* the `%' avoids the (rare) case of r==1, and is needed also because on
      some systems (SunOS!) `rand()' may return a value larger than RAND_MAX */
-  lua_Number r = (lua_Number)(rgi(rg_mill, rg_belt, &rg_phase)%0x7fffffff) 
+  lua_Number r = (lua_Number)(rgi(rg_mill, rg_belt, &rg_phase)%0x7fffffff)
       / (lua_Number)2147483648.0;
   switch (lua_gettop(L)) {  /* check number of arguments */
     case 0: {  /* no arguments */

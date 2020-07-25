@@ -598,7 +598,7 @@ static int link_info(lua_State * L)
   }
   ret = _file_info_(L, LSTAT_FUNC);
   if (ret == 1 && lua_type(L, -1) == LUA_TTABLE) {
-    /*int ok = push_link_target(L);*/  
+    /*int ok = push_link_target(L);*/
     int ok = 0;
     if (ok) {
       lua_setfield(L, -2, "target");

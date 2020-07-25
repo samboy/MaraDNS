@@ -116,7 +116,7 @@ static int bit32_rrotate(lua_State *L) {
     lua_pushnumber(L, (lua_Number)((f >> r) | (f << (32 - r))));
     return 1;
 }
-    
+
 MONADIC(cast,  +)
 MONADIC(bnot,  ~)
 VARIADIC(band, &=)
