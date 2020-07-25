@@ -113,7 +113,7 @@ expression syntax, here are some useful pointers:
 
 * `^` at the beginning of an expression indicates that the pattern we 
   are looking needs to be at the begining of a string. `foo` matches
-  either `foo bar` or `bar foo`, but `$foo` only matches `foo bar` and
+  either `foo bar` or `bar foo`, but `^foo` only matches `foo bar` and
   not `bar foo`.
 * `$` at the end of an expression indicates that the pattern we are looking
   for needs to be at the end of a string.  `foo$` matches `bar foo` but
