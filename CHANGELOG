@@ -4,7 +4,7 @@ MaraDNS changelog
    This is a stable release of MaraDNS:
 
      * Add new program: mmLunacyDNS.  This is an updated version of the
-       microdns program, a program which always return the same IP for 
+       microdns program, a program which always returns the same IP for 
        any DNS query given to it, with Lua scripting support (so we
        can customize what gets logged, return different IPs for 
        different queries, and ignore non-IPv4 IP address queries).
@@ -17,14 +17,14 @@ MaraDNS changelog
        supported by LuaJIT, and I like having the option of increasing
        performance with LuaJIT without breaking existing Lua-based
        configuration files.
-     * Deadwood logging update: Only note if can not open cache when
+     * Deadwood logging update: Only note if one can not open cache when
        verbose_level is 10 or more (since this is mostly harmless).
        This is a non-fatal error which can be safely ignored. The cache 
        file just keeps copies of previously resolved DNS names around 
        between invocations of Deadwood; if the cache file can’t be read, 
        then DNS resolution might be a bit slower for some names after 
        starting up Deadwood, but everything will be OK.
-     * I have added the ability to have multiline comments to Deadwood
+     * I have added the ability to have multiline comments in Deadwood
        configuration files by using _rem={ at the beginning of a line;
        this indicates that a comment should continue until a } character
        is seen.  The reason for the unusual syntax is so that we can have
