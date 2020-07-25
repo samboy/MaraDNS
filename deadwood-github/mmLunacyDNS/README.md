@@ -96,12 +96,47 @@ function processQuery(mmAll) -- Called for every DNS query received
   end
   mmDNS.log("Got IPv4 query for " .. mmAll.mmQuery) -- Log the query
   mmDNS.log("Got IPv4 from " .. mmAll.mmFromIP) -- Log the query source IP
-  if string.match(mmAll.mmQuery,'.com.$') then
+  if string.match(mmAll.mmQuery,'%.com%.$') then
     return {mm1Type = "A", mm1Data = "10.1.1.1"} -- Answer for anything.com
   end
   return {mm1Type = "A", mm1Data = "10.1.2.3"} -- Answer for all non-.com
 end
 ```
+
+# Lua regular expressions
+
+mmLunacyDNS uses, for its `string.match` command, Lua regular 
+expressions.  In the interests of keeping code as compact as possible,
+these are not Perl compatible regular expressions, but the syntax is 
+similar.  While this document does not go over all of Lua’s regular
+expression syntax, here are some useful pointers:
+
+* `^` at the beginning of an expression indicates that the pattern we 
+  are looking needs to be at the begining of a string. `foo` matches
+  either `foo bar` or `bar foo`, but `$foo` only matches `foo bar` and
+  not `bar foo`.
+* `$` at the end of an expression indicates that the pattern we are looking
+  for needs to be at the end of a string.  `foo$` matches `bar foo` but
+  not `foo bar`
+* `.` indicates we can have any character at that place in the pattern.
+  `f.o.o` matches the start of `frobozz` or `foofo`, but not `foaoa`.
+* `%.` indicates that we need to find a literal `.` in the pattern.
+  While `foo.` matches `fooz`, `foo%.` only matches against `foo.`.
+* Brackets indicate a range of characters that can match; `[a-z]` matches
+  all ASCII lower case letters, and `[0-9]` matches numbers.  So, 
+  `f[a-z]o` matches `fao`, `foo`, and `fzo`, but not `f3o`.  Likewise,
+  `f[0-9]o` matches `f7o` but not `foo`.
+* To match a single number, we can use use `%d`, e.g. `f%do` matches
+  `f8o` but not `foo`.  To match one or more numbers, we can use `%d+`;
+  `f%d+o` matches `f12o`, `f7o`, `f12345o`, but not `fzo`.
+
+`string.match(string, pattern)` will return the matched string if 
+found; otherwise it returns `nil` (equivalent to “null”) which is 
+considered false in a Lua `if` statement:
+
+* `string.match('foo','f.o')` will return the string `foo`
+* `string.match('foo','f%do')` will return “nil”
+* `string.match('f1o','f%do')` will return the string `f1o`
 
 # Sandboxing
 
