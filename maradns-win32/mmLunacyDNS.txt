@@ -1,7 +1,8 @@
 # mmLunacyDNS ############################################################
 
 mmLunacyDNS is a simple DNS server configured with Lunacy, my fork of
-Lua 5.1 (the syntax is the same)
+Lua 5.1 (the syntax is the same).  This server can only either ignore
+DNS queries or reply with "A" (IPv4 IP DNS record) replies.
 
 It uses, as a Lua configuration file, mmLunacyDNS.lua.
 
@@ -33,7 +34,6 @@ table with the following members:
   IP the query came from.  The string will look like "10.9.8.7".
 * mmFromIPtype: This is the number 4
 
-
 The processQuery function returns as its output a table with two
 parameters:
 
@@ -43,7 +43,7 @@ parameters:
 
 # Examples ###############################################################
 
-Simple Example:
+Simple example mmLunacyDNS.lua file:
 
 --------------------------------------------------------------------------
 -- We bind to the IP 127.0.0.1 and always return "10.1.2.3" for every
@@ -78,6 +78,10 @@ end
 
 # Lua regular expressions ###############################################
 
+Regular expressions are a common way to (among other things) find 
+strings which meet certain criteria.  "string.match", in Lua, is a 
+routine which looks in a string for a given regular expression.
+
 mmLunacyDNS uses, for its "string.match" command, Lua regular 
 expressions.  In the interests of keeping code as compact as possible,
 these are not Perl compatible regular expressions, but the syntax is 
@@ -109,9 +113,9 @@ expression syntax, here are some useful pointers:
 found; otherwise it returns nil (equivalent to “null”) which is 
 considered false in a Lua "if" statement:
 
-* "string.match('foo','f.o')" will return the string "foo"
+* "string.match('Hello, foo life','f.o')" will return the string "foo"
 * "string.match('foo','f%do')" will return nil
-* "string.match('f1o','f%do')" will return the string "f1o"
+* "string.match('Hello, f1o','f%do')" will return the string "f1o"
 
 # Sandboxing #############################################################
 

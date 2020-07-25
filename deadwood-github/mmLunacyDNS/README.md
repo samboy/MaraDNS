@@ -1,7 +1,8 @@
 # mmLunacyDNS
 
 mmLunacyDNS is a simple DNS server configured with Lunacy, my fork of
-Lua 5.1 (the syntax is the same)
+Lua 5.1 (the syntax is the same).  This server can only either ignore
+DNS queries or reply with "A" (IPv4 IP DNS record) replies.
 
 It uses, as a Lua configuration file, `mmLunacyDNS.lua` by default.
 It is possible to use a different config file by either:
@@ -104,6 +105,10 @@ end
 ```
 
 # Lua regular expressions
+
+Regular expressions are a common way to (among other things) find
+strings which meet certain criteria.  `string.match`, in Lua, is a
+routine which looks in a string for a given regular expression.
 
 mmLunacyDNS uses, for its `string.match` command, Lua regular 
 expressions.  In the interests of keeping code as compact as possible,
