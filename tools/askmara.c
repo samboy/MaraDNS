@@ -663,7 +663,6 @@ int csv2_answer(js_string *uindata, int *place, js_string *query) {
     int count;
     js_string *lower1, *lower2;
     js_string *t;
-    int rtype;
 
     /* Create the needed strings */
     if((rr_hdr.name = js_create(512,1)) == 0)
@@ -696,7 +695,6 @@ int csv2_answer(js_string *uindata, int *place, js_string *query) {
     if(js_issame(lower1,lower2) != 1)
         printf("#");
 
-    rtype = rr_hdr.type;
     hname_translate(rr_hdr.name,rr_hdr.type);
     t = js_create(256,1);
     if(js_copy(rr_hdr.name,t) == JS_ERROR) {

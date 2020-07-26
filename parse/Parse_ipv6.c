@@ -1,4 +1,4 @@
-/* Copyright (c) 2004 Sam Trenholme
+/* Copyright (c) 2004,2020 Sam Trenholme
  *
  * TERMS
  *
@@ -245,7 +245,7 @@ int count_colons(js_string *i, int offset) {
 js_string *ip6_to_raw(js_string *i) {
         js_string *o;
         int input_point, output_point;
-        int counter, w, l, c;
+        int counter, l, c;
         int skipped = 0;
         int init_colon = 1;
 
@@ -269,8 +269,6 @@ js_string *ip6_to_raw(js_string *i) {
         o->unit_count = 16;
 
         input_point = output_point = 0;
-
-        w = 1; /* The 16-bit (4-digit) hex block that we are in */
 
         l = js_length(i);
 

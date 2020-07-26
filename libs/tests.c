@@ -78,20 +78,19 @@ int main() {
     printf("Interactive session: add/remove/view mhash elements\n");
     printf("key = value, otherkey = hihihi, otherwise empty mhash\n");
     for(;;) {
-        char *nowarn;
         printf("a to add, v to view, d to delete, and q to quit\n");
         printf("Enter command: ");
-        nowarn = fgets(strn,200,stdin);
+        fgets(strn,200,stdin);
         if(strn[strlen(strn) - 1] == '\n')
             strn[strlen(strn) - 1] = '\0';
         if(*strn == 'a') {
             printf("Element to add: ");
-            nowarn = fgets(strn,200,stdin);
+            fgets(strn,200,stdin);
             if(strn[strlen(strn) - 1] == '\n')
                 strn[strlen(strn) - 1] = '\0';
             js_qstr2js(s1,strn);
             printf("Value of element: ");
-            nowarn = fgets(strn,200,stdin);
+            fgets(strn,200,stdin);
             if(strn[strlen(strn) - 1] == '\n')
                 strn[strlen(strn) - 1] = '\0';
             js_qstr2js(s2,strn);
@@ -99,7 +98,7 @@ int main() {
             }
         else if(*strn == 'v') {
             printf("Element to view: ");
-            nowarn = fgets(strn,200,stdin);
+            fgets(strn,200,stdin);
             if(strn[strlen(strn) - 1] == '\n')
                 strn[strlen(strn) - 1] = '\0';
             js_qstr2js(s1,strn);
@@ -111,7 +110,7 @@ int main() {
             }
         else if(*strn == 'd') {
             printf("Element to delete: ");
-            nowarn = fgets(strn,200,stdin);
+            fgets(strn,200,stdin);
             if(strn[strlen(strn) - 1] == '\n')
                 strn[strlen(strn) - 1] = '\0';
             js_qstr2js(s1,strn);

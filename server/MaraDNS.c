@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2019 Sam Trenholme
+/* Copyright (c) 2002-2020 Sam Trenholme
  *
  * TERMS
  *
@@ -3706,9 +3706,11 @@ int main(int argc, char **argv) {
     int errorn, value, maxprocs, counter;
     int sock[514];
     int cache_size;
-    int min_ttl_n = 300, min_ttl_c = 300;
+    int min_ttl_n = 300;
     int timestamp_type = 5; /* Type of timestamp */
 #ifndef AUTHONLY
+    int min_ttl_c = 300;
+    int verbose_query = 0;
     int max_glueless; /* Maximum allowed glueless level */
     int max_q_total; /* Maximum total queries in attempt to resolve hostname */
     int timeout; /* Maximum time to wait for a remote server when performing
@@ -3724,10 +3726,11 @@ int main(int argc, char **argv) {
     int thread_overhead = 0; /* No memory needed for threads */
 /* Cygwin doesn't have ipv6 support yet */
 #ifndef __CYGWIN__
+#ifdef IPV6
     struct sockaddr_in6 *clin6;
+#endif
 #endif /* __CYGWIN__ */
 #endif
-    int verbose_query = 0;
     struct sockaddr client;
     struct sockaddr_in *clin = 0; /* So we can log the IP */
 #ifndef MINGW32
@@ -3772,7 +3775,9 @@ int main(int argc, char **argv) {
 #ifdef AUTHONLY
 /* Cygwin doesn't have ipv6 yet */
 #ifndef __CYGWIN__
+#ifdef IPV6
     clin6 = (struct sockaddr_in6 *)&client;
+#endif
 #endif /* __CYGWIN__ */
 #endif
 
@@ -3934,7 +3939,9 @@ int main(int argc, char **argv) {
 
     /* Get the minttl values from the kvar database (if there) */
     min_ttl_n = read_numeric_kvar("min_ttl",300);
+#ifndef AUTHONLY
     min_ttl_c = read_numeric_kvar("min_ttl_cname",min_ttl_n);
+#endif
     min_visible_ttl = read_numeric_kvar("min_visible_ttl",30);
     if(min_visible_ttl < 5)
         min_visible_ttl = 5;
@@ -4003,7 +4010,9 @@ int main(int argc, char **argv) {
     /* Whether to supress dangling CNAME warnings */
     no_cname_warnings = read_numeric_kvar("no_cname_warnings",0);
 
+#ifndef AUTHONLY
     verbose_query = read_numeric_kvar("verbose_query",0);
+#endif
 
     /* Set the dns_port */
     dns_port = read_numeric_kvar("dns_port",53);

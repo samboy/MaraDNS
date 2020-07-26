@@ -16,7 +16,6 @@ int main() {
     char strn[256];
     mhash_offset counter = 0;
     int see_ret;
-    char *nowarn;
 
     /* creation of strings */
     s1 = js_create(256,1);
@@ -28,7 +27,7 @@ int main() {
     /* First, create the dictionary */
     printf("Interactive session: create dictionary\n");
     printf("Number of bits in hash (default 8): ");
-    nowarn = fgets(strn,200,stdin);
+    fgets(strn,200,stdin);
     if(strn[strlen(strn) - 1] == '\n')
         strn[strlen(strn) - 1] = '\0';
     if(atoi(strn) >= 8 && atoi(strn) < 31)
@@ -63,12 +62,12 @@ int main() {
         printf("hash, r to resize,\n");
         printf("g to add element with autogrow check,and q to quit\n");
         printf("Enter command: ");
-        nowarn = fgets(strn,200,stdin);
+        fgets(strn,200,stdin);
         if(strn[strlen(strn) - 1] == '\n')
             strn[strlen(strn) - 1] = '\0';
         if(*strn == 'r') {
             printf("New size of hash (in hash_bits): ");
-            nowarn = fgets(strn,200,stdin);
+            fgets(strn,200,stdin);
             if(strn[strlen(strn) - 1] == '\n')
                 strn[strlen(strn) - 1] = '\0';
             if(atoi(strn) >= 8 && atoi(strn) < 31)
@@ -96,12 +95,12 @@ int main() {
             }
         else if(*strn == 'a') {
             printf("Element to add: ");
-            nowarn = fgets(strn,200,stdin);
+            fgets(strn,200,stdin);
             if(strn[strlen(strn) - 1] == '\n')
                 strn[strlen(strn) - 1] = '\0';
             js_qstr2js(s1,strn);
             printf("Value of element: ");
-            nowarn = fgets(strn,200,stdin);
+            fgets(strn,200,stdin);
             if(strn[strlen(strn) - 1] == '\n')
                 strn[strlen(strn) - 1] = '\0';
             js_qstr2js(s2,strn);
@@ -109,12 +108,12 @@ int main() {
             }
         else if(*strn == 'g') {
             printf("Element to add: ");
-            nowarn = fgets(strn,200,stdin);
+            fgets(strn,200,stdin);
             if(strn[strlen(strn) - 1] == '\n')
                 strn[strlen(strn) - 1] = '\0';
             js_qstr2js(s1,strn);
             printf("Value of element: ");
-            nowarn = fgets(strn,200,stdin);
+            fgets(strn,200,stdin);
             if(strn[strlen(strn) - 1] == '\n')
                 strn[strlen(strn) - 1] = '\0';
             js_qstr2js(s2,strn);
@@ -123,7 +122,7 @@ int main() {
             }
         else if(*strn == 'v') {
             printf("Element to view: ");
-            nowarn = fgets(strn,200,stdin);
+            fgets(strn,200,stdin);
             if(strn[strlen(strn) - 1] == '\n')
                 strn[strlen(strn) - 1] = '\0';
             js_qstr2js(s1,strn);
@@ -135,7 +134,7 @@ int main() {
             }
         else if(*strn == 'd') {
             printf("Element to delete: ");
-            nowarn = fgets(strn,200,stdin);
+            fgets(strn,200,stdin);
             if(strn[strlen(strn) - 1] == '\n')
                 strn[strlen(strn) - 1] = '\0';
             js_qstr2js(s1,strn);

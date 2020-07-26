@@ -1273,8 +1273,7 @@ on %s\nFor usage information, type in 'man maradns'" */
                                     if(FD_ISSET(counter,&read_set)) {
                                         readed = read(counter,buf,1024);
                                         if(readed > 0) {
-                                            int nowarn;
-                                            nowarn = write(1,buf,readed);
+                                            write(1,buf,readed);
                                         } else {
                                             /* No longer exists  */
                                             close(counter);
