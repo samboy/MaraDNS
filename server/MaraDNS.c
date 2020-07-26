@@ -3706,9 +3706,9 @@ int main(int argc, char **argv) {
     int errorn, value, maxprocs, counter;
     int sock[514];
     int cache_size;
-    int min_ttl_n = 300;
     int timestamp_type = 5; /* Type of timestamp */
 #ifndef AUTHONLY
+    int min_ttl_n = 300;
     int min_ttl_c = 300;
     int verbose_query = 0;
     int max_glueless; /* Maximum allowed glueless level */
@@ -3938,8 +3938,8 @@ int main(int argc, char **argv) {
     set_timestamp(timestamp_type);
 
     /* Get the minttl values from the kvar database (if there) */
-    min_ttl_n = read_numeric_kvar("min_ttl",300);
 #ifndef AUTHONLY
+    min_ttl_n = read_numeric_kvar("min_ttl",300);
     min_ttl_c = read_numeric_kvar("min_ttl_cname",min_ttl_n);
 #endif
     min_visible_ttl = read_numeric_kvar("min_visible_ttl",30);
