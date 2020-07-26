@@ -1,1 +1,1 @@
-../lunacy/lua.h
+../../lunacy/lua.h
