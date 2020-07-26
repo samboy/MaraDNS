@@ -421,19 +421,19 @@ void runServer(lua_State *L) {
                                                 rs = luaL_checkstring(L, -1);
 					}
                                         if(rs == NULL) {
-						lua_pop(L, 1);
+						lua_pop(L, 1); // t.mm1Type
 					}
                                 }
                                 if(rs != NULL && rs[0] == 'A' && rs[1] == 0) {
-                                        lua_pop(L, 1);
+                                        lua_pop(L, 1); // t.mm1Type
                                         lua_getfield(L, -1, "mm1Data");
                                         if(lua_type(L, -1) == LUA_TSTRING) {
                                                 rs = luaL_checkstring(L, -1);                                           } else {
-                                                lua_pop(L, 1);
+                                                lua_pop(L, 1); // t.mm1Data
                                                 rs = NULL;
                                         }
                                 } else if(rs != NULL) {
-                                        lua_pop(L, 1);
+                                        lua_pop(L, 1); // t.mm1Type
                                         rs = NULL;
                                 }
                                 if(rs != NULL) {
@@ -446,8 +446,9 @@ void runServer(lua_State *L) {
                                         /* Send the reply */
                                         sendto(sock,in,len_inet + 16,0,
                                             (struct sockaddr *)&dns_udp, leni);
-                                        lua_pop(L, 1);
+                                        lua_pop(L, 1); // t.mm1Data
                                 }
+				lua_pop(L, 1); // processQuery return table
                         } else {
                                 log_it("Error calling function processQuery");
                                 log_it((char *)lua_tostring(L, -1));
