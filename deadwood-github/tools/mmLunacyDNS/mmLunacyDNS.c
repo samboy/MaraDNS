@@ -419,7 +419,10 @@ void runServer(lua_State *L) {
                                         lua_getfield(L, -1, "mm1Type");
                                         if(lua_type(L, -1) == LUA_TSTRING) {
                                                 rs = luaL_checkstring(L, -1);
-                                        }
+					}
+                                        if(rs == NULL) {
+						lua_pop(L, 1);
+					}
                                 }
                                 if(rs != NULL && rs[0] == 'A' && rs[1] == 0) {
                                         lua_pop(L, 1);
@@ -458,7 +461,7 @@ int main(int argc, char **argv) {
         lua_State *L;
         char *look;
 
-        printf("mmLunacyDNS version 2020-07-24 starting\n\n");
+        printf("mmLunacyDNS version 2020-07-26 starting\n\n");
         // Get bindIp and returnIp from Lua script
         if(argc == 1) {
                 log_it("Only debug (interactive) mode supported.");
@@ -717,7 +720,7 @@ int main(int argc, char **argv) {
                         svc_install_service();
                 }
         } else {
-                printf("mmLunacyDNS version 2020-07-24\n\n");
+                printf("mmLunacyDNS version 2020-07-26\n\n");
                 printf(
                     "mmLunacyDNS is a DNS server that is a Windows service\n\n"
                     "To install this service:\n\n\tmmLunacyDNS --install\n\n"
