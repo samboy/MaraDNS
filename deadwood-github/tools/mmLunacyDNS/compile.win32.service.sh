@@ -9,11 +9,11 @@ fi
 rm -f lauxlib.h lua.h luaconf.h lualib.h
 
 for a in lauxlib.h lua.h luaconf.h lualib.h ; do
-	cp ../lunacy/$a .
+	cp ../../lunacy/$a .
 done
 
-cd ../lunacy/
+cd ../../lunacy/
 make
-cd ../mmLunacyDNS/
+cd ../tools/mmLunacyDNS/
 gcc -Os -DMINGW -c -o mmLunacyDNS.o mmLunacyDNS.c
-gcc -Os -o mmLunacyDNS mmLunacyDNS.o ../lunacy/liblua.a -lm -lwsock32
+gcc -Os -o mmLunacyDNS mmLunacyDNS.o ../../lunacy/liblua.a -lm -lwsock32
