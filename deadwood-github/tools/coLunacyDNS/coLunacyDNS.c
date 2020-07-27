@@ -19,9 +19,10 @@
  * Lua license is in the file COPYING
  */
 
-/* coLunacyDNS: A tiny DNS server which uses Lua for configuration and
+/* coLunacyDNS: A small DNS server which uses Lua for configuration and
  * for the main loop.  This is Lunacy, a fork of Lua 5.1, and it's
- * embedded in the compiled binary
+ * embedded in the compiled binary (Lunacy is a superset of Lua 5.1
+ * with a version of bitop added).
  */
 
 #include <stdint.h>
@@ -38,6 +39,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <time.h>
 #endif /* MINGW */
 #include <string.h>
 #include <unistd.h>
@@ -54,6 +56,93 @@
 #ifndef MINGW
 #define SOCKET int
 #endif
+
+int64_t the_time = -1;
+
+/* On systems with a 32-bit time_t, anything before July 26, 2020
+ * is assumed to be a time stamp after 2038; this allows us
+ * to have dates from mid-2020 until mid-2156.  But, really,
+ * this is 2020, there are no mainstream Linux distributions with
+ * 32-bit support anymore, and anyone who needs to use 32-bit code to
+ * save memory should avoid timestamps altogeter or use the
+ * x32 ABI (which does have a 64-bit time_t while keeping pointers
+ * 32 bits in size) 
+ *
+ * THIS ONLY AFFECTS THINGS WHEN time_t IS 32-BIT */
+#define DW_MINTIME 1595787855
+
+/* Set a 64-bit timestamp; same form as Deadwood's timestamp.
+ * Epoch (0) is when the Blake's 7 episode Gambit was originally 
+ * broadcast; each second has 256 "ticks". 
+ * MacOS users will need to use FALLBACK_TIME; Windows has its
+ * own quirky way to get 64-bit timestamps; Posix-compatible
+ * sub-seconds has its own interface.  This handles all of that
+ * mess; in addition, there is some attempt, but only when time_t is
+ * 32-bits in size, to have things limp along after the January 19, 
+ * 2038 rollover by assuming that, if the time stamp is in the past, we 
+ * are actually in 2038 or later.  I checked, and on the 64-bit CentOS 8,
+ * when running a 32-bit binary, post-2038 timestamps are still dynamic
+ * and can give a correct timestamp when adjusted (on Windows, the 32-bit
+ * Posix layer stops having functional timestamps come 2038).
+ */
+void set_time() {
+#ifdef FALLBACK_TIME
+        time_t sys_time;
+        sys_time = time(0);
+        if(sizeof(sys_time) > 4) {
+                if(sys_time != -1) {
+                        the_time = sys_time - 290805600;
+                }
+        } else {
+                if(sys_time < DW_MINTIME) {
+                        the_time = sys_time + 4004161696U;
+                } else {
+                        the_time = sys_time - 290805600;
+                }
+        }
+        the_time <<= 8; /* Each second has 256 "ticks" */
+#else /* FALLBACK_TIME */
+#ifndef MINGW
+        struct timespec posix_time;
+        time_t coarse;
+        long fine;
+        long result;
+        result = clock_gettime(CLOCK_REALTIME, &posix_time);
+        if(result == 0) { /* Successful getting time */
+                coarse = posix_time.tv_sec;
+                fine = posix_time.tv_nsec;
+                if(sizeof(coarse) > 4) {
+                        if(coarse != -1) {
+                                the_time = coarse - 290805600;
+                        }
+                } else {
+                        if(coarse < DW_MINTIME) {
+                                the_time = coarse + 4004161696U;
+                        } else {
+                                the_time = coarse - 290805600;
+                        }
+                }
+                the_time <<= 8;
+                fine /= 3906250; /* 256 "ticks" per second */
+                if(fine > 0 && fine <= 256) {
+                        the_time += fine;
+                }
+                //printf("time: %llx control %lx\n",the_time,time(0)-290805600);//DEBUG
+        }
+#else /* MINGW */
+        FILETIME win_time = { 0, 0 };
+	uint64_t calc_time = 0;
+        GetSystemTimeAsFileTime(&win_time);
+        calc_time = win_time.dwHighDateTime & 0xffffffff;
+        calc_time <<= 32;
+        calc_time |= (win_time.dwLowDateTime & 0xffffffff);
+        calc_time *= 2;
+        calc_time /= 78125;
+        calc_time -= 3055431475200LL;
+        the_time = calc_time;
+#endif /* MINGW */
+#endif /* FALLBACK_TIME */
+}
 
 /* Log a message */
 #ifndef MINGW
@@ -90,7 +179,6 @@ void log_it(char *message) {
         fflush(LOG);
 }
 #endif /* MINGW */
-
 
 /* Set this to 0 to stop the server */
 int serverRunning = 1;
@@ -180,14 +268,14 @@ SOCKET get_port(uint32_t ip, struct sockaddr_in *dns_udp) {
         return sock;
 }
 
-static int mmDNS_log (lua_State *L) {
+static int coDNS_log (lua_State *L) {
         const char *message = luaL_checkstring(L,1);
         log_it((char *)message);
         return 0;
 }
 
-static const luaL_Reg mmDNSlib[] = {
-        {"log", mmDNS_log},
+static const luaL_Reg coDNSlib[] = {
+        {"log", coDNS_log},
         {NULL, NULL}
 };
 
@@ -205,7 +293,7 @@ lua_State *init_lua(char *fileName) {
         lua_pushcfunction(L, luaopen_bit32);
         lua_pushstring(L, "bit32");
         lua_call(L, 1, 0);
-        luaL_register(L, "mmDNS", mmDNSlib);
+        luaL_register(L, "coDNS", coDNSlib);
 
         /* The filename we use is {executable name}.lua.
          * {executable name} is the name this is being called as,
@@ -353,9 +441,12 @@ void runServer(lua_State *L) {
                 int qLen = -1;
                 uint32_t fromIp; /* Who sent us a query */
                 char fromString[128]; /* String of sending IP */
+
+		
                 /* Get data from UDP port 53 */
                 len_inet = recvfrom(sock,in,255,0,(struct sockaddr *)&dns_udp,
                         &lenthing);
+		set_time(); // Keep timestamp up to date
                 /* Roy Arends check: We only answer questions */
                 if(len_inet < 3 || (in[2] & 0x80) != 0x00) {
                         continue;
@@ -459,6 +550,7 @@ int main(int argc, char **argv) {
         char *look;
 
         printf("coLunacyDNS version 2020-07-26 starting\n\n");
+	set_time(); // Run this frequently to update timestamp
         // Get bindIp and returnIp from Lua script
         if(argc == 1) {
                 log_it("Only debug (interactive) mode supported.");
@@ -651,6 +743,8 @@ void svc_service_main(int argc, char **argv) {
                 chdir(szPath);
                 *b = d;
         }
+
+	set_time(); // Run this frequently to update timestamp
 
         LOG = fopen("coLunacyDNSLog.txt","ab");
         log_it("==coLunacyDNS started==");
