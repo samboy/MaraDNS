@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2015 Sam Trenholme
+/* Copyright (c) 2007-2020 Sam Trenholme
  *
  * TERMS
  *
@@ -33,7 +33,7 @@
  * change once we get something very basic that works) */
 
 #define DW_UID 99      /* UID that we run as */
-#define DW_MINTIME 1178488417 /* Minimum allowed timestamp */
+#define DW_MINTIME 1595787855 /* Minimum allowed timestamp */
 
 /* Make this look like a function just in case we need to make it
  * a function to make things thread-safe */
