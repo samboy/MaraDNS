@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2020 Sam Trenholme
+/* Copyright (c) 2007-2020 Sam Trenholme
  *
  * TERMS
  *
@@ -29,6 +29,7 @@
 #ifdef MINGW
 #include <winsock.h>
 #include <wininet.h>
+#include <wincrypt.h>
 #ifndef FD_SETSIZE
 #define FD_SETSIZE 512
 #endif /* FD_SETSIZE */
@@ -67,9 +68,10 @@ int64_t the_time = -1;
  * 32-bit support anymore, and anyone who needs to use 32-bit code to
  * save memory should avoid timestamps altogeter or use the
  * x32 ABI (which does have a 64-bit time_t while keeping pointers
- * 32 bits in size) 
+ * 32 bits in size)
  *
- * THIS ONLY AFFECTS THINGS WHEN time_t IS 32-BIT */
+ * THIS ONLY AFFECTS THINGS WHEN time_t IS 32-BIT 
+ * THIS DOES NOT AFFECT WINDOWS 32-BIT BUILDS */
 #define DW_MINTIME 1595787855
 
 /* Set a 64-bit timestamp; same form as Deadwood's timestamp.
@@ -161,6 +163,7 @@ void log_it(char *message) {
         char h[256];
         if(isInteractive == 1) {
                 puts(message);
+		fflush(stdout);
                 return;
         }
         if(LOG == 0) {
@@ -200,9 +203,10 @@ A[y+4];*a^=1;rnp(3)a[c+o]^=b[c*o]=b[c*o+o];}void rnl(rz*u,rz*w,char*v
 uint32_t rgX_belt[40], rgX_mill[19], rgX_phase = 0;
 
 void init_rng() {
-	char noise[65];
+	char noise[67];
 	rgX_phase = 2;
-	
+
+#ifndef MINGW	
 	int a = 0;
 	FILE *rfile = NULL;
 	rfile = fopen("/dev/urandom","rb");
@@ -219,8 +223,24 @@ void init_rng() {
 		}
 		noise[a] = b;
 	}
-
 	noise[64] = 0;
+#else // MINGW
+	HCRYPTPROV CryptContext;
+	int q;
+	q = CryptAcquireContext(&CryptContext, NULL, NULL, PROV_RSA_FULL,
+                CRYPT_VERIFYCONTEXT);
+	if(q == 1) {
+		q = CryptGenRandom(CryptContext, 48, noise);
+	}
+	CryptReleaseContext(CryptContext,0);
+	for(q=0;q<56;q++) {
+		if(noise[q] == 0) {
+			noise[q] = 1;
+		}
+	}
+	noise[64] = 0;
+#endif // MINGW
+
 	rnl(rgX_mill,rgX_belt,noise);
 }
 
@@ -884,6 +904,7 @@ int main(int argc, char **argv) {
                         svc_remove_service();
                 } else if(action == 2) { /* --nodaemon or -d */
                         lua_State *L;
+			set_time(); 
                         isInteractive = 1;
                         L = init_lua(argv[0]);
                         if(L != NULL) {

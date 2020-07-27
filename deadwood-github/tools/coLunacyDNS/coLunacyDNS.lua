@@ -4,7 +4,7 @@ function processQuery(mmAll) -- Called for every DNS query received
     return {mm1Type = "ignoreMe"} -- Ignore the query
   end
   -- Log query
-  mmDNS.log("Got IPv4 query for " .. mmAll.mmQuery .. " from " ..
+  coDNS.log("Got IPv4 query for " .. mmAll.mmQuery .. " from " ..
             mmAll.mmFromIP .. " type " .. 
             string.format("%d",mmAll.mmFromIPtype)) 
   if string.match(mmAll.mmQuery,'%.com%.$') then
