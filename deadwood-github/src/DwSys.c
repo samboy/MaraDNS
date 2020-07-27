@@ -449,13 +449,15 @@ void set_time() {
         }
 #else /* MINGW */
         FILETIME win_time = { 0, 0 };
+	uint64_t calc_time = 0; // Unsigned to not have Y15424 issue
         GetSystemTimeAsFileTime(&win_time);
-        the_time = win_time.dwHighDateTime & 0xffffffff;
-        the_time <<= 32;
-        the_time |= (win_time.dwLowDateTime & 0xffffffff);
-        the_time *= 2;
-        the_time /= 78125;
-        the_time -= 3055431475200LL;
+        calc_time = win_time.dwHighDateTime & 0xffffffff;
+        calc_time <<= 32;
+        calc_time |= (win_time.dwLowDateTime & 0xffffffff);
+        calc_time *= 2;
+        calc_time /= 78125;
+        calc_time -= 3055431475200LL;
+        the_time = calc_time;
 #endif /* MINGW */
 #endif /* FALLBACK_TIME */
 }
