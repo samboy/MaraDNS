@@ -232,6 +232,11 @@ void init_rng() {
 	if(q == 1) {
 		q = CryptGenRandom(CryptContext, 48, noise);
 	}
+	if(q == 0) {
+		log_it("I can not generate strong random numbers");
+		log_it("I refuse to run under these conditions");
+		exit(1);
+	}
 	CryptReleaseContext(CryptContext,0);
 	for(q=0;q<56;q++) {
 		if(noise[q] == 0) {
