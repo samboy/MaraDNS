@@ -57,6 +57,7 @@
 #define SOCKET int
 #endif
 
+// Timestamp handling
 int64_t the_time = -1;
 
 /* On systems with a 32-bit time_t, anything before July 26, 2020
@@ -179,7 +180,58 @@ void log_it(char *message) {
         fflush(LOG);
 }
 #endif /* MINGW */
+// END timestamp handling
 
+// BEGIN strong random number generation
+// This compact code comes from https://github.com/samboy/rg32hash
+// This is an implementation of RadioGatun[32]
+#include <stdint.h> // Public domain random numbers
+#define rz uint32_t // NO WARRANTY
+#define rnp(a) for(c=0;c<a;c++)
+void rnf(rz*a,rz*b){rz m=19,A[45],x,o=13,c,y,r=0;rnp(12)b[c+c%3*o]^=a
+[c+1];rnp(m){r=(c+r)&31;y=c*7;x=a[y++%m];x^=a[y%m]|~a[(y+1)%m];A[c]=A
+[c+m]=x>>r|x<<(32-r)%32;}for(y=39;y--;b[y+1]=b[y])a[y%m]=A[y]^A[y+1]^
+A[y+4];*a^=1;rnp(3)a[c+o]^=b[c*o]=b[c*o+o];}void rnl(rz*u,rz*w,char*v
+){rz s,q,c;rnp(40)w[c]=u[c%19]=0;for(;;rnf(u,w)){rnp(3){for(q=0;q<4;)
+{w[c*13]^=s=(*v?255&*v:1)<<8*q++;u[16+c]^=s;if(!*v++){rnp(17)rnf(u,w)
+;return;}}}}}rz rn(rz*m,rz*b,rz*a){if(*a&2)rnf(m,b);return m[*a^=3];}
+
+// Random number generator state
+uint32_t rgX_belt[40], rgX_mill[19], rgX_phase = 0;
+
+void init_rng() {
+	char noise[65];
+	rgX_phase = 2;
+	
+	int a = 0;
+	FILE *rfile = NULL;
+	rfile = fopen("/dev/urandom","rb");
+	if(rfile == NULL) {
+		log_it("You do not have /dev/urandom");
+		log_it("I refuse to run under these conditions");
+		exit(1);
+	}
+	for(a=0;a<64;a++) {
+		int b;
+		b = getc(rfile);
+		if(b == 0) {
+			b = 1;
+		}
+		noise[a] = b;
+	}
+
+	noise[64] = 0;
+	rnl(rgX_mill,rgX_belt,noise);
+}
+
+uint32_t rand32() {
+	if(rgX_phase == 0) {
+		init_rng();
+	}
+	return rn(rgX_mill, rgX_belt, &rgX_phase);
+}
+// END random number API
+	
 /* Set this to 0 to stop the server */
 int serverRunning = 1;
 
@@ -268,6 +320,20 @@ SOCKET get_port(uint32_t ip, struct sockaddr_in *dns_udp) {
         return sock;
 }
 
+// A 32 bit unsigned random number
+static int coDNS_rand32 (lua_State *L) {
+	lua_Number r = (lua_Number)rand32();
+	lua_pushnumber(L, r);
+	return 1;
+}
+
+// This returns a Deadwood, not Unix, timestamp
+static int coDNS_timestamp(lua_State *L) {
+	lua_Number r = (lua_Number)the_time;
+	lua_pushnumber(L, r);
+	return 1;
+}
+
 static int coDNS_log (lua_State *L) {
         const char *message = luaL_checkstring(L,1);
         log_it((char *)message);
@@ -275,6 +341,8 @@ static int coDNS_log (lua_State *L) {
 }
 
 static const luaL_Reg coDNSlib[] = {
+	{"rand32", coDNS_rand32},
+	{"timestamp", coDNS_timestamp},
         {"log", coDNS_log},
         {NULL, NULL}
 };
