@@ -617,7 +617,9 @@ int main(int argc, char **argv) {
         lua_State *L;
         char *look;
 
-        printf("coLunacyDNS version 2020-07-26 starting\n\n");
+	if(argc != 2 || *argv[1] == '-') {
+        	printf("coLunacyDNS version 2020-07-26 starting\n\n");
+	}
 	set_time(); // Run this frequently to update timestamp
         // Get bindIp and returnIp from Lua script
         if(argc == 1) {
@@ -631,12 +633,27 @@ int main(int argc, char **argv) {
                 log_it("Error getting command line args.");
                 return 1;
         }
-        if(look[0] != '-' || look[1] != 'd') {
+        if(look[0] == '-' && look[1] != 'd') {
                 log_it("Only debug (interactive) mode supported.");
                 log_it("Running as a daemon not supported yet.");
                 log_it("Usage: coLunacyDNS -d {config file}");
                 return 1;
         }
+	// Allow testing of the strong prng algorithm
+	if(argc == 2 && look[0] != '-') {
+		uint32_t j;
+		int z;
+		rgX_phase = 2;
+		rnl(rgX_mill,rgX_belt,look);		
+		for(z = 0; z < 8; z++) {
+			j = rn(rgX_mill,rgX_belt,&rgX_phase);	
+			j = (j << 24 | (j & 0xff00) << 8 |
+                             (j & 0xff0000) >> 8 | j >> 24);
+			printf("%08x",j);
+		}
+		puts("");
+		return 0;
+	}
         if(argc == 2) {
                 L = init_lua(argv[0]); // Initialize Lua
         } else if(argc == 3) {
