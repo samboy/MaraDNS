@@ -23,10 +23,13 @@ Progress:
   random numbers.  Note that the timestamps are in an unusual format
   (256 ticks per second; different epoch).
 
-To do:
+In progress:
 
 * Call the Lua code in a way which allows a DNS name to be solved, and
-  have the solution be available to the Lua code.
+  have the solution be available to the Lua code. (Progress: The
+  called function is now a co-routine; I have a way of protecting the
+  co-routine "threads" from the garbage collector; and we have most of 
+  the scaffolding needed to have the code call other DNS servers)
 
 Note that this is under construction; its API and interface is subject to
 change.
