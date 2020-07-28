@@ -132,7 +132,6 @@ void set_time() {
                 if(fine > 0 && fine <= 256) {
                         the_time += fine;
                 }
-                //printf("time: %llx control %lx\n",the_time,time(0)-290805600);//DEBUG
         }
 #else /* MINGW */
         FILETIME win_time = { 0, 0 };
@@ -630,12 +629,16 @@ SOCKET startServer(lua_State *L) {
 
 // Process an incoming DNS query
 void processQueryC(lua_State *L, SOCKET sock, char *in, int len_inet, 
-		   uint32_t fromIp, struct sockaddr_in *dns_in) {
+		   uint32_t fromIp, uint16_t fromPort) {
         char query[500];
         int qLen = -1;
         char fromString[128]; /* String of sending IP */
         int leni = sizeof(struct sockaddr);
-	// CODE HERE: New socket to send reply to
+	struct sockaddr_in dns_out;
+	memset(&dns_out,0,sizeof(struct sockaddr_in));
+	dns_out.sin_family = AF_INET;
+	dns_out.sin_port = htons(fromPort);
+	dns_out.sin_addr.s_addr = htonl(fromIp);
 
         snprintf(fromString,120,"%d.%d.%d.%d",fromIp >> 24,
                 (fromIp & 0xff0000) >> 16,
@@ -733,7 +736,7 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int len_inet,
 
                                 /* Send the reply */
                                 sendto(sock,in,len_inet + 16,0,
-                                       (struct sockaddr *)dns_in, leni);
+                                       (struct sockaddr *)&dns_out, leni);
                                 lua_pop(LT, 1);
                         }
                 } else {
@@ -753,6 +756,7 @@ void runServer(lua_State *L, SOCKET sock) {
          * DNS requests */
         while(serverRunning == 1) {
                 uint32_t fromIp; /* Who sent us a query */
+                uint16_t fromPort; /* On which port */
 		
                 /* Get data from UDP port 53 */
                 len_inet = recvfrom(sock,in,255,0,(struct sockaddr *)&dns_in,
@@ -768,7 +772,8 @@ void runServer(lua_State *L, SOCKET sock) {
                 }
                 fromIp = dns_in.sin_addr.s_addr;
                 fromIp = ntohl(fromIp);
-		processQueryC(L, sock, in, len_inet, fromIp, &dns_in);
+		fromPort = ntohs(dns_in.sin_port);
+		processQueryC(L, sock, in, len_inet, fromIp, fromPort);
 	}
 }
 
