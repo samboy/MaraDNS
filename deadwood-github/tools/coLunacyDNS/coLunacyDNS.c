@@ -41,6 +41,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <time.h>
+#include <grp.h>
 #endif /* MINGW */
 #include <string.h>
 #include <unistd.h>
@@ -306,8 +307,8 @@ SOCKET get_port(uint32_t ip, struct sockaddr_in *dns_udp) {
         SOCKET sock;
         int len_inet;
         struct timeval noblock;
-        noblock.tv_sec = 1;
-        noblock.tv_usec = 0;
+        noblock.tv_sec = 0;
+        noblock.tv_usec = 50000; // Strobe 20 times a second
 
         /* Bind to port 53 */
 #ifdef MINGW
@@ -359,6 +360,7 @@ static int coDNS_timestamp(lua_State *L) {
 	return 1;
 }
 
+// Log a string (run in the Lua script)
 static int coDNS_log (lua_State *L) {
         const char *message = luaL_checkstring(L,1);
         log_it((char *)message);
@@ -387,6 +389,12 @@ lua_State *init_lua(char *fileName) {
         lua_pushstring(L, "bit32");
         lua_call(L, 1, 0);
         luaL_register(L, "coDNS", coDNSlib);
+	lua_pop(L, 1); // _G.coDNS
+	// The gloabl table _coThreads will store active threads
+	// so they do not get eaten by the garbage collector
+	lua_newtable(L);
+	lua_setglobal(L, "_coThreads"); 
+	
 
         /* The filename we use is {executable name}.lua.
          * {executable name} is the name this is being called as,
@@ -500,17 +508,71 @@ int humanDNSname(char *in, char *out, int max) {
         return inPoint;
 }
 
+/* On *NIX, drop non-root stuff once we bind to port 53 */
+void sandbox() {
+#ifndef MINGW
+        unsigned char *c = 0;
+        gid_t g = 99;
+        if(chroot(".") == -1) {
+                log_it("chroot() failed"); exit(1);
+        }
+        if(setgroups(1,&g) == -1) {
+                log_it("setgroups() failed"); exit(1);
+        }
+        if(setgid(99) != 0) { // Yes, 99 is hard wired to minimize space
+                log_it("setgid() failed"); exit(1);
+        }
+        if(setuid(99) != 0) {
+                log_it("setuid() failed"); exit(1);
+        }
+        if(setuid(0) == 0) {
+                log_it("Your kernel\'s setuid() is broken"); exit(1);
+        }
+#endif
+}
+
+/* Create a sockaddr_in that will be bound to a given port; this is
+ * used by the code that binds to a randomly chosen port */
+void setup_bind(struct sockaddr_in *dns_udp, uint16_t port) {
+        if(dns_udp == 0) {
+                return;
+        }
+        memset(dns_udp,0,sizeof(dns_udp));
+        dns_udp->sin_family = AF_INET;
+        dns_udp->sin_addr.s_addr = htonl(INADDR_ANY);
+        dns_udp->sin_port = htons(port);
+        return;
+}
+
+/* This tries to bind to a random port up to 10 times; should it fail
+ * after 10 times, it returns a -1 */
+int do_random_bind(SOCKET s) {
+        struct sockaddr_in dns_udp;
+        int a = 0;
+        int success = 0;
+
+        for(a = 0; a < 10; a++) {
+                /* Set up random source port to bind to, between 20200
+                 * and 24296 */
+                setup_bind(&dns_udp, 20200 + (rand32() & 0xfff));
+                /* Try to bind to that port */
+                if(bind(s, (struct sockaddr *)&dns_udp, sizeof(dns_udp))!=-1) {
+                        success = 1;
+                        break;
+                }
+        }
+        if(success == 0) { /* Bind to random port failed */
+                return -1;
+        }
+        return 1;
+}
 
 /* Give a Lua state, which is the file 'config.lua' read, run the
  * server */
-void runServer(lua_State *L) {
-        int a, len_inet;
+SOCKET startServer(lua_State *L) {
         SOCKET sock;
-        char in[515];
-        socklen_t lenthing = sizeof(in);
         struct sockaddr_in dns_udp;
         uint32_t ip = 0; /* 0.0.0.0; default bind IP */
-        int leni = sizeof(struct sockaddr);
 
         // Get bindIp from the Lua program
         lua_getglobal(L,"bindIp"); // Push "bindIp" on to stack
@@ -521,11 +583,21 @@ void runServer(lua_State *L) {
         } else {
                 log_it("Unable to get bindIp; using 0.0.0.0");
         }
-        lua_pop(L, 1); // Remove result from stack, restoring the stack
+        lua_pop(L, 1); // Remove _G.bindIp from stack, restoring the stack
 
+	// No we have an IP, bind to port 53
         sock = get_port(ip,&dns_udp);
-
+	sandbox(); // Drop root and chroot()
         log_it("Running coLunacyDNS");
+	return sock;
+}
+
+void runServer(lua_State *L, SOCKET sock) {
+        char in[515];
+        socklen_t lenthing = sizeof(in);
+        int leni = sizeof(struct sockaddr);
+        int a, len_inet;
+        struct sockaddr_in dns_in;
 
         /* Now that we know the IP and are on port 53, process incoming
          * DNS requests */
@@ -533,11 +605,11 @@ void runServer(lua_State *L) {
                 char query[500];
                 int qLen = -1;
                 uint32_t fromIp; /* Who sent us a query */
+                uint32_t fromPort; /* On which port */
                 char fromString[128]; /* String of sending IP */
-
 		
                 /* Get data from UDP port 53 */
-                len_inet = recvfrom(sock,in,255,0,(struct sockaddr *)&dns_udp,
+                len_inet = recvfrom(sock,in,255,0,(struct sockaddr *)&dns_in,
                         &lenthing);
 		set_time(); // Keep timestamp up to date
                 /* Roy Arends check: We only answer questions */
@@ -545,15 +617,17 @@ void runServer(lua_State *L) {
                         continue;
                 }
                 // IPv6 support is left as an exercise for the reader
-                if(dns_udp.sin_family != AF_INET) {
+                if(dns_in.sin_family != AF_INET) {
                         continue;
                 }
-                fromIp = dns_udp.sin_addr.s_addr;
+                fromIp = dns_in.sin_addr.s_addr;
                 fromIp = ntohl(fromIp);
+		fromPort = dns_in.sin_port;
                 snprintf(fromString,120,"%d.%d.%d.%d",fromIp >> 24,
                         (fromIp & 0xff0000) >> 16,
                         (fromIp & 0xff00) >> 8,
                         fromIp & 0xff);
+		printf("DEBUG %d %d\n",fromIp,fromPort);
 
                 /* Prepare the reply */
                 if(len_inet > 12 && in[5] == 1) {
@@ -626,7 +700,7 @@ void runServer(lua_State *L) {
 
                                         /* Send the reply */
                                         sendto(sock,in,len_inet + 16,0,
-                                            (struct sockaddr *)&dns_udp, leni);
+                                            (struct sockaddr *)&dns_in, leni);
                                         lua_pop(L, 1);
                                 }
                         } else {
@@ -641,9 +715,10 @@ void runServer(lua_State *L) {
 int main(int argc, char **argv) {
         lua_State *L;
         char *look;
+	SOCKET sock;
 
 	if(argc != 2 || *argv[1] == '-') {
-        	printf("coLunacyDNS version 2020-07-26 starting\n\n");
+        	printf("coLunacyDNS version 2020-07-27 starting\n\n");
 	}
 	set_time(); // Run this frequently to update timestamp
         // Get bindIp and returnIp from Lua script
@@ -693,7 +768,8 @@ int main(int argc, char **argv) {
                 log_it("Fatal error opening lua config file");
                 return 1;
         }
-        runServer(L);
+	sock = startServer(L);
+        runServer(L,sock);
 }
 #else /* MINGW */
 
@@ -818,6 +894,7 @@ void svc_service_main(int argc, char **argv) {
         int c = 0;
         char szPath[512];
         lua_State *L;
+	SOCKET sock;
 
         hServiceStatus = RegisterServiceCtrlHandler(argv[0],
                 (void *)svc_service_control);
@@ -863,7 +940,8 @@ void svc_service_main(int argc, char **argv) {
                 fprintf(LOG,"FATAL: Can not init Lua state!\n");
                 exit(1);
         }
-        runServer(L);
+	sock = startServer(L);
+        runServer(L,sock);
         log_it("==coLunacyDNS stopped==");
         fclose(LOG);
 
@@ -909,11 +987,13 @@ int main(int argc, char **argv) {
                         svc_remove_service();
                 } else if(action == 2) { /* --nodaemon or -d */
                         lua_State *L;
+			SOCKET sock;
 			set_time(); 
                         isInteractive = 1;
                         L = init_lua(argv[0]);
                         if(L != NULL) {
-                                runServer(L);
+				sock = startServer(L);
+                                runServer(L,sock);
                         } else {
                                 puts("Fatal: Can not init Lua");
                                 exit(1);
@@ -922,7 +1002,7 @@ int main(int argc, char **argv) {
                         svc_install_service();
                 }
         } else {
-                printf("coLunacyDNS version 2020-07-26\n\n");
+                printf("coLunacyDNS version 2020-07-27\n\n");
                 printf(
                     "coLunacyDNS is a DNS server that is a Windows service\n\n"
                     "To install this service:\n\n\tcoLunacyDNS --install\n\n"
