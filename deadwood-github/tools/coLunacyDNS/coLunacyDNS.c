@@ -41,6 +41,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <time.h>
+#include <grp.h>
 #endif /* MINGW */
 #include <string.h>
 #include <unistd.h>
@@ -56,6 +57,7 @@
 /* We use a special SOCKET type for easier Windows porting */
 #ifndef MINGW
 #define SOCKET int
+#define closesocket(a) close(a)
 #endif
 
 // Timestamp handling
@@ -130,7 +132,6 @@ void set_time() {
                 if(fine > 0 && fine <= 256) {
                         the_time += fine;
                 }
-                //printf("time: %llx control %lx\n",the_time,time(0)-290805600);//DEBUG
         }
 #else /* MINGW */
         FILETIME win_time = { 0, 0 };
@@ -188,6 +189,12 @@ void log_it(char *message) {
 // BEGIN strong random number generation
 // This compact code comes from https://github.com/samboy/rg32hash
 // This is an implementation of RadioGatun[32]
+// This implementation has been tested and verified to be correct
+// against all official RadioGatun[32] test vectors, in addition to
+// a test vector to verify this code handles a UTF-8 string the same
+// way the RadioGatun[32] reference code does.  This code does not 
+// generate any warnings when compiled with -Wall -Wpedantic in both
+// GCC 8.3.1 and Clang 9.0.1.  This is correct C code.
 #include <stdint.h> // Public domain random numbers
 #define rz uint32_t // NO WARRANTY
 #define rnp(a) for(c=0;c<a;c++)
@@ -255,6 +262,19 @@ uint32_t rand32() {
 	}
 	return rn(rgX_mill, rgX_belt, &rgX_phase);
 }
+
+uint32_t rgX16_place = 0, rgX16_num = 0;
+
+uint32_t rand16() {
+	if(rgX16_place == 0) {
+		rgX16_num = rand32();
+		rgX16_place = 1;
+		return rgX16_num >> 16;
+	}
+	rgX16_place = 0;
+	return rgX16_num & 65535;
+}
+	
 // END random number API
 	
 /* Set this to 0 to stop the server */
@@ -306,8 +326,8 @@ SOCKET get_port(uint32_t ip, struct sockaddr_in *dns_udp) {
         SOCKET sock;
         int len_inet;
         struct timeval noblock;
-        noblock.tv_sec = 1;
-        noblock.tv_usec = 0;
+        noblock.tv_sec = 0;
+        noblock.tv_usec = 50000; // Strobe 20 times a second
 
         /* Bind to port 53 */
 #ifdef MINGW
@@ -345,6 +365,13 @@ SOCKET get_port(uint32_t ip, struct sockaddr_in *dns_udp) {
         return sock;
 }
 
+// A 16 bit unsigned random number
+static int coDNS_rand16 (lua_State *L) {
+	lua_Number r = (lua_Number)rand16();
+	lua_pushnumber(L, r);
+	return 1;
+}
+
 // A 32 bit unsigned random number
 static int coDNS_rand32 (lua_State *L) {
 	lua_Number r = (lua_Number)rand32();
@@ -359,16 +386,50 @@ static int coDNS_timestamp(lua_State *L) {
 	return 1;
 }
 
+// Log a string (run in the Lua script)
 static int coDNS_log (lua_State *L) {
         const char *message = luaL_checkstring(L,1);
         log_it((char *)message);
         return 0;
 }
 
+// We solve a DNS name by having the coroutine yield and then
+// returning when we can give a reasonable answer
+static int coDNS_solve (lua_State *L) {
+	return lua_yield(L, lua_gettop(L));
+}
+
+/* Traverse a table like this: 
+   key = nil
+   while true do 
+     key = coDNS.key(t, key)
+     if not key then break else coDNS.log(key .. "," .. t[key]) end
+   end
+*/
+#ifdef XTRA
+static int coDNS_key(lua_State *L) {
+	if(lua_type(L,1) != LUA_TTABLE) {
+		lua_pushboolean(L, 0);
+		return 1;
+	}
+	lua_settop(L, 2);
+	if(lua_next(L, 1)) {
+		return 2;
+	}
+	lua_pushboolean(L, 0);
+	return 1;
+}
+#endif // XTRA
+
 static const luaL_Reg coDNSlib[] = {
+	{"rand16", coDNS_rand16},
 	{"rand32", coDNS_rand32},
 	{"timestamp", coDNS_timestamp},
         {"log", coDNS_log},
+	{"solve", coDNS_solve},
+#ifdef XTRA
+	{"key", coDNS_key},
+#endif // XTRA
         {NULL, NULL}
 };
 
@@ -387,6 +448,18 @@ lua_State *init_lua(char *fileName) {
         lua_pushstring(L, "bit32");
         lua_call(L, 1, 0);
         luaL_register(L, "coDNS", coDNSlib);
+	lua_pop(L, 1); // _G.coDNS
+
+	// Do not come crying to me if, after uncommenting the 
+  	// following line, and running an untrusted Lua script,
+	// bad things happen.
+	// luaL_openlibs(L);
+
+	// The gloabl table _coThreads will store active threads
+	// so they do not get eaten by the garbage collector
+	lua_newtable(L);
+	lua_setglobal(L, "_coThreads"); 
+	
 
         /* The filename we use is {executable name}.lua.
          * {executable name} is the name this is being called as,
@@ -500,17 +573,71 @@ int humanDNSname(char *in, char *out, int max) {
         return inPoint;
 }
 
+/* On *NIX, drop non-root stuff once we bind to port 53 */
+void sandbox() {
+#ifndef MINGW
+        unsigned char *c = 0;
+        gid_t g = 99;
+        if(chroot(".") == -1) {
+                log_it("chroot() failed"); exit(1);
+        }
+        if(setgroups(1,&g) == -1) {
+                log_it("setgroups() failed"); exit(1);
+        }
+        if(setgid(99) != 0) { // Yes, 99 is hard wired to minimize space
+                log_it("setgid() failed"); exit(1);
+        }
+        if(setuid(99) != 0) {
+                log_it("setuid() failed"); exit(1);
+        }
+        if(setuid(0) == 0) {
+                log_it("Your kernel\'s setuid() is broken"); exit(1);
+        }
+#endif
+}
+
+/* Create a sockaddr_in that will be bound to a given port; this is
+ * used by the code that binds to a randomly chosen port */
+void setup_bind(struct sockaddr_in *dns_udp, uint16_t port) {
+        if(dns_udp == 0) {
+                return;
+        }
+        memset(dns_udp,0,sizeof(dns_udp));
+        dns_udp->sin_family = AF_INET;
+        dns_udp->sin_addr.s_addr = htonl(INADDR_ANY);
+        dns_udp->sin_port = htons(port);
+        return;
+}
+
+/* This tries to bind to a random port up to 10 times; should it fail
+ * after 10 times, it returns a -1 */
+int do_random_bind(SOCKET s) {
+        struct sockaddr_in dns_udp;
+        int a = 0;
+        int success = 0;
+
+        for(a = 0; a < 10; a++) {
+                /* Set up random source port to bind to, between 20200
+                 * and 24296 */
+                setup_bind(&dns_udp, 20200 + (rand16() & 0xfff));
+                /* Try to bind to that port */
+                if(bind(s, (struct sockaddr *)&dns_udp, sizeof(dns_udp))!=-1) {
+                        success = 1;
+                        break;
+                }
+        }
+        if(success == 0) { /* Bind to random port failed */
+                return -1;
+        }
+        return 1;
+}
 
 /* Give a Lua state, which is the file 'config.lua' read, run the
  * server */
-void runServer(lua_State *L) {
-        int a, len_inet;
+SOCKET startServer(lua_State *L) {
         SOCKET sock;
-        char in[515];
-        socklen_t lenthing = sizeof(in);
         struct sockaddr_in dns_udp;
         uint32_t ip = 0; /* 0.0.0.0; default bind IP */
-        int leni = sizeof(struct sockaddr);
 
         // Get bindIp from the Lua program
         lua_getglobal(L,"bindIp"); // Push "bindIp" on to stack
@@ -521,23 +648,161 @@ void runServer(lua_State *L) {
         } else {
                 log_it("Unable to get bindIp; using 0.0.0.0");
         }
-        lua_pop(L, 1); // Remove result from stack, restoring the stack
+        lua_pop(L, 1); // Remove _G.bindIp from stack, restoring the stack
 
+	// No we have an IP, bind to port 53
         sock = get_port(ip,&dns_udp);
-
+	sandbox(); // Drop root and chroot()
         log_it("Running coLunacyDNS");
+	return sock;
+}
+
+
+// Process an incoming DNS query
+void processQueryC(lua_State *L, SOCKET sock, char *in, int len_inet, 
+		   uint32_t fromIp, uint16_t fromPort) {
+        char query[500];
+        int qLen = -1;
+        char fromString[128]; /* String of sending IP */
+        int leni = sizeof(struct sockaddr);
+	struct sockaddr_in dns_out;
+	memset(&dns_out,0,sizeof(struct sockaddr_in));
+	dns_out.sin_family = AF_INET;
+	dns_out.sin_port = htons(fromPort);
+	dns_out.sin_addr.s_addr = htonl(fromIp);
+
+        snprintf(fromString,120,"%d.%d.%d.%d",fromIp >> 24,
+                (fromIp & 0xff0000) >> 16,
+                (fromIp & 0xff00) >> 8,
+                 fromIp & 0xff);
+
+        /* Prepare the reply */
+        if(len_inet > 12 && in[5] == 1) {
+                /* Make this an answer */
+                in[2] |= 0x80;
+                in[7]++;
+                in[11] = 0; // Ignore EDNS
+        }
+        qLen = humanDNSname(in + 12, query, 490);
+        if(qLen > 0) {
+                int qType = -1;
+		lua_State *LT;
+		int thread_status;
+		char threadName[32];
+		snprintf(threadName,27,
+			"%08x%08x%08x",rand32(),rand32(),rand32());
+
+		LT = lua_newthread(L);
+		lua_getfield(L, LUA_GLOBALSINDEX, "_coThreads"); // Lua 5.1
+		lua_pushstring(L,threadName);
+		lua_pushvalue(L,-3); // Copy LT thread pointer to stack top
+		lua_settable(L,-3); // Pop two from top, put in table
+		lua_pop(L, 1); // Pointer to LT thread
+
+                qType = (in[13 + qLen] * 256) + in[14 + qLen];
+                lua_getglobal(LT, "processQuery");
+
+                // Function input is a table, which I will call "t"
+                lua_newtable(LT);
+
+                // t["mmQuery"] = query, where "query" is the
+                // dns query made (with a trailing dot), such
+                // as "caulixtla.com." or "lua.org."
+                lua_pushstring(LT,"mmQuery");
+                lua_pushstring(LT,query);
+                lua_settable(LT, -3);
+
+                // t["mmQtype"] is a number with the query type
+                lua_pushstring(LT,"mmQtype");
+                lua_pushinteger(LT,(lua_Integer)qType);
+                lua_settable(LT, -3);
+
+                // t["mmFromIP"] is the IP the query came from,
+                // in the form of a human-readable string
+                lua_pushstring(LT,"mmFromIP");
+                lua_pushstring(LT,fromString);
+                lua_settable(LT, -3);
+
+                // t["mmFromIPtype"] is a number with the number
+                // 4, for IPv4
+                lua_pushstring(LT,"mmFromIPtype");
+                lua_pushinteger(LT,(lua_Integer)4);
+                lua_settable(LT, -3);
+
+                thread_status = lua_resume(LT, 1);
+		// For now coroutine.yield (make that coDNS.solve)
+                // returns a table with
+		// t.answer = "Not implemented yet" then
+		// immediately continues running the thread
+		while(thread_status == LUA_YIELD) {
+			lua_newtable(LT);
+			lua_pushstring(LT,"answer");
+			lua_pushstring(LT,"Not implemented yet");
+			lua_settable(LT,-3);
+			thread_status = lua_resume(LT, 1);
+		}
+		if(thread_status == 0) {	
+                        const char *rs;
+                        // Pull mmType from return table
+                        rs = NULL;
+                        if(lua_type(LT, -1) == LUA_TTABLE) {
+                                lua_getfield(LT, -1, "mm1Type");
+                                if(lua_type(LT, -1) == LUA_TSTRING) {
+                                        rs = luaL_checkstring(LT, -1);
+                                }
+                        }
+                        if(rs != NULL && rs[0] == 'A' && rs[1] == 0) {
+                                lua_pop(LT, 1);
+                                lua_getfield(LT, -1, "mm1Data");
+                                if(lua_type(LT, -1) == LUA_TSTRING) {
+                                        rs = luaL_checkstring(LT, -1);
+                                } else {
+                                       lua_pop(LT, 1);
+                                       rs = NULL;
+                                }
+                        } else if(rs != NULL) {
+                                lua_pop(LT, 1);
+                                rs = NULL;
+                        }
+                        if(rs != NULL) {
+				int a;
+                                set_return_ip((char *)rs);
+                                len_inet = 17 + qLen;
+                                for(a=0;a<16;a++) {
+                                        in[len_inet + a] = p[a];
+                                }
+
+                                /* Send the reply */
+                                sendto(sock,in,len_inet + 16,0,
+                                       (struct sockaddr *)&dns_out, leni);
+                                lua_pop(LT, 1);
+                        }
+                } else {
+                        log_it("Error calling function processQuery");
+                        log_it((char *)lua_tostring(LT, -1));
+                }
+		// Derefernce the thread so it can be collected
+		lua_getfield(L, LUA_GLOBALSINDEX, "_coThreads"); // Lua 5.1
+		lua_pushstring(L,threadName);
+		lua_pushnil(L); // Copy LT thread pointer to stack top
+		lua_settable(L, -3);
+        }
+}
+
+void runServer(lua_State *L, SOCKET sock) {
+        char in[515];
+        socklen_t lenthing = sizeof(in);
+        int a, len_inet;
+        struct sockaddr_in dns_in;
 
         /* Now that we know the IP and are on port 53, process incoming
          * DNS requests */
         while(serverRunning == 1) {
-                char query[500];
-                int qLen = -1;
                 uint32_t fromIp; /* Who sent us a query */
-                char fromString[128]; /* String of sending IP */
-
+                uint16_t fromPort; /* On which port */
 		
                 /* Get data from UDP port 53 */
-                len_inet = recvfrom(sock,in,255,0,(struct sockaddr *)&dns_udp,
+                len_inet = recvfrom(sock,in,255,0,(struct sockaddr *)&dns_in,
                         &lenthing);
 		set_time(); // Keep timestamp up to date
                 /* Roy Arends check: We only answer questions */
@@ -545,105 +810,24 @@ void runServer(lua_State *L) {
                         continue;
                 }
                 // IPv6 support is left as an exercise for the reader
-                if(dns_udp.sin_family != AF_INET) {
+                if(dns_in.sin_family != AF_INET) {
                         continue;
                 }
-                fromIp = dns_udp.sin_addr.s_addr;
+                fromIp = dns_in.sin_addr.s_addr;
                 fromIp = ntohl(fromIp);
-                snprintf(fromString,120,"%d.%d.%d.%d",fromIp >> 24,
-                        (fromIp & 0xff0000) >> 16,
-                        (fromIp & 0xff00) >> 8,
-                        fromIp & 0xff);
-
-                /* Prepare the reply */
-                if(len_inet > 12 && in[5] == 1) {
-                        /* Make this an answer */
-                        in[2] |= 0x80;
-                        in[7]++;
-                        in[11] = 0; // Ignore EDNS
-                }
-                qLen = humanDNSname(in + 12, query, 490);
-                if(qLen > 0) {
-                        int qType = -1;
-                        qType = (in[13 + qLen] * 256) + in[14 + qLen];
-                        lua_getglobal(L, "processQuery");
-
-                        // Function input is a table, which I will call "t"
-                        lua_newtable(L);
-
-                        // t["mmQuery"] = query, where "query" is the
-                        // dns query made (with a trailing dot), such
-                        // as "caulixtla.com." or "lua.org."
-                        lua_pushstring(L,"mmQuery");
-                        lua_pushstring(L,query);
-                        lua_settable(L, -3);
-
-                        // t["mmQtype"] is a number with the query type
-                        lua_pushstring(L,"mmQtype");
-                        lua_pushinteger(L,(lua_Integer)qType);
-                        lua_settable(L, -3);
-
-                        // t["mmFromIP"] is the IP the query came from,
-                        // in the form of a human-readable string
-                        lua_pushstring(L,"mmFromIP");
-                        lua_pushstring(L,fromString);
-                        lua_settable(L, -3);
-
-                        // t["mmFromIPtype"] is a number with the number
-                        // 4, for IPv4
-                        lua_pushstring(L,"mmFromIPtype");
-                        lua_pushinteger(L,(lua_Integer)4);
-                        lua_settable(L, -3);
-
-                        if (lua_pcall(L, 1, 1, 0) == 0) {
-                                const char *rs;
-                                // Pull mmType from return table
-                                rs = NULL;
-                                if(lua_type(L, -1) == LUA_TTABLE) {
-                                        lua_getfield(L, -1, "mm1Type");
-                                        if(lua_type(L, -1) == LUA_TSTRING) {
-                                                rs = luaL_checkstring(L, -1);
-                                        }
-                                }
-                                if(rs != NULL && rs[0] == 'A' && rs[1] == 0) {
-                                        lua_pop(L, 1);
-                                        lua_getfield(L, -1, "mm1Data");
-                                        if(lua_type(L, -1) == LUA_TSTRING) {
-                                                rs = luaL_checkstring(L, -1);                                           } else {
-                                                lua_pop(L, 1);
-                                                rs = NULL;
-                                        }
-                                } else if(rs != NULL) {
-                                        lua_pop(L, 1);
-                                        rs = NULL;
-                                }
-                                if(rs != NULL) {
-                                        set_return_ip((char *)rs);
-                                        len_inet = 17 + qLen;
-                                        for(a=0;a<16;a++) {
-                                                in[len_inet + a] = p[a];
-                                        }
-
-                                        /* Send the reply */
-                                        sendto(sock,in,len_inet + 16,0,
-                                            (struct sockaddr *)&dns_udp, leni);
-                                        lua_pop(L, 1);
-                                }
-                        } else {
-                                log_it("Error calling function processQuery");
-                                log_it((char *)lua_tostring(L, -1));
-                        }
-                }
-        }
+		fromPort = ntohs(dns_in.sin_port);
+		processQueryC(L, sock, in, len_inet, fromIp, fromPort);
+	}
 }
 
 #ifndef MINGW
 int main(int argc, char **argv) {
         lua_State *L;
         char *look;
+	SOCKET sock;
 
 	if(argc != 2 || *argv[1] == '-') {
-        	printf("coLunacyDNS version 2020-07-26 starting\n\n");
+        	printf("coLunacyDNS version 2020-07-27 starting\n\n");
 	}
 	set_time(); // Run this frequently to update timestamp
         // Get bindIp and returnIp from Lua script
@@ -693,7 +877,8 @@ int main(int argc, char **argv) {
                 log_it("Fatal error opening lua config file");
                 return 1;
         }
-        runServer(L);
+	sock = startServer(L);
+        runServer(L,sock);
 }
 #else /* MINGW */
 
@@ -818,6 +1003,7 @@ void svc_service_main(int argc, char **argv) {
         int c = 0;
         char szPath[512];
         lua_State *L;
+	SOCKET sock;
 
         hServiceStatus = RegisterServiceCtrlHandler(argv[0],
                 (void *)svc_service_control);
@@ -863,7 +1049,8 @@ void svc_service_main(int argc, char **argv) {
                 fprintf(LOG,"FATAL: Can not init Lua state!\n");
                 exit(1);
         }
-        runServer(L);
+	sock = startServer(L);
+        runServer(L,sock);
         log_it("==coLunacyDNS stopped==");
         fclose(LOG);
 
@@ -909,11 +1096,13 @@ int main(int argc, char **argv) {
                         svc_remove_service();
                 } else if(action == 2) { /* --nodaemon or -d */
                         lua_State *L;
+			SOCKET sock;
 			set_time(); 
                         isInteractive = 1;
                         L = init_lua(argv[0]);
                         if(L != NULL) {
-                                runServer(L);
+				sock = startServer(L);
+                                runServer(L,sock);
                         } else {
                                 puts("Fatal: Can not init Lua");
                                 exit(1);
@@ -922,7 +1111,7 @@ int main(int argc, char **argv) {
                         svc_install_service();
                 }
         } else {
-                printf("coLunacyDNS version 2020-07-26\n\n");
+                printf("coLunacyDNS version 2020-07-27\n\n");
                 printf(
                     "coLunacyDNS is a DNS server that is a Windows service\n\n"
                     "To install this service:\n\n\tcoLunacyDNS --install\n\n"
