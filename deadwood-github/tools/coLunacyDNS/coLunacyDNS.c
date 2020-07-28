@@ -659,7 +659,7 @@ SOCKET startServer(lua_State *L) {
 
 
 // Process an incoming DNS query
-void processQueryC(lua_State *L, SOCKET sock, char *in, int len_inet, 
+void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen, 
 		   uint32_t fromIp, uint16_t fromPort) {
         char query[500];
         int qLen = -1;
@@ -677,7 +677,7 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int len_inet,
                  fromIp & 0xff);
 
         /* Prepare the reply */
-        if(len_inet > 12 && in[5] == 1) {
+        if(inLen > 12 && in[5] == 1) {
                 /* Make this an answer */
                 in[2] |= 0x80;
                 in[7]++;
@@ -767,7 +767,7 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int len_inet,
                         if(rs != NULL) {
 				int a;
                                 set_return_ip((char *)rs);
-                                len_inet = 17 + qLen;
+                                inLen = 17 + qLen;
                                 for(a=0;a<16;a++) {
                                         in[len_inet + a] = p[a];
                                 }
