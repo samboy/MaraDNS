@@ -399,12 +399,34 @@ static int coDNS_solve (lua_State *L) {
 	return lua_yield(L, lua_gettop(L));
 }
 
+/* Traverse a table like this: 
+   key = nil
+   while true do 
+     key = coDNS.key(t, key)
+     if not key then break else coDNS.log(key .. "," .. t[key]) end
+   end
+*/
+static int coDNS_key(lua_State *L) {
+	if(lua_type(L,1) != LUA_TTABLE) {
+		lua_pushboolean(L, 0);
+		return 1;
+	}
+	lua_settop(L, 2);
+	if(lua_next(L, 1)) {
+		return 2;
+	}
+	lua_pushboolean(L, 0);
+	return 1;
+}
+
+
 static const luaL_Reg coDNSlib[] = {
 	{"rand16", coDNS_rand16},
 	{"rand32", coDNS_rand32},
 	{"timestamp", coDNS_timestamp},
         {"log", coDNS_log},
 	{"solve", coDNS_solve},
+	{"key", coDNS_key},
         {NULL, NULL}
 };
 
@@ -424,6 +446,12 @@ lua_State *init_lua(char *fileName) {
         lua_call(L, 1, 0);
         luaL_register(L, "coDNS", coDNSlib);
 	lua_pop(L, 1); // _G.coDNS
+
+	// Do not come crying to me if, after uncommenting the 
+  	// following line, and running an untrusted Lua script,
+	// bad things happen.
+	// luaL_openlibs(L);
+
 	// The gloabl table _coThreads will store active threads
 	// so they do not get eaten by the garbage collector
 	lua_newtable(L);
@@ -657,8 +685,15 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int len_inet,
                 int qType = -1;
 		lua_State *LT;
 		int thread_status;
+		char threadName[32];
+		snprintf(threadName,25,"%08x%08x",rand32(),rand32());
 
 		LT = lua_newthread(L);
+		lua_getfield(L, LUA_GLOBALSINDEX, "_coThreads"); // Lua 5.1
+		lua_pushstring(L,threadName);
+		lua_pushvalue(L,-3); // Copy LT thread pointer to stack top
+		lua_settable(L,-3); // Pop two from top, put in table
+		lua_pop(L, 1); // Pointer to LT thread
 
                 qType = (in[13 + qLen] * 256) + in[14 + qLen];
                 lua_getglobal(LT, "processQuery");
