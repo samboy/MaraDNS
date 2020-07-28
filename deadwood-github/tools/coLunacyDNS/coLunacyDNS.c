@@ -406,6 +406,7 @@ static int coDNS_solve (lua_State *L) {
      if not key then break else coDNS.log(key .. "," .. t[key]) end
    end
 */
+#ifdef XTRA
 static int coDNS_key(lua_State *L) {
 	if(lua_type(L,1) != LUA_TTABLE) {
 		lua_pushboolean(L, 0);
@@ -418,7 +419,7 @@ static int coDNS_key(lua_State *L) {
 	lua_pushboolean(L, 0);
 	return 1;
 }
-
+#endif // XTRA
 
 static const luaL_Reg coDNSlib[] = {
 	{"rand16", coDNS_rand16},
@@ -426,7 +427,9 @@ static const luaL_Reg coDNSlib[] = {
 	{"timestamp", coDNS_timestamp},
         {"log", coDNS_log},
 	{"solve", coDNS_solve},
+#ifdef XTRA
 	{"key", coDNS_key},
+#endif // XTRA
         {NULL, NULL}
 };
 
@@ -686,7 +689,8 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int len_inet,
 		lua_State *LT;
 		int thread_status;
 		char threadName[32];
-		snprintf(threadName,25,"%08x%08x",rand32(),rand32());
+		snprintf(threadName,27,
+			"%08x%08x%08x",rand32(),rand32(),rand32());
 
 		LT = lua_newthread(L);
 		lua_getfield(L, LUA_GLOBALSINDEX, "_coThreads"); // Lua 5.1
@@ -731,7 +735,6 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int len_inet,
 		// t.answer = "Not implemented yet" then
 		// immediately continues running the thread
 		while(thread_status == LUA_YIELD) {
-			log_it("Thread yield");
 			lua_newtable(LT);
 			lua_pushstring(LT,"answer");
 			lua_pushstring(LT,"Not implemented yet");
@@ -778,6 +781,11 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int len_inet,
                         log_it("Error calling function processQuery");
                         log_it((char *)lua_tostring(LT, -1));
                 }
+		// Derefernce the thread so it can be collected
+		lua_getfield(L, LUA_GLOBALSINDEX, "_coThreads"); // Lua 5.1
+		lua_pushstring(L,threadName);
+		lua_pushnil(L); // Copy LT thread pointer to stack top
+		lua_settable(L, -3);
         }
 }
 
