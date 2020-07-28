@@ -190,6 +190,12 @@ void log_it(char *message) {
 // BEGIN strong random number generation
 // This compact code comes from https://github.com/samboy/rg32hash
 // This is an implementation of RadioGatun[32]
+// This implementation has been tested and verified to be correct
+// against all official RadioGatun[32] test vectors, in addition to
+// a test vector to verify this code handles a UTF-8 string the same
+// way the RadioGatun[32] reference code does.  This code does not 
+// generate any warnings when compiled with -Wall -Wpedantic in both
+// GCC 8.3.1 and Clang 9.0.1.  This is correct C code.
 #include <stdint.h> // Public domain random numbers
 #define rz uint32_t // NO WARRANTY
 #define rnp(a) for(c=0;c<a;c++)
