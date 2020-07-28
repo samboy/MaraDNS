@@ -784,7 +784,7 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
 		// Derefernce the thread so it can be collected
 		lua_getfield(L, LUA_GLOBALSINDEX, "_coThreads"); // Lua 5.1
 		lua_pushstring(L,threadName);
-		lua_pushnil(L); // Copy LT thread pointer to stack top
+		lua_pushnil(L); // This will delete the table entry
 		lua_settable(L, -3);
         }
 }
