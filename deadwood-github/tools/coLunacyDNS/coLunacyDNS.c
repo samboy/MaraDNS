@@ -581,6 +581,7 @@ void sandbox() {
         if(chroot(".") == -1) {
                 log_it("chroot() failed"); exit(1);
         }
+#ifndef CYGWIN
         if(setgroups(1,&g) == -1) {
                 log_it("setgroups() failed"); exit(1);
         }
@@ -593,6 +594,7 @@ void sandbox() {
         if(setuid(0) == 0) {
                 log_it("Your kernel\'s setuid() is broken"); exit(1);
         }
+#endif /* CYGWIN */
 #endif
 }
 
