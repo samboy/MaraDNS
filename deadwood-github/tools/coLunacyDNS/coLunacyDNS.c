@@ -664,6 +664,65 @@ SOCKET startServer(lua_State *L) {
 	return sock;
 }
 
+// Once a call to processQuery() in the Lua is done, send out the
+// DNS reply and wrap up the thread
+void endThread(lua_State *L, lua_State *LT, char *threadName, 
+		int qLen, char *in, SOCKET sock,
+		uint32_t fromIp, uint16_t fromPort) {
+	const char *rs;
+	struct sockaddr_in dns_out;
+	memset(&dns_out,0,sizeof(struct sockaddr_in));
+	dns_out.sin_family = AF_INET;
+	dns_out.sin_port = htons(fromPort);
+	dns_out.sin_addr.s_addr = htonl(fromIp);
+        int leni = sizeof(struct sockaddr);
+
+        // Pull data from Lua processQuery() function return value
+        rs = NULL;
+        if(lua_type(LT, -1) == LUA_TTABLE) {
+		lua_getfield(LT, -1, "co1Type");
+                if(lua_type(LT, -1) == LUA_TSTRING) {
+                	rs = luaL_checkstring(LT, -1);
+                }
+		if(rs == NULL) {
+			lua_pop(LT, 1); // t.co1Type
+		}
+        }
+        if(rs != NULL && rs[0] == 'A' && rs[1] == 0) {
+                lua_pop(LT, 1); // t.co1Type
+                lua_getfield(LT, -1, "co1Data");
+                if(lua_type(LT, -1) == LUA_TSTRING) {
+                        rs = luaL_checkstring(LT, -1);
+                } else {
+                        lua_pop(LT, 1); // t.co1Data
+                        rs = NULL;
+                }
+        } else if(rs != NULL) {
+                lua_pop(LT, 1); // t.co1Type
+                rs = NULL;
+        }
+        if(rs != NULL) {
+		int a;
+                set_return_ip((char *)rs);
+		int outLen;
+                outLen = 17 + qLen;
+                for(a=0;a<16;a++) {
+                        in[outLen + a] = p[a];
+                }
+
+                /* Send the reply */
+                sendto(sock,in,outLen + 16,0,
+                       (struct sockaddr *)&dns_out, leni);
+                lua_pop(LT, 1); // t.co1Data
+        }
+	// Derefernce the thread so it can be collected
+	lua_getfield(L, LUA_GLOBALSINDEX, "_coThreads"); // Lua 5.1
+	lua_pushstring(L,threadName);
+	lua_pushnil(L); // This will delete the table entry
+	lua_settable(L, -3);
+	free(threadName);
+	free(in);
+}
 
 // Process an incoming DNS query
 void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen, 
@@ -671,12 +730,6 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
         char query[500];
         int qLen = -1;
         char fromString[128]; /* String of sending IP */
-        int leni = sizeof(struct sockaddr);
-	struct sockaddr_in dns_out;
-	memset(&dns_out,0,sizeof(struct sockaddr_in));
-	dns_out.sin_family = AF_INET;
-	dns_out.sin_port = htons(fromPort);
-	dns_out.sin_addr.s_addr = htonl(fromIp);
 
         snprintf(fromString,120,"%d.%d.%d.%d",fromIp >> 24,
                 (fromIp & 0xff0000) >> 16,
@@ -695,7 +748,12 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
                 int qType = -1;
 		lua_State *LT;
 		int thread_status;
-		char threadName[32];
+		char *threadName;
+		threadName = malloc(35);
+		if(threadName == 0) {
+			free(in);
+			return;
+		}
 		snprintf(threadName,27,
 			"%08x%08x%08x",rand32(),rand32(),rand32());
 
@@ -736,9 +794,6 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
                 lua_settable(LT, -3);
 
                 thread_status = lua_resume(LT, 1);
-
-/*-------------------------CODE HERE----------------------------------*/
-
 		// For now coroutine.yield (make that coDNS.solve)
                 // returns a table with
 		// t.answer = "Not implemented yet" then
@@ -751,61 +806,23 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
 			lua_settable(LT,-3);
 			thread_status = lua_resume(LT, 1);
 		}
-		if(thread_status == 0) {	
-                        const char *rs;
-                        // Pull co1Type from return table
-                        rs = NULL;
-                        if(lua_type(LT, -1) == LUA_TTABLE) {
-                                lua_getfield(LT, -1, "co1Type");
-                                if(lua_type(LT, -1) == LUA_TSTRING) {
-                                        rs = luaL_checkstring(LT, -1);
-                                }
-				if(rs == NULL) {
-					lua_pop(L, 1); // t.co1Type
-				}
-                        }
-                        if(rs != NULL && rs[0] == 'A' && rs[1] == 0) {
-                                lua_pop(LT, 1); // t.co1Type
-                                lua_getfield(LT, -1, "co1Data");
-                                if(lua_type(LT, -1) == LUA_TSTRING) {
-                                        rs = luaL_checkstring(LT, -1);
-                                } else {
-                                       lua_pop(LT, 1); // t.co1Data
-                                       rs = NULL;
-                                }
-                        } else if(rs != NULL) {
-                                lua_pop(LT, 1); // t.co1Type
-                                rs = NULL;
-                        }
-                        if(rs != NULL) {
-				int a;
-                                set_return_ip((char *)rs);
-                                inLen = 17 + qLen;
-                                for(a=0;a<16;a++) {
-                                        in[inLen + a] = p[a];
-                                }
 
-                                /* Send the reply */
-                                sendto(sock,in,inLen + 16,0,
-                                       (struct sockaddr *)&dns_out, leni);
-                                lua_pop(LT, 1); // t.co1Data
-                        }
-                } else {
+		if(thread_status == 0) {
+			endThread(L, LT, threadName, qLen, in, sock,
+				  fromIp, fromPort);
+		} else {
                         log_it("Error calling function processQuery");
                         log_it((char *)lua_tostring(LT, -1));
 			lua_settop(LT,0); // Clean the stack
+			free(in);
                 }
-		// Derefernce the thread so it can be collected
-		lua_getfield(L, LUA_GLOBALSINDEX, "_coThreads"); // Lua 5.1
-		lua_pushstring(L,threadName);
-		lua_pushnil(L); // This will delete the table entry
-		lua_settable(L, -3);
-        }
+	} else {
+		free(in);
+	}
 }
 
+
 void runServer(lua_State *L) {
-        char in[515];
-        socklen_t lenthing = sizeof(in);
         int a, len_inet;
         struct sockaddr_in dns_in;
 	struct timeval selectTimeout;
@@ -816,6 +833,8 @@ void runServer(lua_State *L) {
                 uint32_t fromIp; /* Who sent us a query */
                 uint16_t fromPort; /* On which port */
 		SOCKET sock = INVALID_SOCKET;
+        	char *in = 0;
+        	socklen_t lenthing;
 	
 		int selectOut;
 
@@ -835,15 +854,19 @@ void runServer(lua_State *L) {
 		}
 		
                 /* Get data from UDP port 53 */
+		in = malloc(500);
+		lenthing = 450;
                 len_inet = recvfrom(sock,in,255,0,(struct sockaddr *)&dns_in,
                         &lenthing);
 		set_time(); // Keep timestamp up to date
                 /* Roy Arends check: We only answer questions */
                 if(len_inet < 3 || (in[2] & 0x80) != 0x00) {
+			free(in);
                         continue;
                 }
                 // IPv6 support is left as an exercise for the reader
                 if(dns_in.sin_family != AF_INET) {
+			free(in);
                         continue;
                 }
                 fromIp = dns_in.sin_addr.s_addr;

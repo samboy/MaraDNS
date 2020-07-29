@@ -5,5 +5,6 @@
 cd ../../lunacy/
 make 
 cd ../tools/coLunacyDNS/
-gcc -Os -c -o coLunacyDNS.o coLunacyDNS.c
-gcc -Os -o coLunacyDNS coLunacyDNS.o ../../lunacy/liblua.a -lm
+FLAGS=-Os
+gcc $FLAGS -c -o coLunacyDNS.o coLunacyDNS.c
+gcc $FLAGS -o coLunacyDNS coLunacyDNS.o ../../lunacy/liblua.a -lm
