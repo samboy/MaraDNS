@@ -22,8 +22,13 @@
 /* coLunacyDNS: A small DNS server which uses Lua for configuration and
  * for the main loop.  This is Lunacy, a fork of Lua 5.1, and it's
  * embedded in the compiled binary (Lunacy is a superset of Lua 5.1
- * with a version of bitop added).
+ * with a version of bit32 bit operations added).
  */
+
+/* Note that a "thread" here is actually a Lua co-routine and the
+ * scaffolding in C to keep that co-routine active while waiting for a
+ * a reply.  This is *not* multi-threaded at the OS level, just at the
+ * Lua level */
 
 #include <stdint.h>
 #ifdef MINGW
@@ -58,12 +63,29 @@
 #ifndef MINGW
 #define SOCKET int
 #define INVALID_SOCKET -1
+#define NO_REPLY -2
 #define closesocket(a) close(a)
 #endif
 
 // Select() stuff
 fd_set selectFdSet;
 SOCKET selectMax;
+SOCKET localConn;
+typedef struct {
+	lua_State *L;
+	lua_State *LT;
+	char *threadName;
+	int qLen; // length of DNS query they want 
+	char *in; // Full DNS packet sent to us from client
+	SOCKET sockLocal; // Client -> coLunacyDNS
+	SOCKET sockRemote; // coLunacyDNS -> remote DNS server
+	uint32_t fromIp;
+	uint16_t fromPort;
+	int64_t timeout; // Represented in Deadwood time
+} remoteConn;
+int remoteTop = -1; // Highest active remoteConn co-routine
+#define maxprocs 512
+remoteConn remoteCo[maxprocs];
 
 // Timestamp handling
 int64_t the_time = -1;
@@ -640,12 +662,18 @@ int do_random_bind(SOCKET s) {
 }
 
 /* Give a Lua state, which is the file 'config.lua' read, run the
- * server */
+ * server.  This includes initializing the remoteCo array used by
+ * select() to resume a thread once we get a DNS reply */
 SOCKET startServer(lua_State *L) {
         SOCKET sock;
         struct sockaddr_in dns_udp;
         uint32_t ip = 0; /* 0.0.0.0; default bind IP */
+	int a;
 
+	// Initialize remoteCo
+      	for(a = 0; a < maxprocs; a++) {
+		remoteCo[a].sockRemote = INVALID_SOCKET;
+	} 
         // Get bindIp from the Lua program
         lua_getglobal(L,"bindIp"); // Push "bindIp" on to stack
         if(lua_type(L, -1) == LUA_TSTRING) {
@@ -724,6 +752,92 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
 	free(in);
 }
 
+// Make a new remote DNS connection
+int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
+		SOCKET sock, uint32_t fromIp, uint16_t fromPort, 
+		char *in) {
+	int a;
+	set_time();
+	for(a = 0; a < maxprocs; a++) {
+		// Once we find an open socket, we make
+		// a DNS query then set it up to wait for
+		// the response
+		if(remoteCo[a].sockRemote == INVALID_SOCKET) {
+			if(a > remoteTop) {
+				remoteTop = a;
+			}
+			// 2 second timeout (256 ticks/second)
+			remoteCo[a].timeout = the_time + 512;
+			remoteCo[a].sockRemote = NO_REPLY;
+			// CODE HERE: Send a DNS query out
+			remoteCo[a].L = L;	
+			remoteCo[a].LT = LT;	
+			remoteCo[a].threadName = threadName;
+			remoteCo[a].qLen = qLen;
+			remoteCo[a].sockLocal = sock;
+			remoteCo[a].fromIp = fromIp;
+			remoteCo[a].fromPort = fromPort;
+			remoteCo[a].in = in;
+			return 1;
+		}
+	}
+	return 0;
+}
+
+// Resume a thread once we get a reply or timeout
+void resumeThread(int n) {
+	int thread_status;
+	if(n < 0 || n >= maxprocs) {
+		return; // Sanity check
+	}
+	printf("Resume thread for remoteCo #%d\n",n);
+
+	// Now, the reason why we can mark this select() state struct
+ 	// for reuse right away is because we will handle and wrap up
+	// this particular state here.  If we need to make another DNS
+	// call, that's a new DNS connection (which may overwrite this one)
+	remoteCo[n].sockRemote = INVALID_SOCKET; // Mark for reuse
+        lua_settop(remoteCo[n].LT, 0); // Clean any stack
+        lua_newtable(remoteCo[n].LT);
+        lua_pushstring(remoteCo[n].LT,"answer");
+        lua_pushstring(remoteCo[n].LT,"Not implemented yet");
+        lua_settable(remoteCo[n].LT,-3);
+        thread_status = lua_resume(remoteCo[n].LT, 1);
+	if(thread_status == LUA_YIELD) {
+		// We need to return right after newDNS because this
+		// can overwrite the current remoteCo[] state.
+		if(newDNS(remoteCo[n].L, remoteCo[n].LT, 
+                          remoteCo[n].threadName, remoteCo[n].qLen,
+			  remoteCo[n].sockLocal, remoteCo[n].fromIp,
+			  remoteCo[n].fromPort, remoteCo[n].in) == 1) {
+			return;
+		}
+		lua_settop(remoteCo[n].LT, 0); // Clean any stack
+		lua_newtable(remoteCo[n].LT);
+		lua_pushstring(remoteCo[n].LT,"answer");
+		lua_pushstring(remoteCo[n].LT,"ERROR: Server too busy");
+		lua_settable(remoteCo[n].LT,-3);
+		thread_status = lua_resume(remoteCo[n].LT, 1);
+	}
+	if(thread_status == 0) {
+		endThread(remoteCo[n].L, remoteCo[n].LT, 
+		          remoteCo[n].threadName, remoteCo[n].qLen, 
+			  remoteCo[n].in, remoteCo[n].sockLocal,
+			  remoteCo[n].fromIp, remoteCo[n].fromPort);
+		return;
+	}
+	// Server is too busy, we clean up.
+	log_it("Error: server too busy");
+	lua_settop(remoteCo[n].LT, 0);
+	free(remoteCo[n].in);
+	// Derefernce the thread so it can be collected
+	lua_getfield(remoteCo[n].L, LUA_GLOBALSINDEX, "_coThreads");
+	lua_pushstring(remoteCo[n].L, remoteCo[n].threadName);
+	lua_pushnil(remoteCo[n].L);
+	lua_settable(remoteCo[n].L, -3);
+	free(remoteCo[n].threadName);
+}
+
 // Process an incoming DNS query
 void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen, 
 		   uint32_t fromIp, uint16_t fromPort) {
@@ -798,11 +912,16 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
                 // returns a table with
 		// t.answer = "Not implemented yet" then
 		// immediately continues running the thread
-		while(thread_status == LUA_YIELD) {
+		if(thread_status == LUA_YIELD) {
+			if(newDNS(L, LT, threadName, qLen, sock,
+				  fromIp, fromPort, in) == 1) {
+				return;
+			}
+			// Server too busy
 			lua_settop(LT, 0); // Clean any stack
 			lua_newtable(LT);
 			lua_pushstring(LT,"answer");
-			lua_pushstring(LT,"Not implemented yet");
+			lua_pushstring(LT,"ERROR: Server too busy");
 			lua_settable(LT,-3);
 			thread_status = lua_resume(LT, 1);
 		}
@@ -810,11 +929,27 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
 		if(thread_status == 0) {
 			endThread(L, LT, threadName, qLen, in, sock,
 				  fromIp, fromPort);
+		} else if(thread_status == LUA_YIELD) {
+			log_it("Error: server too busy");
+			lua_settop(LT, 0);
+			free(in);
+			// Derefernce the thread so it can be collected
+			lua_getfield(L, LUA_GLOBALSINDEX, "_coThreads"); 
+			lua_pushstring(L,threadName);
+			lua_pushnil(L); // This will delete the table entry
+			lua_settable(L, -3);
+			free(threadName);
 		} else {
                         log_it("Error calling function processQuery");
                         log_it((char *)lua_tostring(LT, -1));
 			lua_settop(LT,0); // Clean the stack
 			free(in);
+			// Derefernce the thread so it can be collected
+			lua_getfield(L, LUA_GLOBALSINDEX, "_coThreads"); 
+			lua_pushstring(L,threadName);
+			lua_pushnil(L); // This will delete the table entry
+			lua_settable(L, -3);
+			free(threadName);
                 }
 	} else {
 		free(in);
@@ -837,6 +972,7 @@ void runServer(lua_State *L) {
         	socklen_t lenthing;
 	
 		int selectOut;
+		int a;
 
 		selectTimeout.tv_sec  = 0;
 		selectTimeout.tv_usec = 50000; // Strobe 20 times a second
@@ -844,13 +980,20 @@ void runServer(lua_State *L) {
 		FD_SET(selectMax - 1,&selectFdSet);	
 		selectOut = select(selectMax, &selectFdSet, NULL, NULL,
 			&selectTimeout);
-		if(selectOut <= 0) {
-			continue;
+		set_time();
+		if(selectOut > 0) {
+			if(FD_ISSET(localConn, &selectFdSet)) {
+				sock = localConn;
+			} else {
+				continue;
+			}
 		}
-		if(FD_ISSET(selectMax - 1, &selectFdSet)) {
-			sock = selectMax - 1;
-		} else {
-			continue;
+		// Handle timeout
+		for(a = 0; a <= remoteTop; a++) {
+			if(remoteCo[a].sockRemote != INVALID_SOCKET
+			   && remoteCo[a].timeout < the_time) {
+				resumeThread(a);
+			}
 		}
 		
                 /* Get data from UDP port 53 */
@@ -934,6 +1077,7 @@ int main(int argc, char **argv) {
                 return 1;
         }
 	sock = startServer(L);
+	localConn = sock;
 	selectMax = sock + 1;
         runServer(L);
 }
@@ -1107,6 +1251,7 @@ void svc_service_main(int argc, char **argv) {
                 exit(1);
         }
 	sock = startServer(L);
+	localConn = sock;
 	selectMax = sock + 1;
         runServer(L);
         log_it("==coLunacyDNS stopped==");
@@ -1160,6 +1305,7 @@ int main(int argc, char **argv) {
                         L = init_lua(argv[0]);
                         if(L != NULL) {
 				sock = startServer(L);
+				localConn = sock;
 				selectMax = sock + 1;
                                 runServer(L);
                         } else {
