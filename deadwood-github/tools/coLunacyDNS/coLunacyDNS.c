@@ -54,11 +54,16 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-/* We use a special SOCKET type for easier Windows porting */
+/* MinGW uses some different stuff for sockets; account for it */
 #ifndef MINGW
 #define SOCKET int
+#define INVALID_SOCKET -1
 #define closesocket(a) close(a)
 #endif
+
+// Select() stuff
+fd_set selectFdSet;
+SOCKET selectMax;
 
 // Timestamp handling
 int64_t the_time = -1;
@@ -731,6 +736,9 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
                 lua_settable(LT, -3);
 
                 thread_status = lua_resume(LT, 1);
+
+/*-------------------------CODE HERE----------------------------------*/
+
 		// For now coroutine.yield (make that coDNS.solve)
                 // returns a table with
 		// t.answer = "Not implemented yet" then
@@ -795,17 +803,36 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
         }
 }
 
-void runServer(lua_State *L, SOCKET sock) {
+void runServer(lua_State *L) {
         char in[515];
         socklen_t lenthing = sizeof(in);
         int a, len_inet;
         struct sockaddr_in dns_in;
+	struct timeval selectTimeout;
 
         /* Now that we know the IP and are on port 53, process incoming
          * DNS requests */
         while(serverRunning == 1) {
                 uint32_t fromIp; /* Who sent us a query */
                 uint16_t fromPort; /* On which port */
+		SOCKET sock = INVALID_SOCKET;
+	
+		int selectOut;
+
+		selectTimeout.tv_sec  = 0;
+		selectTimeout.tv_usec = 50000; // Strobe 20 times a second
+		FD_ZERO(&selectFdSet);
+		FD_SET(selectMax - 1,&selectFdSet);	
+		selectOut = select(selectMax, &selectFdSet, NULL, NULL,
+			&selectTimeout);
+		if(selectOut <= 0) {
+			continue;
+		}
+		if(FD_ISSET(selectMax - 1, &selectFdSet)) {
+			sock = selectMax - 1;
+		} else {
+			continue;
+		}
 		
                 /* Get data from UDP port 53 */
                 len_inet = recvfrom(sock,in,255,0,(struct sockaddr *)&dns_in,
@@ -884,7 +911,8 @@ int main(int argc, char **argv) {
                 return 1;
         }
 	sock = startServer(L);
-        runServer(L,sock);
+	selectMax = sock + 1;
+        runServer(L);
 }
 #else /* MINGW */
 
@@ -1056,7 +1084,8 @@ void svc_service_main(int argc, char **argv) {
                 exit(1);
         }
 	sock = startServer(L);
-        runServer(L,sock);
+	selectMax = sock + 1;
+        runServer(L);
         log_it("==coLunacyDNS stopped==");
         fclose(LOG);
 
@@ -1108,7 +1137,8 @@ int main(int argc, char **argv) {
                         L = init_lua(argv[0]);
                         if(L != NULL) {
 				sock = startServer(L);
-                                runServer(L,sock);
+				selectMax = sock + 1;
+                                runServer(L);
                         } else {
                                 puts("Fatal: Can not init Lua");
                                 exit(1);
