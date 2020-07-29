@@ -705,28 +705,27 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
                 // Function input is a table, which I will call "t"
                 lua_newtable(LT);
 
-                // t["mmQuery"] = query, where "query" is the
+                // t["coQuery"] = query, where "query" is the
                 // dns query made (with a trailing dot), such
                 // as "caulixtla.com." or "lua.org."
-                lua_pushstring(LT,"mmQuery");
+                lua_pushstring(LT,"coQuery");
                 lua_pushstring(LT,query);
                 lua_settable(LT, -3);
 
-                // t["mmQtype"] is a number with the query type
-                lua_pushstring(LT,"mmQtype");
+                // t["coQtype"] is a number with the query type
+                lua_pushstring(LT,"coQtype");
                 lua_pushinteger(LT,(lua_Integer)qType);
                 lua_settable(LT, -3);
 
-                // t["mmFromIP"] is the IP the query came from,
+                // t["coFromIP"] is the IP the query came from,
                 // in the form of a human-readable string
-                lua_pushstring(LT,"mmFromIP");
+                lua_pushstring(LT,"coFromIP");
                 lua_pushstring(LT,fromString);
                 lua_settable(LT, -3);
 
-                // t["mmFromIPtype"] is a number with the number
-                // 4, for IPv4
-                lua_pushstring(LT,"mmFromIPtype");
-                lua_pushinteger(LT,(lua_Integer)4);
+                // t["coFromIPtype"] is the string "IPv4" 
+                lua_pushstring(LT,"coFromIPtype");
+                lua_pushstring(LT,"IPv4");
                 lua_settable(LT, -3);
 
                 thread_status = lua_resume(LT, 1);
@@ -735,6 +734,7 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
 		// t.answer = "Not implemented yet" then
 		// immediately continues running the thread
 		while(thread_status == LUA_YIELD) {
+			lua_settop(LT, 0); // Clean any stack
 			lua_newtable(LT);
 			lua_pushstring(LT,"answer");
 			lua_pushstring(LT,"Not implemented yet");
@@ -743,25 +743,28 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
 		}
 		if(thread_status == 0) {	
                         const char *rs;
-                        // Pull mmType from return table
+                        // Pull co1Type from return table
                         rs = NULL;
                         if(lua_type(LT, -1) == LUA_TTABLE) {
-                                lua_getfield(LT, -1, "mm1Type");
+                                lua_getfield(LT, -1, "co1Type");
                                 if(lua_type(LT, -1) == LUA_TSTRING) {
                                         rs = luaL_checkstring(LT, -1);
                                 }
+				if(rs == NULL) {
+					lua_pop(L, 1); // t.co1Type
+				}
                         }
                         if(rs != NULL && rs[0] == 'A' && rs[1] == 0) {
-                                lua_pop(LT, 1);
-                                lua_getfield(LT, -1, "mm1Data");
+                                lua_pop(LT, 1); // t.co1Type
+                                lua_getfield(LT, -1, "co1Data");
                                 if(lua_type(LT, -1) == LUA_TSTRING) {
                                         rs = luaL_checkstring(LT, -1);
                                 } else {
-                                       lua_pop(LT, 1);
+                                       lua_pop(LT, 1); // t.co1Data
                                        rs = NULL;
                                 }
                         } else if(rs != NULL) {
-                                lua_pop(LT, 1);
+                                lua_pop(LT, 1); // t.co1Type
                                 rs = NULL;
                         }
                         if(rs != NULL) {
@@ -769,17 +772,18 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
                                 set_return_ip((char *)rs);
                                 inLen = 17 + qLen;
                                 for(a=0;a<16;a++) {
-                                        in[len_inet + a] = p[a];
+                                        in[inLen + a] = p[a];
                                 }
 
                                 /* Send the reply */
-                                sendto(sock,in,len_inet + 16,0,
+                                sendto(sock,in,inLen + 16,0,
                                        (struct sockaddr *)&dns_out, leni);
-                                lua_pop(LT, 1);
+                                lua_pop(LT, 1); // t.co1Data
                         }
                 } else {
                         log_it("Error calling function processQuery");
                         log_it((char *)lua_tostring(LT, -1));
+			lua_settop(LT,0); // Clean the stack
                 }
 		// Derefernce the thread so it can be collected
 		lua_getfield(L, LUA_GLOBALSINDEX, "_coThreads"); // Lua 5.1
