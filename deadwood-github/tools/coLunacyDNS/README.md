@@ -32,4 +32,4 @@ In progress:
   the scaffolding needed to have the code call other DNS servers)
 
 Note that this is under construction; its API and interface is subject to
-change.
+change (the API was redone in commit `c79ec3d1`).
