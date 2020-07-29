@@ -13,7 +13,7 @@ function processQuery(Q) -- Called for every DNS query received
   if Q.coQtype ~= 1 then -- If it is not an A (ipv4) query
     return {co1Type = "ignoreMe"} -- Ignore the query
   end
-  t = coDNS.solve({name="some.example.com.", type="A", upstreamIp4="10.1.2.3"})
+  t = coDNS.solve({name="lenovo.com.", type="A", upstreamIp4="9.9.9.9"})
   if t.answer then
     coDNS.log(t.answer)
   end
