@@ -15,6 +15,10 @@ function processQuery(Q) -- Called for every DNS query received
   end
   --t = coDNS.solve({name="lenovo.com.", type="A", upstreamIp4="9.9.9.9"})
   t = coDNS.solve({name="lenovo.com.", type="A", upstreamIp4="10.9.9.9"})
+  -- If coDNS.solve returns an error, the entire processQuery routine is
+  -- "on probation" and unable to run coDNS.solve() again (if an attempt
+  -- is made, the thread will be aborted and no DNS response sent 
+  -- downstream).  
   if t.error then	
     coDNS.log(t.error)
     return {co1Type = "A", co1Data = "10.10.10.10"} -- Error
