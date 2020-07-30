@@ -106,16 +106,18 @@ int64_t the_time = -1;
 /* Set a 64-bit timestamp; same form as Deadwood's timestamp.
  * Epoch (0) is when the Blake's 7 episode Gambit was originally 
  * broadcast; each second has 256 "ticks". 
- * MacOS users will need to use FALLBACK_TIME; Windows has its
- * own quirky way to get 64-bit timestamps; Posix-compatible
- * sub-seconds has its own interface.  This handles all of that
- * mess; in addition, there is some attempt, but only when time_t is
- * 32-bits in size, to have things limp along after the January 19, 
- * 2038 rollover by assuming that, if the time stamp is in the past, we 
- * are actually in 2038 or later.  I checked, and on the 64-bit CentOS 8,
- * when running a 32-bit binary, post-2038 timestamps are still dynamic
- * and can give a correct timestamp when adjusted (on Windows, the 32-bit
- * Posix layer stops having functional timestamps come 2038).
+ * MacOS users before MacOS before 10.12 (Sierra from 2016) needed
+ * to use FALLBACK_TIME; Windows has its own quirky way to get 64-bit 
+ * timestamps; Posix-compatible sub-seconds has its own interface.  
+ * This handles all of that mess; in addition, there is some attempt, 
+ * but only when time_t is 32-bits in size, to have things limp along 
+ * after the January 19, 2038 rollover by assuming that, if the time 
+ * stamp is in the past, we are actually in 2038 or later.  I checked, 
+ * and on the 64-bit CentOS 8, when running a 32-bit binary, post-2038 
+ * timestamps are still dynamic and can give a correct timestamp when 
+ * adjusted (on Windows, the 32-bit Posix layer stops having functional 
+ * timestamps come 2038, but just returns -1 every time one asks for the 
+ * time).
  */
 void set_time() {
 #ifdef FALLBACK_TIME
