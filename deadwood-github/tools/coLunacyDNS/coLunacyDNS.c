@@ -82,6 +82,9 @@ typedef struct {
 	uint32_t fromIp;
 	uint16_t fromPort;
 	int64_t timeout; // Represented in Deadwood time
+	char *coDNSname; // Name requested in Lua to query upstream
+	uint16_t upQueryID; // Query ID of upstream request
+	uint32_t upstreamIP; // IP of upstream server
 } remoteConn;
 int remoteTop = 0; // Highest active remoteConn co-routine
 #define maxprocs 512
@@ -779,13 +782,16 @@ void sendDNSpacket(int a) {
 	return;
 }
 
-// If coDNS is called incorrectly, return an error why
-int coDNSerror(lua_State *LT, char *why) {
+// If coDNS.solve() (Lua) is called incorrectly, return an error why
+// We only log user errors; bad queries are noted but not logged
+int coDNSerror(lua_State *LT, char *why, int doLog) {
 	lua_settop(LT,0); // Clean the stack
 	lua_newtable(LT);
 	lua_pushstring(LT,"error");
 	lua_pushstring(LT,why);
-	log_it(why);
+	if(doLog == 1) {
+		log_it(why);
+	}
 	lua_settable(LT,-3);
 	return 2;
 }
@@ -824,7 +830,10 @@ char *human2DNS(int *coDNSlen, char *z, lua_State *LT) {
 			}
 			if(len >= 64 || *z == 0 || p >= a) {
 				free(coDNSname);
-				coDNSerror(LT,"ERROR: coDNS.solve bad query");
+				if(LT != NULL) {
+					coDNSerror(LT,
+					     "ERROR: coDNS.solve bad query",0);
+				}
 				return NULL;
 			}
 	                // We can move z because Lua free()s this string
@@ -832,7 +841,10 @@ char *human2DNS(int *coDNSlen, char *z, lua_State *LT) {
 		coDNSname[label] = len;
 		if(*z != '.') {
 			free(coDNSname);
-			coDNSerror(LT, "ERROR: coDNS.solve has bad query");
+			if(LT != NULL) {
+				coDNSerror(LT, 
+					"ERROR: coDNS.solve has bad query",0);
+			}
 			return NULL;
 		}
 		label = p;
@@ -864,7 +876,7 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
 
 	if(lua_type(LT, -1) != LUA_TTABLE) {
 		return coDNSerror(LT,
-			"ERROR: coDNS.solve must be given a table");
+			"ERROR: coDNS.solve must be given a table", 1);
 	}
 
 	// Make sure t.type is there, is a string, has value "A"
@@ -872,12 +884,13 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
 	lua_getfield(LT, -1, "type");
 	if(lua_type(LT, -1) != LUA_TSTRING) {
 		return coDNSerror(LT,
-			"ERROR: coDNS.solve table needs 'type' to be string");
+			"ERROR: coDNS.solve table needs 'type' to be string",
+			1);
 	}
 	z = luaL_checkstring(LT, -1);
 	if(z[0] != 'A' || z[1] != 0) {
 		return coDNSerror(LT,
-			"ERROR: coDNS.solve table needs 'type' to be 'A'");
+			"ERROR: coDNS.solve table needs 'type' to be 'A'",1);
 	}
 	lua_pop(LT, 1); // t.type popped from top
 
@@ -889,7 +902,7 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
 	}
 	if(lua_type(LT, -1) != LUA_TSTRING) {
 		return coDNSerror(LT,
-			"ERROR: 'upstreamIp4' not set");
+			"ERROR: 'upstreamIp4' not set", 1);
 	}
 	z = luaL_checkstring(LT, -1);
 	upstreamIP = inet_addr(z);
@@ -899,7 +912,8 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
 	lua_getfield(LT, -1, "name");
 	if(lua_type(LT, -1) != LUA_TSTRING) {
 		return coDNSerror(LT,
-			"ERROR: coDNS.solve table needs 'name' to be string");
+			"ERROR: coDNS.solve table needs 'name' to be string",
+			1);
 	}
 	z = luaL_checkstring(LT, -1);
 	lua_pop(LT, 1);
@@ -908,7 +922,6 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
 		// human2DNS puts error on Lua stack for us
 		return 2;
 	}
-	free(coDNSname); // DEBUG until we find a place to free it
 	
 	set_time();
 	for(a = 0; a < remoteTop + 1; a++) {
@@ -934,6 +947,9 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
 			remoteCo[a].fromIp = fromIp;
 			remoteCo[a].fromPort = fromPort;
 			remoteCo[a].in = in;
+			remoteCo[a].coDNSname = coDNSname;
+			remoteCo[a].upQueryID = rand16();
+			remoteCo[a].upstreamIP = upstreamIP;
 			sendDNSpacket(a);
 			return 1;
 		}
@@ -986,6 +1002,7 @@ void resumeThread(int n) {
 		thread_status = lua_resume(remoteCo[n].LT, 1);
 	}
 	if(thread_status == 0) {
+		free(remoteCo[n].coDNSname);
 		endThread(remoteCo[n].L, remoteCo[n].LT, 
 		          remoteCo[n].threadName, remoteCo[n].qLen, 
 			  remoteCo[n].in, remoteCo[n].sockLocal,
@@ -1001,6 +1018,7 @@ void resumeThread(int n) {
 	}
 	lua_settop(remoteCo[n].LT, 0);
 	free(remoteCo[n].in);
+	free(remoteCo[n].coDNSname);
 	// Derefernce the thread so it can be collected
 	lua_getfield(remoteCo[n].L, LUA_GLOBALSINDEX, "_coThreads");
 	lua_pushstring(remoteCo[n].L, remoteCo[n].threadName);
