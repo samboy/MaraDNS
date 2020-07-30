@@ -752,17 +752,44 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
 	free(in);
 }
 
+// Given a fresh DNS connection, send a packet upstream
+// Return code:
+// 1: We have sent a reply to the upstream DNS server
+// 2: Something stopped us from sending a reply; we have
+//    added, to the Lua return stack, information about what the
+//    problem is.  
+int sendDNSpacket(int a) {
+	lua_State *LT;
+	LT = remoteCo[a].LT;
+	if(lua_type(LT, -1) != LUA_TTABLE) {
+		lua_settop(LT,0); // Clean the stack
+		lua_newtable(LT);
+		lua_pushstring(LT,"error");
+		lua_pushstring(LT,"ERROR: Incorrect query");
+		lua_settable(LT,-3);
+		log_it("WARNING: Incorrect query sent to coDNS.solve()");
+		return 2;
+	}
+	return 1;
+}
+
 // Make a new remote DNS connection
+// Return code:
+// 0: The DNS server is overloaded
+// 1: We have sent a reply to the upstream DNS server
+// 2: Something stopped us from sending a reply; we have
+//    added, to the Lua return stack, information about what the
+//    problem is.  
 int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
 		SOCKET sock, uint32_t fromIp, uint16_t fromPort, 
 		char *in) {
 	int a;
 	set_time();
-	for(a = 0; a < maxprocs; a++) {
+	for(a = 0; a < remoteTop + 1; a++) {
 		// Once we find an open socket, we make
 		// a DNS query then set it up to wait for
 		// the response
-		if(remoteCo[a].sockRemote == INVALID_SOCKET) {
+		if(remoteCo[a].sockRemote == INVALID_SOCKET && a < maxprocs) {
 			if(a > remoteTop) {
 				remoteTop = a;
 			}
@@ -778,7 +805,7 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
 			remoteCo[a].fromIp = fromIp;
 			remoteCo[a].fromPort = fromPort;
 			remoteCo[a].in = in;
-			return 1;
+			return sendDNSpacket(a);
 		}
 	}
 	return 0;
@@ -792,8 +819,12 @@ void resumeThread(int n) {
 	}
 	printf("Resume thread for remoteCo #%d\n",n);
 
+	if(remoteCo[n].sockRemote != NO_REPLY) {
+		// CODE HERE
+	}
+		
 	// Now, the reason why we can mark this select() state struct
- 	// for reuse right away is because we will handle and wrap up
+ 	// for reuse is because we will handle and wrap up
 	// this particular state here.  If we need to make another DNS
 	// call, that's a new DNS connection (which may overwrite this one)
 	remoteCo[n].sockRemote = INVALID_SOCKET; // Mark for reuse
@@ -804,19 +835,24 @@ void resumeThread(int n) {
         lua_settable(remoteCo[n].LT,-3);
         thread_status = lua_resume(remoteCo[n].LT, 1);
 	if(thread_status == LUA_YIELD) {
+		int status;
 		// We need to return right after newDNS because this
 		// can overwrite the current remoteCo[] state.
-		if(newDNS(remoteCo[n].L, remoteCo[n].LT, 
+		status =  newDNS(remoteCo[n].L, remoteCo[n].LT, 
                           remoteCo[n].threadName, remoteCo[n].qLen,
 			  remoteCo[n].sockLocal, remoteCo[n].fromIp,
-			  remoteCo[n].fromPort, remoteCo[n].in) == 1) {
+			  remoteCo[n].fromPort, remoteCo[n].in);
+		if(status == 1) {
 			return;
 		}
-		lua_settop(remoteCo[n].LT, 0); // Clean any stack
-		lua_newtable(remoteCo[n].LT);
-		lua_pushstring(remoteCo[n].LT,"answer");
-		lua_pushstring(remoteCo[n].LT,"ERROR: Server too busy");
-		lua_settable(remoteCo[n].LT,-3);
+		if(status == 0) {	
+			lua_settop(remoteCo[n].LT, 0); // Clean any stack
+			lua_newtable(remoteCo[n].LT);
+			lua_pushstring(remoteCo[n].LT,"error");
+			lua_pushstring(remoteCo[n].LT,
+				"ERROR: Server too busy");
+			lua_settable(remoteCo[n].LT,-3);
+		}
 		thread_status = lua_resume(remoteCo[n].LT, 1);
 	}
 	if(thread_status == 0) {
@@ -827,7 +863,12 @@ void resumeThread(int n) {
 		return;
 	}
 	// Server is too busy, we clean up.
-	log_it("Error: server too busy");
+	if(thread_status == LUA_YIELD) {
+		log_it(
+		  "ERROR: Lua is ignoring coDNS.solve errors; ending thread.");
+	} else {
+		log_it("Error: Server too busy");
+	}
 	lua_settop(remoteCo[n].LT, 0);
 	free(remoteCo[n].in);
 	// Derefernce the thread so it can be collected
@@ -908,21 +949,21 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
                 lua_settable(LT, -3);
 
                 thread_status = lua_resume(LT, 1);
-		// For now coroutine.yield (make that coDNS.solve)
-                // returns a table with
-		// t.answer = "Not implemented yet" then
-		// immediately continues running the thread
 		if(thread_status == LUA_YIELD) {
-			if(newDNS(L, LT, threadName, qLen, sock,
-				  fromIp, fromPort, in) == 1) {
+			int status;
+			status = newDNS(L, LT, threadName, qLen, sock,
+				        fromIp, fromPort, in);
+                        if(status == 1) {
 				return;
 			}
-			// Server too busy
-			lua_settop(LT, 0); // Clean any stack
-			lua_newtable(LT);
-			lua_pushstring(LT,"answer");
-			lua_pushstring(LT,"ERROR: Server too busy");
-			lua_settable(LT,-3);
+			if(status == 0) {
+				// Server too busy
+				lua_settop(LT, 0); // Clean any stack
+				lua_newtable(LT);
+				lua_pushstring(LT,"error");
+				lua_pushstring(LT,"ERROR: Server too busy");
+				lua_settable(LT,-3);
+			}
 			thread_status = lua_resume(LT, 1);
 		}
 
@@ -930,7 +971,8 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
 			endThread(L, LT, threadName, qLen, in, sock,
 				  fromIp, fromPort);
 		} else if(thread_status == LUA_YIELD) {
-			log_it("Error: server too busy");
+			log_it(
+	"ERROR: Lua file is ignoring coDNS.solve errors; ending thread");
 			lua_settop(LT, 0);
 			free(in);
 			// Derefernce the thread so it can be collected
@@ -992,6 +1034,7 @@ void runServer(lua_State *L) {
 		for(a = 0; a <= remoteTop; a++) {
 			if(remoteCo[a].sockRemote != INVALID_SOCKET
 			   && remoteCo[a].timeout < the_time) {
+				remoteCo[a].sockRemote = NO_REPLY;
 				resumeThread(a);
 			}
 		}
