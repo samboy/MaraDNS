@@ -758,19 +758,8 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
 // 2: Something stopped us from sending a reply; we have
 //    added, to the Lua return stack, information about what the
 //    problem is.  
-int sendDNSpacket(int a) {
-	lua_State *LT;
-	LT = remoteCo[a].LT;
-	if(lua_type(LT, -1) != LUA_TTABLE) {
-		lua_settop(LT,0); // Clean the stack
-		lua_newtable(LT);
-		lua_pushstring(LT,"error");
-		lua_pushstring(LT,"ERROR: Incorrect query");
-		lua_settable(LT,-3);
-		log_it("WARNING: Incorrect query sent to coDNS.solve()");
-		return 2;
-	}
-	return 1;
+void sendDNSpacket(int a) {
+	return;
 }
 
 // Make a new remote DNS connection
@@ -784,19 +773,31 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
 		SOCKET sock, uint32_t fromIp, uint16_t fromPort, 
 		char *in) {
 	int a;
+	if(lua_type(LT, -1) != LUA_TTABLE) {
+		lua_settop(LT,0); // Clean the stack
+		lua_newtable(LT);
+		lua_pushstring(LT,"error");
+		lua_pushstring(LT,"ERROR: Incorrect query");
+		lua_settable(LT,-3);
+		log_it("WARNING: Incorrect query sent to coDNS.solve()");
+		return 2;
+	}
 	set_time();
 	for(a = 0; a < remoteTop + 1; a++) {
 		// Once we find an open socket, we make
 		// a DNS query then set it up to wait for
 		// the response
 		if(remoteCo[a].sockRemote == INVALID_SOCKET && a < maxprocs) {
+			// Once we are here, the code **needs** to return 1
+			// So that whatever calls this knows to not play
+			// with the Lua state or other things related
+			// to this co-routine any more
 			if(a > remoteTop) {
 				remoteTop = a;
 			}
 			// 2 second timeout (256 ticks/second)
 			remoteCo[a].timeout = the_time + 512;
 			remoteCo[a].sockRemote = NO_REPLY;
-			// CODE HERE: Send a DNS query out
 			remoteCo[a].L = L;	
 			remoteCo[a].LT = LT;	
 			remoteCo[a].threadName = threadName;
@@ -805,7 +806,8 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
 			remoteCo[a].fromIp = fromIp;
 			remoteCo[a].fromPort = fromPort;
 			remoteCo[a].in = in;
-			return sendDNSpacket(a);
+			sendDNSpacket(a);
+			return 1;
 		}
 	}
 	return 0;
