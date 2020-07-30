@@ -301,7 +301,22 @@ uint32_t rand16() {
 	rgX16_place = 0;
 	return rgX16_num & 65535;
 }
-	
+
+// One random bit, either 0 or 1
+uint16_t rgXbit_place = 0, rgXbit_num = 0;
+
+int randBit() {
+	int out = 0;
+	if(rgXbit_place >= 16) {
+		rgXbit_num = rand16();
+		rgX16_place = 0;
+		return (rgXbit_num & 1);
+	}
+	rgX16_place++;
+	out = (rgXbit_num & 1);
+	rgXbit_num >>= 1;
+	return out;
+}
 // END random number API
 	
 /* Set this to 0 to stop the server */
@@ -762,6 +777,73 @@ void sendDNSpacket(int a) {
 	return;
 }
 
+// If coDNS is called incorrectly, return an error why
+int coDNSerror(lua_State *LT, char *why) {
+	lua_settop(LT,0); // Clean the stack
+	lua_newtable(LT);
+	lua_pushstring(LT,"error");
+	lua_pushstring(LT,why);
+	log_it(why);
+	lua_settable(LT,-3);
+	return 2;
+}
+
+// Convert a human name like "lenovo.com." in to a DNS name like
+// {06}lenovo{03}com{00} (where {06} is a binary 6, etc.)
+// This will return a string which will need free() later
+// Yes, this needs a dot at the end!
+char *human2DNS(int *coDNSlen, char *z, lua_State *LT) {
+	int a, p, label, len;
+	a = strnlen(z, 256);
+	a++;
+	char *coDNSname;
+	coDNSname = malloc(a + 2);
+	*coDNSlen = 0;
+	coDNSname[a] = 0;
+	label = 0;
+	len = 1;
+	p = 1;
+	while(len > 0) {
+		len = 0;
+        	while(p < a && *z != '.' && *z && len < 64) {
+			char v;
+			v = *z;
+			// Randomly change case (security measure)
+			if(v >= 'a' && v <= 'z' && randBit() == 1) {
+				v -= 32;
+			} else if(v >= 'A' && v <= 'Z' && randBit() == 1) {
+				v += 32;
+			}
+			if(v != '.') {
+				coDNSname[p] = v;
+				p++;
+				len++;
+				z++;
+			}
+			if(len >= 64 || *z == 0 || p >= a) {
+				free(coDNSname);
+				coDNSerror(LT,"ERROR: coDNS.solve bad query");
+				return NULL;
+			}
+	                // We can move z because Lua free()s this string
+		}
+		coDNSname[label] = len;
+		if(*z != '.') {
+			free(coDNSname);
+			coDNSerror(LT, "ERROR: coDNS.solve has bad query");
+			return NULL;
+		}
+		label = p;
+		p++;
+		z++;
+		if(*z == 0) {
+			coDNSname[label] = len = 0;
+		}
+	}	
+	*coDNSlen = p;
+	return coDNSname;
+}
+
 // Make a new remote DNS connection
 // Return code:
 // 0: The DNS server is overloaded
@@ -773,15 +855,67 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
 		SOCKET sock, uint32_t fromIp, uint16_t fromPort, 
 		char *in) {
 	int a;
+	char *coDNSname;
+	int coDNSlen = 0;
+	const char *z;
+	uint32_t upstreamIP = 0;
+
 	if(lua_type(LT, -1) != LUA_TTABLE) {
-		lua_settop(LT,0); // Clean the stack
-		lua_newtable(LT);
-		lua_pushstring(LT,"error");
-		lua_pushstring(LT,"ERROR: Incorrect query");
-		lua_settable(LT,-3);
-		log_it("WARNING: Incorrect query sent to coDNS.solve()");
+		return coDNSerror(LT,
+			"ERROR: coDNS.solve must be given a table");
+	}
+
+	// Make sure t.type is there, is a string, has value "A"
+	// (in comments, "t" is the table given to coDNS.solve)
+	lua_getfield(LT, -1, "type");
+	if(lua_type(LT, -1) != LUA_TSTRING) {
+		return coDNSerror(LT,
+			"ERROR: coDNS.solve table needs 'type' to be string");
+	}
+	z = luaL_checkstring(LT, -1);
+	if(z[0] != 'A' || z[1] != 0) {
+		return coDNSerror(LT,
+			"ERROR: coDNS.solve table needs 'type' to be 'A'");
+	}
+	lua_pop(LT, 1); // t.type popped from top
+
+	// Get the IP we will connect to
+	lua_getfield(LT, -1, "upstreamIp4");
+	if(lua_type(LT, -1) != LUA_TSTRING) {
+		lua_pop(LT, 1); // t.upstreamIp4 popped from top
+		lua_getfield(LT, LUA_GLOBALSINDEX, "upstreamIp4");
+	}
+	if(lua_type(LT, -1) != LUA_TSTRING) {
+		return coDNSerror(LT,
+			"ERROR: 'upstreamIp4' not set");
+	}
+	z = luaL_checkstring(LT, -1);
+	upstreamIP = inet_addr(z);
+	lua_pop(LT, 1); // (t.)upstreamIp4 popped from top
+
+	// Do t.name last, since it allocates memory			
+	lua_getfield(LT, -1, "name");
+	if(lua_type(LT, -1) != LUA_TSTRING) {
+		return coDNSerror(LT,
+			"ERROR: coDNS.solve table needs 'name' to be string");
+	}
+	z = luaL_checkstring(LT, -1);
+	lua_pop(LT, 1);
+	coDNSname = human2DNS(&coDNSlen, (char *)z, LT);
+	if(coDNSname == NULL) {
 		return 2;
 	}
+	// DEBUG code follows
+	for(a = 0; a < coDNSlen; a++) {
+		char q = coDNSname[a];
+		if(q >= 'A' && q <= 'Z') { printf("%c",q); } 
+		else if(q >= 'a' && q <= 'z') { printf("%c",q); }
+		else if(q >= '0' && q <= '9') { printf("%c",q); }
+		else if(q == '-' || q == '_') { printf("%c",q); }
+		else { printf("{%02x}",q); }
+	} puts(""); // END DEBUG
+	free(coDNSname); // ALSO DEBUG until we find a place to free it
+	
 	set_time();
 	for(a = 0; a < remoteTop + 1; a++) {
 		// Once we find an open socket, we make
