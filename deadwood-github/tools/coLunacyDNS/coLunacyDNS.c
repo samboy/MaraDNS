@@ -83,7 +83,7 @@ typedef struct {
 	uint16_t fromPort;
 	int64_t timeout; // Represented in Deadwood time
 } remoteConn;
-int remoteTop = -1; // Highest active remoteConn co-routine
+int remoteTop = 0; // Highest active remoteConn co-routine
 #define maxprocs 512
 remoteConn remoteCo[maxprocs];
 
@@ -303,18 +303,18 @@ uint32_t rand16() {
 }
 
 // One random bit, either 0 or 1
-uint16_t rgXbit_place = 0, rgXbit_num = 0;
+uint16_t rgXbit_place = 32, rgXbit_num = 0;
 
 int randBit() {
 	int out = 0;
 	if(rgXbit_place >= 16) {
 		rgXbit_num = rand16();
-		rgX16_place = 0;
+		rgXbit_place = 0;
 		return (rgXbit_num & 1);
 	}
-	rgX16_place++;
-	out = (rgXbit_num & 1);
+	rgXbit_place++;
 	rgXbit_num >>= 1;
+	out = (rgXbit_num & 1);
 	return out;
 }
 // END random number API
@@ -801,7 +801,7 @@ char *human2DNS(int *coDNSlen, char *z, lua_State *LT) {
 	*coDNSlen = 0;
 	coDNSname[a] = 0;
 	label = 0;
-	len = 1;
+	len = 1;	
 	p = 1;
 	while(len > 0) {
 		len = 0;
@@ -903,18 +903,10 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
 	lua_pop(LT, 1);
 	coDNSname = human2DNS(&coDNSlen, (char *)z, LT);
 	if(coDNSname == NULL) {
+		// human2DNS puts error on Lua stack for us
 		return 2;
 	}
-	// DEBUG code follows
-	for(a = 0; a < coDNSlen; a++) {
-		char q = coDNSname[a];
-		if(q >= 'A' && q <= 'Z') { printf("%c",q); } 
-		else if(q >= 'a' && q <= 'z') { printf("%c",q); }
-		else if(q >= '0' && q <= '9') { printf("%c",q); }
-		else if(q == '-' || q == '_') { printf("%c",q); }
-		else { printf("{%02x}",q); }
-	} puts(""); // END DEBUG
-	free(coDNSname); // ALSO DEBUG until we find a place to free it
+	free(coDNSname); // DEBUG until we find a place to free it
 	
 	set_time();
 	for(a = 0; a < remoteTop + 1; a++) {
