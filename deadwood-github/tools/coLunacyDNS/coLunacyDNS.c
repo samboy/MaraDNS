@@ -564,6 +564,21 @@ lua_State *init_lua(char *fileName) {
         return L;
 }
 
+#ifdef XTRA
+// Print a binary string in the form {xx} where xx is a hex number
+// for anything which is not a letter or number
+void printBinary(char *s, int len) {
+	int a,b;
+	for(a=0;a<len;a++) {
+		b = *s;
+		s++;
+		if((a>='A'&&a<='Z')||(a>='a'&&a<='z')||(a>='0'&&a<='9')||
+                   a=='-'||a=='_'||a=='/'||a=='@'){printf("%c",a);}else{
+		   printf("{%02x}",a&0xff);}
+	}
+}
+#endif // XTRA
+
 /* Convert a raw over-the-wire DNS name (in) in to a human-readable
  * name.  Anything that is not [A-Za-z0-9\-\_] is converted in to {hex}
  * where "hex" is a hex number
