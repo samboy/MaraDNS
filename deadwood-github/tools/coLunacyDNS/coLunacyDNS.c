@@ -577,9 +577,9 @@ void printBinary(char *s, int len) {
 	for(a=0;a<len;a++) {
 		b = *s;
 		s++;
-		if((a>='A'&&a<='Z')||(a>='a'&&a<='z')||(a>='0'&&a<='9')||
-                   a=='-'||a=='_'||a=='/'||a=='@'){printf("%c",a);}else{
-		   printf("{%02x}",a&0xff);}
+		if((b>='A'&&b<='Z')||(b>='a'&&b<='z')||(b>='0'&&b<='9')||
+                   b=='-'||b=='_'||b=='/'||b=='@'){printf("%c",b);}else{
+		   printf("{%02x}",b&0xff);}
 	}
 }
 #endif // XTRA
@@ -819,6 +819,7 @@ void sendDNSpacket(int a) {
 	char out[512]; // Packet to send 
 	int outLen, b;
 	struct sockaddr_in addrType;
+	memset(&addrType,0,sizeof(addrType));
 	if(remoteCo[a].coDNSlen > 490) { return; } // Sanity check
 	out[0] = (remoteCo[a].upQueryID & 0xff00) >> 8;
 	out[1] = (remoteCo[a].upQueryID & 0xff);
@@ -829,7 +830,7 @@ void sendDNSpacket(int a) {
 	out[8] = 0; out[9] = 0; // No name servers
 	out[10] = 0; out[11] = 0; // No other DNS records
 	for(b = 0; b < remoteCo[a].coDNSlen; b++) {
-		out[12 + b] = remoteCo[a].coDNSname[a];
+		out[12 + b] = remoteCo[a].coDNSname[b];
 	}
 	outLen = 12 + b;
 	out[outLen++] = 0; out[outLen++] = 1; // Type "A" (IPv4 IP)
@@ -837,11 +838,29 @@ void sendDNSpacket(int a) {
 	remoteCo[a].sockRemote = socket(AF_INET,SOCK_DGRAM,0);
 	make_socket_nonblock(remoteCo[a].sockRemote); 
 	addrType.sin_family = AF_INET;
+	addrType.sin_port = htons(53);
 	addrType.sin_addr.s_addr = remoteCo[a].upstreamIP;
-	do_random_bind(remoteCo[a].sockRemote);
-	connect(remoteCo[a].sockRemote, (struct sockaddr *)&addrType, 
-		sizeof(addrType));
-	send(remoteCo[a].sockRemote,out,outLen,0);
+	if(do_random_bind(remoteCo[a].sockRemote) == -1) {
+		set_time();
+		closesocket(remoteCo[a].sockRemote);
+		remoteCo[a].sockRemote = NO_REPLY;
+		remoteCo[a].timeout = the_time;
+		return;
+	}
+	if(connect(remoteCo[a].sockRemote, (struct sockaddr *)&addrType, 
+		sizeof(addrType)) != 0) {
+		closesocket(remoteCo[a].sockRemote);
+		set_time();
+		remoteCo[a].sockRemote = NO_REPLY;
+		remoteCo[a].timeout = the_time;
+		return;
+	}
+	if(send(remoteCo[a].sockRemote,out,outLen,0) == -1) {
+		closesocket(remoteCo[a].sockRemote);
+		set_time();
+		remoteCo[a].sockRemote = NO_REPLY;
+		remoteCo[a].timeout = the_time;
+	}
         return;
 }
 
@@ -1033,6 +1052,7 @@ void resumeThread(int n) {
 		int count;
 		char in[514];
 		count = recv(remoteCo[n].sockRemote,in,514,0);
+		closesocket(remoteCo[n].sockRemote);
 		printBinary(in,count);
         }
 
@@ -1234,21 +1254,35 @@ void runServer(lua_State *L) {
                 int selectOut;
                 int a;
 
-                selectTimeout.tv_sec  = 0;
+                selectTimeout.tv_sec  = 1;
                 selectTimeout.tv_usec = 50000; // Strobe 20 times a second
                 FD_ZERO(&selectFdSet);
-                FD_SET(selectMax - 1,&selectFdSet);
+                FD_SET(localConn,&selectFdSet);
+		selectMax = localConn + 1;
+		for(a = 0; a <= remoteTop; a++) {
+			if(a < maxprocs &&
+			   remoteCo[a].sockRemote != INVALID_SOCKET &&
+			   remoteCo[a].sockRemote != NO_REPLY) {
+				FD_SET(remoteCo[a].sockRemote, &selectFdSet);
+				if(remoteCo[a].sockRemote + 1 > selectMax) {
+					selectMax = remoteCo[a].sockRemote + 1;
+				}
+			}
+		}
                 selectOut = select(selectMax, &selectFdSet, NULL, NULL,
                         &selectTimeout);
                 set_time();
-                if(selectOut > 0) {
+                while(selectOut > 0) {
                         if(FD_ISSET(localConn, &selectFdSet)) {
                                 sock = localConn;
+				selectOut -= 1;
                         } else {
 				for(a = 0; a <= remoteTop; a++) {
-					if(FD_ISSET(remoteCo[a].sockRemote,
+					if(a < maxprocs &&
+					   FD_ISSET(remoteCo[a].sockRemote,
 							&selectFdSet)) {
 						resumeThread(a);
+						selectOut -= 1;
 					}
 				}	
                         }
