@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2020 Sam Trenholme
+/* Copyright (c) 2007-2020 Sam Trenholme 
  *
  * TERMS
  *
@@ -65,6 +65,10 @@
 #define INVALID_SOCKET -1
 #define NO_REPLY -2
 #define closesocket(a) close(a)
+#define make_socket_nonblock(a) fcntl(a,F_SETFL,O_NONBLOCK)
+#else // MINGW true
+u_long dont_block = 0;
+#define make_socket_nonblock(a) dont_block=1;ioctlsocket(a,FIONBIO,&dont_block)
 #endif
 
 // Select() stuff
@@ -83,6 +87,7 @@ typedef struct {
         uint16_t fromPort;
         int64_t timeout; // Represented in Deadwood time
         char *coDNSname; // Name requested in Lua to query upstream
+	int coDNSlen;    // length of coDNSname
         uint16_t upQueryID; // Query ID of upstream request
         uint32_t upstreamIP; // IP of upstream server
 } remoteConn;
@@ -811,7 +816,32 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
 //    added, to the Lua return stack, information about what the
 //    problem is.
 void sendDNSpacket(int a) {
-        // CODE HERE
+	char out[512]; // Packet to send 
+	int outLen, b;
+	struct sockaddr_in addrType;
+	if(remoteCo[a].coDNSlen > 490) { return; } // Sanity check
+	out[0] = (remoteCo[a].upQueryID & 0xff00) >> 8;
+	out[1] = (remoteCo[a].upQueryID & 0xff);
+	out[2] = 0x01; // Recursion desired (make 0 for no recursion)
+	out[3] = 0;
+	out[4] = 0; out[5] = 1; // One question
+	out[6] = 0; out[7] = 0; // No answers
+	out[8] = 0; out[9] = 0; // No name servers
+	out[10] = 0; out[11] = 0; // No other DNS records
+	for(b = 0; b < remoteCo[a].coDNSlen; b++) {
+		out[12 + b] = remoteCo[a].coDNSname[a];
+	}
+	outLen = 12 + b;
+	out[outLen++] = 0; out[outLen++] = 1; // Type "A" (IPv4 IP)
+	out[outLen++] = 0; out[outLen++] = 1; // Class "IN"
+	remoteCo[a].sockRemote = socket(AF_INET,SOCK_DGRAM,0);
+	make_socket_nonblock(remoteCo[a].sockRemote); 
+	addrType.sin_family = AF_INET;
+	addrType.sin_addr.s_addr = remoteCo[a].upstreamIP;
+	do_random_bind(remoteCo[a].sockRemote);
+	connect(remoteCo[a].sockRemote, (struct sockaddr *)&addrType, 
+		sizeof(addrType));
+	send(remoteCo[a].sockRemote,out,outLen,0);
         return;
 }
 
@@ -981,6 +1011,7 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
                         remoteCo[a].fromPort = fromPort;
                         remoteCo[a].in = in;
                         remoteCo[a].coDNSname = coDNSname;
+                        remoteCo[a].coDNSlen = coDNSlen;
                         remoteCo[a].upQueryID = rand16();
                         remoteCo[a].upstreamIP = upstreamIP;
                         sendDNSpacket(a);
@@ -999,7 +1030,10 @@ void resumeThread(int n) {
         printf("Resume thread for remoteCo #%d\n",n);
 
         if(remoteCo[n].sockRemote != NO_REPLY) {
-                // CODE HERE (process returned packet)
+		int count;
+		char in[514];
+		count = recv(remoteCo[n].sockRemote,in,514,0);
+		printBinary(in,count);
         }
 
         // Now, the reason why we can mark this select() state struct
@@ -1211,7 +1245,12 @@ void runServer(lua_State *L) {
                         if(FD_ISSET(localConn, &selectFdSet)) {
                                 sock = localConn;
                         } else {
-                                continue;
+				for(a = 0; a <= remoteTop; a++) {
+					if(FD_ISSET(remoteCo[a].sockRemote,
+							&selectFdSet)) {
+						resumeThread(a);
+					}
+				}	
                         }
                 }
                 // Handle timeout
