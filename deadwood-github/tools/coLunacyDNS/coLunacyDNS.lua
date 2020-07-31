@@ -12,10 +12,11 @@ coDNS.log(string.format("Random16: %04x",coDNS.rand16())) -- random 16-bit num
 function processQuery(Q) -- Called for every DNS query received
   if Q.coQtype ~= 1 then -- If it is not an A (ipv4) query
     -- return {co1Type = "ignoreMe"} -- Ignore the query
-    return {co1Type = "serverFail"} -- Send server fail
+    -- return {co1Type = "serverFail"} -- Send server fail
+    return {co1Type = "notThere"} -- Send "not there" (like NXDOMAIN)
   end
   --t = coDNS.solve({name="lenovo.com.", type="A", upstreamIp4="9.9.9.9"})
-  t = coDNS.solve({name="lenovo.com.", type="A", upstreamIp4="10.9.9.9"})
+  t = coDNS.solve({name="lenovo.com.", type="A", upstreamIp4="9.9.9.9"})
   -- If coDNS.solve returns an error, the entire processQuery routine is
   -- "on probation" and unable to run coDNS.solve() again (if an attempt
   -- is made, the thread will be aborted and no DNS response sent 

@@ -337,6 +337,18 @@ int serverRunning = 1;
 char p[17] =
 "\xc0\x0c\x00\x01\x00\x01\x00\x00\x00\x00\x00\x04\x7f\x7f\x7f\x7f";
 
+/* This is a synthetic "not there" answer */
+unsigned char not_there[41] =
+        "\xc0\x0c" /* Name */
+        "\0\x06" /* Type */
+        "\0\x01" /* Class */
+        "\0\0\0\0" /* TTL (don't cache) */
+        "\0\x1c" /* RDLENGTH */
+        "\x01\x7a\xc0\x0c" /* Origin */
+        "\x01\x79\xc0\x0c" /* Email */
+        "\0\0\0\x01\0\0\0\x01\0\0\0\x01\0\0\0\x01\0\0\0\x01" /* 5 numbers */;
+
+
 /* Set the IP we send in response to DNS queries */
 uint32_t set_return_ip(char *returnIp) {
         uint32_t ip;
@@ -790,6 +802,17 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                        (struct sockaddr *)&dns_out, leni);
                 rs = NULL; // Done.
         }
+	// Synthetic "this name is not here" answer
+        if(rs != NULL && strcmp("notThere",rs) == 0) {
+		int outLen, a;
+		outLen = 17 + qLen;
+                for(a=0;a<41;a++) {
+                        in[outLen + a] = not_there[a];
+                }
+                sendto(sock,in,outLen + 41,0,
+                       (struct sockaddr *)&dns_out, leni);
+                lua_pop(LT, 1); // t.co1Type
+	}
         if(rs != NULL && rs[0] == 'A' && rs[1] == 0) {
                 lua_pop(LT, 1); // t.co1Type
                 lua_getfield(LT, -1, "co1Data");
