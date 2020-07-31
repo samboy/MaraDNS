@@ -586,13 +586,23 @@ void printBinary(char *s, int len) {
 
 /* Convert a raw over-the-wire DNS name (in) in to a human-readable
  * name.  Anything that is not [A-Za-z0-9\-\_] is converted in to {hex}
- * where "hex" is a hex number
+ * where "hex" is a hex number.  Return the length of the DNS name.
+ * Compression pointer support.
  */
 int humanDNSname(char *in, char *out, int max) {
         int labelLen = 0;
         int inPoint = 0;
         int outPoint = 0;
         labelLen = in[inPoint];
+	
+	if(labelLen >= 64) { // Compression pointer
+       		if(outPoint + 1 >= max) {return -1;}
+		out[outPoint]='*';
+		outPoint++;
+		out[outPoint]=0;
+		return inPoint + 1;
+	}
+
         while(labelLen > 0) {
                 char see = 0;
                 if(inPoint >= max || outPoint >= max) {
@@ -630,6 +640,13 @@ int humanDNSname(char *in, char *out, int max) {
                 if(labelLen == 0) {
                         inPoint++;
                         labelLen = in[inPoint];
+			if(labelLen >= 64) { // Compression pointer
+        			if(outPoint + 1 >= max) {return -1;}
+				out[outPoint]='*';
+				outPoint++;
+				out[outPoint]=0;
+				return inPoint + 1;
+			}
                         if(outPoint >= max) {return -1;}
                         out[outPoint] = '.';
                         outPoint++;
@@ -1043,17 +1060,19 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
 // Resume a thread once we get a reply or timeout
 void resumeThread(int n) {
         int thread_status;
+	char answer[48];
+	char status = 0;
+	strcpy(answer,"DNS connect error");
         if(n < 0 || n >= maxprocs) {
                 return; // Sanity check
         }
-        printf("Resume thread for remoteCo #%d\n",n);
 
         if(remoteCo[n].sockRemote != NO_REPLY) {
 		int count;
 		char in[514];
 		count = recv(remoteCo[n].sockRemote,in,514,0);
 		closesocket(remoteCo[n].sockRemote);
-		printBinary(in,count);
+		printBinary(in,count); // DEBUG
         }
 
         // Now, the reason why we can mark this select() state struct
@@ -1064,7 +1083,7 @@ void resumeThread(int n) {
         lua_settop(remoteCo[n].LT, 0); // Clean any stack
         lua_newtable(remoteCo[n].LT);
         lua_pushstring(remoteCo[n].LT,"answer");
-        lua_pushstring(remoteCo[n].LT,"Not implemented yet");
+        lua_pushstring(remoteCo[n].LT,answer);
         lua_settable(remoteCo[n].LT,-3);
         thread_status = lua_resume(remoteCo[n].LT, 1);
         if(thread_status == LUA_YIELD) {
