@@ -736,6 +736,23 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
 			lua_pop(LT, 1); // t.co1Type
 		}
         }
+	if(rs != NULL && strcmp("ignoreMe",rs) == 0) {
+                lua_pop(LT, 1); // t.co1Type
+		rs = NULL; // Do nothing
+	}
+	if(rs != NULL && strcmp("serverFail",rs) == 0) {
+                lua_pop(LT, 1); // t.co1Type
+		
+		int outLen;
+                outLen = 17 + qLen;
+		in[2] |= 0x80; // Set QR 
+		in[3] &= 0xf0;
+		in[3] |= 2;	
+		in[7] = 0; // Zero answers
+                sendto(sock,in,outLen,0,
+                       (struct sockaddr *)&dns_out, leni);
+		rs = NULL; // Done.
+	}
         if(rs != NULL && rs[0] == 'A' && rs[1] == 0) {
                 lua_pop(LT, 1); // t.co1Type
                 lua_getfield(LT, -1, "co1Data");
@@ -779,6 +796,7 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
 //    added, to the Lua return stack, information about what the
 //    problem is.  
 void sendDNSpacket(int a) {
+	// CODE HERE
 	return;
 }
 
@@ -966,7 +984,7 @@ void resumeThread(int n) {
 	printf("Resume thread for remoteCo #%d\n",n);
 
 	if(remoteCo[n].sockRemote != NO_REPLY) {
-		// CODE HERE
+		// CODE HERE (process returned packet)
 	}
 		
 	// Now, the reason why we can mark this select() state struct
@@ -983,7 +1001,10 @@ void resumeThread(int n) {
 	if(thread_status == LUA_YIELD) {
 		int status;
 		// We need to return right after newDNS because this
-		// can overwrite the current remoteCo[] state.
+		// can overwrite the current remoteCo[] state if
+		// it returns 1 (0: Server too busy; 2: Error in
+  		// parameters given to newDNS making it impossible to
+		// detach co-routine)
 		status =  newDNS(remoteCo[n].L, remoteCo[n].LT, 
                           remoteCo[n].threadName, remoteCo[n].qLen,
 			  remoteCo[n].sockLocal, remoteCo[n].fromIp,
