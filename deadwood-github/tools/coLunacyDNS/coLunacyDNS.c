@@ -1296,7 +1296,7 @@ void runServer(lua_State *L) {
                 int selectOut;
                 int a;
 
-                selectTimeout.tv_sec  = 1;
+                selectTimeout.tv_sec  = 0;
                 selectTimeout.tv_usec = 50000; // Strobe 20 times a second
                 FD_ZERO(&selectFdSet);
                 FD_SET(localConn,&selectFdSet);
@@ -1333,6 +1333,9 @@ void runServer(lua_State *L) {
                 for(a = 0; a <= remoteTop; a++) {
                         if(remoteCo[a].sockRemote != INVALID_SOCKET
                            && remoteCo[a].timeout < the_time) {
+				if(remoteCo[a].sockRemote != NO_REPLY) {
+					closesocket(remoteCo[a].sockRemote);
+				}
                                 remoteCo[a].sockRemote = NO_REPLY;
                                 resumeThread(a);
                         }
