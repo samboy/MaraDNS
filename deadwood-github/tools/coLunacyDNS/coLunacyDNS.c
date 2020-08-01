@@ -756,6 +756,7 @@ SOCKET startServer(lua_State *L) {
 
         // No we have an IP, bind to port 53
         sock = get_port(ip,&dns_udp);
+        init_rng();
         sandbox(); // Drop root and chroot()
         log_it("Running coLunacyDNS");
         return sock;
