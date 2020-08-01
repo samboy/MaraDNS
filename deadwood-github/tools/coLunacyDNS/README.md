@@ -232,7 +232,7 @@ processQuery, which takes as its input a table with the following members:
   IP the query came from.  The string will look like `10.9.8.7`.
 * `coFromIPtype`: This is the string `IPv4`
 
-The processQuery function returns as its output a table with two
+The processQuery function returns as its output a table with one or two
 parameters:
 
 * `co1Type`: This is a string which can have the following values: 
@@ -240,5 +240,6 @@ parameters:
   (tell the client that this DNS name does not exist for the query
   type requested), `serverFail` (send a "server fail" to the client),
   or "A" (send an IPv4 IP answer back to the client)
-* `co1Data`: This is an IPv4 IP in dotted decimal format, e.g. `10.1.2.3`
+* `co1Data`: When `co1Type` is `A`, this is an IPv4 IP in dotted decimal 
+  format, e.g. `10.1.2.3`.  Otherwise, this field is ignored.
 
