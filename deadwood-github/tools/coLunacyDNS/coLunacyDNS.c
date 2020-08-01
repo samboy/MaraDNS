@@ -1098,14 +1098,30 @@ void resumeThread(int n) {
 		int32_t place = 12;
 		uint16_t qtype;
 		uint16_t rdlength;
+		uint16_t QID;
 		int first = 1;
 		count = recv(remoteCo[n].sockRemote,in,514,0);
 		closesocket(remoteCo[n].sockRemote);
 
-		// CODE HERE: Error if QID or Query do not match
+		if(count > 12) {
+			QID = (in[0] << 8) | (in[1] & 0xff);
+			if(QID != remoteCo[n].upQueryID) {
+				count = 0;
+			}
+		}
+		if(count > 12) {
+			int a;
+			for(a = 0; a < remoteCo[n].coDNSlen; a++) {
+				if(in[12 + a] != remoteCo[n].coDNSname[a]) {
+					count = 0;
+					break;
+				}
+			}
+		}
+
 
 		// Look in DNS packet for first A (IPv4 IP) record
-		while(place < 450 && DNSanswer == 0) {
+		while(count > 12 && place < 450 && DNSanswer == 0) {
 			int len;
 			len = humanDNSname(in+place, discard, 500-place);
 			if(len < 0) { break ; }
@@ -1131,7 +1147,6 @@ void resumeThread(int n) {
 			if(place > 450) { break; }	
 		}
         }
-	DNSanswer = 0; // Until we match ID and Query, clamp this
 	if(DNSanswer != 0) {
 		int zz;
 		for(zz = 0;zz<40;zz++){answer[zz] = 0;}

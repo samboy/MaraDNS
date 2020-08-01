@@ -10,29 +10,51 @@ coDNS.log(string.format("Random16: %04x",coDNS.rand16())) -- random 16-bit num
 -- "attempt to yield across metamethod/C-call boundary".  
 
 function processQuery(Q) -- Called for every DNS query received
+  returnIP = nil
+  upstream = "9.9.9.9"
+  -- Log query
+  coDNS.log("Got IPv4 query for " .. Q.coQuery .. " from " ..
+            Q.coFromIP .. " type " ..  Q.coFromIPtype) 
+
+  -- We will use 8.8.8.8 as the upstream server is the query ends in ".tj"
+  if string.match(Q.coQuery,'%.tj%.$') then
+    upstream = "8.8.8.8"
+  end
+
+  -- We will use 4.2.2.1 as the upstream server if the query comes from 
+  -- 192.168.99.X
+  if string.match(Q.coFromIP,'^192%.168%.99%.') then
+    upstream = "4.2.2.1"
+  end
+
+  -- Right now, coLunacyDNS can *only* process "A" (IPv4 IP) queries
   if Q.coQtype ~= 1 then -- If it is not an A (ipv4) query
     -- return {co1Type = "ignoreMe"} -- Ignore the query
-    -- return {co1Type = "serverFail"} -- Send server fail
     return {co1Type = "notThere"} -- Send "not there" (like NXDOMAIN)
   end
-  --t = coDNS.solve({name="lenovo.com.", type="A", upstreamIp4="9.9.9.9"})
-  t = coDNS.solve({name="lenovo.com.", type="A", upstreamIp4="9.9.9.9"})
+
+  -- Contact another DNS server to get our answer
+  t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=upstream})
+
   -- If coDNS.solve returns an error, the entire processQuery routine is
   -- "on probation" and unable to run coDNS.solve() again (if an attempt
   -- is made, the thread will be aborted and no DNS response sent 
   -- downstream).  
   if t.error then	
     coDNS.log(t.error)
-    return {co1Type = "A", co1Data = "10.10.10.10"} -- Error
+    return {co1Type = "serverFail"} 
   end
-  if t.answer then
-    coDNS.log(t.answer)
+
+  -- Status is 1 when we get an IP from the upstream DNS server, otherwise 0
+  if t.status == 1 and t.answer then
+    returnIP = t.answer
   end
-  -- Log query
-  coDNS.log("Got IPv4 query for " .. Q.coQuery .. " from " ..
-            Q.coFromIP .. " type " ..  Q.coFromIPtype) 
-  if string.match(Q.coQuery,'%.com%.$') then
-    return {co1Type = "A", co1Data = "10.1.1.1"} -- Answer for anything.com
+
+  if string.match(Q.coQuery,'%.invalid%.$') then
+    return {co1Type = "A", co1Data = "10.1.1.1"} -- Answer for anything.invalid
   end
-  return {co1Type = "A", co1Data = "10.1.2.3"} -- Answer for anything not .com
+  if returnIP then
+    return {co1Type = "A", co1Data = returnIP} 
+  end
+  return {co1Type = "serverFail"} 
 end
