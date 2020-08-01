@@ -123,7 +123,7 @@ what it can do:
 # Limitations ###########################################################
 
 coLunacyDNS, at this time, only processes requests for DNS "A"
-queries—queries for IPv4 IP addresses.  Information about other query
+queries--queries for IPv4 IP addresses.  Information about other query
 types is not available to coLunacyDNS, and it can only return "A" queries
 (or "server fail", or "this name is not here") in its replies.
 
