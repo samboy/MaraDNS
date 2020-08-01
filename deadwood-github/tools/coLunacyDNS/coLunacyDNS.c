@@ -60,10 +60,10 @@
 #include "lualib.h"
 
 /* MinGW uses some different stuff for sockets; account for it */
+#define NO_REPLY -2
 #ifndef MINGW
 #define SOCKET int
 #define INVALID_SOCKET -1
-#define NO_REPLY -2
 #define closesocket(a) close(a)
 #define make_socket_nonblock(a) fcntl(a,F_SETFL,O_NONBLOCK)
 #else // MINGW true
@@ -925,7 +925,11 @@ int coDNSerror(lua_State *LT, char *why, int doLog) {
 // Yes, this needs a dot at the end!
 char *human2DNS(int *coDNSlen, char *z, lua_State *LT) {
         int a, p, label, len;
+#ifdef MINGW
+	a = strlen(z);
+#else
         a = strnlen(z, 256);
+#endif // MINGW
         a++;
         char *coDNSname;
         coDNSname = malloc(a + 2);
