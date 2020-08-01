@@ -115,8 +115,18 @@ end
 Since the Lua file is executed as admin, some effort is made to restrict
 what it can do:
 
-* Only the `math`, `string`, and `bit32` libraries are loaded from
+* Only the "math", "string", and "bit32" libraries are loaded from
   Lua's standard libs.  (bit32 actually is another Bit library, but with a
-  `bit32` interface.)
-* A special `coDNS` library is also loaded.
+  "bit32" interface.)
+* A special "coDNS" library is also loaded.
 
+# Limitations ###########################################################
+
+coLunacyDNS, at this time, only processes requests for DNS "A"
+queries—queries for IPv4 IP addresses.  Information about other query
+types is not available to coLunacyDNS, and it can only return "A" queries
+(or "server fail", or "this name is not here") in its replies.
+
+coLunacyDNS, likewise, can only send "A" (IPv4 IP) requests to upstream
+servers.  coLunacyDNS can only bind to an IPv4 IP, and can only send DNS
+queries via IPv4.

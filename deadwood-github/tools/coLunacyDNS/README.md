@@ -132,3 +132,14 @@ what it can do:
 * The Lua script should not have access to the filesystem nor be able
   to do anything malicious.
 
+# Limitations
+
+coLunacyDNS, at this time, only processes requests for DNS `A`
+queries—queries for IPv4 IP addresses.  Information about other query
+types is not available to coLunacyDNS, and it can only return `A` queries
+(or “server fail”, or “this name is not here”) in its replies.
+
+coLunacyDNS, likewise, can only send `A` (IPv4 IP) requests to upstream
+servers.  coLunacyDNS can only bind to an IPv4 IP, and can only send DNS
+queries via IPv4.
+
