@@ -129,8 +129,8 @@ what it can do:
   Lua's standard libs.  (bit32 actually is another Bit library, but with a
   `bit32` interface.)
 * A special `coDNS` library is also loaded.
-* The Lua script should not have access to the filesystem nor be able
-  to do anything malicious.
+* The program is designed to not give Lua access to the filesystem nor 
+  be able to do anything malicious.
 
 # Limitations
 
