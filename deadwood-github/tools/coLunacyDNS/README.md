@@ -67,8 +67,11 @@ coDNS.log(string.format("Random16: %04x",coDNS.rand16())) -- random 16-bit num
 -- "attempt to yield across metamethod/C-call boundary".  
 
 function processQuery(Q) -- Called for every DNS query received
-  returnIP = nil
-  upstream = "9.9.9.9"
+  -- Because this code uses multiple co-routines, always use "local"
+  -- variables
+  local returnIP = nil
+  local upstream = "9.9.9.9"
+
   -- Log query
   coDNS.log("Got IPv4 query for " .. Q.coQuery .. " from " ..
             Q.coFromIP .. " type " ..  Q.coFromIPtype) 
