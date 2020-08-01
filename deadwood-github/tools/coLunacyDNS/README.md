@@ -53,7 +53,7 @@ function processQuery(Q) -- Called for every DNS query received
   coDNS.log("Got IPv4 query for " .. Q.coQuery .. " from " ..
             Q.coFromIP .. " type " ..  Q.coFromIPtype) 
 
-  -- We will use 8.8.8.8 as the upstream server is the query ends in ".tj"
+  -- We will use 8.8.8.8 as the upstream server if the query ends in ".tj"
   if string.match(Q.coQuery,'%.tj%.$') then
     upstream = "8.8.8.8"
   end
