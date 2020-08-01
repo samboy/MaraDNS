@@ -607,7 +607,7 @@ int humanDNSname(char *in, char *out, int max) {
         int outPoint = 0;
         labelLen = in[inPoint];
 	
-	if(labelLen >= 64) { // Compression pointer
+	if(labelLen >= 64 || labelLen < 0) { // Compression pointer
        		if(outPoint + 1 >= max) {return -1;}
 		out[outPoint]='*';
 		outPoint++;
@@ -652,7 +652,7 @@ int humanDNSname(char *in, char *out, int max) {
                 if(labelLen == 0) {
                         inPoint++;
                         labelLen = in[inPoint];
-			if(labelLen >= 64) { // Compression pointer
+			if(labelLen >= 64 || labelLen < 0) { // Comp. pointer
         			if(outPoint + 1 >= max) {return -1;}
 				out[outPoint]='*';
 				outPoint++;
@@ -1085,6 +1085,7 @@ void resumeThread(int n) {
         int thread_status;
 	char answer[48];
 	char status = 0;
+	uint32_t DNSanswer = 0;
 	strcpy(answer,"DNS connect error");
         if(n < 0 || n >= maxprocs) {
                 return; // Sanity check
@@ -1093,10 +1094,52 @@ void resumeThread(int n) {
         if(remoteCo[n].sockRemote != NO_REPLY) {
 		int count;
 		char in[514];
+		char discard[514];
+		int32_t place = 12;
+		uint16_t qtype;
+		uint16_t rdlength;
+		int first = 1;
 		count = recv(remoteCo[n].sockRemote,in,514,0);
 		closesocket(remoteCo[n].sockRemote);
-		printBinary(in,count); // DEBUG
+
+		// CODE HERE: Error if QID or Query do not match
+
+		// Look in DNS packet for first A (IPv4 IP) record
+		while(place < 450 && DNSanswer == 0) {
+			int len;
+			len = humanDNSname(in+place, discard, 500-place);
+			if(len < 0) { break ; }
+			if(place > 450) { break; }	
+			place += len;
+			qtype = in[place + 1] << 8;
+			qtype |= in[place + 2] & 0xff;
+			if(first == 0) {
+				rdlength = in[place + 9] << 8;
+				rdlength |= in[place + 10] & 0xff;
+				if(qtype == 1 && rdlength == 4) {
+					DNSanswer = 0;
+					DNSanswer|=(in[place + 11] & 0xff)<<24;
+					DNSanswer|=(in[place + 12] & 0xff)<<16;
+					DNSanswer|=(in[place + 13] & 0xff)<< 8;
+					DNSanswer|=(in[place + 14] & 0xff);
+				}
+				place += 11 + rdlength;
+			} else {
+				place += 5;
+				first = 0;
+			}
+			if(place > 450) { break; }	
+		}
         }
+	DNSanswer = 0; // Until we match ID and Query, clamp this
+	if(DNSanswer != 0) {
+		int zz;
+		for(zz = 0;zz<40;zz++){answer[zz] = 0;}
+        	snprintf(answer,120,"%d.%d.%d.%d",DNSanswer >> 24,
+               	         (DNSanswer & 0xff0000) >> 16,
+                         (DNSanswer & 0xff00) >> 8,
+                          DNSanswer & 0xff);
+	}
 
         // Now, the reason why we can mark this select() state struct
         // for reuse is because we will handle and wrap up
@@ -1104,10 +1147,22 @@ void resumeThread(int n) {
         // call, that's a new DNS connection (which may overwrite this one)
         remoteCo[n].sockRemote = INVALID_SOCKET; // Mark for reuse
         lua_settop(remoteCo[n].LT, 0); // Clean any stack
-        lua_newtable(remoteCo[n].LT);
+
+        lua_newtable(remoteCo[n].LT); // Output table
+	// answer
         lua_pushstring(remoteCo[n].LT,"answer");
         lua_pushstring(remoteCo[n].LT,answer);
         lua_settable(remoteCo[n].LT,-3);
+
+	// status
+	lua_pushstring(remoteCo[n].LT,"status");
+	if(DNSanswer != 0) {
+		lua_pushnumber(remoteCo[n].LT,1);
+	} else {
+		lua_pushnumber(remoteCo[n].LT,0);
+	}
+	lua_settable(remoteCo[n].LT,-3);
+
         thread_status = lua_resume(remoteCo[n].LT, 1);
         if(thread_status == LUA_YIELD) {
                 int status;
