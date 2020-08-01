@@ -5,7 +5,27 @@ by a Lua script.  It allows a lot of flexibility because it uses
 a combination of C for high performance and Lua for maximum
 flexibility.
 
-# Examples of the interface at work
+# Getting started
+
+On a CentOS 8 Linux system, this gets us started:
+
+```bash
+./compile.coLunacyDNS.sh
+su
+./coLunacyDNS -d
+```
+
+Here, we use `coLunacyDNS.lua` as the configuration file.
+
+Since coLunacyDNS runs on port 53, we need to start it as root.
+As soon as coLunacyDNS binds to port 53 and seeds its internal 
+secure pseudo random number generator, it calls `chroot` and drops
+root privileges.
+
+Cygwin users may use `compile.cygwin.sh` to compile coLunacyDNS, since
+Cygwin does not have the same sandboxing Linux has.
+
+# Configration file examples
 
 In this example, we listen on 127.0.0.1, and, for any IPv4 query,
 we return the IP of that query as reported by 9.9.9.9.
@@ -96,4 +116,16 @@ function processQuery(Q) -- Called for every DNS query received
   return {co1Type = "serverFail"} 
 end
 ```
+
+# Security considerations
+
+Since the Lua file is executed as root, some effort is made to restrict
+what it can do:
+
+* Only the `math`, `string`, and `bit32` libraries are loaded from
+  Lua's standard libs.  (bit32 actually is another Bit library, but with a
+  `bit32` interface.)
+* A special `coDNS` library is also loaded.
+* The Lua script should not have access to the filesystem nor be able
+  to do anything malicious.
 
