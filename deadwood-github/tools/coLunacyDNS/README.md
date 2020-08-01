@@ -230,7 +230,7 @@ processQuery, which takes as its input a table with the following members:
   1 is "A", i.e. a request for an IPv4 IP address.
 * `coFromIP`: This is a string containing, in human-readable format, the
   IP the query came from.  The string will look like `10.9.8.7`.
-* `coFromIPtype`: This is the number 4
+* `coFromIPtype`: This is the string `IPv4`
 
 The processQuery function returns as its output a table with two
 parameters:
