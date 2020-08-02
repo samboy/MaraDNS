@@ -69,6 +69,32 @@ function processQuery(Q) -- Called for every DNS query received
 end
 ```
 
+In the same vein, in this example, we contact the DNS server 9.9.9.9 for 
+IPv4 queries, and 149.112.112.112 for IPv6 queries:
+
+```lua
+bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
+function processQuery(Q) -- Called for every DNS query received
+  if Q.coQtype == 28 then -- Request for IPv6 IP
+    t = coDNS.solve({name=Q.coQuery,type="ip6", upstreamIp4="149.112.112.112"})
+  elseif Q.coQtype == 1 then -- Request for IPv4 IP
+    t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4="9.9.9.9"})
+  else
+    return {co1Type = "notThere"}
+  end
+  if t.error then
+    return {co1Type = "serverFail"}
+  end
+  if t.status == 28 then
+    return {co1Type = "ip6", co1Data = t.answer}
+  elseif t.status == 1 then
+    return {co1Type = "A", co1Data = t.answer}
+  else
+    return {co1Type = "notThere"}
+  end 
+end
+```
+
 Here is a more complicated example:
 
 ```lua
