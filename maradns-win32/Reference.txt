@@ -211,11 +211,12 @@ ip6
    addresses. We don't use standard notation for IPv6 addresses.
    Instead, we we use 32-character hex addresses (case
    insensitive); to make it easier to count long strings of "0"s,
-   the "_" acts like a 0. Here is an example:
+   the "_" acts like a 0.  We also ignore "-" (dash) and " " (space) 
+   in ip6 strings. Here is an example:
 
  ip6 = {}
  ip6["maradns.foo."] = "20010db84d617261444e530000001234"
- ip6["kabah.foo."] = "2001_DB84D617261444E5300__002345"
+ iip6["kabah.foo."] = "2001-0DB8-4D61-7261 444E-5300-__00-2345"
 
 ip_blocklist
 
