@@ -52,6 +52,23 @@ function processQuery(Q) -- Called for every DNS query received
 end
 ```
 
+In this example, we return `10.1.1.1` for all IPv4 `A` queries, 
+`2001:db8:4d61:7261:444e:5300::1234` for all IPv6 `AAAA` queries,
+and "not there" for all other query types:
+
+```lua
+bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
+function processQuery(Q) -- Called for every DNS query received
+  if Q.coQtype == 28 then
+    return {co1Type = "ip6",co1Data="2001-0db8-4d61-7261 444e-5300-0000-1234"}
+  elseif Q.coQtype == 1 then
+    return {co1Type = "A", co1Data = "10.1.1.1"}
+  else
+    return {co1Type = "notThere"}
+  end
+end
+```
+
 Here is a more complicated example:
 
 ```lua
@@ -105,8 +122,8 @@ function processQuery(Q) -- Called for every DNS query received
     return {co1Type = "serverFail"} 
   end
 
-  -- Status is 1 when we get an IP from the upstream DNS server, otherwise 0
-  if t.status == 1 and t.answer then
+  -- Status being 0 means we did not get an answer from upstream
+  if t.status ~= 0 and t.answer then
     returnIP = t.answer
   end
 
