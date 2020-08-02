@@ -202,13 +202,14 @@ coLunacyDNS also includes a few functions in its own `coDNS` space:
   respond, or if it gives us a reply, but without a record we can use).
   This function is given a table with three members: `name`, which is
   the DNS name in human format like `example.com.` (the final dot is
-  mandatory); `type`, which must be `A`, and `upstreamIp4`, which is
-  the IP connect to; this is a string in IPv4 dotted decimal format,
-  like `10.1.2.3` or `9.9.9.9`.  If `upstreamIp4` is not present,
-  coLunacyDNS looks for a global variable called `upstreamIp4` to
-  see if a default value is available.  Since this function allows
-  other Lua threads to run while it awaits a DNS reply, global variables
-  may change in value while the DNS record is being fetched.
+  mandatory); `type`, which can be `A` (IPv4) or `ip6` (IPv6), and
+  `upstreamIp4`, which is the IP connect to; this is a string in IPv4
+  dotted decimal format, like `10.1.2.3` or `9.9.9.9`.  If `upstreamIp4`
+  is not present, coLunacyDNS looks for a global variable called
+  `upstreamIp4` to see if a default value is available.  Since this
+  function allows other Lua threads to run while it awaits a DNS reply,
+  global variables may change in value while the DNS record is being
+  fetched.
 
 # processQuery
 
