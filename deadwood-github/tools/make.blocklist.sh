@@ -1,19 +1,19 @@
 #!/bin/sh
 
 cat > /dev/null << EOF
-This is a command which will use Steven Black's blacklist to add
-a large blacklist to Deadwood.  To use this script, on a UNIX-like
+This is a command which will use Steven Black's blocklist to add
+a large blocklist to Deadwood.  To use this script, on a UNIX-like
 system (e.g. Linux, maybe MacOS), type in the following command from
 the directory containing this:
 
 mkdir /etc/deadwood/
 mkdir /etc/deadwood/execfile/
-./make.blacklist.sh > /etc/deadwood/execfile/blacklist
+./make.blocklist.sh > /etc/deadwood/execfile/blocklist
 
-Once this "blacklist" file is created, add the following line to
+Once this "blocklist" file is created, add the following line to
 the end of one's dwood3rc file:
 
-execfile("blacklist")
+execfile("blocklist")
 
 Note that each entry takes over one kilobyte to store, so Deadwood 
 needs about 70 megabytes to use this blacklist.
