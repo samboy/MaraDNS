@@ -335,8 +335,13 @@ int serverRunning = 1;
 
 /* This is the header placed before the 4-byte IP; we change the last four
  * bytes to set the IP we give out in replies */
-char p[17] =
+char IPv4answer[17] =
 "\xc0\x0c\x00\x01\x00\x01\x00\x00\x00\x00\x00\x04\x7f\x7f\x7f\x7f";
+
+/* Likewise, for IPv6 */
+char IPv6answer[29] =
+"\xc0\x0c\x00\x1c\x00\x01\x00\x00\x00\x00\x00\x10\x7f\x7f\x7f\x7f"
+"\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f\x7f";
 
 /* This is a synthetic "not there" answer */
 unsigned char not_there[41] =
@@ -350,7 +355,7 @@ unsigned char not_there[41] =
         "\0\0\0\x01\0\0\0\x01\0\0\0\x01\0\0\0\x01\0\0\0\x01" /* 5 numbers */;
 
 
-/* Set the IP we send in response to DNS queries */
+/* Set the IPv4 IP we send in response to DNS queries */
 uint32_t set_return_ip(char *returnIp) {
         uint32_t ip;
 
@@ -360,10 +365,10 @@ uint32_t set_return_ip(char *returnIp) {
         /* Set the IP we give everyone */
         ip = inet_addr(returnIp);
         ip = ntohl(ip);
-        p[12] = (ip & 0xff000000) >> 24;
-        p[13] = (ip & 0x00ff0000) >> 16;
-        p[14] = (ip & 0x0000ff00) >>  8;
-        p[15] = (ip & 0x000000ff);
+        IPv4answer[12] = (ip & 0xff000000) >> 24;
+        IPv4answer[13] = (ip & 0x00ff0000) >> 16;
+        IPv4answer[14] = (ip & 0x0000ff00) >>  8;
+        IPv4answer[15] = (ip & 0x000000ff);
         return ip;
 }
 
@@ -824,6 +829,78 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                         lua_pop(LT, 1); // t.co1Data
                         rs = NULL;
                 }
+        } else if(rs != NULL && rs[0]=='i' && rs[1]=='p' && rs[2]=='6' &&
+		  rs[3] == 0) {
+                lua_pop(LT, 1); // t.co1Type
+                lua_getfield(LT, -1, "co1Data");
+                if(lua_type(LT, -1) == LUA_TSTRING) {
+                        rs = luaL_checkstring(LT, -1);
+                } else {
+                        lua_pop(LT, 1); // t.co1Data
+                        rs = NULL;
+                }
+		if(rs != NULL) { // IP6 data
+			int good = 1;
+			int place = 12; 
+			uint8_t me = 0;
+			int nybble = 0;
+			int count = 0;
+			while(*rs && count < 100) {
+				count++;
+				if(*rs >= '0' && *rs <= '9') {
+					int see = *rs - '0';
+					if(nybble == 0) {
+						IPv6answer[place] = see << 4;
+						nybble = 1;
+					} else {
+						IPv6answer[place] |= see;
+						if(place < 28) { place++; }
+						nybble = 0;
+					}
+				} else if((*rs >= 'a' && *rs <= 'f') ||
+				          (*rs >= 'A' && *rs <= 'F')) {
+					int see = *rs;
+					if(*rs < 'G') {
+						see -= 'A';
+						see += 10;
+					} else {
+						see -= 'a';
+						see += 10;
+					}
+					if(nybble == 0) {
+						IPv6answer[place] = see << 4;
+						nybble = 1;
+					} else {
+						IPv6answer[place] |= see;
+						if(place < 28) { place++; }
+						nybble = 0;
+					}
+				} else if(*rs == '_') { // Treat like 0
+					if(nybble == 0) {
+						IPv6answer[place] = 0;
+						nybble = 1;
+					} else {
+						if(place < 28) { place++; }
+						nybble = 0;
+					}
+				} else if(*rs != ' ' && *rs != '-') {
+					rs = NULL; // Parse error
+					break;	
+				}
+				rs++;
+			}
+		}
+		if(rs != NULL) {
+                	int outLen, a;
+                	outLen = 17 + qLen;
+                	for(a=0;a<28;a++) {
+                       		in[outLen + a] = IPv6answer[a];
+                	}
+                	/* Send the reply */
+                	sendto(sock,in,outLen + 28,0,
+                       		(struct sockaddr *)&dns_out, leni);
+                	lua_pop(LT, 1); // t.co1Data
+		}
         } else if(rs != NULL) {
                 lua_pop(LT, 1); // t.co1Type
                 rs = NULL;
@@ -834,7 +911,7 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                 int outLen;
                 outLen = 17 + qLen;
                 for(a=0;a<16;a++) {
-                        in[outLen + a] = p[a];
+                        in[outLen + a] = IPv4answer[a];
                 }
 
                 /* Send the reply */
