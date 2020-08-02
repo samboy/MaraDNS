@@ -134,14 +134,16 @@ what it can do:
 
 # Limitations
 
-coLunacyDNS, at this time, only processes requests for DNS `A`
-queries—queries for IPv4 IP addresses.  Information about other query
-types is not available to coLunacyDNS, and it can only return `A` queries
-(or “server fail”, or “this name is not here”) in its replies.
+coLunacyDNS, at this time, only processes requests for DNS `A` queries
+and DNS `AAAA` queries — queries for IPv4 and IPv6 IP addresses.
+Information about other query types is not available to coLunacyDNS,
+and it can only return `A` queries, `AAAA` queries, “server fail”,
+or “this name is not here” in its replies.
 
-coLunacyDNS, likewise, can only send `A` (IPv4 IP) requests to upstream
-servers.  coLunacyDNS can only bind to an IPv4 IP, and can only send DNS
-queries via IPv4.
+coLunacyDNS, likewise, can only send `A` (IPv4 IP) and `AAAA` (IPv6 IP)
+requests to upstream servers.  While coLunacyDNS can process and forward
+IPv6 DNS records, coLunacyDNS can only bind to an IPv4 IP, and can only
+send DNS queries via IPv4.
 
 # The API available to the Lua script
 
@@ -270,7 +272,14 @@ parameters:
   `ignoreMe` (no DNS reply will be sent back to the client), `notThere`
   (tell the client that this DNS name does not exist for the query
   type requested), `serverFail` (send a "server fail" to the client),
-  or "A" (send an IPv4 IP answer back to the client)
+  "A" (send an IPv4 IP answer back to the client), or "ip6" (send an
+  IPv6 IP answer back to the client).
 * `co1Data`: When `co1Type` is `A`, this is an IPv4 IP in dotted decimal 
-  format, e.g. `10.1.2.3`.  Otherwise, this field is ignored.
+  format, e.g. `10.1.2.3`.  When `co1type` is `ip6`, and `co1data` is
+  a string with 32 hexadecimal digits, the IPv6 IP in the string is
+  returned to the client.  If the character `_` is in the string, this
+  is treated as if it were the number `0`; the characters ` ` (space) and
+  `-` (dash) are ignored.  For example, 
+  `2001-0db8-4d61-7261 444e-5300-0000-__01` (without linefeed) is an 
+  allowed value for `co1data` when `co1type` is `ip6`.
 
