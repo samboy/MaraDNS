@@ -150,9 +150,10 @@ ip4["kabah.foo."] = "10.11.11.11"
 # We don't use standard notation for IPv6 addresses.  Instead, we
 # we use 32-character hex addresses (case insensitive); to make
 # it easier to count long strings of "0"s, the "_" acts like a 0
+# It is also allowed to add "-" (dash) and " " (space) to IPv6 strings
 ip6 = {}
 ip6["maradns.foo."] = "20010db84d617261444e530000001234"
-ip6["kabah.foo."] = "2001_DB84D617261444E5300__002345"
+ip6["kabah.foo."] = "2001-0DB8-4D61-7261 444E-5300-__00-2345"
 
 # How many messages to log.  Higher means more messages.
 verbose_level = 3
