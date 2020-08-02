@@ -1113,9 +1113,9 @@ void resumeThread(int n) {
 		uint16_t rdlength;
 		uint16_t QID;
 		int first = 1;
+		strcpy(answer,"DNS answer not seen");
 		count = recv(remoteCo[n].sockRemote,in,514,0);
 		closesocket(remoteCo[n].sockRemote);
-		for(qtype=0;qtype<count;qtype++){if(in[qtype]>=' '&&in[qtype]<'~'){printf("{%02x}%c ",in[qtype]&0xff,in[qtype]);}else{printf("{%02x}",in[qtype]&0xff);}}//DEBUG
 
 		if(count > 12) {
 			QID = (in[0] << 8) | (in[1] & 0xff);
@@ -1158,7 +1158,7 @@ void resumeThread(int n) {
 					// Any IPv4 address under 16777216
 					// (0.0.0.0/8) can be used here, see
 					// RFC6890 section 2.2.2.
-					DNSanswer = 6;
+					DNSanswer = 28;
 					// Nonstandard easy to parse IPv6 
 					// format, since Win32 build 
 					// system doesn't have IPv6 parser
@@ -1182,7 +1182,7 @@ void resumeThread(int n) {
 			if(place > 450) { break; }	
 		}
         }
-	if(DNSanswer != 0 && DNSanswer != 6) {
+	if(DNSanswer > 65535) {
 		int zz;
 		for(zz = 0;zz<40;zz++){answer[zz] = 0;}
         	snprintf(answer,120,"%d.%d.%d.%d",DNSanswer >> 24,
@@ -1206,8 +1206,10 @@ void resumeThread(int n) {
 
 	// status
 	lua_pushstring(remoteCo[n].LT,"status");
-	if(DNSanswer != 0) {
+	if(DNSanswer > 65535) {
 		lua_pushnumber(remoteCo[n].LT,1);
+	} else if(DNSanswer > 0) {
+		lua_pushnumber(remoteCo[n].LT,DNSanswer);
 	} else {
 		lua_pushnumber(remoteCo[n].LT,0);
 	}
