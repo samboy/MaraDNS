@@ -48,8 +48,11 @@ function processQuery(Q) -- Called for every DNS query received
     return {co1Type = "serverFail"} 
   end
 
-  -- Status is 1 when we get an IP from the upstream DNS server, otherwise 0
-  if t.status == 1 and t.answer then
+  -- Status is 1 when we get an IPv4 from the upstream DNS server, 
+  -- 28 when we get an IPv6 from the upstream DNS server, otherwise 0
+  -- 1 and 28 are the DNS query type numbers for IPv4 and IPv6 
+  -- addresses.
+  if (t.status == 1 or t.status == 28) and t.answer then
     returnIP = t.answer
   end
 

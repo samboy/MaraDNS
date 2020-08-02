@@ -199,17 +199,47 @@ coLunacyDNS also includes a few functions in its own `coDNS` space:
 * `coDNS.solve` This function, which can only be called inside of
   `processQuery`, requests a DNS record from another DNS server, and
   returns once the data is available (or if the DNS server does not 
-  respond, or if it gives us a reply, but without a record we can use).
-  This function is given a table with three members: `name`, which is
-  the DNS name in human format like `example.com.` (the final dot is
-  mandatory); `type`, which can be `A` (IPv4) or `ip6` (IPv6), and
-  `upstreamIp4`, which is the IP connect to; this is a string in IPv4
+  respond, or if it gives us a reply that we did not get a record).
+  This function is described in more detail in the following section.
+
+# coDNS.solve
+
+This function is given a table with three members: 
+
+* `name`, which is the DNS name in human format like `example.com.` 
+  The final dot is mandatory
+* `type`, which can be `A` (IPv4) or `ip6` (IPv6)
+* `upstreamIp4`, which is the IP connect to; this is a string in IPv4
   dotted decimal format, like `10.1.2.3` or `9.9.9.9`.  If `upstreamIp4`
   is not present, coLunacyDNS looks for a global variable called
-  `upstreamIp4` to see if a default value is available.  Since this
-  function allows other Lua threads to run while it awaits a DNS reply,
-  global variables may change in value while the DNS record is being
-  fetched.
+  `upstreamIp4` to see if a default value is available.  
+
+It outputs a table with a number of possible elements:
+
+* `error`: If this is in the return table, an error happened which makes 
+  it not possible to have `coDNS.solve` run.  Errors include giving
+  `coDNS.solve` a bad query for its DNS name; not giving `coDNS.solve`
+  a table when calling it; not having the element `type` in the table
+  given to `coDNS.solve`; etc.  Once an error is returned, it is not
+  possible to run `coDNS.solve` again in the current thread; if one
+  calls `coDNS.solve` a second time after getting an error, the thread
+  will be terminated and the client will not receive a DNS reply.
+* `status`: If we got an IPv4 address from the upstream server, this
+  returns the number 1.  If we got an IPv6 address from the upstream
+  server, this returns the number 28 (the DNS number for an IPv6 reply).
+  Otherwise, this returns the number 0.
+* `answer`: This is the answer we got from the upstream DNS server.
+  If the answer is an IPv4 IP, the answer is a string with a standard
+  dotted decimal IP in it, such as `10.4.5.6`.  If the answer is an
+  IPv6 IP, the answer is a string with the IPv6 IP in it, in the form
+  `XXXX-XXXX-XXXX-XXXX XXXX-XXXX-XXXX-XXXX`, where each X is a 
+  hexadecimal digit, such as `2001-0db8-4d61-7261 444e-5300-0000-0001`
+  All 32 hexadecimal digits that comprise an IPv6 address will be 
+  present in the reply string.
+
+Since this function allows other Lua threads to run while it awaits a
+DNS reply, global variables may change in value while the DNS record is
+being fetched.
 
 # processQuery
 
