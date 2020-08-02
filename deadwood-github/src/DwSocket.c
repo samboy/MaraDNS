@@ -620,14 +620,16 @@ dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
 dw_str *make_synth_ip6(dw_str *rawname, dw_str *ipv6, int ttl) {
         dw_str *ip = 0;
         dw_str *out = 0;
-        int a, n, v;
+        int a, n, v, l;
         ip = dw_create(18);
         if(ip == 0 || rawname == 0 || ipv6 == 0 || ipv6->len != 32) {
                 if(ip != 0) { dw_destroy(ip); }
                 return 0;
         }
         ip->len = 16;
-        for(a = 0; a < 32; a++) {
+	l = 0; // Nybble location in IPv6 IP output
+        for(a = 0; a < 64; a++) {
+		int seen = 1;
                 n = *(ipv6->str + a);
                 if(n >= '0' && n <= '9') {
                         v = n - '0';
@@ -637,15 +639,20 @@ dw_str *make_synth_ip6(dw_str *rawname, dw_str *ipv6, int ttl) {
                         v = 10 + (n - 'a');
                 } else if(n >= 'A' && n <= 'F') {
                         v = 10 + (n - 'A');
-                } else {
+		} else if(n == '-' || n == ' ') {
+			seen = 0;
+		} else {
                         dw_destroy(ip);
                         return 0; /* Syntax error */
                 }
-                if((a & 1) == 0) {
+                if(seen == 1 && (l & 1) == 0) {
                         v <<= 4;
-                        *(ip->str + (a >> 1)) = 0;
+                        *(ip->str + (l >> 1)) = 0;
                 }
-                *(ip->str + (a >> 1)) |= v;
+		if(seen == 1) {
+                	*(ip->str + (l >> 1)) |= v;
+			l++;
+		}
         }
         out = make_synth_record(rawname, ip, 28, ttl);
         dw_destroy(ip);
