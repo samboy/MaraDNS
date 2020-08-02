@@ -119,11 +119,24 @@ void dw_log_dwstr_p(char *s1, dw_str *s2, int min_log_level) {
 
         for(ll = 0 ; ll < s2->len ; ll++) {
                 q = *(s2->str + ll);
-                if(q >= '.' && q <= '~' /* Last ASCII char */ && q != '\\') {
+                if(q >= '.' && q <= '~' /* Last ASCII char */ && q != '\\'
+                   && q != '{' && q != '}') {
 #ifndef MINGW
                         printf("%c",q);
 #else /* MINGW */
                         fprintf(LOG,"%c",q);
+#endif /* MINGW */
+                } else if(q == '-') {
+#ifndef MINGW
+                        printf("%c",q);
+#else /* MINGW */
+                        fprintf(LOG,"%c",q);
+#endif /* MINGW */
+                } else if(q == ' ') {
+#ifndef MINGW
+                        printf("{%c}",q);
+#else /* MINGW */
+                        fprintf(LOG,"{%c}",q);
 #endif /* MINGW */
                 } else {
 #ifndef MINGW

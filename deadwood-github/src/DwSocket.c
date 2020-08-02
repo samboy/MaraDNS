@@ -620,16 +620,17 @@ dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
 dw_str *make_synth_ip6(dw_str *rawname, dw_str *ipv6, int ttl) {
         dw_str *ip = 0;
         dw_str *out = 0;
-        int a, n, v, l;
+        int a, n, v, l, seen;
         ip = dw_create(18);
-        if(ip == 0 || rawname == 0 || ipv6 == 0 || ipv6->len != 32) {
+        if(ip == 0 || rawname == 0 || ipv6 == 0 || ipv6->len < 32
+           || ipv6->len > 64) {
                 if(ip != 0) { dw_destroy(ip); }
                 return 0;
         }
         ip->len = 16;
 	l = 0; // Nybble location in IPv6 IP output
-        for(a = 0; a < 64; a++) {
-		int seen = 1;
+        for(a = 0; a < ipv6->len; a++) {
+		seen = 1;
                 n = *(ipv6->str + a);
                 if(n >= '0' && n <= '9') {
                         v = n - '0';
@@ -649,10 +650,17 @@ dw_str *make_synth_ip6(dw_str *rawname, dw_str *ipv6, int ttl) {
                         v <<= 4;
                         *(ip->str + (l >> 1)) = 0;
                 }
-		if(seen == 1) {
+		if(seen == 1 && l < 32) {
                 	*(ip->str + (l >> 1)) |= v;
 			l++;
-		}
+		} else if(seen == 1) {
+                        dw_destroy(ip);
+                        return 0; /* Syntax error */
+                }
+        }
+	if(l != 32) {
+                dw_destroy(ip);
+                return 0;
         }
         out = make_synth_record(rawname, ip, 28, ttl);
         dw_destroy(ip);
@@ -701,7 +709,7 @@ int process_ip4_params() {
                 if(cache_key == 0 ||
                    dw_append(rawname, cache_key) == -1 ||
                    dw_push_u16(1, cache_key) == -1) {
-                        dw_log_dwstr_str(" ",value," is ip4 entry name",0);
+                        dw_log_dwstr_str("",value," is ip4 entry name",0);
                         dw_fatal("Fatal error processing ip4 cache_key");
                 }
                 // Put cache_data in to cache with key cache_key
@@ -740,14 +748,14 @@ int process_ip6_params() {
                 rawname = dw_dnsname_convert(key);
                 cache_data = make_synth_ip6(rawname, value, 30);
                 if(value == 0 || rawname == 0 || cache_data == 0) {
-                        dw_log_dwstr_str(" ",value," is ip6 entry name",0);
+                        dw_log_dwstr_str("",value," is ip6 entry name",0);
                         dw_fatal("Fatal error processing ip6 entry");
                 }
                 cache_key = dw_create(rawname->len + 3);
                 if(cache_key == 0 ||
                    dw_append(rawname, cache_key) == -1 ||
                    dw_push_u16(28, cache_key) == -1) {
-                        dw_log_dwstr_str(" ",value," is ip6 entry name",0);
+                        dw_log_dwstr_str("",value," is ip6 entry name",0);
                         dw_fatal("Fatal error processing ip6 cache_key");
                 }
                 // Put cache_data in to cache with key cache_key

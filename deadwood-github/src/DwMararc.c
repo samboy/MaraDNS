@@ -465,6 +465,7 @@ void dwm_execfile(dw_str *execfile, dw_str *fname) {
 
 #ifndef MINGW
         if(chdir(EXECFILE_DIR) != 0) {
+		dw_alog_3strings("Execfile dir: ", EXECFILE_DIR, " ");
                 dwm_fatal("Could not enter execfile directory");
                 return;
         }
