@@ -89,6 +89,7 @@ typedef struct {
         char *coDNSname; // Name requested in Lua to query upstream
 	int coDNSlen;    // length of coDNSname
         uint16_t upQueryID; // Query ID of upstream request
+        uint16_t upQueryType; // Query Type of upstream request
         uint32_t upstreamIP; // IP of upstream server
 } remoteConn;
 int remoteTop = 0; // Highest active remoteConn co-routine
@@ -874,7 +875,8 @@ void sendDNSpacket(int a) {
 		out[12 + b] = remoteCo[a].coDNSname[b];
 	}
 	outLen = 12 + b;
-	out[outLen++] = 0; out[outLen++] = 1; // Type "A" (IPv4 IP)
+	out[outLen++] = remoteCo[a].upQueryType >> 8;
+	out[outLen++] = remoteCo[a].upQueryType & 0xff; 
 	out[outLen++] = 0; out[outLen++] = 1; // Class "IN"
 	remoteCo[a].sockRemote = socket(AF_INET,SOCK_DGRAM,0);
 	make_socket_nonblock(remoteCo[a].sockRemote); 
@@ -1000,6 +1002,7 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
         int coDNSlen = 0;
         const char *z;
         uint32_t upstreamIP = 0;
+	uint16_t qType = 0;
 
         if(lua_type(LT, -1) != LUA_TTABLE) {
                 return coDNSerror(LT,
@@ -1015,9 +1018,13 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
                         1);
         }
         z = luaL_checkstring(LT, -1);
-        if(z[0] != 'A' || z[1] != 0) {
+        if(z[0] == 'A' && z[1] == 0) {
+		qType = 1; // IPv4 address
+	} else if(z[0] == 'i' && z[1] == 'p' && z[2] == '6' && z[3] == 0) {
+		qType = 28; // IPv6 "AAAA" address
+	} else {
                 return coDNSerror(LT,
-                        "ERROR: coDNS.solve table needs 'type' to be 'A'",1);
+                 "ERROR: coDNS.solve table needs 'type' to be 'A' or 'ip6'",1);
         }
         lua_pop(LT, 1); // t.type popped from top
 
@@ -1077,6 +1084,7 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
                         remoteCo[a].coDNSname = coDNSname;
                         remoteCo[a].coDNSlen = coDNSlen;
                         remoteCo[a].upQueryID = rand16();
+                        remoteCo[a].upQueryType = qType;
                         remoteCo[a].upstreamIP = upstreamIP;
                         sendDNSpacket(a);
                         return 1;
@@ -1088,7 +1096,7 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
 // Resume a thread once we get a reply or timeout
 void resumeThread(int n) {
         int thread_status;
-	char answer[48];
+	char answer[64];
 	char status = 0;
 	uint32_t DNSanswer = 0;
 	strcpy(answer,"DNS connect error");
@@ -1098,7 +1106,7 @@ void resumeThread(int n) {
 
         if(remoteCo[n].sockRemote != NO_REPLY) {
 		int count;
-		char in[514];
+		unsigned char in[514];
 		char discard[514];
 		int32_t place = 12;
 		uint16_t qtype;
@@ -1107,6 +1115,7 @@ void resumeThread(int n) {
 		int first = 1;
 		count = recv(remoteCo[n].sockRemote,in,514,0);
 		closesocket(remoteCo[n].sockRemote);
+		for(qtype=0;qtype<count;qtype++){if(in[qtype]>=' '&&in[qtype]<'~'){printf("{%02x}%c ",in[qtype]&0xff,in[qtype]);}else{printf("{%02x}",in[qtype]&0xff);}}//DEBUG
 
 		if(count > 12) {
 			QID = (in[0] << 8) | (in[1] & 0xff);
@@ -1144,6 +1153,27 @@ void resumeThread(int n) {
 					DNSanswer|=(in[place + 13] & 0xff)<< 8;
 					DNSanswer|=(in[place + 14] & 0xff);
 				}
+				// If we get an IPv6 address, use it
+				if(qtype == 28 && rdlength == 16) {
+					// Any IPv4 address under 16777216
+					// (0.0.0.0/8) can be used here, see
+					// RFC6890 section 2.2.2.
+					DNSanswer = 6;
+					// Nonstandard easy to parse IPv6 
+					// format, since Win32 build 
+					// system doesn't have IPv6 parser
+					snprintf(answer, 48,
+					 "%02x%02x-%02x%02x-%02x%02x-%02x%02x "
+					 "%02x%02x-%02x%02x-%02x%02x-%02x%02x",
+					 in[place + 11], in[place + 12],
+					 in[place + 13], in[place + 14],
+					 in[place + 15], in[place + 16],
+					 in[place + 17], in[place + 18],
+					 in[place + 19], in[place + 20],
+					 in[place + 21], in[place + 22],
+					 in[place + 23], in[place + 24],
+					 in[place + 25], in[place + 26]);
+				}
 				place += 11 + rdlength;
 			} else {
 				place += 5;
@@ -1152,7 +1182,7 @@ void resumeThread(int n) {
 			if(place > 450) { break; }	
 		}
         }
-	if(DNSanswer != 0) {
+	if(DNSanswer != 0 && DNSanswer != 6) {
 		int zz;
 		for(zz = 0;zz<40;zz++){answer[zz] = 0;}
         	snprintf(answer,120,"%d.%d.%d.%d",DNSanswer >> 24,
@@ -1191,7 +1221,7 @@ void resumeThread(int n) {
                 // it returns 1 (0: Server too busy; 2: Error in
                 // parameters given to newDNS making it impossible to
                 // detach co-routine)
-                status =  newDNS(remoteCo[n].L, remoteCo[n].LT,
+                status = newDNS(remoteCo[n].L, remoteCo[n].LT,
                           remoteCo[n].threadName, remoteCo[n].qLen,
                           remoteCo[n].sockLocal, remoteCo[n].fromIp,
                           remoteCo[n].fromPort, remoteCo[n].in);
@@ -1216,7 +1246,7 @@ void resumeThread(int n) {
                           remoteCo[n].fromIp, remoteCo[n].fromPort);
                 return;
         }
-        // Server is too busy, we clean up.
+        // Server is too busy/ignoring solve errors, so we clean up.
         if(thread_status == LUA_YIELD) {
                 log_it(
                   "ERROR: Lua is ignoring coDNS.solve errors; ending thread.");
