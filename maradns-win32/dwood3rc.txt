@@ -51,6 +51,6 @@ ip4["phish.example.com."] = "X"
 # we use 32-character hex addresses (case insensitive); to make
 # it easier to count long strings of "0"s, the "_" acts like a 0
 ip6 = {}
-ip6["maradns.foo."] = "fd4d617261444e530000000000001234"
-ip6["kabah.foo."] = "FD4D617261444E53__00__00__002345"
+ip6["maradns.foo."] = "20010db84d617261444e530000001234"
+ip6["kabah.foo."] = "2001_DB84D617261444E5300__002345"
 
