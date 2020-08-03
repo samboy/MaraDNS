@@ -71,6 +71,25 @@ u_long dont_block = 0;
 #define make_socket_nonblock(a) dont_block=1;ioctlsocket(a,FIONBIO,&dont_block)
 #endif
 
+// We need something which can store an IPv4 or IPv6 address
+typedef struct {
+        uint8_t len;
+	uint8_t ip[17];
+} ip_addr_T;
+
+/* storage for both sockaddr_in and sockaddr_in6; note that this needs
+ * to be in that format that system calls like bind() and what not use
+ * for the sockaddr format (16-bit family, followed by the IP) */
+typedef struct {
+        union {
+                sa_family_t family;
+                struct sockaddr_in v4;
+#ifndef NOIP6
+                struct sockaddr_in6 v6;
+#endif
+        } u;
+} sockaddr_all_T;
+
 // Select() stuff
 fd_set selectFdSet;
 SOCKET selectMax;
@@ -83,14 +102,14 @@ typedef struct {
         char *in; // Full DNS packet sent to us from client
         SOCKET sockLocal; // Client -> coLunacyDNS
         SOCKET sockRemote; // coLunacyDNS -> remote DNS server
-        uint32_t fromIp;
+        ip_addr_T fromIp;
         uint16_t fromPort;
         int64_t timeout; // Represented in Deadwood time
         char *coDNSname; // Name requested in Lua to query upstream
 	int coDNSlen;    // length of coDNSname
         uint16_t upQueryID; // Query ID of upstream request
         uint16_t upQueryType; // Query Type of upstream request
-        uint32_t upstreamIP; // IP of upstream server
+        ip_addr_T upstreamIP; // IP of upstream server
 } remoteConn;
 int remoteTop = 0; // Highest active remoteConn co-routine
 #define maxprocs 512
@@ -356,29 +375,37 @@ unsigned char not_there[41] =
 
 
 /* Set the IPv4 IP we send in response to DNS queries */
-uint32_t set_return_ip(char *returnIp) {
-        uint32_t ip;
-
+ip_addr_T set_return_ip4(char *returnIp) {
+        ip_addr_T ip;
+	ip.len = 4;
+	uint32_t ipt = 0xffffffff;
         if(returnIp == NULL) {
                 returnIp = "127.0.0.1";
         }
         /* Set the IP we give everyone */
-        ip = inet_addr(returnIp);
-        ip = ntohl(ip);
-        IPv4answer[12] = (ip & 0xff000000) >> 24;
-        IPv4answer[13] = (ip & 0x00ff0000) >> 16;
-        IPv4answer[14] = (ip & 0x0000ff00) >>  8;
-        IPv4answer[15] = (ip & 0x000000ff);
+        ipt = inet_addr(returnIp);
+        ipt = ntohl(ip);
+        IPv4answer[12] = ip.ip[0] = (ipt & 0xff000000) >> 24;
+        IPv4answer[13] = ip.ip[1] = (ipt & 0x00ff0000) >> 16;
+        IPv4answer[14] = ip.ip[2] = (ipt & 0x0000ff00) >>  8;
+        IPv4answer[15] = ip.ip[3] = (ipt & 0x000000ff);
         return ip;
 }
 
 /* Convert a NULL-terminated string like "10.1.2.3" in to an IP */
-uint32_t get_ip(char *stringIp) {
-        uint32_t ip = 0;
+ip_addr_T get_ip4(char *stringIp) {
+        ip_addr_T ip = 0;
+	uint32_t ipt = 0xffffffff;
         /* Set the IP we bind to (default is "0", which means "all IPs) */
         if(stringIp != NULL) {
-                ip = inet_addr(stringIp);
+                ipt = inet_addr(stringIp);
         }
+        ipt = ntohl(ip);
+	ip.len = 4;
+        ip.ip[0] = (ipt & 0xff000000) >> 24;
+        ip.ip[1] = (ipt & 0x00ff0000) >> 16;
+        ip.ip[2] = (ipt & 0x0000ff00) >>  8;
+        ip.ip[3] = (ipt & 0x000000ff);
         /* Return the IP we bind to */
         return ip;
 }
@@ -392,7 +419,7 @@ void windows_socket_start() {
 #endif /* MINGW */
 
 /* Get port: Get a port locally and return the socket the port is on */
-SOCKET get_port(uint32_t ip, struct sockaddr_in *dns_udp) {
+SOCKET get_port(ip_addr_T ip, struct sockaddr_all_T *dns_udp) {
         SOCKET sock;
         int len_inet;
         struct timeval noblock;
@@ -413,14 +440,21 @@ SOCKET get_port(uint32_t ip, struct sockaddr_in *dns_udp) {
                 (char *)&noblock, sizeof(struct timeval));
 #endif /* MINGW */
         memset(dns_udp,0,sizeof(struct sockaddr_in));
-        dns_udp->sin_family = AF_INET;
-        dns_udp->sin_port = htons(53);
-        dns_udp->sin_addr.s_addr = ip;
-        if(dns_udp->sin_addr.s_addr == INADDR_NONE) {
+	if(ip.len == 4) {
+        	dns_udp->V4.sin_family = AF_INET;
+        	dns_udp->V4.sin_port = htons(53);
+        	memcpy(&(dns_udp->V4.sin_addr),ip.ip,4);
+#ifndef NOIP6
+	} else if(ip.len == 16) {
+        	dns_udp->V6.sin_family = AF_INET;
+        	dns_udp->V6.sin_port = htons(53);
+        	memcpy(&(dns_udp->V6.sin_addr),ip.ip,16);
+#endif // NOIP6
+	} else
                 log_it("Problem with bind IP");
                 exit(0);
         }
-        len_inet = sizeof(struct sockaddr_in);
+        len_inet = sizeof(struct sockaddr_all_T);
         if(bind(sock,(struct sockaddr *)dns_udp,len_inet) == -1) {
                 perror("bind error");
 #ifdef MINGW
@@ -434,6 +468,10 @@ SOCKET get_port(uint32_t ip, struct sockaddr_in *dns_udp) {
 
         return sock;
 }
+
+// CODE HERE: Convert sockets to IPv6 compatible sockets, with just
+// enough #ifdefs to allow things to compile on the ancient mingw system
+// w/o IPv6 I still keep around.
 
 // A 16 bit unsigned random number
 static int coDNS_rand16 (lua_State *L) {
