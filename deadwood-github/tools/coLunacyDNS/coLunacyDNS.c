@@ -439,7 +439,7 @@ SOCKET get_port(ip_addr_T ip, struct sockaddr_all_T *dns_udp) {
         setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO,
                 (char *)&noblock, sizeof(struct timeval));
 #endif /* MINGW */
-        memset(dns_udp,0,sizeof(struct sockaddr_in));
+        memset(dns_udp,0,sizeof(struct sockaddr_all_T));
 	if(ip.len == 4) {
         	dns_udp->V4.sin_family = AF_INET;
         	dns_udp->V4.sin_port = htons(53);
