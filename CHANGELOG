@@ -11,7 +11,7 @@ MaraDNS changelog
        an entire select()-based state machine).  coLunacyDNS also supports
        sending proper "not there" replies and both sending and 
        receiving IPv6 DNS records (but presently only over IPv4).
-     * Deadwood ip6 records can not have dashes and spaces in them
+     * Deadwood ip6 records can now have dashes and spaces in them
        to make reading a 128-bit IP easier.
      * SQA tests have been updated to run in CentOS 8.
 
