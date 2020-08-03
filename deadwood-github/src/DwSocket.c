@@ -620,7 +620,7 @@ dw_str *make_synth_ip4(dw_str *rawname, char *ipv4, int ttl) {
 dw_str *make_synth_ip6(dw_str *rawname, dw_str *ipv6, int ttl) {
         dw_str *ip = 0;
         dw_str *out = 0;
-        int a, n, v, l, seen;
+        int a, n, v = 0, l, seen;
         ip = dw_create(18);
         if(ip == 0 || rawname == 0 || ipv6 == 0 || ipv6->len < 32
            || ipv6->len > 64) {
