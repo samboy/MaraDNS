@@ -38,12 +38,14 @@ filter_rfc1918 = 0
 ip4 = {}
 ip4["kabah.foo."] = "10.10.10.10"
 ip6 = {}
-ip6["kabah.foo."] = "fd4d617261444e530000000000001234"
+ip6["kabah.foo."] = "fd4d-6172-6144-4e53 0000-0000-0000-1234"
+maradns_uid = 65534
+maradns_gid = 65534
 EOF
 
 # Make the directory to store the cache
 mkdir cache
-chown nobody:nobody cache # You're using CentOS 5 to test this, of course.
+chown nobody:nobody cache # You're using CentOS 8 to test this, of course.
 
 # Recompile to not have any Valgrind errors (Valgrind doesn't like how I use
 # uninitialized memory as entropy for the random number generator)
