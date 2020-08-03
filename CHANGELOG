@@ -1,5 +1,22 @@
 MaraDNS changelog
 
+   maradns-3.5.0009:
+   This is a stable release of MaraDNS:
+
+     * Add new program: coLunacyDNS.  This is a DNS server which runs a
+       Lua function every time it gets a DNS query.  It uses Lua
+       threads ("co-routines") to have a function which can get a
+       DNS packet from an upstream server and return the result for
+       processing by the Lua script (doing all this required setting up
+       an entire select()-based state machine).  coLunacyDNS also supports
+       sending proper "not there" replies and both sending and 
+       receiving IPv6 DNS records (but presently only over IPv4).
+     * Deadwood ip6 records can not have dashes and spaces in them
+       to make reading a 128-bit IP easier.
+     * SQA tests have been updated to run in CentOS 8.
+
+     (2020-08-03)
+
    maradns-3.5.0008:
    This is a stable release of MaraDNS:
 
