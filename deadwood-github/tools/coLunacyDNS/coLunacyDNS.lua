@@ -37,7 +37,7 @@ function processQuery(Q) -- Called for every DNS query received
   end
 
   -- Contact another DNS server to get our answer
-  t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=upstream})
+  local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=upstream})
 
   -- If coDNS.solve returns an error, the entire processQuery routine is
   -- "on probation" and unable to run coDNS.solve() again (if an attempt

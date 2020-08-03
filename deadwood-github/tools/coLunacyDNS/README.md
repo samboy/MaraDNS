@@ -34,7 +34,7 @@ we return the IP of that query as reported by 9.9.9.9.
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
 function processQuery(Q) -- Called for every DNS query received
    -- Connect to 9.9.9.9 for the query given to this routine
-   t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4="9.9.9.9"})
+   local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4="9.9.9.9"})
    -- Return a "server fail" if we did not get an answer
    if(t.error or t.status ~= 1) then return {co1Type = "serverFail"} end
    -- Otherwise, return the answer
@@ -75,6 +75,7 @@ IPv4 queries, and 149.112.112.112 for IPv6 queries:
 ```lua
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
 function processQuery(Q) -- Called for every DNS query received
+  local t
   if Q.coQtype == 28 then -- Request for IPv6 IP
     t = coDNS.solve({name=Q.coQuery,type="ip6", upstreamIp4="149.112.112.112"})
   elseif Q.coQtype == 1 then -- Request for IPv4 IP
@@ -137,7 +138,7 @@ function processQuery(Q) -- Called for every DNS query received
   end
 
   -- Contact another DNS server to get our answer
-  t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=upstream})
+  local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=upstream})
 
   -- If coDNS.solve returns an error, the entire processQuery routine is
   -- "on probation" and unable to run coDNS.solve() again (if an attempt
