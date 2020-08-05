@@ -497,8 +497,8 @@ void process_numeric_mararc_params() {
         handle_noreply  = get_key_n(DWM_N_handle_noreply,0,1,1);
         min_bind = get_key_n(DWM_N_recurse_min_bind_port,1025,32767,15000);
         num_ports = get_key_n(DWM_N_recurse_number_ports,256,32768,4096);
-        maradns_uid = get_key_n(DWM_N_maradns_uid,10,65535,99);
-        maradns_gid = get_key_n(DWM_N_maradns_gid,10,65535,99);
+        maradns_uid = get_key_n(DWM_N_maradns_uid,10,16777216,99);
+        maradns_gid = get_key_n(DWM_N_maradns_gid,10,16777216,99);
         resurrections = get_key_n(DWM_N_resurrections,0,1,1);
         num_retries = get_key_n(DWM_N_num_retries,0,32,5);
         max_ttl = get_key_n(DWM_N_max_ttl,
