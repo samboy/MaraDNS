@@ -30,6 +30,10 @@
  * a reply.  This is *not* multi-threaded at the OS level, just at the
  * Lua level */
 
+/* The user and group ID coLunacyDNS runs as. */
+#define UID 99
+#define GID 99
+
 #include <stdint.h>
 #ifdef MINGW
 #include <winsock.h>
@@ -89,6 +93,10 @@ typedef struct {
 #endif
         } u;
 } sockaddr_all_T;
+
+#define V4 u.v4
+#define V6 u.v6
+#define Family u.family
 
 // Select() stuff
 fd_set selectFdSet;
@@ -384,7 +392,7 @@ ip_addr_T set_return_ip4(char *returnIp) {
         }
         /* Set the IP we give everyone */
         ipt = inet_addr(returnIp);
-        ipt = ntohl(ip);
+        ipt = ntohl(ipt);
         IPv4answer[12] = ip.ip[0] = (ipt & 0xff000000) >> 24;
         IPv4answer[13] = ip.ip[1] = (ipt & 0x00ff0000) >> 16;
         IPv4answer[14] = ip.ip[2] = (ipt & 0x0000ff00) >>  8;
@@ -394,13 +402,15 @@ ip_addr_T set_return_ip4(char *returnIp) {
 
 /* Convert a NULL-terminated string like "10.1.2.3" in to an IP */
 ip_addr_T get_ip4(char *stringIp) {
-        ip_addr_T ip = 0;
+        ip_addr_T ip;
 	uint32_t ipt = 0xffffffff;
         /* Set the IP we bind to (default is "0", which means "all IPs) */
         if(stringIp != NULL) {
                 ipt = inet_addr(stringIp);
-        }
-        ipt = ntohl(ip);
+        } else {
+		ipt = 0;
+	}
+        ipt = ntohl(ipt);
 	ip.len = 4;
         ip.ip[0] = (ipt & 0xff000000) >> 24;
         ip.ip[1] = (ipt & 0x00ff0000) >> 16;
@@ -419,7 +429,7 @@ void windows_socket_start() {
 #endif /* MINGW */
 
 /* Get port: Get a port locally and return the socket the port is on */
-SOCKET get_port(ip_addr_T ip, struct sockaddr_all_T *dns_udp) {
+SOCKET get_port(ip_addr_T ip, sockaddr_all_T *dns_udp) {
         SOCKET sock;
         int len_inet;
         struct timeval noblock;
@@ -439,22 +449,22 @@ SOCKET get_port(ip_addr_T ip, struct sockaddr_all_T *dns_udp) {
         setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO,
                 (char *)&noblock, sizeof(struct timeval));
 #endif /* MINGW */
-        memset(dns_udp,0,sizeof(struct sockaddr_all_T));
+        memset(dns_udp,0,sizeof(dns_udp));
 	if(ip.len == 4) {
         	dns_udp->V4.sin_family = AF_INET;
         	dns_udp->V4.sin_port = htons(53);
         	memcpy(&(dns_udp->V4.sin_addr),ip.ip,4);
 #ifndef NOIP6
 	} else if(ip.len == 16) {
-        	dns_udp->V6.sin_family = AF_INET;
-        	dns_udp->V6.sin_port = htons(53);
-        	memcpy(&(dns_udp->V6.sin_addr),ip.ip,16);
+        	dns_udp->V6.sin6_family = AF_INET;
+        	dns_udp->V6.sin6_port = htons(53);
+        	memcpy(&(dns_udp->V6.sin6_addr),ip.ip,16);
 #endif // NOIP6
-	} else
+	} else {
                 log_it("Problem with bind IP");
                 exit(0);
         }
-        len_inet = sizeof(struct sockaddr_all_T);
+        len_inet = sizeof(dns_udp);
         if(bind(sock,(struct sockaddr *)dns_udp,len_inet) == -1) {
                 perror("bind error");
 #ifdef MINGW
@@ -468,10 +478,6 @@ SOCKET get_port(ip_addr_T ip, struct sockaddr_all_T *dns_udp) {
 
         return sock;
 }
-
-// CODE HERE: Convert sockets to IPv6 compatible sockets, with just
-// enough #ifdefs to allow things to compile on the ancient mingw system
-// w/o IPv6 I still keep around.
 
 // A 16 bit unsigned random number
 static int coDNS_rand16 (lua_State *L) {
@@ -717,7 +723,7 @@ int humanDNSname(char *in, char *out, int max) {
 void sandbox() {
 #ifndef MINGW
         unsigned char *c = 0;
-        gid_t g = 99;
+        gid_t g = GID;
         if(chroot(".") == -1) {
                 log_it("chroot() failed"); exit(1);
         }
@@ -725,10 +731,10 @@ void sandbox() {
         if(setgroups(1,&g) == -1) {
                 log_it("setgroups() failed"); exit(1);
         }
-        if(setgid(99) != 0) { // Yes, 99 is hard wired to minimize space
+        if(setgid(GID) != 0) { // Yes, this is hard wired right now
                 log_it("setgid() failed"); exit(1);
         }
-        if(setuid(99) != 0) {
+        if(setuid(UID) != 0) {
                 log_it("setuid() failed"); exit(1);
         }
         if(setuid(0) == 0) {
@@ -738,30 +744,38 @@ void sandbox() {
 #endif
 }
 
-/* Create a sockaddr_in that will be bound to a given port; this is
+/* Create a sockaddr_all_T that will be bound to a given port; this is
  * used by the code that binds to a randomly chosen port */
-void setup_bind(struct sockaddr_in *dns_udp, uint16_t port) {
+void setup_bind(sockaddr_all_T *dns_udp, uint16_t port, int len) {
         if(dns_udp == 0) {
                 return;
         }
         memset(dns_udp,0,sizeof(dns_udp));
-        dns_udp->sin_family = AF_INET;
-        dns_udp->sin_addr.s_addr = htonl(INADDR_ANY);
-        dns_udp->sin_port = htons(port);
+	if(len == 4) {
+        	dns_udp->V4.sin_family = AF_INET;
+        	dns_udp->V4.sin_addr.s_addr = htonl(INADDR_ANY);
+        	dns_udp->V4.sin_port = htons(port);
+#ifndef NOIP6
+	} else if(len == 16) {
+		dns_udp->V6.sin6_family = AF_INET6;
+		dns_udp->V6.sin6_addr = in6addr_any;
+		dns_udp->V6.sin6_port = htons(port);
+#endif // NOIP6
+	} 
         return;
 }
 
 /* This tries to bind to a random port up to 10 times; should it fail
  * after 10 times, it returns a -1 */
-int do_random_bind(SOCKET s) {
-        struct sockaddr_in dns_udp;
+int do_random_bind(SOCKET s, int len) {
+        sockaddr_all_T dns_udp;
         int a = 0;
         int success = 0;
 
         for(a = 0; a < 10; a++) {
                 /* Set up random source port to bind to, between 20200
                  * and 24296 */
-                setup_bind(&dns_udp, 20200 + (rand16() & 0xfff));
+                setup_bind(&dns_udp, 20200 + (rand16() & 0xfff), len);
                 /* Try to bind to that port */
                 if(bind(s, (struct sockaddr *)&dns_udp, sizeof(dns_udp))!=-1) {
                         success = 1;
@@ -779,8 +793,8 @@ int do_random_bind(SOCKET s) {
  * select() to resume a thread once we get a DNS reply */
 SOCKET startServer(lua_State *L) {
         SOCKET sock;
-        struct sockaddr_in dns_udp;
-        uint32_t ip = 0; /* 0.0.0.0; default bind IP */
+        sockaddr_all_T dns_udp;
+        ip_addr_T ip; 
         int a;
 
         // Initialize remoteCo
@@ -792,9 +806,10 @@ SOCKET startServer(lua_State *L) {
         if(lua_type(L, -1) == LUA_TSTRING) {
                 char *bindIp;
                 bindIp = (char *)lua_tostring(L, -1);
-                ip = get_ip(bindIp);
+                ip = get_ip4(bindIp);
         } else {
                 log_it("Unable to get bindIp; using 0.0.0.0");
+                ip = get_ip4(0);
         }
         lua_pop(L, 1); // Remove _G.bindIp from stack, restoring the stack
 
@@ -810,13 +825,13 @@ SOCKET startServer(lua_State *L) {
 // DNS reply and wrap up the thread
 void endThread(lua_State *L, lua_State *LT, char *threadName,
                 int qLen, char *in, SOCKET sock,
-                uint32_t fromIp, uint16_t fromPort) {
+                ip_addr_T fromIp, uint16_t fromPort) {
         const char *rs;
-        struct sockaddr_in dns_out;
-        memset(&dns_out,0,sizeof(struct sockaddr_in));
-        dns_out.sin_family = AF_INET;
-        dns_out.sin_port = htons(fromPort);
-        dns_out.sin_addr.s_addr = htonl(fromIp);
+        sockaddr_all_T dns_out;
+        memset(&dns_out,0,sizeof(dns_out));
+        dns_out.V4.sin_family = AF_INET;
+        dns_out.V4.sin_port = htons(fromPort);
+	memcpy(&(dns_out.V4.sin_addr.s_addr),&fromIp.ip,4);
         int leni = sizeof(struct sockaddr);
 
         // Pull data from Lua processQuery() function return value
@@ -945,7 +960,7 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
         }
         if(rs != NULL) {
                 int a;
-                set_return_ip((char *)rs);
+                set_return_ip4((char *)rs);
                 int outLen;
                 outLen = 17 + qLen;
                 for(a=0;a<16;a++) {
@@ -975,7 +990,7 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
 void sendDNSpacket(int a) {
 	char out[512]; // Packet to send 
 	int outLen, b;
-	struct sockaddr_in addrType;
+	sockaddr_all_T addrType;
 	memset(&addrType,0,sizeof(addrType));
 	if(remoteCo[a].coDNSlen > 490) { return; } // Sanity check
 	out[0] = (remoteCo[a].upQueryID & 0xff00) >> 8;
@@ -995,10 +1010,10 @@ void sendDNSpacket(int a) {
 	out[outLen++] = 0; out[outLen++] = 1; // Class "IN"
 	remoteCo[a].sockRemote = socket(AF_INET,SOCK_DGRAM,0);
 	make_socket_nonblock(remoteCo[a].sockRemote); 
-	addrType.sin_family = AF_INET;
-	addrType.sin_port = htons(53);
-	addrType.sin_addr.s_addr = remoteCo[a].upstreamIP;
-	if(do_random_bind(remoteCo[a].sockRemote) == -1) {
+	addrType.V4.sin_family = AF_INET;
+	addrType.V4.sin_port = htons(53);
+	memcpy(&(addrType.V4.sin_addr.s_addr), remoteCo[a].upstreamIP.ip, 4);
+	if(do_random_bind(remoteCo[a].sockRemote, 4) == -1) {
 		set_time();
 		closesocket(remoteCo[a].sockRemote);
 		remoteCo[a].sockRemote = NO_REPLY;
@@ -1110,13 +1125,13 @@ char *human2DNS(int *coDNSlen, char *z, lua_State *LT) {
 //    added, to the Lua return stack, information about what the
 //    problem is.
 int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
-                SOCKET sock, uint32_t fromIp, uint16_t fromPort,
+                SOCKET sock, ip_addr_T fromIp, uint16_t fromPort,
                 char *in) {
         int a;
         char *coDNSname;
         int coDNSlen = 0;
         const char *z;
-        uint32_t upstreamIP = 0;
+        ip_addr_T upstreamIP;
 	uint16_t qType = 0;
 
         if(lua_type(LT, -1) != LUA_TTABLE) {
@@ -1154,7 +1169,7 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
                         "ERROR: 'upstreamIp4' not set", 1);
         }
         z = luaL_checkstring(LT, -1);
-        upstreamIP = inet_addr(z);
+        upstreamIP = get_ip4((char *)z);
         lua_pop(LT, 1); // (t.)upstreamIp4 popped from top
 
         // Do t.name last, since it allocates memory
@@ -1383,15 +1398,15 @@ void resumeThread(int n) {
 
 // Process an incoming DNS query
 void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
-                   uint32_t fromIp, uint16_t fromPort) {
+                   ip_addr_T fromIp, uint16_t fromPort) {
         char query[500];
         int qLen = -1;
         char fromString[128]; /* String of sending IP */
 
-        snprintf(fromString,120,"%d.%d.%d.%d",fromIp >> 24,
-                (fromIp & 0xff0000) >> 16,
-                (fromIp & 0xff00) >> 8,
-                 fromIp & 0xff);
+        snprintf(fromString,120,"%d.%d.%d.%d",fromIp.ip[0],
+                fromIp.ip[1],
+                fromIp.ip[2],
+                fromIp.ip[3]);
 
         /* Prepare the reply */
         if(inLen > 12 && in[5] == 1) {
@@ -1503,13 +1518,13 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
 
 void runServer(lua_State *L) {
         int a, len_inet;
-        struct sockaddr_in dns_in;
+        sockaddr_all_T dns_in;
         struct timeval selectTimeout;
 
         /* Now that we know the IP and are on port 53, process incoming
          * DNS requests */
         while(serverRunning == 1) {
-                uint32_t fromIp; /* Who sent us a query */
+                ip_addr_T fromIp; /* Who sent us a query */
                 uint16_t fromPort; /* On which port */
                 SOCKET sock = INVALID_SOCKET;
                 char *in = 0;
@@ -1575,13 +1590,12 @@ void runServer(lua_State *L) {
                         continue;
                 }
                 // IPv6 support is left as an exercise for the reader
-                if(dns_in.sin_family != AF_INET) {
+                if(dns_in.V4.sin_family != AF_INET) {
                         free(in);
                         continue;
                 }
-                fromIp = dns_in.sin_addr.s_addr;
-                fromIp = ntohl(fromIp);
-                fromPort = ntohs(dns_in.sin_port);
+		memcpy(fromIp.ip,&(dns_in.V4.sin_addr.s_addr),4);
+                fromPort = ntohs(dns_in.V4.sin_port);
                 processQueryC(L, sock, in, len_inet, fromIp, fromPort);
         }
 }
