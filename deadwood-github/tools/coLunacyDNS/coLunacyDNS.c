@@ -30,9 +30,11 @@
  * a reply.  This is *not* multi-threaded at the OS level, just at the
  * Lua level */
 
-/* The user and group ID coLunacyDNS runs as. */
-#define UID 99
-#define GID 99
+/* The user and group ID coLunacyDNS runs as.  Do this as root:
+ * useradd -u 90909 -M -N -s /bin/true codns
+ */
+#define UID 90909
+#define GID 100 
 
 #include <stdint.h>
 #ifdef MINGW
