@@ -1,5 +1,4 @@
 /* Copyright (c) 2007-2020 Sam Trenholme
- * IPv6 code by Jean-Jacques Sarton
  *
  * TERMS
  *
