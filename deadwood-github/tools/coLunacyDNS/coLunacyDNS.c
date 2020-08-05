@@ -449,7 +449,7 @@ SOCKET get_port(ip_addr_T ip, sockaddr_all_T *dns_udp) {
         setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO,
                 (char *)&noblock, sizeof(struct timeval));
 #endif /* MINGW */
-        memset(dns_udp,0,sizeof(dns_udp));
+        memset(dns_udp,0,sizeof(sockaddr_all_T));
 	if(ip.len == 4) {
         	dns_udp->V4.sin_family = AF_INET;
         	dns_udp->V4.sin_port = htons(53);
@@ -464,7 +464,7 @@ SOCKET get_port(ip_addr_T ip, sockaddr_all_T *dns_udp) {
                 log_it("Problem with bind IP");
                 exit(0);
         }
-        len_inet = sizeof(dns_udp);
+        len_inet = sizeof(sockaddr_all_T);
         if(bind(sock,(struct sockaddr *)dns_udp,len_inet) == -1) {
                 perror("bind error");
 #ifdef MINGW
