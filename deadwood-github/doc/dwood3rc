@@ -40,7 +40,7 @@ maximum_cache_elements = 60000
 # If you want to read and write the cache from disk, make sure chroot_dir 
 # above is readable and writable by the maradns_uid/gid above, and 
 # uncomment the following line
-cache_file = "dw_cache"
+#cache_file = "cache/dw_cache"
 
 # The following line tells deadwood to fetch an expired record if it's 
 # impossible to connect to any nameservers
