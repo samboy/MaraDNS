@@ -31,10 +31,10 @@
  * Lua level */
 
 /* The user and group ID coLunacyDNS runs as.  Do this as root:
- * useradd -u 90909 -M -N -s /bin/true codns
+ * useradd -u 707 -M -N -s /bin/true codns
  */
-#define UID 90909
-#define GID 100 
+#define UID 707
+#define GID 707 
 
 #include <stdint.h>
 #ifdef MINGW

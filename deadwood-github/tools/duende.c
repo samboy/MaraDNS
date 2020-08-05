@@ -44,7 +44,7 @@
 /* The UID that the Duende logging process uses.  CHANGE THE DUENDE MAN
    PAGE IF YOU CHANGE THIS VALUE (same general process as changing the
    mararc man page; the source file for the duende man page is duende.ej) */
-#define DUENDE_LOGGER_UID 66
+#define DUENDE_LOGGER_UID 707
 
 /* The directory that Duende runs in.  This directory has to exist for
    Duende to be able to run.  Again, IF YOU CHANGE THIS, CHANGE THE
