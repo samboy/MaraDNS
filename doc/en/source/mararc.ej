@@ -486,7 +486,7 @@ MaraDNS, as soon as possible drops root privileges, minimizing the
 damage a potential attacker can cause should there be a security
 problem with MaraDNS.  This is the UID maradns becomes.
 <p>
-The default UID is 90909.
+The default UID is 707.
 
 <h2>maradns_gid</h2>
 maradns_gid: The numeric GID that MaraDNS will run as.
@@ -495,7 +495,7 @@ maradns_gid: The numeric GID that MaraDNS will run as.
 This accepts a single numerical value: The GID to run MaraDNS as.
 <p>
 
-The default GID is 90909.
+The default GID is 707.
 
 <h2>max_ar_chain</h2>
 max_ar_chain: The maximum number of records to display if a record in
