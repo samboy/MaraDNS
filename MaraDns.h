@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2014 Sam Trenholme
+/* Copyright (c) 2002-2020 Sam Trenholme
  *
  * TERMS
  *
@@ -31,6 +31,9 @@
 
 /* This is the root server list as of 2007/11/15; the root servers were
  * last changed 2007/11/01 */
+/* 2020 update: No longer used; Deadwood has different root server list. 
+ * Actually, these days Deadwood has an upstream server list, and only
+ * has root servers in documentation examples */
 #define ROOT_SERVERS "198.41.0.4"       /* a.root-servers.net (VeriSign) */ \
                      ",192.228.79.201"  /* b.root-servers.net (ISI) */ \
                      ",192.33.4.12"     /* c.root-servers.net (Cogent) */ \
@@ -50,8 +53,9 @@
    a special 'MaraDNS' user.  This user needs to be able to enter
    the /etc/maradns directory, and read all zone files in /etc/maradns
 
-   If you change this from 99, please also change the mararc man page, which
-   states the default value for this is 99.  To change the man page:
+   If you change this from 90909, please also change the mararc man page, 
+   which states the default value for this is 90909.  To change the 
+   man page:
 
    * Enter the doc/en/source directory
 
@@ -71,16 +75,16 @@
      line to point to Bash
  */
 
-#define MARADNS_DEFAULT_UID 99
+#define MARADNS_DEFAULT_UID 90909
 
 /* The default GID (Group ID) that MaraDNS has; see the default UID notes
    above.  Again: CHANGE THE MARARC MAN PAGE IF YOU CHANGE THIS VALUE */
-#define MARADNS_DEFAULT_GID 99
+#define MARADNS_DEFAULT_GID 90909
 
 /* The UID that the Duende logging process uses.  CHANGE THE DUENDE MAN
    PAGE IF YOU CHANGE THIS VALUE (same general process as changing the
    mararc man page; the source file for the duende man page is duende.ej) */
-#define DUENDE_LOGGER_UID 66
+#define DUENDE_LOGGER_UID 90910
 
 /* The directory that Duende runs in.  This directory has to exist for
    Duende to be able to run.  Again, IF YOU CHANGE THIS, CHANGE THE

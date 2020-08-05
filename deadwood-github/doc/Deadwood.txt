@@ -221,13 +221,13 @@ ip_blocklist
 maradns_uid
 
    The user-id Deadwood runs as. This can be any number between 10 and
-   65535; the default value is 99 (nobody on RedHat-derived Linux
-   distributions). This value is not used on Windows systems.
+   16777216; the default value is 90909 (a 32-bit value which should be
+   unused). This value is not used on Windows systems.
 
 maradns_gid
 
    The group-id Deadwood runs as. This can be any number between 10 and
-   65535; the default value is 99. This value is not used on Windows
+   16777216; the default value is 90909. This value is not used on Windows
    systems.
 
 max_ar_chain

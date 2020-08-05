@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Tue Jul  7 01:32:39 2020
+.\" Last updated Wed Aug  5 07:22:52 2020
 .\"
 .TH DEADWOOD 1 "August 2009" DEADWOOD "Deadwood reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -367,15 +367,15 @@ name.
 \fBmaradns_uid\fR
 .PP
 The user-id Deadwood runs as. This can be any number
-between 10 and 65535; the default value is 99 (nobody on
-RedHat-derived Linux distributions). This value is not
+between 10 and 16777216; the default value is 90909 (a
+32-bit value which should be unused). This value is not
 used on Windows systems.
 .PP
 .in -3
 \fBmaradns_gid\fR
 .PP
 The group-id Deadwood runs as. This can be any
-number between 10 and 65535; the default value is 99. This
+number between 10 and 16777216; the default value is 90909. This
 value is not used on Windows systems.
 .PP
 .in -3

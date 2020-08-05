@@ -40,10 +40,10 @@ handle_overload = 1
 #ip_blocklist = "10.1.2.3, 10.1.2.4"
 
 # User-id Deadwood runs as
-maradns_uid = 99
+maradns_uid = 90909
 
 # Group-id Deadwood runs as
-maradns_gid = 99
+maradns_gid = 90909
 
 # If this is 1, enable RR rotation.  Otherwise, it is disabled
 max_ar_chain = 1
