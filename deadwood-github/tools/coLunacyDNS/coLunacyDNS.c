@@ -537,6 +537,90 @@ static int coDNS_key(lua_State *L) {
 }
 #endif // XTRA
 
+// File read API
+FILE *oneFile = NULL;
+
+static int coDNS_open1(lua_State *L) {
+	const char *filename = luaL_checkstring(L,1);
+	char *f;
+	int a;
+
+	if(oneFile != NULL) {
+		fclose(oneFile);
+		oneFile = NULL;
+	}
+	// Validate filename
+	f = (char *)filename;
+	a = 0;
+	while(*f != 0) {
+		// '^[0-9A-Z_a-z][0-9A-Z_a-z%.]+$' for filename
+		if(*f == '.' && a == 0) {
+			lua_pushboolean(L, 0);
+			return 1;
+		} else if(*f < '.' || (*f > '.' && *f < '0') ||
+			  (*f > '9' && *f < 'A') ||  
+                          (*f > 'Z' && *f < '_') || *f == '`' ||
+			  *f > 'z') {
+			lua_pushboolean(L, 0);
+			return 1;
+		}
+		a++;
+		f++;
+	}
+	f = (char *)filename;
+	oneFile = fopen(f, "r");
+	if(oneFile == NULL) {
+		lua_pushboolean(L, 0);
+		return 1;
+	}
+	lua_pushboolean(L, 1);
+	return 1;
+}
+
+// Read a line from the file, removing any trailing newline	
+static int coDNS_read1(lua_State *L) {
+	char result[512];
+	int a;
+	char *r;
+	if(oneFile == NULL) {	
+		lua_pushboolean(L, 0);
+		return 1;
+	}
+	r = fgets(result, 500, oneFile);
+	if(r == NULL) {
+		fclose(oneFile);
+		oneFile = NULL;
+		lua_pushboolean(L, 0);
+		return 1;
+	}
+
+	// Remove the trailing newline
+	a = 0; 
+	while(a < 505 && *r != 0) {
+		if(*r == '\r' || *r == '\n') {
+			*r = 0;
+			break;
+		}
+		a++;
+		r++;
+	}
+
+	lua_pushstring(L, result);
+	return 1;
+}
+
+static int coDNS_close1(lua_State *L) {
+	if(oneFile == NULL) {
+		lua_pushboolean(L, 0);
+		return 1;
+	}
+	fclose(oneFile);
+	oneFile = NULL;
+	lua_pushboolean(L, 1);
+	return 1;
+}
+
+// Library functions we open and use
 static const luaL_Reg coDNSlib[] = {
         {"rand16", coDNS_rand16},
         {"rand32", coDNS_rand32},
@@ -546,6 +630,9 @@ static const luaL_Reg coDNSlib[] = {
 #ifdef XTRA
         {"key", coDNS_key},
 #endif // XTRA
+	{"open1", coDNS_open1},
+	{"read1", coDNS_read1},
+	{"close1", coDNS_close1},
         {NULL, NULL}
 };
 
@@ -624,6 +711,10 @@ lua_State *init_lua(char *fileName) {
                         log_it((char *)lua_tostring(L,-1));
                         return NULL;
                 }
+		if(oneFile != NULL) {
+			fclose(oneFile);
+			oneFile = NULL;
+		}
         } else {
                 log_it("Unable to open lua file with name:");
                 log_it(useFilename);
@@ -1348,6 +1439,10 @@ void resumeThread(int n) {
 	lua_settable(remoteCo[n].LT,-3);
 
         thread_status = lua_resume(remoteCo[n].LT, 1);
+	if(oneFile != NULL) {
+		fclose(oneFile);
+		oneFile = NULL;
+	}
         if(thread_status == LUA_YIELD) {
                 int status;
                 // We need to return right after newDNS because this
@@ -1371,6 +1466,10 @@ void resumeThread(int n) {
                         lua_settable(remoteCo[n].LT,-3);
                 }
                 thread_status = lua_resume(remoteCo[n].LT, 1);
+		if(oneFile != NULL) {
+			fclose(oneFile);
+			oneFile = NULL;
+		}
         }
         if(thread_status == 0) {
                 free(remoteCo[n].coDNSname);
@@ -1468,6 +1567,10 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
                 lua_settable(LT, -3);
 
                 thread_status = lua_resume(LT, 1);
+		if(oneFile != NULL) {
+			fclose(oneFile);
+			oneFile = NULL;
+		}
                 if(thread_status == LUA_YIELD) {
                         int status;
                         status = newDNS(L, LT, threadName, qLen, sock,
@@ -1484,6 +1587,10 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
                                 lua_settable(LT,-3);
                         }
                         thread_status = lua_resume(LT, 1);
+			if(oneFile != NULL) {
+				fclose(oneFile);
+				oneFile = NULL;
+			}
                 }
 
                 if(thread_status == 0) {

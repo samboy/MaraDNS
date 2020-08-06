@@ -1,0 +1,4 @@
+# This is an example file with possible IPs to send to clients
+10.1.2.3
+10.1.2.4
+10.1.2.5
