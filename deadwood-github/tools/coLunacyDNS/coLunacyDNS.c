@@ -1071,10 +1071,12 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                 lua_pop(LT, 1); // t.co1Data
         }
         // Derefernce the thread so it can be collected
+	lua_settop(L, 0); // Clean any stack currently there
         lua_getfield(L, LUA_GLOBALSINDEX, "_coThreads"); // Lua 5.1
         lua_pushstring(L,threadName);
         lua_pushnil(L); // This will delete the table entry
         lua_settable(L, -3);
+	lua_settop(L, 0); // Clean the stack up
         free(threadName);
         free(in);
 }
@@ -1495,10 +1497,12 @@ void resumeThread(int n) {
         free(remoteCo[n].in);
         free(remoteCo[n].coDNSname);
         // Derefernce the thread so it can be collected
+	lua_settop(remoteCo[n].L, 0); // Clean main stack
         lua_getfield(remoteCo[n].L, LUA_GLOBALSINDEX, "_coThreads");
         lua_pushstring(remoteCo[n].L, remoteCo[n].threadName);
         lua_pushnil(remoteCo[n].L);
         lua_settable(remoteCo[n].L, -3);
+	lua_settop(remoteCo[n].L, 0); // Clean main stack
         free(remoteCo[n].threadName);
 }
 
@@ -1609,10 +1613,12 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
                         lua_settop(LT, 0);
                         free(in);
                         // Derefernce the thread so it can be collected
+                        lua_settop(L,0); // Clean the stack
                         lua_getfield(L, LUA_GLOBALSINDEX, "_coThreads");
                         lua_pushstring(L,threadName);
                         lua_pushnil(L); // This will delete the table entry
                         lua_settable(L, -3);
+                        lua_settop(L,0); // Clean the stack
                         free(threadName);
                 } else {
                         log_it("Error calling function processQuery");
@@ -1620,10 +1626,12 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
                         lua_settop(LT,0); // Clean the stack
                         free(in);
                         // Derefernce the thread so it can be collected
+                        lua_settop(L,0); // Clean the stack
                         lua_getfield(L, LUA_GLOBALSINDEX, "_coThreads");
                         lua_pushstring(L,threadName);
                         lua_pushnil(L); // This will delete the table entry
                         lua_settable(L, -3);
+                        lua_settop(L,0); // Clean the stack
                         free(threadName);
                 }
         } else {
