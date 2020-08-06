@@ -45,11 +45,11 @@ function processQuery(Q) -- Called for every DNS query received
   -- return to the client.
   -- The "return" call closes the opened file for us.
   if string.lower(Q.coQuery) == "example.com." then
-    ipList = {}
+    local ipList = {}
     if not coDNS.open1("exampleIPs.txt") then
       return {co1Type = "serverFail"}
     end
-    line = "#"
+    local line = "#"
     while line do
       line = string.gsub(line,'#.*','') -- Remove # comments
       if string.match(line,'^%d') then -- If line starts with a number

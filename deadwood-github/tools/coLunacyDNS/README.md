@@ -300,7 +300,7 @@ We have an API which can be used to read files.  For example:
 if not coDNS.open1("filename.txt") then
   return {co1Type = "serverFail"}
 end
-line = ""
+local line = ""
 while line do
   if line then coDNS.log("Line: " .. line) end
   line = coDNS.read1()
