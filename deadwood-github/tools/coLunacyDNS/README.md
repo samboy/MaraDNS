@@ -1,9 +1,9 @@
 # coLunacyDNS
 
-coLunacyDNS is a simply IPv4-only forwarding DNS server controlled
-by a Lua script.  It allows a lot of flexibility because it uses
-a combination of C for high performance and Lua for maximum
-flexibility.
+coLunacyDNS is a simply IPv4-only forwarding DNS server (with support only
+for IPv4 and IPv6 IP records) controlled by a Lua script.  It allows a
+lot of flexibility because it uses a combination of C for high performance
+and Lua for maximum control.
 
 # Getting started
 
@@ -334,8 +334,8 @@ NUL characters in the line also truncate the string read.  If a line
 is read from the file, `coDNS.read1()` returns the line which was read.
 Otherwise, `coDNS.read1()` returns the `false` Lua boolean value.
 
-`coDNS.read1()` assumes that a single line will be 500 bytes or 
-less in size.  Behavior is undefined when trying to read a longer line.
+`coDNS.read1()` assumes that a single line will be under 500 bytes 
+in size.  Behavior is undefined when trying to read a longer line.
     
 `coDNS.close1()` closes an open file; a file is also closed when
 opening another file, ending `processQuery()`, or calling `coDNS.solve()`.
