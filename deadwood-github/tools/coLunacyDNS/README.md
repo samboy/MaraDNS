@@ -333,6 +333,9 @@ stripped from the end (unlike Perl, coLunacyDNS does not require a `chop`);
 NUL characters in the line also truncate the string read.  If a line
 is read from the file, `coDNS.read1()` returns the line which was read.
 Otherwise, `coDNS.read1()` returns the `false` Lua boolean value.
+
+`coDNS.read1()` assumes that a single line will be 500 bytes or 
+less in size.  Behavior is undefined when trying to read a longer line.
     
 `coDNS.close1()` closes an open file; a file is also closed when
 opening another file, ending `processQuery()`, or calling `coDNS.solve()`.
