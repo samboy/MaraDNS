@@ -322,8 +322,8 @@ configuration file used by coLunacyDNS, before listening to DNS queries.
 The filename must start with an ASCII letter, number, or the `_`
 (underscore) character.  The filename may contain only ASCII letters,
 numbers, instances of `.` (the dot character), or the `_` character.
-In particular, the filename may not contain `/`, `\`, or any commonly
-used directory separator.
+In particular, the filename may not contain `/`, `\`, or any other
+commonly used directory separator.
     
 The file has to be in the same directory that coLunacyDNS is solved
 from.  The file may only be read; writing to the file is not possible.
