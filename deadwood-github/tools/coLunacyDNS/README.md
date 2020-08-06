@@ -178,7 +178,6 @@ what it can do:
 * `coDNS.open1()` can only open a file in the directory coLunacyDNS is
   called from; it can not open files in other directories.
 
-
 # Limitations
 
 coLunacyDNS, at this time, only processes requests for DNS `A` queries
@@ -324,6 +323,11 @@ The filename must start with an ASCII letter, number, or the `_`
 numbers, instances of `.` (the dot character), or the `_` character.
 In particular, the filename may not contain `/`, `\`, or any other
 commonly used directory separator.
+
+If the file is not present, or the filename contains an illegal
+character, or the file can not be opened, `coDNS.open1` will return
+a `false` boolean value.  Otherwise, `open1` returns the `true` 
+boolean.
     
 The file has to be in the same directory that coLunacyDNS is run
 from.  The file may only be read; writing to the file is not possible.
