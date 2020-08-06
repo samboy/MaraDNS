@@ -75,6 +75,7 @@
 #else // MINGW true
 u_long dont_block = 0;
 #define make_socket_nonblock(a) dont_block=1;ioctlsocket(a,FIONBIO,&dont_block)
+#define sa_family_t uint16_t
 #endif
 
 // We need something which can store an IPv4 or IPv6 address
