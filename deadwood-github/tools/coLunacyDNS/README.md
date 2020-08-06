@@ -325,7 +325,7 @@ numbers, instances of `.` (the dot character), or the `_` character.
 In particular, the filename may not contain `/`, `\`, or any other
 commonly used directory separator.
     
-The file has to be in the same directory that coLunacyDNS is solved
+The file has to be in the same directory that coLunacyDNS is run
 from.  The file may only be read; writing to the file is not possible.
     
 `coDNS.read1()` reads a single line from the file.  Any newline is
