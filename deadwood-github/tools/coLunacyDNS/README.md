@@ -143,7 +143,7 @@ function processQuery(Q) -- Called for every DNS query received
     t = coDNS.solve({name=Q.coQuery, type="ip6", upstreamIp4=upstream})
   end
   -- Handle errors; it is not possible to call coDNS.solve() again
-  -- in an invocation of processQuery is t.error is set.
+  -- in an invocation of processQuery if t.error is set.
   if t.error then
     coDNS.log(t.error)
     return {co1Type = "serverFail"}
