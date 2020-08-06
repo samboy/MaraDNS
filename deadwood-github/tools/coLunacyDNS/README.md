@@ -173,8 +173,11 @@ what it can do:
   Lua's standard libs.  (bit32 actually is another Bit library, but with a
   `bit32` interface.)
 * A special `coDNS` library is also loaded.
-* The program is designed to not give Lua access to the filesystem nor 
-  be able to do anything malicious.
+* The program is designed to not give Lua very limted access to the 
+  filesystem nor be able to do anything malicious.
+* `coDNS.open1()` can only open a file in the directory coLunacyDNS is
+  called from; it can not open files in other directories.
+
 
 # Limitations
 
@@ -247,6 +250,9 @@ coLunacyDNS also includes a few functions in its own `coDNS` space:
   returns once the data is available (or if the DNS server does not 
   respond, or if it gives us a reply that we did not get a record).
   This function is described in more detail in the following section.
+* `coDNS.open1`, `coDNS.read1`, and `coDNS.close1` can be used to
+  read a text file in the same directory that coLunacyDNS is being 
+  run from.  Details are below, after the `coDNS.solve` section.
 
 # coDNS.solve
 
@@ -286,6 +292,52 @@ It outputs a table with a number of possible elements:
 Since this function allows other Lua threads to run while it awaits a
 DNS reply, global variables may change in value while the DNS record is
 being fetched.
+
+# Reading files
+
+We have an API which can be used to read files.  For example:
+
+```lua
+if not coDNS.open1("filename.txt") then
+  return {co1Type = "serverFail"}
+end
+line = ""
+while line do
+  if line then coDNS.log("Line: " .. line) end
+  line = coDNS.read1()
+end
+```
+    
+The calls are: `coDNS.open1(filename)`, `coDNS.read1()`, and 
+`coDNS.close1()`.
+    
+Only a single file can be open at a time.  If `coDNS.open1()` is called
+when a file is open, the currently open file is closed before we attempt
+to open the new file.  If `coDNS.solve()` is called while a file is open,
+the file is closed before we attempt to solve the DNS query.  If we exit
+`processQuery()` while a file is open, the file is closed as we exit the
+function.  Files are also closed when we finish parsing the Lua
+configuration file used by coLunacyDNS, before listening to DNS queries.
+    
+The filename must start with an ASCII letter, number, or the `_`
+(underscore) character.  The filename may contain only ASCII letters,
+numbers, instances of `.` (the dot character), or the `_` character.
+In particular, the filename may not contain `/`, `\`, or any commonly
+used directory separator.
+    
+The file has to be in the same directory that coLunacyDNS is solved
+from.  The file may only be read; writing to the file is not possible.
+    
+`coDNS.read1()` reads a single line from the file.  Any newline is
+stripped from the end (unlike Perl, coLunacyDNS does not require a `chop`);
+NUL characters in the line also truncate the string read.  If a line
+is read from the file, `coDNS.read1()` returns the line which was read.
+Otherwise, `coDNS.read1()` returns the `false` Lua boolean value.
+    
+`coDNS.close1()` closes an open file; a file is also closed when
+opening another file, ending `processQuery()`, or calling `coDNS.solve()`.
+It is mainly here to give programmers trained to close open files
+a function which does so.
 
 # processQuery
 
