@@ -96,6 +96,74 @@ function processQuery(Q) -- Called for every DNS query received
 end
 ```
 
+Here is an example of using a block list to block bad domains.
+The block list is stored in a file with a Deadwood compatible block
+list; see the file `make.blocklist.sh` in the upper level directory
+for the tool used to make the file we read to find domains to 
+block.
+
+```lua
+bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
+
+-- Open up block list to know which domains to block
+blockList = {}
+if coDNS.open1("blocklist") then
+  line = coDNS.read1()
+  while line do
+    local name, seen = string.gsub(line,'^ip4%["([^"]+)".*$','%1')
+    if seen > 0 then
+      blockList[name] = "X"
+    end
+    line = coDNS.read1()
+  end
+end
+
+function processQuery(Q) -- Called for every DNS query received
+  local upstream = "9.9.9.9"
+  local t
+
+  -- Log query
+  coDNS.log("Got query for " .. Q.coQuery .. " from " ..
+            Q.coFromIP .. " type " ..  Q.coFromIPtype)
+
+  -- Process blocklist
+  if blockList[Q.coQuery] == "X" then
+    coDNS.log("Name is on block list.")
+    return {co1Type = "notThere"}
+  end
+
+  if Q.coQtype ~= 1 and Q.coQtype ~= 28 then -- If not IPv4 or IPv6 IP query
+    return {co1Type = "notThere"} -- Send "not there" (like NXDOMAIN)
+  end
+
+  -- Look for the answer upstream
+  if Q.coQtype == 1 then
+    t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=upstream})
+  else
+    t = coDNS.solve({name=Q.coQuery, type="ip6", upstreamIp4=upstream})
+  end
+  -- Handle errors; it is not possible to call coDNS.solve() again
+  -- in an invocation of processQuery is t.error is set.
+  if t.error then
+    coDNS.log(t.error)
+    return {co1Type = "serverFail"}
+  end
+
+  -- If we got an answer we can use, send it to them
+  if t.status > 0 and t.answer then
+    if t.status == 1 then
+      return {co1Type = "A", co1Data = t.answer} 
+    elseif t.status == 28 then
+      return {co1Type = "ip6", co1Data = t.answer}
+    else -- Send notThere for unknown query type
+      return {co1Type = "notThere"}
+    end
+  end
+  coDNS.log("Unknown issue")
+  return {co1Type = "serverFail"}
+end
+```
+
 Here is a more complicated example:
 
 ```lua
