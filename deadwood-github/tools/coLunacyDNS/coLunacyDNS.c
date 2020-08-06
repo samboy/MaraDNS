@@ -81,7 +81,11 @@ u_long dont_block = 0;
 // We need something which can store an IPv4 or IPv6 address
 typedef struct {
         uint8_t len;
+#ifndef NOIP6
 	uint8_t ip[17];
+#else
+	uint8_t ip[4];
+#endif
 } ip_addr_T;
 
 /* storage for both sockaddr_in and sockaddr_in6; note that this needs
