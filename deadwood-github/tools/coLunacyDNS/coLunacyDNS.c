@@ -1536,6 +1536,8 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
                 lua_pushvalue(L,-3); // Copy LT thread pointer to stack top
                 lua_settable(L,-3); // Pop two from top, put in table
                 lua_pop(L, 1); // Pointer to LT thread
+		lua_settop(L, 0); // Clean L stack
+		lua_settop(LT, 0); // Clean LT stack
 
                 qType = (in[13 + qLen] * 256) + in[14 + qLen];
                 lua_getglobal(LT, "processQuery");
@@ -1608,15 +1610,19 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
                         lua_settable(L, -3);
                         free(threadName);
                 } else {
+			printf("HERE0 %d\n",thread_status);
                         log_it("Error calling function processQuery");
                         log_it((char *)lua_tostring(LT, -1));
+			printf("HERE1\n"); // DEBUG
                         lua_settop(LT,0); // Clean the stack
                         free(in);
+			printf("HERE2\n"); // DEBUG
                         // Derefernce the thread so it can be collected
                         lua_getfield(L, LUA_GLOBALSINDEX, "_coThreads");
                         lua_pushstring(L,threadName);
                         lua_pushnil(L); // This will delete the table entry
                         lua_settable(L, -3);
+			printf("HERE3\n"); // DEBUG
                         free(threadName);
                 }
         } else {
