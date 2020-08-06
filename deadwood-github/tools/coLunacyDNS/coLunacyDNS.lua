@@ -38,17 +38,29 @@ function processQuery(Q) -- Called for every DNS query received
   end
 
   -- If they ask for example.com, return one of the IPs in the file
-  -- "exampleIPs.txt"
+  -- "exampleIPs.txt".  The format of this file is: Comments start
+  -- with #.  Otherwise, a line can have an IPv4 IP in dotted decimal
+  -- notation on it.  
+  -- Once we read this file, we randomly choose an IP from the file to
+  -- return to the client.
+  -- The "return" call closes the opened file for us.
   if string.lower(Q.coQuery) == "example.com." then
+    ipList = {}
     if not coDNS.open1("exampleIPs.txt") then
       return {co1Type = "serverFail"}
     end
-    line = "FIRST"
+    line = "#"
     while line do
-      if line then coDNS.log("Line: " .. line) end
+      line = string.gsub(line,'#.*','') -- Remove # comments
+      if string.match(line,'^%d') then -- If line starts with a number
+        for ip in string.gmatch(line,'%d+%.%d+%.%d+%.%d+') do -- For each IP
+          ipList[#ipList + 1] = ip -- Add the IP to the ipList
+        end
+      end
       line = coDNS.read1()
     end
-    return{co1Type = "A", co1Data = "10.9.8.7"}
+    -- Return a randomly chosen IP from the list
+    return {co1Type = "A", co1Data = ipList[(coDNS.rand32() % #ipList) + 1]}
   end
 
   -- Contact another DNS server to get our answer
