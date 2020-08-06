@@ -1,5 +1,25 @@
 MaraDNS changelog
 
+   maradns-3.5.0010:
+   This is a stable release of MaraDNS:
+
+     * Hotfix: coLunacyDNS no longer fails after 20 calls to 
+       processQuery() (we now properly clean the main stack before 
+       calling processQuery() in a co-routine).
+     * Security update: MaraDNS, Deadwood, and Duende now default to
+       the user ID 707 instead of 99/66.  This minimizes the chances
+       of the user used by MaraDNS being used by other processes, 
+       which could be a security leak under some circumstances.  The
+       problem with running multiple services as "nobody" is that
+       the "nobody" account is only as secure as the least secure
+       service running as that account.
+     * coLunacyDNS feature update: coLunacyDNS can now open and
+       read files (for security reasons, only in the same directory
+       coLunacyDNS is running in).  In addition, the code to implement 
+       IPv6 sockets is well under way.
+
+     (2020-08-06)
+
    maradns-3.5.0009:
    This is a stable release of MaraDNS:
 
