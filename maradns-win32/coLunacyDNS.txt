@@ -164,6 +164,59 @@ what it can do:
   "bit32" interface.)
 * A special "coDNS" library is also loaded.
 
+# Reading files #########################################################
+
+We have an API which can be used to read files.  For example:
+
+-------------------------------------------------------------------------
+if not coDNS.open1("filename.txt") then
+  return {co1Type = "serverFail"}
+end
+local line = ""
+while line do
+  if line then coDNS.log("Line: " .. line) end
+  line = coDNS.read1()
+end
+-------------------------------------------------------------------------
+    
+The calls are: coDNS.open1(filename), coDNS.read1(), and coDNS.close1().
+    
+Only a single file can be open at a time.  If coDNS.open1() is called
+when a file is open, the currently open file is closed before we attempt
+to open the new file.  If coDNS.solve() is called while a file is open,
+the file is closed before we attempt to solve the DNS query.  If we exit
+processQuery() while a file is open, the file is closed as we exit the
+function.  Files are also closed when we finish parsing the Lua
+configuration file used by coLunacyDNS, before listening to DNS queries.
+    
+The filename must start with an ASCII letter, number, or the "_"
+(underscore) character.  The filename may contain only ASCII letters,
+numbers, instances of "." (the dot character), or the "_" character.
+In particular, the filename may not contain "/", "\", or any other
+commonly used directory separator.
+
+If the file is not present, or the filename contains an illegal
+character, or the file can not be opened, coDNS.open1() will return
+a false boolean value.  Otherwise, "open1" returns true.
+    
+The file has to be in the same directory that coLunacyDNS is run
+from.  The file may only be read; writing to the file is not possible.
+    
+coDNS.read1() reads a single line from the file.  Any newline is
+stripped from the end (unlike Perl, coLunacyDNS does not require a 
+chop); NUL characters in the line also truncate the string read.  If 
+a line is read from the file, coDNS.read1() returns the line which 
+was read.  Otherwise, coDNS.read1() returns the `false` Lua boolean 
+value.
+
+coDNS.read1() assumes that a single line will be under 500 bytes 
+in size.  Behavior is undefined when trying to read a longer line.
+    
+coDNS.close1() closes an open file; a file is also closed when
+opening another file, ending processQuery(), or calling coDNS.solve().
+It is mainly here to give programmers trained to close open files
+a function which does so.
+
 # Limitations ###########################################################
 
 coLunacyDNS, at this time, only processes requests for DNS A queries
