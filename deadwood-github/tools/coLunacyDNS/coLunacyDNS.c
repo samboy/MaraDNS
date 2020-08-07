@@ -822,10 +822,10 @@ void sandbox() {
 #ifndef MINGW
         unsigned char *c = 0;
         gid_t g = GID;
+#ifndef CYGWIN
         if(chroot(".") == -1) {
                 log_it("chroot() failed"); exit(1);
         }
-#ifndef CYGWIN
         if(setgroups(1,&g) == -1) {
                 log_it("setgroups() failed"); exit(1);
         }
