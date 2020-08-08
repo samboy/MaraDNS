@@ -78,6 +78,11 @@ static TString *newlstr (lua_State *L, const char *str, size_t l,
 uint64_t sipKey1 = 0xded6cbc72f7eeb4fULL;
 uint64_t sipKey2 = 0x81875fe84b1705d7ULL;
 
+void SipHashSetKey(uint64_t a, uint64_t b) {
+  sipKey1 = a;
+  sipKey2 = b;
+}
+
 uint64_t SipHash(const char *str, size_t l) {
   uint64_t v0, v1, v2, v3, m;
   int shift = 0, round = 0;
