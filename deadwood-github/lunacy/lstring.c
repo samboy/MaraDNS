@@ -6,14 +6,6 @@
 
 
 #include <string.h>
-#include <stdio.h> // DEBUG
-
-// Sip Hash needs well defined 64-bit ints, even on 32-bit systems
-#include <stdint.h>
-// Sip hash has a 128-bit key which should be fairly random
-// This comes from the RadioGatun[32] hash of "https://maradns.samiam.org"
-uint64_t sipKey1 = 0xded6cbc72f7eeb4fULL;
-uint64_t sipKey2 = 0x81875fe84b1705d7ULL;
 
 #define lstring_c
 #define LUA_CORE
@@ -31,7 +23,6 @@ void luaS_resize (lua_State *L, int newsize) {
   GCObject **newhash;
   stringtable *tb;
   int i;
-  newsize = MINSTRTABSIZE * 32; // DEBUG
   if (G(L)->gcstate == GCSsweepstring)
     return;  /* cannot resize during GC traverse */
   newhash = luaM_newvector(L, newsize, GCObject *);
@@ -83,72 +74,11 @@ static TString *newlstr (lua_State *L, const char *str, size_t l,
 
 TString *luaS_newlstr (lua_State *L, const char *str, size_t l) {
   GCObject *o;
-  uint64_t v0, v1, v2, v3, m;
-  int shift = 0, round = 0;
-  size_t offset = 0;
-  unsigned int h;
-
-  // We calculate the hash via SipHash, for security reasons
-  v0 = sipKey1 ^ 0x736f6d6570736575ULL;
-  v1 = sipKey2 ^ 0x646f72616e646f6dULL;
-  v2 = sipKey1 ^ 0x6c7967656e657261ULL;
-  v3 = sipKey2 ^ 0x7465646279746573ULL;
-  m = 0;
-  while(offset <= l) {
-    if(offset < l) {
-      m |= (uint64_t)(str[offset] & 0xff) << shift;  
-      shift += 8;
-    }
-    while(shift >= 64 || offset == l) { // "while" to avoid goto
-      if(offset == l && shift != 64) {
-        m |= (uint64_t)(l & 0xff) << 56;
-        offset++;
-      }
-      shift = 0;
-      v3 ^= m;
-      for(round = 0; round < 2; round++) {
-        v0 += v1; v2 += v3;
-        v1 = (v1 << 13) | (v1 >> 51);
-        v3 = (v3 << 16) | (v3 >> 48);
-        v1 ^= v0; v3 ^= v2;
-        v0 = (v0 << 32) | (v0 >> 32);
-        v2 += v1; v0 += v3;
-        v1 = (v1 << 17) | (v1 >> 47);
-        v3 = (v3 << 21) | (v3 >> 43);
-        v1 ^= v2; v3 ^= v0;
-        v2 = (v2 << 32) | (v2 >> 32);
-      }
-      v0 ^= m;
-      shift = 0;
-      m = 0;
-    }
-    offset++;
-  }   
-  v2 ^= 255;
-  for(round = 0; round < 4; round++) {
-    v0 += v1; v2 += v3;
-    v1 = (v1 << 13) | (v1 >> 51);
-    v3 = (v3 << 16) | (v3 >> 48);
-    v1 ^= v0; v3 ^= v2;
-    v0 = (v0 << 32) | (v0 >> 32);
-    v2 += v1; v0 += v3;
-    v1 = (v1 << 17) | (v1 >> 47);
-    v3 = (v3 << 21) | (v3 >> 43);
-    v1 ^= v2; v3 ^= v0;
-    v2 = (v2 << 32) | (v2 >> 32);
-  }
-  m = v0 ^ v1 ^ v2 ^ v3;
-  // Unsigned int tends to be 32-bit, so this will be truncated
-  h = (unsigned int)m;
-  // printf("SipHash: %s %016llx\n",str,m); // Test vector check
-  
-  // The Lua 5.1.5 stock hash is commented out
-  //unsigned int h = cast(unsigned int, l);  /* seed */
-  //size_t step = (l>>5)+1;  /* if string is too long, don't hash all its chars */
-  //size_t l1;
-  //for (l1=l; l1>=step; l1-=step)  /* compute hash */
-  //  { h = h ^ ((h<<5)+(h>>2)+cast(unsigned char, str[l1-1])); }
-  
+  unsigned int h = cast(unsigned int, l);  /* seed */
+  size_t step = (l>>5)+1;  /* if string is too long, don't hash all its chars */
+  size_t l1;
+  for (l1=l; l1>=step; l1-=step)  /* compute hash */
+    h = h ^ ((h<<5)+(h>>2)+cast(unsigned char, str[l1-1]));
   for (o = G(L)->strt.hash[lmod(h, G(L)->strt.size)];
        o != NULL;
        o = o->gch.next) {
