@@ -917,8 +917,6 @@ SOCKET startServer(lua_State *L) {
 
         // No we have an IP, bind to port 53
         sock = get_port(ip,&dns_udp);
-        init_rng();
-	SipHashSetKey(rand64(),rand64());
         sandbox(); // Drop root and chroot()
         log_it("Running coLunacyDNS");
         return sock;
@@ -1735,6 +1733,10 @@ int main(int argc, char **argv) {
         char *look;
         SOCKET sock;
 
+	// Do this *before* running any Lua code
+        init_rng();
+	SipHashSetKey(rand64(),rand64());
+
         if(argc != 2 || *argv[1] == '-') {
                 printf("coLunacyDNS version 2020-08-08 starting\n\n");
         }
@@ -1952,6 +1954,8 @@ void svc_service_main(int argc, char **argv) {
         }
 
         set_time(); // Run this frequently to update timestamp
+        init_rng();
+	SipHashSetKey(rand64(),rand64());
 
         LOG = fopen("coLunacyDNSLog.txt","ab");
         log_it("==coLunacyDNS started==");
@@ -2011,6 +2015,8 @@ int main(int argc, char **argv) {
                         lua_State *L;
                         SOCKET sock;
                         set_time();
+        		init_rng();
+			SipHashSetKey(rand64(),rand64());
                         isInteractive = 1;
                         L = init_lua(argv[0]);
                         if(L != NULL) {
