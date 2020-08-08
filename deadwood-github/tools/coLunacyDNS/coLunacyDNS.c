@@ -335,6 +335,10 @@ uint32_t rand32() {
         return rn(rgX_mill, rgX_belt, &rgX_phase);
 }
 
+uint64_t rand64() {
+        return ((uint64_t)rand32() << 32) ^ rand32();
+}
+
 uint32_t rgX16_place = 0, rgX16_num = 0;
 
 uint32_t rand16() {
@@ -914,6 +918,7 @@ SOCKET startServer(lua_State *L) {
         // No we have an IP, bind to port 53
         sock = get_port(ip,&dns_udp);
         init_rng();
+	SipHashSetKey(rand64(),rand64());
         sandbox(); // Drop root and chroot()
         log_it("Running coLunacyDNS");
         return sock;
@@ -1731,7 +1736,7 @@ int main(int argc, char **argv) {
         SOCKET sock;
 
         if(argc != 2 || *argv[1] == '-') {
-                printf("coLunacyDNS version 2020-08-06 starting\n\n");
+                printf("coLunacyDNS version 2020-08-08 starting\n\n");
         }
         set_time(); // Run this frequently to update timestamp
         // Get bindIp and returnIp from Lua script
@@ -2021,7 +2026,7 @@ int main(int argc, char **argv) {
                         svc_install_service();
                 }
         } else {
-                printf("coLunacyDNS version 2020-08-06\n\n");
+                printf("coLunacyDNS version 2020-08-08\n\n");
                 printf(
                     "coLunacyDNS is a DNS server that is a Windows service\n\n"
                     "To install this service:\n\n\tcoLunacyDNS --install\n\n"
