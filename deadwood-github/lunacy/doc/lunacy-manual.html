@@ -12,7 +12,7 @@
 
 <hr>
 <h1>
-Lunacy (Lua) 5.1 Reference Manual (Release 2020-07-20)
+Lunacy (Lua) 5.1 Reference Manual (Release 2020-08-08)
 </h1>
 
 by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
@@ -533,6 +533,18 @@ Right now:
 <code>= bit32.lshift(1,31) -- returns 2147483648</code><p>
 <code>= bit32.lshift(1,32) -- returns 0</code><p>
 <code>= bit32.rrotate(1,2) -- returns 1073741824</code><p>
+
+<p>
+
+For security reasons, Lunacy uses SipHash as the string hash
+compression function.  When linking to Lunacy, a C program
+can run this code before running any Lua code:
+
+<code>SipHashSetKey(x, y);</code>
+
+Where "x" and "y" are suitably random 64-bit numbers (uint64_t).  Do
+not call SipHashSetKey() once any Lua code is running; otherwise
+things will break very badly in Lua.
 
 <p><A HREF="#contents">Contents</A>
 
