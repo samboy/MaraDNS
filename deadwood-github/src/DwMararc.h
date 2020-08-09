@@ -157,6 +157,7 @@ char *key_n_names[KEY_N_COUNT + 1] = {
         "min_ttl_incomplete_cname", /* How long to store incomplete CNAME
                                      * records in the cache, in seconds */
         "max_ttl", /* Maximum allowed TTL */
+        "min_ttl", /* Minimum allowed TTL */
         0 };
 
 #endif /* MARARC_C */
