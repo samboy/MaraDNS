@@ -3,7 +3,11 @@ MaraDNS changelog
    maradns-3.5.0011:
    This is a stable release of MaraDNS:
 
-     * min_ttl parameter added
+     * min_ttl parameter added; this is the minimum time we keep a 
+       record in the cache (in seconds)
+     * Deadwood now compiles with IPv6 support by default.  For
+       systems without IPv6 support, -DNOIP6 can be set when
+       compiling Deadwood.
 
      (2020-08-??)
 
