@@ -1291,7 +1291,7 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
         }
 
         set_time();
-        for(a = 0; a < remoteTop + 1; a++) {
+        for(a = 0; a <= remoteTop + 1; a++) {
                 // Once we find an open socket, we make
                 // a DNS query then set it up to wait for
                 // the response
