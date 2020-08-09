@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Clean up
-rm -f *.o *.exe coLunacyDNS
+rm -f *.o *.exe coLunacyDNS sipHash
 
 # Win32 build env has no symlinks
 rm -f lauxlib.h lua.h luaconf.h lualib.h
