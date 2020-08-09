@@ -401,6 +401,7 @@ void dwm_init_mararc() {
         key_n[DWM_N_reject_ptr] = 0;
         key_n[DWM_N_min_ttl_incomplete_cname] = 3600;
         key_n[DWM_N_max_ttl] = 86400;
+        key_n[DWM_N_min_ttl] = 60;
 }
 
 /* Look for a Mararc parameter; -1 if not found/error; 0-n if found

@@ -71,6 +71,7 @@ int_fast32_t num_ports = 4096;
 int_fast32_t maradns_uid = 99;
 int_fast32_t maradns_gid = 99;
 int_fast32_t max_ttl = 86400;
+int_fast32_t min_ttl = 30;
 int num_retries = 5;
 dwd_dict *blocklist_dict = 0;
 
@@ -504,6 +505,10 @@ void process_numeric_mararc_params() {
                 300 /* 5 minutes */,
                 7776000 /* 90 days */,
                 86400 /* One day */);
+        min_ttl = get_key_n(DWM_N_min_ttl,
+                5 /* 5 seconds */,
+                86400 /* One day */,
+                60 /* One minute */);
 
         if((num_ports & (num_ports - 1)) != 0) {
                 dw_fatal("num_ports must be a power of 2");

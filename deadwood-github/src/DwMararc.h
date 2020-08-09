@@ -71,13 +71,14 @@
 #define DWM_N_reject_ptr 27
 #define DWM_N_min_ttl_incomplete_cname 28
 #define DWM_N_max_ttl 29
+#define DWM_N_min_ttl 30
 
 /* Number of string parameters in the mararc file */
 #define KEY_S_COUNT 8
 /* Number of dictionary parameters in the mararc file */
 #define KEY_D_COUNT 4
 /* Number of numeric parameters in the mararc file */
-#define KEY_N_COUNT 30
+#define KEY_N_COUNT 31
 
 #ifndef MINGW
 /* Location of files we read when we run execfile("foo") */

@@ -65,6 +65,9 @@ max_tcp_procs = 8
 # Maximum time an entry will stay in the cache, in seconds (86400 = one day)
 max_ttl = 86400
 
+# Minimum time an entry will stay in the cache in seconds
+min_ttl = 180
+
 # The number of times we retry to send a query upstream before giving up.
 num_retries = 2
 

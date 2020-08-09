@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2015 Sam Trenholme
+/* Copyright (c) 2009-2020 Sam Trenholme
  *
  * TERMS
  *
@@ -51,6 +51,7 @@ extern u_long dont_block;
 #endif /* MINGW */
 /* Numeric mararc parameters */
 extern int32_t max_ttl;
+extern int32_t min_ttl;
 /* Maximum number of remote connections */
 extern int_fast32_t maxprocs;
 
@@ -1742,6 +1743,9 @@ void dwx_handle_ns_refer(int connection_number, dw_str *action,
                           * an hour for security reasons */
                 ttl = 3600;
         }
+	if(ttl < min_ttl) {
+		ttl = min_ttl;
+	}
         if(ttl > max_ttl) {
                 ttl = max_ttl;
         }
@@ -2111,9 +2115,12 @@ int dwx_make_cname_reply(int conn_num, dw_str *query,
                 dw_log_dwstr("Invalid TTL in answer ",answer,100);
                 ttl = 3600;
         }
-        if(ttl < 60) {
-                ttl = 60;
+        if(ttl < 30) {
+                ttl = 30;
         }
+	if(ttl < min_ttl) {
+		ttl = min_ttl;
+	}
         if(ttl > max_ttl) {
                 ttl = max_ttl;
         }
@@ -2190,6 +2197,9 @@ int dwx_handle_cname_refer(int connection_number, dw_str *action,
         if(ttl < 30) {
                 ttl = 30;
         }
+	if(ttl < min_ttl) {
+		ttl = min_ttl;
+	}
         if(ttl > max_ttl) {
                 ttl = max_ttl;
         }
@@ -2275,6 +2285,9 @@ int dwx_cache_reply(dw_hash *cache, dw_str *query, dw_str *in, int32_t ttl,
         if(ttl < 30) {
                 ttl = 30;
         }
+	if(ttl < min_ttl) {
+		ttl = min_ttl;
+	}
         if(ttl > max_ttl) {
                 ttl = max_ttl;
         }

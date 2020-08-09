@@ -307,6 +307,11 @@ max_tcp_procs
 
    This is the number of allowed open TCP connections. Default value: 8
 
+min_ttl
+
+   The minimum amount of time we will keep an entry in the cache, in 
+   seconds (also called "Minimum TTL").
+
 num_retries
 
    The number of times we retry to send a query upstream before giving up.

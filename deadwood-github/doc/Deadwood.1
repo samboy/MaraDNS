@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Wed Aug  5 10:50:13 2020
+.\" Last updated Sun Aug  9 02:32:28 2020
 .\"
 .TH DEADWOOD 1 "August 2009" DEADWOOD "Deadwood reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -470,6 +470,13 @@ Deadwood can have. The default value for this is 1024.
 \fBmax_tcp_procs\fR
 .PP
 This is the number of allowed open TCP connections. Default value: 8
+.PP
+.in -3
+\fBmin_ttl\fR
+.PP
+The minimum amount of time we will keep an entry in the cache, in
+seconds
+(also called "Minimum TTL").
 .PP
 .in -3
 \fBnum_retries\fR

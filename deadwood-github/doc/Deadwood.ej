@@ -372,6 +372,10 @@ Deadwood can have.  The default value for this is 1024.
 <h2>max_tcp_procs</h2>
 This is the number of allowed open TCP connections.  Default value: 8
 
+<h2>min_ttl</h2>
+The minimum amount of time we will keep an entry in the cache, in seconds
+(also called "Minimum TTL").
+
 <h2>num_retries</h2>  
 The number of times we retry to send a query upstream
 before giving up.  If this is 0, we only try once; if this is 1, 

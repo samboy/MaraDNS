@@ -1,5 +1,12 @@
 MaraDNS changelog
 
+   maradns-3.5.0011:
+   This is a stable release of MaraDNS:
+
+     * min_ttl parameter added
+
+     (2020-08-??)
+
    maradns-3.5.0010:
    This is a stable release of MaraDNS:
 
