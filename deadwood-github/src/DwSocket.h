@@ -96,11 +96,11 @@
 /* Structures for storing IP addresses */
 typedef struct {
         uint8_t len; /* 0: Error; 4: IPv4; 16: IPv6; 127: Glueless name */
-#ifdef IPV6
+#ifndef NOIP6
         uint8_t ip[17];
-#else /* IPV6 */
+#else /* NOIP6 */
         uint8_t ip[5];
-#endif /* IPV6 */
+#endif /* NOIP6 */
         dw_str *glueless; /* Used for glueless NS referrals */
         uint8_t flags;
 } ip_addr_T;
@@ -112,13 +112,13 @@ typedef struct {
  * ip_addr_T structure above */
 typedef struct {
         uint8_t len;
-#ifdef IPV6
+#ifndef NOIP6
         uint8_t ip[17];
         uint8_t mask[17];
-#else /* IPV6 */
+#else /* NOIP6 */
         uint8_t ip[5];
         uint8_t mask[5];
-#endif /* IPV6 */
+#endif /* NOIP6 */
 } ip_mask_T;
 
 /* storage for both sockaddr_in and sockaddr_in6; note that this needs
@@ -128,7 +128,7 @@ typedef struct {
         union {
                 sa_family_t family;
                 struct sockaddr_in v4;
-#ifdef IPV6
+#ifndef NOIP6
                 struct sockaddr_in6 v6;
 #endif
         } u;

@@ -127,13 +127,13 @@ SOCKET setup_tcp_server(sockaddr_all_T *server, dw_str *query, int b) {
                 server->V4.sin_port = htons(upstream_port);
                 memcpy(&(server->V4.sin_addr),rem_ip.ip,4);
                 remote = socket(AF_INET,SOCK_STREAM,0);
-#ifdef IPV6
+#ifndef NOIP6
         } else if(rem_ip.len == 16) {
                 server->V6.sin6_family = AF_INET6;
                 server->V6.sin6_port = htons(upstream_port);
                 memcpy(&(server->V6.sin6_addr),rem_ip.ip,16);
                 remote = socket(AF_INET6,SOCK_STREAM,0);
-#endif /* IPV6 */
+#endif /* NOIP6 */
         } else {
                 return INVALID_SOCKET;
         }
@@ -404,10 +404,10 @@ void tcp_truncated_retry(int b, dw_str *query, int id, int udp_id, int is_up) {
                 goto catch_tcp_truncated_retry;
         }
         make_socket_nonblock(tcp_pend[b].upstream);
-#ifdef IPV6
+#ifndef NOIP6
         if (server.Family == AF_INET6)
                 len = sizeof(struct sockaddr_in6);
-#endif /* IPV6 */
+#endif /* NOIP6 */
         if(connect(tcp_pend[b].upstream,(struct sockaddr *)&server,len) == -1
            && SCKT_ERR != EINPROGRESS) {
                 closesocket(tcp_pend[b].upstream);

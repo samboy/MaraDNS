@@ -106,7 +106,7 @@ void setup_bind(sockaddr_all_T *dns_udp, uint16_t port, int len) {
                 dns_udp->V4.sin_family = AF_INET;
                 dns_udp->V4.sin_addr.s_addr = htonl(INADDR_ANY);
                 dns_udp->V4.sin_port = htons(port);
-#ifdef IPV6
+#ifndef NOIP6
         } else if(len == 16) {
                 dns_udp->V6.sin6_family = AF_INET6;
                 dns_udp->V6.sin6_addr = in6addr_any;
@@ -130,7 +130,7 @@ int do_random_bind(SOCKET s, int len) {
                 /* Set up random source port to bind to */
                 setup_bind(&dns_udp,
                            min_bind + (dwr_rng(rng_seed) & num_ports), len);
-#ifdef IPV6
+#ifndef NOIP6
                 if (dns_udp.Family == AF_INET6)
                         len_inet = sizeof(struct sockaddr_in6);
 #endif
@@ -161,7 +161,7 @@ SOCKET setup_server(sockaddr_all_T *server, ip_addr_T *addr) {
                 server->V4.sin_port = htons(upstream_port);
                 memcpy(&(server->V4.sin_addr),addr->ip,4);
                 s = socket(AF_INET,SOCK_DGRAM,0);
-#ifdef IPV6
+#ifndef NOIP6
         } else if ( addr->len == 16 ) {
                 server->V6.sin6_family = AF_INET6;
                 server->V6.sin6_port = htons(upstream_port);
@@ -224,7 +224,7 @@ int make_remote_connection(int32_t n, unsigned char *packet, int len,
                 return -1;
         }
 
-#ifdef IPV6
+#ifndef NOIP6
         if (server.Family == AF_INET6)
                  inet_len = sizeof(struct sockaddr_in6);
 #endif
@@ -261,7 +261,7 @@ void send_server_fail(sockaddr_all_T *client,unsigned char *a, int len,
                 return;
         }
 
-#ifdef IPV6
+#ifndef NOIP6
         if (client->Family == AF_INET6)
                 c_len = sizeof(struct sockaddr_in6);
 #endif
@@ -548,7 +548,7 @@ int get_reply_from_cache(dw_str *query, sockaddr_all_T *client,
                 goto catch_get_reply_from_cache;
         }
 
-#ifdef IPV6
+#ifndef NOIP6
         if (client->Family == AF_INET6) {
                c_len = sizeof(struct sockaddr_in6);
         }
@@ -840,7 +840,7 @@ void forward_remote_reply(unsigned char *packet, size_t len, remote_T *r_ip,
                 client.V4.sin_port = htons(r_ip->local[local_num]->port);
                 memcpy(&client.V4.sin_addr, r_ip->local[local_num]->ip.ip, 4);
                 len_inet = sizeof(struct sockaddr_in);
-#ifdef IPV6
+#ifndef NOIP6
         } else if(r_ip->local[local_num]->ip.len == 16) {
                 client.V6.sin6_family = AF_INET6;
                 client.V6.sin6_port = htons(r_ip->local[local_num]->port);
@@ -1122,7 +1122,7 @@ int send_reply_from_cache(unsigned char *a, ssize_t count, int b, int l) {
                 client.V4.sin_family = AF_INET;
                 client.V4.sin_port = htons(rem[b].local[l]->port);
                 memcpy(&client.V4.sin_addr, rem[b].local[l]->ip.ip, 4);
-#ifdef IPV6
+#ifndef NOIP6
         } else if(rem[b].local[l]->ip.len == 16) {
                 client.V6.sin6_family = AF_INET6;
                 client.V6.sin6_port = htons(rem[b].local[l]->port);

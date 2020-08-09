@@ -31,9 +31,6 @@ void windows_socket_start() {
         WORD wVersionRequested = MAKEWORD(2,2);
         WSAStartup( wVersionRequested, &wsaData);
 }
-#ifdef IPV6
-ipv6_not_supported_on_windows_build;
-#endif /* IPV6 */
 #endif /* MINGW */
 
 void usage() {
@@ -43,13 +40,13 @@ void usage() {
 
 /* Show the name of the program */
 void dw_show_programname() {
-#ifdef IPV6
+#ifndef NOIP6
         dw_log_string(
         "Deadwood: A DNS UDP non-recursive cache (IPv6 supported)",1);
-#else /* IPV6 */
+#else /* NOIP6 */
         dw_log_string(
         "Deadwood: A DNS UDP non-recursive cache (IPv4-only)",1);
-#endif /* IPV6 */
+#endif /* NOIP6 */
 }
 
 /* Parse command-line arguments given to server */

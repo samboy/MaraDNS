@@ -162,7 +162,7 @@ SOCKET bind_set_dns(ip_addr_T *ip, sockaddr_all_T *dns_do, int type) {
                 memcpy(&(dns_do->V4.sin_addr.s_addr), ip->ip, ip->len);
                 dns_do->V4.sin_port = htons(dns_port);
                 sock = socket(AF_INET,type,0);
-#ifdef IPV6
+#ifndef NOIP6
         } else if( ip->len == 16) { /* IPV6 */
                 dns_do->V6.sin6_family = AF_INET6;
                 memcpy(&(dns_do->V6.sin6_addr), ip->ip, ip->len);
@@ -199,7 +199,7 @@ SOCKET do_bind(ip_addr_T *ip,int type) {
                 return INVALID_SOCKET;
         }
 
-#ifdef IPV6
+#ifndef NOIP6
         if (ip->len == 16)
                 len_inet = sizeof(struct sockaddr_in6);
 #endif
@@ -227,12 +227,12 @@ void pop_ip_core(dw_str *list, ip_addr_T *ip,char *c) {
         ip->len = 0;
         if( inet_pton(AF_INET, c, (uint8_t *)(ip->ip)) > 0 ) {
                 ip->len = 4;
-#ifdef IPV6
+#ifndef NOIP6
         } else {
                 if ( inet_pton(AF_INET6, c, (uint8_t *)(ip->ip)) > 0 ) {
                         ip->len = 16;
                 }
-#endif /* IPV6 */
+#endif /* NOIP6 */
         }
 }
 
@@ -434,7 +434,7 @@ uint16_t get_from_ip_port(ip_addr_T *from_ip, sockaddr_all_T *client) {
                 memcpy(from_ip->ip,&(client->V4.sin_addr.s_addr),4);
                 /* Copy over the port the query is from */
                 from_port = ntohs(client->V4.sin_port);
-#ifdef IPV6
+#ifndef NOIP6
         } else if (client->Family == AF_INET6) {
                 from_ip->len = 16;
                 /* Copy over the IP the query is from */

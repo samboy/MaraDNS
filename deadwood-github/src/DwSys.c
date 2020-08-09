@@ -174,7 +174,7 @@ void dw_log_ip_p(ip_addr_T *ip) {
 #else /* MINGW */
                 fprintf(LOG,"%d ",ip->ip[3]);
 #endif /* MINGW */
-#ifdef IPV6
+#ifndef NOIP6
         } else if(ip->len == 16) {
                 for(counter = 0; counter < 15; counter++) {
 #ifndef MINGW
@@ -188,7 +188,7 @@ void dw_log_ip_p(ip_addr_T *ip) {
 #else /* MINGW */
                 fprintf(LOG,"%02x ",ip->ip[15]);
 #endif /* MINGW */
-#endif /* IPV6 */
+#endif /* NOIP6 */
         } else {
 #ifndef MINGW
                 printf("%s%d","IP of length ",ip->len);

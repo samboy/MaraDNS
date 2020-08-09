@@ -2351,10 +2351,10 @@ int dwx_ns_convert_1ip(char *ip_human, uint8_t *ip_raw) {
 
         if(inet_pton(AF_INET, ip_human, (uint8_t *)(ip_raw)) > 0) {
                 ip_type = 4;
-#ifdef IPV6
+#ifndef NOIP6
         } else if(inet_pton(AF_INET6, ip_human, (uint8_t *)(ip_raw)) > 0) {
                 ip_type = 16;
-#endif /* IPV6 */
+#endif /* NOIP6 */
         }
 
         return ip_type;
@@ -2561,7 +2561,7 @@ ip_addr_T dwx_ns_getip_ipv4(dw_str *list, int offset) {
         return addr;
 }
 
-#ifdef IPV6
+#ifndef NOIP6
 /* Given a NS referral string and an offset, get the IPv6 address from that
  * string and return it
  */
@@ -2585,7 +2585,7 @@ ip_addr_T dwx_ns_getip_ipv6(dw_str *list, int offset) {
 
         return addr;
 }
-#endif /* IPV6 */
+#endif /* NOIP6 */
 
 /* Given an answer as it looks in the cache, choose a random A (or AAAA if
  * IPv6 support is compiled in) record from that answer and return it as
@@ -2621,9 +2621,9 @@ ip_addr_T dwx_get_rr_from_answer(dw_str *answer) {
                  * from the stack */
                 type = dw_fetch_u16(answer,z);
                 if(type == RR_A
-#ifdef IPV6
+#ifndef NOIP6
                         || type == RR_AAAA
-#endif /* IPV6 */
+#endif /* NOIP6 */
                 ) {
                         stack[place] = z;
                         place++;
@@ -2743,9 +2743,9 @@ int dwx_choose_ns(int b, int count, dwr_rg *rng, dw_str *list) {
                         out = dwr_rng(rng) % count;
                         type = dwx_nsref_type(out,&offset,list);
                         if(type == RR_A
-#ifdef IPV6
+#ifndef NOIP6
                         || type == RR_AAAA
-#endif /* IPV6 */
+#endif /* NOIP6 */
                         ) {
                                 break;
                         }
@@ -2788,10 +2788,10 @@ ip_addr_T dwx_ns_getip(dw_str *list, dwr_rg *rng, int b) {
 
         if(rr == RR_A) {
                 addr = dwx_ns_getip_ipv4(list,offset);
-#ifdef IPV6
+#ifndef NOIP6
         } else if(rr == RR_AAAA) {
                 addr = dwx_ns_getip_ipv6(list,offset);
-#endif /* IPV6 */
+#endif /* NOIP6 */
         } else if(rr == RR_NS) {
                 addr = dwx_ns_getip_glueless(list,offset);
         } else {
@@ -3072,9 +3072,9 @@ void dwx_glueless_done(dw_str *query, int32_t conn_num) {
         }
         addr = dwx_get_rr_from_answer(answer);
         if(addr.len != 4
-#ifdef IPV6
+#ifndef NOIP6
                 && addr.len != 16
-#endif /* IPV6 */
+#endif /* IP6 */
         ) {
                 goto catch_dwx_glueless_done;
         }
@@ -3082,11 +3082,11 @@ void dwx_glueless_done(dw_str *query, int32_t conn_num) {
         if(s == INVALID_SOCKET) {
                 goto catch_dwx_glueless_done;
         }
-#ifdef IPV6
+#ifndef NOIP6
         if (server.Family == AF_INET6) {
                 inet_len = sizeof(struct sockaddr_in6);
         }
-#endif /* IPV6 */
+#endif /* NOIP6 */
         rem[conn_num].remote_id = dwr_rng(rng_seed);
         /* Make sure the following does not leak */
         /* Yes, RD is 0.  Yes, this may very well be a bug */
