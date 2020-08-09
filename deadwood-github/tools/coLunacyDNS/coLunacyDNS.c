@@ -130,6 +130,9 @@ int remoteTop = 0; // Highest active remoteConn co-routine
 #define maxprocs 512
 remoteConn remoteCo[maxprocs];
 
+// Global variable setting: log level
+int logLevel = 0;
+
 // Timestamp handling
 int64_t the_time = -1;
 
@@ -903,6 +906,7 @@ SOCKET startServer(lua_State *L) {
         for(a = 0; a < maxprocs; a++) {
                 remoteCo[a].sockRemote = INVALID_SOCKET;
         }
+
         // Get bindIp from the Lua program
         lua_getglobal(L,"bindIp"); // Push "bindIp" on to stack
         if(lua_type(L, -1) == LUA_TSTRING) {
@@ -914,6 +918,17 @@ SOCKET startServer(lua_State *L) {
                 ip = get_ip4(0);
         }
         lua_pop(L, 1); // Remove _G.bindIp from stack, restoring the stack
+
+	// Get logLevel from global Lua context
+        lua_getglobal(L,"logLevel");
+        if(lua_type(L, -1) == LUA_TNUMBER) {
+		logLevel = (int)lua_tonumber(L, -1);
+		if(logLevel < 0) { logLevel = 0; }
+		if(logLevel > 10) { logLevel = 10; }
+	} else {
+		logLevel = 0;
+	}
+        lua_pop(L, 1); // Remove _G.logLevel from stack, restoring stack
 
         // No we have an IP, bind to port 53
         sock = get_port(ip,&dns_udp);
@@ -1429,7 +1444,8 @@ void resumeThread(int n) {
         lua_newtable(remoteCo[n].LT); // Output table
 
 	// rawpacket output table entry (to debug errors)
-	if(1) {
+	// To enable this, set logLevel to be 1 or 2
+	if((DNSanswer == 0 && logLevel > 0) || logLevel > 1) {
 		char rawpacket[4096];
 		int zq, zk;
        		lua_pushstring(remoteCo[n].LT,"rawpacket");

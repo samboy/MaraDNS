@@ -1,6 +1,8 @@
 -- coLunacyDNS configuration
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
 
+logLevel = 2 -- Between 0 and 10; higher numbers mean more logging
+
 -- Examples of three API calls we have: timestamp, rand32, and rand16
 coDNS.log(string.format("Timestamp: %.1f",coDNS.timestamp())) -- timestamp
 coDNS.log(string.format("Random32: %08x",coDNS.rand32())) -- random 32-bit num
@@ -14,10 +16,12 @@ function processQuery(Q) -- Called for every DNS query received
   -- variables
   local returnIP = nil
   local upstream = "9.9.9.9"
+  local t = {}
 
   -- Log query
   coDNS.log("Got IPv4 query for " .. Q.coQuery .. " from " ..
-            Q.coFromIP .. " type " ..  Q.coFromIPtype) 
+            Q.coFromIP .. " type " ..  Q.coFromIPtype .. 
+            " query type " .. Q.coQtype) 
 
   -- We will use 8.8.8.8 as the upstream server if the query ends in ".tj"
   if string.match(Q.coQuery,'%.tj%.$') then
@@ -32,7 +36,7 @@ function processQuery(Q) -- Called for every DNS query received
 
   -- Right now, coLunacyDNS can *only* process "A" (IPv4 IP) and
   -- "ip6" (IPv6 IP) queries
-  if Q.coQtype ~= 1 then -- If it is not an A (ipv4) query
+  if Q.coQtype ~= 1 and Q.coQtype ~= 28 then -- If it is not an ipv4/v6 query
     -- return {co1Type = "ignoreMe"} -- Ignore the query
     return {co1Type = "notThere"} -- Send "not there" (like NXDOMAIN)
   end
@@ -64,7 +68,13 @@ function processQuery(Q) -- Called for every DNS query received
   end
 
   -- Contact another DNS server to get our answer
-  local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=upstream})
+  if Q.coQtype == 1 then
+    t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=upstream})
+  else
+    t = coDNS.solve({name=Q.coQuery, type="ip6", upstreamIp4=upstream})
+  end
+
+  if t.rawpacket then coDNS.log("Raw packet: " .. t.rawpacket) end
 
   -- If coDNS.solve returns an error, the entire processQuery routine is
   -- "on probation" and unable to run coDNS.solve() again (if an attempt
@@ -86,8 +96,10 @@ function processQuery(Q) -- Called for every DNS query received
   if string.match(Q.coQuery,'%.invalid%.$') then
     return {co1Type = "A", co1Data = "10.1.1.1"} -- Answer for anything.invalid
   end
-  if returnIP then
+  if returnIP and Q.coQtype == 1 then
     return {co1Type = "A", co1Data = returnIP} 
+  elseif returnIP and Q.coQtype == 28 then
+    return {co1Type = "ip6", co1Data = returnIP} 
   end
   return {co1Type = "serverFail"} 
 end
