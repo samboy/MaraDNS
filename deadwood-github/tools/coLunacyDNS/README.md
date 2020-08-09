@@ -355,6 +355,16 @@ It outputs a table with a number of possible elements:
   hexadecimal digit, such as `2001-0db8-4d61-7261 444e-5300-0000-0001`
   All 32 hexadecimal digits that comprise an IPv6 address will be 
   present in the reply string.
+* `rawpacket`: If the global variable `logLevel` has a value of 0,
+  this will always be `nil`.  If `logLevel` is 1, this will be `nil`
+  if we were able to extract an answer from the upstream DNS server;
+  otherwise, this will be an escaped form of the raw packet sent to
+  us from upstream.  If `logLevel` is 2 or higher, this will always
+  be an escaped raw packet from upstream.  In an escaped packet, 
+  characters which are between ASCII `0` and `z` will be shown as
+  is; otherwise, they will be in the form `{1f}`, where the hex
+  value of the byte is shown between the brackets (`{` and
+  `}` have an ASCII value above `z`).
 
 Since this function allows other Lua threads to run while it awaits a
 DNS reply, global variables may change in value while the DNS record is
@@ -453,4 +463,16 @@ parameters:
   `-` (dash) are ignored.  For example, 
   `2001-0db8-4d61-7261 444e-5300-0000-__01` (without linefeed) is an 
   allowed value for `co1data` when `co1type` is `ip6`.
+
+# Global settings 
+
+coLunacyDNS Lua scripts have two special global variables which are
+read to adjust some setting in coLunacyDNS:
+
+* `bindIp`: This is the IPv4 IP that coLunacyDNS will use as a DNS server.
+  If this is not set, then coLunacyDNS will bind to the IP `0.0.0.0`
+  (all IP addresses the machine running coLunacyDNS has)
+* `logLevel`: If this is set, more information will be logged and passed
+  to Lua scripts which can be used for debugging purposes.  This can have
+  a value between 0 and 10; higher values result in more logging.
 
