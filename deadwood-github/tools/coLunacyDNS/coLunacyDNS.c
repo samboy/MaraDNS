@@ -1331,6 +1331,8 @@ void resumeThread(int n) {
         int thread_status;
 	char answer[64];
 	char status = 0;
+	int count;
+	unsigned char in[514];
 	uint32_t DNSanswer = 0;
 	strcpy(answer,"DNS connect error");
         if(n < 0 || n >= maxprocs) {
@@ -1338,8 +1340,6 @@ void resumeThread(int n) {
         }
 
         if(remoteCo[n].sockRemote != NO_REPLY) {
-		int count;
-		unsigned char in[514];
 		char discard[514];
 		int32_t place = 12;
 		uint16_t qtype;
@@ -1415,6 +1415,7 @@ void resumeThread(int n) {
 			if(place > 450) { break; }	
 		}
         }
+
 	if(DNSanswer > 65535) {
 		int zz;
 		for(zz = 0;zz<40;zz++){answer[zz] = 0;}
@@ -1424,14 +1425,47 @@ void resumeThread(int n) {
                           DNSanswer & 0xff);
 	}
 
+        lua_settop(remoteCo[n].LT, 0); // Clean any stack
+        lua_newtable(remoteCo[n].LT); // Output table
+
+	// rawpacket output table entry (to debug errors)
+	if(1) {
+		char rawpacket[4096];
+		int zq, zk;
+       		lua_pushstring(remoteCo[n].LT,"rawpacket");
+		zk = 0;
+		rawpacket[0] = 0;	
+		for(zq = 0; zq < count; zq++) {
+			if(zk > 4000) { break; }
+			if(in[zq] >= '0' && in[zq] <= 'z') {
+				rawpacket[zk] = in[zq];
+				zk++;
+			} else { // {XX} escape
+				char left, right;
+				left = in[zq];
+				right = left;
+				left >>= 4;
+				left = left & 0xf;
+				if(left < 10) { left += '0'; }
+				else { left += 'a' - 10; }
+				right = right & 0xf;
+				if(right < 10) { right += '0'; }
+				else { right += 'a' - 10; }
+				rawpacket[zk] = '{'; zk++;
+				rawpacket[zk] = left; zk++;
+				rawpacket[zk] = right; zk++;
+				rawpacket[zk] = '}'; zk++;
+			}
+		}	
+		rawpacket[zk] = 0;
+       		lua_pushstring(remoteCo[n].LT,rawpacket);
+       		lua_settable(remoteCo[n].LT,-3);
+	}
         // Now, the reason why we can mark this select() state struct
         // for reuse is because we will handle and wrap up
         // this particular state here.  If we need to make another DNS
         // call, that's a new DNS connection (which may overwrite this one)
         remoteCo[n].sockRemote = INVALID_SOCKET; // Mark for reuse
-        lua_settop(remoteCo[n].LT, 0); // Clean any stack
-
-        lua_newtable(remoteCo[n].LT); // Output table
 	// answer
         lua_pushstring(remoteCo[n].LT,"answer");
         lua_pushstring(remoteCo[n].LT,answer);
