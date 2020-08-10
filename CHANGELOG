@@ -12,7 +12,7 @@ MaraDNS changelog
        and all pass.  Tests are now completely automated, and can run
        from cron (and can be adapted to run inside Jenkins). 
 
-     (2020-08-??)
+     (2020-08-10)
 
    maradns-3.5.0010:
    This is a stable release of MaraDNS:
