@@ -11,6 +11,8 @@ with Docker or Podman support.
 
 # Setting up the tests
 
+Make sure either Docker or Podman is installed and running, then:
+
 ```bash
 ./make.docker.image.sh
 ```
