@@ -8,6 +8,9 @@ MaraDNS changelog
      * Deadwood now compiles with IPv6 support by default.  For
        systems without IPv6 support, -DNOIP6 can be set when
        compiling Deadwood.
+     * Automated tests now all run inside of Podman (Docker) container
+       and all pass.  This is one step closer to completely automated
+       testing.
 
      (2020-08-??)
 
