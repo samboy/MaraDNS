@@ -5,6 +5,7 @@
 FROM centos:8
 COPY killall /usr/bin/
 COPY rg32hash.tar.gz /tmp/
+COPY run.tests.sh /
 
 RUN yum -y update && yum -y install gcc && yum -y install git && \
 	yum -y install make && cd /tmp && git clone \

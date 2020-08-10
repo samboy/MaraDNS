@@ -1,0 +1,19 @@
+#!/bin/sh
+
+TESTDIR="/home/user/MaraDNS-CI/" # Where we run MaraDNS tests
+IMAGE="010203040506" # ID of Docker/Podman image w/ MaraDNS test framework
+cd $TESTDIR
+if [ ! -e MaraDNS ] ; then
+	git clone https://github.com/samboy/MaraDNS
+fi
+cd MaraDNS
+git pull origin master
+COMMIT="$( git log -1 | head -1 | awk '{print $2}' )"
+cd ..
+LAST="$( cat lastCommit )"
+if [ "$LAST" = "$COMMIT" ] ; then
+	echo No changes\; not running test
+	exit 0
+fi
+docker run -it $IMAGE /run.tests.sh > output-$( date +%Y-%m-%d )
+echo $COMMIT > lastCommit
