@@ -90,7 +90,8 @@ TESTS=$TESTS"long.chunk noat_parse_bug percent_parse_bug "
 # Valgrind reports 24 bytes lost when compiled -O2, 0 bytes lost when
 # compiled -g.  I'm not chasing that ghost.
 TESTS=$TESTS"star_handling_1 star_handling_2 "
-TESTS=$TESTS"truncation zoneserver_doc improper_rotation "
+#TESTS=$TESTS"truncation zoneserver_doc improper_rotation "
+#TESTS=$TESTS"truncation improper_rotation " # zoneserver_doc uses dig
 
 # These tests need to be revised to not use recursion
 #TESTS=$TESTS"predator1 predator2 ptr_leak "
