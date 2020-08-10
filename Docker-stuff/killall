@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Since CentOS 8 killall is broken, rewrite it as a shell script
+LIST=$( ps auxw | awk '{print $2 " " $11}' | grep "$1" | awk '{print $1}' )
+for a in $LIST ; do
+	kill $a
+done
