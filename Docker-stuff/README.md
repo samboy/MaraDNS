@@ -67,3 +67,7 @@ This line says every morning, at 5:32am (32: Minutes after the hour;
 5: Hour of the day; `* * *`: Every day), we run 
 `/usr/local/bin/run.MaraDNS.tests`
 
+After the tests are run, look for a file with a name like
+`output-2020-07-26` in the `TESTDIR` directory set up above
+(see the section "Setting up the tests").  This file will have
+the test output.
