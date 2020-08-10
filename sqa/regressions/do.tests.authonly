@@ -83,7 +83,8 @@ TESTS=$TESTS"future "
 
 # Valgrind is required to run some of these tests.  
 
-TESTS=$TESTS"any_case askmara.bug def_zone_nx delegation_glue loc "
+TESTS=$TESTS"any_case askmara.bug def_zone_nx delegation_glue "
+# loc test disabled: Uses dig
 TESTS=$TESTS"long.chunk noat_parse_bug percent_parse_bug "
 #TESTS=$TESTS"star_handling_1 star_handling_2 star_handling_leak "
 # Valgrind reports 24 bytes lost when compiled -O2, 0 bytes lost when
