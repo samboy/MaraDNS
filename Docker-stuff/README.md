@@ -11,6 +11,8 @@ with Docker or Podman support.
 
 # Setting up the tests
 
+Make sure either Docker or Podman is installed and running, then:
+
 ```bash
 ./make.docker.image.sh
 ```
@@ -29,6 +31,10 @@ to that directory.  Next, run `docker images` and look for a
 repository with a name like `maradns-2020-07-26`; on that
 line there should be an image ID like `0a0b0c1d1e1f`.  Edit
 `run.MaraDNS.tests` to have `IMAGE` image point to that image ID.
+
+The Docker image does not need to be frequently updated; the
+automated tests pull MaraDNS from GitHub to run the actual tests
+against.
 
 # Running the tests
 
