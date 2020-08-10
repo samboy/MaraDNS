@@ -16,7 +16,8 @@ RUN yum -y update && yum -y install gcc && yum -y install git && \
 	cp /tmp/MaraDNS/tools/askmara-tcp /usr/bin/ && \
 	cp /tmp/MaraDNS/tools/OneSourceOfTruth/do.osot.tests /tmp && \
 	rm -fr /tmp/MaraDNS && cd /tmp && tar xvzf rg32hash.tar.gz && \
-	cd rg32hash-source && make && cp rg32hash /usr/bin
+	cd rg32hash-source && make && cp rg32hash /usr/bin && \
+	mkdir /etc/deadwood/
 
 
 CMD ["/bin/bash"]
