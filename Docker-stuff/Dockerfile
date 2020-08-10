@@ -1,5 +1,6 @@
 # This is a Dockerfile to make a Docker image to test installing MaraDNS on
 # a fresh CentOS 8 virtual machine.
+# This image can also run the "one source of truth" tests
 
 FROM centos:8
 COPY killall /usr/bin/
