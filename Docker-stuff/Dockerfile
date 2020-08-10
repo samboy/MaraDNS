@@ -3,6 +3,7 @@
 
 FROM centos:8
 COPY killall /usr/bin/
+COPY rg32hash.tar.gz /tmp/
 
 RUN yum -y update && yum -y install gcc && yum -y install git && \
 	yum -y install make && cd /tmp && git clone \
@@ -11,7 +12,10 @@ RUN yum -y update && yum -y install gcc && yum -y install git && \
 	cd deadwood-* && cd src/ && ./make.version.h && \
 	make -f Makefile.sl6 && cp Deadwood /usr/local/sbin/ && \
 	yum -y install net-tools && \
+	cp /tmp/MaraDNS/tools/askmara-tcp /usr/bin/ && \
 	cp /tmp/MaraDNS/tools/OneSourceOfTruth/do.osot.tests /tmp && \
-	rm -fr /tmp/MaraDNS
+	rm -fr /tmp/MaraDNS && cd /tmp && tar xvzf rg32hash.tar.gz && \
+	cd rg32hash-source && make && cp rg32hash /usr/bin
+
 
 CMD ["/bin/bash"]
