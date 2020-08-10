@@ -4,6 +4,7 @@
 # NOTE: No startup of MaraDNS because we're just looking at the address
 #       deadwood binds to
 
+sleep 60 # TIME_WAIT for processes from other tests
 export LANG=C
 
 for VALUE in 127.0.0.1 127.0.0.2 ; do
