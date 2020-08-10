@@ -103,7 +103,7 @@ TESTS=$TESTS"star_handling_1 star_handling_2 "
 # only run this test on a machine where you can have the localhost IP
 # temporarily disrupted (The localhost interface will briefly have the IPs
 # 192.168.1.116, 172.16.116.70, 10.1.2.3, and 126.254.254.9)
-TESTS=$TESTS"private_ips "
+#TESTS=$TESTS"private_ips " # We do not have permission to run this in Docker
 
 for test in $TESTS ; do
 	cd $test
