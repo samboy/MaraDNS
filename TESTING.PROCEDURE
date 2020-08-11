@@ -1,14 +1,8 @@
-The testing is done with a shell script.
-
-Required: Git, valgrind, gcc, make, etc.
-
-Testing platform: CentOS 7
-
 To test:
 
-```
-cp tools/OneSourceOfTruth/do.osot.tests ~/tmp
-cd ~/tmp
-su
-./do.osot.tests
-```
+cd Docker-stuff
+./make.docker.image.sh # Takes a long time
+docker images | grep maradns # Image is hex humber like a10203b4c5d6
+# Replace "a10203b4c5d6" with actual image ID
+docker run -it a10203b4c5d6 /run.tests.sh # Takes about an hour
+
