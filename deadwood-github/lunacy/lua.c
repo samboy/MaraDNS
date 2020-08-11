@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 #define lua_c
 
@@ -375,6 +376,48 @@ static int pmain (lua_State *L) {
 
 
 int main (int argc, char **argv) {
+// Getting randomness for SipHash in a cross platform manner is a pain
+  char noise[18];
+  int a = 0;
+#ifndef MINGW
+        FILE *rfile = NULL;
+        rfile = fopen("/dev/urandom","rb");
+        if(rfile == NULL) {
+                puts("You do not have /dev/urandom");
+                puts("I refuse to run under these conditions");
+                exit(1);
+        }
+        for(a=0;a<16;a++) {
+                int b;
+                b = getc(rfile);
+                noise[a] = b;
+        }
+#else // MINGW
+        HCRYPTPROV CryptContext;
+        int q;
+        q = CryptAcquireContext(&CryptContext, NULL, NULL, PROV_RSA_FULL,
+                CRYPT_VERIFYCONTEXT);
+        if(q == 1) {
+                q = CryptGenRandom(CryptContext, 16, noise);
+        }
+        if(q == 0) {
+                puts("I can not generate strong random numbers");
+                puts("I refuse to run under these conditions");
+                exit(1);
+        }
+#endif // MINGW
+  noise[16] = 0;
+  uint64_t sipHashLeft = 0, sipHashRight = 0;
+  for(a = 0; a < 8; a++) {
+    sipHashLeft <<= 8;
+    sipHashLeft ^= noise[a];
+  }
+  for(a = 8; a < 16; a++) {
+    sipHashRight <<= 8;
+    sipHashRight ^= noise[a];
+  }
+  SipHashSetKey(sipHashLeft, sipHashRight);
+  
   int status;
   struct Smain s;
   lua_State *L = lua_open();  /* create state */
