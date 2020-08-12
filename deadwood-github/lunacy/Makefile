@@ -8,7 +8,7 @@
 PLAT= ansi
 
 CC= gcc
-CFLAGS= -Os -Wall $(MYCFLAGS)
+CFLAGS= -O3 -Wall $(MYCFLAGS)
 AR= ar rcu
 RANLIB= ranlib
 RM= rm -f

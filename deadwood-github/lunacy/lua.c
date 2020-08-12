@@ -10,6 +10,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#ifdef MINGW
+#include <winsock.h>
+#include <wincrypt.h>
+#endif // MINGW
+
 
 #define lua_c
 
@@ -377,35 +382,48 @@ static int pmain (lua_State *L) {
 
 int main (int argc, char **argv) {
 // Getting randomness for SipHash in a cross platform manner is a pain
+#ifdef FullSipHash
   char noise[18];
+#else
+  char noise[10];
+#endif
   int a = 0;
 #ifndef MINGW
-        FILE *rfile = NULL;
-        rfile = fopen("/dev/urandom","rb");
-        if(rfile == NULL) {
-                puts("You do not have /dev/urandom");
-                puts("I refuse to run under these conditions");
-                exit(1);
-        }
-        for(a=0;a<16;a++) {
-                int b;
-                b = getc(rfile);
-                noise[a] = b;
-        }
+  FILE *rfile = NULL;
+  rfile = fopen("/dev/urandom","rb");
+  if(rfile == NULL) {
+    puts("You do not have /dev/urandom");
+    puts("I refuse to run under these conditions");
+    exit(1);
+  }
+#ifdef FullSipHash
+  for(a=0;a<16;a++) {
+#else
+  for(a=0;a<8;a++) {
+#endif
+    int b;
+    b = getc(rfile);
+    noise[a] = b;
+  }
 #else // MINGW
-        HCRYPTPROV CryptContext;
-        int q;
-        q = CryptAcquireContext(&CryptContext, NULL, NULL, PROV_RSA_FULL,
-                CRYPT_VERIFYCONTEXT);
-        if(q == 1) {
-                q = CryptGenRandom(CryptContext, 16, noise);
-        }
-        if(q == 0) {
-                puts("I can not generate strong random numbers");
-                puts("I refuse to run under these conditions");
-                exit(1);
-        }
+  HCRYPTPROV CryptContext;
+  int q;
+  q = CryptAcquireContext(&CryptContext, NULL, NULL, PROV_RSA_FULL,
+      CRYPT_VERIFYCONTEXT);
+  if(q == 1) {
+#ifdef FullSipHash
+    q = CryptGenRandom(CryptContext, 16, noise);
+#else
+    q = CryptGenRandom(CryptContext, 8, noise);
+#endif
+  }
+  if(q == 0) {
+    puts("I can not generate strong random numbers");
+    puts("I refuse to run under these conditions");
+    exit(1);
+  }
 #endif // MINGW
+#ifdef FullSipHash
   noise[16] = 0;
   uint64_t sipHashLeft = 0, sipHashRight = 0;
   for(a = 0; a < 8; a++) {
@@ -416,6 +434,18 @@ int main (int argc, char **argv) {
     sipHashRight <<= 8;
     sipHashRight ^= noise[a];
   }
+#else // FullSipHash
+  noise[8] = 0;
+  uint32_t sipHashLeft = 0, sipHashRight = 0;
+  for(a = 0; a < 4; a++) {
+    sipHashLeft <<= 8;
+    sipHashLeft ^= noise[a];
+  }
+  for(a = 4; a < 8; a++) {
+    sipHashRight <<= 8;
+    sipHashRight ^= noise[a];
+  }
+#endif // FullSipHash
   SipHashSetKey(sipHashLeft, sipHashRight);
   
   int status;
