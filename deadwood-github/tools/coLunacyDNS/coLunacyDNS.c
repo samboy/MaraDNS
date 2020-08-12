@@ -448,9 +448,11 @@ void windows_socket_start() {
 SOCKET get_port(ip_addr_T ip, sockaddr_all_T *dns_udp) {
         SOCKET sock;
         int len_inet;
+#ifdef MINGW
         struct timeval noblock;
         noblock.tv_sec = 0;
         noblock.tv_usec = 50000; // Strobe 20 times a second
+#endif
 
         /* Bind to port 53 */
 #ifdef MINGW
@@ -758,7 +760,7 @@ void printBinary(char *s, int len) {
  * where "hex" is a hex number.  Return the length of the DNS name.
  * Compression pointer support.
  */
-int humanDNSname(char *in, char *out, int max) {
+int humanDNSname(unsigned char *in, char *out, int max) {
         int labelLen = 0;
         int inPoint = 0;
         int outPoint = 0;
@@ -829,7 +831,6 @@ int humanDNSname(char *in, char *out, int max) {
 /* On *NIX, drop non-root stuff once we bind to port 53 */
 void sandbox() {
 #ifndef MINGW
-        unsigned char *c = 0;
         gid_t g = GID;
 #ifndef CYGWIN
         if(chroot(".") == -1) {
@@ -857,7 +858,7 @@ void setup_bind(sockaddr_all_T *dns_udp, uint16_t port, int len) {
         if(dns_udp == 0) {
                 return;
         }
-        memset(dns_udp,0,sizeof(dns_udp));
+        memset(dns_udp,0,sizeof(*dns_udp));
 	if(len == 4) {
         	dns_udp->V4.sin_family = AF_INET;
         	dns_udp->V4.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -1011,9 +1012,7 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                         rs = NULL;
                 }
 		if(rs != NULL) { // IP6 data
-			int good = 1;
 			int place = 12; 
-			uint8_t me = 0;
 			int nybble = 0;
 			int count = 0;
 			while(*rs && count < 100) {
@@ -1347,8 +1346,7 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
 void resumeThread(int n) {
         int thread_status;
 	char answer[64];
-	char status = 0;
-	int count;
+	int count = 0;
 	unsigned char in[514];
 	uint32_t DNSanswer = 0;
 	strcpy(answer,"DNS connect error");
@@ -1387,7 +1385,7 @@ void resumeThread(int n) {
 		// Look in DNS packet for first A (IPv4 IP) record
 		while(count > 12 && place < 450 && DNSanswer == 0) {
 			int len;
-			len = humanDNSname(in+place, discard, 500-place);
+			len = humanDNSname(in + place, discard, 500-place);
 			if(len < 0) { break ; }
 			if(place > 450) { break; }	
 			place += len;
@@ -1580,7 +1578,7 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
                 in[7]++;
                 in[11] = 0; // Ignore EDNS
         }
-        qLen = humanDNSname(in + 12, query, 490);
+        qLen = humanDNSname((unsigned char *)in + 12, query, 490);
         if(qLen > 0) {
                 int qType = -1;
                 lua_State *LT;
@@ -1696,7 +1694,7 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
 
 
 void runServer(lua_State *L) {
-        int a, len_inet;
+        int len_inet;
         sockaddr_all_T dns_in;
         struct timeval selectTimeout;
 

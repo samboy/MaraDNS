@@ -8,7 +8,6 @@
 int main() {
 	char test[66];
         int a;
-        uint64_t result;
 	SipHashSetKey(0x03020100, 0x07060504);
         for(a = 0; a < 64; a++) { 
 		test[a] = a;
