@@ -1,5 +1,19 @@
 MaraDNS changelog
 
+   maradns-3.5.0012:
+   This is a stable release of MaraDNS (note that coLunacyDNS and
+   mmLunacyDNS are unstable):
+
+     * mmLunacyDNS security fix: We now use a secure hash compression
+       function (HalfSipHash-1-3) for string hashing.
+     * coLunacyDNS: hash compression function updated from 64-bit
+       SipHash-2-4 to 32-bit HalfSipHash-1-3.  Compile time warnings
+       removed from code.
+     * lunacy: The code by default now uses HalfSipHash-1-3 for string
+       hash compression.  Default compile optimization is now -O3
+ 
+     (2020-08-12)
+
    maradns-3.5.0011:
    This is a stable release of MaraDNS:
 
