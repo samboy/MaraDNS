@@ -28,6 +28,7 @@
 #ifdef MINGW
 #include <winsock.h>
 #include <wininet.h>
+#include <wincrypt.h>
 #ifndef FD_SETSIZE
 #define FD_SETSIZE 512
 #endif /* FD_SETSIZE */
@@ -461,6 +462,33 @@ void runServer(lua_State *L) {
 int main(int argc, char **argv) {
         lua_State *L;
         char *look;
+	int a;
+
+	// Key the random hash compression seed
+	char noise[10];
+	FILE *rfile = NULL;
+	rfile = fopen("/dev/urandom","rb");
+	if(rfile == NULL) {
+		log_it("You do not have /dev/urandom");
+		log_it("I refuse to run under these conditions");
+		exit(1);
+	}
+	for(a=0;a<8;a++) {
+		int b;
+		b = getc(rfile);
+		noise[a] = b;
+	}
+	noise[8] = 0;
+	uint32_t sipHashLeft = 0, sipHashRight = 0;
+	for(a = 0; a < 4; a++) {
+		sipHashLeft <<= 8;
+		sipHashLeft ^= noise[a];
+	}
+	for(a = 4; a < 8; a++) {
+		sipHashRight <<= 8;
+		sipHashRight ^= noise[a];
+	}
+	SipHashSetKey(sipHashLeft, sipHashRight);
 
         printf("mmLunacyDNS version 2020-08-12 starting\n\n");
         // Get bindIp and returnIp from Lua script
@@ -658,6 +686,29 @@ void svc_service_main(int argc, char **argv) {
 
         LOG = fopen("mmLunacyDNSLog.txt","ab");
         log_it("==mmLunacyDNS started==");
+	// Key the random hash compression seed
+	char noise[10];
+	HCRYPTPROV CryptContext;
+	int q;
+	q = CryptAcquireContext(&CryptContext, NULL, NULL, PROV_RSA_FULL,
+		CRYPT_VERIFYCONTEXT);
+	q = CryptGenRandom(CryptContext, 8, noise);
+	if(q == 0) {
+		puts("I can not generate strong random numbers");
+		puts("I refuse to run under these conditions");
+		exit(1);
+	}
+	noise[8] = 0;
+	uint32_t sipHashLeft = 0, sipHashRight = 0;
+	for(a = 0; a < 4; a++) {
+		sipHashLeft <<= 8;
+		sipHashLeft ^= noise[a];
+	}
+	for(a = 4; a < 8; a++) {
+		sipHashRight <<= 8;
+		sipHashRight ^= noise[a];
+	}
+	SipHashSetKey(sipHashLeft, sipHashRight);
         L = init_lua(argv[0]);
         if(L == NULL) {
                 fprintf(LOG,"FATAL: Can not init Lua state!\n");
@@ -680,6 +731,7 @@ int main(int argc, char **argv) {
         int a=0;
         char *b;
         int action = 0;
+
 
         static SERVICE_TABLE_ENTRY      Services[] = {
                 { "mmLunacyDNS",  (void *)svc_service_main },
@@ -710,6 +762,31 @@ int main(int argc, char **argv) {
                 } else if(action == 2) { /* --nodaemon or -d */
                         lua_State *L;
                         isInteractive = 1;
+
+	// Key the random hash compression seed (Outdent)
+	char noise[10];
+	HCRYPTPROV CryptContext;
+	int q;
+	q = CryptAcquireContext(&CryptContext, NULL, NULL, PROV_RSA_FULL,
+		CRYPT_VERIFYCONTEXT);
+	q = CryptGenRandom(CryptContext, 8, noise);
+	if(q == 0) {
+		puts("I can not generate strong random numbers");
+		puts("I refuse to run under these conditions");
+		exit(1);
+	}
+	noise[8] = 0;
+	uint32_t sipHashLeft = 0, sipHashRight = 0;
+	for(a = 0; a < 4; a++) {
+		sipHashLeft <<= 8;
+		sipHashLeft ^= noise[a];
+	}
+	for(a = 4; a < 8; a++) {
+		sipHashRight <<= 8;
+		sipHashRight ^= noise[a];
+	}
+	SipHashSetKey(sipHashLeft, sipHashRight);
+
                         L = init_lua(argv[0]);
                         if(L != NULL) {
                                 runServer(L);
