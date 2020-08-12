@@ -699,14 +699,15 @@ void svc_service_main(int argc, char **argv) {
 		exit(1);
 	}
 	noise[8] = 0;
+ 	int za;
 	uint32_t sipHashLeft = 0, sipHashRight = 0;
-	for(a = 0; a < 4; a++) {
+	for(za = 0; za < 4; za++) {
 		sipHashLeft <<= 8;
-		sipHashLeft ^= noise[a];
+		sipHashLeft ^= noise[za];
 	}
-	for(a = 4; a < 8; a++) {
+	for(za = 4; za < 8; za++) {
 		sipHashRight <<= 8;
-		sipHashRight ^= noise[a];
+		sipHashRight ^= noise[za];
 	}
 	SipHashSetKey(sipHashLeft, sipHashRight);
         L = init_lua(argv[0]);
@@ -776,14 +777,15 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
 	noise[8] = 0;
+        int za;
 	uint32_t sipHashLeft = 0, sipHashRight = 0;
-	for(a = 0; a < 4; a++) {
+	for(za = 0; za < 4; za++) {
 		sipHashLeft <<= 8;
-		sipHashLeft ^= noise[a];
+		sipHashLeft ^= noise[za];
 	}
-	for(a = 4; a < 8; a++) {
+	for(za = 4; za < 8; za++) {
 		sipHashRight <<= 8;
-		sipHashRight ^= noise[a];
+		sipHashRight ^= noise[za];
 	}
 	SipHashSetKey(sipHashLeft, sipHashRight);
 
