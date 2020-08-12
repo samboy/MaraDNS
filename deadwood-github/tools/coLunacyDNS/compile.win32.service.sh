@@ -15,5 +15,5 @@ done
 cd ../../lunacy/
 make
 cd ../tools/coLunacyDNS/
-gcc -Os -DNOIP6 -DMINGW -c -o coLunacyDNS.o coLunacyDNS.c
+gcc -Wall -Os -DNOIP6 -DMINGW -c -o coLunacyDNS.o coLunacyDNS.c
 gcc -Os -o coLunacyDNS coLunacyDNS.o ../../lunacy/liblua.a -lm -lwsock32

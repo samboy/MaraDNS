@@ -338,9 +338,11 @@ uint32_t rand32() {
         return rn(rgX_mill, rgX_belt, &rgX_phase);
 }
 
+#ifdef XTRA
 uint64_t rand64() {
         return ((uint64_t)rand32() << 32) ^ rand32();
 }
+#endif // XTRA
 
 uint32_t rgX16_place = 0, rgX16_num = 0;
 
@@ -1785,7 +1787,7 @@ int main(int argc, char **argv) {
 
 	// Do this *before* running any Lua code
         init_rng();
-	SipHashSetKey(rand64(),rand64());
+	SipHashSetKey(rand32(),rand32());
 
         if(argc != 2 || *argv[1] == '-') {
                 printf("coLunacyDNS version 2020-08-12 starting\n\n");
@@ -2005,7 +2007,7 @@ void svc_service_main(int argc, char **argv) {
 
         set_time(); // Run this frequently to update timestamp
         init_rng();
-	SipHashSetKey(rand64(),rand64());
+	SipHashSetKey(rand32(),rand32());
 
         LOG = fopen("coLunacyDNSLog.txt","ab");
         log_it("==coLunacyDNS started==");
@@ -2066,7 +2068,7 @@ int main(int argc, char **argv) {
                         SOCKET sock;
                         set_time();
         		init_rng();
-			SipHashSetKey(rand64(),rand64());
+			SipHashSetKey(rand32(),rand32());
                         isInteractive = 1;
                         L = init_lua(argv[0]);
                         if(L != NULL) {
