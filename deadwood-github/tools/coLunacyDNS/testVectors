@@ -1,0 +1,72 @@
+These are test vectors for HalfSipHash1-3, the hash compression
+algorithm used by coLunacyDNS.
+
+Here, the key is 0001020304050607 and the input is a ever longer 
+string 0x00, 0x00 0x01, 0x00 0x01 0x02 up to 64 bytes in size.
+This generates the same test vectors as the official halfSipHash 
+reference code (when modified to run HalfSipHash13).
+
+5814c896
+e7e864ca
+bc4b0e30
+01539939
+7e059ea6
+88e3d89b
+a0080b65
+9d38d9d6
+577999b1
+c839caed
+e4fa32cf
+959246ee
+6b28096c
+66dd9cd6
+16658a7c
+d0257b04
+8b31d501
+2b1cd04b
+06712339
+522aca67
+911bb605
+90a65f0e
+f826ef7b
+62512deb
+57150ad7
+5d473507
+1ec47442
+ab64afd3
+0a4100d0
+6d2ce652
+2331b6a3
+08d8791a
+bc6dda8d
+e0f6c934
+b0652033
+9b9851cc
+7c46fb7f
+732ba8cb
+f142997a
+fcc9aa1b
+05327eb2
+e110131c
+f9e5e7c0
+a7d708a6
+11795ab1
+65671619
+9f5fff91
+d89c5267
+007783eb
+95766243
+ab639262
+9c7e1390
+c368dda6
+38ddc455
+fa13d379
+979ea4e8
+53ecd77e
+2ee80657
+33dbb66a
+ae3f0577
+88b4c4cc
+3e7f480b
+74c1ebf8
+87178304
