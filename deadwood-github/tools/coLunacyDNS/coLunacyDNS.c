@@ -254,7 +254,7 @@ void log_it(char *message) {
         if(message != NULL) {
                 fprintf(LOG,"%s\n",message);
         } else {
-                fprintf(LOG,"NULL string\n",message);
+                fprintf(LOG,"NULL string\n");
         }
         fflush(LOG);
 }
