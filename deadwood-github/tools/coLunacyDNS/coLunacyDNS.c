@@ -22,7 +22,8 @@
 /* coLunacyDNS: A small DNS server which uses Lua for configuration and
  * for the main loop.  This is Lunacy, a fork of Lua 5.1, and it's
  * embedded in the compiled binary (Lunacy is a superset of Lua 5.1
- * with a version of bit32 bit operations added).
+ * with a number of changes, including bit32 support, secure hash
+ * compression of strings, cryptographically strong math.random(), etc.)
  */
 
 /* Note that a "thread" here is actually a Lua co-routine and the
@@ -108,7 +109,8 @@ typedef struct {
 // Select() stuff
 fd_set selectFdSet;
 SOCKET selectMax;
-SOCKET localConn;
+SOCKET localConn4;
+SOCKET localConn6;
 typedef struct {
         lua_State *L;
         lua_State *LT;
@@ -948,9 +950,17 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
         const char *rs;
         sockaddr_all_T dns_out;
         memset(&dns_out,0,sizeof(dns_out));
-        dns_out.V4.sin_family = AF_INET;
-        dns_out.V4.sin_port = htons(fromPort);
-	memcpy(&(dns_out.V4.sin_addr.s_addr),&fromIp.ip,4);
+	if(fromIp.len == 4) {
+        	dns_out.V4.sin_family = AF_INET;
+        	dns_out.V4.sin_port = htons(fromPort);
+		memcpy(&(dns_out.V4.sin_addr.s_addr),&fromIp.ip,4);
+#ifndef NOIP6
+	} else if(fromIp.len == 16) {
+		dns_out.V6.sin6_family = AF_INET6;
+		dns_out.V6.sin6_port = htons(fromPort);
+		memcpy(&(dns_out.V6.sin6_addr),&fromIp.ip,16);
+#endif // NOIP6
+	} 
         int leni = sizeof(struct sockaddr);
 
         // Pull data from Lua processQuery() function return value
@@ -1110,6 +1120,7 @@ void sendDNSpacket(int a) {
 	char out[512]; // Packet to send 
 	int outLen, b;
 	sockaddr_all_T addrType;
+	int random_bind_result = 0;
 	memset(&addrType,0,sizeof(addrType));
 	if(remoteCo[a].coDNSlen > 490) { return; } // Sanity check
 	out[0] = (remoteCo[a].upQueryID & 0xff00) >> 8;
@@ -1129,10 +1140,21 @@ void sendDNSpacket(int a) {
 	out[outLen++] = 0; out[outLen++] = 1; // Class "IN"
 	remoteCo[a].sockRemote = socket(AF_INET,SOCK_DGRAM,0);
 	make_socket_nonblock(remoteCo[a].sockRemote); 
-	addrType.V4.sin_family = AF_INET;
-	addrType.V4.sin_port = htons(53);
-	memcpy(&(addrType.V4.sin_addr.s_addr), remoteCo[a].upstreamIP.ip, 4);
-	if(do_random_bind(remoteCo[a].sockRemote, 4) == -1) {
+	if(remoteCo[a].upstreamIP.len == 4) {
+		addrType.V4.sin_family = AF_INET;
+		addrType.V4.sin_port = htons(53);
+		memcpy(&(addrType.V4.sin_addr.s_addr), 
+				remoteCo[a].upstreamIP.ip, 4);
+		random_bind_result = do_random_bind(remoteCo[a].sockRemote, 4);
+#ifndef NOIP6
+	} else if(remoteCo[a].upstreamIP.len == 16) {
+		addrType.V6.sin6_family = AF_INET6;
+		addrType.V6.sin6_port = htons(53);
+		memcpy(&(addrType.V6.sin6_addr), remoteCo[a].upstreamIP.ip,16);
+		random_bind_result = do_random_bind(remoteCo[a].sockRemote,16);
+#endif // NOIP6
+	}
+	if(random_bind_result == -1) {
 		set_time();
 		closesocket(remoteCo[a].sockRemote);
 		remoteCo[a].sockRemote = NO_REPLY;
@@ -1713,8 +1735,8 @@ void runServer(lua_State *L) {
                 selectTimeout.tv_sec  = 0;
                 selectTimeout.tv_usec = 50000; // Strobe 20 times a second
                 FD_ZERO(&selectFdSet);
-                FD_SET(localConn,&selectFdSet);
-		selectMax = localConn + 1;
+                FD_SET(localConn4,&selectFdSet);
+		selectMax = localConn4 + 1;
 		for(a = 0; a <= remoteTop; a++) {
 			if(a < maxprocs &&
 			   remoteCo[a].sockRemote != INVALID_SOCKET &&
@@ -1729,8 +1751,8 @@ void runServer(lua_State *L) {
                         &selectTimeout);
                 set_time();
                 while(selectOut > 0) {
-                        if(FD_ISSET(localConn, &selectFdSet)) {
-                                sock = localConn;
+                        if(FD_ISSET(localConn4, &selectFdSet)) {
+                                sock = localConn4;
 				selectOut -= 1;
                         } else {
 				for(a = 0; a <= remoteTop; a++) {
@@ -1766,7 +1788,6 @@ void runServer(lua_State *L) {
                         free(in);
                         continue;
                 }
-                // IPv6 support is left as an exercise for the reader
                 if(dns_in.V4.sin_family != AF_INET) {
                         free(in);
                         continue;
@@ -1839,7 +1860,7 @@ int main(int argc, char **argv) {
                 return 1;
         }
         sock = startServer(L);
-        localConn = sock;
+        localConn4 = sock;
         selectMax = sock + 1;
         runServer(L);
 }
@@ -2015,7 +2036,7 @@ void svc_service_main(int argc, char **argv) {
                 exit(1);
         }
         sock = startServer(L);
-        localConn = sock;
+        localConn4 = sock;
         selectMax = sock + 1;
         runServer(L);
         log_it("==coLunacyDNS stopped==");
@@ -2071,7 +2092,7 @@ int main(int argc, char **argv) {
                         L = init_lua(argv[0]);
                         if(L != NULL) {
                                 sock = startServer(L);
-                                localConn = sock;
+                                localConn4 = sock;
                                 selectMax = sock + 1;
                                 runServer(L);
                         } else {
