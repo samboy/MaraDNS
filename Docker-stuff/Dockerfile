@@ -19,6 +19,6 @@ RUN yum -y update && yum -y install gcc && yum -y install git && \
 	rm -fr /tmp/MaraDNS && cd /tmp && tar xvzf rg32hash.tar.gz && \
 	cd rg32hash-source && make && cp rg32hash /usr/bin && \
 	mkdir /etc/deadwood/ && yum -y install valgrind && \
-	yum -y install clang
+	yum -y install clang && yum -y install diffutils
 
 CMD ["/bin/bash"]

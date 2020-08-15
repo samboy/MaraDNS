@@ -111,6 +111,8 @@ for test in $TESTS ; do
 	sleep 2
 	if ! cmp output.success output.test > /dev/null 2>&1 ; then
 		echo test $test failed
+		echo diff follows
+		diff -u output.test output.success
 		exit 1
 	else
 		echo test $test succeeded
