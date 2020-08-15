@@ -109,8 +109,8 @@ typedef struct {
 // Select() stuff
 fd_set selectFdSet;
 SOCKET selectMax;
-SOCKET localConn4;
-SOCKET localConn6;
+SOCKET localConn4 = INVALID_SOCKET;
+SOCKET localConn6 = INVALID_SOCKET;
 typedef struct {
         lua_State *L;
         lua_State *LT;
@@ -1719,24 +1719,37 @@ void runServer(lua_State *L) {
         int len_inet;
         sockaddr_all_T dns_in;
         struct timeval selectTimeout;
+	SOCKET sock4 = INVALID_SOCKET;
+	SOCKET sock6 = INVALID_SOCKET;
 
         /* Now that we know the IP and are on port 53, process incoming
          * DNS requests */
         while(serverRunning == 1) {
                 ip_addr_T fromIp; /* Who sent us a query */
                 uint16_t fromPort; /* On which port */
-                SOCKET sock = INVALID_SOCKET;
                 char *in = 0;
                 socklen_t lenthing;
 
                 int selectOut;
                 int a;
 
+		sock4 = INVALID_SOCKET;
+		sock6 = INVALID_SOCKET;
+
                 selectTimeout.tv_sec  = 0;
                 selectTimeout.tv_usec = 50000; // Strobe 20 times a second
                 FD_ZERO(&selectFdSet);
-                FD_SET(localConn4,&selectFdSet);
-		selectMax = localConn4 + 1;
+		selectMax = -1;
+		if(localConn4 != INVALID_SOCKET) {
+                	FD_SET(localConn4,&selectFdSet);
+			selectMax = localConn4 + 1;
+		}
+		if(localConn6 != INVALID_SOCKET) {
+			FD_SET(localConn6,&selectFdSet);
+			if(localConn6 + 1 > selectMax) {
+				selectMax = localConn6 + 1;
+			}
+		}
 		for(a = 0; a <= remoteTop; a++) {
 			if(a < maxprocs &&
 			   remoteCo[a].sockRemote != INVALID_SOCKET &&
@@ -1752,7 +1765,10 @@ void runServer(lua_State *L) {
                 set_time();
                 while(selectOut > 0) {
                         if(FD_ISSET(localConn4, &selectFdSet)) {
-                                sock = localConn4;
+                                sock4 = localConn4;
+				selectOut -= 1;
+			} else if(FD_ISSET(localConn6, &selectFdSet)) {
+				sock6 = localConn6;
 				selectOut -= 1;
                         } else {
 				for(a = 0; a <= remoteTop; a++) {
@@ -1777,24 +1793,51 @@ void runServer(lua_State *L) {
                         }
                 }
 
-                /* Get data from UDP port 53 */
-                in = malloc(500);
-                lenthing = 450;
-                len_inet = recvfrom(sock,in,255,0,(struct sockaddr *)&dns_in,
-                        &lenthing);
-                set_time(); // Keep timestamp up to date
-                /* Roy Arends check: We only answer questions */
-                if(len_inet < 3 || (in[2] & 0x80) != 0x00) {
-                        free(in);
-                        continue;
-                }
-                if(dns_in.V4.sin_family != AF_INET) {
-                        free(in);
-                        continue;
-                }
-		memcpy(fromIp.ip,&(dns_in.V4.sin_addr.s_addr),4);
-                fromPort = ntohs(dns_in.V4.sin_port);
-                processQueryC(L, sock, in, len_inet, fromIp, fromPort);
+		if(sock4 != INVALID_SOCKET) {
+                	/* Get data from UDP port 53 */
+                	in = malloc(500);
+                	lenthing = 450;
+                	len_inet = recvfrom(sock4,in,255,0,
+					(struct sockaddr *)&dns_in, &lenthing);
+                	set_time(); // Keep timestamp up to date
+                	/* Roy Arends check: We only answer questions */
+                	if(len_inet < 3 || (in[2] & 0x80) != 0x00) {
+                        	free(in);
+                        	goto sock6;
+                	}
+               	 	if(dns_in.V4.sin_family != AF_INET) {
+                        	free(in);
+                        	goto sock6;
+                	}
+			fromIp.len = 4;
+			memcpy(fromIp.ip,&(dns_in.V4.sin_addr.s_addr),4);
+                	fromPort = ntohs(dns_in.V4.sin_port);
+                	processQueryC(L, sock4,in, len_inet, fromIp, fromPort);
+		}
+sock6:
+		if(sock6 != INVALID_SOCKET) {
+                	lenthing = 450;
+#ifndef NOIP6
+                	/* Get data from UDP port 53 */
+                	in = malloc(500);
+                	len_inet = recvfrom(sock6,in,255,0,
+					(struct sockaddr *)&dns_in, &lenthing);
+                	set_time(); // Keep timestamp up to date
+                	/* Roy Arends check: We only answer questions */
+                	if(len_inet < 3 || (in[2] & 0x80) != 0x00) {
+                        	free(in);
+                        	continue;
+                	}
+               	 	if(dns_in.V6.sin6_family != AF_INET6) {
+                        	free(in);
+                        	continue;
+                	}
+			fromIp.len = 16;
+			memcpy(fromIp.ip,&(dns_in.V6.sin6_addr),16);
+                	fromPort = ntohs(dns_in.V6.sin6_port);
+                	processQueryC(L, sock6,in, len_inet, fromIp, fromPort);
+#endif // NOIP6
+		}
         }
 }
 
