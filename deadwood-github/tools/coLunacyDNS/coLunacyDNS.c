@@ -1638,10 +1638,20 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
         int qLen = -1;
         char fromString[128]; /* String of sending IP */
 
-        snprintf(fromString,120,"%d.%d.%d.%d",fromIp.ip[0],
-                fromIp.ip[1],
-                fromIp.ip[2],
-                fromIp.ip[3]);
+	if(fromIp.len == 4) {
+        	snprintf(fromString,120,"%d.%d.%d.%d",fromIp.ip[0],
+                	fromIp.ip[1],
+                	fromIp.ip[2],
+                	fromIp.ip[3]);
+	} else if(fromIp.len == 16) {
+		snprintf(fromString,120,"%02x%02x-%02x%02x-%02x%02x-%02x%02x "
+		         "%02x%02x-%02x%02x-%02x%02x-%02x%02x",
+			fromIp.ip[0],fromIp.ip[1],fromIp.ip[2],fromIp.ip[3],
+			fromIp.ip[4],fromIp.ip[5],fromIp.ip[6],fromIp.ip[7],
+			fromIp.ip[8],fromIp.ip[9],fromIp.ip[10],fromIp.ip[11],
+			fromIp.ip[12],fromIp.ip[13],fromIp.ip[14],
+			fromIp.ip[15]);
+	}
 
         /* Prepare the reply */
         if(inLen > 12 && in[5] == 1) {
@@ -1699,7 +1709,11 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
 
                 // t["coFromIPtype"] is the string "IPv4"
                 lua_pushstring(LT,"coFromIPtype");
-                lua_pushstring(LT,"IPv4");
+		if(fromIp.len == 4) {
+                	lua_pushstring(LT,"IPv4");
+		} else if(fromIp.len == 16) {
+                	lua_pushstring(LT,"ip6");
+		}
                 lua_settable(LT, -3);
 
                 thread_status = lua_resume(LT, 1);
