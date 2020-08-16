@@ -901,8 +901,8 @@ int do_random_bind(SOCKET s, int len) {
 /* Give a Lua state, which is the file 'config.lua' read, run the
  * server.  This includes initializing the remoteCo array used by
  * select() to resume a thread once we get a DNS reply */
-SOCKET startServer(lua_State *L) {
-        SOCKET sock;
+void startServer(lua_State *L) {
+        SOCKET sock4;
         sockaddr_all_T dns_udp;
         ip_addr_T ip; 
         int a;
@@ -936,10 +936,11 @@ SOCKET startServer(lua_State *L) {
         lua_pop(L, 1); // Remove _G.logLevel from stack, restoring stack
 
         // No we have an IP, bind to port 53
-        sock = get_port(ip,&dns_udp);
+        sock4 = get_port(ip,&dns_udp);
         sandbox(); // Drop root and chroot()
         log_it("Running coLunacyDNS");
-        return sock;
+        localConn4 = sock4;
+        selectMax = sock4 + 1;
 }
 
 // Once a call to processQuery() in the Lua is done, send out the
@@ -1845,7 +1846,6 @@ sock6:
 int main(int argc, char **argv) {
         lua_State *L;
         char *look;
-        SOCKET sock;
 
 	// Do this *before* running any Lua code
         init_rng();
@@ -1902,9 +1902,7 @@ int main(int argc, char **argv) {
                 log_it("Fatal error opening lua config file");
                 return 1;
         }
-        sock = startServer(L);
-        localConn4 = sock;
-        selectMax = sock + 1;
+        startServer(L);
         runServer(L);
 }
 #else /* MINGW */
@@ -2078,9 +2076,7 @@ void svc_service_main(int argc, char **argv) {
                 fprintf(LOG,"FATAL: Can not init Lua state!\n");
                 exit(1);
         }
-        sock = startServer(L);
-        localConn4 = sock;
-        selectMax = sock + 1;
+        startServer(L);
         runServer(L);
         log_it("==coLunacyDNS stopped==");
         fclose(LOG);
@@ -2134,9 +2130,7 @@ int main(int argc, char **argv) {
                         isInteractive = 1;
                         L = init_lua(argv[0]);
                         if(L != NULL) {
-                                sock = startServer(L);
-                                localConn4 = sock;
-                                selectMax = sock + 1;
+                                startServer(L);
                                 runServer(L);
                         } else {
                                 puts("Fatal: Can not init Lua");
