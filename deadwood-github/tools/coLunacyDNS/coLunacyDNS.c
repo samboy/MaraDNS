@@ -463,7 +463,7 @@ void windows_socket_start() {
 
 /* Get port: Get a port locally and return the socket the port is on */
 SOCKET get_port(ip_addr_T ip, sockaddr_all_T *dns_udp) {
-        SOCKET sock;
+        SOCKET sock = INVALID_SOCKET;
         int len_inet;
 #ifdef MINGW
         struct timeval noblock;
@@ -475,8 +475,14 @@ SOCKET get_port(ip_addr_T ip, sockaddr_all_T *dns_udp) {
 #ifdef MINGW
         windows_socket_start();
 #endif /* MINGW */
-        sock = socket(AF_INET,SOCK_DGRAM,0);
-        if(sock == -1) {
+	if(ip.len == 4) {
+        	sock = socket(AF_INET,SOCK_DGRAM,0);
+#ifndef NOIP6
+	} else if(ip.len == 16) {
+		sock = socket(AF_INET6, SOCK_DGRAM, 0);
+#endif // NOIP6
+	} 
+        if(sock == INVALID_SOCKET) {
                 perror("socket error");
                 exit(0);
         }
@@ -491,7 +497,7 @@ SOCKET get_port(ip_addr_T ip, sockaddr_all_T *dns_udp) {
         	memcpy(&(dns_udp->V4.sin_addr),ip.ip,4);
 #ifndef NOIP6
 	} else if(ip.len == 16) {
-        	dns_udp->V6.sin6_family = AF_INET;
+        	dns_udp->V6.sin6_family = AF_INET6;
         	dns_udp->V6.sin6_port = htons(53);
         	memcpy(&(dns_udp->V6.sin6_addr),ip.ip,16);
 #endif // NOIP6
@@ -953,7 +959,7 @@ void startServer(lua_State *L) {
 		char *bindIp6;
 		bindIp6 = (char *)lua_tostring(L, -1);
 		ip = get_ip6(bindIp6);
-		if(ip.len == 6) {
+		if(ip.len == 16) {
 			sock = get_port(ip,&dns_udp);
 		} else {
 			log_it("FATAL: Invalid value for bindIp6");
