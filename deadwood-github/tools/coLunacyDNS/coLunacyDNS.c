@@ -999,7 +999,6 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                 ip_addr_T fromIp, uint16_t fromPort) {
         const char *rs;
         sockaddr_all_T dns_out;
-        memset(&dns_out,0,sizeof(dns_out));
 	if(fromIp.len == 4) {
         	dns_out.V4.sin_family = AF_INET;
         	dns_out.V4.sin_port = htons(fromPort);
@@ -1011,7 +1010,7 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
 		memcpy(&(dns_out.V6.sin6_addr),&fromIp.ip,16);
 #endif // NOIP6
 	} 
-        int leni = sizeof(struct sockaddr);
+        int leni = sizeof(dns_out);
 
         // Pull data from Lua processQuery() function return value
         rs = NULL;
