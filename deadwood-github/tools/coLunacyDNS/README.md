@@ -52,12 +52,13 @@ function processQuery(Q) -- Called for every DNS query received
 end
 ```
 
-In this example, we return `10.1.1.1` for all IPv4 `A` queries, 
-`2001:db8:4d61:7261:444e:5300::1234` for all IPv6 `AAAA` queries,
-and "not there" for all other query types:
+In this example, where we bind to both IPv4 and IPv6 localhost, we return
+`10.1.1.1` for all IPv4 `A` queries, `2001:db8:4d61:7261:444e:5300::1234`
+for all IPv6 `AAAA` queries, and "not there" for all other query types:
 
 ```lua
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
+bindIp6 = "::1" -- Localhost for IPv6
 function processQuery(Q) -- Called for every DNS query received
   if Q.coQtype == 28 then
     return {co1Type = "ip6",co1Data="2001-0db8-4d61-7261 444e-5300-0000-1234"}
@@ -69,11 +70,15 @@ function processQuery(Q) -- Called for every DNS query received
 end
 ```
 
-In the same vein, in this example, we contact the DNS server 9.9.9.9 for 
+Note that coLunacyDNS *always* binds to an IPv4 address; if `bindIp` is
+not set, coLunacyDNS will bind to `0.0.0.0` (all available IPv4 addresses).
+
+In this example, we contact the DNS server 9.9.9.9 for 
 IPv4 queries, and 149.112.112.112 for IPv6 queries:
 
 ```lua
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
+bindIp6 = "::1" -- Localhost for IPv6
 function processQuery(Q) -- Called for every DNS query received
   local t
   if Q.coQtype == 28 then -- Request for IPv6 IP
@@ -104,6 +109,7 @@ block.
 
 ```lua
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
+bindIp6 = "::1" -- Localhost for IPv6
 
 -- Open up block list to know which domains to block
 blockList = {}
