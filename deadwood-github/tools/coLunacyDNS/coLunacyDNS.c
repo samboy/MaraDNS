@@ -418,7 +418,7 @@ ip_addr_T set_return_ip4(char *returnIp) {
         return ip;
 }
 
-/* Convert a NULL-terminated string like "10.1.2.3" in to an IP */
+/* Convert a NULL-terminated string like "10.1.2.3" in to an IPv4 IP */
 ip_addr_T get_ip4(char *stringIp) {
         ip_addr_T ip;
 	uint32_t ipt = 0xffffffff;
@@ -436,6 +436,21 @@ ip_addr_T get_ip4(char *stringIp) {
         ip.ip[3] = (ipt & 0x000000ff);
         /* Return the IP we bind to */
         return ip;
+}
+
+/* Convert a NULL-terminated string like "2001:db8:f00:ba4::777" in to
+ * an IPv6 ip */
+ip_addr_T get_ip6(char *stringIp) {
+        ip_addr_T ip;
+#ifndef NOIP6
+	ip.len = 16;
+	if(inet_pton(AF_INET6, stringIp, (uint8_t *)&(ip.ip)) <= 0) {
+		ip.len = 0;
+	}
+#else // NOIP6
+	ip.len = 0;
+#endif // NOIP6
+	return ip;
 }
 
 #ifdef MINGW
@@ -902,7 +917,7 @@ int do_random_bind(SOCKET s, int len) {
  * server.  This includes initializing the remoteCo array used by
  * select() to resume a thread once we get a DNS reply */
 void startServer(lua_State *L) {
-        SOCKET sock4;
+        SOCKET sock;
         sockaddr_all_T dns_udp;
         ip_addr_T ip; 
         int a;
@@ -923,6 +938,37 @@ void startServer(lua_State *L) {
                 ip = get_ip4(0);
         }
         lua_pop(L, 1); // Remove _G.bindIp from stack, restoring the stack
+	if(ip.len == 4) {
+        	sock = get_port(ip,&dns_udp);
+	} else {
+		log_it("FATAL: Invalid value for bindIp");
+		exit(1);
+	}
+        localConn4 = sock;
+        selectMax = localConn4 + 1;
+
+	lua_getglobal(L,"bindIp6"); 
+	if(lua_type(L, -1) == LUA_TSTRING) {
+#ifndef NOIP6
+		char *bindIp6;
+		bindIp6 = (char *)lua_tostring(L, -1);
+		ip = get_ip6(bindIp6);
+		if(ip.len == 6) {
+			sock = get_port(ip,&dns_udp);
+		} else {
+			log_it("FATAL: Invalid value for bindIp6");
+			exit(1);
+		}
+		localConn6 = sock;
+		if(localConn6 > localConn4) {
+			selectMax = localConn6 + 1;
+		}
+#else // NOIP6
+		log_it("FATAL: bindIp6 set; IPv6 not compiled in");
+		exit(1)
+#endif // NOIP6
+	}
+	lua_pop(L, 1); // remove _G.bindIp6 from stack
 
 	// Get logLevel from global Lua context
         lua_getglobal(L,"logLevel");
@@ -936,11 +982,8 @@ void startServer(lua_State *L) {
         lua_pop(L, 1); // Remove _G.logLevel from stack, restoring stack
 
         // No we have an IP, bind to port 53
-        sock4 = get_port(ip,&dns_udp);
         sandbox(); // Drop root and chroot()
         log_it("Running coLunacyDNS");
-        localConn4 = sock4;
-        selectMax = sock4 + 1;
 }
 
 // Once a call to processQuery() in the Lua is done, send out the
