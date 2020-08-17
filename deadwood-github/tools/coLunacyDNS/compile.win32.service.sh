@@ -20,8 +20,8 @@ export CC="x86_64-w64-mingw32-gcc"
 make -f Makefile.mingw64
 mv Makefile.disabled Makefile
 cd ../tools/coLunacyDNS/
-echo $CC -Wall -O3 -DMINGW -c -o coLunacyDNS.o coLunacyDNS.c
-$CC -Wall -O3 -DMINGW -c -o coLunacyDNS.o coLunacyDNS.c
+echo $CC -Wall -O3 -DMINGW -DNOIP6 -c -o coLunacyDNS.o coLunacyDNS.c
+$CC -Wall -O3 -DMINGW -DNOIP6 -c -o coLunacyDNS.o coLunacyDNS.c
 $CC -O3 -o coLunacyDNS.exe coLunacyDNS.o ../../lunacy/liblua.a -lm -lwsock32
 #gcc -Wall -Os -DNOIP6 -DMINGW -c -o coLunacyDNS.o coLunacyDNS.c
 #gcc -Os -o coLunacyDNS coLunacyDNS.o ../../lunacy/liblua.a -lm -lwsock32
