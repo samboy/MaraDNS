@@ -478,6 +478,12 @@ read to adjust some setting in coLunacyDNS:
 * `bindIp`: This is the IPv4 IP that coLunacyDNS will use as a DNS server.
   If this is not set, then coLunacyDNS will bind to the IP `0.0.0.0`
   (all IP addresses the machine running coLunacyDNS has)
+* `bindIp6`: This is the IPv6 IP that coLunacyDNS will bind to.  If this
+  is not set, coLunacyDNS will only bind to IPv4.  The IP address
+  is in standard IPv6 format, e.g. `2001:0db8:f00:ba4::2020`.  Note
+  that if `coLunacyDNS` is compiled with IPv6 disabled (`-DNOIP6`, and it
+  does *not* affect `coLunacyDNS`’s ability to resolve AAAA queries) and 
+  `bindIp6` is set, `coLunacyDNS` will terminate.
 * `logLevel`: If this is set, more information will be logged and passed
   to Lua scripts which can be used for debugging purposes.  This can have
   a value between 0 and 10; higher values result in more logging.
