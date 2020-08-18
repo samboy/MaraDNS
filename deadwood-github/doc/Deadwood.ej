@@ -384,15 +384,41 @@ takes timeout_seconds seconds before we retry again.  Default
 value: 5
 
 <h2>ns_glueless_type</h2>
-The RR type we send to resolve glueless records.  This should be
-1 (A) when mainly using IPv4 to resolve records.  If glueless NS records
-have AAAA but not A records, and IPv6 is enabled, it may make sense to
-give this a value of 255 (ANY).  If IPv4 ever stops being used on a large
-scale, it may eventually become possible to make this have a value of
-28 (AAAA).<p>
+The RR type we send to resolve glueless records.  This should always be 1 
+(A; i.e.  IPv4 DNS servers).  This should <i>never</i> be ANY, see RFC8482.  
+This should not be any other value, since only A glueless NS referrals
+have ever been tested with Deadwood.
 
-The default value is 1: An A (IPv4 IP) record.  This parameter has <b>not</b>
-been tested; use at your own risk.
+<p>
+
+The reason why this exists is because, often times in DNS, we get a
+reply like "The name server for this foo.example.com and no I do not
+have the IP for foo.example.com" when recursively solving an answer.
+So, the question is this: Is foo.example.com an IPv4 DNS server, an 
+IPv6 server, or both?  
+
+<p>
+
+On today's internet (mid-2020, during the COVID-19 crisis), the answer
+is that the name server in question is only on the IPv4 Internet.  IPv6
+is now mainstream (e.g. my ISP gives me a /64 and I no longer have
+to tunnel through he.net to try out IPv6), but most servers are
+still IPv4 only (e.g. my domains are only on IPv4, and amazon.com
+does not have an IPv6 address).  
+
+<p>
+
+The reason this parameter exists is because, when I was writing the
+recursive code for Deadwood, I was thinking of a future where IPv6 
+is prevalent enough that we would have DNS servers with only IPv6
+addresses, and glueless NS referrals (the "foo.example.com" case 
+above) would point to servers with IPv6, but not IPv4, addresses.
+
+<p>
+
+That day may yet come, but preparing Deadwood to still be a viable
+DNS server when that day comes will require more than changing the 
+RR type sent when it gets a glueless NS referral.
 
 <h2>random_seed_file</h2>
 This is a file that contains random numbers, and
