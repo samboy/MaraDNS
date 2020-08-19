@@ -1,5 +1,16 @@
 MaraDNS changelog
 
+   maradns-3.5.0013:
+   This is a stable release of MaraDNS (note that coLunacyDNS and
+   mmLunacyDNS are unstable):
+
+     * coLunacyDNS now has support for binding to IPv6 addresses.  Both
+       the *NIX (Linux) and the Windows32 binary can bind to an IPv6
+       socket.
+     * Some other bug fixes and cleanup, mainly with coLunacyDNS.
+
+     (2020-08-19)
+
    maradns-3.5.0012:
    This is a stable release of MaraDNS (note that coLunacyDNS and
    mmLunacyDNS are unstable): 

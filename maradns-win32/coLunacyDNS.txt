@@ -48,6 +48,7 @@ and "not there" for all other query types:
 
 --------------------------------------------------------------------------
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
+bindIp6 = "::1" -- As well as the IPv6 IP ::1 (IP6 localhost)
 function processQuery(Q) -- Called for every DNS query received
   if Q.coQtype == 28 then
     return {co1Type = "ip6",co1Data="2001-0db8-4d61-7261 444e-5300-0000-1234"}
@@ -64,6 +65,7 @@ IPv4 queries, and 149.112.112.112 for IPv6 queries:
 
 --------------------------------------------------------------------------
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
+bindIp6 = "::1" -- And the IP ::1 on IPv6
 function processQuery(Q) -- Called for every DNS query received
   local t
   if Q.coQtype == 28 then -- Request for IPv6 IP

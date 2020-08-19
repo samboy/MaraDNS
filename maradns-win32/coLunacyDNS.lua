@@ -1,5 +1,6 @@
 -- coLunacyDNS configuration
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
+-- bindIp6 = "::1" -- Uncomment this line to give program IPv6 address
 
 -- Examples of three API calls we have: timestamp, rand32, and rand16
 coDNS.log(string.format("Timestamp: %.1f",coDNS.timestamp())) -- timestamp
