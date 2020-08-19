@@ -39,14 +39,13 @@
 
 #include <stdint.h>
 #ifdef MINGW
-#include <winsock.h>
-#include <wininet.h>
-#include <wincrypt.h>
 #ifndef FD_SETSIZE
 #define FD_SETSIZE 512
 #endif /* FD_SETSIZE */
-#include <winsock.h>
 #include <wininet.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <wincrypt.h>
 #define socklen_t int32_t
 #else
 #include <sys/socket.h>
@@ -1015,7 +1014,9 @@ void setup_bind(sockaddr_all_T *dns_udp, uint16_t port, int len) {
 #ifndef NOIP6
 	} else if(len == 16) {
 		dns_udp->V6.sin6_family = AF_INET6;
+#ifndef MINGW
 		dns_udp->V6.sin6_addr = in6addr_any;
+#endif // MINGW
 		dns_udp->V6.sin6_port = htons(port);
 #endif // NOIP6
 	} 

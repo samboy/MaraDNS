@@ -15,7 +15,7 @@ done
 cd ../../lunacy/
 #mv Makefile Makefile.disabled
 #cp Makefile.mingw64 Makefile
-make clean
+#make clean
 export CC="gcc"
 make -f Makefile
 #mv Makefile.disabled Makefile
