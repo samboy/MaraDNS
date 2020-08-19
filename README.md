@@ -1,6 +1,3 @@
-Did I mention I will be in a Luke Bible study tonight (this is Git commit
-#666, you know, Nero Ceaser, power without compassion or responsibility)?
-
 # 2020 Updates
 
 I have updated things so that the Git version of MaraDNS is the 
