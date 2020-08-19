@@ -225,6 +225,133 @@ void set_time() {
 #endif /* FALLBACK_TIME */
 }
 
+
+/* ip6Parse: Given a string with a human readable IPv6 IP, and
+   an array to put the resulting 16-byte IP, convert the string
+   in to an IPv6 IP.  1 is success, negative is error.
+  
+   When "len" is -1, "human" is NULL-terminated.
+
+ */
+
+int ip6Parse(char *human, int len, unsigned char *ip6) {
+	int afterDoubleColonQuads = 1;
+	int doubleColonIndex = -1;
+	uint16_t thisQuad = 0;	
+	int8_t thisHex = 0;
+	int outIndex = 0;
+	int currentQuad = 0;
+	int currentHexDigit = 0;
+	char *humanStart = human;
+	int hexCount = 0;
+	int colonCount = 0;
+
+ 	char last = 0;
+	int index = 0;
+
+	if(len > 75 || (len < 2 && len != -1)) { return -262; }
+	// Pass 1: See if we have a double colon and count the colons
+        // after the double colon.  Also: Count colons
+	while((len == -1 && *human != 0 && index < 100) || index < len) {
+		if(last == ':' && *human == ':') {
+			if(doubleColonIndex != -1) {
+				return -(index + 1);
+			}
+			doubleColonIndex = index;
+		}
+		if(last != ':' && *human == ':' && doubleColonIndex != -1) {
+			afterDoubleColonQuads++;
+		}
+		if(*human == ':') { colonCount++; }
+		last = *human;
+		human++;
+		index++;
+	}
+	// Trailing colon error (2001:db8::1:2000:) needs an explicit check
+	if(last == ':' && doubleColonIndex != index - 1) { return -263; } 
+	if(index >= 100) { return -256; /* Error */ }
+	
+	// Zero out the output ip6, so we do not have to add zeroes with “::”
+        for(index = 0 ; index < 16; index++) {
+		ip6[index] = 0;
+	}
+
+	// Pass 2: Convert the hex numbers in to an IPv6 IP
+	human = humanStart;
+	index = 0;
+	while((len == -1 && *human != 0 && index < 100) || index < len) {
+		thisHex = -1;
+		if(*human >= '0' && *human <= '9') {
+			thisHex = *human - '0';
+		} else if(*human == '_' && colonCount == 0) {
+			thisHex = 0;
+		} else if(*human >= 'a' && *human <= 'f') {
+			thisHex = *human + 10 - 'a';
+		} else if(*human >= 'A' && *human <= 'F') {
+			thisHex = *human + 10 - 'A';
+		} else if(*human != ':' && *human != '-' && *human != ' ') {
+			return -(index + 1); // Error
+		}
+
+		// If hexadecimal digit [0-9a-fA-F] seen, add it to Quad
+		if(thisHex != -1) {
+			thisQuad <<= 4;
+			thisQuad += thisHex;
+			currentHexDigit++;
+			// Maximum 4 hex digits between colons
+			if(currentHexDigit == 5 && colonCount != 0) {
+				return -261;
+			}
+			hexCount++;
+		}
+
+		// Single colon processing: End current Quad
+		if(*human == ':' && index != doubleColonIndex &&
+				currentHexDigit != 0 && currentHexDigit != 4) {
+			currentHexDigit = 8;
+		}
+		if(*human == ':' && index != doubleColonIndex &&
+				currentHexDigit == 4) {
+			currentHexDigit = 0;
+		}
+
+		if(*human == ':' && index == doubleColonIndex) {
+			if(thisQuad != 0 || currentHexDigit != 0) { 
+				return -258; 
+			}
+			if(currentQuad + afterDoubleColonQuads >= 8) {
+				return -259; // Too many colons
+			}
+			currentQuad = 8 - afterDoubleColonQuads;
+			if(currentQuad < 0) { return -259; }
+			outIndex = currentQuad * 2;
+		}
+
+		human++;
+		index++;
+		// Convert a series of up to four hex digits in to raw IPv6
+		if((currentHexDigit == 4 && thisHex != -1) || 
+				currentHexDigit == 8 || *human == 0
+				|| (len != -1 && index >= len)) {
+			if(outIndex + 1 >= 16) { return -257; }
+			ip6[outIndex + 1] = thisQuad & 0xff;
+			ip6[outIndex] = thisQuad >> 8;
+			outIndex += 2;
+			thisQuad = 0;
+			if(currentHexDigit == 8) {
+				currentHexDigit = 0;
+			}
+			currentQuad++;
+		}
+
+	}
+	if(index >= 100) { return -256; /* Error */ }
+	if(colonCount == 0 && hexCount != 32) { return -260; }
+	if(colonCount != 0 && currentQuad != 8) { return -262; }
+
+	return 1; // Success	
+}
+
 /* Log a message */
 #ifndef MINGW
 void log_it(char *message) {
@@ -442,12 +569,11 @@ ip_addr_T get_ip4(char *stringIp) {
  * an IPv6 ip */
 ip_addr_T get_ip6(char *stringIp) {
         ip_addr_T ip;
-#ifndef NOIP6
 	ip.len = 16;
-	if(inet_pton(AF_INET6, stringIp, (uint8_t *)&(ip.ip)) <= 0) {
+	if(ip6Parse(stringIp, -1, (uint8_t *)&(ip.ip)) <= 0) {
 		ip.len = 0;
 	}
-#else // NOIP6
+#ifdef NOIP6
 	ip.len = 0;
 #endif // NOIP6
 	return ip;
