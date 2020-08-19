@@ -1,6 +1,6 @@
 # coLunacyDNS ############################################################
 
-coLunacyDNS is a simply IPv4 and IPv6 forwarding DNS server controlled
+coLunacyDNS is a simple IPv4 and IPv6 forwarding DNS server controlled
 by a Lua script.  It allows a lot of flexibility because it uses
 a combination of C for high performance and Lua for maximum
 flexibility.
