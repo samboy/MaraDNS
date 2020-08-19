@@ -1,6 +1,6 @@
 # coLunacyDNS ############################################################
 
-coLunacyDNS is a simply IPv4-only forwarding DNS server controlled
+coLunacyDNS is a simply IPv4 and IPv6 forwarding DNS server controlled
 by a Lua script.  It allows a lot of flexibility because it uses
 a combination of C for high performance and Lua for maximum
 flexibility.
@@ -228,7 +228,7 @@ and it can only return A queries, AAAA queries, “server fail”,
 or “this name is not here” in its replies.
 
 coLunacyDNS, likewise, can only send A (IPv4 IP) and AAAA (IPv6 IP)
-requests to upstream servers.  While coLunacyDNS can process and forward
-IPv6 DNS records, coLunacyDNS can only bind to an IPv4 IP, and can only
-send DNS queries via IPv4.
+requests to upstream servers.  While coLunacyDNS can bind to an IPv6
+IP and process IPv6 AAAA records, coLunacyDNS can not contact upstream
+DNS servers via IPv6.
 
