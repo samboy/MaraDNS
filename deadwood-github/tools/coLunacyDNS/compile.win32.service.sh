@@ -13,15 +13,9 @@ for a in lauxlib.h lua.h luaconf.h lualib.h ; do
 done
 
 cd ../../lunacy/
-#mv Makefile Makefile.disabled
-#cp Makefile.mingw64 Makefile
-#make clean
 export CC="gcc"
 make -f Makefile
-#mv Makefile.disabled Makefile
 cd ../tools/coLunacyDNS/
 echo $CC -Wall -O3 -DMINGW -c -o coLunacyDNS.o coLunacyDNS.c
 $CC -Wall -O3 -DMINGW -c -o coLunacyDNS.o coLunacyDNS.c
 $CC -O3 -o coLunacyDNS.exe coLunacyDNS.o ../../lunacy/liblua.a -lm -lwsock32
-#gcc -Wall -Os -DNOIP6 -DMINGW -c -o coLunacyDNS.o coLunacyDNS.c
-#gcc -Os -o coLunacyDNS coLunacyDNS.o ../../lunacy/liblua.a -lm -lwsock32

@@ -32,7 +32,7 @@
  * Lua level */
 
 /* The user and group ID coLunacyDNS runs as.  Do this as root:
- * useradd -u 707 -M -N -s /bin/true codns
+ * useradd -u 707 -M -N -s /bin/true maradns
  */
 #define UID 707
 #define GID 707 
@@ -81,11 +81,7 @@ u_long dont_block = 0;
 // We need something which can store an IPv4 or IPv6 address
 typedef struct {
         uint8_t len;
-#ifndef NOIP6
 	uint8_t ip[17];
-#else
-	uint8_t ip[4];
-#endif
 } ip_addr_T;
 
 /* storage for both sockaddr_in and sockaddr_in6; note that this needs
@@ -95,9 +91,7 @@ typedef struct {
         union {
                 sa_family_t family;
                 struct sockaddr_in v4;
-#ifndef NOIP6
                 struct sockaddr_in6 v6;
-#endif
         } u;
 } sockaddr_all_T;
 
@@ -572,9 +566,6 @@ ip_addr_T get_ip6(char *stringIp) {
 	if(ip6Parse(stringIp, -1, (uint8_t *)&(ip.ip)) <= 0) {
 		ip.len = 0;
 	}
-#ifdef NOIP6
-	ip.len = 0;
-#endif // NOIP6
 	return ip;
 }
 
@@ -602,10 +593,8 @@ SOCKET get_port(ip_addr_T ip, sockaddr_all_T *dns_udp) {
 #endif /* MINGW */
 	if(ip.len == 4) {
         	sock = socket(AF_INET,SOCK_DGRAM,0);
-#ifndef NOIP6
 	} else if(ip.len == 16) {
 		sock = socket(AF_INET6, SOCK_DGRAM, 0);
-#endif // NOIP6
 	} 
         if(sock == INVALID_SOCKET) {
                 perror("socket error");
@@ -620,12 +609,10 @@ SOCKET get_port(ip_addr_T ip, sockaddr_all_T *dns_udp) {
         	dns_udp->V4.sin_family = AF_INET;
         	dns_udp->V4.sin_port = htons(53);
         	memcpy(&(dns_udp->V4.sin_addr),ip.ip,4);
-#ifndef NOIP6
 	} else if(ip.len == 16) {
         	dns_udp->V6.sin6_family = AF_INET6;
         	dns_udp->V6.sin6_port = htons(53);
         	memcpy(&(dns_udp->V6.sin6_addr),ip.ip,16);
-#endif // NOIP6
 	} else {
                 log_it("Problem with bind IP");
                 exit(0);
@@ -1011,14 +998,12 @@ void setup_bind(sockaddr_all_T *dns_udp, uint16_t port, int len) {
         	dns_udp->V4.sin_family = AF_INET;
         	dns_udp->V4.sin_addr.s_addr = htonl(INADDR_ANY);
         	dns_udp->V4.sin_port = htons(port);
-#ifndef NOIP6
 	} else if(len == 16) {
 		dns_udp->V6.sin6_family = AF_INET6;
 #ifndef MINGW
 		dns_udp->V6.sin6_addr = in6addr_any;
 #endif // MINGW
 		dns_udp->V6.sin6_port = htons(port);
-#endif // NOIP6
 	} 
         return;
 }
@@ -1082,7 +1067,6 @@ void startServer(lua_State *L) {
 
 	lua_getglobal(L,"bindIp6"); 
 	if(lua_type(L, -1) == LUA_TSTRING) {
-#ifndef NOIP6
 		char *bindIp6;
 		bindIp6 = (char *)lua_tostring(L, -1);
 		ip = get_ip6(bindIp6);
@@ -1096,10 +1080,6 @@ void startServer(lua_State *L) {
 		if(localConn6 > localConn4) {
 			selectMax = localConn6 + 1;
 		}
-#else // NOIP6
-		log_it("FATAL: bindIp6 set; IPv6 not compiled in");
-		exit(1);
-#endif // NOIP6
 	}
 	lua_pop(L, 1); // remove _G.bindIp6 from stack
 
@@ -1131,12 +1111,10 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
         	dns_out.V4.sin_family = AF_INET;
         	dns_out.V4.sin_port = htons(fromPort);
 		memcpy(&(dns_out.V4.sin_addr.s_addr),&fromIp.ip,4);
-#ifndef NOIP6
 	} else if(fromIp.len == 16) {
 		dns_out.V6.sin6_family = AF_INET6;
 		dns_out.V6.sin6_port = htons(fromPort);
 		memcpy(&(dns_out.V6.sin6_addr),&fromIp.ip,16);
-#endif // NOIP6
 	} 
         int leni = sizeof(dns_out);
 
@@ -1323,13 +1301,11 @@ void sendDNSpacket(int a) {
 		memcpy(&(addrType.V4.sin_addr.s_addr), 
 				remoteCo[a].upstreamIP.ip, 4);
 		random_bind_result = do_random_bind(remoteCo[a].sockRemote, 4);
-#ifndef NOIP6
 	} else if(remoteCo[a].upstreamIP.len == 16) {
 		addrType.V6.sin6_family = AF_INET6;
 		addrType.V6.sin6_port = htons(53);
 		memcpy(&(addrType.V6.sin6_addr), remoteCo[a].upstreamIP.ip,16);
 		random_bind_result = do_random_bind(remoteCo[a].sockRemote,16);
-#endif // NOIP6
 	}
 	if(random_bind_result == -1) {
 		set_time();
@@ -2008,7 +1984,6 @@ void runServer(lua_State *L) {
 sock6:
 		if(sock6 != INVALID_SOCKET) {
                 	lenthing = 450;
-#ifndef NOIP6
                 	/* Get data from UDP port 53 */
                 	in = malloc(500);
                 	len_inet = recvfrom(sock6,in,255,0,
@@ -2027,7 +2002,6 @@ sock6:
 			memcpy(fromIp.ip,&(dns_in.V6.sin6_addr),16);
                 	fromPort = ntohs(dns_in.V6.sin6_port);
                 	processQueryC(L, sock6,in, len_inet, fromIp, fromPort);
-#endif // NOIP6
 		}
         }
 }
