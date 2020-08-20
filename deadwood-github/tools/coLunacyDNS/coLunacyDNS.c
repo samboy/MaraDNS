@@ -227,7 +227,7 @@ void set_time() {
 
  */
 
-int ip6Parse(char *human, int len, unsigned char *ip6) {
+int ip6Parse(char *human, int len, uint8_t *ip6) {
 	int afterDoubleColonQuads = 1;
 	int doubleColonIndex = -1;
 	uint16_t thisQuad = 0;	
@@ -1177,52 +1177,9 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                         rs = NULL;
                 }
 		if(rs != NULL) { // IP6 data
-			int place = 12; 
-			int nybble = 0;
-			int count = 0;
-			while(*rs && count < 100) {
-				count++;
-				if(*rs >= '0' && *rs <= '9') {
-					int see = *rs - '0';
-					if(nybble == 0) {
-						IPv6answer[place] = see << 4;
-						nybble = 1;
-					} else {
-						IPv6answer[place] |= see;
-						if(place < 28) { place++; }
-						nybble = 0;
-					}
-				} else if((*rs >= 'a' && *rs <= 'f') ||
-				          (*rs >= 'A' && *rs <= 'F')) {
-					int see = *rs;
-					if(*rs < 'G') {
-						see -= 'A';
-						see += 10;
-					} else {
-						see -= 'a';
-						see += 10;
-					}
-					if(nybble == 0) {
-						IPv6answer[place] = see << 4;
-						nybble = 1;
-					} else {
-						IPv6answer[place] |= see;
-						if(place < 28) { place++; }
-						nybble = 0;
-					}
-				} else if(*rs == '_') { // Treat like 0
-					if(nybble == 0) {
-						IPv6answer[place] = 0;
-						nybble = 1;
-					} else {
-						if(place < 28) { place++; }
-						nybble = 0;
-					}
-				} else if(*rs != ' ' && *rs != '-') {
-					rs = NULL; // Parse error
-					break;	
-				}
-				rs++;
+			if(ip6Parse((char *)rs, -1, 
+					(uint8_t *)IPv6answer + 12) != 1) {
+				rs = NULL;
 			}
 		}
 		if(rs != NULL) {
