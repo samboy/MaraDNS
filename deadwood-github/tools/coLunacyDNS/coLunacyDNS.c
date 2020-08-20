@@ -519,6 +519,9 @@ unsigned char not_there[41] =
         "\x01\x79\xc0\x0c" /* Email */
         "\0\0\0\x01\0\0\0\x01\0\0\0\x01\0\0\0\x01\0\0\0\x01" /* 5 numbers */;
 
+/* We also have one for ANY queries, as per RFC8482. This one has a TTL */
+char AnyAnswer[22] =
+"\xc0\x0c\x00\x0d\x00\x01\x00\x01\x51\x80\x00\x09\x07RFC8482\x00";
 
 /* Set the IPv4 IP we send in response to DNS queries */
 ip_addr_T set_return_ip4(char *returnIp) {
@@ -1726,6 +1729,30 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
                 lua_State *LT;
                 int thread_status;
                 char *threadName;
+                qType = ((uint8_t)in[13 + qLen] * 256) + (uint8_t)in[14+qLen];
+		// We handle ANY (and HINFO) in a RFC8482 manner
+		if(qType == 255 || qType == 13) {
+			sockaddr_all_T dns_out;
+			memset(&dns_out,0,sizeof(dns_out));
+			if(fromIp.len == 4) {
+				dns_out.V4.sin_family = AF_INET;
+				dns_out.V4.sin_port = htons(fromPort);
+				memcpy(&(dns_out.V4.sin_addr.s_addr),
+						&fromIp.ip,4);
+			} else if(fromIp.len == 16) {
+				dns_out.V6.sin6_family = AF_INET6;
+				dns_out.V6.sin6_port = htons(fromPort);
+				memcpy(&(dns_out.V6.sin6_addr),&fromIp.ip,16);
+			}
+			int leni = sizeof(dns_out);
+			int a;
+			for(a = 0; a<22; a++) {
+				in[17 + qLen + a] = AnyAnswer[a];
+			}
+			sendto(sock, in, 17 + qLen + a, 0,
+				(struct sockaddr *)&dns_out, leni);
+			return;
+		}
                 threadName = malloc(35);
                 if(threadName == 0) {
                         free(in);
@@ -1742,8 +1769,6 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
                 lua_pop(L, 1); // Pointer to LT thread
 		lua_settop(L, 0); // Clean L stack
 		lua_settop(LT, 0); // Clean LT stack
-
-                qType = (in[13 + qLen] * 256) + in[14 + qLen];
                 lua_getglobal(LT, "processQuery");
 
                 // Function input is a table, which I will call "t"
