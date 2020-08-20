@@ -101,5 +101,5 @@ function processQuery(Q) -- Called for every DNS query received
   elseif returnIP and Q.coQtype == 28 then
     return {co1Type = "ip6", co1Data = returnIP} 
   end
-  return {co1Type = "serverFail"} 
+  return {co1Type = "notThere"} 
 end
