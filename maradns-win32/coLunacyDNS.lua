@@ -31,7 +31,6 @@ function processQuery(Q) -- Called for every DNS query received
     upstream = "4.2.2.1"
   end
 
-  -- Right now, coLunacyDNS can *only* process "A" (IPv4 IP) queries
   if Q.coQtype ~= 1 then -- If it is not an A (ipv4) query
     -- return {co1Type = "ignoreMe"} -- Ignore the query
     return {co1Type = "notThere"} -- Send "not there" (like NXDOMAIN)
@@ -60,5 +59,5 @@ function processQuery(Q) -- Called for every DNS query received
   if returnIP then
     return {co1Type = "A", co1Data = returnIP} 
   end
-  return {co1Type = "serverFail"} 
+  return {co1Type = "notThere"} 
 end

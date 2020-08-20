@@ -165,8 +165,8 @@ function processQuery(Q) -- Called for every DNS query received
       return {co1Type = "notThere"}
     end
   end
-  coDNS.log("Unknown issue")
-  return {co1Type = "serverFail"}
+  coDNS.log("Unknown issue (or record not found)")
+  return {co1Type = "notThere"}
 end
 ```
 
@@ -234,7 +234,7 @@ function processQuery(Q) -- Called for every DNS query received
   if returnIP then
     return {co1Type = "A", co1Data = returnIP} 
   end
-  return {co1Type = "serverFail"} 
+  return {co1Type = "notThere"} 
 end
 ```
 
