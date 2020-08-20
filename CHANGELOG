@@ -1,5 +1,18 @@
 MaraDNS changelog
 
+   maradns-3.5.0014:
+   This is a stable release of MaraDNS (note that coLunacyDNS and
+   mmLunacyDNS are unstable):
+
+     * coLunacyDNS’s Lua script can now specify IPv6 addresses in
+       standard “colon” format, e.g. co1Data="2001:db8::1"
+     * coLunacyDNS now handles ANY (and HINFO) queries as per RFC8482
+     * coLunacyDNS documentation updates: Various cleanup.  Also,
+       the example coLunacyDNS .lua files now return “not there”
+       when we ask for a hostname which does not have a given record.
+
+     (2020-08-20)
+
    maradns-3.5.0013:
    This is a stable release of MaraDNS (note that coLunacyDNS and
    mmLunacyDNS are unstable):
