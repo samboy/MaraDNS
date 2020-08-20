@@ -463,12 +463,14 @@ parameters:
   IPv6 IP answer back to the client).
 * `co1Data`: When `co1Type` is `A`, this is an IPv4 IP in dotted decimal 
   format, e.g. `10.1.2.3`.  When `co1type` is `ip6`, and `co1data` is
+  either a standard IPv6 string, such as `2001:db8:1234::5678`, or
   a string with 32 hexadecimal digits, the IPv6 IP in the string is
-  returned to the client.  If the character `_` is in the string, this
-  is treated as if it were the number `0`; the characters ` ` (space) and
-  `-` (dash) are ignored.  For example, 
-  `2001-0db8-4d61-7261 444e-5300-0000-__01` (without linefeed) is an 
-  allowed value for `co1data` when `co1type` is `ip6`.
+  returned to the client.  If the character `_` is in the ip6 string and
+  the character `:` is *not* present in the string, this is treated 
+  as if it were the number `0`; the characters ` ` (space) and
+  `-` (dash) are ignored.  For example, both `2001:db8::8` and
+  `2001-0db8-4d61-7261 444e-5300-0000-__01` (without linefeed) are
+  allowed values for `co1data` when `co1type` is `ip6`.
 
 # Global settings 
 
