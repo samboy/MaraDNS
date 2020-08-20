@@ -7,7 +7,7 @@ flexibility.
 
 # Getting started ########################################################
 
-Run the following commands as an administrator to start to coLunacyDNS 
+Run the following commands as an administrator to start the coLunacyDNS 
 service:
 
 	coLunacyDNS.exe --install
