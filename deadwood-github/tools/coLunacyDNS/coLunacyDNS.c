@@ -2013,12 +2013,17 @@ int main(int argc, char **argv) {
                 log_it("Error getting command line args.");
                 return 1;
         }
+#ifdef TEST
         if(look[0] == '-' && look[1] != 'd') {
+#else // TEST
+        if(look[0] != '-' || look[1] != 'd') {
+#endif // TEST
                 log_it("Only debug (interactive) mode supported.");
                 log_it("Running as a daemon not supported yet.");
                 log_it("Usage: coLunacyDNS -d {config file}");
                 return 1;
         }
+#ifdef TEST
         // Allow testing of the strong prng algorithm
         if(argc == 2 && look[0] != '-') {
                 uint32_t j;
@@ -2032,8 +2037,23 @@ int main(int argc, char **argv) {
                         printf("%08x",j);
                 }
                 puts("");
+		// While we're here, let's test the IP6 parser also
+		int result;
+		uint8_t ip6[16];
+		result = ip6Parse(look, -1, ip6);
+		if(result != 1) {
+			printf("ip6Parse returned error code %d\n",result);
+		} else {
+			printf("%02x%02x-%02x%02x-%02x%02x-%02x%02x "
+				"%02x%02x-%02x%02x-%02x%02x-%02x%02x\n",
+				ip6[0], ip6[1], ip6[2], ip6[3],
+				ip6[4], ip6[5], ip6[6], ip6[7],
+				ip6[8], ip6[9], ip6[10], ip6[11],
+				ip6[12], ip6[13], ip6[14], ip6[15]);
+		}
                 return 0;
         }
+#endif // TEST
         if(argc == 2) {
                 L = init_lua(argv[0]); // Initialize Lua
         } else if(argc == 3) {
