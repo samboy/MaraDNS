@@ -1,3 +1,8 @@
+# To use another CC, invoke as "make CC=clang" or some such
+CC = gcc
+# To use other flags, invoke as "make CFLAGS=-g" or some such
+CFLAGS = -O3
+
 all: coLunacyDNS HalfSipHash1-3 
 
 clean: 
