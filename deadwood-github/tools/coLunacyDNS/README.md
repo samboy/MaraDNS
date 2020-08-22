@@ -10,9 +10,15 @@ and Lua for maximum control.
 On a CentOS 8 Linux system, this gets us started:
 
 ```bash
-./compile.coLunacyDNS.sh
+make
 su
 ./coLunacyDNS -d
+```
+
+If one has `clang` instead of GCC:
+
+```
+make CC="clang"
 ```
 
 Here, we use `coLunacyDNS.lua` as the configuration file.
@@ -22,8 +28,9 @@ As soon as coLunacyDNS binds to port 53 and seeds its internal
 secure pseudo random number generator, it calls `chroot` and drops
 root privileges.
 
-Cygwin users may use `compile.cygwin.sh` to compile coLunacyDNS, since
-Cygwin does not have the same sandboxing Linux has.
+Cygwin users may use `make -f Makefile.cygwin` (or, if one prefers,
+`make CFLAGS="-O3 -DCYGWIN"` also works) to compile coLunacyDNS, 
+since Cygwin does not have the same sandboxing Linux has.
 
 # Configration file examples
 
