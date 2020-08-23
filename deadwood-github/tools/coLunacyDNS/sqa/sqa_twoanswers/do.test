@@ -1,6 +1,8 @@
 #!/bin/bash
 # Bashism: Job control
 
+. ../testVars
+
 PROG="../../coLunacyDNS"
 
 cat > test.lua << EOF
@@ -22,7 +24,7 @@ sleep 1
 askmara Amaradns.samiam.org. 127.7.7.4 > output.test
 askmara 28:maradns.samiam.org. 127.7.7.4 >> output.test
 
-LIST=$( ps auxw | awk '{print $2 " " $11}' | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
 	kill $process
 done

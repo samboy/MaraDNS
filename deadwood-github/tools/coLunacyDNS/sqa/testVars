@@ -1,0 +1,5 @@
+# This script is sourced by each test script, so things which may change
+# from one Linux version to another can be changed here
+
+# This, given the output of "ps auxw", returns the PID and the process name
+PROCGET='{print $2 " " $11}'

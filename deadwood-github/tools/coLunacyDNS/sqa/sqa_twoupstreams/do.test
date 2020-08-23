@@ -1,0 +1,69 @@
+#!/bin/bash
+# Bashism: Job control
+
+. ../testVars
+
+PROG="../../coLunacyDNS"
+
+cat > upstream1.lua << EOF
+bindIp = "127.7.7.5" 
+function processQuery(Q) -- Called for every DNS query received
+  return {co1Type = "ip6", co1Data = "2001:db8::707"}
+end
+EOF
+cat > upstream2.lua << EOF
+bindIp = "127.7.7.6" 
+function processQuery(Q) -- Called for every DNS query received
+  return {co1Type = "A", co1Data = "10.1.1.1"}
+end
+EOF
+cat > test.lua << EOF
+bindIp = "127.7.7.7" 
+function processQuery(Q) -- Called for every DNS query received
+  local t
+  if Q.coQtype == 28 then -- Request for IPv6 IP
+    t = coDNS.solve({name=Q.coQuery,type="ip6", upstreamIp4="127.7.7.5"})
+  elseif Q.coQtype == 1 then -- Request for IPv4 IP
+    t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4="127.7.7.6"})
+  else
+    return {co1Type = "notThere"}
+  end
+  if t.error then
+    return {co1Type = "serverFail"}
+  end
+  if t.status == 28 then
+    return {co1Type = "ip6", co1Data = t.answer}
+  elseif t.status == 1 then
+    return {co1Type = "A", co1Data = t.answer}
+  else
+    return {co1Type = "notThere"}
+  end 
+end
+EOF
+
+
+${PROG} -d test.lua &
+${PROG} -d upstream1.lua &
+${PROG} -d upstream2.lua &
+sleep 1
+
+askmara Amaradns.samiam.org. 127.7.7.7 > output.test
+askmara 28:maradns.samiam.org. 127.7.7.7 >> output.test
+
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}')
+for process in $LIST ; do
+	kill $process
+done
+sleep 1
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+        echo GetUpstream Test failed
+        exit 255
+fi
+
+echo GetUpstream test Success
+# Clean up
+rm test.lua
+rm upstream1.lua
+rm upstream2.lua
+rm output.test
