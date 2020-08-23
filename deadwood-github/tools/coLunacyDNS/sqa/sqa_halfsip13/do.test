@@ -1,0 +1,11 @@
+#!/bin/sh
+
+../../HalfSipHash1-3 > output.test
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+        echo Test HalfSip-1-3 failed
+        exit 255
+fi
+
+echo HalfSip-1-3 Success
+rm output.test

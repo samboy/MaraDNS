@@ -27,6 +27,7 @@ fi
 
 TESTS="sqa_rg32"
 TESTS=$TESTS" sqa_ip6Parse"
+TESTS=$TESTS" sqa_halfsip13"
 FAIL=""
 
 for test in $TESTS ; do
