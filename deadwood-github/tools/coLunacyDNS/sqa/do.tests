@@ -1,5 +1,11 @@
 #!/bin/sh
 
+# We need to be root to bind to port 53
+if ! id | grep root > /dev/null 2>&1 ; then
+        echo the tests must be run as a root user
+        exit 1
+fi
+
 if [ "$1" = "--help" ] ; then	
 	echo Usage: $0 to run all tests 
 	echo $0 --stop to stop if a test fails
@@ -36,6 +42,9 @@ for test in $TESTS ; do
 	cd "$HERE"
 done
 if [ -z "$FAIL" ] ; then
+	cd "$HERE"
+	cd ..
+	make clean
 	echo All tests successful
 	exit 0
 fi
