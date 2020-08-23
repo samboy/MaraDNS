@@ -493,5 +493,8 @@ read to adjust settings in coLunacyDNS:
   MaraDNS-specific format, e.g. `2001-0db8-0f00-0ba4 00__00__00__2020`
 * `logLevel`: If this is set, more information will be logged and passed
   to Lua scripts which can be used for debugging purposes.  This can have
-  a value between 0 and 10; higher values result in more logging.
+  a value between 0 and 10; higher values result in more logging.  If
+  `logLevel` has a value of 0, log messages generated with `coDNS.log` are
+  buffered and will not immediately be visible; if `logLevel` has a value
+  more than 0, `coDNS.log` messages are immediately flushed (unbuffered).
 
