@@ -25,9 +25,12 @@ if [ "$1" = "--stop" ] ; then
 	DoStop="1"
 fi
 
+# Test underlying libs
 TESTS="sqa_rg32"
 TESTS=$TESTS" sqa_ip6Parse"
 TESTS=$TESTS" sqa_halfsip13"
+# Test Lua config files in README.md
+TESTS=$TESTS" sqa_oneanswer"
 FAIL=""
 
 for test in $TESTS ; do
