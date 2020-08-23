@@ -2,12 +2,7 @@
 
 PROG="../../coLunacyDNS"
 
-if [ -z "$PROG" ] ; then
-        echo Usage: $0 {program_name}
-        echo Where the program is one that performs RG32 hashes to its
-        echo first argument
-        exit 255
-fi
+echo Running coLunacyDNS rg32 test
 
 cat Input | awk '{print "'${PROG}\ \''" $0 "'\'' | head -1"}' | sh | \
         tr -d '\015' > output.test
