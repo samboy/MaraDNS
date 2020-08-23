@@ -1,0 +1,15 @@
+# Querying the server with the IP 127.7.7.17
+# Question: Amaradns.samiam.org.
+maradns.samiam.org. +0 a 10.1.1.14
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.7.7.17
+# Question: Aname.invalid.
+name.invalid. +0 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.7.7.17
+# Question: As.vk.tj.
+s.vk.tj. +0 a 10.1.1.15
+# NS replies:
+# AR replies:

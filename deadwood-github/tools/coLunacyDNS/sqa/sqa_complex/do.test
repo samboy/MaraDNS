@@ -1,0 +1,137 @@
+#!/bin/bash
+# Bashism: Job control
+
+# This is ian adpted version of the “complex” example in README.md
+
+. ../testVars
+
+PROG="../../coLunacyDNS"
+
+cat > upstream14.lua << EOF
+bindIp = "127.7.7.14" 
+function processQuery(Q) -- Called for every DNS query received
+  if Q.coQtype == 28 then
+    return {co1Type = "ip6",co1Data="2001:db8::14"}
+  elseif Q.coQtype == 1 then
+    return {co1Type = "A", co1Data = "10.1.1.14"}
+  else
+    return {co1Type = "notThere"}
+  end
+end
+EOF
+cat > upstream15.lua << EOF
+bindIp = "127.7.7.15" 
+function processQuery(Q) -- Called for every DNS query received
+  if Q.coQtype == 28 then
+    return {co1Type = "ip6",co1Data="2001:db8::15"}
+  elseif Q.coQtype == 1 then
+    return {co1Type = "A", co1Data = "10.1.1.15"}
+  else
+    return {co1Type = "notThere"}
+  end
+end
+EOF
+cat > upstream16.lua << EOF
+bindIp = "127.7.7.16" 
+function processQuery(Q) -- Called for every DNS query received
+  if Q.coQtype == 28 then
+    return {co1Type = "ip6",co1Data="2001:db8::16"}
+  elseif Q.coQtype == 1 then
+    return {co1Type = "A", co1Data = "10.1.1.16"}
+  else
+    return {co1Type = "notThere"}
+  end
+end
+EOF
+cat > test.lua << EOF
+bindIp = "127.7.7.17" 
+logLevel = 1 -- flush log entries
+
+-- Examples of three API calls we have: timestamp, rand32, and rand16
+coDNS.log(string.format("Timestamp: %.1f",coDNS.timestamp())) -- timestamp
+coDNS.log(string.format("Random32: %08x",coDNS.rand32())) -- random 32-bit num
+coDNS.log(string.format("Random16: %04x",coDNS.rand16())) -- random 16-bit num
+-- Note that it is *not* possible to use coDNS.solve here; if we attempt
+-- to do so, we will get an error with the message
+-- "attempt to yield across metamethod/C-call boundary".  
+
+function processQuery(Q) -- Called for every DNS query received
+  -- Because this code uses multiple co-routines, always use "local"
+  -- variables
+  local returnIP = nil
+  local upstream = "127.7.7.14"
+
+  -- Log query
+  coDNS.log("Got IPv4 query for " .. Q.coQuery .. " from " ..
+            Q.coFromIP .. " type " ..  Q.coFromIPtype) 
+
+  -- We will use 127.7.7.15 as the upstream server if the query ends in ".tj"
+  if string.match(Q.coQuery,'%.tj%.$') then
+    upstream = "127.7.7.15"
+  end
+
+  -- We will use 127.7.7.16 as the upstream server if the query comes from 
+  -- 192.168.99.X
+  if string.match(Q.coFromIP,'^192%.168%.99%.') then
+    upstream = "127.7.7.16"
+  end
+
+  if Q.coQtype ~= 1 then -- If it is not an A (ipv4) query
+    -- return {co1Type = "ignoreMe"} -- Ignore the query
+    return {co1Type = "notThere"} -- Send "not there" (like NXDOMAIN)
+  end
+
+  -- Contact another DNS server to get our answer
+  local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=upstream})
+
+  -- If coDNS.solve returns an error, the entire processQuery routine is
+  -- "on probation" and unable to run coDNS.solve() again (if an attempt
+  -- is made, the thread will be aborted and no DNS response sent 
+  -- downstream).  
+  if t.error then       
+    coDNS.log(t.error)
+    return {co1Type = "serverFail"} 
+  end
+
+  -- Status being 0 means we did not get an answer from upstream
+  if t.status ~= 0 and t.answer then
+    returnIP = t.answer
+  end
+
+  if string.match(Q.coQuery,'%.invalid%.$') then
+    return {co1Type = "A", co1Data = "10.1.1.1"} -- Answer for anything.invalid
+  end
+  if returnIP then
+    return {co1Type = "A", co1Data = returnIP} 
+  end
+  return {co1Type = "notThere"} 
+end
+EOF
+
+${PROG} -d test.lua &
+${PROG} -d upstream14.lua &
+${PROG} -d upstream15.lua &
+${PROG} -d upstream16.lua &
+sleep 1
+
+askmara Amaradns.samiam.org. 127.7.7.17 > output.test
+askmara Aname.invalid. 127.7.7.17 >> output.test
+askmara As.vk.tj. 127.7.7.17 >> output.test
+
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+for process in $LIST ; do
+	kill $process
+done
+sleep 1
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+        echo Complex Test failed
+        exit 255
+fi
+
+echo Complex test Success
+# Clean up
+rm test.lua
+rm upstream.lua
+rm blocklist
+rm output.test
