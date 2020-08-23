@@ -1,0 +1,32 @@
+#!/bin/bash
+# Bashism: Job control
+
+. ../testVars
+PROG="../../coLunacyDNS"
+
+cat > test.lua << EOF
+bindIp = "127.7.7.10" 
+function processQuery(Q) -- Called for every DNS query received
+  return {co1Type = "serverFail"}
+end
+EOF
+
+${PROG} -d test.lua &
+sleep 1
+
+askmara Amaradns.samiam.org. 127.7.7.10 > output.test
+
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+for process in $LIST ; do
+	kill $process
+done
+sleep 1
+rm test.lua
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+        echo serverFail Test failed
+        exit 255
+fi
+
+echo serverFail test Success
+rm output.test
