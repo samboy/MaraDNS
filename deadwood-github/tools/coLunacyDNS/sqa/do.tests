@@ -30,13 +30,16 @@ TESTS="sqa_rg32"
 TESTS=$TESTS" sqa_ip6Parse"
 TESTS=$TESTS" sqa_halfsip13"
 # Test Lua config files in README.md
-TESTS=$TESTS" sqa_oneanswer"
-TESTS=$TESTS" sqa_getupstream"
-TESTS=$TESTS" sqa_twoanswers"
-TESTS=$TESTS" sqa_twoupstreams"
-TESTS=$TESTS" sqa_blocklist"
-TESTS=$TESTS" sqa_servfail"
-TESTS=$TESTS" sqa_ignoreme"
+# Note: We only use a given localhost IP once for all tests so we
+# do not need one-minute waits for FIN_WAIT to finally close up
+TESTS=$TESTS" sqa_oneanswer" # 127.7.7.1
+TESTS=$TESTS" sqa_getupstream" # 127.7.7.2 and 127.7.7.3
+TESTS=$TESTS" sqa_twoanswers" # 127.7.7.4
+TESTS=$TESTS" sqa_twoupstreams" # 127.7.7.5, 127.7.7.6, and 127.7.7.7
+TESTS=$TESTS" sqa_blocklist" # 127.7.7.8 and 127.7.7.9
+TESTS=$TESTS" sqa_servfail" # 127.7.7.10
+TESTS=$TESTS" sqa_ignoreme" # 127.7.7.11
+TESTS=$TESTS" sqa_timeout" # 127.7.7.12 and 127.7.7.13 (no server)
 FAIL=""
 
 for test in $TESTS ; do

@@ -5,7 +5,7 @@
 PROG="../../coLunacyDNS"
 
 cat > test.lua << EOF
-bindIp = "127.7.7.1" -- We bind the server to the IP 127.0.0.1
+bindIp = "127.7.7.1" 
 function processQuery(Q) -- Called for every DNS query received
   return {co1Type = "A", co1Data = "10.1.1.1"}
 end
