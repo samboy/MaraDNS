@@ -350,6 +350,7 @@ int ip6Parse(char *human, int len, uint8_t *ip6) {
 void log_it(char *message) {
         if(message != NULL) {
                 puts(message);
+		fflush(stdout);
         }
 }
 #else /* MINGW */
