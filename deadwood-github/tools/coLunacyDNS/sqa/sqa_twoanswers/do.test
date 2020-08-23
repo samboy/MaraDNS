@@ -4,7 +4,7 @@
 PROG="../../coLunacyDNS"
 
 cat > test.lua << EOF
-bindIp = "127.7.7.1" -- We bind the server to the IP 127.0.0.1
+bindIp = "127.7.7.4" 
 function processQuery(Q) -- Called for every DNS query received
   if Q.coQtype == 28 then
     return {co1Type = "ip6",co1Data="2001-0db8-4d61-7261 444e-5300-0000-1234"}
@@ -19,8 +19,8 @@ EOF
 ${PROG} -d test.lua &
 sleep 1
 
-askmara Amaradns.samiam.org. 127.7.7.1 > output.test
-askmara 28:maradns.samiam.org. 127.7.7.1 >> output.test
+askmara Amaradns.samiam.org. 127.7.7.4 > output.test
+askmara 28:maradns.samiam.org. 127.7.7.4 >> output.test
 
 LIST=$( ps auxw | awk '{print $2 " " $11}' | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do

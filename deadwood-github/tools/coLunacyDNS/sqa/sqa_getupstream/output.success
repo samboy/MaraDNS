@@ -1,4 +1,4 @@
-# Querying the server with the IP 127.7.7.1
+# Querying the server with the IP 127.7.7.3
 # Question: Amaradns.samiam.org.
 maradns.samiam.org. +0 a 10.1.1.1
 # NS replies:

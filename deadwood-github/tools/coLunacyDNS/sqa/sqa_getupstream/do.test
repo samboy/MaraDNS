@@ -4,13 +4,13 @@
 PROG="../../coLunacyDNS"
 
 cat > upstream.lua << EOF
-bindIp = "127.7.7.2" -- We bind the server to the IP 127.0.0.1
+bindIp = "127.7.7.2" 
 function processQuery(Q) -- Called for every DNS query received
   return {co1Type = "A", co1Data = "10.1.1.1"}
 end
 EOF
 cat > test.lua << EOF
-bindIp = "127.7.7.1" -- We bind the server to the IP 127.0.0.1
+bindIp = "127.7.7.3" 
 function processQuery(Q) -- Called for every DNS query received
    -- Connect to 127.7.7.1 for the query given to this routine
    local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4="127.7.7.2"})
@@ -26,7 +26,7 @@ ${PROG} -d test.lua &
 ${PROG} -d upstream.lua &
 sleep 1
 
-askmara Amaradns.samiam.org. 127.7.7.1 > output.test
+askmara Amaradns.samiam.org. 127.7.7.3 > output.test
 
 LIST=$( ps auxw | awk '{print $2 " " $11}' | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
