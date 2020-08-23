@@ -6,13 +6,14 @@ PROG="../../coLunacyDNS"
 
 cat > test.lua << EOF
 bindIp = "127.7.7.11" 
+logLevel = 1 -- flush stdout
 function processQuery(Q) -- Called for every DNS query received
   coDNS.log("Ignoring query " .. Q.coQuery)
   return {co1Type = "ignoreMe"}
 end
 EOF
 
-${PROG} -d test.lua | grep -vi version > output.test1 &
+${PROG} -d test.lua | egrep '[A-Za-z]' > foo &
 sleep 1
 
 askmara -t 1 Amaradns.samiam.org. 127.7.7.11 > output.test2
@@ -22,6 +23,7 @@ for process in $LIST ; do
 	kill $process
 done
 sleep 1
+cat foo | grep -vi version > output.test1
 
 if ! cmp output.success1 output.test1 > /dev/null 2>&1 ; then
         echo ignoreMe Test failed: Server did not log message
@@ -34,4 +36,5 @@ fi
 
 echo igmoreMe test Success
 rm test.lua
-rm output.test
+rm output.test*
+rm foo

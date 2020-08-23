@@ -36,6 +36,7 @@ TESTS=$TESTS" sqa_twoanswers"
 TESTS=$TESTS" sqa_twoupstreams"
 TESTS=$TESTS" sqa_blocklist"
 TESTS=$TESTS" sqa_servfail"
+TESTS=$TESTS" sqa_ignoreme"
 FAIL=""
 
 for test in $TESTS ; do
