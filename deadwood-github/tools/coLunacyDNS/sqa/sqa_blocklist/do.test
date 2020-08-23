@@ -1,0 +1,107 @@
+#!/bin/bash
+# Bashism: Job control
+
+. ../testVars
+
+PROG="../../coLunacyDNS"
+
+cat > upstream.lua << EOF
+bindIp = "127.7.7.8" 
+function processQuery(Q) -- Called for every DNS query received
+  if Q.coQtype == 28 then
+    return {co1Type = "ip6",co1Data="2001:db8::707"}
+  elseif Q.coQtype == 1 then
+    return {co1Type = "A", co1Data = "10.1.1.1"}
+  else
+    return {co1Type = "notThere"}
+  end
+end
+EOF
+cat > test.lua << EOF
+bindIp = "127.7.7.9" 
+-- Open up block list to know which domains to block
+blockList = {}
+if coDNS.open1("blocklist") then
+  line = coDNS.read1()
+  while line do
+    local name, seen = string.gsub(line,'^ip4%["([^"]+)".*$','%1')
+    if seen > 0 then
+      blockList[name] = "X"
+    end
+    line = coDNS.read1()
+  end
+end
+
+function processQuery(Q) -- Called for every DNS query received
+  local upstream = "127.7.7.8"
+  local t
+  -- Log query
+  coDNS.log("Got query for " .. Q.coQuery .. " from " ..
+            Q.coFromIP .. " type " ..  Q.coFromIPtype)
+
+  -- Process blocklist
+  if blockList[Q.coQuery] == "X" then
+    coDNS.log("Name is on block list.")
+    return {co1Type = "notThere"}
+  end
+
+  if Q.coQtype ~= 1 and Q.coQtype ~= 28 then -- If not IPv4 or IPv6 IP query
+    return {co1Type = "notThere"} -- Send "not there" (like NXDOMAIN)
+  end
+
+  -- Look for the answer upstream
+  if Q.coQtype == 1 then
+    t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=upstream})
+  else
+    t = coDNS.solve({name=Q.coQuery, type="ip6", upstreamIp4=upstream})
+  end
+  -- Handle errors; it is not possible to call coDNS.solve() again
+  -- in an invocation of processQuery if t.error is set.
+  if t.error then
+    coDNS.log(t.error)
+    return {co1Type = "serverFail"}
+  end
+
+  -- If we got an answer we can use, send it to them
+  if t.status > 0 and t.answer then
+    if t.status == 1 then
+      return {co1Type = "A", co1Data = t.answer} 
+    elseif t.status == 28 then
+      return {co1Type = "ip6", co1Data = t.answer}
+    else -- Send notThere for unknown query type
+      return {co1Type = "notThere"}
+    end
+  end
+  coDNS.log("Unknown issue (or record not found)")
+  return {co1Type = "notThere"}
+end
+EOF
+cat > blocklist << EOF
+ip4["phish.example.com."] = "X"
+ip4["bad.invalid."] = "X"
+EOF
+
+${PROG} -d test.lua &
+${PROG} -d upstream.lua &
+sleep 1
+
+askmara Amaradns.samiam.org. 127.7.7.9 > output.test
+askmara Aphish.example.com. 127.7.7.9 >> output.test
+
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+for process in $LIST ; do
+	kill $process
+done
+sleep 1
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+        echo Blocklist Test failed
+        exit 255
+fi
+
+echo Blocklist test Success
+# Clean up
+rm test.lua
+rm upstream.lua
+rm blocklist
+rm output.test

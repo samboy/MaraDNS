@@ -1,0 +1,10 @@
+# Querying the server with the IP 127.7.7.9
+# Question: Amaradns.samiam.org.
+maradns.samiam.org. +0 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.7.7.9
+# Question: Aphish.example.com.
+phish.example.com. +0 soa z.phish.example.com. y@phish.example.com. 1 1 1 1 1
+# NS replies:
+# AR replies:
