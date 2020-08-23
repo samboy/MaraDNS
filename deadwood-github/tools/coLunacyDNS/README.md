@@ -482,7 +482,7 @@ parameters:
 # Global settings 
 
 coLunacyDNS Lua scripts have two special global variables which are
-read to adjust some setting in coLunacyDNS:
+read to adjust settings in coLunacyDNS:
 
 * `bindIp`: This is the IPv4 IP that coLunacyDNS will use as a DNS server.
   If this is not set, then coLunacyDNS will bind to the IP `0.0.0.0`
