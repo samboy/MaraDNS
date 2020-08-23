@@ -13,7 +13,7 @@ EOF
 ${PROG} -d test.lua &
 sleep 1
 
-askmara Awww.google.com. 127.7.7.1 > output.test
+askmara Amaradns.samiam.org. 127.7.7.1 > output.test
 
 LIST=$( ps auxw | awk '{print $2 " " $11}' | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
