@@ -1,0 +1,18 @@
+#!/bin/sh
+
+TESTS="sqa_rg32"
+FAIL=""
+
+for test in $TESTS ; do
+	echo Test $test
+	cd $test
+	if ! ./do.test ; then
+		FAIL=${FAIL}${test}" "
+	fi
+done
+if [ -z "$FAIL" ] ; then
+	echo All tests successful
+	exit 0
+fi
+echo Test failures: ${FAIL}
+exit 1
