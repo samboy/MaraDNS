@@ -32,6 +32,7 @@ TESTS=$TESTS" sqa_halfsip13"
 # Test Lua config files in README.md
 TESTS=$TESTS" sqa_oneanswer"
 TESTS=$TESTS" sqa_getupstream"
+TESTS=$TESTS" sqa_twoanswers"
 FAIL=""
 
 for test in $TESTS ; do
