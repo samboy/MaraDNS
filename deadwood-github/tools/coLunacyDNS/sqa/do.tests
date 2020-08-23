@@ -1,5 +1,16 @@
 #!/bin/sh
 
+if [ "$1" = "--help" ] ; then	
+	echo Usage: $0 to run all tests 
+	echo $0 --stop to stop if a test fails
+	exit 0
+fi
+
+DoStop=""
+if [ "$1" = "--stop" ] ; then
+	DoStop="1"
+fi
+
 TESTS="sqa_rg32"
 FAIL=""
 
@@ -8,6 +19,10 @@ for test in $TESTS ; do
 	cd $test
 	if ! ./do.test ; then
 		FAIL=${FAIL}${test}" "
+		if [ ! -z "$DoStop" ] ; then
+			echo Stopping tests because of test failure
+			exit 1
+		fi
 	fi
 done
 if [ -z "$FAIL" ] ; then
