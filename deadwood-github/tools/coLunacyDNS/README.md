@@ -265,6 +265,7 @@ what it can do:
   filesystem nor be able to do anything malicious.
 * `coDNS.open1()` can only open a file in the directory coLunacyDNS is
   called from; it can not open files in other directories.
+* All DNS `ANY` and `HINFO` queries are given a RFC8482 response.
 
 # Limitations
 
