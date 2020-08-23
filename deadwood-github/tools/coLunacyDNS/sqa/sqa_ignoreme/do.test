@@ -1,0 +1,37 @@
+#!/bin/bash
+# Bashism: Job control
+
+. ../testVars
+PROG="../../coLunacyDNS"
+
+cat > test.lua << EOF
+bindIp = "127.7.7.11" 
+function processQuery(Q) -- Called for every DNS query received
+  coDNS.log("Ignoring query " .. Q.coQuery)
+  return {co1Type = "ignoreMe"}
+end
+EOF
+
+${PROG} -d test.lua | grep -vi version > output.test1 &
+sleep 1
+
+askmara -t 1 Amaradns.samiam.org. 127.7.7.11 > output.test2
+
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+for process in $LIST ; do
+	kill $process
+done
+sleep 1
+
+if ! cmp output.success1 output.test1 > /dev/null 2>&1 ; then
+        echo ignoreMe Test failed: Server did not log message
+        exit 255
+fi
+if ! cmp output.success2 output.test2 > /dev/null 2>&1 ; then
+        echo ignoreMe Test failed: Client did not log timeout
+        exit 255
+fi
+
+echo igmoreMe test Success
+rm test.lua
+rm output.test
