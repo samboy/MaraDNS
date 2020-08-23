@@ -1,0 +1,16 @@
+#!/bin/sh
+
+PROG="../../coLunacyDNS"
+
+echo Running coLunacyDNS IPv6 parser test
+
+cat Input | awk '{print "'${PROG}\ \''" $0 "'\''"}' | sh | \
+        tr -d '\015' > output.test
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+        echo Test failed
+        exit 255
+fi
+
+echo Success
+rm output.test

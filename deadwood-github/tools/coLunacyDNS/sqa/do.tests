@@ -6,12 +6,21 @@ if [ "$1" = "--help" ] ; then
 	exit 0
 fi
 
+HERE="$(/bin/pwd)"
+rm ../coLunacyDNS
+cd ..
+make clean
+make CFLAGS="-g -DTEST"
+echo coLunacyDNS compiled in test mode
+cd "$HERE"
+
 DoStop=""
 if [ "$1" = "--stop" ] ; then
 	DoStop="1"
 fi
 
 TESTS="sqa_rg32"
+TESTS=$TESTS" sqa_ip6Parse"
 FAIL=""
 
 for test in $TESTS ; do
@@ -24,6 +33,7 @@ for test in $TESTS ; do
 			exit 1
 		fi
 	fi
+	cd "$HERE"
 done
 if [ -z "$FAIL" ] ; then
 	echo All tests successful
