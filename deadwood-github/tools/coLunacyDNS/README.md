@@ -269,8 +269,9 @@ or “this name is not here” in its replies.
 
 coLunacyDNS, likewise, can only send `A` (IPv4 IP) and `AAAA` (IPv6 IP)
 requests to upstream servers.  While coLunacyDNS can process and forward
-IPv6 DNS records, coLunacyDNS can only bind to an IPv4 IP, and can only
-send DNS queries via IPv4.
+IPv6 DNS records, and while coLunacyDNS can bind to IPv4 and IPv6 IPs, it
+can not send queries to upstream DNS servers via IPv6, and `coLunacyDNS`
+must always have an IPv4 address to bind to.
 
 # The API available to the Lua script
 
