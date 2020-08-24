@@ -376,7 +376,12 @@ It outputs a table with a number of possible elements:
   `XXXX-XXXX-XXXX-XXXX XXXX-XXXX-XXXX-XXXX`, where each X is a 
   hexadecimal digit, such as `2001-0db8-4d61-7261 444e-5300-0000-0001`
   All 32 hexadecimal digits that comprise an IPv6 address will be 
-  present in the reply string.
+  present in the reply string.  Should there be a timeout getting
+  an answer from the upstream DNS server, this sting will have
+  the value `DNS connect error`.  Should we get a reply from the
+  upstream DNS server, but an answer was not seen (usually, because
+  we asked for a DNS record which does not exist), the `answer` field
+  will have the string `DNS answer not seen`.
 * `rawpacket`: If the global variable `logLevel` has a value of 0,
   this will always be `nil`.  If `logLevel` is 1, this will be `nil`
   if we were able to extract an answer from the upstream DNS server;

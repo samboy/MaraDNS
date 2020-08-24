@@ -17,6 +17,9 @@ function processQuery(Q) -- Called for every DNS query received
   if t.status then
     coDNS.log("t.status is " .. t.status)
   end 
+  if t.answer then -- answer will be "DNS connect error" on timeout
+    coDNS.log("t.answer is " .. t.answer) 
+  end
   return {co1Type = "A", co1Data = "10.1.1.1"}
 end
 EOF
