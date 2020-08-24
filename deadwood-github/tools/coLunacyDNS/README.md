@@ -379,7 +379,7 @@ It outputs a table with a number of possible elements:
   hexadecimal digit, such as `2001-0db8-4d61-7261 444e-5300-0000-0001`
   All 32 hexadecimal digits that comprise an IPv6 address will be 
   present in the reply string.  Should there be a timeout or error 
-  getting an answer from the upstream DNS server, this sting will have
+  getting an answer from the upstream DNS server, this string will have
   the value `DNS connect error`.  Should we get a reply from the
   upstream DNS server, but an answer was not seen (usually, because
   we asked for a DNS record which does not exist), the `answer` field
