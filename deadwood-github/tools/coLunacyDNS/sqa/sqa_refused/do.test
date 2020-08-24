@@ -1,0 +1,49 @@
+#!/bin/bash
+# Bashism: Job control
+
+# Test how we handle not getting a reply upstream
+. ../testVars
+PROG="../../coLunacyDNS"
+
+# Note: 127.7.7.13 is not an actual running server, but this number is
+# being used as an example server which is not there.
+
+cat > test.lua << EOF
+bindIp = "127.7.7.12" 
+logLevel = 1 -- flush stdout
+function processQuery(Q) -- Called for every DNS query received
+  coDNS.log("Got query " .. Q.coQuery)
+  local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4="127.7.7.13"})
+  if t.status then
+    coDNS.log("t.status is " .. t.status)
+  end 
+  if t.answer then -- answer will be "DNS connect error" on timeout
+    coDNS.log("t.answer is " .. t.answer) 
+  end
+  return {co1Type = "A", co1Data = "10.1.1.1"}
+end
+EOF
+
+${PROG} -d test.lua | egrep '[A-Za-z]' | grep -vi version > output.test1 &
+sleep 1
+
+askmara Amaradns.samiam.org. 127.7.7.12 > output.test2
+
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+for process in $LIST ; do
+	kill $process
+done
+sleep 1
+
+if ! cmp output.success1 output.test1 > /dev/null 2>&1 ; then
+        echo Refused Test failed: Server did not log messages correctly
+        exit 255
+fi
+if ! cmp output.success2 output.test2 > /dev/null 2>&1 ; then
+        echo Refused Test failed: Client did not log answer
+        exit 255
+fi
+
+echo Refused test Success
+rm test.lua
+rm output.test*

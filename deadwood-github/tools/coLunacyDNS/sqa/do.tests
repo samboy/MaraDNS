@@ -39,8 +39,10 @@ TESTS=$TESTS" sqa_twoupstreams" # 127.7.7.5, 127.7.7.6, and 127.7.7.7
 TESTS=$TESTS" sqa_blocklist" # 127.7.7.8 and 127.7.7.9
 TESTS=$TESTS" sqa_servfail" # 127.7.7.10
 TESTS=$TESTS" sqa_ignoreme" # 127.7.7.11
-TESTS=$TESTS" sqa_timeout" # 127.7.7.12 and 127.7.7.13 (no server)
-TESTS=$TESTS" sqa_complex" # 127.7.7.14 to 127.7.7.17 (no server)
+TESTS=$TESTS" sqa_refused" # 127.7.7.12 and 127.7.7.13 (no server)
+TESTS=$TESTS" sqa_complex" # 127.7.7.14 to 127.7.7.17 
+TESTS=$TESTS" sqa_timeout" # 127.7.7.18 and 127.7.7.19
+TESTS=$TESTS" sqa_any" # 127.7.7.20
 FAIL=""
 
 for test in $TESTS ; do

@@ -481,7 +481,11 @@ parameters:
   (tell the client that this DNS name does not exist for the query
   type requested), `serverFail` (send a "server fail" to the client),
   "A" (send an IPv4 IP answer back to the client), or "ip6" (send an
-  IPv6 IP answer back to the client).
+  IPv6 IP answer back to the client).  Please note that `ignoreMe` 
+  does not guarantee that coLunacyDNS ignores all DNS queries;  
+  coLunacyDNS will always respond to ANY or HINFO queries in a
+  RFC8482 manner; if one wishes to drop all DNS packets, this can
+  be done at the firewall level.
 * `co1Data`: When `co1Type` is `A`, this is an IPv4 IP in dotted decimal 
   format, e.g. `10.1.2.3`.  When `co1type` is `ip6`, and `co1data` is
   either a standard IPv6 string, such as `2001:db8:1234::5678`, or

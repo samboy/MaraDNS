@@ -5,15 +5,12 @@
 . ../testVars
 PROG="../../coLunacyDNS"
 
-# Note: 127.7.7.13 is not an actual running server, but this number is
-# being used as an example server which is not there.
-
-cat > test.lua << EOF
-bindIp = "127.7.7.12" 
+cat > test18.lua << EOF
+bindIp = "127.7.7.18" 
 logLevel = 1 -- flush stdout
 function processQuery(Q) -- Called for every DNS query received
   coDNS.log("Got query " .. Q.coQuery)
-  local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4="127.7.7.13"})\
+  local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4="127.7.7.19"})
   if t.status then
     coDNS.log("t.status is " .. t.status)
   end 
@@ -23,11 +20,21 @@ function processQuery(Q) -- Called for every DNS query received
   return {co1Type = "A", co1Data = "10.1.1.1"}
 end
 EOF
+cat > test19.lua << EOF
+bindIp = "127.7.7.19"
+logLevel = 1 -- flush stdout
+function processQuery(Q) -- Called for every DNS query received
+  local s = string.lower(Q.coQuery)
+  coDNS.log("Ignoring query " .. s)
+  return {co1Type = "ignoreMe"}
+end
+EOF
 
-${PROG} -d test.lua | egrep '[A-Za-z]' | grep -vi version > output.test1 &
+${PROG} -d test18.lua | egrep '[A-Za-z]' | grep -vi version > output.test18 &
+${PROG} -d test19.lua | egrep '[A-Za-z]' | grep -vi version > output.test19 &
 sleep 1
 
-askmara Amaradns.samiam.org. 127.7.7.12 > output.test2
+askmara Amaradns.samiam.org. 127.7.7.18 > output.test1
 
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
@@ -35,15 +42,19 @@ for process in $LIST ; do
 done
 sleep 1
 
-if ! cmp output.success1 output.test1 > /dev/null 2>&1 ; then
+if ! cmp output.success18 output.test18 > /dev/null 2>&1 ; then
         echo Timeout Test failed: Server did not log messages correctly
         exit 255
 fi
-if ! cmp output.success2 output.test2 > /dev/null 2>&1 ; then
+if ! cmp output.success19 output.test19 > /dev/null 2>&1 ; then
+        echo Timeout Test failed: Upstream did not log messages correctly
+        exit 255
+fi
+if ! cmp output.success1 output.test1 > /dev/null 2>&1 ; then
         echo Timeout Test failed: Client did not log answer
         exit 255
 fi
 
 echo Timeout test Success
-rm test.lua
+rm test*.lua
 rm output.test*

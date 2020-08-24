@@ -1,0 +1,15 @@
+# Querying the server with the IP 127.7.7.20
+# Question: Amaradns.samiam.org.
+maradns.samiam.org. +0 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.7.7.20
+# Question: Zmaradns.samiam.org.
+maradns.samiam.org. +86400 raw 13 \x07'RFC8482'\x00 
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.7.7.20
+# Question: Umaradns.samiam.org.
+maradns.samiam.org. +86400 raw 13 \x07'RFC8482'\x00 
+# NS replies:
+# AR replies:

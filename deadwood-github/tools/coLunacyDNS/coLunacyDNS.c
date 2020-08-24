@@ -1499,9 +1499,11 @@ void resumeThread(int n) {
 		uint16_t rdlength;
 		uint16_t QID;
 		int first = 1;
-		strcpy(answer,"DNS answer not seen");
 		count = recv(remoteCo[n].sockRemote,in,514,0);
 		closesocket(remoteCo[n].sockRemote);
+		if(count >= 0) {
+			strcpy(answer,"DNS answer not seen");
+		}
 
 		if(count > 12) {
 			QID = (in[0] << 8) | (in[1] & 0xff);
@@ -2001,7 +2003,7 @@ int main(int argc, char **argv) {
 	SipHashSetKey(rand32(),rand32());
 
         if(argc != 2 || *argv[1] == '-') {
-                printf("coLunacyDNS version 1.0.001 starting\n\n");
+                printf("coLunacyDNS version 1.0.002 starting\n\n");
         }
         set_time(); // Run this frequently to update timestamp
         // Get bindIp and returnIp from Lua script
@@ -2309,7 +2311,7 @@ int main(int argc, char **argv) {
                         svc_install_service();
                 }
         } else {
-                printf("coLunacyDNS version 1.0.001\n\n");
+                printf("coLunacyDNS version 1.0.002\n\n");
                 printf(
                     "coLunacyDNS is a DNS server that is a Windows service\n\n"
                     "To install this service:\n\n\tcoLunacyDNS --install\n\n"

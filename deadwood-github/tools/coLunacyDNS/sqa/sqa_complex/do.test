@@ -132,6 +132,6 @@ fi
 echo Complex test Success
 # Clean up
 rm test.lua
-rm upstream.lua
+rm upstream*.lua
 rm blocklist
 rm output.test
