@@ -78,18 +78,23 @@ static int os_getenv (lua_State *L) {
 ** =======================================================
 */
 
+/* (Disabled to remove C compile warning)
 static void setfield (lua_State *L, const char *key, int value) {
   lua_pushinteger(L, value);
   lua_setfield(L, -2, key);
 }
+*/
 
+/* (Disabled to remove C compile warning; / made - to remove another warning)
 static void setboolfield (lua_State *L, const char *key, int value) {
-  if (value < 0)  /* undefined? */
-    return;  /* does not set field */
+  if (value < 0)  -* undefined? *-
+    return;  -* does not set field *-
   lua_pushboolean(L, value);
   lua_setfield(L, -2, key);
 }
+*/
 
+/* (Disabled to remove C compile warning)
 static int getboolfield (lua_State *L, const char *key) {
   int res;
   lua_getfield(L, -1, key);
@@ -97,8 +102,10 @@ static int getboolfield (lua_State *L, const char *key) {
   lua_pop(L, 1);
   return res;
 }
+*/
 
 
+/* (Disabled to remove C compile warning)
 static int getfield (lua_State *L, const char *key, int d) {
   int res;
   lua_getfield(L, -1, key);
@@ -111,7 +118,8 @@ static int getfield (lua_State *L, const char *key, int d) {
   }
   lua_pop(L, 1);
   return res;
-}
+} 
+*/
 
 /* }====================================================== */
 
