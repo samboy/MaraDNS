@@ -269,11 +269,11 @@ what it can do:
 
 # Limitations
 
-coLunacyDNS, at this time, only processes requests for DNS `A` queries
-and DNS `AAAA` queries — queries for IPv4 and IPv6 IP addresses.
-Information about other query types is not available to coLunacyDNS,
-and it can only return `A` queries, `AAAA` queries, “server fail”,
-or “this name is not here” in its replies.
+coLunacyDNS only processes requests for DNS `A` queries and DNS `AAAA`
+queries — queries for IPv4 and IPv6 IP addresses.  Information about
+other query types is not available to coLunacyDNS, and it can only return
+`A` queries, `AAAA` queries, “server fail”, or “this name is not
+here” in its replies.
 
 coLunacyDNS, likewise, can only send `A` (IPv4 IP) and `AAAA` (IPv6 IP)
 requests to upstream servers.  While coLunacyDNS can process and forward
