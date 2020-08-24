@@ -12,7 +12,7 @@
 
 <hr>
 <h1>
-Lunacy (Lua) 5.1 Reference Manual (Release 2020-08-11)
+Lunacy (Lua) 5.1 Reference Manual (Release 2020-08-23)
 </h1>
 
 by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
@@ -566,6 +566,11 @@ this code before running any Lua code:
 Where "x" and "y" are suitably random 32-bit numbers (uint32_t).  Do
 not call SipHashSetKey() once any Lua code is running; otherwise
 things will break very badly in Lua.
+
+<p>
+
+The 2020-08-23 version of Lunacy removed all compile time warnings when
+using a modern version of GCC.  The code is otherwise unchanged.
 
 <p><A HREF="#contents">Contents</A>
 
