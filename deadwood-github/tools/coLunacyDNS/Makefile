@@ -6,7 +6,8 @@ CFLAGS = -O3
 all: coLunacyDNS HalfSipHash1-3 
 
 clean: 
-	rm -f *.o *.exe coLunacyDNS sipHash HalfSipHash1-3 ; \
+	rm -f *.o *.exe coLunacyDNS sipHash HalfSipHash1-3 \
+    *.gcda *.gcno *.gcov ; \
     cd ../../lunacy ; make clean
 
 ../../lunacy/liblua.a:

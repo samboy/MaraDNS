@@ -16,6 +16,8 @@ HERE="$(/bin/pwd)"
 rm ../coLunacyDNS
 cd ..
 make clean
+cd ../../lunacy ; make
+cd ../tools/coLunacyDNS/
 make CFLAGS="-g -DTEST -fprofile-arcs -ftest-coverage"
 echo coLunacyDNS compiled in test mode
 cd "$HERE"
@@ -59,8 +61,6 @@ for test in $TESTS ; do
 done
 if [ -z "$FAIL" ] ; then
 	cd "$HERE"
-	cd ..
-	make clean
 	echo All tests successful
 	exit 0
 fi
