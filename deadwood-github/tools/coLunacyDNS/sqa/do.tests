@@ -58,6 +58,10 @@ for test in $TESTS ; do
 		fi
 	fi
 	cd "$HERE"
+	cd ..
+	gcov coLunacyDNS.c
+	mv coLunacyDNS.c.gcov ${HERE}/${test}-gcov
+	cd "$HERE"
 done
 if [ -z "$FAIL" ] ; then
 	cd "$HERE"
