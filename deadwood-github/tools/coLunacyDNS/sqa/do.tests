@@ -13,7 +13,6 @@ if [ "$1" = "--help" ] ; then
 fi
 
 HERE="$(/bin/pwd)"
-rm *-gcov # Coverage file clean up
 rm ../coLunacyDNS
 cd ..
 make clean
@@ -61,8 +60,9 @@ for test in $TESTS ; do
 	fi
 	cd "$HERE"
 	cd ..
+	rm -f coLunacyDNS.c.gcov
+	echo This is coverage for all tests done so far:
 	gcov coLunacyDNS.c
-	mv coLunacyDNS.c.gcov ${HERE}/${test}-gcov
 	cd "$HERE"
 done
 if [ -z "$FAIL" ] ; then
