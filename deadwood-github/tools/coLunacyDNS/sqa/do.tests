@@ -13,6 +13,7 @@ if [ "$1" = "--help" ] ; then
 fi
 
 HERE="$(/bin/pwd)"
+rm *-gcov # Coverage file clean up
 rm ../coLunacyDNS
 cd ..
 make clean
@@ -45,6 +46,7 @@ TESTS=$TESTS" sqa_refused" # 127.7.7.12 and 127.7.7.13 (no server)
 TESTS=$TESTS" sqa_complex" # 127.7.7.14 to 127.7.7.17 
 TESTS=$TESTS" sqa_timeout" # 127.7.7.18 and 127.7.7.19
 TESTS=$TESTS" sqa_any" # 127.7.7.20
+TESTS=$TESTS" sqa_args" # 127.7.7.21
 FAIL=""
 
 for test in $TESTS ; do
