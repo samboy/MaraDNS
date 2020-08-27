@@ -52,7 +52,7 @@ askmara 28:maradns.samiam.org. 127.7.7.7 >> output.test
 
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}')
 for process in $LIST ; do
-	kill $process
+	kill -ALRM $process
 done
 sleep 1
 
