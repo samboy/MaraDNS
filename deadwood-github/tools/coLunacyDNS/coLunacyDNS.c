@@ -795,7 +795,9 @@ static const luaL_Reg coDNSlib[] = {
 
 lua_State *init_lua(char *fileName) {
         char useFilename[512];
+	puts("HERE3");
         lua_State *L = luaL_newstate(); // Initialize Lua
+	puts("HERE4");
         // Add string, math, and bit32.
         // Don't add everything (io, lfs, etc. allow filesystem access)
         lua_pushcfunction(L, luaopen_string);
@@ -861,13 +863,17 @@ lua_State *init_lua(char *fileName) {
         }
 
         // Open and parse the .lua file
+	puts("HERE8");
         if(luaL_loadfile(L, useFilename) == 0) {
+		puts("HERE5");
                 if(lua_pcall(L, 0, 0, 0) != 0) {
+			puts("HERE6");
                         log_it("Unable to parse lua file with name:");
                         log_it(useFilename);
                         log_it((char *)lua_tostring(L,-1));
                         return NULL;
                 }
+		puts("HERE7");
 		if(oneFile != NULL) {
 			fclose(oneFile);
 			oneFile = NULL;
@@ -1101,7 +1107,9 @@ void startServer(lua_State *L) {
         lua_pop(L, 1); // Remove _G.logLevel from stack, restoring stack
 
         // No we have an IP, bind to port 53
-        sandbox(); // Drop root and chroot()
+#ifndef GCOV
+        sandbox(); // Drop root and chroot() (Unless running with gcov)
+#endif // GCOV
         log_it("Running coLunacyDNS");
 }
 
@@ -2003,7 +2011,7 @@ int main(int argc, char **argv) {
 	SipHashSetKey(rand32(),rand32());
 
         if(argc != 2 || *argv[1] == '-') {
-                printf("coLunacyDNS version 1.0.002 starting\n\n");
+                printf("coLunacyDNS version 1.0.00X starting\n\n");
         }
         set_time(); // Run this frequently to update timestamp
         // Get bindIp and returnIp from Lua script
@@ -2060,7 +2068,9 @@ int main(int argc, char **argv) {
         }
 #endif // TEST
         if(argc == 2) {
+		puts("HERE1");
                 L = init_lua(argv[0]); // Initialize Lua
+		puts("HERE2");
         } else if(argc == 3) {
                 L = init_lua(argv[2]); // Initialize Lua
         } else {
@@ -2311,7 +2321,7 @@ int main(int argc, char **argv) {
                         svc_install_service();
                 }
         } else {
-                printf("coLunacyDNS version 1.0.002\n\n");
+                printf("coLunacyDNS version 1.0.00X\n\n");
                 printf(
                     "coLunacyDNS is a DNS server that is a Windows service\n\n"
                     "To install this service:\n\n\tcoLunacyDNS --install\n\n"

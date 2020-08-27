@@ -16,9 +16,9 @@ HERE="$(/bin/pwd)"
 rm ../coLunacyDNS
 cd ..
 make clean
-cd ../../lunacy ; make
+cd ../../lunacy ; make CFLAGS="-g -fprofile-arcs -ftest-coverage"
 cd ../tools/coLunacyDNS/
-make CFLAGS="-g -DTEST -fprofile-arcs -ftest-coverage"
+make CFLAGS="-g -DTEST -DGCOV -fprofile-arcs -ftest-coverage"
 echo coLunacyDNS compiled in test mode
 cd "$HERE"
 
