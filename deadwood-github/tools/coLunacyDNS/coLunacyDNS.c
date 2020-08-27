@@ -53,6 +53,7 @@
 #include <arpa/inet.h>
 #include <time.h>
 #include <grp.h>
+#include <signal.h>
 #endif /* MINGW */
 #include <string.h>
 #include <unistd.h>
@@ -795,9 +796,7 @@ static const luaL_Reg coDNSlib[] = {
 
 lua_State *init_lua(char *fileName) {
         char useFilename[512];
-	puts("HERE3");
         lua_State *L = luaL_newstate(); // Initialize Lua
-	puts("HERE4");
         // Add string, math, and bit32.
         // Don't add everything (io, lfs, etc. allow filesystem access)
         lua_pushcfunction(L, luaopen_string);
@@ -863,17 +862,13 @@ lua_State *init_lua(char *fileName) {
         }
 
         // Open and parse the .lua file
-	puts("HERE8");
         if(luaL_loadfile(L, useFilename) == 0) {
-		puts("HERE5");
                 if(lua_pcall(L, 0, 0, 0) != 0) {
-			puts("HERE6");
                         log_it("Unable to parse lua file with name:");
                         log_it(useFilename);
                         log_it((char *)lua_tostring(L,-1));
                         return NULL;
                 }
-		puts("HERE7");
 		if(oneFile != NULL) {
 			fclose(oneFile);
 			oneFile = NULL;
@@ -2002,9 +1997,21 @@ sock6:
 }
 
 #ifndef MINGW
+void alarmHandler() {
+#ifdef GCOV
+	serverRunning = 0; // Clean termination of service
+#else
+	log_it("SIG ALARM: Please restart coLunacyDNS to reload file");
+#endif
+}
+
 int main(int argc, char **argv) {
         lua_State *L;
         char *look;
+
+	// Allow kill -14 to have it end naturally for gcov
+	// Or let user know SIGALRM is *not* "reload" with coLunacyDNS
+	signal(SIGALRM, alarmHandler);
 
 	// Do this *before* running any Lua code
         init_rng();
@@ -2068,9 +2075,7 @@ int main(int argc, char **argv) {
         }
 #endif // TEST
         if(argc == 2) {
-		puts("HERE1");
                 L = init_lua(argv[0]); // Initialize Lua
-		puts("HERE2");
         } else if(argc == 3) {
                 L = init_lua(argv[2]); // Initialize Lua
         } else {

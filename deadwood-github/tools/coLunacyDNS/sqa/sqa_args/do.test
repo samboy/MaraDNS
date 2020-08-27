@@ -21,7 +21,7 @@ ${PROG} | egrep '[A-Za-z0-9]' | grep -v version > output.test1 &
 sleep 1
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
-	kill $process
+	kill -ALRM $process
 done
 sleep 1
 
@@ -30,7 +30,7 @@ ${PROG} -d | egrep '[A-Za-z0-9]' | grep -v version | cut -f1 -d: \
 sleep 1
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
-	kill $process
+	kill -ALRM $process
 done
 sleep 1
 
@@ -38,7 +38,7 @@ ${PROG} -d test.lua | egrep '[A-Za-z0-9]' | grep -v version > output.test3 &
 sleep 1
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
-	kill $process
+	kill -ALRM $process
 done
 sleep 1
 rm test.lua
@@ -47,7 +47,7 @@ ${PROG} -foo | egrep '[A-Za-z0-9]' | grep -v version > output.test4 &
 sleep 1
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
-	kill $process
+	kill -ALRM $process
 done
 sleep 1
 
@@ -55,7 +55,7 @@ ${PROG} -d bad.lua | egrep '[A-Za-z0-9]' | grep -v version > output.test5 &
 sleep 1
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
-	kill $process
+	kill -ALRM $process
 done
 sleep 1
 
@@ -63,7 +63,7 @@ ${PROG} foo bar baz | egrep '[A-Za-z0-9]' | grep -v version > output.test6 &
 sleep 1
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
-	kill $process
+	kill -ALRM $process
 done
 sleep 1
 
