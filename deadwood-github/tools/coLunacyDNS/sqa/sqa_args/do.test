@@ -13,6 +13,10 @@ function processQuery(Q) -- Called for every DNS query received
 end
 EOF
 
+cat > bad.lua << EOF
+This is not a valid Lua file
+EOF
+
 ${PROG} | egrep '[A-Za-z0-9]' | grep -v version > output.test1 &
 sleep 1
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
@@ -39,6 +43,30 @@ done
 sleep 1
 rm test.lua
 
+${PROG} -foo | egrep '[A-Za-z0-9]' | grep -v version > output.test4 &
+sleep 1
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+for process in $LIST ; do
+	kill $process
+done
+sleep 1
+
+${PROG} -d bad.lua | egrep '[A-Za-z0-9]' | grep -v version > output.test5 &
+sleep 1
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+for process in $LIST ; do
+	kill $process
+done
+sleep 1
+
+${PROG} foo bar baz | egrep '[A-Za-z0-9]' | grep -v version > output.test6 &
+sleep 1
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+for process in $LIST ; do
+	kill $process
+done
+sleep 1
+
 if ! cmp output.success1 output.test1 > /dev/null 2>&1 ; then
         echo Args Test \#1 failed
         exit 255
@@ -51,8 +79,23 @@ if ! cmp output.success3 output.test3 > /dev/null 2>&1 ; then
         echo Args Test \#3 failed
         exit 255
 fi
+if ! cmp output.success4 output.test4 > /dev/null 2>&1 ; then
+        echo Args Test \#4 failed
+        exit 255
+fi
+if ! cmp output.success5 output.test5 > /dev/null 2>&1 ; then
+        echo Args Test \#5 failed
+        exit 255
+fi
+if ! cmp output.success6 output.test6 > /dev/null 2>&1 ; then
+        echo Args Test \#6 failed
+        exit 255
+fi
 
 echo Args test Success
 rm output.test1
 rm output.test2
 rm output.test3
+rm output.test4
+rm output.test5
+rm output.test6

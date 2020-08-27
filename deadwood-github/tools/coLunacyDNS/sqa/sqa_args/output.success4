@@ -1,0 +1,3 @@
+Only debug (interactive) mode supported.
+Running as a daemon not supported yet.
+Usage: coLunacyDNS -d {config file}
