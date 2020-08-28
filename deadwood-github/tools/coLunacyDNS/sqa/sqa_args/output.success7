@@ -1,0 +1,4 @@
+Unable to parse lua file with name:
+bad2.lua
+bad2.lua:2: attempt to index global 'foo' (a nil value)
+Fatal error opening lua config file

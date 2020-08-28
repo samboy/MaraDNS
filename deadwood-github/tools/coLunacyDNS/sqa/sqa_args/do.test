@@ -13,10 +13,15 @@ function processQuery(Q) -- Called for every DNS query received
 end
 EOF
 
-cat > bad.lua << EOF
+cat > bad1.lua << EOF
 This is not a valid Lua file
 EOF
+cat > bad2.lua << EOF
+-- Valid Lua, but bad function name (different error than above)
+foo.bar(1)
+EOF
 
+echo Test 1
 ${PROG} | egrep '[A-Za-z0-9]' | grep -v version > output.test1 &
 sleep 1
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
@@ -25,6 +30,7 @@ for process in $LIST ; do
 done
 sleep 1
 
+echo Test 2
 ${PROG} -d | egrep '[A-Za-z0-9]' | grep -v version | cut -f1 -d: \
 	> output.test2 &
 sleep 1
@@ -34,6 +40,7 @@ for process in $LIST ; do
 done
 sleep 1
 
+echo Test 3
 ${PROG} -d test.lua | egrep '[A-Za-z0-9]' | grep -v version > output.test3 &
 sleep 1
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
@@ -42,6 +49,7 @@ for process in $LIST ; do
 done
 sleep 1
 
+echo Test 4
 ${PROG} -foo | egrep '[A-Za-z0-9]' | grep -v version > output.test4 &
 sleep 1
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
@@ -50,7 +58,8 @@ for process in $LIST ; do
 done
 sleep 1
 
-${PROG} -d bad.lua | egrep '[A-Za-z0-9]' | grep -v version > output.test5 &
+echo Test 5
+${PROG} -d bad1.lua | egrep '[A-Za-z0-9]' | grep -v version > output.test5 &
 sleep 1
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
@@ -58,7 +67,17 @@ for process in $LIST ; do
 done
 sleep 1
 
+echo Test 6
 ${PROG} foo bar baz | egrep '[A-Za-z0-9]' | grep -v version > output.test6 &
+sleep 1
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+for process in $LIST ; do
+	kill -ALRM $process
+done
+sleep 1
+
+echo Test 7
+${PROG} -d bad2.lua | egrep '[A-Za-z0-9]' | grep -v version > output.test7 &
 sleep 1
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
@@ -90,13 +109,19 @@ if ! cmp output.success6 output.test6 > /dev/null 2>&1 ; then
         echo Args Test \#6 failed
         exit 255
 fi
+if ! cmp output.success7 output.test7 > /dev/null 2>&1 ; then
+        echo Args Test \#7 failed
+        exit 255
+fi
 
 echo Args test Success
 rm test.lua
-rm bad.lua
+rm bad1.lua
+rm bad2.lua
 rm output.test1
 rm output.test2
 rm output.test3
 rm output.test4
 rm output.test5
 rm output.test6
+rm output.test7
