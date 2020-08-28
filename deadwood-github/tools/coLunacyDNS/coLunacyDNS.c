@@ -630,7 +630,7 @@ SOCKET get_port(ip_addr_T ip, sockaddr_all_T *dns_udp) {
         	dns_udp->V6.sin6_family = AF_INET6;
         	dns_udp->V6.sin6_port = htons(53);
         	memcpy(&(dns_udp->V6.sin6_addr),ip.ip,16);
-#ifdef GCOV
+#ifndef GCOV
 	} else {
                 log_it("Problem with bind IP");
                 exit(0);
