@@ -1,5 +1,3 @@
-coLunacyDNS version 1.0.003 starting
-
 Read line: ip4["phish.example.com."] = "X"
 End of file
 Read line: ip4["bad.invalid."] = "X"
