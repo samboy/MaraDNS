@@ -18,7 +18,7 @@ clean:
 	rm -f core $(EXECS) *.exe
 
 askmara: askmara.c askmara_labels_en.h $(OBJECTS) $(Q) $(OUTOBJ)
-	$(CC) $(FLAGS) -DAUTHONLY -o askmara askmara.c $(OBJECTS) $(Q) $(OUTOBJ)
+	$(CC) $(FLAGS) -DIPV6 -DAUTHONLY -o askmara askmara.c $(OBJECTS) $(Q) $(OUTOBJ)
 
 askmara-tcp: askmara-tcp.c askmara_labels_en.h $(OBJECTS) $(ROBJECTS) $(POBJECTS)
 	$(CC) $(FLAGS) -o askmara-tcp askmara-tcp.c $(OBJECTS) $(ROBJECTS) $(POBJECTS)
