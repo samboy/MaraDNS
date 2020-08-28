@@ -1,0 +1,18 @@
+coLunacyDNS version 1.0.003 starting
+
+Read line: ip4["phish.example.com."] = "X"
+End of file
+Read line: ip4["bad.invalid."] = "X"
+End of file
+No file read
+Read line: ip4["four.invalid."] = "X"
+End of file
+Running coLunacyDNS
+Got query for maradns.samiam.org. from 127.0.0.1 type IPv4
+Got query for phish.example.com. from 127.0.0.1 type IPv4
+Name is on block list.
+Got query for good.invalid. from 127.0.0.1 type IPv4
+Got query for bad.invalid. from 127.0.0.1 type IPv4
+Name is on block list.
+Got query for four.invalid. from 127.0.0.1 type IPv4
+Name is on block list.

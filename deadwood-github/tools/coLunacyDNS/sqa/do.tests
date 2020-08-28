@@ -52,6 +52,7 @@ TESTS=$TESTS" sqa_any" # 127.7.7.20
 TESTS=$TESTS" sqa_args" # 127.7.7.21
 TESTS=$TESTS" sqa_ip6" # 127.7.7.22 and ::1
 TESTS=$TESTS" sqa_ip6bad" # 127.7.7.23
+TESTS=$TESTS" sqa_file" # 127.7.7.24 and 127.7.7.25
 TESTS=$TESTS" sqa_nobindIP" # 0.0.0.0 (for test)
 FAIL=""
 
