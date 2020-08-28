@@ -310,9 +310,11 @@ int ip6Parse(char *human, int len, uint8_t *ip6) {
 		}
 
 		if(*human == ':' && index == doubleColonIndex) {
+#ifndef GCOV
 			if(thisQuad != 0 || currentHexDigit != 0) { 
 				return -258; 
 			}
+#endif // GCOV
 			if(currentQuad + afterDoubleColonQuads >= 8) {
 				return -259; // Too many colons
 			}
@@ -418,11 +420,13 @@ void init_rng() {
         int a = 0;
         FILE *rfile = NULL;
         rfile = fopen("/dev/urandom","rb");
+#ifndef GCOV
         if(rfile == NULL) {
                 log_it("You do not have /dev/urandom");
                 log_it("I refuse to run under these conditions");
                 exit(1);
         }
+#endif // GCOV
         for(a=0;a<64;a++) {
                 int b;
                 b = getc(rfile);
@@ -458,9 +462,11 @@ void init_rng() {
 }
 
 uint32_t rand32() {
+#ifndef GCOV
         if(rgX_phase == 0) {
                 init_rng();
         }
+#endif // GCOV
         return rn(rgX_mill, rgX_belt, &rgX_phase);
 }
 
@@ -532,9 +538,11 @@ ip_addr_T set_return_ip4(char *returnIp) {
         ip_addr_T ip;
 	ip.len = 4;
 	uint32_t ipt = 0xffffffff;
+#ifndef GCOV
         if(returnIp == NULL) {
                 returnIp = "127.0.0.1";
         }
+#endif // GCOV
         /* Set the IP we give everyone */
         ipt = inet_addr(returnIp);
         ipt = ntohl(ipt);
@@ -603,10 +611,12 @@ SOCKET get_port(ip_addr_T ip, sockaddr_all_T *dns_udp) {
 	} else if(ip.len == 16) {
 		sock = socket(AF_INET6, SOCK_DGRAM, 0);
 	} 
+#ifndef GCOV
         if(sock == INVALID_SOCKET) {
                 perror("socket error");
                 exit(0);
         }
+#endif // GCOV
 #ifdef MINGW
         setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO,
                 (char *)&noblock, sizeof(struct timeval));
@@ -620,9 +630,11 @@ SOCKET get_port(ip_addr_T ip, sockaddr_all_T *dns_udp) {
         	dns_udp->V6.sin6_family = AF_INET6;
         	dns_udp->V6.sin6_port = htons(53);
         	memcpy(&(dns_udp->V6.sin6_addr),ip.ip,16);
+#ifdef GCOV
 	} else {
                 log_it("Problem with bind IP");
                 exit(0);
+#endif // GCOV
         }
         len_inet = sizeof(sockaddr_all_T);
         if(bind(sock,(struct sockaddr *)dns_udp,len_inet) == -1) {
@@ -970,6 +982,7 @@ int humanDNSname(unsigned char *in, char *out, int max) {
         return inPoint;
 }
 
+#ifndef GCOV
 /* On *NIX, drop non-root stuff once we bind to port 53 */
 void sandbox() {
 #ifndef MINGW
@@ -991,8 +1004,9 @@ void sandbox() {
                 log_it("Your kernel\'s setuid() is broken"); exit(1);
         }
 #endif /* CYGWIN */
-#endif
+#endif // MINGW
 }
+#endif // GCOV
 
 /* Create a sockaddr_all_T that will be bound to a given port; this is
  * used by the code that binds to a randomly chosen port */
@@ -2018,7 +2032,7 @@ int main(int argc, char **argv) {
 	SipHashSetKey(rand32(),rand32());
 
         if(argc != 2 || *argv[1] == '-') {
-                printf("coLunacyDNS version 1.0.003 starting\n\n");
+                printf("coLunacyDNS version 1.0.004 starting\n\n");
         }
         set_time(); // Run this frequently to update timestamp
         // Get bindIp and returnIp from Lua script
@@ -2326,7 +2340,7 @@ int main(int argc, char **argv) {
                         svc_install_service();
                 }
         } else {
-                printf("coLunacyDNS version 1.0.003\n\n");
+                printf("coLunacyDNS version 1.0.004\n\n");
                 printf(
                     "coLunacyDNS is a DNS server that is a Windows service\n\n"
                     "To install this service:\n\n\tcoLunacyDNS --install\n\n"
