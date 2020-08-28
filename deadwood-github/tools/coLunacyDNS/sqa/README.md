@@ -29,4 +29,6 @@ numbers are for coLunacyDNS 1.0.003 (commit
   and 1080.  Not “fixing”, I would rather have two checks than zero 
   checks.
 
+* Line 861 requires writing a program which runs execve() or what not
+  with a NULL argv[0] to test
 

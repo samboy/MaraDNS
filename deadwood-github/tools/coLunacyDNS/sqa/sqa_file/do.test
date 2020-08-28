@@ -45,6 +45,7 @@ if coDNS.open1("does_not_exist") then readFile() end -- Should fail
 if not coDNS.read1() then coDNS.log("No file read") end 
 if coDNS.open1("file4") then readFile() end
 coDNS.close1()
+coDNS.open1("file1")
 
 function processQuery(Q) -- Called for every DNS query received
   local upstream = "127.7.7.24"
