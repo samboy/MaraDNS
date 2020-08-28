@@ -19,3 +19,6 @@ ERROR: 'upstreamIp4' not set
 ERROR: 'upstreamIp4' not set
 Should get here {type=A}
 ERROR: Lua file is ignoring coDNS.solve errors; ending thread
+ERROR: coDNS.solve bad query
+Should get here (long name)
+ERROR: Lua file is ignoring coDNS.solve errors; ending thread
