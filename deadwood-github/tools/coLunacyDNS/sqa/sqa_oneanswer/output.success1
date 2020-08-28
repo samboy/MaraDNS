@@ -4,8 +4,8 @@ maradns.samiam.org. +0 a 10.1.1.1
 # NS replies:
 # AR replies:
 # Querying the server with the IP 127.7.7.1
-# Question: A1-2-3.example.com.
-1-2-3.example.com. +0 a 10.1.1.1
+# Question: A[1-2-@3].example.com.
+[1-2-@3].example.com. +0 a 10.1.1.1
 # NS replies:
 # AR replies:
 # Querying the server with the IP 127.7.7.1
