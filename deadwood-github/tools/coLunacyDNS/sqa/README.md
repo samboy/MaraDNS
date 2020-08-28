@@ -25,3 +25,8 @@ numbers are for coLunacyDNS 1.0.003 (commit
 
 * Because of line 1209, we will never reach line 536
 
+* Lines 607-608 and 624-625 are never reached because of lines 1066 
+  and 1080.  Not “fixing”, I would rather have two checks than zero 
+  checks.
+
+
