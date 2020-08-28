@@ -46,6 +46,7 @@ TESTS=$TESTS" sqa_complex" # 127.7.7.14 to 127.7.7.17
 TESTS=$TESTS" sqa_timeout" # 127.7.7.18 and 127.7.7.19
 TESTS=$TESTS" sqa_any" # 127.7.7.20
 TESTS=$TESTS" sqa_args" # 127.7.7.21
+TESTS=$TESTS" sqa_nobindIP" # 0.0.0.0 (for test)
 FAIL=""
 
 for test in $TESTS ; do
