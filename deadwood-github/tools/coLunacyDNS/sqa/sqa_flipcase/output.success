@@ -1,0 +1,20 @@
+# Querying the server with the IP 127.7.7.27
+# Question: Aabcdefghijklmnopqrstuvwxyzabcde.example.com.
+abcdefghijklmnopqrstuvwxyzabcde.example.com. +0 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.7.7.28
+# Question: Aabcdefghijklmnopqrstuvwxyzabcde.example.com.
+abcdefghijklmnopqrstuvwxyzabcde.example.com. +0 a 10.3.3.3
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.7.7.27
+# Question: AABCDEFGHIJKLMNOPQRSTUVWXYZABCDE.EXAMPLE.COM.
+ABCDEFGHIJKLMNOPQRSTUVWXYZABCDE.EXAMPLE.COM. +0 a 10.2.2.2
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.7.7.28
+# Question: AABCDEFGHIJKLMNOPQRSTUVWXYZABCDE.EXAMPLE.COM.
+ABCDEFGHIJKLMNOPQRSTUVWXYZABCDE.EXAMPLE.COM. +0 a 10.3.3.3
+# NS replies:
+# AR replies:
