@@ -1011,9 +1011,11 @@ void sandbox() {
 /* Create a sockaddr_all_T that will be bound to a given port; this is
  * used by the code that binds to a randomly chosen port */
 void setup_bind(sockaddr_all_T *dns_udp, uint16_t port, int len) {
+#ifndef GCOV
         if(dns_udp == 0) {
                 return;
         }
+#endif
         memset(dns_udp,0,sizeof(*dns_udp));
 	if(len == 4) {
         	dns_udp->V4.sin_family = AF_INET;
@@ -2032,7 +2034,7 @@ int main(int argc, char **argv) {
 	SipHashSetKey(rand32(),rand32());
 
         if(argc != 2 || *argv[1] == '-') {
-                printf("coLunacyDNS version 1.0.004 starting\n\n");
+                printf("coLunacyDNS version 1.0.00X starting\n\n");
         }
         set_time(); // Run this frequently to update timestamp
         // Get bindIp and returnIp from Lua script
@@ -2340,7 +2342,7 @@ int main(int argc, char **argv) {
                         svc_install_service();
                 }
         } else {
-                printf("coLunacyDNS version 1.0.004\n\n");
+                printf("coLunacyDNS version 1.0.00X\n\n");
                 printf(
                     "coLunacyDNS is a DNS server that is a Windows service\n\n"
                     "To install this service:\n\n\tcoLunacyDNS --install\n\n"

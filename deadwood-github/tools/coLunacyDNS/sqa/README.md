@@ -29,4 +29,9 @@ are a number if `#ifdef GCOV` blocks which hide this code from the tester:
 
 * We do not test the sandboxing code which drops root and does a chroot().
   This is for practical reasons: If we drop root, we won’t be able to 
-  write to the files used by gcov/gcc to track test coverage.
+  write to the files used by gcov/gcc to track test coverage.  I have
+  verified this code works via hand testing.
+
+* The `dns_udp == 0` sanity test in setup_bind will never be called
+  in coLunacyDNS, but I am keeping this code because I would rather
+  have a sanity test which is never used.
