@@ -36,6 +36,9 @@ end
 blockList = {}
 if coDNS.open1("file1") then readFile() end
 if coDNS.open1("file2") then readFile() end
+coDNS.open1("file1")
+coDNS.close1("file1")
+coDNS.open1("file2")
 if coDNS.open1(".file3") then readFile() end -- Should fail
 if coDNS.open1("/etc/passwd") then readFile() end -- Should fail
 if coDNS.open1("does_not_exist") then readFile() end -- Should fail
