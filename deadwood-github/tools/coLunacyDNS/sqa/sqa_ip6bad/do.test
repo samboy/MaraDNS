@@ -23,9 +23,9 @@ sleep 1
 rm test.lua
 
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
-        echo IP6 Test failed
+        echo IP6 bad Test failed
         exit 255
 fi
 
-echo IP6 test Success
+echo IP6 bad test Success
 rm output.test
