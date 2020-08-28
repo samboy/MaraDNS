@@ -1,0 +1,41 @@
+#!/bin/bash
+# Bashism: Job control
+
+. ../testVars
+
+PROG="../../coLunacyDNS"
+
+cat > test.lua << EOF
+bindIp = "127.7.7.26" 
+logLevel = 1
+function processQuery(Q) -- Called for every DNS query received
+   local t = coDNS.solve(false)
+   coDNS.log(t.error)
+   coDNS.log("Should get here")
+   t = coDNS.solve(false)
+   coDNS.log("Should never get here")
+end
+EOF
+
+
+${PROG} -d test.lua | egrep '[0-9a-zA-Z]' | grep -v version > output.test &
+sleep 1
+
+askmara -t 1 Amaradns.samiam.org. 127.7.7.26
+
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+for process in $LIST ; do
+	kill -ALRM $process
+done
+sleep 1
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+        echo BadSolve Test failed
+        exit 255
+fi
+
+echo BadSolve test Success
+# Clean up
+rm test.lua
+rm upstream.lua
+rm output.test
