@@ -16,13 +16,17 @@ are a number if `#ifdef GCOV` blocks which hide this code from the tester:
   `/dev/urandom` system wide for a SQA test.  I *know* this code works;
   it gets invoked when I compile in Windows with the wrong flags.
     
-* `rand32()` has a test to make sure we have a RNG state which is never
-  run.  I will keep it around so *that* library remains robust (I *could* 
-  reach this line by changing the C code to call rand32() *before* 
-  init_rng(), but nah)
+* `rand32()` has code to make sure we have a RNG state which is never
+  run in coLunacyDNS.  I will keep it around so *that* library remains 
+  robust (I *could* reach this line by changing the C code to call 
+  rand32() *before* init_rng(), but nah)
 
 * We will never reach a block of code which makes an IP `127.0.0.1`
+  if unser.
 
 * A couple of tests for bad sockets or bind IPs will never be reached.
   Not “fixing”, I would rather have two checks than zero checks.
 
+* We do not test the sandboxing code which drops root and does a chroot().
+  This is for practical reasons: If we drop root, we won’t be able to 
+  write to the files used by gcov/gcc to track test coverage.
