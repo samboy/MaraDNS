@@ -21,6 +21,10 @@ cd ../tools/coLunacyDNS/
 make CFLAGS="-g -DTEST -DGCOV -fprofile-arcs -ftest-coverage"
 echo coLunacyDNS compiled in test mode
 cd "$HERE"
+if [ "$1" = "--compile" ] ; then
+	echo coLunacyDNS compiled for tests
+	exit 0
+fi
 
 DoStop=""
 if [ "$1" = "--stop" ] ; then
