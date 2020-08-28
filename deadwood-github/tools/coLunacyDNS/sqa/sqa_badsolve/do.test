@@ -9,11 +9,37 @@ cat > test.lua << EOF
 bindIp = "127.7.7.26" 
 logLevel = 1
 function processQuery(Q) -- Called for every DNS query received
-   local t = coDNS.solve(false)
-   coDNS.log(t.error)
-   coDNS.log("Should get here")
-   t = coDNS.solve(false)
-   coDNS.log("Should never get here")
+  if string.sub(Q.coQuery,1,1) == "a" then
+    local t = coDNS.solve(false)
+    coDNS.log(t.error)
+    coDNS.log("Should get here")
+    t = coDNS.solve(false)
+    coDNS.log("Should never get here")
+  elseif string.sub(Q.coQuery,1,1) == "b" then
+    local t = coDNS.solve({})
+    coDNS.log(t.error)
+    coDNS.log("Should get here {}")
+    t = coDNS.solve({})
+    coDNS.log("Should never get here {}")
+  elseif string.sub(Q.coQuery,1,1) == "c" then
+    local t = coDNS.solve({type=1})
+    coDNS.log(t.error)
+    coDNS.log("Should get here {type=1}")
+    t = coDNS.solve({})
+    coDNS.log("Should never get here {type=1}")
+  elseif string.sub(Q.coQuery,1,1) == "d" then
+    local t = coDNS.solve({type="foo"})
+    coDNS.log(t.error)
+    coDNS.log("Should get here {type=foo}")
+    t = coDNS.solve({})
+    coDNS.log("Should never get here {type=foo}")
+  elseif string.sub(Q.coQuery,1,1) == "e" then
+    local t = coDNS.solve({type="A"})
+    coDNS.log(t.error)
+    coDNS.log("Should get here {type=A}")
+    t = coDNS.solve({})
+    coDNS.log("Should never get here {type=A}")
+  end
 end
 EOF
 
@@ -21,7 +47,11 @@ EOF
 ${PROG} -d test.lua | egrep '[0-9a-zA-Z]' | grep -v version > output.test &
 sleep 1
 
-askmara -t 1 Amaradns.samiam.org. 127.7.7.26
+askmara -t 1 Aa.example.com. 127.7.7.26
+askmara -t 1 Ab.example.com. 127.7.7.26
+askmara -t 1 Ac.example.com. 127.7.7.26
+askmara -t 1 Ad.example.com. 127.7.7.26
+askmara -t 1 Ae.example.com. 127.7.7.26
 
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do

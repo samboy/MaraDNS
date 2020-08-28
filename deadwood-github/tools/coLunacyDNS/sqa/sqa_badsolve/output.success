@@ -3,3 +3,19 @@ ERROR: coDNS.solve must be given a table
 ERROR: coDNS.solve must be given a table
 Should get here
 ERROR: Lua file is ignoring coDNS.solve errors; ending thread
+ERROR: coDNS.solve table needs 'type' to be string
+ERROR: coDNS.solve table needs 'type' to be string
+Should get here {}
+ERROR: Lua file is ignoring coDNS.solve errors; ending thread
+ERROR: coDNS.solve table needs 'type' to be string
+ERROR: coDNS.solve table needs 'type' to be string
+Should get here {type=1}
+ERROR: Lua file is ignoring coDNS.solve errors; ending thread
+ERROR: coDNS.solve table needs 'type' to be 'A' or 'ip6'
+ERROR: coDNS.solve table needs 'type' to be 'A' or 'ip6'
+Should get here {type=foo}
+ERROR: Lua file is ignoring coDNS.solve errors; ending thread
+ERROR: 'upstreamIp4' not set
+ERROR: 'upstreamIp4' not set
+Should get here {type=A}
+ERROR: Lua file is ignoring coDNS.solve errors; ending thread
