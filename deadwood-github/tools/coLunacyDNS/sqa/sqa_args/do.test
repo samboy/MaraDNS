@@ -41,7 +41,6 @@ for process in $LIST ; do
 	kill -ALRM $process
 done
 sleep 1
-rm test.lua
 
 ${PROG} -foo | egrep '[A-Za-z0-9]' | grep -v version > output.test4 &
 sleep 1
@@ -93,6 +92,8 @@ if ! cmp output.success6 output.test6 > /dev/null 2>&1 ; then
 fi
 
 echo Args test Success
+rm test.lua
+rm bad.lua
 rm output.test1
 rm output.test2
 rm output.test3
