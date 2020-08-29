@@ -1,0 +1,57 @@
+#!/bin/bash
+# Bashism: Job control
+
+. ../testVars
+
+PROG="../../coLunacyDNS"
+
+cat > test.lua << EOF
+bindIp = "127.7.7.29" 
+logLevel = 1
+function processQuery(Q) -- Called for every DNS query received
+  if string.sub(Q.coQuery,1,1) == "a" then
+    return {}
+  elseif string.sub(Q.coQuery,1,1) == "b" then
+    return {co1Type = true}
+  elseif string.sub(Q.coQuery,1,1) == "c" then
+    return {co1Type = "A"}
+  elseif string.sub(Q.coQuery,1,1) == "d" then
+    return {co1Type = "A", co1Data = true}
+  elseif string.sub(Q.coQuery,1,1) == "e" then
+    return {co1Type = "ip6"}
+  elseif string.sub(Q.coQuery,1,1) == "f" then
+    return {co1Type = "ip6", co1Data = true}
+  elseif string.sub(Q.coQuery,1,1) == "g" then
+    return {co1Type = "ip6", co1Data = "This is not an IP6 address"}
+  end
+end
+EOF
+
+
+${PROG} -d test.lua | egrep '[0-9a-zA-Z]' | grep -v version > output.test &
+sleep 1
+
+askmara -t 1 Aa.example.com. 127.7.7.29
+askmara -t 1 Ab.example.com. 127.7.7.29
+askmara -t 1 Ac.example.com. 127.7.7.29
+askmara -t 1 Ad.example.com. 127.7.7.29
+askmara -t 1 Ae.example.com. 127.7.7.29
+askmara -t 1 Af.example.com. 127.7.7.29
+askmara -t 1 Ag.example.com. 127.7.7.29
+
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+for process in $LIST ; do
+	kill -ALRM $process
+done
+sleep 1
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+        echo BadAnswer Test failed
+        exit 255
+fi
+
+echo BadAnswer test Success
+# Clean up
+rm test.lua
+rm upstream.lua
+rm output.test

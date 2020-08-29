@@ -57,6 +57,7 @@ TESTS=$TESTS" sqa_badsolve" # 127.7.7.26
 TESTS=$TESTS" sqa_flipcase" # 127.7.7.27 and 127.7.7.28
 TESTS=$TESTS" sqa_execve" # No IPs used 
 TESTS=$TESTS" sqa_badBindIP" # No IPs used 
+TESTS=$TESTS" sqa_badanswer" # 127.7.7.29
 TESTS=$TESTS" sqa_nobindIP" # 0.0.0.0 (for test)
 FAIL=""
 
