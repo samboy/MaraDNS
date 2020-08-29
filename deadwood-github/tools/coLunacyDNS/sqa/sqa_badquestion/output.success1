@@ -1,0 +1,7 @@
+# Querying the server with the IP 127.7.7.30
+# Hard Error: Timeout
+# Querying the server with the IP 127.7.7.30
+# Question: Amaradns.samiam.org.
+maradns.samiam.org. +0 a 10.1.1.1
+# NS replies:
+# AR replies:
