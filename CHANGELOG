@@ -4,14 +4,14 @@ MaraDNS changelog
    This is a stable release of MaraDNS:
 
      * coLunacyDNS is now a stable release (1.0.003) with a full
-       SQA testing suite with over 75% code coverage in its tests.
+       SQA testing suite and well over 90% code coverage in its tests.
      * mmLunacyDNS has been removed; coLunacyDNS can do everything
        mmLunacyDNS could do, and this saves me the bother of
        maintaining two code bases.
      * askmara now compiles with IPv6 support (the code has been
        there, but is finally getting enabled)
 
-     (2020-0?-??)
+     (2020-08-29)
 
    maradns-3.5.0014:
    This is a stable release of MaraDNS (note that coLunacyDNS and
