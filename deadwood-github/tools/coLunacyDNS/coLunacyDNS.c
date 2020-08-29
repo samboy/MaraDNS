@@ -132,6 +132,10 @@ remoteConn remoteCo[maxprocs];
 
 // Global variable setting: log level
 int logLevel = 0;
+// Test-specific global settings
+#ifdef GCOV
+int gCovSendsFail = 0;
+#endif
 
 // Timestamp handling
 int64_t the_time = -1;
@@ -1054,7 +1058,7 @@ int do_random_bind(SOCKET s, int len) {
 #ifndef GCOV
                 setup_bind(&dns_udp, 20200 + (rand16() & 0xfff), len);
 #else
-                setup_bind(&dns_udp, 20200 + (rand16() & 0xf), len);
+                setup_bind(&dns_udp, 20200 + (rand16() & 0x7), len);
 #endif
                 /* Try to bind to that port */
                 if(bind(s, (struct sockaddr *)&dns_udp, sizeof(dns_udp))!=-1) {
@@ -1130,6 +1134,15 @@ void startServer(lua_State *L) {
 		logLevel = 0;
 	}
         lua_pop(L, 1); // Remove _G.logLevel from stack, restoring stack
+
+#ifdef GCOV
+	// get gCovSendsFail from global Lua context
+        lua_getglobal(L,"gCovSendsFail");
+        if(lua_type(L, -1) == LUA_TNUMBER) {
+		gCovSendsFail = (int)lua_tonumber(L, -1);
+	}
+	lua_pop(L, 1); // Remove _G.gCovSendsFail from stack
+#endif // GCOV
 
         // No we have an IP, bind to port 53
 #ifndef GCOV
@@ -1305,26 +1318,17 @@ void sendDNSpacket(int a) {
 		random_bind_result = do_random_bind(remoteCo[a].sockRemote,16);
 #endif // FUTURE
 	}
-	if(random_bind_result == -1) {
+	if(random_bind_result == -1 ||
+	   connect(remoteCo[a].sockRemote, (struct sockaddr *)&addrType,
+                sizeof(addrType)) != 0 ||
+#ifdef GCOV
+		gCovSendsFail == 1 ||
+#endif // GCOV
+           send(remoteCo[a].sockRemote,out,outLen,0) == -1) {
 		set_time();
 		closesocket(remoteCo[a].sockRemote);
 		remoteCo[a].sockRemote = NO_REPLY;
-		remoteCo[a].timeout = the_time;
-		return;
-	}
-	if(connect(remoteCo[a].sockRemote, (struct sockaddr *)&addrType, 
-		sizeof(addrType)) != 0) {
-		closesocket(remoteCo[a].sockRemote);
-		set_time();
-		remoteCo[a].sockRemote = NO_REPLY;
-		remoteCo[a].timeout = the_time;
-		return;
-	}
-	if(send(remoteCo[a].sockRemote,out,outLen,0) == -1) {
-		closesocket(remoteCo[a].sockRemote);
-		set_time();
-		remoteCo[a].sockRemote = NO_REPLY;
-		remoteCo[a].timeout = the_time;
+		remoteCo[a].timeout = the_time - 256;
 	}
         return;
 }
@@ -2054,7 +2058,7 @@ int main(int argc, char **argv) {
 	SipHashSetKey(rand32(),rand32());
 
         if(argc != 2 || *argv[1] == '-') {
-                printf("coLunacyDNS version 1.0.00X starting\n\n");
+                printf("coLunacyDNS version 1.0.007 starting\n\n");
         }
         set_time(); // Run this frequently to update timestamp
         // Get bindIp and returnIp from Lua script
@@ -2362,7 +2366,7 @@ int main(int argc, char **argv) {
                         svc_install_service();
                 }
         } else {
-                printf("coLunacyDNS version 1.0.00X\n\n");
+                printf("coLunacyDNS version 1.0.007\n\n");
                 printf(
                     "coLunacyDNS is a DNS server that is a Windows service\n\n"
                     "To install this service:\n\n\tcoLunacyDNS --install\n\n"
