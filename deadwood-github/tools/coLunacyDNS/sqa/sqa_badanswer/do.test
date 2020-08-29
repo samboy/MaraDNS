@@ -23,6 +23,8 @@ function processQuery(Q) -- Called for every DNS query received
     return {co1Type = "ip6", co1Data = true}
   elseif string.sub(Q.coQuery,1,1) == "g" then
     return {co1Type = "ip6", co1Data = "This is not an IP6 address"}
+  elseif string.sub(Q.coQuery,1,1) == "h" then
+    return true
   end
 end
 EOF
@@ -38,6 +40,7 @@ askmara -t 1 Ad.example.com. 127.7.7.29
 askmara -t 1 Ae.example.com. 127.7.7.29
 askmara -t 1 Af.example.com. 127.7.7.29
 askmara -t 1 Ag.example.com. 127.7.7.29
+askmara -t 1 Ah.example.com. 127.7.7.29
 
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
