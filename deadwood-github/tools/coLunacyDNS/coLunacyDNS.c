@@ -1178,9 +1178,13 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                         rs = luaL_checkstring(LT, -1);
                 }
                 if(rs == NULL) {
+			log_it(
+                             "processQuery: co1Type not set or invalid value");
                         lua_pop(LT, 1); // t.co1Type
                 }
-        }
+        } else {
+		log_it("processQuery: Table not returned by function");
+	}
         if(rs != NULL && strcmp("ignoreMe",rs) == 0) {
                 lua_pop(LT, 1); // t.co1Type
                 rs = NULL; // Do nothing
@@ -1215,6 +1219,8 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                 if(lua_type(LT, -1) == LUA_TSTRING) {
                         rs = luaL_checkstring(LT, -1);
                 } else {
+			log_it(
+                             "processQuery: co1Data not set or invalid value");
                         lua_pop(LT, 1); // t.co1Data
                         rs = NULL;
                 }
@@ -1225,12 +1231,16 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                 if(lua_type(LT, -1) == LUA_TSTRING) {
                         rs = luaL_checkstring(LT, -1);
                 } else {
+			log_it(
+                             "processQuery: co1Data not set or invalid");
                         lua_pop(LT, 1); // t.co1Data
                         rs = NULL;
                 }
 		if(rs != NULL) { // IP6 data
 			if(ip6Parse((char *)rs, -1, 
 					(uint8_t *)IPv6answer + 12) != 1) {
+				log_it(
+                             "processQuery: co1Data not valid IPv6 address");
 				rs = NULL;
 			}
 		}
@@ -1244,6 +1254,7 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                 	sendto(sock,in,outLen + 28,0,
                        		(struct sockaddr *)&dns_out, leni);
                 	lua_pop(LT, 1); // t.co1Data
+			rs = NULL; // No need to send a second reply
 		}
         } else if(rs != NULL) {
                 lua_pop(LT, 1); // t.co1Type
@@ -2058,7 +2069,7 @@ int main(int argc, char **argv) {
 	SipHashSetKey(rand32(),rand32());
 
         if(argc != 2 || *argv[1] == '-') {
-                printf("coLunacyDNS version 1.0.007 starting\n\n");
+                printf("coLunacyDNS version 1.0.00X starting\n\n");
         }
         set_time(); // Run this frequently to update timestamp
         // Get bindIp and returnIp from Lua script
@@ -2366,7 +2377,7 @@ int main(int argc, char **argv) {
                         svc_install_service();
                 }
         } else {
-                printf("coLunacyDNS version 1.0.007\n\n");
+                printf("coLunacyDNS version 1.0.00X\n\n");
                 printf(
                     "coLunacyDNS is a DNS server that is a Windows service\n\n"
                     "To install this service:\n\n\tcoLunacyDNS --install\n\n"
