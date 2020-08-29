@@ -1,0 +1,31 @@
+#!/bin/bash
+# Bashism: Job control
+
+. ../testVars
+PROG="../../coLunacyDNS"
+
+cat > test.lua << EOF
+bindIp="198.41.0.4" -- A.root-servers.net, i.e. not an IP we have
+coDNS.log("Hello, there")
+function processQuery(Q) -- Called for every DNS query received
+  return {co1Type = "A", co1Data = "10.1.1.1"}
+end
+EOF
+
+${PROG} -d test.lua 2>&1 | egrep '[A-Za-z0-9]' | grep -v version >output.test &
+sleep 1
+
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+for process in $LIST ; do
+	kill -ALRM $process
+done
+sleep 1
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+        echo Bad BindIP Test failed
+        exit 255
+fi
+
+echo Bad BindIP test Success
+rm output.test
+rm test.lua

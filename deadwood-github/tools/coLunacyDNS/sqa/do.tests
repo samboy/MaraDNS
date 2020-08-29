@@ -62,6 +62,7 @@ TESTS=$TESTS" sqa_badquestion" # 127.7.7.30
 TESTS=$TESTS" sqa_amazon" # 127.7.7.31
 TESTS=$TESTS" sqa_rawpacket" # 127.7.7.32 and 127.7.7.33
 TESTS=$TESTS" sqa_gCovSendsFail" # 127.7.7.34 and 127.7.7.35
+TESTS=$TESTS" sqa_binderror" # No IPs used
 TESTS=$TESTS" sqa_nobindIP" # 0.0.0.0 (for test)
 FAIL=""
 
