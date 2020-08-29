@@ -518,3 +518,10 @@ read to adjust settings in coLunacyDNS:
   buffered and will not immediately be visible; if `logLevel` has a value
   more than 0, `coDNS.log` messages are immediately flushed (unbuffered).
 
+# Test coverage
+
+`coLunacyDNS` is feature complete and being made stable.
+
+I am currently in the process of making `coLunacyDNS` a stable and
+fully tested DNS server.  Test coverage is currently, as of this
+edit to README.md, at 88.18%.
