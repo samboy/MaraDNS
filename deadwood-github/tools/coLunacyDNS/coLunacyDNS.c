@@ -123,7 +123,11 @@ typedef struct {
         ip_addr_T upstreamIP; // IP of upstream server
 } remoteConn;
 int remoteTop = 0; // Highest active remoteConn co-routine
+#ifndef GCOV
 #define maxprocs 512
+#else // GCOV
+#define maxprocs 12
+#endif // GCOV
 remoteConn remoteCo[maxprocs];
 
 // Global variable setting: log level
@@ -1025,12 +1029,14 @@ void setup_bind(sockaddr_all_T *dns_udp, uint16_t port, int len) {
         	dns_udp->V4.sin_family = AF_INET;
         	dns_udp->V4.sin_addr.s_addr = htonl(INADDR_ANY);
         	dns_udp->V4.sin_port = htons(port);
+#ifdef FUTURE
 	} else if(len == 16) {
 		dns_udp->V6.sin6_family = AF_INET6;
 #ifndef MINGW
 		dns_udp->V6.sin6_addr = in6addr_any;
 #endif // MINGW
 		dns_udp->V6.sin6_port = htons(port);
+#endif // FUTURE
 	} 
         return;
 }
@@ -1045,7 +1051,11 @@ int do_random_bind(SOCKET s, int len) {
         for(a = 0; a < 10; a++) {
                 /* Set up random source port to bind to, between 20200
                  * and 24296 */
+#ifndef GCOV
                 setup_bind(&dns_udp, 20200 + (rand16() & 0xfff), len);
+#else
+                setup_bind(&dns_udp, 20200 + (rand16() & 0xf), len);
+#endif
                 /* Try to bind to that port */
                 if(bind(s, (struct sockaddr *)&dns_udp, sizeof(dns_udp))!=-1) {
                         success = 1;
@@ -1287,11 +1297,13 @@ void sendDNSpacket(int a) {
 		memcpy(&(addrType.V4.sin_addr.s_addr), 
 				remoteCo[a].upstreamIP.ip, 4);
 		random_bind_result = do_random_bind(remoteCo[a].sockRemote, 4);
+#ifdef FUTURE
 	} else if(remoteCo[a].upstreamIP.len == 16) {
 		addrType.V6.sin6_family = AF_INET6;
 		addrType.V6.sin6_port = htons(53);
 		memcpy(&(addrType.V6.sin6_addr), remoteCo[a].upstreamIP.ip,16);
 		random_bind_result = do_random_bind(remoteCo[a].sockRemote,16);
+#endif // FUTURE
 	}
 	if(random_bind_result == -1) {
 		set_time();
@@ -2038,7 +2050,7 @@ int main(int argc, char **argv) {
 	SipHashSetKey(rand32(),rand32());
 
         if(argc != 2 || *argv[1] == '-') {
-                printf("coLunacyDNS version 1.0.006 starting\n\n");
+                printf("coLunacyDNS version 1.0.00X starting\n\n");
         }
         set_time(); // Run this frequently to update timestamp
         // Get bindIp and returnIp from Lua script
@@ -2346,7 +2358,7 @@ int main(int argc, char **argv) {
                         svc_install_service();
                 }
         } else {
-                printf("coLunacyDNS version 1.0.006\n\n");
+                printf("coLunacyDNS version 1.0.00X\n\n");
                 printf(
                     "coLunacyDNS is a DNS server that is a Windows service\n\n"
                     "To install this service:\n\n\tcoLunacyDNS --install\n\n"
