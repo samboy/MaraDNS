@@ -59,6 +59,7 @@ TESTS=$TESTS" sqa_execve" # No IPs used
 TESTS=$TESTS" sqa_badBindIP" # No IPs used 
 TESTS=$TESTS" sqa_badanswer" # 127.7.7.29
 TESTS=$TESTS" sqa_badquestion" # 127.7.7.30
+TESTS=$TESTS" sqa_amazon" # 127.7.7.31
 TESTS=$TESTS" sqa_nobindIP" # 0.0.0.0 (for test)
 FAIL=""
 
