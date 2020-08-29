@@ -524,4 +524,4 @@ read to adjust settings in coLunacyDNS:
 
 I am currently in the process of making `coLunacyDNS` a stable and
 fully tested DNS server.  Test coverage is currently, as of this
-edit to README.md, at 88.18%.
+edit to README.md, at 92.73%.
