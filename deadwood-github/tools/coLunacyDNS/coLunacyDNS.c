@@ -564,6 +564,10 @@ ip_addr_T get_ip4(char *stringIp) {
 		ipt = 0;
 	}
         ipt = ntohl(ipt);
+	if(ipt == 0xffffffff) {
+		ip.len = 0;
+		return ip;
+	}
 	ip.len = 4;
         ip.ip[0] = (ipt & 0xff000000) >> 24;
         ip.ip[1] = (ipt & 0x00ff0000) >> 16;
@@ -2034,7 +2038,7 @@ int main(int argc, char **argv) {
 	SipHashSetKey(rand32(),rand32());
 
         if(argc != 2 || *argv[1] == '-') {
-                printf("coLunacyDNS version 1.0.005 starting\n\n");
+                printf("coLunacyDNS version 1.0.006 starting\n\n");
         }
         set_time(); // Run this frequently to update timestamp
         // Get bindIp and returnIp from Lua script
@@ -2342,7 +2346,7 @@ int main(int argc, char **argv) {
                         svc_install_service();
                 }
         } else {
-                printf("coLunacyDNS version 1.0.005\n\n");
+                printf("coLunacyDNS version 1.0.006\n\n");
                 printf(
                     "coLunacyDNS is a DNS server that is a Windows service\n\n"
                     "To install this service:\n\n\tcoLunacyDNS --install\n\n"
