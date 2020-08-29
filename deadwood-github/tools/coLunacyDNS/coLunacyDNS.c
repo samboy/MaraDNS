@@ -1779,10 +1779,12 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
 				dns_out.V4.sin_port = htons(fromPort);
 				memcpy(&(dns_out.V4.sin_addr.s_addr),
 						&fromIp.ip,4);
+#ifdef FUTURE
 			} else if(fromIp.len == 16) {
 				dns_out.V6.sin6_family = AF_INET6;
 				dns_out.V6.sin6_port = htons(fromPort);
 				memcpy(&(dns_out.V6.sin6_addr),&fromIp.ip,16);
+#endif // FUTURE
 			}
 			int leni = sizeof(dns_out);
 			int a;
@@ -1794,10 +1796,12 @@ void processQueryC(lua_State *L, SOCKET sock, char *in, int inLen,
 			return;
 		}
                 threadName = malloc(35);
+#ifndef GCOV
                 if(threadName == 0) {
-                        free(in);
-                        return;
+			log_it("AIEEEE! Malloc() failure!");
+			exit(1);
                 }
+#endif // GCOV
                 snprintf(threadName,27,
                         "%08x%08x%08x",rand32(),rand32(),rand32());
 
