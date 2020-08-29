@@ -22,3 +22,10 @@ ERROR: Lua file is ignoring coDNS.solve errors; ending thread
 ERROR: coDNS.solve bad query
 Should get here (long name)
 ERROR: Lua file is ignoring coDNS.solve errors; ending thread
+ERROR: coDNS.solve bad query
+Should get here (no last dot)
+ERROR: Lua file is ignoring coDNS.solve errors; ending thread
+ERROR: coDNS.solve table needs 'name' to be string
+ERROR: coDNS.solve table needs 'name' to be string
+Should get here (name not string)
+ERROR: Lua file is ignoring coDNS.solve errors; ending thread

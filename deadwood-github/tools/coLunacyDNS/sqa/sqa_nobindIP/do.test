@@ -13,7 +13,7 @@ EOF
 ${PROG} -d test.lua &
 sleep 1
 
-askmara Amaradns.samiam.org. 127.7.7.1 > output.test
+askmara -t 2 Amaradns.samiam.org. 127.7.7.1 > output.test
 
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do

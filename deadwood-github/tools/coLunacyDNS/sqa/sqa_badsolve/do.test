@@ -46,6 +46,19 @@ function processQuery(Q) -- Called for every DNS query received
     coDNS.log("Should get here (long name)")
     t = coDNS.solve({})
     coDNS.log("Should never get here")
+  elseif string.sub(Q.coQuery,1,1) == "g" then
+    local t = coDNS.solve({type="A", upstreamIp4="127.7.7.254", name=
+			   "nolastdot.invalid"})
+    coDNS.log(t.error)
+    coDNS.log("Should get here (no last dot)")
+    t = coDNS.solve({})
+    coDNS.log("Should never get here")
+  elseif string.sub(Q.coQuery,1,1) == "h" then
+    local t = coDNS.solve({type="A", upstreamIp4="127.7.7.254", name=true})
+    coDNS.log(t.error)
+    coDNS.log("Should get here (name not string)")
+    t = coDNS.solve({})
+    coDNS.log("Should never get here")
   end
 end
 EOF
@@ -60,6 +73,8 @@ askmara -t 1 Ac.example.com. 127.7.7.26
 askmara -t 1 Ad.example.com. 127.7.7.26
 askmara -t 1 Ae.example.com. 127.7.7.26
 askmara -t 1 Af.example.com. 127.7.7.26
+askmara -t 1 Ag.example.com. 127.7.7.26
+askmara -t 1 Ah.example.com. 127.7.7.26
 
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
