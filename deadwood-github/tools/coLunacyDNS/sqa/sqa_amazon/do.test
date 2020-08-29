@@ -1,23 +1,8 @@
 #!/bin/bash
 # Bashism: Job control
 
-. ../testVars
 
-PROG="../../coLunacyDNS"
-
-cat > test.lua << EOF
-bindIp = "127.7.7.31" 
-function processQuery(Q) -- Called for every DNS query received
-   -- Connect to 127.7.7.1 for the query given to this routine
-   local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4="9.9.9.9"})
-   -- Return a "server fail" if we did not get an answer
-   if(t.error or t.status ~= 1) then return {co1Type = "serverFail"} end
-   -- Otherwise, return the answer
-   coDNS.log(t.answer)
-   return {co1Type = "A", co1Data = "10.1.1.1"}
-end
-EOF
-
+do_test() {
 
 ${PROG} -d test.lua &
 sleep 1
@@ -60,6 +45,49 @@ for process in $LIST ; do
 	kill -ALRM $process
 done
 sleep 1
+
+}
+
+####################################################################
+
+. ../testVars
+
+PROG="../../coLunacyDNS"
+
+cat > test.lua << EOF
+bindIp = "127.7.7.31" 
+function processQuery(Q) -- Called for every DNS query received
+   -- Connect to 127.7.7.1 for the query given to this routine
+   local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4="9.9.9.9"})
+   -- Return a "server fail" if we did not get an answer
+   if(t.error or t.status ~= 1) then return {co1Type = "serverFail"} end
+   -- Otherwise, return the answer
+   coDNS.log(t.answer)
+   return {co1Type = "A", co1Data = "10.1.1.1"}
+end
+EOF
+
+do_test
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+	echo Amazon test failed trying again \#2
+	do_test
+fi
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+	echo Amazon test failed trying again \#3
+	do_test
+fi
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+	echo Amazon test failed trying again \#4
+	do_test
+fi
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+	echo Amazon test failed trying again \#5
+	do_test
+fi
 
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
         echo Amazon Test failed
