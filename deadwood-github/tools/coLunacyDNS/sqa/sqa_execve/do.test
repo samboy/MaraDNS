@@ -1,0 +1,18 @@
+#!/bin/sh
+
+rm -f output.test
+touch output.test
+for a in *.c ; do
+	echo Test for ${a%.c} >>output.test
+	gcc -o ${a%.c} $a
+	./${a%.c} | egrep '[A-Za-z0-9]' | grep -v version >> output.test
+	rm ${a%.c}
+done
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+        echo execve Test failed
+        exit 255
+fi
+
+echo execve test Success
+rm output.test

@@ -1,0 +1,9 @@
+Test for execve1
+Error getting command line args.
+Test for execve2
+Error getting command line args.
+Test for execve3
+Unable to open lua file with name:
+coLunacyDNS.lua
+cannot open coLunacyDNS.lua: No such file or directory
+Fatal error opening lua config file
