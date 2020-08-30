@@ -6,6 +6,7 @@ PROG="../../coLunacyDNS"
 
 cat > test.lua << EOF
 bindIp = "127.7.7.36" 
+bindIp6 = "::1"
 function processQuery(Q) -- Called for every DNS query received
   coDNS.log("Query " .. Q.coQuery)
   return {co1Type = "A", co1Data = "10.1.1.1"}
@@ -17,8 +18,12 @@ sleep 1
 
 gcc -O3 -o sendpacket-arends sendpacket-arends.c
 
-./sendpacket-arends 127.7.7.36 > output.test1
+echo IPv4 > output.test1
+./sendpacket-arends 127.7.7.36 >> output.test1
 ./sendpacket-arends 127.7.7.36 1 >> output.test1
+echo IPv6 >> output.test1
+./sendpacket-arends ::1 >> output.test1
+./sendpacket-arends ::1 1 >> output.test1
 
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do

@@ -38,7 +38,7 @@ typedef struct {
 /* storage for both sockaddr_in and sockaddr_in6; note that this needs
  * to be in that format that system calls like bind() and what not use
  * for the sockaddr format (16-bit family, followed by the IP) */
-typedef struct {
+typedef struct sockaddr_all {
         union {
                 sa_family_t family;
                 struct sockaddr_in v4;
@@ -86,19 +86,24 @@ ip_addr_T get_ip(int argc, char **argv) {
 	ip.len = 0;
 	if(inet_pton(AF_INET, argv[1], (uint8_t *)(ip.ip)) > 0 ) {
 		ip.len = 4;
+	} else if(inet_pton(AF_INET6, argv[1], (uint8_t *)(ip.ip)) > 0 ) {
+		ip.len = 16;
 	}
+
         /* Return the IP we bind to */
         return ip;
 }
 
 /* Get port: Get a port locally and return the socket the port is on */
-SOCKET get_port(ip_addr_T ip, char **argv, struct sockaddr_in *dns_udp) {
+SOCKET get_port(ip_addr_T ip, char **argv, struct sockaddr_all *dns_udp) {
         SOCKET sock;
         int len_inet;
 
         /* Bind to port 53 */
 	if(ip.len == 4) {
         	sock = socket(AF_INET,SOCK_DGRAM,0);
+	} else if(ip.len == 16) {
+		sock = socket(AF_INET6,SOCK_DGRAM,0);
 	} else {
 		sock = -1;
 	}
@@ -106,15 +111,21 @@ SOCKET get_port(ip_addr_T ip, char **argv, struct sockaddr_in *dns_udp) {
                 perror("socket error");
                 exit(0);
         }
-        memset(dns_udp,0,sizeof(dns_udp));
-        dns_udp->sin_family = AF_INET;
-        dns_udp->sin_port = htons(53);
-        memcpy(&(dns_udp->sin_addr.s_addr),ip.ip,4);
-        if(dns_udp->sin_addr.s_addr == INADDR_NONE) {
-                printf("Problem with bind IP %s\n",argv[2]);
-                exit(0);
-        }
-        len_inet = sizeof(struct sockaddr_in);
+        memset(dns_udp,0,sizeof(struct sockaddr_all));
+	if(ip.len == 4) {
+        	dns_udp->V4.sin_family = AF_INET;
+        	dns_udp->V4.sin_port = htons(53);
+        	memcpy(&(dns_udp->V4.sin_addr.s_addr),ip.ip,4);
+        	if(dns_udp->V4.sin_addr.s_addr == INADDR_NONE) {
+                	printf("Problem with bind IPv4 %s\n",argv[2]);
+                	exit(0);
+        	}
+	} else if(ip.len == 16) {
+		dns_udp->V6.sin6_family = AF_INET6;
+		dns_udp->V6.sin6_port = htons(53);
+		memcpy(&(dns_udp->V6.sin6_addr),ip.ip,16);
+	}
+        len_inet = sizeof(struct sockaddr_all);
 
         /* Linux kernel bug */
         /* fcntl(sock, F_SETFL, O_NONBLOCK); */
@@ -128,7 +139,7 @@ int main(int argc, char **argv) {
         SOCKET sock;
         char in[512];
         socklen_t foo = sizeof(in);
-        struct sockaddr_in dns_udp;
+        struct sockaddr_all dns_udp;
         ip_addr_T ip;
         int leni = sizeof(struct sockaddr);
         fd_set rx_set; /* Using select() because if its timeout option */
