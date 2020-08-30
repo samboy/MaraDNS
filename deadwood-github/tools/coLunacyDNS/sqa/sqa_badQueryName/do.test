@@ -1,0 +1,69 @@
+#!/bin/bash
+# Bashism: Job control
+
+. ../testVars
+
+PROG="../../coLunacyDNS"
+
+cat > badNamepacket.c << EOF
+/*Placed in the public domain by Sam Trenholme*/
+#include <arpa/inet.h>
+#include <string.h>
+#include <stdint.h>
+#define Z struct sockaddr
+#define Y sizeof(d)
+int main(int a,char **b){uint32_t i;char q[512]
+,p[17]="\xc0\f\0\x01\0\x01\0\0\0\0\0\x04";if(a>
+1){struct sockaddr_in d;socklen_t f=511;bzero(&
+d,Y);a=socket(AF_INET,SOCK_DGRAM,0);*((uint32_t
+*)(p+12))=inet_addr(b[1]);d.sin_family=AF_INET;
+d.sin_port=htons(53);
+d.sin_addr.s_addr=inet_addr("127.7.7.44"); // Bind address
+bind(a,(Z*)&d,Y);for(;;){i
+=recvfrom(a,q,255,0,(Z*)&d,&f);if(i>9&&q[2]>=0)
+{q[2]|=128;q[11]?q[3]|=4:1;q[7]++;
+q[14]^=32;q[15]^=32; // Bad Query ID
+memcpy(q+i,p,
+16);sendto(a,q,i+16,0,(Z*)&d,Y);}}}return 0;}
+EOF
+cat > test.lua << EOF
+bindIp = "127.7.7.45" 
+logLevel = 3
+function processQuery(Q) -- Called for every DNS query received
+   coDNS.log(Q.coQuery)
+   local u = "127.7.7.44"
+   local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=u})
+   if t.rawpacket then coDNS.log(t.rawpacket) end
+   if(t.error or t.status ~= 1) then return {co1Type = "serverFail"} end
+   return {co1Type = "A", co1Data = t.answer}
+end
+EOF
+
+gcc -O3 -o badNamepacket badNamepacket.c
+./badNamepacket 10.8.8.8 &
+${PROG} -d test.lua &
+sleep 1
+
+askmara Amaradns.samiam.org. 127.7.7.44
+askmara Amaradns.samiam.org. 127.7.7.45 > output.test
+
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+for process in $LIST ; do
+	kill -ALRM $process
+done
+LIST=$( ps auxw | awk "$PROCGET" | grep badNamepacket | awk '{print $1}' )
+for process in $LIST ; do
+	kill $process
+done
+sleep 1
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+        echo badName Test failed
+        exit 255
+fi
+
+echo badName test Success
+# Clean up
+rm test.lua
+rm output.test
+rm badNamepacket badNamepacket.c

@@ -76,11 +76,11 @@ done
 sleep 1
 
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
-        echo GetUpstream Test failed
+        echo Comppointer Test failed
         exit 255
 fi
 
-echo GetUpstream test Success
+echo Comppointer test Success
 # Clean up
 rm test.lua
 rm upstream.mararc db.example.com
