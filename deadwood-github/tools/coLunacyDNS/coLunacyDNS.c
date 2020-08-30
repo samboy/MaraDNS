@@ -2009,11 +2009,8 @@ void runServer(lua_State *L) {
 					(struct sockaddr *)&dns_in, &lenthing);
                 	set_time(); // Keep timestamp up to date
                 	/* Roy Arends check: We only answer questions */
-                	if(len_inet < 3 || (in[2] & 0x80) != 0x00) {
-                        	free(in);
-                        	goto sock6;
-                	}
-               	 	if(dns_in.V4.sin_family != AF_INET) {
+                	if(len_inet < 3 || (in[2] & 0x80) != 0x00 ||
+			   dns_in.V4.sin_family != AF_INET) {
                         	free(in);
                         	goto sock6;
                 	}
@@ -2031,11 +2028,8 @@ sock6:
 					(struct sockaddr *)&dns_in, &lenthing);
                 	set_time(); // Keep timestamp up to date
                 	/* Roy Arends check: We only answer questions */
-                	if(len_inet < 3 || (in[2] & 0x80) != 0x00) {
-                        	free(in);
-                        	continue;
-                	}
-               	 	if(dns_in.V6.sin6_family != AF_INET6) {
+                	if(len_inet < 3 || (in[2] & 0x80) != 0x00
+                           || dns_in.V6.sin6_family != AF_INET6) {
                         	free(in);
                         	continue;
                 	}
