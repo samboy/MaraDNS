@@ -135,6 +135,7 @@ int logLevel = 0;
 // Test-specific global settings
 #ifdef GCOV
 int gCovSendsFail = 0;
+int gCovNoOpenDNS = 0;
 #endif
 
 // Timestamp handling
@@ -1503,7 +1504,18 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
         }
 
         set_time();
+#ifdef GCOV
+	// get gCovNoOpenDNS from global Lua context
+	// We do this here so we can cause this to fail in
+	// different contexts
+        lua_getglobal(L,"gCovNoOpenDNS");
+        if(lua_type(L, -1) == LUA_TNUMBER) {
+		gCovNoOpenDNS = (int)lua_tonumber(L, -1);
+	}
+	lua_pop(L, 1); // Remove _G.gCovSendsFail from stack
+#endif // GCOV
         for(a = 0; a <= remoteTop + 1; a++) {
+		if(gCovNoOpenDNS == 1) { a = maxprocs + 1; }
                 // Once we find an open socket, we make
                 // a DNS query then set it up to wait for
                 // the response
