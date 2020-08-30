@@ -30,12 +30,8 @@ function processQuery(Q) -- Called for every DNS query received
      coDNS.open1("example1")
      coDNS.log(coDNS.read1())
      t = coDNS.solve({name=Q.coQuery,type="A", upstreamIp4="127.7.7.37"})
-     coDNS.log(coDNS.read1())
-     -- Return a "server fail" if we did not get an answer
-     if(t.error or t.status ~= 1) then return {co1Type = "serverFail"} end
-     -- Test: Make sure we can not run more than once
-     local q = coDNS.solve(true)
-     q = coDNS.solve(true)
+     coDNS.log(coDNS.read1()) -- This causes a "server too busy" error 
+     coDNS.log("Checkpoint 1")
    elseif string.sub(Q.coQuery,1,1) == "b" then
      t = coDNS.solve({name=Q.coQuery,type="A", upstreamIp4="127.7.7.37"})
      if(t.error or t.status ~= 1) then return {co1Type = "serverFail"} end
@@ -43,6 +39,17 @@ function processQuery(Q) -- Called for every DNS query received
      q = coDNS.solve(true)
    elseif string.sub(Q.coQuery,1,1) == "c" then
      t = coDNS.solve({name=Q.coQuery,type="A", upstreamIp4="127.7.7.37"})
+   elseif string.sub(Q.coQuery,1,1) == "d" then
+     t = coDNS.solve({name=Q.coQuery,type="A", upstreamIp4="127.7.7.37"})
+     coDNS.open1("example1")
+     coDNS.log(coDNS.read1())
+     -- Return a "server fail" if we did not get an answer
+     if(t.error or t.status ~= 1) then return {co1Type = "serverFail"} end
+     -- Test: Make sure we can not run more than once
+     local q = coDNS.solve(true)
+     q = coDNS.solve(true)
+   elseif string.sub(Q.coQuery,1,1) == "e" then
+     t.answer = "10.4.10.4"
    end
    -- Otherwise, return the answer
    return {co1Type = "A", co1Data = t.answer}
@@ -59,6 +66,8 @@ touch output.test2
 askmara -t 1 Aa.example.com. 127.7.7.38 >> output.test2
 askmara -t 1 Ab.example.com. 127.7.7.38 >> output.test2
 askmara -t 1 Ac.example.com. 127.7.7.38 >> output.test2
+askmara -t 1 Ad.example.com. 127.7.7.38 >> output.test2
+askmara -t 1 Ae.example.com. 127.7.7.38 >> output.test2
 
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
