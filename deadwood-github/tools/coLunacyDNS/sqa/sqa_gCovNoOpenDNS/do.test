@@ -15,16 +15,19 @@ cat > test.lua << EOF
 bindIp = "127.7.7.47" 
 logLevel = 5
 function processQuery(Q) -- Called for every DNS query received
+   local line = coDNS.read1()
+   if line then coDNS.log(line) else coDNS.log("read1 error1") end
    local u = "127.7.7.46"
    local t = {}
    if string.sub(Q.coQuery,1,1) == "a" then
      gCovNoOpenDNS = 1
      coDNS.open1("upstream.lua")
      line = coDNS.read1()
-     if line then coDNS.log(line) else coDNS.log("read1 error") end
+     if line then coDNS.log(line) else coDNS.log("read1 error2") end
      t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=u})
      line = coDNS.read1()
-     if line then coDNS.log(line) else coDNS.log("read1 error") end
+     if line then coDNS.log(line) else coDNS.log("read1 error3") end
+     coDNS.open1("upstream.lua")
      gCovNoOpenDNS = 0
    elseif string.sub(Q.coQuery,1,1) == "b" then
      t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=u})
