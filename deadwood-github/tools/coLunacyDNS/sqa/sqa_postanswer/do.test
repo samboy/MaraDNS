@@ -11,16 +11,38 @@ function processQuery(Q) -- Called for every DNS query received
   return {co1Type = "A", co1Data = "10.1.1.1"}
 end
 EOF
+cat > example1 << EOF
+example1 line 1
+example1 line 2
+example1 line 3
+EOF
+cat > example2 << EOF
+example2 line 1
+example2 line 2
+example2 line 3
+EOF
 cat > test.lua << EOF
 bindIp = "127.7.7.38" 
 function processQuery(Q) -- Called for every DNS query received
-   -- Connect to 127.7.7.1 for the query given to this routine
-   local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4="127.7.7.37"})
-   -- Return a "server fail" if we did not get an answer
-   if(t.error or t.status ~= 1) then return {co1Type = "serverFail"} end
+   local t = {answer = "None"}
+   coDNS.log("Query " .. Q.coQuery)
    if string.sub(Q.coQuery,1,1) == "a" then
+     coDNS.open1("example1")
+     coDNS.log(coDNS.read1())
+     t = coDNS.solve({name=Q.coQuery,type="A", upstreamIp4="127.7.7.37"})
+     coDNS.log(coDNS.read1())
+     -- Return a "server fail" if we did not get an answer
+     if(t.error or t.status ~= 1) then return {co1Type = "serverFail"} end
+     -- Test: Make sure we can not run more than once
      local q = coDNS.solve(true)
      q = coDNS.solve(true)
+   elseif string.sub(Q.coQuery,1,1) == "b" then
+     t = coDNS.solve({name=Q.coQuery,type="A", upstreamIp4="127.7.7.37"})
+     if(t.error or t.status ~= 1) then return {co1Type = "serverFail"} end
+     local q = coDNS.solve(true)
+     q = coDNS.solve(true)
+   elseif string.sub(Q.coQuery,1,1) == "c" then
+     t = coDNS.solve({name=Q.coQuery,type="A", upstreamIp4="127.7.7.37"})
    end
    -- Otherwise, return the answer
    return {co1Type = "A", co1Data = t.answer}
@@ -32,8 +54,11 @@ ${PROG} -d test.lua | egrep '[A-Za-z0-9]' | grep -v version > output.test1 &
 ${PROG} -d upstream.lua &
 sleep 1
 
-askmara -t 2 Az.example.com. 127.7.7.38 > output.test2
+rm -f output.test2
+touch output.test2
 askmara -t 1 Aa.example.com. 127.7.7.38 >> output.test2
+askmara -t 1 Ab.example.com. 127.7.7.38 >> output.test2
+askmara -t 1 Ac.example.com. 127.7.7.38 >> output.test2
 
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
@@ -54,4 +79,5 @@ echo PostAnswer test Success
 # Clean up
 rm test.lua
 rm upstream.lua
+rm example1 example2
 rm output.test1 output.test2

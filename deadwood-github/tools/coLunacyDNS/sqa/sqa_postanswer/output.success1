@@ -1,3 +1,8 @@
 Running coLunacyDNS
+Query a.example.com.
+example1 line 1
+Error: Server too busy
+Query b.example.com.
 ERROR: coDNS.solve must be given a table
 ERROR: Lua is ignoring coDNS.solve errors; ending thread.
+Query c.example.com.
