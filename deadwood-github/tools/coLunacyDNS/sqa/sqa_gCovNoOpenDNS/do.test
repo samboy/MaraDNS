@@ -15,12 +15,20 @@ cat > test.lua << EOF
 bindIp = "127.7.7.47" 
 logLevel = 5
 function processQuery(Q) -- Called for every DNS query received
-   local u = "127.7.7.47"
+   local u = "127.7.7.46"
    local t = {}
    if string.sub(Q.coQuery,1,1) == "a" then
      gCovNoOpenDNS = 1
      t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=u})
      gCovNoOpenDNS = 0
+   elseif string.sub(Q.coQuery,1,1) == "b" then
+     t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=u})
+     gCovNoOpenDNS = 1
+     t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=u})
+     gCovNoOpenDNS = 0
+   elseif string.sub(Q.coQuery,1,1) == "c" then
+     gCovNoOpenDNS = 0
+     t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=u})
    end
    -- Return a "server fail" if we did not get an answer
    if(t.error or t.status ~= 1) then return {co1Type = "serverFail"} end
@@ -33,7 +41,11 @@ ${PROG} -d test.lua &
 ${PROG} -d upstream.lua &
 sleep 1
 
-askmara Aa.example.com. 127.7.7.47 > output.test
+rm -f output.test
+touch output.test
+askmara -t 2 Aa.example.com. 127.7.7.47 >> output.test
+askmara -t 2 Ab.example.com. 127.7.7.47 >> output.test
+askmara -t 2 Ac.example.com. 127.7.7.47 >> output.test
 
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do

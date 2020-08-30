@@ -3,3 +3,13 @@
 # Question: Aa.example.com.
 # NS replies:
 # AR replies:
+# Querying the server with the IP 127.7.7.47
+# Remote server said: SERVER FAILURE
+# Question: Ab.example.com.
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.7.7.47
+# Question: Ac.example.com.
+c.example.com. +0 a 10.1.1.1
+# NS replies:
+# AR replies:
