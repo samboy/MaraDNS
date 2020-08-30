@@ -19,12 +19,18 @@ function processQuery(Q) -- Called for every DNS query received
    local t = {}
    if string.sub(Q.coQuery,1,1) == "a" then
      gCovNoOpenDNS = 1
+     coDNS.open1("upstream.lua")
+     line = coDNS.read1()
+     if line then coDNS.log(line) else coDNS.log("read1 error") end
      t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=u})
+     line = coDNS.read1()
+     if line then coDNS.log(line) else coDNS.log("read1 error") end
      gCovNoOpenDNS = 0
    elseif string.sub(Q.coQuery,1,1) == "b" then
      t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=u})
      gCovNoOpenDNS = 1
      t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=u})
+     coDNS.open1("upstream.lua")
      gCovNoOpenDNS = 0
    elseif string.sub(Q.coQuery,1,1) == "c" then
      gCovNoOpenDNS = 0
@@ -55,11 +61,11 @@ done
 sleep 1
 
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
-        echo gCovSendsFail test failed
+        echo gCovNoOpenDNS test failed
         exit 255
 fi
 
-echo gCovSendsFail test Success
+echo gCovNoOpenDNS test Success
 # Clean up
 rm test.lua
 rm upstream.lua
