@@ -29,6 +29,7 @@ function processQuery(Q) -- Called for every DNS query received
    elseif string.sub(Q.coQuery,1,1) == "c" then
      gCovNoOpenDNS = 0
      t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=u})
+     t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=u})
    end
    -- Return a "server fail" if we did not get an answer
    if(t.error or t.status ~= 1) then return {co1Type = "serverFail"} end
