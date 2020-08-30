@@ -35,3 +35,8 @@ are a number if `#ifdef GCOV` blocks which hide this code from the tester:
 * The `dns_udp == 0` sanity test in setup_bind will never be called
   in coLunacyDNS, but I am keeping this code because I would rather
   have a sanity test which is never used.
+
+* `human2DNS` has a sanity check which will never pass.  I will keep this
+  check in production code just in case some corner case I haven’t thought
+  of triggers it.
+
