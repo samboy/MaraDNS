@@ -1,5 +1,10 @@
 # Querying the server with the IP 127.7.7.40
-# Question: Awww2.example.com.
-www2.example.com. +0 a 10.9.9.9
+# Question: Aa.example.com.
+a.example.com. +0 a 10.1.2.3
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.7.7.40
+# Question: Ab.example.com.
+b.example.com. +0 a 10.9.9.9
 # NS replies:
 # AR replies:

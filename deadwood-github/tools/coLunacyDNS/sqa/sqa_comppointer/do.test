@@ -14,8 +14,7 @@ max_ar_chain = 20
 csv2["example.com."] = "db.example.com"
 EOF
 cat > db.example.com << EOF
-www1.% CNAME www2.%
-www2.% CNAME foo.%
+a.% CNAME foo.%
 foo.% +60 10.1.2.3
 EOF
 cat > nanopacket.c << EOF
@@ -42,7 +41,9 @@ cat > test.lua << EOF
 bindIp = "127.7.7.40" 
 logLevel = 3
 function processQuery(Q) -- Called for every DNS query received
-   local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4="127.7.7.41"})
+   local u = "127.7.7.41"
+   if string.sub(Q.coQuery,1,1) == "a" then u = "127.7.7.39" end
+   local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=u})
    if t.rawpacket then coDNS.log(t.rawpacket) end
    if(t.error or t.status ~= 1) then return {co1Type = "serverFail"} end
    return {co1Type = "A", co1Data = t.answer}
@@ -51,12 +52,14 @@ EOF
 
 gcc -O3 -o nanopacket nanopacket.c
 ./nanopacket 10.9.9.9 &
-#maradns -f upstream.mararc &
+maradns -f upstream.mararc &
 ${PROG} -d test.lua &
 sleep 1
 
-askmara Awww2.example.com. 127.7.7.41
-askmara Awww2.example.com. 127.7.7.40 > output.test
+askmara Aa.example.com. 127.7.7.39
+askmara Ab.example.com. 127.7.7.41
+askmara Aa.example.com. 127.7.7.40 > output.test
+askmara Ab.example.com. 127.7.7.40 >> output.test
 
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
