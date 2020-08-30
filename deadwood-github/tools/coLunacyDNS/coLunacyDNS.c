@@ -558,6 +558,9 @@ ip_addr_T set_return_ip4(char *returnIp) {
         IPv4answer[13] = ip.ip[1] = (ipt & 0x00ff0000) >> 16;
         IPv4answer[14] = ip.ip[2] = (ipt & 0x0000ff00) >>  8;
         IPv4answer[15] = ip.ip[3] = (ipt & 0x000000ff);
+ 	if(ipt == 0xffffffff) {
+		ip.len = 0;
+	}
         return ip;
 }
 
@@ -1262,7 +1265,8 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
         }
         if(rs != NULL) {
                 int a;
-                set_return_ip4((char *)rs);
+		ip_addr_T ipx;
+                ipx = set_return_ip4((char *)rs);
                 int outLen;
                 outLen = 17 + qLen;
                 for(a=0;a<16;a++) {
@@ -1270,8 +1274,12 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                 }
 
                 /* Send the reply */
-                sendto(sock,in,outLen + 16,0,
-                       (struct sockaddr *)&dns_out, leni);
+		if(ipx.len == 4) {
+                	sendto(sock,in,outLen + 16,0,
+                       		(struct sockaddr *)&dns_out, leni);
+		} else {
+			log_it("processQuery: co1Data not valid IPv4 address");
+		}
                 lua_pop(LT, 1); // t.co1Data
         }
         // Derefernce the thread so it can be collected
