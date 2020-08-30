@@ -1,0 +1,57 @@
+#!/bin/bash
+# Bashism: Job control
+
+. ../testVars
+
+PROG="../../coLunacyDNS"
+
+cat > upstream.lua << EOF
+bindIp = "127.7.7.37" 
+function processQuery(Q) -- Called for every DNS query received
+  return {co1Type = "A", co1Data = "10.1.1.1"}
+end
+EOF
+cat > test.lua << EOF
+bindIp = "127.7.7.38" 
+function processQuery(Q) -- Called for every DNS query received
+   -- Connect to 127.7.7.1 for the query given to this routine
+   local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4="127.7.7.37"})
+   -- Return a "server fail" if we did not get an answer
+   if(t.error or t.status ~= 1) then return {co1Type = "serverFail"} end
+   if string.sub(Q.coQuery,1,1) == "a" then
+     local q = coDNS.solve(true)
+     q = coDNS.solve(true)
+   end
+   -- Otherwise, return the answer
+   return {co1Type = "A", co1Data = t.answer}
+end
+EOF
+
+
+${PROG} -d test.lua | egrep '[A-Za-z0-9]' | grep -v version > output.test1 &
+${PROG} -d upstream.lua &
+sleep 1
+
+askmara -t 2 Az.example.com. 127.7.7.38 > output.test2
+askmara -t 1 Aa.example.com. 127.7.7.38 >> output.test2
+
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+for process in $LIST ; do
+	kill -ALRM $process
+done
+sleep 1
+
+if ! cmp output.success1 output.test1 > /dev/null 2>&1 ; then
+        echo PostAnswer Test failed: Server side
+        exit 255
+fi
+if ! cmp output.success2 output.test2 > /dev/null 2>&1 ; then
+        echo PostAnswer Test failed: Client side
+        exit 255
+fi
+
+echo PostAnswer test Success
+# Clean up
+rm test.lua
+rm upstream.lua
+rm output.test1 output.test2

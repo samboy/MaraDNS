@@ -1,0 +1,3 @@
+Running coLunacyDNS
+ERROR: coDNS.solve must be given a table
+ERROR: Lua is ignoring coDNS.solve errors; ending thread.

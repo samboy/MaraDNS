@@ -1,0 +1,7 @@
+# Querying the server with the IP 127.7.7.38
+# Question: Az.example.com.
+z.example.com. +0 a 10.1.1.1
+# NS replies:
+# AR replies:
+# Querying the server with the IP 127.7.7.38
+# Hard Error: Timeout
