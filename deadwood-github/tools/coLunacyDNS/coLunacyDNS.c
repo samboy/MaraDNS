@@ -945,9 +945,7 @@ int humanDNSname(unsigned char *in, char *out, int max) {
 
         while(labelLen > 0) {
                 char see = 0;
-                if(inPoint >= max || outPoint >= max) {
-                        return -1;
-                }
+                if(inPoint >= max || outPoint >= max) { return -1; }
                 inPoint++;
                 see = in[inPoint];
                 if((see >= '0' && see <= '9') ||
@@ -1413,6 +1411,7 @@ char *human2DNS(int *coDNSlen, char *z, lua_State *LT) {
                         // We can move z because Lua free()s this string
                 }
                 coDNSname[label] = len;
+#ifndef GCOV
                 if(*z != '.') {
                         free(coDNSname);
                         if(LT != NULL) {
@@ -1421,6 +1420,7 @@ char *human2DNS(int *coDNSlen, char *z, lua_State *LT) {
                         }
                         return NULL;
                 }
+#endif // GCOV
                 label = p;
                 p++;
                 z++;
