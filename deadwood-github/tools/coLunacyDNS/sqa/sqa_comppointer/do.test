@@ -1,0 +1,85 @@
+#!/bin/bash
+# Bashism: Job control
+
+. ../testVars
+
+PROG="../../coLunacyDNS"
+
+cat > upstream.mararc << EOF
+chroot_dir="$( pwd )"
+ipv4_bind_addresses="127.7.7.39"
+csv2 = {}
+max_chain = 20
+max_ar_chain = 20
+csv2["example.com."] = "db.example.com"
+EOF
+cat > db.example.com << EOF
+www1.% CNAME www2.%
+www2.% CNAME foo.%
+foo.% +60 10.1.2.3
+EOF
+cat > nanopacket.c << EOF
+/*Placed in the public domain by Sam Trenholme*/
+#include <arpa/inet.h>
+#include <string.h>
+#include <stdint.h>
+#define Z struct sockaddr
+#define Y sizeof(d)
+int main(int a,char **b){uint32_t i;char q[512]
+,p[19]="\x01z\xc0\f\0\x01\0\x01\0\0\0\0\0\x04";if(a>
+1){struct sockaddr_in d;socklen_t f=511;bzero(&
+d,Y);a=socket(AF_INET,SOCK_DGRAM,0);*((uint32_t
+*)(p+14))=inet_addr(b[1]);d.sin_family=AF_INET;
+d.sin_port=htons(53);
+d.sin_addr.s_addr=inet_addr("127.7.7.41");
+bind(a,(Z*)&d,Y);for(;;){i
+=recvfrom(a,q,255,0,(Z*)&d,&f);if(i>9&&q[2]>=0)
+{q[2]|=128;q[11]?q[3]|=4:1;q[7]++;memcpy(q+i,p,
+18);sendto(a,q,i+18,0,(Z*)&d,Y);}}}return 0;}
+EOF
+EOF
+cat > test.lua << EOF
+bindIp = "127.7.7.40" 
+logLevel = 3
+function processQuery(Q) -- Called for every DNS query received
+   local t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4="127.7.7.41"})
+   if t.rawpacket then coDNS.log(t.rawpacket) end
+   if(t.error or t.status ~= 1) then return {co1Type = "serverFail"} end
+   return {co1Type = "A", co1Data = t.answer}
+end
+EOF
+
+gcc -O3 -o nanopacket nanopacket.c
+./nanopacket 10.9.9.9 &
+#maradns -f upstream.mararc &
+${PROG} -d test.lua &
+sleep 1
+
+askmara Awww2.example.com. 127.7.7.41
+askmara Awww2.example.com. 127.7.7.40 > output.test
+
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+for process in $LIST ; do
+	kill -ALRM $process
+done
+LIST=$( ps auxw | awk "$PROCGET" | grep maradns | awk '{print $1}' )
+for process in $LIST ; do
+	kill $process
+done
+LIST=$( ps auxw | awk "$PROCGET" | grep nanopacket | awk '{print $1}' )
+for process in $LIST ; do
+	kill $process
+done
+sleep 1
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+        echo GetUpstream Test failed
+        exit 255
+fi
+
+echo GetUpstream test Success
+# Clean up
+rm test.lua
+rm upstream.mararc db.example.com
+rm output.test
+rm nanopacket nanopacket.c
