@@ -1515,7 +1515,9 @@ int newDNS(lua_State *L, lua_State *LT, char *threadName, int qLen,
 	lua_pop(L, 1); // Remove _G.gCovSendsFail from stack
 #endif // GCOV
         for(a = 0; a <= remoteTop + 1; a++) {
+#ifdef GCOV
 		if(gCovNoOpenDNS == 1) { a = maxprocs + 1; }
+#endif // GCOV
                 // Once we find an open socket, we make
                 // a DNS query then set it up to wait for
                 // the response
