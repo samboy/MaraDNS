@@ -1,9 +1,26 @@
 MaraDNS changelog
 
+   maradns-3.5.0016:
+   This is a stable release of MaraDNS:
+
+     * Unstable mmLunacyDNS code removed from tree (coLunacyDNS can do
+       anything mmLunacyDNS could do)
+     * coLunacyDNS bug fixes: We return with an error if the Lua code
+       attempts to return an invalid IPv4 address to the client (before,
+       the code incorrectly returned 255.255.255.255)
+     * coLunacyDNS returns helpful errors if the processQuery return 
+       value is invalid in various ways.
+     * coLunacyDNS now has 100%* testing coverage. *Some sanity tests
+       which protect coLunacyDNS from security threats which can not
+       be readily reproduced are disabled in testing mode.
+     * coLunacyDNS is now at version 1.0.008
+
+     (2020-09-??)
+
    maradns-3.5.0015:
    This is a stable release of MaraDNS:
 
-     * coLunacyDNS is now a stable release (1.0.003) with a full
+     * coLunacyDNS is now a stable release (1.0.007) with a full
        SQA testing suite and well over 90% code coverage in its tests.
      * mmLunacyDNS has been removed; coLunacyDNS can do everything
        mmLunacyDNS could do, and this saves me the bother of
