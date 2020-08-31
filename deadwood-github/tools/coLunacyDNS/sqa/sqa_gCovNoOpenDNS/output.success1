@@ -1,0 +1,10 @@
+Running coLunacyDNS
+read1 error1
+bindIp = "127.7.7.46" 
+read1 error3
+read1 error1
+read1 error1
+read1 error1
+We should get here
+Error calling function processQuery
+test.lua:30: attempt to index global 'foo' (a nil value)

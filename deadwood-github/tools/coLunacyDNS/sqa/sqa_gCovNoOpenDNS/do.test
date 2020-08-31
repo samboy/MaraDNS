@@ -39,6 +39,11 @@ function processQuery(Q) -- Called for every DNS query received
      gCovNoOpenDNS = 0
      t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=u})
      t = coDNS.solve({name=Q.coQuery, type="A", upstreamIp4=u})
+   elseif string.sub(Q.coQuery,1,1) == "d" then
+     coDNS.log("We should get here")
+     foo["bar"] = baz
+     t.error = true
+     coDNS.log("We should not get here")
    end
    -- Return a "server fail" if we did not get an answer
    if(t.error or t.status ~= 1) then return {co1Type = "serverFail"} end
@@ -47,15 +52,16 @@ function processQuery(Q) -- Called for every DNS query received
 end
 EOF
 
-${PROG} -d test.lua &
+${PROG} -d test.lua |egrep '[A-Za-z0-9]' | grep -v version > output.test1 &
 ${PROG} -d upstream.lua &
 sleep 1
 
-rm -f output.test
-touch output.test
-askmara -t 2 Aa.example.com. 127.7.7.47 >> output.test
-askmara -t 2 Ab.example.com. 127.7.7.47 >> output.test
-askmara -t 2 Ac.example.com. 127.7.7.47 >> output.test
+rm -f output.test2
+touch output.test2
+askmara -t 2 Aa.example.com. 127.7.7.47 >> output.test2
+askmara -t 2 Ab.example.com. 127.7.7.47 >> output.test2
+askmara -t 2 Ac.example.com. 127.7.7.47 >> output.test2
+askmara -t 2 Ad.example.com. 127.7.7.47 >> output.test2
 
 LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
@@ -63,8 +69,12 @@ for process in $LIST ; do
 done
 sleep 1
 
-if ! cmp output.success output.test > /dev/null 2>&1 ; then
-        echo gCovNoOpenDNS test failed
+if ! cmp output.success1 output.test1 > /dev/null 2>&1 ; then
+        echo gCovNoOpenDNS test failed: Server side
+        exit 255
+fi
+if ! cmp output.success2 output.test2 > /dev/null 2>&1 ; then
+        echo gCovNoOpenDNS test failed: Server side
         exit 255
 fi
 
@@ -72,4 +82,4 @@ echo gCovNoOpenDNS test Success
 # Clean up
 rm test.lua
 rm upstream.lua
-rm output.test
+rm output.test1 output.test2
