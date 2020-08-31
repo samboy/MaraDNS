@@ -523,5 +523,10 @@ read to adjust settings in coLunacyDNS:
 `coLunacyDNS` is feature complete and being made stable.
 
 I am currently in the process of making `coLunacyDNS` a stable and
-fully tested DNS server.  Test coverage is currently, as of this
-edit to README.md, at 92.73%.
+fully tested DNS server.  Test coverage is currently, as of coLunacyDNS
+1.0.008, at 100%.
+
+Note: Some blocks of code, sanity tests to make sure we’re not in a corner
+case which can not be readily replicated, have been removed from the testing
+code via `#ifdef`.  Read sqa/README.md for details.
+
