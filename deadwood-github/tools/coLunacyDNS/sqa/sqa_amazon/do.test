@@ -90,6 +90,16 @@ if ! cmp output.success output.test > /dev/null 2>&1 ; then
 fi
 
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
+	echo Amazon test failed trying again \#6
+	do_test
+fi
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+	echo Amazon test failed trying again \#7
+	do_test
+fi
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
         echo Amazon Test failed
         exit 255
 fi

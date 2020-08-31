@@ -75,7 +75,7 @@ FAIL=""
 for test in $TESTS ; do
 	echo Test $test
 	cd $test
-	if ! ./do.test ; then
+	if ! ./do.test > /dev/null 2>&1 ; then
 		FAIL=${FAIL}${test}" "
 		if [ ! -z "$DoStop" ] ; then
 			echo Stopping tests because of test failure
@@ -83,12 +83,12 @@ for test in $TESTS ; do
 		fi
 	fi
 	cd "$HERE"
-	cd ..
-	rm -f coLunacyDNS.c.gcov
-	echo This is coverage for all tests done so far:
-	gcov coLunacyDNS.c
-	cd "$HERE"
 done
+cd ..
+rm -f coLunacyDNS.c.gcov
+echo Test coverage results:
+gcov coLunacyDNS.c
+cd "$HERE"
 if [ -z "$FAIL" ] ; then
 	cd "$HERE"
 	echo All tests successful
