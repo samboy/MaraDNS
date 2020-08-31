@@ -15,21 +15,28 @@ converted in to tarballs (with full Git history) which can be
 downloaded at [Sourceforge](https://sourceforge.net/projects/maradns/)
 and [MaraDNS’s web page](https://maradns.samiam.org/download.html).
 
+I have added block list support to Deadwood, to allow a large list
+of host names to be blocked.
+
+I have created a new service: `coLunacyDNS`, a simple Lua-based
+DNS server which can return IPv4 (`A`) and IPv6 (`AAAA`) DNS 
+records.  It has the ability to query other DNS servers, and
+customize the answer given to the client based on the contents
+of a Lua script.
+
 # ABOUT
 
-   MaraDNS is a small and lightweight cross-platform open-source DNS
-   server. The server is remarkably easy to configure for someone
-   comfortable editing text configuration files. MaraDNS is released under
-   a BSD license.
+MaraDNS is a small and lightweight cross-platform open-source DNS
+server. The server is remarkably easy to configure for someone
+comfortable editing text configuration files. MaraDNS is released under
+a BSD license.
 
-   I wrote MaraDNS while I was a college student and a travelling English
-   teacher during the first 2000s decade. Now that I’m working as
-   a professional software developer, I have much less time to devote
-   to MaraDNS.
+I wrote MaraDNS while I was a college student and a travelling English
+teacher during the first 2000s decade. 
 
-   Since MaraDNS is open source, there is nothing stopping anyone from 
-   forking this repository; I ask such users to please not call any such 
-   forks “MaraDNS”.
+Now that I have been furloughed during the COVID-19 pandemic, I have
+been actively adding new features to MaraDNS, most notably the new
+`coLunacyDNS` service which uses Lua to customize DNS replies.
 
 ## Table of contents
 
@@ -178,6 +185,7 @@ and [MaraDNS’s web page](https://maradns.samiam.org/download.html).
 
    As I type this, in the middle of the COVID-19 crisis, I find myself
    with a lot of free time again.  I am actively developing the new
-   Lua-based nameservers based on my decades of experience writing DNS
-   servers.  The servers right now can allow one to quickly implement
-   custom solutions where customized resolution of DNS names is needed.
+   Lua-based `coLunacyDNS` nameserver based on my decades of experience 
+   writing DNS servers.  The servers right now can allow one to quickly 
+   implement custom solutions where customized resolution of DNS names is 
+   needed.
