@@ -89,6 +89,48 @@ rm -f coLunacyDNS.c.gcov
 echo Test coverage results:
 gcov coLunacyDNS.c
 cd "$HERE"
+##########################################################################
+
+# Run some, but not all, tests in production mode
+cd ..
+make clean
+make CFLAGS="-O3"
+echo coLunacyDNS compiled in production mode
+cd "$HERE"
+TESTS="sqa_halfsip13"
+TESTS=$TESTS" sqa_ip6" # 127.7.7.22 and ::1 ####### IPv6 #######
+TESTS=$TESTS" sqa_getupstream" # 127.7.7.2 and 127.7.7.3
+TESTS=$TESTS" sqa_twoanswers" # 127.7.7.4
+TESTS=$TESTS" sqa_twoupstreams" # 127.7.7.5, 127.7.7.6, and 127.7.7.7
+TESTS=$TESTS" sqa_blocklist" # 127.7.7.8 and 127.7.7.9
+TESTS=$TESTS" sqa_servfail" # 127.7.7.10
+TESTS=$TESTS" sqa_complex" # 127.7.7.14 to 127.7.7.17 
+TESTS=$TESTS" sqa_any" # 127.7.7.20
+TESTS=$TESTS" sqa_ip6bad" # 127.7.7.23
+TESTS=$TESTS" sqa_flipcase" # 127.7.7.27 and 127.7.7.28
+TESTS=$TESTS" sqa_execve" # No IPs used 
+TESTS=$TESTS" sqa_badBindIP" # No IPs used 
+TESTS=$TESTS" sqa_rawpacket" # 127.7.7.32 and 127.7.7.33
+TESTS=$TESTS" sqa_binderror" # No IPs used
+TESTS=$TESTS" sqa_comppointer" # 127.7.7.39, 127.7.7.40, and 127.7.7.41
+TESTS=$TESTS" sqa_badQueryID" # 127.7.7.42 and 127.7.7.43
+TESTS=$TESTS" sqa_badQueryName" # 127.7.7.44 and 127.7.7.45
+TESTS=$TESTS" sqa_roy_arends" # 127.7.7.36 and ::1 ####### IPv6 #######
+TESTS=$TESTS" sqa_nobindIP" # 0.0.0.0 (for test)
+for test in $TESTS ; do
+	echo Test production $test
+	cd $test
+	if ! ./do.test > /dev/null 2>&1 ; then
+		FAIL=${FAIL}${test}" (production)  "
+		if [ ! -z "$DoStop" ] ; then
+			echo Stopping tests because of test failure
+			exit 1
+		fi
+	fi
+	cd "$HERE"
+done
+##########################################################################
+
 if [ -z "$FAIL" ] ; then
 	cd "$HERE"
 	echo All tests successful
