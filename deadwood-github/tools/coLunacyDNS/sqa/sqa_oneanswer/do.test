@@ -6,6 +6,7 @@ PROG="../../coLunacyDNS"
 
 cat > test.lua << EOF
 bindIp = "127.7.7.1" 
+logLevel = 1
 function processQuery(Q) -- Called for every DNS query received
   coDNS.log("Query " .. Q.coQuery)
   return {co1Type = "A", co1Data = "10.1.1.1"}

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. ./testVars
+
 # We need to be root to bind to port 53
 if ! id | grep root > /dev/null 2>&1 ; then
         echo the tests must be run as a root user
@@ -127,6 +129,9 @@ for test in $TESTS ; do
 			exit 1
 		fi
 	fi
+	ps auxw | awk "$PROCGET" | grep coLunacyDNS | awk '{print "kill " $1}
+                ' | sh
+	sleep 1
 	cd "$HERE"
 done
 ##########################################################################
