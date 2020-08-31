@@ -77,12 +77,14 @@ FAIL=""
 for test in $TESTS ; do
 	echo Test $test
 	cd $test
-	if ! ./do.test > /dev/null 2>&1 ; then
+	rm -f ../log
+	if ! ./do.test > ../log 2>&1 ; then
 		FAIL=${FAIL}${test}" "
 		if [ ! -z "$DoStop" ] ; then
 			echo Stopping tests because of test failure
 			exit 1
 		fi
+		cat ../log
 	fi
 	cd "$HERE"
 done
@@ -122,12 +124,14 @@ TESTS=$TESTS" sqa_nobindIP" # 0.0.0.0 (for test)
 for test in $TESTS ; do
 	echo Test production $test
 	cd $test
-	if ! ./do.test > /dev/null 2>&1 ; then
+	rm -f ../log
+	if ! ./do.test > ../log 2>&1 ; then
 		FAIL=${FAIL}${test}" (production)  "
 		if [ ! -z "$DoStop" ] ; then
 			echo Stopping tests because of test failure
 			exit 1
 		fi
+		cat ../log
 	fi
 	ps auxw | awk "$PROCGET" | grep coLunacyDNS | awk '{print "kill " $1}
                 ' | sh
