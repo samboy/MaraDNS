@@ -18,11 +18,12 @@ and [MaraDNS’s web page](https://maradns.samiam.org/download.html).
 I have added block list support to Deadwood, to allow a large list
 of host names to be blocked.
 
-I have created a new service: `coLunacyDNS`, a simple Lua-based
-DNS server which can return IPv4 (`A`) and IPv6 (`AAAA`) DNS 
-records.  It has the ability to query other DNS servers, and
-customize the answer given to the client based on the contents
-of a Lua script.
+I have created a new service: `coLunacyDNS`, a simple Lua-based DNS server
+which can return IPv4 (`A`) and IPv6 (`AAAA`) DNS records.  It has the
+ability to query other DNS servers, and customize the answer given to
+the client based on the contents of a Lua script.  All programs have IPv6
+support in Linux as well as *NIX clones, and the Windows 32-bit binary of
+`coLunacyDNS` has IPv6 support.
 
 # ABOUT
 
