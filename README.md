@@ -188,5 +188,5 @@ been actively adding new features to MaraDNS, most notably the new
    with a lot of free time again.  I am actively developing the new
    Lua-based `coLunacyDNS` nameserver based on my decades of experience 
    writing DNS servers.  The servers right now can allow one to quickly 
-   implement custom solutions where customized resolution of DNS names is 
-   needed.
+   implement personalized solutions where customized resolution of DNS 
+   names is needed.
