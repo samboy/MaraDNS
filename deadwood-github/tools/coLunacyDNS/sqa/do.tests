@@ -119,7 +119,6 @@ TESTS=$TESTS" sqa_binderror" # No IPs used
 TESTS=$TESTS" sqa_comppointer" # 127.7.7.39, 127.7.7.40, and 127.7.7.41
 TESTS=$TESTS" sqa_badQueryID" # 127.7.7.42 and 127.7.7.43
 TESTS=$TESTS" sqa_badQueryName" # 127.7.7.44 and 127.7.7.45
-TESTS=$TESTS" sqa_roy_arends" # 127.7.7.36 and ::1 ####### IPv6 #######
 TESTS=$TESTS" sqa_nobindIP" # 0.0.0.0 (for test)
 for test in $TESTS ; do
 	echo Test production $test
@@ -139,6 +138,8 @@ for test in $TESTS ; do
 	cd "$HERE"
 done
 ##########################################################################
+
+rm -f log
 
 if [ -z "$FAIL" ] ; then
 	cd "$HERE"
