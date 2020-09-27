@@ -1,6 +1,6 @@
 MaraDNS changelog
 
-   maradns-3.5.0016: 
+   maradns-3.5.0016:
    This is a stable release of MaraDNS:
 
      * Unstable mmLunacyDNS code removed from tree (coLunacyDNS can do
