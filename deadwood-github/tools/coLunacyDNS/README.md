@@ -503,6 +503,11 @@ parameters:
   gives the `AA` flag in the DNS reply a value of true; in other
   words, the DNS answer is marked as “authoritative”.  This field
   is optional; if not set, the reply is *not* marked authoritative.
+* `co1RA`: This field, when set with the numeric value of 1,
+  gives the `RA` flag in the DNS reply a value of true, indicating
+  that the coLunacyDNS server can process recursive queries.  This
+  field is optional; if not set, the reply is *not* marked as having
+  recursion available.
 
 # Global settings 
 
