@@ -1,3 +1,15 @@
+Note: This document is public domain because:
+
+* It was published before March 1, 1989
+* It was never registered for copyright
+* RFC1325 states that RFCs from this era are public domain.
+
+Note that newer RFCs may not be public domain; see 
+https://trustee.ietf.org/copyright-faq.html for details.
+
+The rest of this document is RFC1035 as published in 1987.
+
+------------------------------------------------------------------------
 Network Working Group                                     P. Mockapetris
 Request for Comments: 1035                                           ISI
                                                            November 1987
