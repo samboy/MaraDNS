@@ -475,7 +475,7 @@ processQuery, which takes as its input a table with the following members:
   IP the query came from.  The string will look like `10.9.8.7`.
 * `coFromIPtype`: This is the string `IPv4`
 
-The processQuery function returns as its output a table with one or two
+The processQuery function returns as its output a table with the following
 parameters:
 
 * `co1Type`: This is a string which can have the following values: 
@@ -487,7 +487,7 @@ parameters:
   does not guarantee that coLunacyDNS ignores all DNS queries;  
   coLunacyDNS will always respond to ANY or HINFO queries in a
   RFC8482 manner; if one wishes to drop all DNS packets, this can
-  be done at the firewall level.
+  be done at the firewall level.  This field is mandatory.
 * `co1Data`: When `co1Type` is `A`, this is an IPv4 IP in dotted decimal 
   format, e.g. `10.1.2.3`.  When `co1type` is `ip6`, and `co1data` is
   either a standard IPv6 string, such as `2001:db8:1234::5678`, or
@@ -497,7 +497,12 @@ parameters:
   as if it were the number `0`; the characters ` ` (space) and
   `-` (dash) are ignored.  For example, both `2001:db8::8` and
   `2001-0db8-4d61-7261 444e-5300-0000-__01` (without linefeed) are
-  allowed values for `co1data` when `co1type` is `ip6`.
+  allowed values for `co1data` when `co1type` is `ip6`.  This field
+  is mandatory when `co1type` is `A` or `ip6`.
+* `co1AA`: This field, when set with the numeric value of 1,
+  gives the `AA` flag in the DNS reply a value of true; in other
+  words, the DNS answer is marked as “authoritative”.  This field
+  is optional; if not set, the reply is *not* marked authoritative.
 
 # Global settings 
 
