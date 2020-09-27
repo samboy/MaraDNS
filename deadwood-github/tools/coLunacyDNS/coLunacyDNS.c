@@ -1174,6 +1174,10 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
         int leni = sizeof(dns_out);
 	int coAA = 0; // Whether answer is authoritative
 	int coRA = 0; // Whether recursion is available
+	int coTTL = 0; // TTL of answer we give out
+	int coThi = 0; // High byte of TTL
+	int coTmd = 0; // Mid byte of TTL
+	int coTlo = 0; // Low byte of TTL
 
         // Pull data from Lua processQuery() function return value
         rs = NULL;
@@ -1204,13 +1208,27 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
 		} else {
 			coRA = 0;
 		}
-		// Clear AA bit in reply we will send out
+		// Clear RA bit in reply we will send out
 		in[3] &= 0x7f; // Clear RA bit
 		// Set RA bit if requested
 		if(coRA == 1) {
 			in[3] |= 0x80; // Set RA bit
 		}
                 lua_pop(LT, 1); // t.co1RA
+
+		// Handle the TTL of the reply we give to the user
+		lua_getfield(LT, -1, "co1TTL");	
+                if(lua_type(LT, -1) == LUA_TNUMBER) {
+                        coTTL = luaL_checknumber(LT, -1);
+			if(coTTL > 7777777) { coTTL = 7777777; }
+			if(coTTL < 0) { coTTL = 0; }
+		} else {
+			coTTL = 0;
+		}
+                lua_pop(LT, 1); // t.co1TTL
+		coTlo = coTTL & 0xff;
+		coTmd = (coTTL >> 8) & 0xff;
+		coThi = (coTTL >> 16) & 0xff;
 		
                 lua_getfield(LT, -1, "co1Type");
                 if(lua_type(LT, -1) == LUA_TSTRING) {
@@ -1248,6 +1266,10 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                 for(a=0;a<41;a++) {
                         in[outLen + a] = not_there[a];
                 }
+		// Set TTL
+		in[qLen + 26] = coTlo;
+		in[qLen + 25] = coTmd;
+		in[qLen + 24] = coThi;
                 sendto(sock,in,outLen + 41,0,
                        (struct sockaddr *)&dns_out, leni);
                 lua_pop(LT, 1); // t.co1Type
@@ -1289,6 +1311,10 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                 	for(a=0;a<28;a++) {
                        		in[outLen + a] = IPv6answer[a];
                 	}
+			// Set TTL
+			in[qLen + 26] = coTlo;
+			in[qLen + 25] = coTmd;
+			in[qLen + 24] = coThi;
                 	/* Send the reply */
                 	sendto(sock,in,outLen + 28,0,
                        		(struct sockaddr *)&dns_out, leni);
@@ -1308,6 +1334,11 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                 for(a=0;a<16;a++) {
                         in[outLen + a] = IPv4answer[a];
                 }
+
+		// Set TTL
+		in[qLen + 26] = coTlo;
+		in[qLen + 25] = coTmd;
+		in[qLen + 24] = coThi;
 
                 /* Send the reply */
 		if(ipx.len == 4) {
