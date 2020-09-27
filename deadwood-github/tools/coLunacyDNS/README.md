@@ -508,6 +508,11 @@ parameters:
   that the coLunacyDNS server can process recursive queries.  This
   field is optional; if not set, the reply is *not* marked as having
   recursion available.
+* `co1TTL`: This field, if set, determines the DNS TTL (suggested time
+  to live for the record) of the reply.  This is the TTL in raw seconds,
+  and can have a value between 0 (do not cache) and 7777777 (cache for
+  just over 90 days).  This field is optional; if not set, the TTL 
+  returned will be 0 (do not cache).
 
 # Global settings 
 

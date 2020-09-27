@@ -411,12 +411,13 @@ void log_it(char *message) {
 #define rz uint32_t // NO WARRANTY
 #define rnp(a) for(c=0;c<a;c++)
 void rnf(rz*a,rz*b){rz m=19,A[45],x,o=13,c,y,r=0;rnp(12)b[c+c%3*o]^=a
-[c+1];rnp(m){r=(c+r)&31;y=c*7;x=a[y++%m];x^=a[y%m]|~a[(y+1)%m];A[c]=A
-[c+m]=x>>r|x<<(32-r)%32;}for(y=39;y--;b[y+1]=b[y])a[y%m]=A[y]^A[y+1]^
-A[y+4];*a^=1;rnp(3)a[c+o]^=b[c*o]=b[c*o+o];}void rnl(rz*u,rz*w,char*v
-){rz s,q,c;rnp(40)w[c]=u[c%19]=0;for(;;rnf(u,w)){rnp(3){for(q=0;q<4;)
-{w[c*13]^=s=(*v?255&*v:1)<<8*q++;u[16+c]^=s;if(!*v++){rnp(17)rnf(u,w)
-;return;}}}}}rz rn(rz*m,rz*b,rz*a){if(*a&2)rnf(m,b);return m[*a^=3];}
+[c+1];rnp(m){r=(c+r)&31;y=c*7;x=a[y++%m];x^=a[y%m]|~a[(y+1)%m];A[c]=
+x>>r|x<<(32-r)%32;}for(y=39;y--;b[y+1]=b[y])a[y%m]=A[y%m]^A[(y+1)%m]^
+A[(y+4)%m];*a^=1;rnp(3)a[c+o]^=b[c*o]=b[c*o+o];}
+void rnl(rz*u,rz*w,char*v){rz s,q,c;rnp(40)w[c]=u[c%19]=0;for(;;rnf(u
+,w)){rnp(3){for(q=0;q<4;){w[c*13]^=s=(*v?255&*v:1)<<8*q++;u[16+c]^=s;
+if(!*v++){rnp(17)rnf(u,w);return;}}}}}rz rn(rz*m,rz*b,rz*a){
+if(*a&2){rnf(m,b);}return m[*a^=3];}
 
 // Random number generator state
 uint32_t rgX_belt[40], rgX_mill[19], rgX_phase = 0;
@@ -1173,6 +1174,10 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
         int leni = sizeof(dns_out);
 	int coAA = 0; // Whether answer is authoritative
 	int coRA = 0; // Whether recursion is available
+	int coTTL = 0; // TTL of answer we give out
+	int coThi = 0; // High byte of TTL
+	int coTmd = 0; // Mid byte of TTL
+	int coTlo = 0; // Low byte of TTL
 
         // Pull data from Lua processQuery() function return value
         rs = NULL;
@@ -1203,13 +1208,27 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
 		} else {
 			coRA = 0;
 		}
-		// Clear AA bit in reply we will send out
+		// Clear RA bit in reply we will send out
 		in[3] &= 0x7f; // Clear RA bit
 		// Set RA bit if requested
 		if(coRA == 1) {
 			in[3] |= 0x80; // Set RA bit
 		}
                 lua_pop(LT, 1); // t.co1RA
+
+		// Handle the TTL of the reply we give to the user
+		lua_getfield(LT, -1, "co1TTL");	
+                if(lua_type(LT, -1) == LUA_TNUMBER) {
+                        coTTL = luaL_checknumber(LT, -1);
+			if(coTTL > 7777777) { coTTL = 7777777; }
+			if(coTTL < 0) { coTTL = 0; }
+		} else {
+			coTTL = 0;
+		}
+                lua_pop(LT, 1); // t.co1TTL
+		coTlo = coTTL & 0xff;
+		coTmd = (coTTL >> 8) & 0xff;
+		coThi = (coTTL >> 16) & 0xff;
 		
                 lua_getfield(LT, -1, "co1Type");
                 if(lua_type(LT, -1) == LUA_TSTRING) {
@@ -1247,6 +1266,10 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                 for(a=0;a<41;a++) {
                         in[outLen + a] = not_there[a];
                 }
+		// Set TTL
+		in[qLen + 26] = coTlo;
+		in[qLen + 25] = coTmd;
+		in[qLen + 24] = coThi;
                 sendto(sock,in,outLen + 41,0,
                        (struct sockaddr *)&dns_out, leni);
                 lua_pop(LT, 1); // t.co1Type
@@ -1288,6 +1311,10 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                 	for(a=0;a<28;a++) {
                        		in[outLen + a] = IPv6answer[a];
                 	}
+			// Set TTL
+			in[qLen + 26] = coTlo;
+			in[qLen + 25] = coTmd;
+			in[qLen + 24] = coThi;
                 	/* Send the reply */
                 	sendto(sock,in,outLen + 28,0,
                        		(struct sockaddr *)&dns_out, leni);
@@ -1307,6 +1334,11 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                 for(a=0;a<16;a++) {
                         in[outLen + a] = IPv4answer[a];
                 }
+
+		// Set TTL
+		in[qLen + 26] = coTlo;
+		in[qLen + 25] = coTmd;
+		in[qLen + 24] = coThi;
 
                 /* Send the reply */
 		if(ipx.len == 4) {
