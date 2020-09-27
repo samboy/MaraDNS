@@ -72,6 +72,7 @@ TESTS=$TESTS" sqa_badQueryName" # 127.7.7.44 and 127.7.7.45
 TESTS=$TESTS" sqa_gCovNoOpenDNS" # 127.7.7.46 and 127.7.7.47
 TESTS=$TESTS" sqa_co1AA" # 127.7.7.48 and 127.7.7.49
 TESTS=$TESTS" sqa_co1RA" # 127.7.7.50 and 127.7.7.51
+TESTS=$TESTS" sqa_co1TTL" # 127.7.7.52 and 127.7.7.53
 TESTS=$TESTS" sqa_roy_arends" # 127.7.7.36 and ::1 ####### IPv6 #######
 TESTS=$TESTS" sqa_nobindIP" # 0.0.0.0 (for test)
 FAIL=""
@@ -123,6 +124,7 @@ TESTS=$TESTS" sqa_badQueryID" # 127.7.7.42 and 127.7.7.43
 TESTS=$TESTS" sqa_badQueryName" # 127.7.7.44 and 127.7.7.45
 TESTS=$TESTS" sqa_co1AA" # 127.7.7.48 and 127.7.7.49
 TESTS=$TESTS" sqa_co1RA" # 127.7.7.50 and 127.7.7.51
+TESTS=$TESTS" sqa_co1TTL" # 127.7.7.52 and 127.7.7.53
 TESTS=$TESTS" sqa_nobindIP" # 0.0.0.0 (for test)
 for test in $TESTS ; do
 	echo Test production $test
