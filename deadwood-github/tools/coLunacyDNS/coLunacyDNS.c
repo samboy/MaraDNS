@@ -1172,6 +1172,7 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
 	} 
         int leni = sizeof(dns_out);
 	int coAA = 0; // Whether answer is authoritative
+	int coRA = 0; // Whether recursion is available
 
         // Pull data from Lua processQuery() function return value
         rs = NULL;
@@ -1191,6 +1192,24 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
 			in[2] |= 0x04; // Set AA bit
 		}
                 lua_pop(LT, 1); // t.co1AA
+		
+		// Handle the "RA" (Recursion available) field specified
+		// in RRC 1035 section 4.1.1 (page 26)
+		// Set this to 1 if contacting other DNS servers to get
+		// an answer
+		lua_getfield(LT, -1, "co1RA");
+                if(lua_type(LT, -1) == LUA_TNUMBER) {
+                        coRA = luaL_checknumber(LT, -1);
+		} else {
+			coRA = 0;
+		}
+		// Clear AA bit in reply we will send out
+		in[3] &= 0x7f; // Clear RA bit
+		// Set RA bit if requested
+		if(coRA == 1) {
+			in[3] |= 0x80; // Set RA bit
+		}
+                lua_pop(LT, 1); // t.co1RA
 		
                 lua_getfield(LT, -1, "co1Type");
                 if(lua_type(LT, -1) == LUA_TSTRING) {
@@ -2102,7 +2121,7 @@ int main(int argc, char **argv) {
 	SipHashSetKey(rand32(),rand32());
 
         if(argc != 2 || *argv[1] == '-') {
-                printf("coLunacyDNS version 1.0.008 starting\n\n");
+                printf("coLunacyDNS version 1.0.00X starting\n\n");
         }
         set_time(); // Run this frequently to update timestamp
         // Get bindIp and returnIp from Lua script
@@ -2410,7 +2429,7 @@ int main(int argc, char **argv) {
                         svc_install_service();
                 }
         } else {
-                printf("coLunacyDNS version 1.0.008\n\n");
+                printf("coLunacyDNS version 1.0.00X\n\n");
                 printf(
                     "coLunacyDNS is a DNS server that is a Windows service\n\n"
                     "To install this service:\n\n\tcoLunacyDNS --install\n\n"
