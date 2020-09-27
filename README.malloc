@@ -1,4 +1,4 @@
-MaraDNS terminates upon a malloc() failure. Deadwood's behavior
+MaraDNS terminates upon a malloc() failure. Deadwood's behavior 
 is undefined should malloc() fail. If anyone is using MaraDNS in an
 environment where a kernel allows malloc() to return a NULL pointer, it is
 best to wrap MaraDNS in a script that restarts it when it terminates. If

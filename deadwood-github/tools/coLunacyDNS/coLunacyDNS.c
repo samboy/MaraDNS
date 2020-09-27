@@ -1171,10 +1171,27 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
 		memcpy(&(dns_out.V6.sin6_addr),&fromIp.ip,16);
 	} 
         int leni = sizeof(dns_out);
+	int coAA = 0; // Whether answer is authoritative
 
         // Pull data from Lua processQuery() function return value
         rs = NULL;
         if(lua_type(LT, -1) == LUA_TTABLE) {
+		// Handle the "AA" (Authoritative Answer) field specified
+		// in RRC 1035 section 4.1.1 (page 26)
+		lua_getfield(LT, -1, "co1AA");
+                if(lua_type(LT, -1) == LUA_TNUMBER) {
+                        coAA = luaL_checknumber(LT, -1);
+		} else {
+			coAA = 0;
+		}
+		// Clear AA bit in reply we will send out
+		in[2] &= 0xfb; // 1111 1011 (all but AA set)
+		// Set AA bit if requested
+		if(coAA == 1) {
+			in[2] |= 0x04; // Set AA bit
+		}
+                lua_pop(LT, 1); // t.co1AA
+		
                 lua_getfield(LT, -1, "co1Type");
                 if(lua_type(LT, -1) == LUA_TSTRING) {
                         rs = luaL_checkstring(LT, -1);
@@ -1197,7 +1214,7 @@ void endThread(lua_State *L, lua_State *LT, char *threadName,
                 int outLen;
                 outLen = 17 + qLen;
                 in[2] |= 0x80; // Set QR
-                in[3] &= 0xf0;
+                in[3] &= 0xf0; // Make RCODE 0
                 in[3] |= 2;
                 in[7] = 0; // Zero answers
                 sendto(sock,in,outLen,0,

@@ -1,0 +1,55 @@
+#!/bin/bash
+# Bashism: Job control
+
+. ../testVars
+PROG="../../coLunacyDNS"
+
+cat > test1.lua << EOF
+bindIp = "127.7.7.48" 
+function processQuery(Q) -- Called for every DNS query received
+  return {co1Type = "A", co1Data = "10.1.1.1", co1AA = 1}
+end
+EOF
+cat > test2.lua << EOF
+bindIp = "127.7.7.49" 
+function processQuery(Q) -- Called for every DNS query received
+  return {co1Type = "A", co1Data = "10.1.1.1"}
+end
+EOF
+
+${PROG} -d test1.lua | egrep '[A-Za-z0-9]' | grep -v version &
+${PROG} -d test2.lua | egrep '[A-Za-z0-9]' | grep -v version &
+sleep 1
+
+askmara -v Amaradns.samiam.org. 127.7.7.48 | grep -i auth > output.test
+askmara -v Amaradns.samiam.org. 127.7.7.49 | grep -i auth >> output.test
+
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+for process in $LIST ; do
+	kill -ALRM $process
+done
+sleep 1
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+if [ ! -z "$LIST" ] ; then
+	for process in $LIST ; do
+		kill $process
+	done
+fi
+sleep 1
+LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+if [ ! -z "$LIST" ] ; then
+	for process in $LIST ; do
+		kill -9 $process
+	done
+fi
+
+rm test1.lua
+rm test2.lua
+
+if ! cmp output.success output.test > /dev/null 2>&1 ; then
+        echo co1AA Test failed
+        exit 255
+fi
+
+echo co1AA test Success
+rm output.test
