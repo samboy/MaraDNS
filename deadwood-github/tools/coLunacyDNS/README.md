@@ -66,6 +66,19 @@ function processQuery(Q) -- Called for every DNS query received
 end
 ```
 
+We can also set the `AA` (authoritative answer) flag, the `RA` 
+(recursion available) flag, and the TTL (time to live) for our 
+answer.  In this example, both the `AA` and `RA` flags are set, and
+the answer is given a time to live of one hour (3600 seconds).
+
+```lua
+bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
+function processQuery(Q) -- Called for every DNS query received
+  return {co1Type = "A", co1Data = "10.1.1.1", 
+          co1AA = 1, co1RA = 1, co1TTL = 3600}
+end
+```
+
 In this example, where we bind to both IPv4 and IPv6 localhost, we return
 `10.1.1.1` for all IPv4 `A` queries, `2001:db8:4d61:7261:444e:5300::1234`
 for all IPv6 `AAAA` queries, and "not there" for all other query types:
