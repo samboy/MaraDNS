@@ -9,7 +9,7 @@ MaraDNS changelog
        to be anywhere from 0 seconds (do not cache) to a little over
        90 days.
 
-     (2020-10-??)
+     (2020-10-02)
 
    maradns-3.5.0016:
    This is a stable release of MaraDNS:
