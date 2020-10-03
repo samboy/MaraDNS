@@ -1,6 +1,6 @@
 MaraDNS changelog
 
-   maradns-3.5.0017: 
+   maradns-3.5.0017:
    This is a stable release of MaraDNS:
 
      * coLunacyDNS update: We can now specify the “Authoritative”
