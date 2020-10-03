@@ -8,6 +8,7 @@ MaraDNS changelog
      * coLunacyDNS update: We can now specify a TTL for the reply,
        to be anywhere from 0 seconds (do not cache) to a little over
        90 days.
+     * coLunacyDNS version updated to be 1.0.009
 
      (2020-10-02)
 
