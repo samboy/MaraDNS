@@ -19,7 +19,6 @@ Here, we use coLunacyDNS.lua as the configuration file.
 
 In this example, we listen on 127.0.0.1, and, for any IPv4 query,
 we return the IP of that query as reported by 9.9.9.9.
-
 --------------------------------------------------------------------------
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
 function processQuery(Q) -- Called for every DNS query received
@@ -32,9 +31,9 @@ function processQuery(Q) -- Called for every DNS query received
 end
 --------------------------------------------------------------------------
 
+
 As an even simpler example, we always return "10.1.1.1" for any DNS
 query given to us:
-
 --------------------------------------------------------------------------
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
 function processQuery(Q) -- Called for every DNS query received
@@ -42,10 +41,23 @@ function processQuery(Q) -- Called for every DNS query received
 end
 --------------------------------------------------------------------------
 
+
+We can also set the AA (authoritative answer) flag, the RA 
+(recursion available) flag, and the TTL (time to live) for our 
+answer.  In this example, both the AA and RA flags are set, and
+the answer is given a time to live of one hour (3600 seconds).
+--------------------------------------------------------------------------
+bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
+function processQuery(Q) -- Called for every DNS query received
+  return {co1Type = "A", co1Data = "10.1.1.1", 
+          co1AA = 1, co1RA = 1, co1TTL = 3600}
+end
+--------------------------------------------------------------------------
+
+
 In this example, we return 10.1.1.1 for all IPv4 A queries, 
 2001:db8:4d61:7261:444e:5300::1234 for all IPv6 AAAA queries,
 and "not there" for all other query types:
-
 --------------------------------------------------------------------------
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
 bindIp6 = "::1" -- As well as the IPv6 IP ::1 (IP6 localhost)
@@ -60,9 +72,9 @@ function processQuery(Q) -- Called for every DNS query received
 end
 --------------------------------------------------------------------------
 
+
 In the same vein, in this example, we contact the DNS server 9.9.9.9 for 
 IPv4 queries, and 149.112.112.112 for IPv6 queries:
-
 --------------------------------------------------------------------------
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
 bindIp6 = "::1" -- And the IP ::1 on IPv6
@@ -88,8 +100,8 @@ function processQuery(Q) -- Called for every DNS query received
 end
 --------------------------------------------------------------------------
 
-Here is a more complicated example:
 
+Here is a more complicated example:
 --------------------------------------------------------------------------
 -- coLunacyDNS configuration
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
