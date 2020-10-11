@@ -5,7 +5,7 @@ support only for IPv4 and IPv6 IP records) controlled by a Lua script.
 It allows a lot of flexibility because it uses a combination of C for
 high performance and Lua for maximum control.
 
-The current version of coLunacyDNS is version 1.0.002, made in August
+The current version of coLunacyDNS is version 1.0.009, made in September
 of 2020.
 
 # Getting started
