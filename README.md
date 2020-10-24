@@ -102,12 +102,11 @@ been actively adding new features to MaraDNS, most notably the new
    recursive DNS server is called Deadwood, and it shares no code with
    MaraDNS’ authoritative DNS server.
 
-   Newly added during the COVID-19 crisis are “coLunacyDNS” and 
-   “mmLunacyDNS”, two Lua-based name servers which uses a combination
-   of C (for the heavy lifting of binding to DNS sockets, processing
-   DNS requests, and, in the case of “coLunacyDNS”, handling pending
-   replies from upstream DNS servers) and Lua (for deciding how to
-   respond to a given query) to have both performance and flexibility.
+   Newly added during the COVID-19 crisis is “coLunacyDNS”, a Lua-based
+   name server which uses a combination of C (for the heavy lifting of
+   binding to DNS sockets, processing DNS requests, and handling pending
+   replies from upstream DNS servers) and Lua (for deciding how to respond
+   to a given query) to have both performance and flexibility.
 
    In more detail: MaraDNS has one daemon, the authoritative daemon
    (called “maradns”), that provides information to recursive DNS servers
