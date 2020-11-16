@@ -183,9 +183,10 @@ been actively adding new features to MaraDNS, most notably the new
 
 ## MaraDNS’ future
 
-   As I type this, in the middle of the COVID-19 crisis, I find myself
-   with a lot of free time again.  I am actively developing the new
-   Lua-based `coLunacyDNS` nameserver based on my decades of experience 
-   writing DNS servers.  The servers right now can allow one to quickly 
-   implement personalized solutions where customized resolution of DNS 
-   names is needed.
+   During the COVID-19 crisis, I had some free time, so I decided to add
+   skills to my resume by writing `coLunacyDNS`, a Lua-based DNS server
+   (which shares some code with Deadwood, but is configured with Lua).
+   The skills I acquired doing this got me the current job I have
+   as an embedded Lua developer.  Since I was able to find work again,
+   MaraDNS is on the back burner again.
+
