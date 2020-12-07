@@ -9,6 +9,10 @@
 #include <locale.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
+#ifdef MINGW
+#include <wininet.h>
+#endif // MINGW
 
 #define loslib_c
 #define LUA_LIB
@@ -135,6 +139,43 @@ static int os_setlocale (lua_State *L) {
   return 1;
 }
 
+/* Note that this will return a bad number on *NIX systems with a
+   32-bit time_t starting in 2038 */
+static int os_time (lua_State *L) {
+#ifndef MINGW
+  time_t t;
+  int64_t tt;
+  if (lua_isnoneornil(L, 1))  /* called without args? */
+    t = time(NULL);  /* get current time */
+  else {
+    // Lunacy only supports getting the current time
+    lua_pushnil(L);
+    return 1;
+  }
+  if(t < -1) {
+    tt = (int64_t)t + 4294967296ULL;
+  } else {
+    tt = (int64_t)t;
+  }
+  if (t == (time_t)(-1))
+    lua_pushnil(L);
+  else
+    lua_pushnumber(L, (lua_Number)tt);
+  return 1;
+#else
+  /* Convert Windows "filetime" in to Lua number */
+  uint64_t t;
+  FILETIME win_time = { 0, 0 };
+  GetSystemTimeAsFileTime(&win_time);
+  t = win_time.dwHighDateTime & 0xffffffff;
+  t <<= 32;
+  t |= (win_time.dwLowDateTime & 0xffffffff);
+  t /= 10000000;
+  t -= 11644473600LL;
+  lua_pushnumber(L, (lua_Number)t); 
+  return 1;
+#endif // MINGW
+}
 
 static int os_exit (lua_State *L) {
   exit(luaL_optint(L, 1, EXIT_SUCCESS));
@@ -148,6 +189,7 @@ static const luaL_Reg syslib[] = {
   {"rename",    os_rename},
   {"setlocale", os_setlocale},
   {"tmpname",   os_tmpname},
+  {"time",      os_time},
   {NULL, NULL}
 };
 
