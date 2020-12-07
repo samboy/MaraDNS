@@ -12,7 +12,7 @@
 
 <hr>
 <h1>
-Lunacy (Lua) 5.1 Reference Manual (Release 2020-08-23)
+Lunacy (Lua) 5.1 Reference Manual (Release 2020-12-06)
 </h1>
 
 by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
@@ -464,17 +464,18 @@ Freely available under the terms of the
 <p>
 
 Lunacy is a fork of Lua 5.1.5 designed to be compiled as a tiny 
-(118,784 byte) Windows 32-bit binary which is (as of 2020) Windows XP 
+(109,568 byte) Windows 32-bit binary which is (as of 2020) Windows XP 
 and Windows 10 compatible.  
 <p>
 
 To make sure we don't have issues come January 19, 2038, 
 <code>os.clock()</code>,
-<code>os.time()</code>, 
 <code>os.date()</code>, and 
 <code>os.difftime()</code> have all been removed
 (If you want to play with dates, use a 64-bit compile of Lua so we 
- don&rsquo;t have headaches come 2038).
+ don&rsquo;t have headaches come 2038).  <code>os.time()</code>
+has a simplified API: Only os.time() with no arguments works
+correctly.
 
 <p>
 
@@ -566,11 +567,6 @@ this code before running any Lua code:
 Where "x" and "y" are suitably random 32-bit numbers (uint32_t).  Do
 not call SipHashSetKey() once any Lua code is running; otherwise
 things will break very badly in Lua.
-
-<p>
-
-The 2020-08-23 version of Lunacy removed all compile time warnings when
-using a modern version of GCC.  The code is otherwise unchanged.
 
 <p><A HREF="#contents">Contents</A>
 
@@ -8639,13 +8635,23 @@ for the given category.
 
 
 <p>
-<hr><h3><a name="pdf-os.time"><code>os.time ([table])</code></a></h3>
+<hr><h3><a name="pdf-os.time"><code>os.time()</code></a></h3>
 
 
 <p>
-os.time is disabled in thie fork of Lua so that there are no issues
-come January 19, 2038.  Please use a 64-bit build of Lua if time
-manipulation is needed.
+os.time returns a standard UNIX timestamp: The number
+of seconds since January 1, 1970.  The timestamp is year 2038 compliant
+both in Windows systems (even 32-bit Windows systems) via Windows’s
+“FileTime” API, and on 64-bit UNIX and compatible systems.
+<p>
+
+os.time is designed to generate a correct timestamp on 32-bit UNIX 
+compatible systems until after 2100.
+<p>
+
+While the Lua version of this call can accept a table as an argument,
+the Lunacy version of this call accepts no arguments, and always returns a
+simple integer timestamp based on the current system time.
 
 <p>
 <hr><h3><a name="pdf-os.tmpname"><code>os.tmpname ()</code></a></h3>
@@ -9426,10 +9432,10 @@ Here is the complete syntax of Lua in extended BNF.
 <HR>
 <SMALL CLASS="footer">
 Last update:
-Wed Aug 12 2020
+Sun Dec 6 2020
 </SMALL>
 <!--
-Last change: revised for Lunacy 2020-08-11
+Last change: revised for Lunacy 2020-12-06
 -->
 
 </body></html>
