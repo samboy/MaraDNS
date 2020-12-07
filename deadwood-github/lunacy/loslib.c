@@ -12,6 +12,8 @@
 #include <stdint.h>
 #ifdef MINGW
 #include <wininet.h>
+#else
+#include <time.h>
 #endif // MINGW
 
 #define loslib_c
@@ -139,8 +141,24 @@ static int os_setlocale (lua_State *L) {
   return 1;
 }
 
-/* Note that this will return a bad number on *NIX systems with a
-   32-bit time_t starting in 2038 */
+/* Note that this code is Y2038 compliant, even with a 32-bit time_t.  
+ *
+ * On 32-bit time_t UNIX compatible systems, things will run OK until 2106.
+ * As I type this, only legacy UNIX-like systems still have a 32-bit time_t
+ * (Notably, Linux distros using older kernels such as CentOS and FreeBSD
+ *  on i386 chips, but even here FreeBSD uses a 32-bit unsigned time_t.
+ *  Note that CentOS only has a 32-bit time_t when one goes out of their way
+ *  to compile a program as 32-bit; the default 64-bit environment has a
+ *  64-bit time_t)
+ *
+ * On 32-bit Windows systems, which use a 64-bit “FileTime” time stamp, 
+ * things will run OK until 30,827 or 30,828.  
+ *
+ * This code has been tested in Windows XP (32-bit binary, using FileTime) 
+ * and CentOS 8 (32-bit binary with 32-bit time_t); in both cases, 
+ * os.time() returns a correct timestamp when we move the clock forward 
+ * to 2040.
+ */
 static int os_time (lua_State *L) {
 #ifndef MINGW
   time_t t;
