@@ -65,7 +65,7 @@ TESTS=""
 TESTS=$TESTS"sqa_tcp " # Disable this if you have no internet
 
 # These tests sometimes fail
-TESTS=$TESTS"sqa_tcp_buffering_2,5 " 
+#TESTS=$TESTS"sqa_tcp_buffering_2,5 " 
 TESTS=$TESTS"dwood2rc_n_maxprocs,2 "
 TESTS=$TESTS"dwood2rc_s_cache_file,2 "
 TESTS=$TESTS"sqa_one_upstream_down,2 "
