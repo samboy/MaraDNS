@@ -42,7 +42,7 @@ maradns_gid = 65534
 EOF
 
 mkdir cache
-chown nobody:nobody cache # You're using CentOS 8 to test this, of course.
+chown nobody cache # Ported to run on Ubuntu 20.04 LTS
 ../../src/Deadwood -f dwood2rc > /dev/null &
 #../../src/Deadwood -f dwood2rc &
 sleep 1

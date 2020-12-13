@@ -45,7 +45,7 @@ EOF
 
 # Make the directory to store the cache
 mkdir cache
-chown nobody:nobody cache # You're using CentOS 8 to test this, of course.
+chown nobody cache # Ported to run on Ubuntu 20.04 LTS
 
 # Recompile to not have any Valgrind errors (Valgrind doesn't like how I use
 # uninitialized memory as entropy for the random number generator)
