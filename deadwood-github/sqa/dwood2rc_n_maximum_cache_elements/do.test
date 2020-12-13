@@ -39,7 +39,7 @@ EOF
 
 # Make the directory to store the cache
 mkdir cache
-chown nobody:nobody cache # You're using CentOS 8 to test this, of course.
+chown nobody cache # Updated to work with Ubuntu 20.04
 
 # Run the resolver
 ../../src/Deadwood -f dwood2rc > /dev/null &
