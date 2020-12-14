@@ -2,13 +2,13 @@
 
 # These two lines need to be changed before running this script;
 # see README.md for details
-TESTDIR="/home/user/MaraDNS-CI/" # Where we run MaraDNS tests
-IMAGE="010203040506" # ID of Docker/Podman image w/ MaraDNS test framework
+TESTDIR="/home/set/MaraDNS-testing/" # Where we run MaraDNS tests
+IMAGE="7dea270d7d58" # ID of Docker/Podman image w/ MaraDNS test framework
 
 # Start the test
 cd $TESTDIR
 if [ ! -e MaraDNS ] ; then
-	git clone https://github.com/samboy/MaraDNS
+        git clone https://github.com/samboy/MaraDNS
 fi
 cd MaraDNS
 git pull origin master
@@ -16,22 +16,24 @@ COMMIT="$( git log -1 | head -1 | awk '{print $2}' )"
 cd ..
 LAST="$( cat lastCommit )"
 if [ "$LAST" = "$COMMIT" ] ; then
-	echo No changes\; not running test
-	exit 0
+        echo No changes\; not running test
+        exit 0
 fi
 
 # Clean up old docker images
-IMGS=$( docker ps -a | grep maradns | awk '{print $1}' )
+IMGS=$( docker ps -a | grep $IMAGE | awk '{print $1}' )
 if [ ! -z "$IMGS" ] ; then
-	for IMG in $IMGS ; do
-		docker rm $IMG
-	done
+        for IMG in $IMGS ; do
+                docker rm $IMG
+        done
 fi
 
 # Run the actual tests.  If using Jenkins instead of running this
 # from cron, remove the output redirect, e.g.
 # docker run -it $IMAGE /run.tests.sh
-docker run -it $IMAGE /run.tests.sh > output-$( date +%Y-%m-%d )
+docker run $IMAGE /run.tests.sh > output-$( date +%Y-%m-%d )
+# If using podman instead of real docker, we need the -it flag, e.g.
+#docker run -it $IMAGE /run.tests.sh > output-$( date +%Y-%m-%d )
 
 # Make a note of the last commit we tested against, so we do not test
 # against that commit again
