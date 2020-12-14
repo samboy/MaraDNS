@@ -2065,7 +2065,8 @@ void runServer(lua_State *L) {
                         if(FD_ISSET(localConn4, &selectFdSet)) {
                                 sock4 = localConn4;
 				selectOut -= 1;
-			} else if(FD_ISSET(localConn6, &selectFdSet)) {
+			} else if(localConn6 != INVALID_SOCKET &&
+				  FD_ISSET(localConn6, &selectFdSet)) {
 				sock6 = localConn6;
 				selectOut -= 1;
                         } else {
