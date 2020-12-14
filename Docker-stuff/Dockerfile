@@ -21,6 +21,6 @@ RUN apt-get -y update && apt-get -y install unattended-upgrades && \
 	rm -fr /tmp/MaraDNS && cd /tmp && tar xvzf rg32hash.tar.gz && \
 	cd rg32hash-source && make && cp rg32hash /usr/bin && \
 	mkdir /etc/deadwood/ && apt-get -y install valgrind && \
-	apt-get -y install clang && apt-get -y install diffutils
+	apt-get -y install clang && apt-get -y install diffutils 
 
 CMD ["/bin/bash"]
