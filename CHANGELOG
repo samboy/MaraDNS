@@ -1,5 +1,16 @@
 MaraDNS changelog
 
+   maradns-3.5.0018:
+   This is a stable release of MaraDNS:
+
+     * coLunacyDNS updated to 1.0.010 (Ubuntu 20.04 testing found a
+       minor select() bug)
+     * Since RedHat has broken their pinky promise to support CentOS 8
+       until 2029, MaraDNS has moved from CentOS 8 to Ubuntu 20.04 LTS
+       (RPM .spec files removed; Docker container now runs Ubuntu 20.04)
+
+     (2020-12-??)
+
    maradns-3.5.0017:
    This is a stable release of MaraDNS:
 
