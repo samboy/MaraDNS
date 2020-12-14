@@ -2,8 +2,8 @@
 
 # These two lines need to be changed before running this script;
 # see README.md for details
-TESTDIR="/home/set/MaraDNS-testing/" # Where we run MaraDNS tests
-IMAGE="7dea270d7d58" # ID of Docker/Podman image w/ MaraDNS test framework
+TESTDIR="/home/user/MaraDNS-CI/" # Where we run MaraDNS tests 
+IMAGE="a1b2c3d4e5f6" # ID of Docker/Podman image w/ MaraDNS test framework
 
 # Start the test
 cd $TESTDIR
