@@ -11,18 +11,13 @@ with Docker or Podman support.
 
 # Setting up the tests
 
-Make sure either Docker or Podman is installed and running, then:
+Make sure Docker is installed and running, then:
 
 ```bash
 ./make.docker.image.sh
 ```
 
-Note that, on RHEL 8/CentOS8 systems, it may be needed to edit
-`/etc/security/limits.conf` so Podman can actually run without
-issue.  See the file `make.docker.image.sh` for details on
-how to make this change.
-
-This `make.docker.image.sh` script will make a Docker/Podman image
+This `make.docker.image.sh` script will make a Docker image
 which can run the MaraDNS automated tests.
 
 Once the image is made, set up an empty directory where the tests
@@ -77,3 +72,16 @@ After the tests are run, look for a file with a name like
 `output-2020-07-26` in the `TESTDIR` directory set up above
 (see the section "Setting up the tests").  This file will have
 the test output.
+
+# Podman compatibility
+
+These directions will *mostly* work on the Podman Docker clone.  However,
+the script `run.MaraDNS.tests` will needed to be edited before things
+run in Podman to invoke a Podman container with the `-it` flag, e.g.
+
+```
+docker run -it $IMAGE /run.tests.sh > output-$( date +%Y-%m-%d )
+```
+
+The `-it` is *not* needed if using Docker; it’s only needed for Podman.
+
