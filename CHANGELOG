@@ -9,7 +9,7 @@ MaraDNS changelog
        until 2029, MaraDNS has moved from CentOS 8 to Ubuntu 20.04 LTS
        (RPM .spec files removed; Docker container now runs Ubuntu 20.04)
 
-     (2020-12-??)
+     (2020-12-20)
 
    maradns-3.5.0017:
    This is a stable release of MaraDNS:
