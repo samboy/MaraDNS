@@ -135,10 +135,6 @@ mararc parameter):
 Should 1 be a known normal mararc parameter we support, store the value
 of variable 3 in the parameter indexed by variable 1
 
-Note that, to make life easier for the initial version of Deadwood, we 
-will only support a dictionary index of ".".  This is temporary, so we 
-can more quickly get a very basic forwarding DNS server written.
-
 ---
 
 When tokenizing the state machine, the state is converted from a lower
