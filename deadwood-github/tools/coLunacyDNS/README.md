@@ -136,7 +136,7 @@ Here is an example where we can synthesize any IP given to us:
 -- This script takes a query like 10.1.2.3.ip4.invalid. and returns the
 -- corresponding IP (e.g. 10.1.2.3 here)
 
--- Change these IPs to the actual IP the DNS server will run on
+-- Change these IPs to the actual IPs the DNS server will run on
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
 bindIp6 = "::1" -- Localhost for IPv6
 
