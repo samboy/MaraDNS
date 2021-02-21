@@ -143,7 +143,6 @@ bindIp6 = "::1" -- Localhost for IPv6
 function processQuery(Q) -- Called for every DNS query received
   if Q.coQtype == 1 then
     local query = Q.coQuery
-    coDNS.log(query)
     if query:match("^%d+%.%d+%.%d+%.%d+%.ip4%.invalid%.$") then
       local ip = query:gsub("%.ip4%.invalid%.$","")
       return {co1Type = "A", co1Data = ip}
