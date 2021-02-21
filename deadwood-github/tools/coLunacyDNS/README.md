@@ -527,14 +527,14 @@ parameters:
   coLunacyDNS will always respond to ANY or HINFO queries in a
   RFC8482 manner; if one wishes to drop all DNS packets, this can
   be done at the firewall level.  This field is mandatory.
-* `co1Data`: When `co1Type` is `A`, this is an IPv4 IP in dotted decimal 
-  format, e.g. `10.1.2.3`.  When `co1type` is `ip6`, and `co1data` is
-  either a standard IPv6 string, such as `2001:db8:1234::5678`, or
-  a string with 32 hexadecimal digits, the IPv6 IP in the string is
-  returned to the client.  If the character `_` is in the ip6 string and
-  the character `:` is *not* present in the string, this is treated 
-  as if it were the number `0`; the characters ` ` (space) and
-  `-` (dash) are ignored.  For example, both `2001:db8::8` and
+* `co1Data`: This is to be a string.  When `co1Type` is `A`, this is an 
+  IPv4 IP in dotted decimal format, e.g. `10.1.2.3`.  When `co1type` is 
+  `ip6`, and `co1data` is either a standard IPv6 string, such as 
+  `2001:db8:1234::5678`, or a string with 32 hexadecimal digits, the IPv6 
+  IP in the string is returned to the client.  If the character `_` is in 
+  the ip6 string and the character `:` is *not* present in the string, 
+  this is treated as if it were the number `0`; the characters ` ` (space) 
+  and `-` (dash) are ignored.  For example, both `2001:db8::8` and
   `2001-0db8-4d61-7261 444e-5300-0000-__01` (without linefeed) are
   allowed values for `co1data` when `co1type` is `ip6`.  This field
   is mandatory when `co1type` is `A` or `ip6`.
@@ -547,8 +547,8 @@ parameters:
   that the coLunacyDNS server can process recursive queries.  This
   field is optional; if not set, the reply is *not* marked as having
   recursion available.
-* `co1TTL`: This field, if set, determines the DNS TTL (suggested time
-  to live for the record) of the reply.  This is the TTL in raw seconds,
+* `co1TTL`: This numeric field, if set, determines the DNS TTL (suggested 
+  time to live for the record) of the reply.  This is the TTL in raw seconds,
   and can have a value between 0 (do not cache) and 7777777 (cache for
   just over 90 days).  This field is optional; if not set, the TTL 
   returned will be 0 (do not cache).
