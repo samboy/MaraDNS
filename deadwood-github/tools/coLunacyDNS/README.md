@@ -146,7 +146,6 @@ function processQuery(Q) -- Called for every DNS query received
     coDNS.log(query)
     if query:match("^%d+%.%d+%.%d+%.%d+%.ip4%.invalid%.$") then
       local ip = query:gsub("%.ip4%.invalid%.$","")
-      coDNS.log(ip)
       return {co1Type = "A", co1Data = ip}
     end
   else
