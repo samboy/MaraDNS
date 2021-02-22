@@ -133,13 +133,15 @@ end
 Here is an example where we can synthesize any IP given to us:
 
 ```lua
--- This script takes a query like 10.1.2.3.ip4.invalid. and returns the
+-- This script takes a query like 10.1.2.3.ip4.internal. and returns the
 -- corresponding IP (e.g. 10.1.2.3 here)
+-- We use "internal" because this is the fourth-most commonly used
+-- bogus TLD (#1 is "local", #2 is "home", and #3 is "dhcp")
 
 -- Change this is a different top level domain as desired.  So, if this
 -- becomes "test", the this configuration script will resolve 
 -- "10.1.2.3.ip4.test." names to their IP.
-TLD="invalid"
+TLD="internal"
 -- Change these IPs to the actual IPs the DNS server will run on
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
 bindIp6 = "::1" -- Localhost for IPv6
