@@ -136,6 +136,10 @@ Here is an example where we can synthesize any IP given to us:
 -- This script takes a query like 10.1.2.3.ip4.invalid. and returns the
 -- corresponding IP (e.g. 10.1.2.3 here)
 
+-- Change this is a different top level domain as desired.  So, if this
+-- becomes "test", the this configuration script will resolve 
+-- "10.1.2.3.ip4.test." names to their IP.
+TLD="invalid"
 -- Change these IPs to the actual IPs the DNS server will run on
 bindIp = "127.0.0.1" -- We bind the server to the IP 127.0.0.1
 bindIp6 = "::1" -- Localhost for IPv6
@@ -143,8 +147,8 @@ bindIp6 = "::1" -- Localhost for IPv6
 function processQuery(Q) -- Called for every DNS query received
   if Q.coQtype == 1 then
     local query = Q.coQuery
-    if query:match("^%d+%.%d+%.%d+%.%d+%.ip4%.invalid%.$") then
-      local ip = query:gsub("%.ip4%.invalid%.$","")
+    if query:match("^%d+%.%d+%.%d+%.%d+%.ip4%." .. TLD .. "%.$") then
+      local ip = query:gsub("%.ip4%." .. TLD .. "%.$","")
       return {co1Type = "A", co1Data = ip}
     end
   else
