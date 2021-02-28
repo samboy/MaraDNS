@@ -1028,7 +1028,7 @@ int main(int argc, char **argv) {
     js_string *synth_soa_origin;
 
     /* Kill children processes when we are signaled */
-    if(setpgid(0,0)) {
+    if(getpgid(0) != getpid() && setpgid(0,0)) {
         printf("%s",strerror(errno)); /* harderror() would kill the group which may not be correct yet */
         return 3;
     }
