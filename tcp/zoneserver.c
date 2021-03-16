@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2014 Sam Trenholme
+/* Copyright (c) 2002-2021 Sam Trenholme
  * Contributions made by Albert Lee (He made a valuable 1-line fix
  * back in 2005 to work around a kernel bug which was making MaraDNS
  * freeze up)
@@ -1028,7 +1028,7 @@ int main(int argc, char **argv) {
     js_string *synth_soa_origin;
 
     /* Kill children processes when we are signaled */
-    if(setpgid(0,0)) {
+    if(setpgid(0,0) && getpgrp() != getpid()) {
         printf("%s",strerror(errno)); /* harderror() would kill the group which may not be correct yet */
         return 3;
     }
