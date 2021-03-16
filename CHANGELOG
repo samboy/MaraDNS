@@ -1,5 +1,12 @@
 MaraDNS changelog
 
+   maradns-3.5.0019:
+   This is a stable release of MaraDNS:
+
+     * One line change to zoneserver.c to make it work better with systemd
+
+     (2021-03-16)
+
    maradns-3.5.0018:
    This is a stable release of MaraDNS:
 
