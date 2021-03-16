@@ -4,6 +4,8 @@ MaraDNS changelog
    This is a stable release of MaraDNS:
 
      * One line change to zoneserver.c to make it work better with systemd
+     * Synthetic IP generator example (e.g. 10.1.2.3.ip4.internal 
+       resolves to 10.1.2.3) added to coLunacyDNS documentation
 
      (2021-03-16)
 
