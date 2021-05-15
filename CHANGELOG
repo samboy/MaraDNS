@@ -1,5 +1,13 @@
 MaraDNS changelog
 
+   maradns-3.5.0020:
+   This is a stable release of MaraDNS:
+
+     * New parameter: source_ip4, to specify the source IP when sending a
+       query to an upstream or authoritative DNS server.
+
+     (2021-05-??)
+
    maradns-3.5.0019:
    This is a stable release of MaraDNS:
 
