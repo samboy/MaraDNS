@@ -60,6 +60,7 @@ extern int32_t max_ttl;
 
 /* Other mararc parameters */
 extern dwd_dict *blocklist_dict;
+extern in_addr_t global_source_ip4;
 
 #ifdef MINGW
 /* Needed for the Windows way of making a socket non-blocking */
@@ -104,7 +105,7 @@ void setup_bind(sockaddr_all_T *dns_udp, uint16_t port, int len) {
         memset(dns_udp,0,sizeof(*dns_udp));
         if(len == 4) {
                 dns_udp->V4.sin_family = AF_INET;
-                dns_udp->V4.sin_addr.s_addr = htonl(INADDR_ANY);
+                dns_udp->V4.sin_addr.s_addr = htonl(global_source_ip4);
                 dns_udp->V4.sin_port = htons(port);
 #ifndef NOIP6
         } else if(len == 16) {

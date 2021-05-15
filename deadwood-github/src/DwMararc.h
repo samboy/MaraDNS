@@ -33,7 +33,7 @@
 #define DWM_S_cache_file 5
 #define DWM_S_ip_blacklist 6
 #define DWM_S_ip_blocklist 7
-#define DWN_S_source_ip4 8
+#define DWM_S_source_ip4 8
 
 /* mararc dictionary parameters */
 #define DWM_D_upstream_servers 0

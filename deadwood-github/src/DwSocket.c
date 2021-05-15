@@ -34,6 +34,9 @@ extern dwr_rg *rng_seed;
 extern tcp_pend_T *tcp_pend;
 extern SOCKET tcp_b_local[]; /* Local TCP sockets */
 
+/* Address we will use to bind to upstream servers */
+in_addr_t global_source_ip4 = INADDR_ANY;
+
 /* List of addresses we will bind to */
 ip_addr_T bind_address[DW_MAXIPS + 1];
 ip_addr_T upstream_address[DW_MAXIPS + 1];
@@ -814,7 +817,7 @@ void process_root_upstream() {
 /* Read mararc parameters and set global variables based on those
  * parameters */
 void process_mararc_params() {
-        dw_str *bind = 0, *r_acl = 0;
+        dw_str *bind = 0, *r_acl = 0, *source_ip4 = 0;
         int a;
 
         bind = get_bind_addrs();
@@ -828,6 +831,14 @@ void process_mararc_params() {
                 dw_fatal("Could not get recursive_acl");
         }
         set_ipmask_list(recursive_acl,r_acl);
+
+	source_ip4 = dw_copy(key_s[DWM_S_source_ip4]);
+	if(source_ip4) {
+		global_source_ip4 = inet_addr((char *)source_ip4->str);
+		if(global_source_ip4 == INADDR_NONE) {
+			dw_fatal("Invalid source_ip4 value");
+		}
+	}
 
 #ifndef TINY_BINARY
         /* Harlan's issue: Make sure all bind addresses are in the recursive
