@@ -80,6 +80,8 @@ upstream_servers["."]="8.8.8.8, 8.8.4.4"
      * root_servers (dictionary)
      * upstream_servers (dictionary)
      * ip4 (dictionary)
+     * ip6 (dictionary)
+     * source_ip4 (string)
 
                               SUPPORTED PARAMETERS
 
@@ -199,8 +201,8 @@ ip6
    Like ip4, ip6 uses a similar syntax to have bogus IPv6 addresses. We
    don't use standard notation for IPv6 addresses. Instead, we we use
    32-character hex addresses (case insensitive); to make it easier to
-   count long strings of "0"s, the "_" acts like a 0; we also ignore 
-   "-" (dash) and " " (space) in ip6 strings.  Here is an example:
+   count long strings of "0"s, the "_" acts like a 0; we also ignore "-"
+   (dash) and " " (space) in ip6 strings. Here is an example:
 ip6 = {}
 ip6["maradns.foo."] = "20010db84d617261444e530000001234"
 ip6["kabah.foo."] = "2001-0DB8-4D61-7261 444E-5300-__00-2345"
@@ -309,7 +311,7 @@ max_tcp_procs
 
 min_ttl
 
-   The minimum amount of time we will keep an entry in the cache, in 
+   The minimum amount of time we will keep an entry in the cache, in
    seconds (also called "Minimum TTL").
 
 num_retries
@@ -327,12 +329,12 @@ ns_glueless_type
    have ever been tested with Deadwood.
 
    The reason why this exists is because, often times in DNS, we get a
-   reply like “The name server for this foo.example.com and no I do not
-   have the IP for foo.example.com” when recursively solving an answer.
+   reply like "The name server for this foo.example.com and no I do not
+   have the IP for foo.example.com" when recursively solving an answer.
    So, the question is this: Is foo.example.com an IPv4 DNS server, an
    IPv6 server, or both?
 
-   On today’s internet (mid-2020, during the COVID-19 crisis), the answer
+   On today's internet (mid-2020, during the COVID-19 crisis), the answer
    is that the name server in question is only on the IPv4 Internet. IPv6
    is now mainstream (e.g. my ISP gives me a /64 and I no longer have to
    tunnel through he.net to try out IPv6), but most servers are still IPv4
@@ -342,7 +344,7 @@ ns_glueless_type
    The reason this parameter exists is because, when I was writing the
    recursive code for Deadwood, I was thinking of a future where IPv6 is
    prevalent enough that we would have DNS servers with only IPv6
-   addresses, and glueless NS referrals (the “foo.example.com” case above)
+   addresses, and glueless NS referrals (the "foo.example.com" case above)
    would point to servers with IPv6, but not IPv4, addresses.
 
    That day may yet come, but preparing Deadwood to still be a viable DNS
@@ -447,8 +449,19 @@ root_servers
    answers to DNS questions, but merely tell us which DNS servers to
    connect to to get an answer closer to our desired answer.
 
-   Please note that, as of Deadwood 3.5.0004, is is no longer needed to
+   Please note that, as of Deadwood 3.5.0004, it is no longer needed to
    increase maximum_cache_elements to store root_server entries.
+
+source_ip4
+
+   With certain complicated networks, it may be desirable to set the
+   source IP of queries sent to upstream or root DNS servers. If so, set
+   this parameter to have the dotted decimal IPv4 address to use when
+   sending IPv4 queries to an upstream DNS server.
+
+   Use this parameter with caution; Deadwood can very well become
+   non-functional if one uses a source IPv4 address which Deadwood is not
+   bound to.
 
 tcp_listen
 

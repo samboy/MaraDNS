@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Tue Aug 18 06:19:06 2020
+.\" Last updated Sat May 15 02:52:42 2021
 .\"
 .TH DEADWOOD 1 "August 2009" DEADWOOD "Deadwood reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -170,6 +170,12 @@ upstream_servers (dictionary)
 .TP 2
 *
 ip4 (dictionary)
+.TP 2
+*
+ip6 (dictionary)
+.TP 2
+*
+source_ip4 (string)
 .PP
 .SH "SUPPORTED PARAMETERS"
 .PP
@@ -650,8 +656,20 @@ not give us complete answers to DNS questions, but merely tell
 us which DNS servers to connect to to get an answer closer to
 our desired answer.
 .PP
-Please note that, as of Deadwood 3.5.0004, is is no longer needed
+Please note that, as of Deadwood 3.5.0004, it is no longer needed
 to increase maximum_cache_elements to store root_server entries.
+.PP
+.in -3
+\fBsource_ip4\fR
+.PP
+With certain complicated networks, it may be desirable to set the
+source IP of queries sent to upstream or root DNS servers. If
+so, set this parameter to have the dotted decimal IPv4 address to
+use when sending IPv4 queries to an upstream DNS server.
+.PP
+Use this parameter with caution; Deadwood can very well become
+non-functional if one uses a source IPv4 address which Deadwood
+is not bound to.
 .PP
 .in -3
 \fBtcp_listen\fR
