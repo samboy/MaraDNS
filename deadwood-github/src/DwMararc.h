@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2020 Sam Trenholme
+/* Copyright (c) 2007-2021 Sam Trenholme
  *
  * TERMS
  *
@@ -33,6 +33,7 @@
 #define DWM_S_cache_file 5
 #define DWM_S_ip_blacklist 6
 #define DWM_S_ip_blocklist 7
+#define DWN_S_source_ip4 8
 
 /* mararc dictionary parameters */
 #define DWM_D_upstream_servers 0
@@ -74,7 +75,7 @@
 #define DWM_N_min_ttl 30
 
 /* Number of string parameters in the mararc file */
-#define KEY_S_COUNT 8
+#define KEY_S_COUNT 9
 /* Number of dictionary parameters in the mararc file */
 #define KEY_D_COUNT 4
 /* Number of numeric parameters in the mararc file */
@@ -102,6 +103,8 @@ char *key_s_names[KEY_S_COUNT + 1] = {
                          * dwood3rc files */
         "ip_blocklist",  /* If an answer has any of these IPs, make it a
                           * "not there" answer */
+	"source_ip4", /* If specified, the source IP we use when sending
+                       * upstream queries. */
         0 };
 
 char *key_d_names[KEY_D_COUNT + 1] = {
