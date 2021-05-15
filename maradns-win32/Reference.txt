@@ -93,6 +93,8 @@ service.
      * root_servers (dictionary)
      * upstream_servers (dictionary)
      * ip4 (dictionary)
+     * ip6 (dictionart)
+     * source_ip4 (string)
 
                          SUPPORTED PARAMETERS
 
@@ -455,6 +457,17 @@ root_servers
    give us complete answers to DNS questions, but merely tell us
    which DNS servers to connect to to get an answer closer to our
    desired answer.
+
+source_ip4
+
+   With certain complicated networks, it may be desirable to set the
+   source IP of queries sent to upstream or root DNS servers. If so, set
+   this parameter to have the dotted decimal IPv4 address to use when
+   sending IPv4 queries to an upstream DNS server.
+
+   Use this parameter with caution; Deadwood can very well become
+   non-functional if one uses a source IPv4 address which Deadwood is not
+   bound to.
 
 tcp_listen
 
