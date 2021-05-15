@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2020 Sam Trenholme and others
+/* Copyright (c) 2007-2021 Sam Trenholme and others
  *
  * TERMS
  *
@@ -105,7 +105,7 @@ void setup_bind(sockaddr_all_T *dns_udp, uint16_t port, int len) {
         memset(dns_udp,0,sizeof(*dns_udp));
         if(len == 4) {
                 dns_udp->V4.sin_family = AF_INET;
-                dns_udp->V4.sin_addr.s_addr = htonl(global_source_ip4);
+                dns_udp->V4.sin_addr.s_addr = global_source_ip4;
                 dns_udp->V4.sin_port = htons(port);
 #ifndef NOIP6
         } else if(len == 16) {
