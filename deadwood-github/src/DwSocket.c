@@ -35,7 +35,11 @@ extern tcp_pend_T *tcp_pend;
 extern SOCKET tcp_b_local[]; /* Local TCP sockets */
 
 /* Address we will use to bind to upstream servers */
+#ifndef MINGW
 in_addr_t global_source_ip4 = INADDR_ANY;
+#else
+u_long global_source_ip4 = INADDR_ANY;
+#endif
 
 /* List of addresses we will bind to */
 ip_addr_T bind_address[DW_MAXIPS + 1];
