@@ -89,7 +89,7 @@ fi
 if echo $UNAME | grep -i linux > /dev/null ; then
 	cat $BUILDDIR/Makefile.linux >> Makefile
 	DEADWOOD="$( echo deadwood-*/src )"
-	cp ${DEADWOOD}/Makefile.centos8 ${DEADWOOD}/Makefile
+	cp ${DEADWOOD}/Makefile.ubuntu2004 ${DEADWOOD}/Makefile
 	echo It looks like you are using Linux\; just type in \'make\'
 	EXITCODE=0
 elif echo $UNAME | grep -i mingw32 > /dev/null ; then
@@ -113,11 +113,11 @@ elif echo $UNAME | grep -i mingw32 > /dev/null ; then
 elif echo $UNAME | grep -i cygwin > /dev/null ; then
 	cat $BUILDDIR/Makefile.noflock >> Makefile
 	DEADWOOD="$( echo deadwood-*/src )"
-	cp ${DEADWOOD}/Makefile.centos8 ${DEADWOOD}/Makefile
+	cp ${DEADWOOD}/Makefile.xcygwin ${DEADWOOD}/Makefile
 	echo It looks like you are using Cygwin\; this will compile fine
 	echo by typing in \'make\'.
 	echo
-	echo Note that Deadwood will not compile\; use the pre-built
+	echo Note that Deadwood may not compile\; use the pre-built
 	echo Windows service in the maradns-win32/ directory.  This
 	echo service is built using mingw.
 	echo
