@@ -60,7 +60,11 @@ extern int32_t max_ttl;
 
 /* Other mararc parameters */
 extern dwd_dict *blocklist_dict;
+#ifndef MINGW
 extern in_addr_t global_source_ip4;
+#else
+extern u_long global_source_ip4;
+#endif
 
 #ifdef MINGW
 /* Needed for the Windows way of making a socket non-blocking */
