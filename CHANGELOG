@@ -8,7 +8,7 @@ MaraDNS changelog
      * Makefile.centos8 file for Deadwood renamed Makefile.Ubuntu2004 (i.e.
        it’s now a Makefile for Ubuntu 20.04)
 
-     (2021-05-??)
+     (2021-05-15)
 
    maradns-3.5.0019:
    This is a stable release of MaraDNS:
