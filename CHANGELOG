@@ -5,6 +5,8 @@ MaraDNS changelog
 
      * New parameter: source_ip4, to specify the source IP when sending a
        query to an upstream or authoritative DNS server.
+     * Makefile.centos8 file for Deadwood renamed Makefile.Ubuntu2004 (i.e.
+       it’s now a Makefile for Ubuntu 20.04)
 
      (2021-05-??)
 
