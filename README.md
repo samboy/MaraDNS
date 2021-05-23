@@ -1,3 +1,28 @@
+# What is MaraDNS
+
+MaraDNS is a free open-source computer program written by Sam Trenholme.
+
+MaraDNS implements the Domain Name System (DNS), an essential internet
+service. MaraDNS is open source software: This means that anyone is
+free to download, use, and modify the program free of charge, as per
+its license.
+
+People like MaraDNS because it’s small, lightweight, easy to set up,
+and remarkably secure. It’s also cross platform — the program runs
+both in Windows and in UNIX clones.
+
+# 2021 Updates
+
+Deadwood has a new parameter: `source_ip4`.  This optional parameter
+is used to specify the source IP when sending queries upstream.  The
+majority of users should be able to leave this untouched; this is for
+cases when Deadwood is multi-homed and we need to specify which IP
+to use when querying root or upstream DNS servers.
+
+One line change to zoneserver.c to make it work better with systemd.
+
+Synthetic IP generator example added to `coLunacyDNS`
+
 # 2020 Updates
 
 I have updated things so that the Git version of MaraDNS is the 
@@ -52,7 +77,7 @@ been actively adding new features to MaraDNS, most notably the new
 
 ## Supported OSes
 
-   There are no “supported OSes” for MaraDNS.  I currently use CentOS 8
+   There are no “supported OSes” for MaraDNS.  I currently use Ubuntu 20.04
    to develop MaraDNS, and a Windows XP virtual machine to make the
    Windows binary.
 
@@ -65,6 +90,10 @@ been actively adding new features to MaraDNS, most notably the new
    binary: http://maradns.samiam.org/download.html (or, look in the
    folder `maradns-win32` here) 
    Be sure to download the file with the .zip extension.
+
+   Only Deadwood and coLunacyDNS binaries are provided.  
+
+   The Deadwood has passed Y2038 tests in Windows 10.
 
 ## What is DNS
 
@@ -190,3 +219,21 @@ been actively adding new features to MaraDNS, most notably the new
    as an embedded Lua developer.  Since I was able to find work again,
    MaraDNS is on the back burner again.
 
+# Y2038 statement
+
+MaraDNS is fully Y2038 compliant on systems with a 64-bit time_t.
+
+Deadwood, in addition, for its Windows 32-bit binary, uses Windows
+filetime to generate internal timestamps; filetime stamps will not run
+over until the year 30827 or so.  Deadwood, when compiled under Windows,
+uses a 32-bit `stat()` in one piece of code, but Y2038 testing does not
+indicate any issues with this code.
+
+coLunacyDNS, likewise, uses Windows filetime for timestamps with its
+Win32 binary.
+
+Both Deadwood and coLunacyDNS make some effort to generate accurate
+timestamps on *NIX systems with a 32-bit time_t until later than
+2106; this code assumes that 32-bit systems will have the time
+stamp “wrap around” after 2038 but still have the 32-bit time be 
+updated.
