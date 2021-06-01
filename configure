@@ -97,7 +97,7 @@ elif echo $UNAME | grep -i mingw32 > /dev/null ; then
 	echo It looks like you are using MinGW32 \; this is only a partial
 	echo port of MaraDNS and does not have all of the security features
 	echo of other ports of MaraDNS.  Only MaraDNS and Askmara will
-	echo compile.  You need mingw32 and pthreads to compile this.
+	echo compile.  You need mingw32 to compile this.
 	echo You have been warned.
 	# We don't support --authonly for the mingw32 port
 	# Other Makefile changes
