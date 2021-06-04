@@ -15,13 +15,18 @@ export AUTHONLY
 # Options: '--noipv6'
 IPV6="yes"
 if [ "$1" = '--ipv6' ] ; then
-	echo 'WARNING: --ipv6 now enabled by default'
+	echo '--ipv6 enabled (Note: now default)'
 elif [ "$1" = '--noipv6' ] ; then
 	IPV6=""
+	echo 'IPv6 disabled'
+elif [ -z "$1" ] ; then
+	echo 'WARNING: ipv6 now enabled by default.  Use --noipv6 to'
+	echo 'compile MaraDNS w/o IPv6 support'
 elif [ -n "$1" ] ; then
 	echo 'Usage: ./configure [options]'
-	echo 'Where [options] currently only supports "--ipv6" for'
-	echo 'making an ipv6-capable build of MaraDNS'
+	echo 'Where [options] currently supports "--ipv6" for'
+	echo 'making an ipv6-capable build of MaraDNS (default)'
+	echo 'and "--noipv6" for making a build *without* IPv6 support'
 	exit 1
 fi
 
