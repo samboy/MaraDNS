@@ -12,9 +12,12 @@ fi
 AUTHONLY="yes"
 export AUTHONLY
 
-# Options: '--ipv6'
+# Options: '--noipv6'
+IPV6="yes"
 if [ "$1" = '--ipv6' ] ; then
-	IPV6="yes"
+	echo 'WARNING: --ipv6 now enabled by default'
+elif [ "$1" = '--noipv6' ] ; then
+	IPV6=""
 elif [ -n "$1" ] ; then
 	echo 'Usage: ./configure [options]'
 	echo 'Where [options] currently only supports "--ipv6" for'
@@ -174,14 +177,14 @@ if [ -z "$IPV6" ] ; then
 	cp tcp/Makefile.authonly tcp/Makefile
 	cp dns/Makefile.authonly dns/Makefile
 	cp tools/Makefile.authonly tools/Makefile
+	DEADWOOD_DIR=$( echo deadwood-* )
+	cp $DEADWOOD_DIR/src/Makefile.noip6 $DEADWOOD_DIR/src/Makefile
 else
 	cp server/Makefile.ipv6 server/Makefile
 	cp qual/Makefile.nothreads qual/Makefile
 	cp tcp/Makefile.ipv6 tcp/Makefile
 	cp dns/Makefile.authonly dns/Makefile
 	cp tools/Makefile.ipv6 tools/Makefile
-	DEADWOOD_DIR=$( echo deadwood-* )
-	cp $DEADWOOD_DIR/src/Makefile.ipv6 $DEADWOOD_DIR/src/Makefile
 fi
 
 echo
