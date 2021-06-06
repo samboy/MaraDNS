@@ -116,6 +116,8 @@ elif echo $UNAME | grep -i mingw32 > /dev/null ; then
 	# Mingw32 doesn't support symlinks
 	cp server/MaraBigHash_en.h server/MaraBigHash_locale.h
 	cp server/MaraDNS_en.h server/MaraDNS_locale.h
+	DEADWOOD_DIR=$( echo deadwood-* )
+	cp $DEADWOOD_DIR/src/Makefile.mingw342 $DEADWOOD_DIR/src/Makefile
 	cp COPYING 00README.FIRST
 	exit 0
 elif echo $UNAME | grep -i cygwin > /dev/null ; then

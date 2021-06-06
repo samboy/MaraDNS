@@ -40,7 +40,7 @@ all:
 	cd ../qual ; make $(M) ; cd ../server ; \
 	make $(M) $(Q) COMPILED=\"$(COMPILED)\" $(V) ; \
 	cd ../tools ; make $(M) ; strip ../server/maradns.exe ; \
-	cd ../deadwood-*/src/ ; make FLAGS=-Os -f Makefile.mingw342 ; \
+	cd ../deadwood-*/src/ ; make FLAGS=-Os ; \
 	strip ../../tools/askmara.exe ; strip Deadwood.exe ; \
 	cat ../../00README.FIRST
 
