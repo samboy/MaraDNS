@@ -35,7 +35,7 @@ if [ $( pwd | awk -F/ '{print $NF}' | cut -f1 -d- | tr '[A-Z]' '[a-z]' ) \
 		 != "maradns" ] ; then
 	echo This script needs to be run from the MaraDNS base
 	echo directory \(the top-level directory created when the
-	echo MaraDNS tar file was extracted\)
+	echo MaraDNS tar file was extracted or the Git repo was pulled\)
 	exit 1
 fi
 
