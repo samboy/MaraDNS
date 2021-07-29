@@ -1,0 +1,13 @@
+# To use another CC, invoke as "make CC=clang" or some such
+CC = gcc
+# To use other flags, invoke as "make CFLAGS=-g" or some such
+CFLAGS = -Os -DMINGW
+
+all: 
+	sh ./compile.win32.service.sh
+
+clean: 
+	rm -f *.o *.exe coLunacyDNS sipHash HalfSipHash1-3 \
+    *.gcda *.gcno *.gcov ; \
+    cd ../../lunacy ; make clean
+
