@@ -1,5 +1,17 @@
 MaraDNS changelog
 
+   maradns-3.5.0021:
+   This is a stable release of MaraDNS:
+
+     * MaraDNS now, by default, will compile with IPv6 support.
+       See MaraDNS GitHUB ticket #97 for discussion.
+     * One line patch for coLunacyDNS against CVE-2014-5461.  This
+       only affects coLunacyDNS (not MaraDNS and not Deadwood), and
+       in the context of coLunacyDNS, I can not reproduce the exploit,
+       and only people running untrusted Lua scripts would be vulnerable.
+
+     (2021-07-28)
+
    maradns-3.5.0020:
    This is a stable release of MaraDNS:
 
