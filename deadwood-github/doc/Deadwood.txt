@@ -671,6 +671,32 @@ verbose_level
    (secret.txt in Windows) as a hardcoded path to get entropy (along with
    the timestamp) for the hash algorithm.
 
+                                    COMMENTS
+
+   Deadwood's configuration file format supports two kinds of comments:
+# This is a comment
+
+   Here, a comment starts with the # character and continues until the end
+   of the line. In some circumstances, a comment can start after a
+   variable is set, for example:
+bind_address="127.0.0.1" # IP we bind to
+
+   The second comment type supports multi-line comments. For example:
+_rem={}
+_rem={ #_rem --[=[
+"""
+ We are now in a multi-line comment.
+ This allows a long explanation to be
+ in a Deadwood configuration file
+""" # ]=]
+}
+
+   The actual format is _rem={ at the start of a line, which begins a
+   multi-line comment. The comment continues until a } is seen. The reason
+   for this unusual format is that it allows a Deadwood configuration file
+   to have multi-line comments in a form which are compatible with both
+   Lua and Python, as can be seen in the above example.
+
                                  DAEMONIZATION
 
    Deadwood does not have any built-in daemonization facilities; this is
