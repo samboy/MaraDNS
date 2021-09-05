@@ -3,11 +3,12 @@
 ## Our Pledge
 
 In the interest of fostering an open and welcoming environment, we as
-contributors and maintainers pledge to making participation in our project and
-our community a harassment-free experience for everyone, regardless of age, body
-size, disability, ethnicity, sex characteristics, gender identity and expression,
-level of experience, education, socio-economic status, nationality, personal
-appearance, race, religion, or sexual identity and orientation.
+contributors and maintainers pledge to making participation in our project
+and our community a harassment-free experience for everyone, regardless
+of age, body size, disability, ethnicity, sex characteristics, gender
+identity and expression, level of experience, education, socio-economic
+status, nationality, personal appearance, race, religion, or sexual
+identity and orientation.
 
 ## Our Standards
 
@@ -30,6 +31,38 @@ Examples of unacceptable behavior by participants include:
   address, without explicit permission
 * Other conduct which could reasonably be considered inappropriate in a
   professional setting
+
+## Other behavior guidelines
+
+There is a cultural force called “cancel culture” where people are judged
+too harshly for things they either did a long time ago when the behavior
+may have been acceptable, things that can very well be false accusations,
+jokes in bad taste, having a reasonable political opinion (even if we
+do not agree with the opinion), or things no reasonable person would
+consider unacceptable behavior.
+
+That in mind, please do not do any of the following, regardless of
+whether the accused is alive or dead:
+
+* Please do not attack someone for something they did or believed a 
+  long time ago, unless one can present solid evidence that the 
+  alleged wrongdoer should had known the action (or belief) in 
+  question was not OK *at the time*.  This is a fundamental human 
+  right: People can not be tried for *Ex Post Pacto* crimes.
+* Please do not assume someone is guilty of a heinous or criminal act
+  without proof beyond a reasonable doubt they did the act in question.
+* Please do not assume that a poorly done joke has been done to actually
+  denigrate a group of people without looking at the context of the joke,
+  including when the joke was made and the reason for the joke.
+* Please do not attack somone or assume someone is a terrible person 
+  because they hold a political or other opinion one may disagree with, 
+  unless a reasonable person would infer the political belief and/or 
+  opinion in question is unacceptable.
+
+It comes down to this: Any and all forums for discussing open source 
+software I work on are not “social media” forums.  The purposes of any
+and all community resources is to improve software, *not* to find
+stuff to get worked up and angry about.
 
 ## Our Responsibilities
 
