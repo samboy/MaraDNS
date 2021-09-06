@@ -1,5 +1,8 @@
 # Contributor Covenant Code of Conduct
 
+_Please note: This has been modified by Sam Trenholme to forbid “Cancel
+Culture” behavior when interacting with the MaraDNS community._
+
 ## Our Pledge
 
 In the interest of fostering an open and welcoming environment, we as
@@ -48,7 +51,7 @@ whether the accused is alive or dead:
   long time ago, unless one can present solid evidence that the 
   alleged wrongdoer should had known the action (or belief) in 
   question was not OK *at the time*.  This is a fundamental human 
-  right: People can not be tried for *Ex Post Pacto* crimes.
+  right: People can not be tried for *Ex Post Facto* crimes.
 * Please do not assume someone is guilty of a heinous or criminal act
   without proof beyond a reasonable doubt they did the act in question.
 * Please do not assume that a poorly done joke has been done to actually
