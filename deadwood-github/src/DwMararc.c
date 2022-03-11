@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2020 Sam Trenholme
+/* Copyright (c) 2007-2022 Sam Trenholme
  *
  * TERMS
  *
@@ -793,7 +793,14 @@ int dwm_parse_file(char *name) {
         do {
                 a = dwm_parse_line(look);
                 if(a == -3) {
+#ifndef MINGW
                         dwm_fatal("incomplete last line");
+#else
+			/* Windows has too many broken editors which make
+			 * an incomplete last line. */
+        		dw_alog_number(
+"Warning in dwood3rc file on line ",dwm_linenum," incomplete last line");
+#endif /* MINGW */			
                 }
                 if(a != 0 && a != 1) {
                         dwm_fatal("deadwoodrc parse error");
