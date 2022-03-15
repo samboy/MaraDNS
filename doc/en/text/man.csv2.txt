@@ -438,6 +438,42 @@ LOC
    Example:
 example.net. LOC 19 31 2.123 N 98 3 4 W 2000m 2m 4m 567m ~
 
+CAA
+
+   MaraDNS does not have direct support for CAA records.
+   However, the RAW record type can generate CAA records. For
+   example, to have "example.com" have a CAA record with the
+   value of "issue letsencrypt.org":
+example.com. RAW 257 \x00\x05'issueletsencrypt.org' ~
+
+                             STAR RECORDS
+
+   MaraDNS has support for star records in zone files:
+*.example.net.  A               10.11.12.13 ~
+
+   In this example, anything.example.net will have the IP
+   10.11.12.13. Note that this does not set the ip for
+   "example.net", which needs a separate record:
+example.net.  A                 10.11.12.13 ~
+
+   Note also that stars must be at the beginining of a name; to
+   have stars at the end of a name, use the
+   csv2_default_zonefile feature as described in the mararc man
+   page.
+
+                            PERCENT SYMBOL
+
+   Placing the percent symbol at the end of a record indicates
+   that the percent should be replaced with the domain name for
+   the zone.
+
+   For example, in the zone for example.net. (e.g. one's mararc
+   file has csv2["example.net."] = "db.example.net", and we are
+   editing the "db.example.net" file):
+www.%   A       10.10.10.10 ~
+
+   This will cause "www.example.net" to have the ip 10.10.10.10.
+
                             SLASH COMMANDS
 
    In addition to being able to have resource records and
