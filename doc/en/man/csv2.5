@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Tue Mar 15 00:15:47 2022
+.\" Last updated Mon Mar 28 00:48:52 2022
 .\"
 .TH CSV2 5 "January 2007" MARADNS "MaraDNS reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -287,13 +287,13 @@ forge email.
 Here is one example SPF record:
 
 .nf
-example.com. SPF \(aqv=spf1 +mx a:colo.example.com/28 -all\(aq
+example.com. SPF \(aqv=spf1 +mx a:colo.example.com/28 -all\(aq ~
 .fi
 
 Use \(aq\\x7e\(aq to put a tilde ("~" character) in a SPF record:
 
 .nf
-example.com. SPF \(aqv=spf1 +mx a:colo.example.com/28 \(aq\\x7e\(aqall\(aq
+example.com. SPF \(aqv=spf1 +mx a:colo.example.com/28 \(aq\\x7e\(aqall\(aq ~
 .fi
 
 More information about SPF records can be found in
