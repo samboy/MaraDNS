@@ -65,7 +65,7 @@ g.example.net.|+86400|10.11.9.8|~
 mail.% +86400 IN A 10.22.23.24 ~
 
 # We even have a bit of ipv6 support
-a.example.net. 		aaaa 	fd4d:6172:6144:4e53:1:2:3::4:f ~
+a.example.net. 		aaaa 	2001:db8:1:2::3:f ~
 
 # Not to mention support for SRV records
 _http._tcp.%    srv   0 0 80 a.% ~
