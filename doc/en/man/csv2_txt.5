@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Wed Mar 30 04:23:01 2022
+.\" Last updated Wed Mar 30 04:36:33 2022
 .\"
 .TH CSV2_TXT 5 "January 2007" MARADNS "MaraDNS reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -388,8 +388,7 @@ MaraDNS can store a 2048-bit RSA DKIM key. Longer keys are not
 supported because of the 512-byte limit for traditional DNS packets.
 .PP
 A DKIM record is a long “multi chunk” TXT record; DKIM records
-are stored in a special _domainkey.example.com record (in my case,
-x._domainkey.samiam.org). As per
+are stored in a special _domainkey.example.com record. As per
 RFC6376 section 3.6.2.2, “Strings in a TXT RR MUST be concatenated
 together
 before use with no intervening whitespace”; a single TXT “chunk” can
