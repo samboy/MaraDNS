@@ -100,7 +100,7 @@ AAAA
    hexadecimal numbers are separated by colons. Two colons
    together indicate multiple streams of all-zero hex numbers.
    This record has only one field, the v6 IP. Example:
-a.example.net.   AAAA    fd4d:6172:6144:4e53:ffe::f ~
+a.example.net.   AAAA    2001:db8:dec:ade::f ~
 
 SRV
 
@@ -193,10 +193,10 @@ SPF
    identical to a TXT record. SPF records are designed to make
    it more difficult to forge email. Here is one example SPF
    record:
-example.com. SPF 'v=spf1 +mx a:colo.example.com/28 -all'
+example.com. SPF 'v=spf1 +mx a:colo.example.com/28 -all' ~
 
    Use '\x7e' to put a tilde ("~" character) in a SPF record:
-example.com. SPF 'v=spf1 +mx a:colo.example.com/28 '\x7e'all'
+example.com. SPF 'v=spf1 +mx a:colo.example.com/28 '\x7e'all' ~
 
    More information about SPF records can be found in RFC4408,
    or by performing a web search for 'sender policy framework'.
@@ -257,14 +257,14 @@ FQDN6
    The FQDN6 (short for "Fully Qualified Domain Name for IPv6")
    record is the ipv6 form for the FQDN4 record. Like the FQDN4
    record, this record creates both a "forward" and "reverse"
-   DNS record for a given host name. For example, onoe may have:
-x.example.net. AAAA fd4d:6172:6144:4e53::b:c:d ~
-d.0.0.0.c.0.0.0.b.0.0.0.0.0.0.0.3.5.e.4.4.4.1.6.2.7.1.6.d.4.d.f PTR
+   DNS record for a given host name. For example, one may have:
+x.example.net. AAAA 2001:db8:dec:ade::b:c:d ~
+d.0.0.0.c.0.0.0.b.0.0.0.0.0.0.0.e.d.a.0.c.e.d.0.8.b.d.0.1.0.0.2 PTR
 x.example.net. ~
 
    But the above two lines in a zone file can also be
    represented thusly:
-x.example.net. FQDN6 fd4d:6172:6144:4e53::b:c:d ~
+x.example.net. FQDN6 2001:db8:dec:ade::b:c:d ~
 
    Like FQDN4 records, it is the DNS administrator's duty to
    make sure only a single IP has a FQDN6 record.

@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Mon Mar 28 00:48:52 2022
+.\" Last updated Tue Mar 29 21:32:50 2022
 .\"
 .TH CSV2 5 "January 2007" MARADNS "MaraDNS reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -152,7 +152,7 @@ streams of all-zero hex numbers. This record has only one field,
 the v6 IP. Example:
 
 .nf
-a.example.net.   AAAA    fd4d:6172:6144:4e53:ffe::f ~
+a.example.net.   AAAA    2001:db8:dec:ade::f ~
 .fi
 .PP
 
@@ -372,18 +372,18 @@ about this limitation.
 The FQDN6 (short for "Fully Qualified Domain Name for IPv6") record is
 the ipv6 form for the FQDN4 record. Like the FQDN4 record, this
 record creates both a "forward" and "reverse" DNS record for a given
-host name. For example, onoe may have:
+host name. For example, one may have:
 
 .nf
-x.example.net. AAAA fd4d:6172:6144:4e53::b:c:d ~
-d.0.0.0.c.0.0.0.b.0.0.0.0.0.0.0.3.5.e.4.4.4.1.6.2.7.1.6.d.4.d.f PTR 
+x.example.net. AAAA 2001:db8:dec:ade::b:c:d ~
+d.0.0.0.c.0.0.0.b.0.0.0.0.0.0.0.e.d.a.0.c.e.d.0.8.b.d.0.1.0.0.2 PTR 
 x.example.net. ~
 .fi
 
 But the above two lines in a zone file can also be represented thusly:
 
 .nf
-x.example.net. FQDN6 fd4d:6172:6144:4e53::b:c:d ~
+x.example.net. FQDN6 2001:db8:dec:ade::b:c:d ~
 .fi
 
 Like FQDN4 records, it is the DNS administrator\(aqs duty to make sure
