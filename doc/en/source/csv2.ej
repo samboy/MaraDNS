@@ -227,6 +227,8 @@ A SPF record is, with the exception of the numeric rtype, identical to
 a TXT record.  SPF records are designed to make it more difficult to
 forge email.  
 
+<p>
+
 Here is one example SPF record:
 
 <pre>
@@ -241,6 +243,11 @@ example.com. SPF 'v=spf1 +mx a:colo.example.com/28 '\x7e'all' ~
 
 More information about SPF records can be found in 
 RFC4408, or by performing a web search for 'sender policy framework'.
+
+<p>
+
+Note that SPF records never gained traction, and their role
+is handled by TXT records.
 
 <h2>RAW</h2>
 
