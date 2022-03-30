@@ -57,7 +57,7 @@ whether the accused is alive or dead:
 * Please do not assume that a poorly done joke has been done to actually
   denigrate a group of people without looking at the context of the joke,
   including when the joke was made and the reason for the joke.
-* Please do not attack somone or assume someone is a terrible person 
+* Please do not attack someone or assume someone is a terrible person 
   because they hold a political or other opinion one may disagree with, 
   unless a reasonable person would infer the political belief and/or 
   opinion in question is unacceptable.
