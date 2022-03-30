@@ -353,6 +353,50 @@ w.example.com. RAW 40 \x10\ # Meaning: 16
                       'Kitchen sink+ data' ~ # Data: 'Kitchen sink+ data'
 </pre>
 
+<h2>DKIM RECORDS</h2>
+
+DKIM is a format used to store e-mail authentication data via DNS.
+
+<p>
+
+MaraDNS can store a 2048-bit RSA DKIM key.  Longer keys are not 
+supported because of the 512-byte limit for traditional DNS packets.
+
+<p>
+
+A DKIM record is a long “multi chunk” TXT record; DKIM records
+are stored in a special <tt>_domainkey.example.com</tt> record (in my case,
+<tt>x._domainkey.samiam.org</tt>). As per
+RFC6376 section 3.6.2.2, “Strings in a TXT RR MUST be concatenated together
+before use with no intervening whitespace”; a single TXT “chunk” can
+only be up to 255 bytes in length, but we need more than 255 bytes to
+store a 2048 bit RSA key (6 bits per character, so we need 342 characters
+to store just the key) and a little more overhead to store the other
+bits in our DKIM record. But, it doesn’t matter where we split the
+chunks as long as each individual chunk is under 256 bytes in size.
+
+<p>
+
+Here is a real-world DKIM key stored in a MaraDNS zone file:
+
+<p>
+
+<pre>
+x._domainkey.% +600 TXT 'v=DKIM1; k=rsa; '\  
+'p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCg'\  
+'KCAQEAuhKjx2Aepa3rllxUEZLgF3x'\  
+'68SWvZ8pEgnjZvxtqp94Vkra3AUC4C8dRLKf5SvT'\  
+'xFtIl6pF27jn+M/w2MzYwPFjBgqVf'\  
+'p2lf7xuKsrus63m0T9Sq958nIt1yuUlLDr71bFs7'\  
+'ZuZyQid0ciCc2JF5lwHno10cAvuNJ';'y1Q'\  
+'tFJa+lRJI6/kzY20Hi/ZTzFzctqgqaRZnSoJlTZHf'\   
+'Oy0uwfmF5ejkJ8xvHbEJp6TEc'\  
+'30DwsqrjVWSFLnUWYBv7lrAPB9sAHN7fCayhEuORn'\  
+'Ap+YUhjjMPWyPla1pvTS9h/LTE7g'\  
+'2d+jR/zOkRpV2Ak/4KpeP9dpsRJEOsPEaWGG1pQXgPw'\ 
+'IDAQAB' 
+</pre>
+
 <h1>LEGAL DISCLAIMER</h1>
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS 
 OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
