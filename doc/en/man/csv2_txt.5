@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Sat Jan 24 09:43:31 2015
+.\" Last updated Wed Mar 30 04:23:01 2022
 .\"
 .TH CSV2_TXT 5 "January 2007" MARADNS "MaraDNS reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -376,6 +376,47 @@ w.example.com. RAW 40 \\x10\\ # Meaning: 16
                       \\x01\\ # Coding: 1
                       \\x02\\ # Sub-coding: 2
                       \(aqKitchen sink+ data\(aq ~ # Data: \(aqKitchen sink+ data\(aq
+.fi
+.PP
+
+.in -3
+\fBDKIM RECORDS\fR
+.PP
+DKIM is a format used to store e-mail authentication data via DNS.
+.PP
+MaraDNS can store a 2048-bit RSA DKIM key. Longer keys are not
+supported because of the 512-byte limit for traditional DNS packets.
+.PP
+A DKIM record is a long “multi chunk” TXT record; DKIM records
+are stored in a special _domainkey.example.com record (in my case,
+x._domainkey.samiam.org). As per
+RFC6376 section 3.6.2.2, “Strings in a TXT RR MUST be concatenated
+together
+before use with no intervening whitespace”; a single TXT “chunk” can
+only be up to 255 bytes in length, but we need more than 255 bytes to
+store a 2048 bit RSA key (6 bits per character, so we need 342
+characters
+to store just the key) and a little more overhead to store the other
+bits in our DKIM record. But, it doesn’t matter where we split the
+chunks as long as each individual chunk is under 256 bytes in size.
+.PP
+Here is a real-world DKIM key stored in a MaraDNS zone file:
+.PP
+
+.nf
+x._domainkey.% +600 TXT \(aqv=DKIM1; k=rsa; \(aq\\  
+\(aqp=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCg\(aq\\  
+\(aqKCAQEAuhKjx2Aepa3rllxUEZLgF3x\(aq\\  
+\(aq68SWvZ8pEgnjZvxtqp94Vkra3AUC4C8dRLKf5SvT\(aq\\  
+\(aqxFtIl6pF27jn+M/w2MzYwPFjBgqVf\(aq\\  
+\(aqp2lf7xuKsrus63m0T9Sq958nIt1yuUlLDr71bFs7\(aq\\  
+\(aqZuZyQid0ciCc2JF5lwHno10cAvuNJ\(aq;\(aqy1Q\(aq\\  
+\(aqtFJa+lRJI6/kzY20Hi/ZTzFzctqgqaRZnSoJlTZHf\(aq\\   
+\(aqOy0uwfmF5ejkJ8xvHbEJp6TEc\(aq\\  
+\(aq30DwsqrjVWSFLnUWYBv7lrAPB9sAHN7fCayhEuORn\(aq\\  
+\(aqAp+YUhjjMPWyPla1pvTS9h/LTE7g\(aq\\  
+\(aq2d+jR/zOkRpV2Ak/4KpeP9dpsRJEOsPEaWGG1pQXgPw\(aq\\ 
+\(aqIDAQAB\(aq 
 .fi
 
 .SH "LEGAL DISCLAIMER"

@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Tue Mar 29 21:43:02 2022
+.\" Last updated Wed Mar 30 04:23:01 2022
 .\"
 .TH CSV2 5 "January 2007" MARADNS "MaraDNS reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -284,6 +284,7 @@ csv2_txt man page for details.
 A SPF record is, with the exception of the numeric rtype, identical to
 a TXT record. SPF records are designed to make it more difficult to
 forge email.
+.PP
 Here is one example SPF record:
 
 .nf
@@ -299,6 +300,9 @@ example.com. SPF \(aqv=spf1 +mx a:colo.example.com/28 \(aq\\x7e\(aqall\(aq ~
 More information about SPF records can be found in
 RFC4408, or by performing a web search for \(aqsender policy
 framework\(aq.
+.PP
+Note that SPF records never gained traction, and their role
+is handled by TXT records.
 .PP
 .in -3
 \fBRAW\fR
