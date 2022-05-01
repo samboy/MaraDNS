@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2020 Sam Trenholme
+/* Copyright (c) 2009-2022 Sam Trenholme
  *
  * TERMS
  *
@@ -184,5 +184,5 @@ int dwx_cname_in_cache(dw_str *orig_query, dw_str *query,
  * because we recursive call it from another function.
  */
 int dwx_make_cname_reply(int conn_num, dw_str *query,
-                dw_str *action, dw_str *answer, int depth);
+                dw_str *action, dw_str *answer, int depth, int here_max_ttl);
 #endif /* __DWRECURSE_H_DEFINED__ */

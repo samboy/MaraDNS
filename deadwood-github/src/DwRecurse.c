@@ -2084,7 +2084,7 @@ void dwx_send_glueless_cname_upstream(int conn_num, int c, int depth,
         }
         child_action = dwh_get(cache, cname_cache, 0, 1);
         dwx_make_cname_reply(upstream, rem[upstream].query,
-                        child_action, uncomp, depth + 1);
+                        child_action, uncomp, depth + 1, 0);
 
 catch_dwx_send_glueless_cname_upstream:
         if(cname_cache != 0) {
@@ -2100,7 +2100,7 @@ catch_dwx_send_glueless_cname_upstream:
  * send that reply out.
  */
 int dwx_make_cname_reply(int conn_num, dw_str *query,
-                dw_str *action, dw_str *answer, int depth) {
+                dw_str *action, dw_str *answer, int depth, int here_max_ttl) {
         dw_str *uncomp = 0, *reply = 0, *comp = 0;
         int ret = -1, c = 0; /* c is for counter */
         int_fast32_t ttl = 3600;
@@ -2131,6 +2131,9 @@ int dwx_make_cname_reply(int conn_num, dw_str *query,
 	}
         if(ttl > max_ttl) {
                 ttl = max_ttl;
+        }
+	if(here_max_ttl > 0 && ttl > here_max_ttl) {
+                ttl = here_max_ttl;
         }
         /*ttl = 30; // DEBUG*/
         uncomp = dwx_create_cname_reply(query, action, answer, ttl);
@@ -2239,7 +2242,7 @@ int dwx_handle_cname_refer(int connection_number, dw_str *action,
         answer = dwh_get(cache,real_query,0,1);
         if(answer != 0) { /* In cache */
                 ret = dwx_make_cname_reply(connection_number, query,
-                                action, answer,0);
+                                action, answer,0,30);
                 goto catch_dwx_handle_cname_refer;
         } else { /* Not in cache */
                 ret = dwx_do_cname_glueless(real_query, connection_number);
@@ -3181,7 +3184,7 @@ void dwx_incomplete_cname_done(dw_str *query, int child, int l) {
                 goto catch_dwx_incomplete_cname_done;
         }
 
-        dwx_make_cname_reply(parent, rem[parent].query, action, answer, 0);
+        dwx_make_cname_reply(parent, rem[parent].query, action, answer, 0, 0);
 
 catch_dwx_incomplete_cname_done:
         if(cname_cache != 0) {
@@ -3324,7 +3327,7 @@ void dwx_cached_cname_done(dw_str *query, int b, int l, int depth) {
                 goto catch_dwx_cached_cname_done;
         }
 
-        dwx_make_cname_reply(b,oquery,action,answer,depth + 1);
+        dwx_make_cname_reply(b,oquery,action,answer,depth + 1,0);
 
 catch_dwx_cached_cname_done:
         dw_destroy(answer);
