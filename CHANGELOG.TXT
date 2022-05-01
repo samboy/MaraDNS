@@ -1,6 +1,6 @@
 MaraDNS changelog
 
-   maradns-3.5.0021: 
+   maradns-3.5.0021:
    This is a stable release of MaraDNS:
 
      * MaraDNS now, by default, will compile with IPv6 support.
