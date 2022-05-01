@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2020 Sam Trenholme
+/* Copyright (c) 2009-2022 Sam Trenholme
  *
  * TERMS
  *
@@ -1735,7 +1735,7 @@ void dwx_handle_ns_refer(int connection_number, dw_str *action,
         rem[connection_number].ns = dw_copy(action);
 
         /* Add this NS referral to the cache */
-        place = dw_get_dname(action->str, 0, 260);
+        place = dw_get_dname(action->str, 0, 260, 0);
         if(place == 0) {
                 goto catch_dwx_handle_ns_refer;
         }
@@ -1794,7 +1794,7 @@ dw_str *dwx_make_one_cname_rr(dw_str *question, int32_t question_offset,
                 goto catch_dwx_make_one_cname_rr;
         }
 
-        temp = dw_get_dname(question->str, question_offset, size);
+        temp = dw_get_dname(question->str, question_offset, size, 0);
         if(temp == 0) {
                 goto catch_dwx_make_one_cname_rr;
         }
@@ -1810,7 +1810,7 @@ dw_str *dwx_make_one_cname_rr(dw_str *question, int32_t question_offset,
                 goto catch_dwx_make_one_cname_rr;
         }
         dw_destroy(temp);
-        temp = dw_get_dname(answer->str, answer_offset, 260);
+        temp = dw_get_dname(answer->str, answer_offset, 260, 0);
         if(temp == 0 || dw_put_u16(out, temp->len, -1) == -1 ||
                         dw_append(temp,out) == -1) {
                 goto catch_dwx_make_one_cname_rr;
@@ -2217,7 +2217,7 @@ int dwx_handle_cname_refer(int connection_number, dw_str *action,
         }
         offset = dw_fetch_u16(action, -2);
         offset += 2; /* Go past two-byte length */
-        real_query = dw_get_dname(action->str, offset, 260);
+        real_query = dw_get_dname(action->str, offset, 260, 0);
         dwc_lower_case(real_query);
         if(real_query == 0) {
                 goto catch_dwx_handle_cname_refer;
@@ -2292,7 +2292,7 @@ int dwx_cache_reply(dw_hash *cache, dw_str *query, dw_str *in, int32_t ttl,
                 ttl = max_ttl;
         }
 
-        bailiwick = dw_get_dname(rem[connection_number].ns->str, 0, 260);
+        bailiwick = dw_get_dname(rem[connection_number].ns->str, 0, 260, 0);
         if(bailiwick == 0 || bailiwick->len > 256) {
                 ret = -1;
                 goto catch_dwx_cache_reply;
@@ -2401,7 +2401,7 @@ dw_str *dwx_ns_convert_init(dw_str *bailiwick) {
                         return 0;
                 }
         } else {
-                dname = dw_get_dname(bailiwick->str, 0, 260);
+                dname = dw_get_dname(bailiwick->str, 0, 260, 0);
                 if(dname == 0) {
                         return 0;
                 }
@@ -2665,7 +2665,7 @@ ip_addr_T dwx_ns_getip_glueless(dw_str *list, int offset) {
         }
 
         /* See if it is in the cache */
-        query = dw_get_dname(list->str + 3, offset, 256);
+        query = dw_get_dname(list->str + 3, offset, 256, 0);
         dwc_lower_case(query);
         if(query == 0 || dw_push_u16(type,query) == -1) {
                 goto catch_dwx_ns_getip_glueless;
@@ -2678,7 +2678,7 @@ ip_addr_T dwx_ns_getip_glueless(dw_str *list, int offset) {
                 }
         }
 
-        addr.glueless = dw_get_dname(list->str + 3, offset, 260);
+        addr.glueless = dw_get_dname(list->str + 3, offset, 260, 0);
         dw_put_u16(addr.glueless, key_n[DWM_N_ns_glueless_type], -1);
         if(addr.glueless == 0) {
                 goto catch_dwx_ns_getip_glueless;
@@ -3229,7 +3229,7 @@ int dwx_cname_in_cache(dw_str *orig_query, dw_str *query,
         /* Create new remote for solving incomplete CNAME */
         offset = dw_fetch_u16(action, -2);
         offset += 2; /* Go past two-byte length */
-        real_query = dw_get_dname(action->str, offset, 260);
+        real_query = dw_get_dname(action->str, offset, 260, 0);
         dwc_lower_case(real_query);
         if(real_query == 0) {
                 goto catch_dwx_cname_in_cache;

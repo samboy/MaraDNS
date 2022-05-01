@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2010 Sam Trenholme
+/* Copyright (c) 2007-2022 Sam Trenholme
  *
  * TERMS
  *
@@ -223,10 +223,11 @@ int32_t dw_atoi(dw_str *obj, int32_t index, int base);
  * ASCII nulls, since DNS packets have those) and puts it in a newly
  * created string.
  * Input: Pointer to raw string; offset where we look for DNS DNAME,
- *        maximum length of raw string
+ *        maximum length of raw string; if label_count is not NULL,
+ *        we set this int with the number of labels in the DNAME
  * Output: A pointer to a new dw_str with NAME
  */
-dw_str *dw_get_dname(uint8_t *raw, int offset, int max);
+dw_str *dw_get_dname(uint8_t *raw, int offset, int max, int *label_count);
 
 /* This extracts a DNS DNAME, followed by a two-byte TYPE (the type of RR)
  * from a raw c-string (with ASCII nulls, since DNS packets have those)
