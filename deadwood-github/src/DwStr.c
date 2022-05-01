@@ -823,6 +823,9 @@ dw_str *dw_get_dname(uint8_t *raw, int offset, int max, int *label_count) {
                 soffset++;
                 offset++;
         }
+        if(label_count != 0) {
+                *label_count = counter;
+        }
         out->len = soffset + 1;
         return out;
 
