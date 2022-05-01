@@ -2241,8 +2241,18 @@ int dwx_handle_cname_refer(int connection_number, dw_str *action,
         /* See if we have the data already in the cache */
         answer = dwh_get(cache,real_query,0,1);
         if(answer != 0) { /* In cache */
+                /* Only keep new cached item in cache slightly longer
+                 * than cache item it depends on */
+		int32_t the_most_ttl;
+                the_most_ttl = dwh_get_ttl(cache,real_query) + 30;
+                if(the_most_ttl > max_ttl) {
+                        the_most_ttl = max_ttl;
+                }
+                if(the_most_ttl < 30) {
+                        the_most_ttl = 30;
+                }
                 ret = dwx_make_cname_reply(connection_number, query,
-                                action, answer,0,30);
+                                action, answer,0,the_most_ttl);
                 goto catch_dwx_handle_cname_refer;
         } else { /* Not in cache */
                 ret = dwx_do_cname_glueless(real_query, connection_number);
