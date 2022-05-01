@@ -1719,6 +1719,8 @@ void dwx_handle_ns_refer_connect(int connection_number, dw_str *packet,
 void dwx_handle_ns_refer(int connection_number, dw_str *action,
                 dw_str *query, int32_t ttl) {
         dw_str *place = 0, *packet = 0;
+        int label_count = -1;
+        int_fast32_t this_max_ttl = max_ttl;
 
         if(rem[connection_number].ns == 0 || action == 0
                         || rem[connection_number].is_upstream == 1) {
@@ -1735,7 +1737,7 @@ void dwx_handle_ns_refer(int connection_number, dw_str *action,
         rem[connection_number].ns = dw_copy(action);
 
         /* Add this NS referral to the cache */
-        place = dw_get_dname(action->str, 0, 260, 0);
+        place = dw_get_dname(action->str, 0, 260, &label_count);
         if(place == 0) {
                 goto catch_dwx_handle_ns_refer;
         }
@@ -1746,8 +1748,14 @@ void dwx_handle_ns_refer(int connection_number, dw_str *action,
 	if(ttl < min_ttl) {
 		ttl = min_ttl;
 	}
-        if(ttl > max_ttl) {
-                ttl = max_ttl;
+        if(label_count > 3) {
+                this_max_ttl >>= (label_count - 3);
+                if(this_max_ttl < 30) {
+                        this_max_ttl = 30;
+                }
+        }
+        if(ttl > this_max_ttl) {
+                ttl = this_max_ttl;
         }
         dw_put_u16(place, 65395, -1); /* Add "NS refer" private RR type */
         dwh_add(cache,place,action,ttl,1);
