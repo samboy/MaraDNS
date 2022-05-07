@@ -1,5 +1,16 @@
 MaraDNS changelog
 
+   maradns-3.5.0022:
+   This is a stable release of MaraDNS:
+
+      * Make incomplete last line non-fatal in Windows
+      * Documentation updates based on user feedback
+      * New Deadwood parameter: maxttl_reduce_labels for tweaking
+        how many lables a DNS label for a NS referral can have before
+        reducing its TTL.
+
+     (2022-05-07)
+
    maradns-3.5.0021: 
    This is a stable release of MaraDNS:
 
