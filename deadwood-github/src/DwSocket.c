@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2021 Sam Trenholme
+/* Copyright (c) 2007-2022 Sam Trenholme
  *
  * TERMS
  *
@@ -79,6 +79,7 @@ int_fast32_t maradns_uid = 99;
 int_fast32_t maradns_gid = 99;
 int_fast32_t max_ttl = 86400;
 int_fast32_t min_ttl = 30;
+int maxttl_reduce_labels = 3;
 int num_retries = 5;
 dwd_dict *blocklist_dict = 0;
 
@@ -516,6 +517,7 @@ void process_numeric_mararc_params() {
                 5 /* 5 seconds */,
                 86400 /* One day */,
                 60 /* One minute */);
+        maxttl_reduce_labels = get_key_n(DWM_N_maxttl_reduce_labels,1,500,3);
 
         if((num_ports & (num_ports - 1)) != 0) {
                 dw_fatal("num_ports must be a power of 2");

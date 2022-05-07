@@ -52,6 +52,7 @@ extern u_long dont_block;
 /* Numeric mararc parameters */
 extern int32_t max_ttl;
 extern int32_t min_ttl;
+extern int maxttl_reduce_labels;
 /* Maximum number of remote connections */
 extern int_fast32_t maxprocs;
 
@@ -1748,8 +1749,8 @@ void dwx_handle_ns_refer(int connection_number, dw_str *action,
 	if(ttl < min_ttl) {
 		ttl = min_ttl;
 	}
-        if(label_count > 3) {
-                this_max_ttl >>= (label_count - 3);
+        if(label_count > maxttl_reduce_labels) {
+                this_max_ttl >>= (label_count - maxttl_reduce_labels);
                 if(this_max_ttl < 30) {
                         this_max_ttl = 30;
                 }

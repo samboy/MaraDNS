@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2021 Sam Trenholme
+/* Copyright (c) 2007-2022 Sam Trenholme
  *
  * TERMS
  *
@@ -73,13 +73,14 @@
 #define DWM_N_min_ttl_incomplete_cname 28
 #define DWM_N_max_ttl 29
 #define DWM_N_min_ttl 30
+#define DWM_N_maxttl_reduce_labels 31
 
 /* Number of string parameters in the mararc file */
 #define KEY_S_COUNT 9
 /* Number of dictionary parameters in the mararc file */
 #define KEY_D_COUNT 4
 /* Number of numeric parameters in the mararc file */
-#define KEY_N_COUNT 31
+#define KEY_N_COUNT 32
 
 #ifndef MINGW
 /* Location of files we read when we run execfile("foo") */
@@ -161,6 +162,8 @@ char *key_n_names[KEY_N_COUNT + 1] = {
                                      * records in the cache, in seconds */
         "max_ttl", /* Maximum allowed TTL */
         "min_ttl", /* Minimum allowed TTL */
+        "maxttl_reduce_labels", /* Number of labels before reducing TTL of
+                                 * NS referrals */
         0 };
 
 #endif /* MARARC_C */
