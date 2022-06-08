@@ -1,0 +1,14 @@
+#!/bin/sh
+PATH=$PATH:/usr/local/bin
+t-count
+cd /etc/maradns
+if [ -z "$2" ] ; then
+	echo Usage: $0 {domain name} {record}
+	echo This script adds a Letsencrypt auth records for a domain
+	echo domain name is example-com example-org example-net
+	echo record looks like nPAWRtaNYI6CwLnbzHNfILGPPjTkdL69aEsibsXqx0g
+	exit 0
+fi
+echo ${1}.% +30 TXT \'${2}\' \~ >> db.letsencrypt-verify
+echo $1 $2 added to db.letsencrypt-verify
+t-count

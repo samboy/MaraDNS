@@ -1,0 +1,4 @@
+#!/bin/sh
+cd /etc/maradns
+COUNT=$( fgrep - db.letsencrypt-verify | wc -l )
+echo $COUNT Letsencrypt auth DNS records

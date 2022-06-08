@@ -1,0 +1,14 @@
+#!/bin/sh
+PATH=$PATH:/usr/local/bin
+t-count
+cd /etc/maradns
+if [ -z "$1" ] ; then
+	echo Usage: $0 domain name
+	echo This script removes all Letsencrypt auth records for a domain
+	echo domain name is example-com example-org example-net
+	exit 0
+fi
+fgrep -v "$1" db.letsencrypt-verify > foo.$$
+mv foo.$$ db.letsencrypt-verify
+echo $1 removed from db.letsencrypt-verify
+t-count
