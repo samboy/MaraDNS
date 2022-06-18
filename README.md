@@ -31,6 +31,7 @@ MaraDNS’s Git tree is now hosted at
 [GitHub](https://github.com/samboy/MaraDNS),
 [GitLab](https://gitlab.com/maradns/maradns), 
 [Bitbucket](https://bitbucket.org/maradns/maradns/),
+[Codeberg](https://codeberg.org/samboy/MaraDNS),
 [SourceForge](https://sourceforge.net/p/maradns-git/code/),
 and 
 [SourceHut](https://git.sr.ht/~samiam/MaraDNS)
