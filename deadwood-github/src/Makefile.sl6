@@ -70,6 +70,7 @@ DwSys.o:	DwSys.c DwStr.h version.h
 RandomPrime:	RandomPrime.c
 	$(CC) -O3 -o RandomPrime RandomPrime.c
 
+# See ../doc/MulConstant.txt to explain this
 DwRandPrime.h: RandomPrime
 	if [ -e /dev/urandom ] ; then ./RandomPrime > DwRandPrime.h ; fi
 

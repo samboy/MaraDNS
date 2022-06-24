@@ -17,7 +17,7 @@
  */
 
 /*
- * See ../Doc/MulConstant.txt for explanation of why we have this program
+ * See ../doc/MulConstant.txt for explanation of why we have this program
  */
 
 #include <stdio.h>
