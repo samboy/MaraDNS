@@ -23,6 +23,7 @@ clean:
 version.h:
 	echo '#define VERSION "github"' > version.h
 
+# See ../Doc/MulConstant.txt for explanation of this
 DwRandPrime.h:
 	echo '#define MUL_CONSTANT 1748294267' > DwRandPrime.h
 

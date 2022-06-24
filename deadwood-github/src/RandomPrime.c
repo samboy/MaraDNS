@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2013 Sam Trenholme
+/* Copyright (c) 2007-2022 Sam Trenholme
  *
  * TERMS
  *
@@ -14,6 +14,10 @@
  *
  * This software is provided 'as is' with no guarantees of correctness or
  * fitness for purpose.
+ */
+
+/*
+ * See ../Doc/MulConstant.txt for explanation of why we have this program
  */
 
 #include <stdio.h>
