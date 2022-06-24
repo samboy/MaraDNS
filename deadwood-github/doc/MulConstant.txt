@@ -1,0 +1,38 @@
+I wrote the code, back in the early days of Deadwood, in 2007, when I
+became aware (in 2007!) of the 2011 hash randomization attack (where
+an attacker can have multiple entries use the same hash bucket). So,
+I did the following:
+
+* I invented a non-cryptographic hash compression algorithm which
+  doesn’t have predictable outputs
+
+* Since it required multiplying by a prime number, I came up with a
+  quick and dirty bit of code to find a 32-bit prime number. The code is
+  slightly slow, so I wanted to run the code when building, not running
+  Deadwood.
+
+* In 2010, I updated that homegrown hash compression algorithm to also
+  add a random number when compressing the input, and calculating another
+  32-bit random number when Deadwood starts.
+
+* I believe the hash compression algorithm is protected from hash bucket
+  collision attacks, even if Deadwood is patched to make MUL_CONSTANT
+  a constant number, since the add constant remains random.
+
+* The reason for a random MUL_CONSTANT is multi-pronged security. If
+  someone is on a system where /dev/urandom has an issue with low quality
+  random numbers, Deadwood’s hash compression might still be secure
+  from hash bucket collision attacks. In addition, on embedded systems,
+  calculating a random 32-bit prime number every time Deadwood starts
+  may be too computationally expensive.
+
+* If one’s coding style can’t have a random 32-bit number in a build,
+  make MUL_CONSTANT an unchanging number like 1748294267 (the number
+  I use for Windows builds of Deadwood). Deadwood will still be secure
+  from hash bucket collision attacks except in the very rare corner case
+  of /dev/urandom not giving out good random numbers.
+
+* If I were to write the code again today, I would use half-siphash
+  1/3 instead of the homegrown hash compression algorithm I used (back
+  in 2007, cryptographically secure hash bucket collision algorithms
+  didn’t exist). Indeed, that’s what I did with coLunacyDNS
