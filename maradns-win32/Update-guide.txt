@@ -1,3 +1,30 @@
+To update from one version of Deadwood to the next one, be sure to stop
+and disable the old Deadwood service, and be sure the service is using
+the latest Deadwood version.
+
+Do this with a cmd shell running as the administrator:
+
+net stop deadwood
+Deadwood.exe --remove
+
+That removes the old version of Deadwood. Then, to install the new version:
+
+Deadwood.exe --install
+net start Deadwood
+
+Use the services manager (called services in Windows 10) to ensure 
+Deadwood is automatically started up.
+
+--
+
+The notes below note changes done between versions of Deadwood;
+please go over these notes if updating from an older version
+of Deadwood.  If a given version number doesn't have notes,
+that indicates the version in question didn't change the
+configuration syntax.
+
+--
+
 Deadwood 3.5.0007 now prefers to use ip_blocklist instead of 
 ip_blacklist.  The older ip_blacklist name still works as before.
 
@@ -36,6 +63,14 @@ was last changed in October of 2017.
 
 Please go to https://root-servers.org to get an up-to-date list of root
 servers.
+
+NOTE ALSO: root_servers will still work, but it’s better these days to
+use upstream_servers. While root_servers works most of the time with most
+domains, there’s enough corner cases out there on the Internet I’m
+not going to recommend doing things that way. It’s a 99/1 situation;
+Deadwood can resolve 99% of the domains out there, but to get it to
+resolve the other 1% would require months to years of work, so it’s
+only good enough to have a mostly usable Internet.
 
 ---
 
