@@ -449,8 +449,13 @@ root_servers
    answers to DNS questions, but merely tell us which DNS servers to
    connect to to get an answer closer to our desired answer.
 
-   Please note that, as of Deadwood 3.5.0004, it is no longer needed to
-   increase maximum_cache_elements to store root_server entries.
+   As of Deadwood 3.5.0004, it is no longer needed to increase
+   maximum_cache_elements to store root_server entries.
+
+   Please be aware that this parameter is deprecated. While there are no
+   plans to remove this parameter, Deadwood is no longer being updated to
+   resolve DNS resolution issues when using root_servers to resolve names
+   on the internet. Please use upstream_servers instead.
 
 source_ip4
 

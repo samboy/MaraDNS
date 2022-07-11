@@ -4,7 +4,7 @@
 .\" Process this file with the following
 .\" nroff -man -Tutf8 maradns.8 | tr '\020' ' '
 .\"
-.\" Last updated Sun Aug 22 05:45:49 2021
+.\" Last updated Mon Jul 11 01:53:26 2022
 .\"
 .TH DEADWOOD 1 "August 2009" DEADWOOD "Deadwood reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -656,8 +656,14 @@ not give us complete answers to DNS questions, but merely tell
 us which DNS servers to connect to to get an answer closer to
 our desired answer.
 .PP
-Please note that, as of Deadwood 3.5.0004, it is no longer needed
+As of Deadwood 3.5.0004, it is no longer needed
 to increase maximum_cache_elements to store root_server entries.
+.PP
+Please be aware that this parameter is deprecated. While
+there are no plans to remove this parameter, Deadwood is no
+longer being updated to resolve DNS resolution issues when
+using root_servers to resolve names on the internet. Please
+use upstream_servers instead.
 .PP
 .in -3
 \fBsource_ip4\fR
