@@ -8,6 +8,9 @@ MaraDNS changelog
       * New Deadwood parameter: maxttl_reduce_labels for tweaking
         how many lables a DNS label for a NS referral can have before
         reducing its TTL.
+      * Mitigations for an issue where “ghost domains” could stay
+        in the cache longer.  This is a medium impact security 
+        issue which should be described in CVE-2022-30256.
 
      (2022-05-07)
 
