@@ -1,0 +1,87 @@
+diff --git a/deadwood-github/src/DwRecurse.c b/deadwood-github/src/DwRecurse.c
+index 956673c..fddaea3 100644
+--- a/deadwood-github/src/DwRecurse.c
++++ b/deadwood-github/src/DwRecurse.c
+@@ -2084,7 +2084,7 @@ void dwx_send_glueless_cname_upstream(int conn_num, int c, int depth,
+         }
+         child_action = dwh_get(cache, cname_cache, 0, 1);
+         dwx_make_cname_reply(upstream, rem[upstream].query,
+-                        child_action, uncomp, depth + 1);
++                        child_action, uncomp, depth + 1, 0);
+ 
+ catch_dwx_send_glueless_cname_upstream:
+         if(cname_cache != 0) {
+@@ -2100,7 +2100,7 @@ catch_dwx_send_glueless_cname_upstream:
+  * send that reply out.
+  */
+ int dwx_make_cname_reply(int conn_num, dw_str *query,
+-                dw_str *action, dw_str *answer, int depth) {
++                dw_str *action, dw_str *answer, int depth, int here_max_ttl) {
+         dw_str *uncomp = 0, *reply = 0, *comp = 0;
+         int ret = -1, c = 0; /* c is for counter */
+         int_fast32_t ttl = 3600;
+@@ -2132,6 +2132,9 @@ int dwx_make_cname_reply(int conn_num, dw_str *query,
+         if(ttl > max_ttl) {
+                 ttl = max_ttl;
+         }
++	if(here_max_ttl > 0 && ttl > here_max_ttl) {
++                ttl = here_max_ttl;
++        }
+         /*ttl = 30; // DEBUG*/
+         uncomp = dwx_create_cname_reply(query, action, answer, ttl);
+         comp = dwc_compress(query, uncomp);
+@@ -2238,8 +2241,18 @@ int dwx_handle_cname_refer(int connection_number, dw_str *action,
+         /* See if we have the data already in the cache */
+         answer = dwh_get(cache,real_query,0,1);
+         if(answer != 0) { /* In cache */
++                /* Only keep new cached item in cache slightly longer
++                 * than cache item it depends on */
++		int32_t the_most_ttl;
++                the_most_ttl = dwh_get_ttl(cache,real_query) + 30;
++                if(the_most_ttl > max_ttl) {
++                        the_most_ttl = max_ttl;
++                }
++                if(the_most_ttl < 30) {
++                        the_most_ttl = 30;
++                }
+                 ret = dwx_make_cname_reply(connection_number, query,
+-                                action, answer,0);
++                                action, answer,0,the_most_ttl);
+                 goto catch_dwx_handle_cname_refer;
+         } else { /* Not in cache */
+                 ret = dwx_do_cname_glueless(real_query, connection_number);
+@@ -3181,7 +3194,7 @@ void dwx_incomplete_cname_done(dw_str *query, int child, int l) {
+                 goto catch_dwx_incomplete_cname_done;
+         }
+ 
+-        dwx_make_cname_reply(parent, rem[parent].query, action, answer, 0);
++        dwx_make_cname_reply(parent, rem[parent].query, action, answer, 0, 0);
+ 
+ catch_dwx_incomplete_cname_done:
+         if(cname_cache != 0) {
+@@ -3324,7 +3337,7 @@ void dwx_cached_cname_done(dw_str *query, int b, int l, int depth) {
+                 goto catch_dwx_cached_cname_done;
+         }
+ 
+-        dwx_make_cname_reply(b,oquery,action,answer,depth + 1);
++        dwx_make_cname_reply(b,oquery,action,answer,depth + 1,0);
+ 
+ catch_dwx_cached_cname_done:
+         dw_destroy(answer);
+diff --git a/deadwood-github/src/DwRecurse.h b/deadwood-github/src/DwRecurse.h
+index 4338210..c9dac8a 100644
+--- a/deadwood-github/src/DwRecurse.h
++++ b/deadwood-github/src/DwRecurse.h
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2009-2011 Sam Trenholme
++/* Copyright (c) 2009-2022 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -184,5 +184,5 @@ int dwx_cname_in_cache(dw_str *orig_query, dw_str *query,
+  * because we recursive call it from another function.
+  */
+ int dwx_make_cname_reply(int conn_num, dw_str *query,
+-                dw_str *action, dw_str *answer, int depth);
++                dw_str *action, dw_str *answer, int depth, int here_max_ttl);
+ #endif /* __DWRECURSE_H_DEFINED__ */

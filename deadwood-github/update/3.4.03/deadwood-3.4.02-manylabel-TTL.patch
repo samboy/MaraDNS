@@ -1,0 +1,177 @@
+diff -ur deadwood-3.4.02/src/DwRecurse.c deadwood-3.4.03/src/DwRecurse.c
+--- deadwood-3.4.02/src/DwRecurse.c	2020-01-14 06:45:38.000000000 -0800
++++ deadwood-3.4.03/src/DwRecurse.c	2022-08-03 00:31:24.631187323 -0700
+@@ -1718,6 +1718,8 @@
+ void dwx_handle_ns_refer(int connection_number, dw_str *action,
+                 dw_str *query, int32_t ttl) {
+         dw_str *place = 0, *packet = 0;
++        int label_count = -1;
++        int_fast32_t this_max_ttl = max_ttl;
+ 
+         if(rem[connection_number].ns == 0 || action == 0
+                         || rem[connection_number].is_upstream == 1) {
+@@ -1734,7 +1736,7 @@
+         rem[connection_number].ns = dw_copy(action);
+ 
+         /* Add this NS referral to the cache */
+-        place = dw_get_dname(action->str, 0, 260);
++        place = dw_get_dname(action->str, 0, 260, &label_count);
+         if(place == 0) {
+                 goto catch_dwx_handle_ns_refer;
+         }
+@@ -1742,8 +1744,14 @@
+                           * an hour for security reasons */
+                 ttl = 3600;
+         }
+-        if(ttl > max_ttl) {
+-                ttl = max_ttl;
++        if(label_count > 3) {
++                this_max_ttl >>= (label_count - 3);
++                if(this_max_ttl < 30) {
++                        this_max_ttl = 30;
++                }
++        }
++        if(ttl > this_max_ttl) {
++               ttl = this_max_ttl;
+         }
+         dw_put_u16(place, 65395, -1); /* Add "NS refer" private RR type */
+         dwh_add(cache,place,action,ttl,1);
+@@ -1790,7 +1798,7 @@
+                 goto catch_dwx_make_one_cname_rr;
+         }
+ 
+-        temp = dw_get_dname(question->str, question_offset, size);
++        temp = dw_get_dname(question->str, question_offset, size, 0);
+         if(temp == 0) {
+                 goto catch_dwx_make_one_cname_rr;
+         }
+@@ -1806,7 +1814,7 @@
+                 goto catch_dwx_make_one_cname_rr;
+         }
+         dw_destroy(temp);
+-        temp = dw_get_dname(answer->str, answer_offset, 260);
++        temp = dw_get_dname(answer->str, answer_offset, 260, 0);
+         if(temp == 0 || dw_put_u16(out, temp->len, -1) == -1 ||
+                         dw_append(temp,out) == -1) {
+                 goto catch_dwx_make_one_cname_rr;
+@@ -2207,7 +2215,7 @@
+         }
+         offset = dw_fetch_u16(action, -2);
+         offset += 2; /* Go past two-byte length */
+-        real_query = dw_get_dname(action->str, offset, 260);
++        real_query = dw_get_dname(action->str, offset, 260, 0);
+         dwc_lower_case(real_query);
+         if(real_query == 0) {
+                 goto catch_dwx_handle_cname_refer;
+@@ -2279,7 +2287,7 @@
+                 ttl = max_ttl;
+         }
+ 
+-        bailiwick = dw_get_dname(rem[connection_number].ns->str, 0, 260);
++        bailiwick = dw_get_dname(rem[connection_number].ns->str, 0, 260, 0);
+         if(bailiwick == 0 || bailiwick->len > 256) {
+                 ret = -1;
+                 goto catch_dwx_cache_reply;
+@@ -2388,7 +2396,7 @@
+                         return 0;
+                 }
+         } else {
+-                dname = dw_get_dname(bailiwick->str, 0, 260);
++                dname = dw_get_dname(bailiwick->str, 0, 260, 0);
+                 if(dname == 0) {
+                         return 0;
+                 }
+@@ -2652,7 +2660,7 @@
+         }
+ 
+         /* See if it is in the cache */
+-        query = dw_get_dname(list->str + 3, offset, 256);
++        query = dw_get_dname(list->str + 3, offset, 256, 0);
+         dwc_lower_case(query);
+         if(query == 0 || dw_push_u16(type,query) == -1) {
+                 goto catch_dwx_ns_getip_glueless;
+@@ -2665,7 +2673,7 @@
+                 }
+         }
+ 
+-        addr.glueless = dw_get_dname(list->str + 3, offset, 260);
++        addr.glueless = dw_get_dname(list->str + 3, offset, 260, 0);
+         dw_put_u16(addr.glueless, key_n[DWM_N_ns_glueless_type], -1);
+         if(addr.glueless == 0) {
+                 goto catch_dwx_ns_getip_glueless;
+@@ -3216,7 +3224,7 @@
+         /* Create new remote for solving incomplete CNAME */
+         offset = dw_fetch_u16(action, -2);
+         offset += 2; /* Go past two-byte length */
+-        real_query = dw_get_dname(action->str, offset, 260);
++        real_query = dw_get_dname(action->str, offset, 260, 0);
+         dwc_lower_case(real_query);
+         if(real_query == 0) {
+                 goto catch_dwx_cname_in_cache;
+Only in deadwood-3.4.03/src: DwRecurse.c.orig
+Only in deadwood-3.4.03/src: DwRecurse.c.rej
+diff -ur deadwood-3.4.02/src/DwStr.c deadwood-3.4.03/src/DwStr.c
+--- deadwood-3.4.02/src/DwStr.c	2020-01-14 06:45:38.000000000 -0800
++++ deadwood-3.4.03/src/DwStr.c	2022-08-03 00:28:04.020613703 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2014 Sam Trenholme
++/* Copyright (c) 2007-2022 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -774,10 +774,11 @@
+  * ASCII nulls, since DNS packets have those) and puts it in a newly
+  * created string.
+  * Input: Pointer to raw string; offset where we look for DNS DNAME,
+- *        maximum length of raw string
++ *        maximum length of raw string; if label_count is not NULL,
++ *        put the number of labels in this integer
+  * Output: A pointer to a new dw_str with NAME
+  */
+-dw_str *dw_get_dname(uint8_t *raw, int offset, int max) {
++dw_str *dw_get_dname(uint8_t *raw, int offset, int max, int *label_count) {
+         int len = 0, counter = 0;
+         int soffset = 0;
+         dw_str *out = 0;
+@@ -822,6 +823,9 @@
+                 soffset++;
+                 offset++;
+         }
++        if(label_count != 0) {
++                *label_count = counter;
++        }
+         out->len = soffset + 1;
+         return out;
+ 
+@@ -842,7 +846,7 @@
+ dw_str *dw_get_dname_type(uint8_t *raw, int offset, int max) {
+         dw_str *out = 0;
+ 
+-        out = dw_get_dname(raw,offset,max);
++        out = dw_get_dname(raw,offset,max,0);
+         if(out == 0) {
+                 goto catch_dw_get_dname_class;
+         }
+diff -ur deadwood-3.4.02/src/DwStr_functions.h deadwood-3.4.03/src/DwStr_functions.h
+--- deadwood-3.4.02/src/DwStr_functions.h	2020-01-14 06:45:38.000000000 -0800
++++ deadwood-3.4.03/src/DwStr_functions.h	2022-08-03 00:28:04.020613703 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2010 Sam Trenholme
++/* Copyright (c) 2007-2022 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -223,10 +223,11 @@
+  * ASCII nulls, since DNS packets have those) and puts it in a newly
+  * created string.
+  * Input: Pointer to raw string; offset where we look for DNS DNAME,
+- *        maximum length of raw string
++ *        maximum length of raw string; if label_count is not NULL,
++ *        we set this int with the number of labels in the DNAME
+  * Output: A pointer to a new dw_str with NAME
+  */
+-dw_str *dw_get_dname(uint8_t *raw, int offset, int max);
++dw_str *dw_get_dname(uint8_t *raw, int offset, int max, int *label_count);
+ 
+ /* This extracts a DNS DNAME, followed by a two-byte TYPE (the type of RR)
+  * from a raw c-string (with ASCII nulls, since DNS packets have those)
