@@ -1,5 +1,3 @@
-Test for execve1
-Error getting command line args.
 Test for execve2
 Error getting command line args.
 Test for execve3
