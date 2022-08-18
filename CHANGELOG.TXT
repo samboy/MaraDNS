@@ -1,6 +1,6 @@
 MaraDNS changelog
 
-   maradns-3.5.0022: 
+   maradns-3.5.0022:
    This is a stable release of MaraDNS:
 
       * Make incomplete last line non-fatal in Windows
