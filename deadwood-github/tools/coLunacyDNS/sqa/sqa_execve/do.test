@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Ubuntu 22.04 note: The new Ubuntu 22.04 kernel has finally fixed
+# the "bug" where sub-processes could be run with argv[0] being NULL, 
+# argv[1] being NULL, etc.  Because of that, this test has had to
+# be modified to run with an Ubuntu 22.04 Kernel (Linux 5.15)
+
 rm -f output.test
 touch output.test
 #for a in *.c ; do
