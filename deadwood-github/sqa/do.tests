@@ -279,10 +279,10 @@ rm -f foo1 foo2 > /dev/null 2>&1
 make -f Makefile.sl6 > /dev/null 2> foo1
 touch foo2
 if ! cmp foo1 foo2 > /dev/null 2>&1 ; then
-	echo test gcc44 compile failed
+	echo test gcc compile failed
 	exit 1
 else
-	echo test gcc44 compile succeeded
+	echo test gcc compile succeeded
 fi
 rm foo1 foo2
 
