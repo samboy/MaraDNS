@@ -268,6 +268,9 @@ fi
 #rm output.test
 
 # No warnings when compiled with gcc44
+# Disabled: Breaks in Ubuntu 22.04, hasn't tested gcc4.4 for years
+# Deadwood, for the record, compiles in gcc 3.4.2 from 2004, at least
+# for the Win32 target
 #cd $SQADIR
 #cd ../src
 #make -f Makefile.sl6 clean > /dev/null 2>&1
