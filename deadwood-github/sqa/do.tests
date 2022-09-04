@@ -268,23 +268,23 @@ fi
 #rm output.test
 
 # No warnings when compiled with gcc44
-cd $SQADIR
-cd ../src
-make -f Makefile.sl6 clean > /dev/null 2>&1
-export FLAGS='-O3'
+#cd $SQADIR
+#cd ../src
+#make -f Makefile.sl6 clean > /dev/null 2>&1
+#export FLAGS='-O3'
 #export CC='gcc43' # For CentOS 5.3
 #export CC='gcc44'
-export CC='gcc' # Scientific Linux 6's normal gcc is GCC 4.4.4
-rm -f foo1 foo2 > /dev/null 2>&1
-make -f Makefile.sl6 > /dev/null 2> foo1
-touch foo2
-if ! cmp foo1 foo2 > /dev/null 2>&1 ; then
-	echo test gcc compile failed
-	exit 1
-else
-	echo test gcc compile succeeded
-fi
-rm foo1 foo2
+#export CC='gcc' # Scientific Linux 6's normal gcc is GCC 4.4.4
+#rm -f foo1 foo2 > /dev/null 2>&1
+#make -f Makefile.sl6 > /dev/null 2> foo1
+#touch foo2
+#if ! cmp foo1 foo2 > /dev/null 2>&1 ; then
+#	echo test gcc compile failed
+#	exit 1
+#else
+#	echo test gcc compile succeeded
+#fi
+#rm foo1 foo2
 
 # OK, clean up
 cd $SQADIR
