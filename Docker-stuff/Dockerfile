@@ -1,8 +1,8 @@
 # This is a Dockerfile to make a Docker image to test installing MaraDNS on
-# a fresh Ubuntu 20.04 virtual machine.
+# a fresh Ubuntu 22.04 virtual machine.
 # This image can also run the "one source of truth" tests
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 COPY killall /usr/bin/
 COPY rg32hash.tar.gz /tmp/
 COPY run.tests.sh /
