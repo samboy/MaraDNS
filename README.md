@@ -11,6 +11,16 @@ People like MaraDNS because it’s small, lightweight, easy to set up,
 and remarkably secure. It’s also cross platform — the program runs
 both in Windows and in UNIX clones.
 
+# 2022 Updates
+
+MaraDNS was updated in 2022 to have its automated tests run in an
+Ubuntu 22.04 Docker container instead of an Ubuntu 20.04 Docker
+container.
+
+I also fixed a minor security issue, which also affected other DNS servers,
+where a clever attacker with access to the recurisve DNS server could had
+kept records in the cache longer than desired.
+
 # 2021 Updates
 
 Deadwood has a new parameter: `source_ip4`.  This optional parameter
