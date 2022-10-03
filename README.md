@@ -88,7 +88,7 @@ been actively adding new features to MaraDNS, most notably the new
 
 ## Supported OSes
 
-   There are no “supported OSes” for MaraDNS.  I currently use Ubuntu 20.04
+   There are no “supported OSes” for MaraDNS.  I currently use Ubuntu 22.04
    to develop MaraDNS, and a Windows XP virtual machine to make the
    Windows binary.
 
