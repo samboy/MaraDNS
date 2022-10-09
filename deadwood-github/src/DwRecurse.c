@@ -50,8 +50,8 @@ extern int num_retries;
 extern u_long dont_block;
 #endif /* MINGW */
 /* Numeric mararc parameters */
-extern int32_t max_ttl;
-extern int32_t min_ttl;
+extern int_fast32_t max_ttl;
+extern int_fast32_t min_ttl;
 extern int maxttl_reduce_labels;
 /* Maximum number of remote connections */
 extern int_fast32_t maxprocs;
