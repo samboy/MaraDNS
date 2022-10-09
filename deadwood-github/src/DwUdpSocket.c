@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2021 Sam Trenholme and others
+/* Copyright (c) 2007-2022 Sam Trenholme and others
  *
  * TERMS
  *
@@ -56,7 +56,7 @@ extern int resurrections;
 extern int min_bind;
 extern int num_ports;
 extern int num_retries;
-extern int32_t max_ttl;
+extern int_fast32_t max_ttl;
 
 /* Other mararc parameters */
 extern dwd_dict *blocklist_dict;
