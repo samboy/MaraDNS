@@ -57,7 +57,7 @@ diff -ur deadwood-3.4.03/src/DwRecurse.c deadwood-3.4.04/src/DwRecurse.c
 +++ deadwood-3.4.04/src/DwRecurse.c	2022-10-09 06:28:04.277460386 -0700
 @@ -1,4 +1,4 @@
 -/* Copyright (c) 2009-2015 Sam Trenholme
-+/* Copyright (c) 2009-2020 Sam Trenholme
++/* Copyright (c) 2009-2022 Sam Trenholme
   *
   * TERMS
   *
