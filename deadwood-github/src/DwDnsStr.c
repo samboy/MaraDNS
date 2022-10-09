@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2020 Sam Trenholme
+/* Copyright (c) 2009-2022 Sam Trenholme
  *
  * TERMS
  *
