@@ -39,6 +39,10 @@ dns_string *dwc_init_dns_str(int32_t ancount, int32_t nscount,
         if(out == 0) {
                 return 0;
         }
+        out->packet = 0;
+        out->an = 0;
+        out->ns = 0;
+        out->ar = 0;
         if(ancount < 0 || nscount < 0 || arcount < 0) {
                 goto catch_dwc_init_dns_str;
         }
