@@ -1,0 +1,19 @@
+--- deadwood-3.4.03/src/DwDnsStr.c	2022-08-03 00:47:07.000000000 -0700
++++ deadwood-3.4.04/src/DwDnsStr.c	2022-10-09 07:37:55.626009419 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2009-2015 Sam Trenholme
++/* Copyright (c) 2009-2022 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -39,6 +39,10 @@
+         if(out == 0) {
+                 return 0;
+         }
++        out->packet = 0;
++        out->an = 0;
++        out->ns = 0;
++        out->ar = 0;
+         if(ancount < 0 || nscount < 0 || arcount < 0) {
+                 goto catch_dwc_init_dns_str;
+         }
