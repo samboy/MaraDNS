@@ -152,6 +152,7 @@ else
 	./make.version.h > version.h
 	cd ../..
 	tar cjf deadwood-$NEXT.tar.bz2 deadwood-$NEXT
+	tar czf deadwood-$NEXT.tar.gz deadwood-$NEXT
 	tar cJf deadwood-$NEXT.tar.xz deadwood-$NEXT
 fi
 
