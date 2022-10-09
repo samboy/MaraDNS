@@ -1,6 +1,6 @@
 diff -ur deadwood-3.4.03/doc/Deadwood.ej deadwood-3.4.04/doc/Deadwood.ej
 --- deadwood-3.4.03/doc/Deadwood.ej	2019-02-22 22:26:12.000000000 -0800
-+++ deadwood-3.4.04/doc/Deadwood.ej	2022-10-09 06:11:50.771038445 -0700
++++ deadwood-3.4.04/doc/Deadwood.ej	2022-10-09 06:27:31.101651992 -0700
 @@ -361,6 +361,10 @@
  <h2>max_tcp_procs</h2>
  This is the number of allowed open TCP connections.  Default value: 8
@@ -14,7 +14,7 @@ diff -ur deadwood-3.4.03/doc/Deadwood.ej deadwood-3.4.04/doc/Deadwood.ej
  before giving up.  If this is 0, we only try once; if this is 1, 
 diff -ur deadwood-3.4.03/doc/dwood3rc-all deadwood-3.4.04/doc/dwood3rc-all
 --- deadwood-3.4.03/doc/dwood3rc-all	2019-02-22 22:26:12.000000000 -0800
-+++ deadwood-3.4.04/doc/dwood3rc-all	2022-10-09 06:12:17.054890000 -0700
++++ deadwood-3.4.04/doc/dwood3rc-all	2022-10-09 06:27:31.101651992 -0700
 @@ -65,6 +65,9 @@
  # Maximum time an entry will stay in the cache, in seconds (86400 = one day)
  max_ttl = 86400
@@ -26,8 +26,8 @@ diff -ur deadwood-3.4.03/doc/dwood3rc-all deadwood-3.4.04/doc/dwood3rc-all
  num_retries = 2
  
 diff -ur deadwood-3.4.03/src/DwMararc.h deadwood-3.4.04/src/DwMararc.h
---- deadwood-3.4.03/src/DwMararc.h	2022-08-03 01:20:42.000000000 -0700
-+++ deadwood-3.4.04/src/DwMararc.h	2022-10-09 06:00:09.990868946 -0700
+--- deadwood-3.4.03/src/DwMararc.h	2022-08-03 00:47:08.000000000 -0700
++++ deadwood-3.4.04/src/DwMararc.h	2022-10-09 06:27:31.105651969 -0700
 @@ -70,13 +70,14 @@
  #define DWM_N_reject_ptr 27
  #define DWM_N_min_ttl_incomplete_cname 28
@@ -53,19 +53,21 @@ diff -ur deadwood-3.4.03/src/DwMararc.h deadwood-3.4.04/src/DwMararc.h
  
  #endif /* MARARC_C */
 diff -ur deadwood-3.4.03/src/DwRecurse.c deadwood-3.4.04/src/DwRecurse.c
---- deadwood-3.4.03/src/DwRecurse.c	2022-08-03 01:20:42.000000000 -0700
-+++ deadwood-3.4.04/src/DwRecurse.c	2022-10-09 06:03:08.269927201 -0700
+--- deadwood-3.4.03/src/DwRecurse.c	2022-08-03 00:47:08.000000000 -0700
++++ deadwood-3.4.04/src/DwRecurse.c	2022-10-09 06:28:04.277460386 -0700
 @@ -1,4 +1,4 @@
 -/* Copyright (c) 2009-2015 Sam Trenholme
 +/* Copyright (c) 2009-2020 Sam Trenholme
   *
   * TERMS
   *
-@@ -51,6 +51,7 @@
+@@ -50,7 +50,8 @@
+ extern u_long dont_block;
  #endif /* MINGW */
  /* Numeric mararc parameters */
- extern int32_t max_ttl;
-+extern int32_t min_ttl;
+-extern int32_t max_ttl;
++extern int_fast32_t max_ttl;
++extern int_fast32_t min_ttl;
  /* Maximum number of remote connections */
  extern int_fast32_t maxprocs;
  
@@ -105,8 +107,8 @@ diff -ur deadwood-3.4.03/src/DwRecurse.c deadwood-3.4.04/src/DwRecurse.c
                  ttl = max_ttl;
          }
 diff -ur deadwood-3.4.03/src/DwSocket.c deadwood-3.4.04/src/DwSocket.c
---- deadwood-3.4.03/src/DwSocket.c	2022-08-03 01:20:42.000000000 -0700
-+++ deadwood-3.4.04/src/DwSocket.c	2022-10-09 06:05:24.829187026 -0700
+--- deadwood-3.4.03/src/DwSocket.c	2022-08-03 00:47:07.000000000 -0700
++++ deadwood-3.4.04/src/DwSocket.c	2022-10-09 06:27:31.109651945 -0700
 @@ -72,6 +72,7 @@
  int_fast32_t maradns_uid = 99;
  int_fast32_t maradns_gid = 99;
