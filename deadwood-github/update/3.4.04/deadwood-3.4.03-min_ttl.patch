@@ -1,6 +1,6 @@
 diff -ur deadwood-3.4.03/doc/Deadwood.ej deadwood-3.4.04/doc/Deadwood.ej
 --- deadwood-3.4.03/doc/Deadwood.ej	2019-02-22 22:26:12.000000000 -0800
-+++ deadwood-3.4.04/doc/Deadwood.ej	2022-10-09 06:27:31.101651992 -0700
++++ deadwood-3.4.04/doc/Deadwood.ej	2022-10-09 06:43:03.136720154 -0700
 @@ -361,6 +361,10 @@
  <h2>max_tcp_procs</h2>
  This is the number of allowed open TCP connections.  Default value: 8
@@ -14,7 +14,7 @@ diff -ur deadwood-3.4.03/doc/Deadwood.ej deadwood-3.4.04/doc/Deadwood.ej
  before giving up.  If this is 0, we only try once; if this is 1, 
 diff -ur deadwood-3.4.03/doc/dwood3rc-all deadwood-3.4.04/doc/dwood3rc-all
 --- deadwood-3.4.03/doc/dwood3rc-all	2019-02-22 22:26:12.000000000 -0800
-+++ deadwood-3.4.04/doc/dwood3rc-all	2022-10-09 06:27:31.101651992 -0700
++++ deadwood-3.4.04/doc/dwood3rc-all	2022-10-09 06:43:03.140720133 -0700
 @@ -65,6 +65,9 @@
  # Maximum time an entry will stay in the cache, in seconds (86400 = one day)
  max_ttl = 86400
@@ -27,7 +27,13 @@ diff -ur deadwood-3.4.03/doc/dwood3rc-all deadwood-3.4.04/doc/dwood3rc-all
  
 diff -ur deadwood-3.4.03/src/DwMararc.h deadwood-3.4.04/src/DwMararc.h
 --- deadwood-3.4.03/src/DwMararc.h	2022-08-03 00:47:08.000000000 -0700
-+++ deadwood-3.4.04/src/DwMararc.h	2022-10-09 06:27:31.105651969 -0700
++++ deadwood-3.4.04/src/DwMararc.h	2022-10-09 06:43:16.308650287 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2019 Sam Trenholme
++/* Copyright (c) 2007-2022 Sam Trenholme
+  *
+  * TERMS
+  *
 @@ -70,13 +70,14 @@
  #define DWM_N_reject_ptr 27
  #define DWM_N_min_ttl_incomplete_cname 28
@@ -54,7 +60,7 @@ diff -ur deadwood-3.4.03/src/DwMararc.h deadwood-3.4.04/src/DwMararc.h
  #endif /* MARARC_C */
 diff -ur deadwood-3.4.03/src/DwRecurse.c deadwood-3.4.04/src/DwRecurse.c
 --- deadwood-3.4.03/src/DwRecurse.c	2022-08-03 00:47:08.000000000 -0700
-+++ deadwood-3.4.04/src/DwRecurse.c	2022-10-09 06:28:04.277460386 -0700
++++ deadwood-3.4.04/src/DwRecurse.c	2022-10-09 06:43:27.464591019 -0700
 @@ -1,4 +1,4 @@
 -/* Copyright (c) 2009-2015 Sam Trenholme
 +/* Copyright (c) 2009-2022 Sam Trenholme
@@ -108,7 +114,15 @@ diff -ur deadwood-3.4.03/src/DwRecurse.c deadwood-3.4.04/src/DwRecurse.c
          }
 diff -ur deadwood-3.4.03/src/DwSocket.c deadwood-3.4.04/src/DwSocket.c
 --- deadwood-3.4.03/src/DwSocket.c	2022-08-03 00:47:07.000000000 -0700
-+++ deadwood-3.4.04/src/DwSocket.c	2022-10-09 06:27:31.109651945 -0700
++++ deadwood-3.4.04/src/DwSocket.c	2022-10-09 06:43:51.196464665 -0700
+@@ -1,5 +1,5 @@
+-/* Copyright (c) 2007-2019 Sam Trenholme
+- * IPv6 code by Jean-Jacques Sarton
++/* Copyright (c) 2007-2022 Sam Trenholme
++ * IPv6 code by Jean-Jacques Sarton and Sam Trenholme
+  *
+  * TERMS
+  *
 @@ -72,6 +72,7 @@
  int_fast32_t maradns_uid = 99;
  int_fast32_t maradns_gid = 99;
@@ -128,3 +142,21 @@ diff -ur deadwood-3.4.03/src/DwSocket.c deadwood-3.4.04/src/DwSocket.c
  
          if((num_ports & (num_ports - 1)) != 0) {
                  dw_fatal("num_ports must be a power of 2");
+diff -ur deadwood-3.4.03/src/DwUdpSocket.c deadwood-3.4.04/src/DwUdpSocket.c
+--- deadwood-3.4.03/src/DwUdpSocket.c	2022-08-03 00:47:08.000000000 -0700
++++ deadwood-3.4.04/src/DwUdpSocket.c	2022-10-09 06:43:57.728429823 -0700
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2016 Sam Trenholme and others
++/* Copyright (c) 2007-2022 Sam Trenholme and others
+  *
+  * TERMS
+  *
+@@ -56,7 +56,7 @@
+ extern int min_bind;
+ extern int num_ports;
+ extern int num_retries;
+-extern int32_t max_ttl;
++extern int_fast32_t max_ttl;
+ 
+ /* Other mararc parameters */
+ extern dwd_dict *blacklist_dict;
