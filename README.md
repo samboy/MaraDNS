@@ -11,6 +11,8 @@ People like MaraDNS because it’s small, lightweight, easy to set up,
 and remarkably secure. It’s also cross platform — the program runs
 both in Windows and in UNIX clones.
 
+MaraDNS has a web page at https://maradns.samiam.org.
+
 # 2022 Updates
 
 MaraDNS was updated in 2022 to have its automated tests run in an
