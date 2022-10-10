@@ -144,19 +144,30 @@ diff -ur deadwood-3.4.03/src/DwSocket.c deadwood-3.4.04/src/DwSocket.c
                  dw_fatal("num_ports must be a power of 2");
 diff -ur deadwood-3.4.03/src/DwUdpSocket.c deadwood-3.4.04/src/DwUdpSocket.c
 --- deadwood-3.4.03/src/DwUdpSocket.c	2022-08-03 00:47:08.000000000 -0700
-+++ deadwood-3.4.04/src/DwUdpSocket.c	2022-10-09 06:43:57.728429823 -0700
++++ deadwood-3.4.04/src/DwUdpSocket.c	2022-10-10 14:33:38.766496291 -0700
 @@ -1,4 +1,4 @@
 -/* Copyright (c) 2007-2016 Sam Trenholme and others
 +/* Copyright (c) 2007-2022 Sam Trenholme and others
   *
   * TERMS
   *
-@@ -56,7 +56,7 @@
+@@ -56,7 +56,8 @@
  extern int min_bind;
  extern int num_ports;
  extern int num_retries;
 -extern int32_t max_ttl;
 +extern int_fast32_t max_ttl;
++extern int_fast32_t min_ttl;
  
  /* Other mararc parameters */
  extern dwd_dict *blacklist_dict;
+@@ -872,6 +873,9 @@
+                 if(ttl > max_ttl) {
+                         ttl = max_ttl;
+                 }
++                if(ttl < min_ttl) {
++                        ttl = min_ttl;
++                }
+ 
+                 /* Routines in DwRecurse.c process the packet and let us know
+                  * what kind of packet we got upstream (so we know how to
