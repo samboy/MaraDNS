@@ -1,20 +1,20 @@
 #!/bin/sh -e
 
+# This script updates Deadwood 3.4
+
+# To run this script, make sure that this script is in the directory
+# containing the .gz tarball for the version of Deadwood you wish to 
+# update, and all of the patches are in a directory entitled 'patches'.
+
+CURRENT=${0%%-*}
+CURRENT=${CURRENT##*/}
+NEXT=${0##*-}
+
 # The revision number; in the case of having multiple snapshots a day,
 # the revision number can be incremented so as to minimize confusion
 # This is only done when more than one snapshop is uploaded to the
 # maradns.org server in a given day.  Here at the top to be easy to change.
 REVISION=1
-
-# This script updates Deadwood 3.0
-
-# To run this script, make sure that this script is in the directory
-# containing the tarball for the version of Deadwood you wish to update, and
-# all of the patches are in a directory entitled 'patches'.
-
-CURRENT=${0%%-*}
-CURRENT=${CURRENT##*/}
-NEXT=${0##*-}
 
 # Make a clean CURRENT install, which we rename NEXT
 rm -fr deadwood-$CURRENT 2> /dev/null
