@@ -57,6 +57,7 @@ extern int min_bind;
 extern int num_ports;
 extern int num_retries;
 extern int_fast32_t max_ttl;
+extern int_fast32_t min_ttl;
 
 /* Other mararc parameters */
 extern dwd_dict *blocklist_dict;
@@ -924,6 +925,9 @@ int cache_dns_reply(unsigned char *packet, int count, int b, int truncated) {
                 }
                 if(ttl > max_ttl) {
                         ttl = max_ttl;
+                }
+                if(ttl < min_ttl) {
+                        ttl = min_ttl;
                 }
 
                 /* Routines in DwRecurse.c process the packet and let us know
