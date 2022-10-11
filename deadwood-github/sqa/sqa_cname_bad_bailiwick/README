@@ -1,0 +1,4 @@
+Right now, this test fails.  This is a long-standing bug; test.example.com
+should resolve to 10.7.7.7 to be bug-for-bug identical to BIND (which is
+the informal standard for resolving names) since the glue record when
+given the CNAME for test.example.com is out of bailiwick.
