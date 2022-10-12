@@ -1,7 +1,7 @@
-Right now, this test fails.  This is a long-standing bug; test.example.com
-should resolve to 10.7.7.7 to be bug-for-bug identical to BIND (which is
-the informal standard for resolving names) since the glue record when
-given the CNAME for test.example.com is out of bailiwick.
+There was a long-standing bug; test.example.com should resolve to
+10.7.7.7 to be bug-for-bug identical to BIND (which is the informal
+standard for resolving names) since the glue record when given the CNAME
+for test.example.com is out of bailiwick.
 
 In more detail, let’s have this when querying the example.com name server:
 
@@ -12,7 +12,7 @@ Then let’s have this at the example.net name server:
 
     test.example.net. A 10.7.7.7
 
-Right now, Deadwood resolves test.example.net as having the IP 10.5.5.5
+In the past, Deadwood resolved test.example.net as having the IP 10.5.5.5
 because there’s a way to accept out-of-bailiwick CNAME glue records
 without corrupting the cache, and MaraDNS resolved things this way
 back in 2001 because that was how BIND at the time handled it (mind you,
