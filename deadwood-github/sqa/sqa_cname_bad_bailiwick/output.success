@@ -4,3 +4,18 @@ test.example.com. cname test.example.net.
 #test.example.net. a 10.7.7.7
 # NS replies:
 # AR replies:
+
+# Querying the server with the IP 127.1.0.1
+# Question: Atest2.example.com.
+test2.example.com. cname c1.example.com.
+#c1.example.com. a 10.1.1.1
+# NS replies:
+# AR replies:
+
+# Querying the server with the IP 127.1.0.1
+# Question: Atest3.example.com.
+test3.example.com. cname c2.example.com.
+#c2.example.com. cname test.example.net.
+#test.example.net. a 10.7.7.7
+# NS replies:
+# AR replies:

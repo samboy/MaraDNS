@@ -36,6 +36,10 @@ EOF
 cat > db.example.com << EOF
 test.% CNAME test.example.net.
 test.example.net. 10.5.5.5
+test2.% CNAME c1.%
+c1.% 10.1.1.1
+test3.% CNAME c2.%
+c2.% CNAME test.example.net.
 EOF
 
 # 127.1.0.3: example.net
@@ -86,8 +90,10 @@ EOF
 ../../src/Deadwood -f dwood3rc > /dev/null &
 sleep 1
 askmara Atest.example.com. 127.1.0.1 | $LUNACY regex.parse.lunacy
-
-exit 0 # DEBUG
+echo
+askmara Atest2.example.com. 127.1.0.1 | $LUNACY regex.parse.lunacy
+echo
+askmara Atest3.example.com. 127.1.0.1 | $LUNACY regex.parse.lunacy
 
 # CLEAN UP
 killall maradns
