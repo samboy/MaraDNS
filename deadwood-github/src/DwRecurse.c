@@ -391,6 +391,8 @@ catch_dwx_create_dns_details:
         return 0;
 }
 
+/* 2022 note: This is for ANY queries.  Here in the 2020s, as per RFC8482, we
+ * should just ignore and discard ANY queries, and never send them out */
 int dwx_check_answer_section_any(dw_str *in, dw_str *query,dns_details *view) {
         int32_t qtype = 0; /* The type of record they want in the query */
         int counter = 0, cname_chain = 0, use_cname = 1;
