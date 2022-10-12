@@ -465,7 +465,8 @@ int dwx_check_answer_section_any(dw_str *in, dw_str *query,dns_details *view) {
  * Output: -1 on error, 1 on success
  */
 
-int dwx_check_answer_section(dw_str *in, dw_str *query, dns_details *view) {
+int dwx_check_answer_section(dw_str *in, dw_str *query, dns_details *view,
+                             dw_str *bailiwick) {
         int32_t qtype = 0; /* The type of record they want in the query */
         int counter = 0, cname_chain = 0, use_cname = 1, offset = 0;
 
@@ -483,6 +484,7 @@ int dwx_check_answer_section(dw_str *in, dw_str *query, dns_details *view) {
         for(counter = 0; counter < view->look->ancount * 2; counter +=2) {
                 if(dwx_dname_issame_2dw(query,0,
                                 in,view->look->an[counter]) == 1 &&
+                                offset >= 0 &&
                                 dw_fetch_u16(in,view->look->an[counter + 1]) ==
                                 qtype) { /* Direct answer for our query */
                         offset++;
@@ -494,8 +496,23 @@ int dwx_check_answer_section(dw_str *in, dw_str *query, dns_details *view) {
                                 view->look->an[counter]) == 1 &&
                                 dw_fetch_u16(in,view->look->an[counter + 1]) ==
                                 RR_CNAME) { /* First answer a CNAME */
-                        offset++;
-                        cname_chain++;
+                        /* While it's not a security hole in Deadwood to
+                         * use out of bailiwick replies in CNAME chains,
+                         * poorly operated domains sometimes have out of
+                         * bailiwick records in their DNS database, and
+                         * since most DNS servers discard out of bailiwick
+                         * CNAME records, they can very well point to the
+                         * wrong IP. */
+                        if(dwx_string_in_bailiwick(in,
+                                view->look->an[1]+10,/* What CNAME points to */
+                                bailiwick, query) != 1) {
+                            offset = -2;
+                            cname_chain = -1;
+                            use_cname = 0;
+                        } else {
+                          offset++;
+                          cname_chain++;
+                        }
                 } else if(cname_chain > 0 && qtype != RR_CNAME &&
                                 offset == cname_chain &&
                                 use_cname == 1 &&
@@ -505,8 +522,17 @@ int dwx_check_answer_section(dw_str *in, dw_str *query, dns_details *view) {
                                 view->look->an[counter]) == 1 &&
                                 dw_fetch_u16(in,view->look->an[counter + 1]) ==
                                 RR_CNAME) { /* CNAME chain member */
-                        offset++;
-                        cname_chain++;
+                        if(dwx_string_in_bailiwick(in,
+                                /* What name the CNAME record points to */
+                                view->look->an[(cname_chain * 2) + 1]+10,
+                                bailiwick, query) != 1) {
+                            offset = -2;
+                            cname_chain = -1;
+                            use_cname = 0;
+                        } else {
+                          offset++;
+                          cname_chain++;
+                        }
                 } else if(cname_chain > 0 && qtype != RR_CNAME &&
                                 dwx_dname_issame_dw(in,
                                 view->look->an[((cname_chain - 1) * 2) + 1]
@@ -1659,7 +1685,7 @@ dw_str *dwx_dissect_packet(dw_str *in, dw_str *query, dw_str *bailiwick) {
         view = dwx_create_dns_details(in,query);
 
         if(view == 0 ||
-           dwx_check_answer_section(in,query,view) == -1 ||
+           dwx_check_answer_section(in,query,view,bailiwick) == -1 ||
            dwx_if_an_then_no_ns_nor_ar(view) == -1 ||
            dwx_cleanup_ns_ar(view) == -1) {
                 goto catch_dwx_dissect_packet;
