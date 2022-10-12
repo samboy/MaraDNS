@@ -23,6 +23,12 @@ I also fixed a minor security issue, which also affected other DNS servers,
 where a clever attacker with access to the recurisve DNS server could had
 kept records in the cache longer than desired.
 
+`min_ttl` now correctly sets a minimum TTL for direct answers to queries.
+
+While using Deadwood as a recursive server is deprecated, I have fixed
+a long standing bug with how Deadwood handled certain CNAME chains, 
+and have added tests to make sure this bug stays fixed.
+
 # 2021 Updates
 
 Deadwood has a new parameter: `source_ip4`.  This optional parameter
