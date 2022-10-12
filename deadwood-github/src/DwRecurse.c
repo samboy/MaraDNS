@@ -503,19 +503,13 @@ int dwx_check_answer_section(dw_str *in, dw_str *query, dns_details *view,
                          * since most DNS servers discard out of bailiwick
                          * CNAME records, they can very well point to the
                          * wrong IP. */
-                        dw_log_dwstr("DEBUG in ",in,1000);
-                        dw_log_number("DEBUG point at ",
-                        /* DEBUG */   view->look->an[1]+10," ",1000);
                         if(dwx_string_in_bailiwick(in,
                                 view->look->an[1]+10,/* What CNAME points to */
                                 bailiwick, 0) != 1) {
-                            dw_log_dwstr("DEBUG bwick FAIL ",bailiwick,1000);
-                            dw_log_dwstr("DEBUG query ",query,1000);
                             offset = -2;
                             cname_chain = -1;
                             use_cname = 0;
                         } else {
-                          dw_log_string("DEBUG bwick PASS ",1000);
                           offset++;
                           cname_chain++;
                         }
@@ -528,20 +522,14 @@ int dwx_check_answer_section(dw_str *in, dw_str *query, dns_details *view,
                                 view->look->an[counter]) == 1 &&
                                 dw_fetch_u16(in,view->look->an[counter + 1]) ==
                                 RR_CNAME) { /* CNAME chain member */
-                        dw_log_dwstr("DEBUG in ",in,1000);
-                        dw_log_number("DEBUG point at ",
-                        /* DEBUG */   view->look->an[1]+10," ",1000);
                         if(dwx_string_in_bailiwick(in,
                                 /* What name the CNAME record points to */
                                 view->look->an[(cname_chain * 2) + 1]+10,
                                 bailiwick, 0) != 1) {
-                            dw_log_dwstr("DEBUG bwickX FAIL ",bailiwick,1000);
-                            dw_log_dwstr("DEBUG query ",query,1000);
                             offset = -2;
                             cname_chain = -1;
                             use_cname = 0;
                         } else {
-                          dw_log_string("DEBUG bwickX PASS ",1000);
                           offset++;
                           cname_chain++;
                         }
@@ -795,12 +783,10 @@ int dwx_string_in_bailiwick(dw_str *in, int32_t offset, dw_str *bailiwick,
                 dw_str *query) {
 
         if(query != 0 && dwx_string_bailiwick_query(in,offset,query) != 1) {
-                dw_log_string("DEBUG dwx_string_in_bailiwick query FAIL",1000);
                 return 0;
         }
 
         if(dwx_string_bailiwick_top(in,offset,bailiwick) != 1) {
-                dw_log_string("DEBUG dwx_string_in_bailiwick top FAIL",1000);
                 return 0;
         }
 
