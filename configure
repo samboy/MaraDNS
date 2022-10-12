@@ -97,7 +97,7 @@ fi
 if echo $UNAME | grep -i linux > /dev/null ; then
 	cat $BUILDDIR/Makefile.linux >> Makefile
 	DEADWOOD="$( echo deadwood-*/src )"
-	cp ${DEADWOOD}/Makefile.ubuntu2004 ${DEADWOOD}/Makefile
+	cp ${DEADWOOD}/Makefile.ubuntu2204 ${DEADWOOD}/Makefile
 	echo It looks like you are using Linux\; just type in \'make\'
 	EXITCODE=0
 elif echo $UNAME | grep -i mingw32 > /dev/null ; then
