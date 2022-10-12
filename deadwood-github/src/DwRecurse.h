@@ -185,4 +185,7 @@ int dwx_cname_in_cache(dw_str *orig_query, dw_str *query,
  */
 int dwx_make_cname_reply(int conn_num, dw_str *query,
                 dw_str *action, dw_str *answer, int depth, int here_max_ttl);
+
+int dwx_string_in_bailiwick(dw_str *in, int32_t offset, dw_str *bailiwick,
+                dw_str *query);
 #endif /* __DWRECURSE_H_DEFINED__ */
