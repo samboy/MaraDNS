@@ -1,6 +1,6 @@
 # Querying the server with the IP 127.1.0.1
 # Question: Atest.example.com.
-test.example.com. +86400 cname test.example.net.
-#test.example.net. +86400 a 10.7.7.7
+test.example.com. cname test.example.net.
+#test.example.net. a 10.7.7.7
 # NS replies:
 # AR replies:
