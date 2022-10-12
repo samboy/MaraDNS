@@ -508,7 +508,7 @@ int dwx_check_answer_section(dw_str *in, dw_str *query, dns_details *view,
                         /* DEBUG */   view->look->an[1]+10," ",1000);
                         if(dwx_string_in_bailiwick(in,
                                 view->look->an[1]+10,/* What CNAME points to */
-                                bailiwick, query) != 1) {
+                                bailiwick, 0) != 1) {
                             dw_log_dwstr("DEBUG bwick FAIL ",bailiwick,1000);
                             dw_log_dwstr("DEBUG query ",query,1000);
                             offset = -2;
@@ -534,7 +534,7 @@ int dwx_check_answer_section(dw_str *in, dw_str *query, dns_details *view,
                         if(dwx_string_in_bailiwick(in,
                                 /* What name the CNAME record points to */
                                 view->look->an[(cname_chain * 2) + 1]+10,
-                                bailiwick, query) != 1) {
+                                bailiwick, 0) != 1) {
                             dw_log_dwstr("DEBUG bwickX FAIL ",bailiwick,1000);
                             dw_log_dwstr("DEBUG query ",query,1000);
                             offset = -2;
@@ -821,7 +821,7 @@ int dwx_check_bailiwick_ns_section(dns_details *view, dw_str *query,
         dns_string *look = 0;
         int max = 0;
 
-        if(view == 0 || view->look == 0 || view->ns_types == 0) {
+        if(view == 0 || view->look == 0 || view->ns_types == 0 || query == 0) {
                 return -1;
         }
 
