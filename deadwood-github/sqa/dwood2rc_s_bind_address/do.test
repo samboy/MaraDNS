@@ -4,15 +4,36 @@
 # NOTE: No startup of MaraDNS because we're just looking at the address
 #       deadwood binds to
 
+# Find Lunacy or lua
+LUNACY=""
+# Command is POSIX: https://www.unix.com/man-page/posix/1p/command/
+if command -v lunacy64 >/dev/null 2>&1 ; then
+  LUNACY=lunacy64
+elif command -v lunacy >/dev/null 2>&1 ; then
+  LUNACY=lunacy
+elif command -v lua5.1 >/dev/null 2>&1 ; then
+  LUNACY=lua5.1
+elif command -v lua-5.1 >/dev/null 2>&1 ; then
+  LUNACY=lua-5.1
+elif command -v lua >/dev/null 2>&1 ; then
+  LUNACY=lua
+fi
+if [ -z "$LUNACY" ] ; then
+  echo Please install Lunacy or Lua 5.1
+  echo Either the version included with MaraDNS -or- the version at
+  echo https://github.com/samboy/lunacy
+  exit 1
+fi
+
 export LANG=C
-for VALUE in 127.0.0.1 127.0.0.2 ; do
+for VALUE in 127.2.0.1 127.2.0.2 ; do
 
 cat > dwood2rc << EOF
 chroot_dir="$( pwd )"
 bind_address="${VALUE}"
 upstream_servers = {}
-upstream_servers["."]="127.0.0.3"
-recursive_acl="127.0.0.1/16"
+upstream_servers["."]="127.2.0.3"
+recursive_acl="127.0.0.1/8"
 maxprocs=8
 timeout_seconds=20
 tcp_listen =1
@@ -23,9 +44,7 @@ EOF
 sleep 1
 echo
 echo $VALUE
-#netstat -nap |grep Dea |perl -pe 's/[0-9\.\/]+(src\/)?Dead?(wood)?//;s/\s*//g'
-netstat -nap | grep 53 | tr -d '-' | perl -pe '
-	s/[0-9\.\/]+(src\/)?Dea?d?(wood)?//;s/\s*//g'
+netstat -nap | grep 53 | grep 127.2 | $LUNACY lrx.lunacy
 echo
 sleep 1
 killall Deadwood > /dev/null 2>&1
