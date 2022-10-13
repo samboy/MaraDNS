@@ -2,6 +2,27 @@
 
 # This is a basic Deadwood test to make sure it works
 
+# Find Lunacy or lua
+LUNACY=""
+# Command is POSIX: https://www.unix.com/man-page/posix/1p/command/
+if command -v lunacy64 >/dev/null 2>&1 ; then
+  LUNACY=lunacy64
+elif command -v lunacy >/dev/null 2>&1 ; then
+  LUNACY=lunacy
+elif command -v lua5.1 >/dev/null 2>&1 ; then
+  LUNACY=lua5.1
+elif command -v lua-5.1 >/dev/null 2>&1 ; then
+  LUNACY=lua-5.1
+elif command -v lua >/dev/null 2>&1 ; then
+  LUNACY=lua
+fi
+if [ -z "$LUNACY" ] ; then
+  echo Please install Lunacy or Lua 5.1
+  echo Either the version included with MaraDNS -or- the version at
+  echo https://github.com/samboy/lunacy
+  exit 1
+fi
+
 killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
 sleep 2
 
@@ -38,11 +59,7 @@ EOF
 ../../src/Deadwood -f dwood2rc > /dev/null &
 #../../src/Deadwood -f dwood2rc &
 sleep 1
-dig @127.0.0.1 -p ${PORT} www1.example.com. | \
-	grep -v 'global options' | perl -pe 's/>>.*<<//;
-s/id:.*//;
-s/time:.*//;
-s/WHEN:.*//;' | awk '/example.com/ {gsub(/86[0-9][0-9][0-9]/,"")} {print}'
+askmara -p ${PORT} Awww.example.com. | $LUNACY regex.parse.lunacy
 
 sleep 1
 killall Deadwood
