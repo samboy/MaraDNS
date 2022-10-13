@@ -52,7 +52,7 @@ function processQuery(Q) -- Called for every DNS query received
 end
 EOF
 
-${PROG} -d test.lua |egrep '[A-Za-z0-9]' | grep -v version > output.test1 &
+${PROG} -d test.lua |grep -E '[A-Za-z0-9]' | grep -v version > output.test1 &
 ${PROG} -d upstream.lua &
 sleep 1
 

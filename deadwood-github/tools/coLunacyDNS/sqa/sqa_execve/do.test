@@ -11,7 +11,7 @@ touch output.test
 for a in execve2.c  execve3.c ; do
 	echo Test for ${a%.c} >>output.test
 	gcc -o ${a%.c} $a
-	./${a%.c} | egrep '[A-Za-z0-9]' | grep -v version >> output.test
+	./${a%.c} | grep -E '[A-Za-z0-9]' | grep -v version >> output.test
 	rm ${a%.c}
 done
 

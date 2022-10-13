@@ -64,7 +64,7 @@ end
 EOF
 
 
-${PROG} -d test.lua | egrep '[0-9a-zA-Z]' | grep -v version > output.test &
+${PROG} -d test.lua | grep -E '[0-9a-zA-Z]' | grep -v version > output.test &
 sleep 1
 
 askmara -t 1 Aa.example.com. 127.7.7.26

@@ -65,7 +65,7 @@ sleep 1
 done
 
 # Valgrind tests
-valgrind ../../src/Deadwood -f dwood2rc 2>&1 |  egrep '(ERROR|lost:)' | \
+valgrind ../../src/Deadwood -f dwood2rc 2>&1 |  grep -E '(ERROR|lost:)' | \
 	$LUNACY lrx.lunacy | awk '{$1="";print}' &
 
 #valgrind --leak-check=full ../../src/Deadwood -f dwood2rc &

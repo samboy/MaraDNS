@@ -63,7 +63,7 @@ cd $CWD
 # element is still accounted for) that Valgrind sometimes lies about
 # memory being "possibly lost"
 
-valgrind ../../src/Deadwood -f dwood2rc 2>&1 |  egrep '(ERROR|lost:)' | \
+valgrind ../../src/Deadwood -f dwood2rc 2>&1 |  grep -E '(ERROR|lost:)' | \
 	perl -pe 's/\(.*\)//' | grep -v possibly | awk '{$1="";print}' &
 
 #valgrind --leak-check=full ../../src/Deadwood -f dwood2rc &

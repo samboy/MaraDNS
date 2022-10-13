@@ -13,7 +13,7 @@ function processQuery(Q) -- Called for every DNS query received
 end
 EOF
 
-${PROG} -d test.lua | egrep '[A-Za-z0-9]' | grep -v version > output.test2 &
+${PROG} -d test.lua | grep -E '[A-Za-z0-9]' | grep -v version > output.test2 &
 sleep 1
 
 askmara Amaradns.samiam.org. 127.7.7.1 > output.test1
