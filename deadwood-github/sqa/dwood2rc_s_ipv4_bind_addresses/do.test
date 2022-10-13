@@ -49,7 +49,7 @@ echo $VALUE
 #netstat -nap |grep Dea |perl -pe 's/[0-9\.\/]+(src\/)?Dead?(wood)?//;s/\s*//g'
 #netstat -nap | grep 53 | grep 127.2 | tr -d '-' | perl -pe '
 #	s/[0-9\.\/]+(src\/)?Dea?d?(wood)?//;s/\s*//g'
-netstat -nap | grep 53 | grep 127.2 | $LUNACY lrx.lunacy
+netstat -na | grep 53 | grep 127.2 | $LUNACY lrx.lunacy
 sleep 1
 killall Deadwood > /dev/null 2>&1
 sleep 1
