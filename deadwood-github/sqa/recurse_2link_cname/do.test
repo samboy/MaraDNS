@@ -2,6 +2,27 @@
 
 # This makes sure Deadwood can follow a multi-link CNAME entry
 
+# Find Lunacy or lua
+LUNACY=""
+# Command is POSIX: https://www.unix.com/man-page/posix/1p/command/
+if command -v lunacy64 >/dev/null 2>&1 ; then
+  LUNACY=lunacy64
+elif command -v lunacy >/dev/null 2>&1 ; then
+  LUNACY=lunacy
+elif command -v lua5.1 >/dev/null 2>&1 ; then
+  LUNACY=lua5.1
+elif command -v lua-5.1 >/dev/null 2>&1 ; then
+  LUNACY=lua-5.1
+elif command -v lua >/dev/null 2>&1 ; then
+  LUNACY=lua
+fi
+if [ -z "$LUNACY" ] ; then
+  echo Please install Lunacy or Lua 5.1
+  echo Either the version included with MaraDNS -or- the version at
+  echo https://github.com/samboy/lunacy
+  exit 1
+fi
+
 # We put this in a separate script so it's easier to run just MaraDNS
 ./setup.maradns
 
@@ -27,7 +48,7 @@ EOF
 ../../src/Deadwood -f dwood3rc > /dev/null 2>&1 &
 sleep 1
 
-askmara Acname1.example.com. | perl -pe 's/\+[0-9]+//'
+askmara Acname1.example.com. | $LUNACY lrx.lunacy
 
 # Clean up
 kill $( ps auxw | grep maradns | grep -v grep | awk '{print $2}' )
