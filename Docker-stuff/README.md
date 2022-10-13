@@ -55,7 +55,7 @@ every morning.
 To make a crontab, after setting up the directory and, as root, 
 copying `run.MaraDNS.tests` over to `/usr/local/bin/`, type in 
 `crontab -e` (one does *not* need to be root to edit crontabs on 
-Ubuntu 20.04 LTS, but some systems require one to set up permissions before
+Ubuntu 22.04 LTS, but some systems require one to set up permissions before
 a non-root user to run cron tabs; your mileage may vary).  If one is 
 not comfortable editing files with `vi`, type in `export EDITOR=nano` 
 before making the crontab.  Make a line which looks like this:
