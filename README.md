@@ -15,10 +15,12 @@ MaraDNS has a web page and blog at https://maradns.samiam.org.
 
 # 2022 Updates
 
-MaraDNS was updated in 2022 to have its automated tests run in an
-Ubuntu 22.04 Docker container instead of an Ubuntu 20.04 Docker
-container.  The tests are also being updated to only need POSIX
-tools or Lua5.1/Lunacy to run.
+MaraDNS was updated in 2022 to have its automated tests run in an Ubuntu
+22.04 Docker container instead of an Ubuntu 20.04 Docker container.
+The tests are also being updated to only need POSIX tools or Lua5.1/Lunacy
+to run; e.g. I have updated the test scripts to not use `egrep` (which,
+strangely enough, is not POSIX) and am updating the scripts to not use
+`perl`.
 
 I also fixed a minor security issue, which also affected other DNS servers,
 where a clever attacker with access to the recurisve DNS server could had
