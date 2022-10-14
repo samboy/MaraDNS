@@ -27,9 +27,10 @@ kept records in the cache longer than desired.
 
 `min_ttl` now correctly sets a minimum TTL for direct answers to queries.
 
-While using Deadwood as a recursive server is deprecated, I have fixed
-a long standing bug with how Deadwood handled certain CNAME chains, 
-and have added tests to make sure this bug stays fixed.
+While using Deadwood as a fully recursive server is not guaranteed to
+be fully supported, I have fixed a long standing bug with how Deadwood
+handled certain CNAME chains, and have added tests to make sure this
+bug stays fixed.
 
 # 2021 Updates
 
