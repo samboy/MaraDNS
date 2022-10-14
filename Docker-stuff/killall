@@ -1,6 +1,9 @@
 #!/bin/sh
 
 # Since CentOS 8 killall is broken, rewrite it as a shell script
+# Note: Ubuntu 22.04 and Alpine Linux come with a working killall
+# The Ubuntu psmisc includes a binary killall
+# However, I am keeping this because the working Dockerfile uses it
 LIST=$( ps auxw | awk '{print $2 " " $11}' | grep "$1" | awk '{print $1}' )
 for a in $LIST ; do
 	kill $a
