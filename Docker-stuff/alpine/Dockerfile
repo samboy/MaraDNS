@@ -14,4 +14,6 @@ RUN apk add --no-cache gcc && apk add --no-cache libc-dev && \
     cp /tmp/MaraDNS/tools/OneSourceOfTruth/do.osot.tests /tmp && \
     rm -fr /tmp/MaraDNS && cd /tmp && tar xvzf rg32hash.tar.gz && \
     cd rg32hash-source && make && cp rg32hash /usr/bin && \
-    mkdir /etc/deadwood/
+    mkdir /etc/deadwood/ && \
+    apk add --no-cache bash && \
+    true
