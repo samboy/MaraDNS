@@ -1,5 +1,26 @@
 #!/bin/sh
 
+# Find Lunacy or lua
+LUNACY=""
+# Command is POSIX: https://www.unix.com/man-page/posix/1p/command/
+if command -v lunacy64 >/dev/null 2>&1 ; then
+  LUNACY=lunacy64
+elif command -v lunacy >/dev/null 2>&1 ; then
+  LUNACY=lunacy
+elif command -v lua5.1 >/dev/null 2>&1 ; then
+  LUNACY=lua5.1
+elif command -v lua-5.1 >/dev/null 2>&1 ; then
+  LUNACY=lua-5.1
+elif command -v lua >/dev/null 2>&1 ; then
+  LUNACY=lua
+fi
+if [ -z "$LUNACY" ] ; then
+  echo Please install Lunacy or Lua 5.1
+  echo Either the version included with MaraDNS -or- the version at
+  echo https://github.com/samboy/lunacy
+  exit 1
+fi
+
 cat > mararc1 << EOF
 ipv4_bind_addresses = "127.0.0.5"
 verbose_level=0
@@ -54,21 +75,17 @@ sleep 1
 
 echo
 echo PARAM: Asking for non-existent hostname
-../../../tools/askmara -t 2 Afooz.example.com. 127.0.0.2 | \
-	perl -pe 's/com\. [0-9]+//'
+../../../tools/askmara -t 2 Afooz.example.com. 127.0.0.2 | $LUNACY lrx.lunacy
 echo
 echo PARAM: Asking for existing hostname
-../../../tools/askmara -t 2 Awww.example.com. 127.0.0.2 | \
-	perl -pe 's/com\. [0-9]+//'
+../../../tools/askmara -t 2 Awww.example.com. 127.0.0.2 | $LUNACY lrx.lunacy
 echo
 echo PARAM: Asking for hostname from non-responsive server
-../../../tools/askmara -t 5 Awww.example.net. 127.0.0.2 | \
-	perl -pe 's/com\. [0-9]+//'
+../../../tools/askmara -t 5 Awww.example.net. 127.0.0.2 | $LUNACY lrx.lunacy
 sleep 1
 echo
 echo PARAM: Asking for authoritative non-existent hostname
-../../../tools/askmara -t 2 Afooz.example.com. 127.0.0.3 | \
-	perl -pe 's/com\. [0-9]+//'
+../../../tools/askmara -t 2 Afooz.example.com. 127.0.0.3 | $LUNACY lrx.lunacy
 sleep 1
 echo
 
