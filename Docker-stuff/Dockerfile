@@ -10,6 +10,7 @@ COPY run.tests.sh /
 RUN apt-get -y update && apt-get -y install unattended-upgrades && \
         unattended-upgrades -d && apt-get -y install gcc && \
         apt-get -y install git && apt-get -y install lua5.1 && \
+	apt-get -y install busybox && \
 	apt-get -y install make && cd /tmp && git clone \
 	https://github.com/samboy/MaraDNS && cd MaraDNS && \
 	./configure && make && make install && export FLAGS=-O3 && \
