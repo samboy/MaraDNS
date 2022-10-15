@@ -115,7 +115,6 @@ fi
 sleep 3
 rm -fr cache
 
-exit 0 # DEBUG
 killall maradns > /dev/null 2>&1
 rm mararc
 rm db.example.com
