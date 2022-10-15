@@ -27,7 +27,7 @@ fi
 killall maradns > /dev/null 2>&1 # Don't run this test on Solaris
 killall valgrind > /dev/null 2>&1
 killall Deadwood > /dev/null 2>&1
-MARAIP=$( $LUNACY randomIP 99 )
+MARAIP=$( $LUNACY randomIP.lunacy 99 )
 sleep 2
 
 cat > mararc << EOF
@@ -49,7 +49,7 @@ sleep 1
 
 # Now, make sure Deadwood works
 
-DEADWOODIP=$( $LUNACY randomIP 98 )
+DEADWOODIP=$( $LUNACY randomIP.lunacy 98 )
 cat > dwood2rc << EOF
 chroot_dir="$( pwd )"
 ipv4_bind_addresses="${DEADWOODIP}"
