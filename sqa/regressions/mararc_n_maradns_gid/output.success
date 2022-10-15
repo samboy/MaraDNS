@@ -6,4 +6,4 @@ www.example.com. +86400 a 10.1.2.3
 # AR replies:
 #synth-ip-7f000001.example.com. +86400 a 127.0.0.1
 
-12345    12345    54321    maradns
+12345    54321    maradns
