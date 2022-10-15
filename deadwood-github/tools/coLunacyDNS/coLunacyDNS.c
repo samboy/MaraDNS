@@ -49,6 +49,7 @@
 #define socklen_t int32_t
 #else
 #include <sys/socket.h>
+#include <sys/select.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <time.h>
