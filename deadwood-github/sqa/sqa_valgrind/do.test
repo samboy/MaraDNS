@@ -111,6 +111,8 @@ sleep 3
 LIST=$( ps -e | grep valgrind | grep -v grep | awk '{print $1}' )
 if [ ! -z "$LIST" ] ; then
   kill $LIST
+else
+  echo FATAL: Deadwood/valgrind terminated early
 fi
 sleep 3
 rm -fr cache
