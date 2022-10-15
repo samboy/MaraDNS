@@ -4,4 +4,6 @@ image.
 
 Right now, the tests do not all pass in Alpine, so the Ubuntu 22.04
 Docker image in the parent directory remains the official testing
-platform for MaraDNS.
+platform for MaraDNS.  In more detail, while all MaraDNS and Deadwood
+tests pass, I am still working on getting the coLunacyDNS tests
+to pass in Alpine.
