@@ -104,7 +104,7 @@ sleep 3
 # Make sure TCP doesn't leak memory
 dig +tcp @127.0.0.1 tcp.example.com. > /dev/null 2>&1
 sleep 3
-ps auxw | grep valgrind | grep -v grep | awk '{print $2}' | xargs kill
+ps axw | grep valgrind | grep -v grep | awk '{print $1}' | xargs kill
 sleep 3
 rm -fr cache
 
