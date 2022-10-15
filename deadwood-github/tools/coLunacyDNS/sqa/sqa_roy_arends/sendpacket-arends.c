@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <sys/select.h>
 
 /* We use a special SOCKET type for easier Windows porting */
 #define SOCKET int
