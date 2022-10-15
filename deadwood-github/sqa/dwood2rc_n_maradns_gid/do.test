@@ -56,7 +56,7 @@ EOF
 
 ../../src/Deadwood -f dwood2rc > /dev/null &
 sleep 1
-ps -o comm,group | grep Deadwood | $LUNACY lrx.lunacy
+ps -eo comm,group | grep Deadwood | $LUNACY lrx.lunacy
 sleep 1
 killall maradns
 killall Deadwood

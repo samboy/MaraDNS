@@ -21,7 +21,7 @@ EOF
 sleep 1
 ../../../tools/askmara Awww.example.com.
 echo
-ps -o user,group,comm | grep maradns
+ps -eo user,group,comm | grep maradns
 sleep 1
 killall maradns > /dev/null 2>&1
 rm mararc
