@@ -12,7 +12,8 @@ function processQuery(Q) -- Called for every DNS query received
 end
 EOF
 
-${PROG} -d test.lua 2>&1 |grep -E '[A-Za-z0-9]' |grep -v version >output.test &
+${PROG} -d test.lua 2>&1 |grep -E '[A-Za-z0-9]' \
+	|grep -v version | awk -F: '{$2="";print}' >output.test &
 sleep 1
 
 LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
