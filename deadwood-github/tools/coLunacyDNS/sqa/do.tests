@@ -140,7 +140,7 @@ for test in $TESTS ; do
 		fi
 		cat ../log
 	fi
-	ps auxw | awk "$PROCGET" | grep coLunacyDNS | awk '{print "kill " $1}
+	ps -e | awk "$PROCGET" | grep coLunacyDNS | awk '{print "kill " $1}
                 ' | sh
 	sleep 1
 	cd "$HERE"

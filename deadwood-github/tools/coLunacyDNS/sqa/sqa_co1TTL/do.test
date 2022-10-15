@@ -24,19 +24,19 @@ sleep 1
 askmara Amaradns.samiam.org. 127.7.7.52 | grep maradns > output.test
 askmara Amaradns.samiam.org. 127.7.7.53 | grep maradns >> output.test
 
-LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done
 sleep 1
-LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 if [ ! -z "$LIST" ] ; then
 	for process in $LIST ; do
 		kill $process
 	done
 fi
 sleep 1
-LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 if [ ! -z "$LIST" ] ; then
 	for process in $LIST ; do
 		kill -9 $process

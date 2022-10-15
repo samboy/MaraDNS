@@ -26,19 +26,19 @@ askmara -v Amaradns.samiam.org. 127.7.7.50 | \
 askmara -v Amaradns.samiam.org. 127.7.7.51 | \
 	grep 'Recurs available' >> output.test
 
-LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done
 sleep 1
-LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 if [ ! -z "$LIST" ] ; then
 	for process in $LIST ; do
 		kill $process
 	done
 fi
 sleep 1
-LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 if [ ! -z "$LIST" ] ; then
 	for process in $LIST ; do
 		kill -9 $process

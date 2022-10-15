@@ -63,7 +63,7 @@ askmara -t 2 Ab.example.com. 127.7.7.47 >> output.test2
 askmara -t 2 Ac.example.com. 127.7.7.47 >> output.test2
 askmara -t 2 Ad.example.com. 127.7.7.47 >> output.test2
 
-LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done

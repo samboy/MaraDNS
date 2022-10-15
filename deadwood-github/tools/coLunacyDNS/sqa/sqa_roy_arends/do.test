@@ -25,7 +25,7 @@ echo IPv6 >> output.test1
 ./sendpacket-arends ::1 >> output.test1
 ./sendpacket-arends ::1 1 >> output.test1
 
-LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done

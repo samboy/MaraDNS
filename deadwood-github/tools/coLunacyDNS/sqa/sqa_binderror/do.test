@@ -15,7 +15,7 @@ EOF
 ${PROG} -d test.lua 2>&1 |grep -E '[A-Za-z0-9]' |grep -v version >output.test &
 sleep 1
 
-LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done

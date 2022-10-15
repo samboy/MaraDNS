@@ -40,7 +40,7 @@ askmara Awww.amazon.com. 127.7.7.31 &
 askmara Awww.amazon.com. 127.7.7.31 &
 askmara Awww.amazon.com. 127.7.7.31 >> output.test
 
-LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done

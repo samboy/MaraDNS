@@ -118,7 +118,7 @@ askmara Amaradns.samiam.org. 127.7.7.17 > output.test
 askmara Aname.invalid. 127.7.7.17 >> output.test
 askmara As.vk.tj. 127.7.7.17 >> output.test
 
-LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done

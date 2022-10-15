@@ -1,5 +1,18 @@
 # This script is sourced by each test script, so things which may change
 # from one Linux version to another can be changed here
 
-# This, given the output of "ps auxw", returns the PID and the process name
-PROCGET='{print $2 " " $11}'
+# This, given the output of "ps -e", returns the PID and the process name
+# This is complex to handle procps, Busybox ps, and Toybox ps
+# Since the original design was not designed to do complex process handling,
+# This script has become line noise.  I will explain each statement in the
+# line noise:
+
+# We have if($1 !~ /[a-zA-Z]/) to work around a busybox ps bug
+# $2 is usually the user, which we don't need.  Discard
+# pid is the process ID.  With "ps -e", this is the first field.
+# Now that the first field is in pid, clear out the first field
+# "a" now has the ps output, including the process name
+# Some implementations of "ps -e" have something like "00:00:01". Remove.
+# Work around that busybox ps bug with 6-digit PIDs again.
+# Finally, print the process ID followed by the process name
+PROCGET='{if($1 !~ /[a-zA-Z]/){$2="";}pid=$1;$1="";a=$0;gsub(/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/,"",a);gsub(/[^0-9]+$/,"",pid);print pid " " a}'

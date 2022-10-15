@@ -61,15 +61,15 @@ askmara Ab.example.com. 127.7.7.41
 askmara Aa.example.com. 127.7.7.40 > output.test
 askmara Ab.example.com. 127.7.7.40 >> output.test
 
-LIST=$( ps auxw | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done
-LIST=$( ps auxw | awk "$PROCGET" | grep maradns | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep maradns | awk '{print $1}' )
 for process in $LIST ; do
 	kill $process
 done
-LIST=$( ps auxw | awk "$PROCGET" | grep nanopacket | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep nanopacket | awk '{print $1}' )
 for process in $LIST ; do
 	kill $process
 done
