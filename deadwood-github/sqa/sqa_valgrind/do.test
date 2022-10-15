@@ -29,7 +29,7 @@ sleep 2
 
 cat > mararc << EOF
 chroot_dir="$( pwd )"
-ipv4_bind_addresses="127.0.0.2"
+ipv4_bind_addresses="127.3.0.2"
 csv2 = {}
 csv2["example.com."] = "db.example.com"
 EOF
@@ -48,10 +48,10 @@ sleep 1
 
 cat > dwood2rc << EOF
 chroot_dir="$( pwd )"
-ipv4_bind_addresses="127.0.0.1"
+ipv4_bind_addresses="127.3.0.1"
 upstream_servers = {}
-upstream_servers["."]="127.0.0.2"
-recursive_acl="127.0.0.1/16"
+upstream_servers["."]="127.3.0.2"
+recursive_acl="127.0.0.1/8"
 maximum_cache_elements=32
 cache_file="cache/dw_cache"
 tcp_listen=1
@@ -93,21 +93,25 @@ sleep 1
 for a in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 \
          22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 ; do
 
-	#askmara -t 1 Acelement${a}.example.com. 127.0.0.1 # DEBUG
-	askmara -t 1 Acelement${a}.example.com. 127.0.0.1 > /dev/null
-	askmara -t 1 Acelement${a}.example.com. 127.0.0.1 > /dev/null
+	#askmara -t 1 Acelement${a}.example.com. 127.3.0.1 # DEBUG
+	askmara -t 1 Acelement${a}.example.com. 127.3.0.1 > /dev/null
+	askmara -t 1 Acelement${a}.example.com. 127.3.0.1 > /dev/null
 	sleep 2
-	askmara -t 1 Acelement${a}.example.com. 127.0.0.1 > /dev/null
+	askmara -t 1 Acelement${a}.example.com. 127.3.0.1 > /dev/null
 done
 
 sleep 3
 # Make sure TCP doesn't leak memory
-dig +tcp @127.0.0.1 tcp.example.com. > /dev/null 2>&1
+dig +tcp @127.3.0.1 tcp.example.com. > /dev/null 2>&1
 sleep 3
-ps -e | grep valgrind | grep -v grep | awk '{print $1}' | xargs kill
+LIST=$( ps -e | grep valgrind | grep -v grep | awk '{print $1}' )
+if [ ! -z "$LIST" ] ; then
+  kill $LIST
+fi
 sleep 3
 rm -fr cache
 
+exit 0 # DEBUG
 killall maradns > /dev/null 2>&1
 rm mararc
 rm db.example.com
