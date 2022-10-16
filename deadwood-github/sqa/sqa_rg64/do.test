@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Since there was a bug in another rg32 implementation which only showed 
 # up with "clang -O2" and "clang -O3" (it passed with all gcc and tcc 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Make the rg64 binary
 cd ../../src

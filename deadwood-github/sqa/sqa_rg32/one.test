@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Make the rg32 binary
 cd ../../src
