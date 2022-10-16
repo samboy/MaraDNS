@@ -1,0 +1,15 @@
+--- maradns-3.4.03/CHANGELOG	2022-08-03 01:20:41.000000000 -0700
++++ maradns-3.4.04/CHANGELOG	2022-10-16 08:11:53.896107087 -0700
+@@ -1,5 +1,12 @@
+ MaraDNS changelog
+ 
++   maradns-3.4.04:
++   This is a legacy release of MaraDNS:
++
++      * Deadwood updated to 3.4.04 (no security updates)
++
++     (2022-10-16)
++
+    maradns-3.4.03:
+    This is a legacy release of MaraDNS:
+ 
