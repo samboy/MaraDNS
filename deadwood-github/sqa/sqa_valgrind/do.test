@@ -88,7 +88,7 @@ cd $CWD
 # element is still accounted for) that Valgrind sometimes lies about
 # memory being "possibly lost"
 
-valgrind ../../src/Deadwood -f dwood2rc 2>&1 | tee output.valgrind | \
+valgrind ../../src/Deadwood -f dwood2rc 2>&1 | \
         grep -E '(ERROR|lost:)' | \
         $LUNACY lrx.lunacy | grep -v possibly | awk '{$1="";print}' &
 
@@ -98,6 +98,7 @@ sleep 1
 for a in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 \
          22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 ; do
 
+	echo $a of 42
 	#askmara -t 1 Acelement${a}.example.com. ${DEADWOODIP} # DEBUG
 	askmara -t 1 Acelement${a}.example.com. ${DEADWOODIP} > /dev/null
 	askmara -t 1 Acelement${a}.example.com. ${DEADWOODIP} > /dev/null
@@ -107,16 +108,21 @@ done
 
 sleep 3
 # Make sure TCP doesn't leak memory
-dig +tcp @${DEADWOODIP} tcp.example.com. > /dev/null 2>&1
-sleep 3
+#dig +tcp @${DEADWOODIP} tcp.example.com. > /dev/null 2>&1
+#sleep 3
 LIST=$( ps -e | grep valgrind | grep -v grep | awk '{print $1}' )
-if [ ! -z "$LIST" ] ; then
-  kill $LIST
+if [ -z "$LIST" ] ; then
+  # ps -e is buggy with valgrind in Ubuntu 22.04, it gives the process
+  # a different name like memcheck-arm64- so we try again with 
+  # the less standard "auxw" args which Busybox/Toybox do not support
+  LIST=$( ps auxw | grep valgrind | grep -v grep | awk '{print $2}' )
+  if [ -z "$LIST" ] ; then
+    echo FATAL: Deadwood/valgrind terminated early
+  else
+    kill $LIST
+  fi
 else
-  echo FATAL: Deadwood/valgrind terminated early
-  cat output.valgrind
-  ps -e | grep valgrind
-  ps -e | grep Deadwood
+  kill $LIST
 fi
 sleep 3
 rm -fr cache
