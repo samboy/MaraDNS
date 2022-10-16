@@ -88,9 +88,7 @@ cd $CWD
 # element is still accounted for) that Valgrind sometimes lies about
 # memory being "possibly lost"
 
-valgrind ../../src/Deadwood -f dwood2rc 2>&1 | \
-        grep -E '(ERROR|lost:)' | \
-        $LUNACY lrx.lunacy | grep -v possibly | awk '{$1="";print}' &
+valgrind ../../src/Deadwood -f dwood2rc > output.valgrind 2>&1 &
 
 #valgrind --leak-check=full ../../src/Deadwood -f dwood2rc &
 
@@ -127,8 +125,11 @@ fi
 sleep 3
 rm -fr cache
 
+cat output.valgrind | \
+        grep -E '(ERROR|lost:)' | \
+        $LUNACY lrx.lunacy | grep -v possibly | awk '{$1="";print}' 
+
 killall maradns > /dev/null 2>&1
 rm mararc
 rm db.example.com
 rm dwood2rc
-rm -f output.valgrind

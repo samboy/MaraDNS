@@ -155,6 +155,11 @@ for PAIR in $TESTS ; do
 			echo ======= output.test ======= 
 			cat output.test
 			echo =========================== 
+			if [ -e output.valgrind ] ; then
+				echo ===== output.valgrind =====
+				cat output.valgrind
+				echo ===========================
+			fi
 			TRY=$(( $TRY + 1 ))
 			if [ $TRY -ge $TRIES ] ; then
 				# exit 1
