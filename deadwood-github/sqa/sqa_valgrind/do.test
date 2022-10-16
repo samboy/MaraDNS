@@ -115,6 +115,8 @@ if [ ! -z "$LIST" ] ; then
 else
   echo FATAL: Deadwood/valgrind terminated early
   cat output.valgrind
+  ps -e | grep valgrind
+  ps -e | grep Deadwood
 fi
 sleep 3
 rm -fr cache
