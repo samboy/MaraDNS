@@ -15,5 +15,4 @@ RUN apk add --no-cache gcc && apk add --no-cache libc-dev && \
     rm -fr /tmp/MaraDNS && cd /tmp && tar xvzf rg32hash.tar.gz && \
     cd rg32hash-source && make && cp rg32hash /usr/bin && \
     mkdir /etc/deadwood/ && \
-    apk add --no-cache bash && \
     true
