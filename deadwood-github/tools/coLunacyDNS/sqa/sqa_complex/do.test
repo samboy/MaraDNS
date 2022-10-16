@@ -1,7 +1,7 @@
-#!/bin/bash
-# Bashism: Job control
+#!/bin/sh
+# Possibly non-POSIX: Job control
 
-# This is ian adpted version of the “complex” example in README.md
+# This is an adapted version of the “complex” example in README.md
 
 . ../testVars
 

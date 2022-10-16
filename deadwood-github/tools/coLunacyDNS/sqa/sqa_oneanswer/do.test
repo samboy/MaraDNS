@@ -1,5 +1,5 @@
-#!/bin/bash
-# Bashism: Job control
+#!/bin/sh
+# Possibly non-POSIX: Job control
 
 . ../testVars
 PROG="../../coLunacyDNS"
