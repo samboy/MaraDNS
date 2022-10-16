@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 
 git clone https://github.com/samboy/MaraDNS/
 # Some tests assume the old version number dir name, so we set up a bogus 
