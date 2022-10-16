@@ -54,6 +54,9 @@ cd ..
 
 patch -p1 < update/$NEXT/deadwood-3.4.03-min_ttl.patch
 patch -p1 < update/$NEXT/deadwood-3.4.03-DwDnsStr.patch
+patch -p1 < update/$NEXT/deadwood-3.4.03-changelog.patch
+patch -p1 < update/$NEXT/deadwood-3.4.03-sqa.patch
+
 # We now use Ubuntu 22.04
 mv src/Makefile.ubuntu2004 src/Makefile.ubuntu2204
 

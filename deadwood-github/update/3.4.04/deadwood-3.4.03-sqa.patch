@@ -1,0 +1,19 @@
+--- deadwood-3.4.03/sqa/do.tests	2019-04-07 19:27:57.000000000 -0700
++++ deadwood-3.4.04/sqa/do.tests	2022-10-16 07:05:49.531255741 -0700
+@@ -44,6 +44,7 @@
+ # Now compile Deadwood
+ cd $SQADIR
+ cd ../src
++cp Makefile.ubuntu2204 Makefile.sl6
+ export FLAGS='-O3'
+ echo compiling Deadwood...
+ make -f Makefile.sl6 clean > /dev/null 2>&1 
+@@ -65,7 +66,7 @@
+ TESTS=$TESTS"sqa_tcp " # Disable this if you have no internet
+ 
+ # These tests sometimes fail
+-TESTS=$TESTS"sqa_tcp_buffering_2,5 " 
++#TESTS=$TESTS"sqa_tcp_buffering_2,5 " # Disabled in 3.4.04
+ TESTS=$TESTS"dwood2rc_n_maxprocs,2 "
+ TESTS=$TESTS"dwood2rc_s_cache_file,2 "
+ TESTS=$TESTS"sqa_one_upstream_down,2 "
