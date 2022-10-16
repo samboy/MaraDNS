@@ -88,8 +88,9 @@ cd $CWD
 # element is still accounted for) that Valgrind sometimes lies about
 # memory being "possibly lost"
 
-valgrind ../../src/Deadwood -f dwood2rc 2>&1 |  grep -E '(ERROR|lost:)' | \
-	$LUNACY lrx.lunacy | grep -v possibly | awk '{$1="";print}' &
+valgrind ../../src/Deadwood -f dwood2rc 2>&1 | tee output.valgrind | \
+        grep -E '(ERROR|lost:)' | \
+        $LUNACY lrx.lunacy | grep -v possibly | awk '{$1="";print}' &
 
 #valgrind --leak-check=full ../../src/Deadwood -f dwood2rc &
 
@@ -113,6 +114,7 @@ if [ ! -z "$LIST" ] ; then
   kill $LIST
 else
   echo FATAL: Deadwood/valgrind terminated early
+  cat output.valgrind
 fi
 sleep 3
 rm -fr cache
@@ -121,3 +123,4 @@ killall maradns > /dev/null 2>&1
 rm mararc
 rm db.example.com
 rm dwood2rc
+rm -f output.valgrind
