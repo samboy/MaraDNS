@@ -152,6 +152,9 @@ for PAIR in $TESTS ; do
 		sleep 2
 		if ! cmp output.success output.test > /dev/null 2>&1 ; then
 			echo test $test failed
+			echo ======= output.test ======= 
+			cat output.test
+			echo =========================== 
 			TRY=$(( $TRY + 1 ))
 			if [ $TRY -ge $TRIES ] ; then
 				# exit 1
