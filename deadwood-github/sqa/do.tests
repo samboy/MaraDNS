@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # This is a shell script that will do all of the sqa tests; this script
 # will halt if any of the tests does not give the desired result
