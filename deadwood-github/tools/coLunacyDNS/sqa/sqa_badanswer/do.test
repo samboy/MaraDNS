@@ -42,7 +42,7 @@ askmara -t 1 Af.example.com. 127.7.7.29
 askmara -t 1 Ag.example.com. 127.7.7.29
 askmara -t 1 Ah.example.com. 127.7.7.29
 
-LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep coLunacyDNS | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done

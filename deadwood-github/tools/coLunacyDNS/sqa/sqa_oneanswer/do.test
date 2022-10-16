@@ -22,7 +22,7 @@ askmara Amaradns.samiam.org. 127.7.7.1 > output.test1
 askmara A[1-2-@3].example.com. 127.7.7.1 >> output.test1
 askmara Aaño_nuevo.example.com. 127.7.7.1 >> output.test1
 
-LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep coLunacyDNS | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done

@@ -24,7 +24,7 @@ EOF
 echo Test 1
 ${PROG} | grep -E '[A-Za-z0-9]' | grep -v version > output.test1 &
 sleep 1
-LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep coLunacyDNS | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done
@@ -34,7 +34,7 @@ echo Test 2
 ${PROG} -d | grep -E '[A-Za-z0-9]' | grep -v version | cut -f1 -d: \
 	> output.test2 &
 sleep 1
-LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep coLunacyDNS | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done
@@ -43,7 +43,7 @@ sleep 1
 echo Test 3
 ${PROG} -d test.lua | grep -E '[A-Za-z0-9]' | grep -v version > output.test3 &
 sleep 1
-LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep coLunacyDNS | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done
@@ -52,7 +52,7 @@ sleep 1
 echo Test 4
 ${PROG} -foo | grep -E '[A-Za-z0-9]' | grep -v version > output.test4 &
 sleep 1
-LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep coLunacyDNS | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done
@@ -61,7 +61,7 @@ sleep 1
 echo Test 5
 ${PROG} -d bad1.lua | grep -E '[A-Za-z0-9]' | grep -v version > output.test5 &
 sleep 1
-LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep coLunacyDNS | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done
@@ -70,7 +70,7 @@ sleep 1
 echo Test 6
 ${PROG} foo bar baz | grep -E '[A-Za-z0-9]' | grep -v version > output.test6 &
 sleep 1
-LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep coLunacyDNS | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done
@@ -79,7 +79,7 @@ sleep 1
 echo Test 7
 ${PROG} -d bad2.lua | grep -E '[A-Za-z0-9]' | grep -v version > output.test7 &
 sleep 1
-LIST=$( ps -e | awk "$PROCGET" | grep "$PROG" | awk '{print $1}' )
+LIST=$( ps -e | awk "$PROCGET" | grep coLunacyDNS | awk '{print $1}' )
 for process in $LIST ; do
 	kill -ALRM $process
 done
