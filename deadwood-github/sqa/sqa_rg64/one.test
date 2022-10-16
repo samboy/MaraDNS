@@ -1,20 +1,21 @@
 #!/bin/sh
 
 # Make the rg64 binary
+HERE=$( /bin/pwd )
 cd ../../src
 rm -f rg64 DwStr.o
 $COMPILER $FLAGS -DSTANDALONE -c -o DwStr.o DwStr.c
 $COMPILER $FLAGS -o rg64 -DHAVE_MAIN -DRG64 DwRadioGatun.c DwStr.o
 
 # Copy the rg32 binary here
-cp rg64 ~-
+cp rg64 $HERE
 
 # Clean up
 rm rg64 DwStr.o
 make clean > /dev/null 2>&1
 
 # OK, come back here to run the test
-cd ~-
+cd $HERE 
 
 # The test
 cat Input | awk '
