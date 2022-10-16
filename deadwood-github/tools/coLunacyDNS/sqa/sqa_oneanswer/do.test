@@ -13,6 +13,8 @@ function processQuery(Q) -- Called for every DNS query received
 end
 EOF
 
+killall coLunacyDNS
+sleep 3
 ${PROG} -d test.lua | grep -E '[A-Za-z0-9]' | grep -v version > output.test2 &
 sleep 1
 
