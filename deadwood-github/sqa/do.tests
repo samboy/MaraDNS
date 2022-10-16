@@ -230,6 +230,9 @@ sh ./do.test > output.test 2> /dev/null
 sleep 2
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
 	echo test dwood2rc_n_max_inflights failed
+        echo ===== output.test =====
+        cat output.test
+        echo =======================
 	exit 1
 else
 	echo test dwood2rc_n_max_inflights succeeded

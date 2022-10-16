@@ -94,8 +94,15 @@ askmara -t 1 Awww2.example.com. > /dev/null &
 askmara -t 1 Awww3.example.com. > /dev/null &
 askmara -t 1 Awww2.example.com. > /dev/null &
 sleep 10
-ps -e | grep Deadwood | grep -v grep | awk '{print $1}' | xargs kill \
-	> /dev/null 2>&1
+LIST=$( ps -e | grep Deadwood | grep -v grep | awk '{print $1}' )
+if [ -z "$LIST" ] ; then
+  # There is a bug in Ubuntu 22.04 procps with valgrind and ps -e
+  LIST=$( ps auxw | grep Deadwood | grep -v grep | awk '{print $2}' )
+  if [ -z "$LIST" ] ; then
+    echo FATAL: Can not find Deadwood/valgrind process
+  fi
+fi
+kill $LIST
 sleep 2
 
 rm dwood2rc
