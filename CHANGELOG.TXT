@@ -14,7 +14,7 @@ MaraDNS changelog
       * Development environment updated to Ubuntu 22.04
       * Documentation clean up and updates
 
-     (2022-10-??)
+     (2022-10-17)
 
    maradns-3.4.04:
    This is a legacy release of MaraDNS:
