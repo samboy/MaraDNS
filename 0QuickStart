@@ -31,7 +31,7 @@
        This dwood3rc file says that MaraDNS will have the ip
        "127.0.0.1" (this is the bind_address), run from the
        directory /etc/maradns (the chroot_dir value), and only
-       allow the ip "127.0.0.1" to make recursive queries (the
+       allow the ip "127.0.0.1" to make DNS queries (the
        recursive_acl value).
 
      * Place the dwood3rc file in the location /etc/dwood3rc on
