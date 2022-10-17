@@ -4,12 +4,13 @@ MaraDNS changelog
    This is a stable release of MaraDNS:
 
       * Testing update: All tests can run in a Ubuntu 22.04 Docker image
-        or an Alpine Linux 3.14 Docker image.
-      * Testing update: No Perl scripts are using for the regression
-        tests.
+        or an Alpine Linux 3.14 Docker image.  Both Dockerfiles are
+	included.
+      * Testing update: Perl scripts no longer used for the regression
+        tests
       * Bugfix: min_ttl now works for all cached entries
       * Recursive update: CNAME chains with out-of-bailiwick records
-        are now resolved the same way as other DNS servers.
+        are now resolved the same way as other DNS servers
       * Development environment updated to Ubuntu 22.04
       * Documentation clean up and updates
 
