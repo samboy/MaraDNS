@@ -1,3 +1,0 @@
-Versions of some MaraDNS programs compiled as Windows binaries
-(without needing Cygwin or another POSIX emulation library) are
-in the folder maradns-win32/

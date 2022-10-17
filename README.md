@@ -82,9 +82,13 @@ a BSD license.
 I wrote MaraDNS while I was a college student and a travelling English
 teacher during the first 2000s decade. 
 
-Now that I have been furloughed during the COVID-19 pandemic, I have
-been actively adding new features to MaraDNS, most notably the new
-`coLunacyDNS` service which uses Lua to customize DNS replies.
+Since being furloughed during the COVID-19 pandemic, I have been actively
+adding new features to MaraDNS, most notably the new `coLunacyDNS`
+service which uses Lua to customize DNS replies.
+
+Versions of some MaraDNS programs compiled as Windows binaries
+(without needing Cygwin or another POSIX emulation library) are
+in the folder maradns-win32/
 
 ## Table of contents
 
@@ -101,7 +105,8 @@ been actively adding new features to MaraDNS, most notably the new
 
    There are no “supported OSes” for MaraDNS.  I currently use Ubuntu 22.04
    to develop MaraDNS, and a Windows XP virtual machine to make the
-   Windows binary.
+   Windows binary.  The tests are run in both Ubuntu 22.04 and Alpine
+   Linux.
 
    Distribution-specific issues should be forwarded to the bug processing
    system for your distribution.
@@ -115,7 +120,7 @@ been actively adding new features to MaraDNS, most notably the new
 
    Only Deadwood and coLunacyDNS binaries are provided.  
 
-   The Deadwood has passed Y2038 tests in Windows 10.
+   Deadwood has passed Y2038 tests in Windows 10.
 
 ## What is DNS
 
