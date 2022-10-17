@@ -1,6 +1,6 @@
 MaraDNS changelog
 
-   maradns-3.5.0023: 
+   maradns-3.5.0023:
    This is a stable release of MaraDNS:
 
       * Testing update: All tests can run in a Ubuntu 22.04 Docker image
@@ -11,6 +11,7 @@ MaraDNS changelog
       * Recursive update: CNAME chains with out-of-bailiwick records
         are now resolved the same way as other DNS servers.
       * Development environment updated to Ubuntu 22.04
+      * Documentation clean up and updates
 
      (2022-10-??)
 
