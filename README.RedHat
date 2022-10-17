@@ -17,6 +17,5 @@ MaraDNS, and rpm users can build their own .rpm files thusly:
 
 I will leave the building of .rpm files to people who are experts at 
 making rpm packages, and concentrate my efforts on making the best 
-possible recursive DNS server; my current project is a complete rewrite 
-of the recursive code.
+possible recursive DNS server.
 
