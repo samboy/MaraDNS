@@ -34,10 +34,11 @@
  * to process these options which may not compile with some libcs and on some
  * embedded systems; hence the "ng" designation
  *
- * More information may or may not be here:
+ * More information used to be here:
  *
  *      http://www.periapt.co.uk/arcana/struggling-with-duende
  *
+ * Since that is now a dead link, one may see it at https://archive.ph/z2x1Q
  */
 
 /* I would like to thank D. Richard Felker III for his invaluable help
