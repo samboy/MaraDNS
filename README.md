@@ -12,6 +12,14 @@ and remarkably secure. It’s also cross platform — the program runs
 both in Windows and in UNIX clones.
 
 MaraDNS has a web page and blog at https://maradns.samiam.org.
+MaraDNS’s Git tree is hosted at 
+[GitHub](https://github.com/samboy/MaraDNS),
+[GitLab](https://gitlab.com/maradns/maradns), 
+[Bitbucket](https://bitbucket.org/maradns/maradns/),
+[Codeberg](https://codeberg.org/samboy/MaraDNS),
+and 
+[SourceHut](https://git.sr.ht/~samiam/MaraDNS)
+(Please use GitHub for bug reports).  
 
 # 2022 Updates
 
@@ -49,15 +57,7 @@ Synthetic IP generator example added to `coLunacyDNS`
 
 I have updated things so that the Git version of MaraDNS is the 
 authoritative “One source of truth” for MaraDNS’s source code.
-MaraDNS’s Git tree is now hosted at 
-[GitHub](https://github.com/samboy/MaraDNS),
-[GitLab](https://gitlab.com/maradns/maradns), 
-[Bitbucket](https://bitbucket.org/maradns/maradns/),
-[Codeberg](https://codeberg.org/samboy/MaraDNS),
-and 
-[SourceHut](https://git.sr.ht/~samiam/MaraDNS)
-(Please use GitHub for bug reports).  The Git code is,
-every time a new MaraDNS release is made,
+The Git code is, every time a new MaraDNS release is made,
 converted in to tarballs (with full Git history) which can be
 downloaded at [Sourceforge](https://sourceforge.net/projects/maradns/)
 and [MaraDNS’s web page](https://maradns.samiam.org/download.html).
