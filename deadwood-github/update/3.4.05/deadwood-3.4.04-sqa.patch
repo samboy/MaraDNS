@@ -1,0 +1,28 @@
+--- deadwood-3.4.05/sqa/do.tests.orig	2022-10-17 21:45:54.000000000 -0700
++++ deadwood-3.4.05/sqa/do.tests	2022-10-18 13:25:53.351756342 -0700
+@@ -114,7 +114,7 @@
+ TESTS=$TESTS"sqa_badid_question "
+ # TESTS=$TESTS"sqa_bigpacket " # Needs BIND to run
+ TESTS=$TESTS"sqa_cname_chain,3 "
+-TESTS=$TESTS"sqa_cname_bad_bailiwick "
++# TESTS=$TESTS"sqa_cname_bad_bailiwick " # This fix is only in Deadwood 3.5
+ TESTS=$TESTS"sqa_roy_arends "
+ #TESTS=$TESTS"sqa_tcp_buffering "
+ TESTS=$TESTS"sqa_ttl_expire "
+--- deadwood-3.4.05/sqa/dwood2rc_n_maximum_cache_elements/output.success.orig	2022-10-18 13:47:12.508122782 -0700
++++ deadwood-3.4.05/sqa/dwood2rc_n_maximum_cache_elements/output.success	2022-10-18 13:48:26.543686991 -0700
+@@ -1,2 +1,2 @@
+-2829
++2738
+ 3830
+--- deadwood-3.4.05/sqa/sqa_valgrind/do.test.orig	2022-10-18 14:45:06.421698152 -0700
++++ deadwood-3.4.05/sqa/sqa_valgrind/do.test	2022-10-18 14:45:26.105586388 -0700
+@@ -62,8 +62,6 @@
+ filter_rfc1918 = 0
+ ip4 = {}
+ ip4["kabah.foo."] = "10.10.10.10"
+-ip6 = {}
+-ip6["kabah.foo."] = "fd4d-6172-6144-4e53 0000-0000-0000-1234"
+ maradns_uid = 65534
+ maradns_gid = 65534
+ EOF
