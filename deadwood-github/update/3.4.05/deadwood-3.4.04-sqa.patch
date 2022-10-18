@@ -26,3 +26,17 @@
  maradns_uid = 65534
  maradns_gid = 65534
  EOF
+--- deadwood-3.4.05/sqa/dwood2rc_n_max_inflights/output.success.orig	2022-10-17 21:45:54.000000000 -0700
++++ deadwood-3.4.05/sqa/dwood2rc_n_max_inflights/output.success	2022-10-18 15:35:13.770091867 -0700
+@@ -1,9 +1,9 @@
+ max_inflights is 1
+-Deadwood: A DNS UDP non-recursive cache (IPv6 supported)
++Deadwood: A DNS UDP non-recursive cache (IPv4-only)
+ We bound to 1 addresses
+ Got signal 1 to process...
+ max_inflights is 20
+-Deadwood: A DNS UDP non-recursive cache (IPv6 supported)
++Deadwood: A DNS UDP non-recursive cache (IPv4-only)
+ We bound to 1 addresses
+ Connection 0 has 2 locals
+ Connection 0 has 3 locals
