@@ -1,0 +1,38 @@
+--- maradns-3.4.04/doc/en/changelog.txt	2022-10-16 08:16:17.000000000 -0700
++++ maradns-3.4.05/doc/en/changelog.txt	2022-10-18 17:36:36.874422723 -0700
+@@ -1,5 +1,35 @@
+ MaraDNS changelog
+ 
++   maradns-3.4.05:
++   This is a legacy release of MaraDNS:
++
++      * Deadwood update to 3.4.05
++      * Deadwood tests are now 3.4 backports of the current 3.5 tests
++      * Legacy testing platform is now Alpine 3.14.  See the Dockerfile
++        in the Deadwood sqa directory for the full platform setup.
++      * MaraDNS tests are now the current 3.5 MaraDNS tests (no backporting
++        needed)
++      * All regression tests pass again
++      * No security fixes
++
++     (2022-10-18)
++
++   maradns-3.5.0023:
++   This is a stable release of MaraDNS:
++
++      * Testing update: All tests can run in a Ubuntu 22.04 Docker image
++        or an Alpine Linux 3.14 Docker image.  Both Dockerfiles are
++        included.
++      * Testing update: Perl scripts no longer used for the regression
++        tests
++      * Bugfix: min_ttl now works for all cached entries
++      * Recursive update: CNAME chains with out-of-bailiwick records
++        are now resolved the same way as other DNS servers
++      * Development environment updated to Ubuntu 22.04
++      * Documentation clean up and updates
++
++     (2022-10-17)
++
+    maradns-3.4.04:
+    This is a legacy release of MaraDNS:
+ 
