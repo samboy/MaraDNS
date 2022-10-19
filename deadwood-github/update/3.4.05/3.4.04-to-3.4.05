@@ -57,9 +57,21 @@ cd ..
 
 # BEGIN Release-specific fixes and changes go here
 
-#patch -p1 < update/$NEXT/deadwood-3.4.04-changelog.patch
+patch -p1 < update/$NEXT/deadwood-3.4.04-changelog.patch
 rm -fr sqa/
+
+# Update SQA tests for 2022 by using tests from 3.5 branch of MaraDNS
 tar xvJf ../deadwood-sqa-2022-10-18.tar.xz
+
+# Add Dockerfile which shows the testing environment
+cd ..
+rm -fr MaraDNS/
+git clone https://github.com/samboy/MaraDNS
+cp MaraDNS/Docker-stuff/alpine/Dockerfile deadwood-${NEXT}/sqa/
+cp MaraDNS/Docker-stuff/rg32hash.tar.gz deadwood-${NEXT}/sqa/
+cd deadwood-$NEXT
+
+# Backport the 3.5 tests to 3.4
 patch -p1 < update/$NEXT/deadwood-3.4.04-sqa.patch
 
 # Makefile.sl6 is used by a bunch of tests
