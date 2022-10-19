@@ -31,6 +31,28 @@ The Docker image does not need to be frequently updated; the
 automated tests pull MaraDNS from GitHub to run the actual tests
 against.
 
+## Busybox ps bug
+
+There is a bug in the `busybox` implementation of ps where it handles
+6-digit process IDs incorrectly.  To fix this, have it so the host system
+only has five-digit PIDs.  To do this, add the following lines to the
+file `/etc/sysctl.d/local.conf` on Ubuntu 22.04 (this *should* work with
+other similar Linux systems, but your mileage may vary).  If the
+file `/etc/sysctl.d/local.conf` does not exist, create it.
+
+```
+# Busybox ps bug
+kernel.pid_max = 99999
+```
+
+Reboot the system; after rebooting, verify this change is in effect:
+
+```
+cat /proc/sys/kernel/pid_max
+```
+
+The value should be `99999`.
+
 # Running the tests
 
 At this point, the tests are ready to run:
