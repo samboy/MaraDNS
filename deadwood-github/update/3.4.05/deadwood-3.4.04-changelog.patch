@@ -1,0 +1,18 @@
+--- deadwood-3.4.04/doc/CHANGELOG	2022-10-16 07:51:34.000000000 -0700
++++ deadwood-3.4.05/doc/CHANGELOG	2022-10-18 16:49:57.387876961 -0700
+@@ -1,7 +1,14 @@
++3.4.05 (2022-10-18; legacy release)
++
++- Fix SQA regressions so that they all pass in Alpine 3.14; I replaced
++  the regressions with the Deadwood 3.5 regressions, than backported them
++  to 3.4 as needed.
++- Add Dockerfile in sqa/ directory which makes working testing image
++- Add rg32hash.tar.gz to sqa/ directory since tests need this program
++
+ 3.4.04 (2022-10-16; legacy release)
+ 
+ - Backport min_ttl to legacy branch
+-- All SQA regressions pass
+ 
+ 3.4.03 (2022-08-03; legacy release)
+ 
