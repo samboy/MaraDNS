@@ -19,10 +19,7 @@ all:	DwHash
 clean:
 	rm -f Test DwMain DwTcp *.exe *.o a.out RandomPrime writehash_test* \
 		dw_cache DwHash *stackdump core Makefile foo* ; \
-		./make.version.h ; if [ -e /dev/urandom ] ; \
-			then rm DwRandPrime.h  ; \
-			cc RandomPrime.c ; ./a.out > DwRandPrime.h ; rm a.out \
-		; fi 
+		./make.version.h 
 
 version.h:	
 	./make.version.h

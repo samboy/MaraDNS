@@ -7,7 +7,6 @@ version.h
 
 # Dynamically generated files
 rng/rng-32bit-tables.h
-DwRandPrime.h
 
 # Dynamically generated Makefiles
 server/Makefile

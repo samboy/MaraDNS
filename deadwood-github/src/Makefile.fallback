@@ -32,10 +32,7 @@ clean:
 	rm -f Test DwMain DwTcp *.exe *.o a.out RandomPrime writehash_test* \
 		Deadwood foo* dw_cache DwHash DwCompress *stackdump \
 		core ; \
-		./make.version.h ; if [ -e /dev/urandom ] ; \
-			then rm DwRandPrime.h  ; \
-			cc RandomPrime.c ; ./a.out > DwRandPrime.h ; rm a.out \
-		; fi 
+		./make.version.h 
 
 version.h:	
 	./make.version.h
