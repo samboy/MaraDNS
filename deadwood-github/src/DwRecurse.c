@@ -2965,6 +2965,7 @@ void dwx_do_glueless_new(dw_str *query, int32_t conn_number, int type) {
         int num_alloc = 0;
         int depth = 0;
         dw_str *packet = 0;
+        int this_recurse_depth = 0;
 
         num_alloc = key_n[DWM_N_max_inflights];
         if(num_alloc < 1) {
@@ -2973,10 +2974,12 @@ void dwx_do_glueless_new(dw_str *query, int32_t conn_number, int type) {
                 num_alloc = 32000;
         }
         num_alloc++; /* Stop off-by-one attacks */
-        if(rem[conn_number].recurse_depth >= 83) {
+        if(conn_number < 0 || conn_number > maxprocs ||
+               rem[conn_number].recurse_depth >= 83) {
                 return;
         }
         rem[conn_number].recurse_depth++;
+        this_recurse_depth = rem[conn_number].recurse_depth;
 
         /* Make sure we "bubble up" the fact we have made a new query */
         new_conn_num = conn_number;
@@ -2997,6 +3000,14 @@ void dwx_do_glueless_new(dw_str *query, int32_t conn_number, int type) {
                         return;
                 }
                 rem[conn_number].recurse_depth++;
+                /* Make sure children and parent queries keep recurse_depth
+                 * in sync with each other */
+                if(rem[conn_number].recurse_depth < this_recurse_depth) {
+                        rem[conn_number].recurse_depth = this_recurse_depth;
+                } else {
+                        this_recurse_depth = rem[new_conn_num].recurse_depth = 
+                            rem[conn_number].recurse_depth;
+                }
                 depth++;
         }
         conn_number = new_conn_num;
