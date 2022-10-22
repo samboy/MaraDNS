@@ -24,7 +24,7 @@ cd ../../deadwood-3.4.99/sqa/
 ./do.tests
 
 # coLunacyDNS
-cd ../tools/coLunacyDNS/sqa/
+cd ../../coLunacyDNS/sqa/
 ./do.tests
 
 echo $VERSION passes all tests
