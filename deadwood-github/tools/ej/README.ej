@@ -1,8 +1,3 @@
-Deadwood, since it's essentially an offshoot of MaraDNS, will use
-the same document format MaraDNS uses.
-
----
-
 EJ is the document system that MaraDNS uses; this is in response to my 
 translators asking for a single unified document format which can be 
 converted in to HTML; man pages; text documents; etc.

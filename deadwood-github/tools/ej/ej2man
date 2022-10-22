@@ -162,6 +162,9 @@ else {
     }
 
 $body = process_body($body,0);
+$body =~ s/\&gt\;/>/g;
+$body =~ s/\&lt\;/</g;
+$body =~ s/\&amp\;/&/g;
 
 print($body);
 

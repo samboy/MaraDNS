@@ -213,6 +213,11 @@ sub process_body {
            }
        }
 
+   # &nbsp; is made a simple whitespace
+   while($body =~ m|\&nbsp\;|ims) {
+       $body =~ s|\&nbsp\;| |ims;
+       }
+
    # The HIBIT tag (replace with ALT text then remove)
    while($body =~ m|<hibit alt=\"([^"]*)\">(.*?)</hibit>|ims) {
        $body =~ s|<hibit alt=\"([^"]*)\">(.*?)</hibit>|$1|ims;

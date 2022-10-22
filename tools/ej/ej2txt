@@ -4,9 +4,20 @@
 # text document
 
 TMP=$HOME/tmp
+LINKS=$( which elinks )
+LYNX=0
+if [ -z "$LINKS" ] ; then
+	LINKS=$( which links )
+fi
+if [ -z "$LINKS" ] ; then
+	LINKS=$( which lynx )
+	LYNX=1
+fi
 
 if which ej2html > /dev/null 2>&1 ; then
 	CMD=ej2html
+elif [ -e ../tools/ej/ej2html ] ; then
+	CMD=../tools/ej/ej2html
 elif [ -e ../../tools/ej/ej2html ] ; then
 	CMD=../../tools/ej/ej2html
 elif [ -e ../../../tools/ej/ej2html ] ; then
@@ -19,7 +30,10 @@ else
 fi
 
 $CMD $1 > $TMP/$$.html
-lynx -dump -width=70 -nolist $TMP/$$.html | awk '
-	{gsub(/\[[0-9]+\]/,"");print}' 
+if [ "$LYNX" < 1 ] ; then
+	$LINKS -dump-width 70 -dump -no-references -no-numbering $TMP/$$.html 
+else
+	lynx -dump -nolist $TMP/$$.html
+fi
 rm $TMP/$$.html
 

@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Convert an ej document to a manpage document; which we then make a utf-8
+# text document; we still use this script to make the QuickStart file
+
+if which ej2man > /dev/null 2>&1 ; then
+	CMD=ej2man
+elif [ -e ../../tools/ej/ej2man ] ; then
+	CMD=../../tools/ej/ej2man
+elif [ -e ../../../tools/ej/ej2man ] ; then
+	CMD=../../../tools/ej/ej2man
+elif [ -e ../../../../tools/ej/ej2man ] ; then
+	CMD=../../../../tools/ej/ej2man
+else
+	echo Sorry\, can not find ej2man
+	exit 1
+fi
+
+if which lcol > /dev/null 2>&1 ; then
+	LCOL=lcol
+elif [ -e ../../utf8/lcol ] ; then
+	LCOL=../../utf8/lcol
+elif [ -e ../../../utf8/lcol ] ; then
+	LCOL=../../../utf8/lcol
+else
+	echo Sorry\, can not find lcol\; this is in the utf8 directory
+	echo off of the main maradns tree
+	exit 1
+fi
+	
+#$CMD $1 | nroff -man -Tlatin1 | $LCOL | \
+#  perl -e 'while(<>){s/^\s*\(\)\s+\(\)\s*$//g;
+#                     s/^\s+\d\s*$//g;$a.=$_}
+#		     $a =~ s/\n\n\n+/\n/sg;
+#		     $a =~ s/^\n+//s; 
+#		     $a =~ s/\xB4/\x27/g; # Single quotes
+#		     print $a' | iconv -f latin1 -t utf8
+
+$CMD $1 | nroff -man | $LCOL | \
+  perl -e 'while(<>){s/^\s*\(\)\s+\(\)\s*$//g; # () at top
+		     s/\(\)//; # () elsewhere
+                     s/^\s+\d\s*$//g;$a.=$_} # numbers by themselves on lines
+		     $a =~ s/\n\n\n+/\n/sg; # Multiple line breaks become one
+		     $a =~ s/^\n+//s;  
+		     print $a' 
