@@ -1,1 +1,1 @@
-../../lunacy/luaconf.h
+lunacy/luaconf.h

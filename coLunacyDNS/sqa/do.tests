@@ -18,8 +18,8 @@ HERE="$(/bin/pwd)"
 rm ../coLunacyDNS
 cd ..
 make clean
-cd ../../lunacy ; make CFLAGS="-g"
-cd ../tools/coLunacyDNS/
+cd lunacy ; make CFLAGS="-g"
+cd ..
 make CFLAGS="-g -DTEST -DGCOV -fprofile-arcs -ftest-coverage"
 echo coLunacyDNS compiled in test mode
 cd "$HERE"
