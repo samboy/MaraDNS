@@ -41,21 +41,23 @@ inInclude = false
 -- mc() converts a string in to a case insensitive regex; mc('th') is [Tt][Hh]
 function mc(i) 
   local out = ""
-  local doIgnore = false
+  local afterPercent = false
   for a=1,i:len() do
     seek = i:sub(a,a) 
     -- Do not mangle anything right after a %
-    if seek == "%" and not doIgnore then
+    if seek == "%" and not afterPercent then
       out = out .. seek
-      seek = i:sub(a+1,a+1)
-      out = out .. seek
-      doIgnore = true
-    elseif seek:find("%a") and not doIgnore then -- Only letters get mangled
+      afterPercent = true
+    -- Only letters not after a % get mangled
+    elseif seek:find("%a") and not afterPercent then 
       out = out .. "[" .. seek:upper() .. seek:lower() .. "]"
-    elseif seek and not doIgnore then
+    -- Other stuff is copied as is
+    elseif seek and not afterPercent then
       out = out .. seek
-    elseif doIgnore then
-      doIgnore = false
+    -- Everything right after a % is passed as-is
+    elseif afterPercent then
+      out = out .. seek
+      afterPercent = false
     end
   end
   return out
@@ -65,7 +67,7 @@ head=mc('head')
 body=mc('body')
 dtwidth=mc('dtwidth')
 th=mc('th')
-meta_http_equiv=mc('meta') .."%s+" .. mc('http%-equiv')
+meta_http_equiv=mc('meta%s+http%-equiv')
 content=mc('content')
 content_type=mc('content%-type')
 text_html=mc('text/html')
@@ -87,11 +89,12 @@ while l do
     state = "COMMENT"
   end
   if state ~= "COMMENT" then
+
     -- Process the <include "filename"> tag.  Note that includes
     -- can not be nested.
-    if l:find(mc('<include')..'%s+"') and not inInclude then
-      includeFileName=l:gsub(mc('.*<include')..'%s+"([^"]+)".*',"%1")
-      l=l:gsub(mc('<include')..'%s+"([^"]+)"%s*>',"")
+    if l:find(mc('<include%s+"') and not inInclude then
+      includeFileName=l:gsub(mc('.*<include%s+"([^"]+)".*'),"%1")
+      l=l:gsub(mc('<include%s+"([^"]+)"%s*>'),"")
       fh = io.open(includeFileName,"rb")
       if not fh then
         print("Error opening file " .. includeFileName)
