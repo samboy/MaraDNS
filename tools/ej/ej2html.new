@@ -15,6 +15,12 @@
 -- ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 -- OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+-- Note that, unlike the old Perl ej2html, the character set *must* be utf-8
+-- There is not an ej document out there using another charset, and here in
+-- the 2020s there is no good reason to *not* use UTF-8 on a POSIX system
+
+-- TO DO: <include "filename"> tag support
+
 -- If they give a filename as an argument try to open that file
 if arg[1] then 
  fh = io.open(arg[1],"rb")
@@ -25,9 +31,76 @@ if arg[1] then
  io.input(fh)
 end
 
+-- Mixed case regular expressions
+-- It would be nice if Lua had prettier mixed case regexes, but Lua is 
+-- tiny and easily compiled
+head='[Hh][Ee][Aa][Dd]'
+body='[Bb][Oo][Dd][Yy]'
+dtwidth='[Dd][Tt][Ww][Ii][Dd][Tt][Hh]'
+th='[Tt][Hh]'
+meta_http_equiv='[Mm][Ee][Tt][Aa]%s+[Hh][Tt][Tt][Pp]%-[Ee][Qq][Uu][Ii][Vv]'
+content='[Cc][Oo][Nn][Tt][Ee][Nn][Tt]'
+content_type=content .. '%-[Tt][Yy][Pp][Ee]'
+text_html='[Tt][Ee][Xx][Tt]/[Hh][Tt][Mm][Ll]'
+charset_utf8='[Cc][Hh][Aa][Rr][Ss][Ee][Tt]=[Uu][Tt][Ff]%-8'
+bodyflags='[Bb][Oo][Dd][Yy][Ff][Ll][Aa][Gg][Ss]'
+
 l = io.read()
+state = "INIT"
+oldstate = "INIT"
+bflags = ""
+metaSeen = false
+print("<HTML>") -- Upper case because that's how it was done in 2002
 while l do
-  print(l)
+  -- Process .ej and make it HTML
+  l = l:gsub("<!%-%-.*%-%->","") -- Remove single line comments
+  if l:find("<!%-%-.*") then -- Multi-line comments
+    oldstate = state
+    state = "COMMENT"
+  end
+  if state ~= "COMMENT" then
+    if l:find("<"..head..">") then state = "HEAD" end
+    if l:find("</"..head..">") then state = "POSTHEAD" end
+    if l:find("<"..body..">") then 
+      if not metaSeen then
+        print("FATAL: Please add this line to the header")
+        print('<META HTTP-EQUIV="Content-Type" CONTENT="text/html; '..
+              ' CHARSET=utf-8">')
+        os.exit(1)
+      end
+      state = "BODY" 
+      -- Add bodyflags to the BODY tag
+      l=l:gsub("<("..body..")>","<%1"..bflags..">") 
+    end
+    if l:find("</"..body..">") then state = "POSTBODY" end
+    if state == 'HEAD' then
+      -- See if they have the mandatory
+      -- <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+      -- line in the header
+      if l:find("<"..meta_http_equiv..'="'..content_type..'"%s+'..content..
+                '="'..text_html..';%s+'..charset_utf8..'">') then
+        metaSeen = true
+      end
+      -- Remove headers used for man page
+      l=l:gsub("<"..dtwidth..">.*</"..dtwidth..">","") 
+      l=l:gsub("<"..th..">.*</"..th..">","") 
+      -- BODYFLAGS was to allow the BODY tag to have flags like colors,
+      -- which was commonly used with 2002-era HTML the script was
+      -- written for.  We will still support it here in the 2020s
+      if l:find("<"..bodyflags..">") then
+        bflags=l:gsub(".*<"..bodyflags..">([^<]*)<"..bodyflags..">.*","%1")
+        bflags=" "..bflags
+        l=l:gsub("<"..bodyflags..">[^<]*<"..bodyflags..">","")
+      end
+    end
+    print(l)
+  else -- In HTML comment
+    if l:find(".*%-%->") then -- End of comment
+      l=l:gsub(".*%-%->","")
+      print(l)
+      state = oldstate
+    end
+  end
   l = io.read()
 end
-
+print("</HTML>")
