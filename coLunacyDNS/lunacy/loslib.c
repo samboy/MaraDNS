@@ -199,6 +199,61 @@ static int os_exit (lua_State *L) {
   exit(luaL_optint(L, 1, EXIT_SUCCESS));
 }
 
+static int lunacy_today(lua_State *L) {
+#ifndef MINGW
+  /* Note note note: This POSIX code assumes one has a 64-bit time_t
+   * If not, and if lunacy.today() needs to work after the Y2038 cutoff,
+   * then
+   * 1) Use the code in os_time above to get a 64-bit timestamp from a
+   *    32-bit timestamp
+   * 2) Go use something like https://github.com/evalEmpire/y2038 to have
+   *    a localtime which works on a 32-bit system after Y2038
+   * As a practical matter, it’s no longer possible to get a new 32-bit
+   * POSIX system unless you’re an embedded developer who works really
+   * hard to find one.  If you are, you’re here, you’re reading this
+   * and you know enough to solve things on your own.
+   * We’re no longer in 2011; the days of $15/year 128 megabyte OpenVZ
+   * VMs are gone; they are now $25/year 512 megabyte KVM VMs which can run
+   * a 64-bit OS and userspace just fine */
+  time_t the_time;
+  struct tm *today;
+  if (!lua_isnoneornil(L, 1))  /* called with args? */ {
+    lua_pushnil(L);
+    return 1;
+  }
+  the_time = time(NULL);  /* get current time */
+  if(the_time == -1) {
+    lua_pushnil(L);
+    return 1;
+  }
+  today = localtime(&the_time);
+  lua_pushnumber(L, (lua_Number)(today->tm_year + 1900));
+  lua_pushnumber(L, (lua_Number)(today->tm_mon + 1));
+  lua_pushnumber(L, (lua_Number)today->tm_mday);
+  lua_pushnumber(L, (lua_Number)today->tm_wday);
+  lua_pushnumber(L, (lua_Number)today->tm_hour);
+  lua_pushnumber(L, (lua_Number)today->tm_min);
+  lua_pushnumber(L, (lua_Number)today->tm_sec);
+  return 7;
+#else // MINGW true
+  /* This works just fine after Y2038 */
+  SYSTEMTIME today;
+  if (!lua_isnoneornil(L, 1))  /* called with args? */ {
+    lua_pushnil(L);
+    return 1;
+  }
+  GetLocalTime(&today);
+  lua_pushnumber(L, (lua_Number)today.wYear);
+  lua_pushnumber(L, (lua_Number)today.wMonth);
+  lua_pushnumber(L, (lua_Number)today.wDay);
+  lua_pushnumber(L, (lua_Number)today.wDayOfWeek);
+  lua_pushnumber(L, (lua_Number)today.wHour);
+  lua_pushnumber(L, (lua_Number)today.wMinute);
+  lua_pushnumber(L, (lua_Number)today.wSecond);
+  return 7;
+#endif // MINGW
+}
+
 static const luaL_Reg syslib[] = {
   {"execute",   os_execute},
   {"exit",      os_exit},
@@ -211,11 +266,15 @@ static const luaL_Reg syslib[] = {
   {NULL, NULL}
 };
 
+static const luaL_Reg lunacylib[] = {
+  {"today", lunacy_today},
+  {NULL, NULL}
+};
+
 /* }====================================================== */
 
-
-
 LUALIB_API int luaopen_os (lua_State *L) {
+  luaL_register(L, "lunacy", lunacylib);
   luaL_register(L, LUA_OSLIBNAME, syslib);
   return 1;
 }
