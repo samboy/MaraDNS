@@ -92,7 +92,7 @@ while l do
 
     -- Process the <include "filename"> tag.  Note that includes
     -- can not be nested.
-    if l:find(mc('<include%s+"') and not inInclude then
+    if l:find(mc('<include%s+"')) and not inInclude then
       includeFileName=l:gsub(mc('.*<include%s+"([^"]+)".*'),"%1")
       l=l:gsub(mc('<include%s+"([^"]+)"%s*>'),"")
       fh = io.open(includeFileName,"rb")
