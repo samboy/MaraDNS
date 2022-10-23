@@ -1,21 +1,4 @@
-#!/bin/sh
-
-# This is a shell script that calls a perl script;
-if [ -e /usr/local/bin/perl ] ; then
-	exec /usr/local/bin/perl -x $0 ${1+"$@"}
-else 
-	exec perl -x $0 ${1+"$@"}
-fi
-
-# The reason for this is because MaraDNS is built on Centos 3.X
-# (RHEL 3 clone) and the Perl Centos comes with takes over 30 seconds to make
-# the changelog; Perl 5.8.7 does it in under 4 seconds.
-
-# /usr/local/bin/perl is a local compile of Perl which, on MaraDNS' build
-# system, is able to quickly process the changelog.  The script looks for
-# Perl at /usr/local/bin/perl then anywhere else in the user's path.
-
-#!/usr/local/bin/perl
+#!/usr/bin/env perl
 # Convert an ej-formatted doc in to a man page
 # Input: First argument or standard input
 # Output: Standard output
