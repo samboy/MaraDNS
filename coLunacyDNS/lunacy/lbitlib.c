@@ -113,7 +113,7 @@ static int bit32_rrotate(lua_State *L) {
     f = (uint32_t)luaL_checknumber(L, 1);
     r = (uint32_t)luaL_checknumber(L, 2);
     r &= 31;
-    lua_pushnumber(L, (lua_Number)((f >> r) | (f << (32 - r))));
+    lua_pushnumber(L, (lua_Number)((f >> r) | (f << ((32 - r) % 32))));
     return 1;
 }
 
