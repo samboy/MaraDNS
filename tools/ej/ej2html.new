@@ -19,8 +19,6 @@
 -- There is not an ej document out there using another charset, and here in
 -- the 2020s there is no good reason to *not* use UTF-8 on a POSIX system
 
--- TO DO: <include "filename"> tag support
-
 -- If they give a filename as an argument try to open that file
 if arg[1] then 
  fh = io.open(arg[1],"rb")
@@ -32,18 +30,30 @@ if arg[1] then
 end
 
 -- Mixed case regular expressions
--- It would be nice if Lua had prettier mixed case regexes, but Lua is 
--- tiny and easily compiled
-head='[Hh][Ee][Aa][Dd]'
-body='[Bb][Oo][Dd][Yy]'
-dtwidth='[Dd][Tt][Ww][Ii][Dd][Tt][Hh]'
-th='[Tt][Hh]'
-meta_http_equiv='[Mm][Ee][Tt][Aa]%s+[Hh][Tt][Tt][Pp]%-[Ee][Qq][Uu][Ii][Vv]'
-content='[Cc][Oo][Nn][Tt][Ee][Nn][Tt]'
-content_type=content .. '%-[Tt][Yy][Pp][Ee]'
-text_html='[Tt][Ee][Xx][Tt]/[Hh][Tt][Mm][Ll]'
-charset_utf8='[Cc][Hh][Aa][Rr][Ss][Ee][Tt]=[Uu][Tt][Ff]%-8'
-bodyflags='[Bb][Oo][Dd][Yy][Ff][Ll][Aa][Gg][Ss]'
+-- mc() converts a string in to a case insensitive regex; mc('th') is [Tt][Hh]
+function mc(i) 
+  local out = ""
+  for a=1,i:len() do
+    seek = i:sub(a,a) 
+    if seek:find("%a") then
+      out = out .. "[" .. seek:upper() .. seek:lower() .. "]"
+    else
+      out = out .. seek
+    end
+  end
+  return out
+end
+head=mc('head')
+body=mc('body')
+dtwidth=mc('dtwidth')
+th=mc('th')
+meta_http_equiv=mc('meta') .."%s+" .. mc('http%-equiv')
+content=mc('content')
+content_type=mc('content%-type')
+text_html=mc('text/html')
+charset_utf8=mc('charset=utf%-8')
+bodyflags=mc('bodyflags')
+include=mc('include')
 
 l = io.read()
 state = "INIT"
@@ -59,6 +69,7 @@ while l do
     state = "COMMENT"
   end
   if state ~= "COMMENT" then
+    if l:find
     if l:find("<"..head..">") then state = "HEAD" end
     if l:find("</"..head..">") then state = "POSTHEAD" end
     if l:find("<"..body..">") then 
