@@ -19,6 +19,10 @@
 -- There is not an ej document out there using another charset, and here in
 -- the 2020s there is no good reason to *not* use UTF-8 on a POSIX system
 
+-- Convert an ej-formatted doc in to an html page
+-- Input: First argument or standard input
+-- Output: Standard output
+
 -- If they give a filename as an argument try to open that file
 if arg[1] then 
  fh = io.open(arg[1],"rb")
@@ -27,22 +31,36 @@ if arg[1] then
    os.exit(1)
  end
  io.input(fh)
+ fhSave = fh
+else
+ fhSave = io.stdin
 end
+inInclude = false
 
 -- Mixed case regular expressions
 -- mc() converts a string in to a case insensitive regex; mc('th') is [Tt][Hh]
 function mc(i) 
   local out = ""
+  local doIgnore = false
   for a=1,i:len() do
     seek = i:sub(a,a) 
-    if seek:find("%a") then -- Only letters get mangled
-      out = out .. "[" .. seek:upper() .. seek:lower() .. "]"
-    else
+    -- Do not mangle anything right after a %
+    if seek == "%" and not doIgnore then
       out = out .. seek
+      seek = i:sub(a+1,a+1)
+      out = out .. seek
+      doIgnore = true
+    elseif seek:find("%a") and not doIgnore then -- Only letters get mangled
+      out = out .. "[" .. seek:upper() .. seek:lower() .. "]"
+    elseif seek and not doIgnore then
+      out = out .. seek
+    elseif doIgnore then
+      doIgnore = false
     end
   end
   return out
 end
+-- Various names we have in code
 head=mc('head')
 body=mc('body')
 dtwidth=mc('dtwidth')
@@ -69,7 +87,20 @@ while l do
     state = "COMMENT"
   end
   if state ~= "COMMENT" then
-    -- CODE HERE: include tag
+    -- Process the <include "filename"> tag.  Note that includes
+    -- can not be nested.
+    if l:find(mc('<include')..'%s+"') and not inInclude then
+      includeFileName=l:gsub(mc('.*<include')..'%s+"([^"]+)".*',"%1")
+      l=l:gsub(mc('<include')..'%s+"([^"]+)"%s*>',"")
+      fh = io.open(includeFileName,"rb")
+      if not fh then
+        print("Error opening file " .. includeFileName)
+        os.exit(1)
+      end
+      io.input(fh)
+      inInclude = true
+    end
+
     if l:find("<"..head..">") then state = "HEAD" end
     if l:find("</"..head..">") then state = "POSTHEAD" end
     if l:find("<"..body..">") then 
@@ -84,6 +115,7 @@ while l do
       l=l:gsub("<("..body..")>","<%1"..bflags..">") 
     end
     if l:find("</"..body..">") then state = "POSTBODY" end
+
     if state == 'HEAD' then
       -- See if they have the mandatory
       -- <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
@@ -99,10 +131,11 @@ while l do
       -- which was commonly used with 2002-era HTML the script was
       -- written for.  We will still support it here in the 2020s
       if l:find("<"..bodyflags..">") then
-        bflags=l:gsub(".*<"..bodyflags..">([^<]*)<"..bodyflags..">.*","%1")
+        bflags=l:gsub(".*<"..bodyflags..">([^<]*)","%1")
         bflags=" "..bflags
-        l=l:gsub("<"..bodyflags..">[^<]*<"..bodyflags..">","")
+        l=l:gsub("<"..bodyflags..">[^<]*","")
       end
+      l=l:gsub("</"..bodyflags.."%s*>","") -- Remove closing </BODYTAGS>
     end
     print(l)
   else -- In HTML comment
@@ -112,6 +145,13 @@ while l do
       state = oldstate
     end
   end
+
   l = io.read()
+  -- Handle end of included files
+  if not l and inInclude then
+    inInclude = false
+    io.input(fhSave)
+    l = io.read()
+  end
 end
 print("</HTML>")
