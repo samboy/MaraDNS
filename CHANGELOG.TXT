@@ -1,6 +1,6 @@
 MaraDNS changelog
 
-   maradns-3.5.0023:
+   maradns-3.5.0023: 
    This is a stable release of MaraDNS:
 
       * Testing update: All tests can run in a Ubuntu 22.04 Docker image
