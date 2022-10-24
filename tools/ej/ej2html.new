@@ -92,9 +92,12 @@ function get_timestamp_string()
     if year then
       timestamp = string.format("%d-%02d-%02d",year, mon, day)
     else 
-      -- lunacy.today() returns nil is time_t is 32-bit
+      -- lunacy.today() returns nil if time_t is 32-bit
       -- Linux has had 64-bit time support on 32-bit systems since 2020
       -- Alpine Linux, for example, has a 64-bit time_t on 32-bit x86
+      -- Another option is to patch the Lunacy source using the
+      -- code at https://github.com/evalEmpire/y2038 and making a 
+      -- non-portable syscall() to get the undelying 64-bit timestamp
       timestamp = "If your time_t is 32-bit, please upgrade"
     end
   elseif os.date then
