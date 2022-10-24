@@ -78,6 +78,17 @@ $charset =~ s/[^A-Za-z0-9\-]//g;
 
 # OK, see if we have a DTWIDTH header in the ej document.  If so, use that
 # value to determine how wide to make "dt" values in the formatted man page
+# Here is how it works:
+# <dl>
+# <dt>1
+# <dd>foo
+# <dt>2
+# <dd>bar
+# </dl>
+# Look like this rendered with a *roff parser after conversion
+# 1   foo
+# 2   bar
+# The DTWIDTH value determines how wide we make the column with the number
 
 if($header =~ m|<dtwidth>(.*?)</dtwidth>|ims) {
     $width = $1;
