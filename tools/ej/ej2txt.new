@@ -1,0 +1,114 @@
+#!/usr/bin/env lunacy
+
+-- This script has been donated to the public domain in 2022 by Sam Trenholme
+-- If, for some reason, a public domain declation is not acceptable, it
+-- may be licensed under the following terms:
+
+-- Copyright 2022 Sam Trenholme
+-- Permission to use, copy, modify, and/or distribute this software for
+-- any purpose with or without fee is hereby granted.
+-- THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+-- WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+-- OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+-- ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+-- WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+-- ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+-- OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+-- Convert an ej-formatted doc in to a plain text page
+-- Input: First argument or standard input
+-- Output: Standard output
+
+-- mc() converts a string in to a case insensitive regex; mc('th') is [Tt][Hh]
+function mc(i) 
+  local out = ""
+  local afterPercent = false
+  for a=1,i:len() do
+    seek = i:sub(a,a) 
+    -- Do not mangle anything right after a %
+    if seek == "%" and not afterPercent then
+      out = out .. seek
+      afterPercent = true
+    -- Only letters not after a % get mangled
+    elseif seek:find("%a") and not afterPercent then 
+      out = out .. "[" .. seek:upper() .. seek:lower() .. "]"
+    -- Other stuff is copied as is
+    elseif seek and not afterPercent then
+      out = out .. seek
+    -- Everything right after a % is passed as-is
+    elseif afterPercent then
+      out = out .. seek
+      afterPercent = false
+    end
+  end
+  return out
+end
+
+-- Get a string representing today’s date
+function get_timestamp_string()
+  local timestamp = "Time unknown"
+  if lunacy then
+    local year, mon, day = lunacy.today()
+    if year then
+      timestamp = string.format("%d-%02d-%02d",year, mon, day)
+    else
+      -- lunacy.today() returns nil if time_t is 32-bit
+      -- Linux has had 64-bit time support on 32-bit systems since 2020
+      -- Alpine Linux, for example, has a 64-bit time_t on 32-bit x86
+      -- Another option is to patch the Lunacy source using the
+      -- code at https://github.com/evalEmpire/y2038 and making a
+      -- non-portable syscall() to get the undelying 64-bit timestamp
+      timestamp = "If your time_t is 32-bit, please upgrade"
+    end
+  elseif os.date then
+    local a = os.date("*t")
+    local year = a.year
+    local mon = a.month
+    local day = a.day
+    timestamp = string.format("%d-%02d-%02d",year, mon, day)
+  elseif os.time then
+    timestamp = string.format("Unix timestamp %d",os.time())
+  end
+  return timestamp
+end
+----- END FUNCTIONS -----
+
+-- If they give a filename as an argument try to open that file
+if arg[1] then 
+ fh = io.open(arg[1],"rb")
+ if not fh then
+   print("Error opening file " .. arg[1])
+   os.exit(1)
+ end
+ io.input(fh)
+ fhSave = fh
+else
+ fhSave = io.stdin
+end
+inInclude = false
+
+-- Read the file, making it a single line, unless we’re in a <PRE>
+-- tag
+
+out = ""
+l = io.read()
+inPre = false
+while l do
+  out = out .. l
+  if l:find(mc("<pre>")) then
+    inPre = true
+  elseif l:find(mc("</pre>")) then
+    inPre = falase
+  end
+  if inPre then 
+    out = out .. "\n"
+  end
+  l = io.read()
+  if not l and inInclude then
+    inInclude = false
+    io.input(fhSave)
+    l = io.read()
+  end
+end
+
+print(out)
