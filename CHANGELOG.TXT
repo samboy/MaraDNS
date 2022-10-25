@@ -36,7 +36,7 @@ MaraDNS changelog
 	(so that we can use the lunacy included with MaraDNS to
 	build the MaraDNS documents)
      
-     (2022-10-??)
+     (2022-10-24)
 
    maradns-3.4.06:
    This is a legacy release of MaraDNS:
