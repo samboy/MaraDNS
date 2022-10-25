@@ -26,6 +26,10 @@ MaraDNS changelog
 	we have a Lua script to convert .ej files in to .html files.
 	We are still using the Perl tools to make documents until 
 	this work is done and tested.
+      * time-test.c tool added to make sure we will be OK after Y2038
+        on systems with a 32-bit time_t.  Yes, MaraDNS is Y2038
+        compliant on such systems as long as the underlying timestamp
+        is being updated.
       * Update the version of lunacy (Lua 5.1 fork) included with 
         MaraDNS to fix a theoretical issue with its RadioGatun[32] 
 	implementation, and to give lunacy lunacy.today() support
