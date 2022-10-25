@@ -1,5 +1,39 @@
 MaraDNS changelog
 
+   maradns-3.5.0024:
+   This is a stable release of MaraDNS:
+
+      * Minor security fix for Deadwood to ensure that no more than 83
+        queries are made to solve a given request when run as a fully
+        recursive server.  This only affects setups where root_servers
+        is set in the Deadwood dwood3rc configuration file.
+      * Some Deadwood tests have been made more robust so they are much
+        less likely to randomly fail.
+      * Update Alpine 3.14 Dockerfile to have lua5.1-bit32 and patch.
+        This Docker image can test both the legacy 3.4 and the current
+	3.5 branches of MaraDNS.
+      * Deadwood no longer changes its random prime for the hash 
+        compressor every time it is compiled, unless the new 
+	Makefile.randomprime file is used.
+      * The ej tools to make the MaraDNS documentation are now unified.
+        ej is a format I came up with in early 2002 to give MaraDNS
+	a unified documentation format.
+      * Move coLunacyDNS to the top-level directory instead of hiding
+        it in deadwood-${VERSION}/tools/  lunacy is now in coLunacyDNS/
+	instead of deadwood-${VERSION}
+      * Begin work on making Lua versions of the ej tools, to remove
+        the final Perl dependency MaraDNS currently has.  Right now 
+	we have a Lua script to convert .ej files in to .html files.
+	We are still using the Perl tools to make documents until 
+	this work is done and tested.
+      * Update the version of lunacy (Lua 5.1 fork) included with 
+        MaraDNS to fix a theoretical issue with its RadioGatun[32] 
+	implementation, and to give lunacy lunacy.today() support
+	(so that we can use the lunacy included with MaraDNS to
+	build the MaraDNS documents)
+     
+     (2022-10-??)
+
    maradns-3.4.06:
    This is a legacy release of MaraDNS:
 
