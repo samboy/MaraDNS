@@ -94,11 +94,12 @@ out = ""
 l = io.read()
 inPre = false
 while l do
-  out = out .. l
+  l = l:gsub("%s+"," ")
+  out = out .. l .. " "
   if l:find(mc("<pre>")) then
     inPre = true
   elseif l:find(mc("</pre>")) then
-    inPre = falase
+    inPre = false
   end
   if inPre then 
     out = out .. "\n"
@@ -110,5 +111,15 @@ while l do
     l = io.read()
   end
 end
+out = out:gsub(" +"," ")
+-- Step two: Now that the file is a single line, process EJ (HTML) tags
+
+out = out:gsub(mc("<p%s*>%s*"),"\n\n")
+out = out:gsub(mc("<h1%s*>%s*"),"\n\n===")
+out = out:gsub(mc("<h2%s*>%s*"),"\n\n==")
+out = out:gsub(mc("</?h1%s*>%s*"),"===\n\n")
+out = out:gsub(mc("</?h2%s*>%s*"),"==\n\n")
+out = out:gsub(mc("<li>([^<]*)"),"\n* %1\n")
+out = out:gsub("</?%w+%s*>","") -- Remove all other EJ tags
 
 print(out)
