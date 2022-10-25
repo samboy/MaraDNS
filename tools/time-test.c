@@ -22,6 +22,6 @@ int main() {
                         the_time = sys_time - 290805600;
                 }
         }
-	printf("Sizeof time_t is %d\n",sizeof(time_t));
+	printf("time_t is %d\n",time_t);
 	printf("%lld\n",the_time);
 }
