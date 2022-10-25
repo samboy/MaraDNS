@@ -1,0 +1,964 @@
+--- maradns-3.4.05/doc/en/changelog.txt	2022-10-18 17:37:16.000000000 -0700
++++ maradns-3.4.06/doc/en/changelog.txt	2022-10-24 17:24:27.473107940 -0700
+@@ -1,459 +1,502 @@
+-MaraDNS changelog
+-
+-   maradns-3.4.04:
+-   This is a legacy release of MaraDNS:
+-
+-      * Deadwood updated to 3.4.04 (no security updates)
+-
+-     (2022-10-16)
+-
+-   maradns-3.4.03:
+-   This is a legacy release of MaraDNS:
+-
+-      * Backport CVE-2022-30256 to MaraDNS 3.4
+-
+-     (2022-08-03)
+-
+-   maradns-3.5.0022: 
+-   This is a stable release of MaraDNS:
+-
+-      * Make incomplete last line non-fatal in Windows
+-      * Documentation updates based on user feedback
+-      * New Deadwood parameter: maxttl_reduce_labels for tweaking
+-        how many lables a DNS label for a NS referral can have before
+-        reducing its TTL.
+-      * Mitigations for an issue where “ghost domains” could stay
+-        in the cache longer.  This is a medium impact security 
+-        issue which should be described in CVE-2022-30256.
+-
+-     (2022-05-07)
+-
+-   maradns-3.5.0021: 
+-   This is a stable release of MaraDNS:
+-
+-     * MaraDNS now, by default, will compile with IPv6 support.
+-       See MaraDNS GitHUB ticket #97 for discussion.
+-     * One line patch for coLunacyDNS against CVE-2014-5461.  This
+-       only affects coLunacyDNS (not MaraDNS and not Deadwood), and
+-       in the context of coLunacyDNS, I can not reproduce the exploit,
+-       and only people running untrusted Lua scripts would be vulnerable.
+-
+-     (2021-07-28)
+-
+-   maradns-3.5.0020:
+-   This is a stable release of MaraDNS:
+-
+-     * New parameter: source_ip4, to specify the source IP when sending a
+-       query to an upstream or authoritative DNS server.
+-     * Makefile.centos8 file for Deadwood renamed Makefile.Ubuntu2004 (i.e.
+-       it’s now a Makefile for Ubuntu 20.04)
+-
+-     (2021-05-15)
+-
+-   maradns-3.5.0019:
+-   This is a stable release of MaraDNS:
+-
+-     * One line change to zoneserver.c to make it work better with systemd
+-     * Synthetic IP generator example (e.g. 10.1.2.3.ip4.internal 
+-       resolves to 10.1.2.3) added to coLunacyDNS documentation
+-
+-     (2021-03-16)
+-
+-   maradns-3.5.0018:
+-   This is a stable release of MaraDNS:
+-
+-     * coLunacyDNS updated to 1.0.010 (Ubuntu 20.04 testing found a
+-       minor select() bug)
+-     * Since RedHat has broken their pinky promise to support CentOS 8
+-       until 2029, MaraDNS has moved from CentOS 8 to Ubuntu 20.04 LTS
+-       (RPM .spec files removed; Docker container now runs Ubuntu 20.04)
+-
+-     (2020-12-20)
+-
+-   maradns-3.5.0017:
+-   This is a stable release of MaraDNS:
+-
+-     * coLunacyDNS update: We can now specify the “Authoritative”
+-       and “Recursion available” flags in the reply.
+-     * coLunacyDNS update: We can now specify a TTL for the reply,
+-       to be anywhere from 0 seconds (do not cache) to a little over
+-       90 days.
+-     * coLunacyDNS version updated to be 1.0.009.
+-
+-     (2020-10-02)
+-
+-   maradns-3.5.0016:
+-   This is a stable release of MaraDNS:
+-
+-     * Unstable mmLunacyDNS code removed from tree (coLunacyDNS can do
+-       anything mmLunacyDNS could do)
+-     * coLunacyDNS bug fixes: We return with an error if the Lua code
+-       attempts to return an invalid IPv4 address to the client (before,
+-       the code incorrectly returned 255.255.255.255)
+-     * coLunacyDNS returns helpful errors if the processQuery return 
+-       value is invalid in various ways.
+-     * coLunacyDNS now has 100%* testing coverage. *Some sanity tests
+-       which protect coLunacyDNS from security threats which can not
+-       be readily reproduced are disabled in testing mode.
+-     * coLunacyDNS is now at version 1.0.008
+-
+-     (2020-09-01)
+-
+-   maradns-3.5.0015:
+-   This is a stable release of MaraDNS:
+-
+-     * coLunacyDNS is now a stable release (1.0.007) with a full
+-       SQA testing suite and well over 90% code coverage in its tests.
+-     * mmLunacyDNS has been removed; coLunacyDNS can do everything
+-       mmLunacyDNS could do, and this saves me the bother of
+-       maintaining two code bases.
+-     * askmara now compiles with IPv6 support (the code has been
+-       there, but is finally getting enabled)
+-
+-     (2020-08-29)
+-
+-   maradns-3.5.0014:
+-   This is a stable release of MaraDNS (note that coLunacyDNS and
+-   mmLunacyDNS are unstable):
+-
+-     * coLunacyDNS’s Lua script can now specify IPv6 addresses in
+-       standard “colon” format, e.g. co1Data="2001:db8::1"
+-     * coLunacyDNS now handles ANY (and HINFO) queries as per RFC8482
+-     * coLunacyDNS documentation updates: Various cleanup.  Also,
+-       the example coLunacyDNS .lua files now return “not there”
+-       when we ask for a hostname which does not have a given record.
+-
+-     (2020-08-20)
+-
+-   maradns-3.5.0013:
+-   This is a stable release of MaraDNS (note that coLunacyDNS and
+-   mmLunacyDNS are unstable):
+-
+-     * coLunacyDNS now has support for binding to IPv6 addresses.  Both
+-       the *NIX (Linux) and the Windows32 binary can bind to an IPv6
+-       socket.
+-     * Some other bug fixes and cleanup, mainly with coLunacyDNS.
+-
+-     (2020-08-19)
+-
+-   maradns-3.5.0012:
+-   This is a stable release of MaraDNS (note that coLunacyDNS and
+-   mmLunacyDNS are unstable): 
+-
+-     * mmLunacyDNS security fix: We now use a secure hash compression
+-       function (HalfSipHash-1-3) for string hashing.
+-     * coLunacyDNS: hash compression function updated from 64-bit
+-       SipHash-2-4 to 32-bit HalfSipHash-1-3.  Compile time warnings
+-       removed from code.
+-     * lunacy: The code by default now uses HalfSipHash-1-3 for string
+-       hash compression.  Default compile optimization is now -O3
+- 
+-     (2020-08-12)
+-
+-   maradns-3.5.0011:
+-   This is a stable release of MaraDNS:
+-
+-     * min_ttl parameter added; this is the minimum time we keep a 
+-       record in the cache (in seconds)
+-     * Deadwood now compiles with IPv6 support by default.  For
+-       systems without IPv6 support, -DNOIP6 can be set when
+-       compiling Deadwood.
+-     * Automated tests now all run inside of Podman (Docker) container
+-       and all pass.  Tests are now completely automated, and can run
+-       from cron (and can be adapted to run inside Jenkins). 
+-
+-     (2020-08-10)
+-
+-   maradns-3.5.0010:
+-   This is a stable release of MaraDNS:
+-
+-     * Hotfix: coLunacyDNS no longer fails after 20 calls to 
+-       processQuery() (we now properly clean the main stack before 
+-       calling processQuery() in a co-routine).
+-     * Security update: MaraDNS, Deadwood, and Duende now default to
+-       the user ID 707 instead of 99/66.  This minimizes the chances
+-       of the user used by MaraDNS being used by other processes, 
+-       which could be a security leak under some circumstances.  The
+-       problem with running multiple services as "nobody" is that
+-       the "nobody" account is only as secure as the least secure
+-       service running as that account.
+-     * coLunacyDNS feature update: coLunacyDNS can now open and
+-       read files (for security reasons, only in the same directory
+-       coLunacyDNS is running in).  In addition, the code to implement 
+-       IPv6 sockets is well under way.
+-
+-     (2020-08-06)
+-
+-   maradns-3.5.0009:
+-   This is a stable release of MaraDNS:
+-
+-     * Add new program: coLunacyDNS.  This is a DNS server which runs a
+-       Lua function every time it gets a DNS query.  It uses Lua
+-       threads ("co-routines") to have a function which can get a
+-       DNS packet from an upstream server and return the result for
+-       processing by the Lua script (doing all this required setting up
+-       an entire select()-based state machine).  coLunacyDNS also supports
+-       sending proper "not there" replies and both sending and 
+-       receiving IPv6 DNS records (but presently only over IPv4).
+-     * Deadwood ip6 records can now have dashes and spaces in them
+-       to make reading a 128-bit IP easier.
+-     * SQA tests have been updated to run in CentOS 8.
+-
+-     (2020-08-03)
+-
+-   maradns-3.5.0008:
+-   This is a stable release of MaraDNS:
+-
+-     * Add new program: mmLunacyDNS.  This is an updated version of the
+-       microdns program, a program which always returns the same IP for 
+-       any DNS query given to it, with Lua scripting support (so we
+-       can customize what gets logged, return different IPs for 
+-       different queries, and ignore non-IPv4 IP address queries).
+-       The program can also run as a Windows service.  The script can
+-       only return IPv4 IP addresses or ignore queries, but it’s quite
+-       flexible given those limitations.
+-     * Since mmLunacyDNS has Lua support, we now include the full source
+-       of my fork of Lua 5.1, “Lunacy”.  The reason why I am using an
+-       older version of Lua is because this is the version of Lua 
+-       supported by LuaJIT, and I like having the option of increasing
+-       performance with LuaJIT without breaking existing Lua-based
+-       configuration files.
+-     * Deadwood logging update: Only note if one can not open cache when
+-       verbose_level is 10 or more (since this is mostly harmless).
+-       This is a non-fatal error which can be safely ignored. The cache 
+-       file just keeps copies of previously resolved DNS names around 
+-       between invocations of Deadwood; if the cache file can’t be read, 
+-       then DNS resolution might be a bit slower for some names after 
+-       starting up Deadwood, but everything will be OK.
+-     * I have added the ability to have multiline comments in Deadwood
+-       configuration files by using _rem={ at the beginning of a line;
+-       this indicates that a comment should continue until a } character
+-       is seen.  The reason for the unusual syntax is so that we can have
+-       multi-line comments in script files which are compatible with
+-       Deadwood, Lua, and Python.
+-
+-     (2020-07-24)
+-
+-   maradns-3.5.0007:
+-   This is a stable release of MaraDNS:
+-
+-     * Update name of “ip_blacklist” to be “ip_blocklist”.  The
+-       old name "ip_blacklist" still works (and I have no plans to 
+-       remove it), but “ip_blocklist” is more up to date.
+-     * Note in some older documents that while “primary” and “replica”
+-       are more up to date ways of saying “master” and “slave”, the
+-       documents will, in the interest of compatibility, retain the 
+-       “master” and “slave” wording.
+-
+-     (2020-07-07)
+-
+-   maradns-3.5.0006:
+-   This is a stable release of MaraDNS:
+-
+-     * Deadwood configuration files can not have leading space in them.
+-       Deadwood no longer uses a subset of Python2 syntax, since Python2
+-       is now post-End of life.
+-
+-     (2020-07-01)
+-
+-   maradns-3.5.0005:
+-   This is a stable release of MaraDNS:
+-
+-     * MaraDNS is now fully supported in Cygwin
+-     * Windows port of MaraDNS no longer includes maradns.exe; we instead
+-       tell people how to compile MaraDNS in Cygwin. Note We continue to
+-       fully support Deadwood for Windows, which is a proper Windows
+-       service (unlike the old maradns.exe).
+-     * Dockerfile now creates Docker image with working instance of
+-       MaraDNS. This is still a work in progress; one currently needs to
+-       enter the Docker container to change MaraDNS configuration files.
+-     * Version number fixed when compiling a MaraDNS release.
+-
+-     (2020-06-02)
+-
+-   maradns-3.5.0004:
+-   This is a stable release of MaraDNS:
+-
+-     * maximum_cache_elements no longer needs to include blocklist, root
+-       server, upstream server, or synthetic IP elements.
+-     * Documentation updates, mainly for maximum_cache_elements change
+-
+-     (2020-04-18)
+-
+-   maradns-3.5.0003:
+-   This is a stable release of MaraDNS:
+-
+-     * Added support for blocklists as per GitHub issue #69 and GitHub
+-       issue #70
+-     * Minimize memory usage of blocklists by allowing the same entry to
+-       be used for IPv4 and IPv6
+-
+-     (2020-04-16)
+-
+-   maradns-3.5.0002:
+-   This is a stable release of MaraDNS:
+-
+-     * Documentation and other updates and cleanups.
+-     * Windows port no longer needs to have secret.txt file to run; the
+-       Deadwood Windows port now uses the Windows call CryptGenRandom() to
+-       get entropy.
+-
+-     (2020-02-03)
+-
+-   maradns-3.5.0001:
+-   This is a stable release of MaraDNS:
+-
+-     * bind2csv2.py updated to run in Python3.
+-     * This is the first “One Source of Truth” release of MaraDNS: All
+-       files in the release are derived directly from the Git version of
+-       MaraDNS.
+-     * Github history going back to 2014 is now included as part of the
+-       source code tarball.
+-     * Scripts to test the Git version of MaraDNS, to make the Windows
+-       binaries, and to convert the Git version in to a tarball and
+-       Windows zipfile added.
+-
+-     (2020-01-25)
+-
+-   maradns-3.4.02:
+-   This is a stable release of MaraDNS:
+-
+-     * Tests updated to run and pass in CentOS 7
+-     * Fix typo in asktest.c.
+-     * Deadwood: Issue building Deadwood from the GitHub tree in CentOS8
+-       fixed
+-     * Deadwood: Update Windows documents in Deadwood source code tarball
+-
+-     (2020-01-16)
+-
+-   maradns-3.4.01:
+-   This is a stable release of MaraDNS:
+-
+-     * Deadwood updated to 3.4.01
+-
+-     (2019-10-24)
+-
+-   Important: Deadwood 3.4.01 is updated to use the Quad9 upstream DNS
+-   servers as the default. If the old behavior of using the ICANN name
+-   servers as root servers is desired, add the following lines to one’s
+-   dwood3rc file:
+-root_servers = {}
+-root_servers["."]="198.41.0.4,"
+-root_servers["."]+="199.9.14.201,"
+-root_servers["."]+="192.33.4.12,"
+-root_servers["."]+="199.7.91.13,"
+-root_servers["."]+="192.203.230.10,"
+-root_servers["."]+="192.5.5.241,"
+-root_servers["."]+="192.112.36.4,"
+-root_servers["."]+="198.97.190.53,"
+-root_servers["."]+="192.36.148.17,"
+-root_servers["."]+="192.58.128.30,"
+-root_servers["."]+="193.0.14.129,"
+-root_servers["."]+="199.7.83.42,"
+-root_servers["."]+="202.12.27.33"
+-
+-   Please note: The above list of IPs is current as of 2019-04-07, and was
+-   last changed in October of 2017.
+-
+-   Please go to root-servers.org to get an up-to-date list of root
+-   servers.
+-
+-   maradns-3.3.03:
+-   This is a development release of MaraDNS.
+-
+-     * Updated numbering system to give MaraDNS the same version number as
+-       Deadwood.
+-     * Deadwood updated to 3.3.03.
+-     * Document how star records work.
+-
+-     (2019-09-28)
+-
+-   maradns-2.0.17:
+-   This is the stable release of MaraDNS. No security updates were made.
+-
+-     * Deadwood updated to 3.2.14
+-     * Default max_mem value doubled as discussed in GitHub issue #52.
+-
+-     (2019-01-20)
+-
+-   maradns-2.0.16:
+-   This is the stable release of MaraDNS. A very minor security update was
+-   made.
+-
+-     * Deadwood updated to 3.2.12
+-
+-     (2018-08-16)
+-
+-   maradns-2.0.15:
+-   This is the stable release of MaraDNS. No security updates were done in
+-   this release.
+-
+-     * Deadwood updated to 3.2.11
+-
+-     (2018-02-05)
+-
+-   maradns-2.0.14:
+-   This is the stable release of MaraDNS. No security updates were done in
+-   this release.
+-
+-     * Deadwood updated to 3.2.10
+-
+-     (2017-06-10)
+-
+-   maradns-2.0.13:
+-   This is the stable release of MaraDNS.
+-
+-     * Two non-critical buffer overflows from ParseMaraRc fixed. One can
+-       never be exploited; the other one can only be exploted by the
+-       (usually) root user by writing to the system mararc file.
+-     * Deadwood updated to 3.2.09
+-
+-     (2015-09-25)
+-
+-   maradns-2.0.12:
+-   This is the stable release of MaraDNS.
+-
+-     * Security fix for improper free() in zoneserver
+-     * Deadwood updated to 3.2.08
+-     * Zone transfers now work with newer versions of dig
+-     * Documentation updates
+-
+-     (2015.08.19)
+-
+-   maradns-2.0.11:
+-   This is the stable release of MaraDNS.
+-
+-     * Deadwood updated to 3.2.07
+-
+-     (2015.01.30)
+-
+-   maradns-1.4.16:
+-   This is the final MaraDNS 1 release. Please be aware that MaraDNS 1 has
+-   at least one unpatched security hole
+-
+-   This is the legacy branch of MaraDNS. Please upgrade to MaraDNS 2. All
+-   MaraDNS 1 support ends on June 21, 2015.
+-
+-     * Deadwood updated to 3.2.07
+-
+-     (2015.01.30)
+-
+-   maradns-2.0.10:
+-   This is the stable release of MaraDNS.
+-
+-     * Deadwood updated to 3.2.06
+-     * Zoneserver now compiles and runs in Cygwin (so Windows users can
+-       have DNS-over-TCP support).
+-
+-     (2015.01.24)
+-
+-   maradns-1.4.15:
+-   This is the legacy branch of MaraDNS. Please upgrade to MaraDNS 2. This
+-   will probably be the final MaraDNS 1 release; all MaraDNS 1 support
+-   ends on June 21, 2015.
+-
+-     * Deadwood updated to 3.2.06
+-     * CERT vulnerability VU#264212 update: max_glueless_level now
+-       defaults to 4 instead of 10
+-
+-     (2015.01.24)
++MaraDNS changelog
++
++   maradns-3.4.06:
++   This is a legacy release of MaraDNS:
++
++      * Minor security fix for Deadwood to ensure that no more than 83
++        queries are made to solve a given request when run as a fully
++        recursive server.  This only affects setups where root_servers
++        is set in the Deadwood dwood3rc configuration file.
++
++     (2022-10-24)
++
++   maradns-3.4.05:
++   This is a legacy release of MaraDNS:
++
++      * Deadwood updated to 3.4.05
++      * Deadwood tests are now 3.4 backports of the current 3.5 tests
++      * Legacy testing platform is now Alpine 3.14.  See the Dockerfile
++        in the Deadwood sqa directory for the full platform setup.
++      * MaraDNS tests are now the current 3.5 MaraDNS tests (no backporting
++        needed)
++      * All regression tests pass again
++      * rg32hash.tar.gz, used for testing, added to Deadwood 3.4 tree
++      * No security fixes
++
++     (2022-10-18)
++
++   maradns-3.5.0023: 
++   This is a stable release of MaraDNS:
++
++      * Testing update: All tests can run in a Ubuntu 22.04 Docker image
++        or an Alpine Linux 3.14 Docker image.  Both Dockerfiles are
++	included.
++      * Testing update: Perl scripts no longer used for the regression
++        tests
++      * Bugfix: min_ttl now works for all cached entries
++      * Recursive update: CNAME chains with out-of-bailiwick records
++        are now resolved the same way as other DNS servers
++      * Development environment updated to Ubuntu 22.04
++      * Documentation clean up and updates
++
++     (2022-10-17)
++
++   maradns-3.4.04:
++   This is a legacy release of MaraDNS:
++
++      * Deadwood updated to 3.4.04 (no security updates)
++        - Backport min_ttl to legacy branch
++        - Some minor code cleanup
++
++     (2022-10-16)
++
++   maradns-3.4.03:
++   This is a legacy release of MaraDNS:
++
++      * Backport CVE-2022-30256 to MaraDNS 3.4
++
++     (2022-08-03)
++
++   maradns-3.5.0022:
++   This is a stable release of MaraDNS:
++
++      * Make incomplete last line non-fatal in Windows
++      * Documentation updates based on user feedback
++      * New Deadwood parameter: maxttl_reduce_labels for tweaking
++        how many lables a DNS label for a NS referral can have before
++        reducing its TTL.
++      * Mitigations for an issue where “ghost domains” could stay
++        in the cache longer.  This is a medium impact security 
++        issue which should be described in CVE-2022-30256.
++
++     (2022-05-07)
++
++   maradns-3.5.0021: 
++   This is a stable release of MaraDNS:
++
++     * MaraDNS now, by default, will compile with IPv6 support.
++       See MaraDNS GitHUB ticket #97 for discussion.
++     * One line patch for coLunacyDNS against CVE-2014-5461.  This
++       only affects coLunacyDNS (not MaraDNS and not Deadwood), and
++       in the context of coLunacyDNS, I can not reproduce the exploit,
++       and only people running untrusted Lua scripts would be vulnerable.
++
++     (2021-07-28)
++
++   maradns-3.5.0020:
++   This is a stable release of MaraDNS:
++
++     * New parameter: source_ip4, to specify the source IP when sending a
++       query to an upstream or authoritative DNS server.
++     * Makefile.centos8 file for Deadwood renamed Makefile.Ubuntu2004 (i.e.
++       it’s now a Makefile for Ubuntu 20.04)
++
++     (2021-05-15)
++
++   maradns-3.5.0019:
++   This is a stable release of MaraDNS:
++
++     * One line change to zoneserver.c to make it work better with systemd
++     * Synthetic IP generator example (e.g. 10.1.2.3.ip4.internal 
++       resolves to 10.1.2.3) added to coLunacyDNS documentation
++
++     (2021-03-16)
++
++   maradns-3.5.0018:
++   This is a stable release of MaraDNS:
++
++     * coLunacyDNS updated to 1.0.010 (Ubuntu 20.04 testing found a
++       minor select() bug)
++     * Since RedHat has broken their pinky promise to support CentOS 8
++       until 2029, MaraDNS has moved from CentOS 8 to Ubuntu 20.04 LTS
++       (RPM .spec files removed; Docker container now runs Ubuntu 20.04)
++
++     (2020-12-20)
++
++   maradns-3.5.0017:
++   This is a stable release of MaraDNS:
++
++     * coLunacyDNS update: We can now specify the “Authoritative”
++       and “Recursion available” flags in the reply.
++     * coLunacyDNS update: We can now specify a TTL for the reply,
++       to be anywhere from 0 seconds (do not cache) to a little over
++       90 days.
++     * coLunacyDNS version updated to be 1.0.009.
++
++     (2020-10-02)
++
++   maradns-3.5.0016:
++   This is a stable release of MaraDNS:
++
++     * Unstable mmLunacyDNS code removed from tree (coLunacyDNS can do
++       anything mmLunacyDNS could do)
++     * coLunacyDNS bug fixes: We return with an error if the Lua code
++       attempts to return an invalid IPv4 address to the client (before,
++       the code incorrectly returned 255.255.255.255)
++     * coLunacyDNS returns helpful errors if the processQuery return 
++       value is invalid in various ways.
++     * coLunacyDNS now has 100%* testing coverage. *Some sanity tests
++       which protect coLunacyDNS from security threats which can not
++       be readily reproduced are disabled in testing mode.
++     * coLunacyDNS is now at version 1.0.008
++
++     (2020-09-01)
++
++   maradns-3.5.0015:
++   This is a stable release of MaraDNS:
++
++     * coLunacyDNS is now a stable release (1.0.007) with a full
++       SQA testing suite and well over 90% code coverage in its tests.
++     * mmLunacyDNS has been removed; coLunacyDNS can do everything
++       mmLunacyDNS could do, and this saves me the bother of
++       maintaining two code bases.
++     * askmara now compiles with IPv6 support (the code has been
++       there, but is finally getting enabled)
++
++     (2020-08-29)
++
++   maradns-3.5.0014:
++   This is a stable release of MaraDNS (note that coLunacyDNS and
++   mmLunacyDNS are unstable):
++
++     * coLunacyDNS’s Lua script can now specify IPv6 addresses in
++       standard “colon” format, e.g. co1Data="2001:db8::1"
++     * coLunacyDNS now handles ANY (and HINFO) queries as per RFC8482
++     * coLunacyDNS documentation updates: Various cleanup.  Also,
++       the example coLunacyDNS .lua files now return “not there”
++       when we ask for a hostname which does not have a given record.
++
++     (2020-08-20)
++
++   maradns-3.5.0013:
++   This is a stable release of MaraDNS (note that coLunacyDNS and
++   mmLunacyDNS are unstable):
++
++     * coLunacyDNS now has support for binding to IPv6 addresses.  Both
++       the *NIX (Linux) and the Windows32 binary can bind to an IPv6
++       socket.
++     * Some other bug fixes and cleanup, mainly with coLunacyDNS.
++
++     (2020-08-19)
++
++   maradns-3.5.0012:
++   This is a stable release of MaraDNS (note that coLunacyDNS and
++   mmLunacyDNS are unstable): 
++
++     * mmLunacyDNS security fix: We now use a secure hash compression
++       function (HalfSipHash-1-3) for string hashing.
++     * coLunacyDNS: hash compression function updated from 64-bit
++       SipHash-2-4 to 32-bit HalfSipHash-1-3.  Compile time warnings
++       removed from code.
++     * lunacy: The code by default now uses HalfSipHash-1-3 for string
++       hash compression.  Default compile optimization is now -O3
++ 
++     (2020-08-12)
++
++   maradns-3.5.0011:
++   This is a stable release of MaraDNS:
++
++     * min_ttl parameter added; this is the minimum time we keep a 
++       record in the cache (in seconds)
++     * Deadwood now compiles with IPv6 support by default.  For
++       systems without IPv6 support, -DNOIP6 can be set when
++       compiling Deadwood.
++     * Automated tests now all run inside of Podman (Docker) container
++       and all pass.  Tests are now completely automated, and can run
++       from cron (and can be adapted to run inside Jenkins). 
++
++     (2020-08-10)
++
++   maradns-3.5.0010:
++   This is a stable release of MaraDNS:
++
++     * Hotfix: coLunacyDNS no longer fails after 20 calls to 
++       processQuery() (we now properly clean the main stack before 
++       calling processQuery() in a co-routine).
++     * Security update: MaraDNS, Deadwood, and Duende now default to
++       the user ID 707 instead of 99/66.  This minimizes the chances
++       of the user used by MaraDNS being used by other processes, 
++       which could be a security leak under some circumstances.  The
++       problem with running multiple services as "nobody" is that
++       the "nobody" account is only as secure as the least secure
++       service running as that account.
++     * coLunacyDNS feature update: coLunacyDNS can now open and
++       read files (for security reasons, only in the same directory
++       coLunacyDNS is running in).  In addition, the code to implement 
++       IPv6 sockets is well under way.
++
++     (2020-08-06)
++
++   maradns-3.5.0009:
++   This is a stable release of MaraDNS:
++
++     * Add new program: coLunacyDNS.  This is a DNS server which runs a
++       Lua function every time it gets a DNS query.  It uses Lua
++       threads ("co-routines") to have a function which can get a
++       DNS packet from an upstream server and return the result for
++       processing by the Lua script (doing all this required setting up
++       an entire select()-based state machine).  coLunacyDNS also supports
++       sending proper "not there" replies and both sending and 
++       receiving IPv6 DNS records (but presently only over IPv4).
++     * Deadwood ip6 records can now have dashes and spaces in them
++       to make reading a 128-bit IP easier.
++     * SQA tests have been updated to run in CentOS 8.
++
++     (2020-08-03)
++
++   maradns-3.5.0008:
++   This is a stable release of MaraDNS:
++
++     * Add new program: mmLunacyDNS.  This is an updated version of the
++       microdns program, a program which always returns the same IP for 
++       any DNS query given to it, with Lua scripting support (so we
++       can customize what gets logged, return different IPs for 
++       different queries, and ignore non-IPv4 IP address queries).
++       The program can also run as a Windows service.  The script can
++       only return IPv4 IP addresses or ignore queries, but it’s quite
++       flexible given those limitations.
++     * Since mmLunacyDNS has Lua support, we now include the full source
++       of my fork of Lua 5.1, “Lunacy”.  The reason why I am using an
++       older version of Lua is because this is the version of Lua 
++       supported by LuaJIT, and I like having the option of increasing
++       performance with LuaJIT without breaking existing Lua-based
++       configuration files.
++     * Deadwood logging update: Only note if one can not open cache when
++       verbose_level is 10 or more (since this is mostly harmless).
++       This is a non-fatal error which can be safely ignored. The cache 
++       file just keeps copies of previously resolved DNS names around 
++       between invocations of Deadwood; if the cache file can’t be read, 
++       then DNS resolution might be a bit slower for some names after 
++       starting up Deadwood, but everything will be OK.
++     * I have added the ability to have multiline comments in Deadwood
++       configuration files by using _rem={ at the beginning of a line;
++       this indicates that a comment should continue until a } character
++       is seen.  The reason for the unusual syntax is so that we can have
++       multi-line comments in script files which are compatible with
++       Deadwood, Lua, and Python.
++
++     (2020-07-24)
++
++   maradns-3.5.0007:
++   This is a stable release of MaraDNS:
++
++     * Update name of “ip_blacklist” to be “ip_blocklist”.  The
++       old name "ip_blacklist" still works (and I have no plans to 
++       remove it), but “ip_blocklist” is more up to date.
++     * Note in some older documents that while “primary” and “replica”
++       are more up to date ways of saying “master” and “slave”, the
++       documents will, in the interest of compatibility, retain the 
++       “master” and “slave” wording.
++
++     (2020-07-07)
++
++   maradns-3.5.0006:
++   This is a stable release of MaraDNS:
++
++     * Deadwood configuration files can not have leading space in them.
++       Deadwood no longer uses a subset of Python2 syntax, since Python2
++       is now post-End of life.
++
++     (2020-07-01)
++
++   maradns-3.5.0005:
++   This is a stable release of MaraDNS:
++
++     * MaraDNS is now fully supported in Cygwin
++     * Windows port of MaraDNS no longer includes maradns.exe; we instead
++       tell people how to compile MaraDNS in Cygwin. Note We continue to
++       fully support Deadwood for Windows, which is a proper Windows
++       service (unlike the old maradns.exe).
++     * Dockerfile now creates Docker image with working instance of
++       MaraDNS. This is still a work in progress; one currently needs to
++       enter the Docker container to change MaraDNS configuration files.
++     * Version number fixed when compiling a MaraDNS release.
++
++     (2020-06-02)
++
++   maradns-3.5.0004:
++   This is a stable release of MaraDNS:
++
++     * maximum_cache_elements no longer needs to include blocklist, root
++       server, upstream server, or synthetic IP elements.
++     * Documentation updates, mainly for maximum_cache_elements change
++
++     (2020-04-18)
++
++   maradns-3.5.0003:
++   This is a stable release of MaraDNS:
++
++     * Added support for blocklists as per GitHub issue #69 and GitHub
++       issue #70
++     * Minimize memory usage of blocklists by allowing the same entry to
++       be used for IPv4 and IPv6
++
++     (2020-04-16)
++
++   maradns-3.5.0002:
++   This is a stable release of MaraDNS:
++
++     * Documentation and other updates and cleanups.
++     * Windows port no longer needs to have secret.txt file to run; the
++       Deadwood Windows port now uses the Windows call CryptGenRandom() to
++       get entropy.
++
++     (2020-02-03)
++
++   maradns-3.5.0001:
++   This is a stable release of MaraDNS:
++
++     * bind2csv2.py updated to run in Python3.
++     * This is the first “One Source of Truth” release of MaraDNS: All
++       files in the release are derived directly from the Git version of
++       MaraDNS.
++     * Github history going back to 2014 is now included as part of the
++       source code tarball.
++     * Scripts to test the Git version of MaraDNS, to make the Windows
++       binaries, and to convert the Git version in to a tarball and
++       Windows zipfile added.
++
++     (2020-01-25)
++
++   maradns-3.4.02:
++   This is a stable release of MaraDNS:
++
++     * Tests updated to run and pass in CentOS 7
++     * Fix typo in asktest.c.
++     * Deadwood: Issue building Deadwood from the GitHub tree in CentOS8
++       fixed
++     * Deadwood: Update Windows documents in Deadwood source code tarball
++
++     (2020-01-16)
++
++   maradns-3.4.01:
++   This is a stable release of MaraDNS:
++
++     * Deadwood updated to 3.4.01
++
++     (2019-10-24)
++
++   Important: Deadwood 3.4.01 is updated to use the Quad9 upstream DNS
++   servers as the default. If the old behavior of using the ICANN name
++   servers as root servers is desired, add the following lines to one’s
++   dwood3rc file:
++root_servers = {}
++root_servers["."]="198.41.0.4,"
++root_servers["."]+="199.9.14.201,"
++root_servers["."]+="192.33.4.12,"
++root_servers["."]+="199.7.91.13,"
++root_servers["."]+="192.203.230.10,"
++root_servers["."]+="192.5.5.241,"
++root_servers["."]+="192.112.36.4,"
++root_servers["."]+="198.97.190.53,"
++root_servers["."]+="192.36.148.17,"
++root_servers["."]+="192.58.128.30,"
++root_servers["."]+="193.0.14.129,"
++root_servers["."]+="199.7.83.42,"
++root_servers["."]+="202.12.27.33"
++
++   Please note: The above list of IPs is current as of 2019-04-07, and was
++   last changed in October of 2017.
++
++   Please go to root-servers.org to get an up-to-date list of root
++   servers.
++
++   maradns-3.3.03:
++   This is a development release of MaraDNS.
++
++     * Updated numbering system to give MaraDNS the same version number as
++       Deadwood.
++     * Deadwood updated to 3.3.03.
++     * Document how star records work.
++
++     (2019-09-28)
++
++   maradns-2.0.17:
++   This is the stable release of MaraDNS. No security updates were made.
++
++     * Deadwood updated to 3.2.14
++     * Default max_mem value doubled as discussed in GitHub issue #52.
++
++     (2019-01-20)
++
++   maradns-2.0.16:
++   This is the stable release of MaraDNS. A very minor security update was
++   made.
++
++     * Deadwood updated to 3.2.12
++
++     (2018-08-16)
++
++   maradns-2.0.15:
++   This is the stable release of MaraDNS. No security updates were done in
++   this release.
++
++     * Deadwood updated to 3.2.11
++
++     (2018-02-05)
++
++   maradns-2.0.14:
++   This is the stable release of MaraDNS. No security updates were done in
++   this release.
++
++     * Deadwood updated to 3.2.10
++
++     (2017-06-10)
++
++   maradns-2.0.13:
++   This is the stable release of MaraDNS.
++
++     * Two non-critical buffer overflows from ParseMaraRc fixed. One can
++       never be exploited; the other one can only be exploted by the
++       (usually) root user by writing to the system mararc file.
++     * Deadwood updated to 3.2.09
++
++     (2015-09-25)
++
++   maradns-2.0.12:
++   This is the stable release of MaraDNS.
++
++     * Security fix for improper free() in zoneserver
++     * Deadwood updated to 3.2.08
++     * Zone transfers now work with newer versions of dig
++     * Documentation updates
++
++     (2015.08.19)
++
++   maradns-2.0.11:
++   This is the stable release of MaraDNS.
++
++     * Deadwood updated to 3.2.07
++
++     (2015.01.30)
++
++   maradns-1.4.16:
++   This is the final MaraDNS 1 release. Please be aware that MaraDNS 1 has
++   at least one unpatched security hole
++
++   This is the legacy branch of MaraDNS. Please upgrade to MaraDNS 2. All
++   MaraDNS 1 support ends on June 21, 2015.
++
++     * Deadwood updated to 3.2.07
++
++     (2015.01.30)
++
++   maradns-2.0.10:
++   This is the stable release of MaraDNS.
++
++     * Deadwood updated to 3.2.06
++     * Zoneserver now compiles and runs in Cygwin (so Windows users can
++       have DNS-over-TCP support).
++
++     (2015.01.24)
++
++   maradns-1.4.15:
++   This is the legacy branch of MaraDNS. Please upgrade to MaraDNS 2. This
++   will probably be the final MaraDNS 1 release; all MaraDNS 1 support
++   ends on June 21, 2015.
++
++     * Deadwood updated to 3.2.06
++     * CERT vulnerability VU#264212 update: max_glueless_level now
++       defaults to 4 instead of 10
++
++     (2015.01.24)
