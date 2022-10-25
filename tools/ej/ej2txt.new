@@ -117,6 +117,9 @@ out = out:gsub(" +"," ")
 out = out:gsub(mc("<th%s*>[^<]*</th%s*>"),"") -- EJ for man pages unused here
 out = out:gsub(mc("</?meta[^>]*>"),"") -- Scrub META tag
 out = out:gsub(mc("<a%s+[^>]*>"),"") -- Scrub A tag
+out = out:gsub(mc("<ul>"),"\n") -- Have space at top of lists
+out = out:gsub(mc("</pre>"),"\n") -- Space after code blocks
+out = out:gsub("(%s) +","%1") -- Make sure not to have space at line start
 out = out:gsub(mc("<p%s*>%s*"),"\n\n")
 out = out:gsub(mc("<h1%s*>%s*"),"\n\n===")
 out = out:gsub(mc("<h2%s*>%s*"),"\n\n==")
