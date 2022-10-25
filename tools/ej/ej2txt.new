@@ -124,5 +124,6 @@ out = out:gsub(mc("</?h1%s*>%s*"),"===\n\n")
 out = out:gsub(mc("</?h2%s*>%s*"),"==\n\n")
 out = out:gsub(mc("<li>([^<]*)"),"\n* %1\n")
 out = out:gsub("</?%w+%s*>","") -- Remove all other EJ tags
+out = out:gsub("^%s*","") -- Remove whitespace at document top
 
 print(out)
