@@ -1,5 +1,30 @@
 MaraDNS changelog
 
+   maradns-3.4.06:
+   This is a legacy release of MaraDNS:
+
+      * Minor security fix for Deadwood to ensure that no more than 83
+        queries are made to solve a given request when run as a fully
+        recursive server.  This only affects setups where root_servers
+        is set in the Deadwood dwood3rc configuration file.
+
+     (2022-10-24)
+
+   maradns-3.4.05:
+   This is a legacy release of MaraDNS:
+
+      * Deadwood updated to 3.4.05
+      * Deadwood tests are now 3.4 backports of the current 3.5 tests
+      * Legacy testing platform is now Alpine 3.14.  See the Dockerfile
+        in the Deadwood sqa directory for the full platform setup.
+      * MaraDNS tests are now the current 3.5 MaraDNS tests (no backporting
+        needed)
+      * All regression tests pass again
+      * rg32hash.tar.gz, used for testing, added to Deadwood 3.4 tree
+      * No security fixes
+
+     (2022-10-18)
+
    maradns-3.5.0023: 
    This is a stable release of MaraDNS:
 
