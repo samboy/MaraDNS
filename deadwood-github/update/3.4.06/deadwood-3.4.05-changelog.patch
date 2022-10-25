@@ -1,0 +1,12 @@
+--- deadwood-3.4.05/doc/CHANGELOG	2022-10-18 16:50:56.000000000 -0700
++++ deadwood-3.4.06/doc/CHANGELOG	2022-10-24 15:22:53.484350839 -0700
+@@ -1,3 +1,9 @@
++3.4.06 (2022-10-24; legacy release)
++
++- Very minor security fix: Under some circumstances, Deadwood would make
++  too many upstream queires to recursively resolve a name.  Fixed.  This
++  only affects people using the root_servers feature of Deadwood.
++
+ 3.4.05 (2022-10-18; legacy release)
+ 
+ - Fix SQA regressions so that they all pass in Alpine 3.14; I replaced
