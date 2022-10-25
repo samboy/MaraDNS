@@ -65,7 +65,7 @@ DwSys.o:	DwSys.c DwStr.h version.h
 	$(CC) $(FLAGS) -Wall -c -o DwSys.o DwSys.c
 
 RandomPrime:	RandomPrime.c
-	$(CC) -O3 -o RandomPrime RandomPrime.c
+	$(HOSTCC) -O3 -o RandomPrime RandomPrime.c
 
 # See ../doc/MulConstant.txt to explain this
 DwRandPrime.h: RandomPrime
