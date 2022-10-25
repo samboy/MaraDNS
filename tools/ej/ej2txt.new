@@ -114,6 +114,9 @@ end
 out = out:gsub(" +"," ")
 -- Step two: Now that the file is a single line, process EJ (HTML) tags
 
+out = out:gsub(mc("<th%s*>[^<]*</th%s*>"),"") -- EJ for man pages unused here
+out = out:gsub(mc("</?meta[^>]*>"),"") -- Scrub META tag
+out = out:gsub(mc("<a%s+[^>]*>"),"") -- Scrub A tag
 out = out:gsub(mc("<p%s*>%s*"),"\n\n")
 out = out:gsub(mc("<h1%s*>%s*"),"\n\n===")
 out = out:gsub(mc("<h2%s*>%s*"),"\n\n==")
