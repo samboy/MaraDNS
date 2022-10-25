@@ -1,6 +1,7 @@
-EJ is the document system that MaraDNS uses; this is in response to my 
-translators asking for a single unified document format which can be 
-converted in to HTML; man pages; text documents; etc.
+EJ (short for “Easy Journal”) is the document system that MaraDNS
+uses; this is in response to my translators asking for a single unified
+document format which can be converted in to HTML; man pages; text
+documents; etc.
 
 EJ is an XML-like format (without a DTD, alas) which has the following 
 tags.
