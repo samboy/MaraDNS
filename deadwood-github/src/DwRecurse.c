@@ -2393,7 +2393,7 @@ catch_dwx_cache_reply:
 }
 
 /* Convert a single IP from human-readable ("8.8.4.4",
- * "fd4d:6172:6144:4e53::3") to raw binary format, returning the length of
+ * "2001:db8:1:2::3:f") to raw binary format, returning the length of
  * the resulting IP
  */
 int dwx_ns_convert_1ip(char *ip_human, uint8_t *ip_raw) {
