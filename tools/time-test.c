@@ -22,6 +22,6 @@ int main() {
                         the_time = sys_time - 290805600;
                 }
         }
-	printf("time_t is %d\n",time_t);
+	printf("time_t is %d\n",time(0));
 	printf("%lld\n",the_time);
 }
