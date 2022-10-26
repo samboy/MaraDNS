@@ -179,12 +179,12 @@ while matchPlace and matchPlace > 1 do
 end
 -- out = out:gsub(mc("<li>([^<]*)"),"\n* " .. fmt("%1","  ") .. "\n")
 out = out:gsub(mc("</?ul>%s*"),"\n\n") -- Have space at top and bottom of lists
-out = out:gsub(mc("</pre>%s*"),"\n") -- Space after code blocks
-out = out:gsub(mc("<p%s*>%s*"),"\n\n")
-out = out:gsub(mc("<h1%s*>%s*"),"\n\n===")
-out = out:gsub(mc("<h2%s*>%s*"),"\n\n==")
-out = out:gsub(mc("</?h1%s*>%s*"),"===\n\n")
-out = out:gsub(mc("</?h2%s*>%s*"),"==\n\n")
+out = out:gsub(mc("</?pre>%s*"),"\n\n") -- Space before and after code blocks
+out = out:gsub(mc("<p%s*>%s*"),"\n\n") -- Paragraph is new line
+out = out:gsub(mc("<h1%s*>%s*"),"\n\n===") -- Level 1 headings start
+out = out:gsub(mc("<h2%s*>%s*"),"\n\n==") -- Level 2 headings start
+out = out:gsub(mc("</?h1%s*>%s*"),"===\n\n") -- Level 1 headings end
+out = out:gsub(mc("</?h2%s*>%s*"),"==\n\n") -- Level 2 headings end
 out = out:gsub("</?%w+%s*>","") -- Remove all other EJ tags
 out = out:gsub("^%s*","") -- Remove whitespace at document top
 out = fmt(out)
