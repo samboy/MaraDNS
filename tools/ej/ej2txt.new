@@ -71,6 +71,41 @@ function get_timestamp_string()
   end
   return timestamp
 end
+
+-- Add linebreaks to a long string to make it look nice on a 80-column
+-- (or whatever) terminal
+-- Input: The string we will add newlines to (from)
+--        What we will put on lines after adding newlines (this is
+--        so we can use this with lists and have the lines all start
+--        to the right of the bullet) (prefix)
+--        The maximum length of a line before adding a newline (should
+--        there be a word with space longer than len, it will not be
+--        broken up)
+-- Output: The string with newlines added
+function fmt(from, prefix, len)
+  if not prefix then prefix = "" end
+  if not len then len = 74 end
+  out = ""
+  index = 1
+  thisLineStart = 1
+  while index < from:len() do
+    lastIndex = index
+    index = from:find("%s",index + 1)
+    if not index then
+      return out .. from:sub(thisLineStart,-1) .. "\n"
+    end 
+    if from:sub(index,index) == "\n" then 
+      out = out .. from:sub(thisLineStart,index)
+      thisLineStart = index + 1
+    end
+    if index - thisLineStart > len then
+      out = out .. from:sub(thisLineStart,lastIndex) .. "\n" .. prefix
+      if thisLineStart == 1 then len = len - prefix:len() end
+      thisLineStart = lastIndex + 1
+    end
+  end
+  return out .. from:sub(thisLineStart,-1) .. "\n"
+end
 ----- END FUNCTIONS -----
 
 -- If they give a filename as an argument try to open that file
@@ -128,4 +163,4 @@ out = out:gsub(mc("<li>([^<]*)"),"\n* %1\n")
 out = out:gsub("</?%w+%s*>","") -- Remove all other EJ tags
 out = out:gsub("^%s*","") -- Remove whitespace at document top
 
-print(out)
+print(fmt(out))
