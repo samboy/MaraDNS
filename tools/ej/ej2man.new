@@ -1,0 +1,174 @@
+#!/usr/bin/env lunacy
+
+-- This script has been donated to the public domain in 2022 by Sam Trenholme
+-- If, for some reason, a public domain declation is not acceptable, it
+-- may be licensed under the following terms:
+
+-- Copyright 2022 Sam Trenholme
+-- Permission to use, copy, modify, and/or distribute this software for
+-- any purpose with or without fee is hereby granted.
+-- THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+-- WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+-- OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+-- ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+-- WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+-- ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+-- OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+-- Convert an ej-formatted doc in to a *ROFF man page (an macro)
+-- Input: First argument or standard input
+-- Output: Standard output
+
+-- mc() converts a string in to a case insensitive regex; mc('th') is [Tt][Hh]
+function mc(i) 
+  local out = ""
+  local afterPercent = false
+  for a=1,i:len() do
+    seek = i:sub(a,a) 
+    -- Do not mangle anything right after a %
+    if seek == "%" and not afterPercent then
+      out = out .. seek
+      afterPercent = true
+    -- Only letters not after a % get mangled
+    elseif seek:find("%a") and not afterPercent then 
+      out = out .. "[" .. seek:upper() .. seek:lower() .. "]"
+    -- Other stuff is copied as is
+    elseif seek and not afterPercent then
+      out = out .. seek
+    -- Everything right after a % is passed as-is
+    elseif afterPercent then
+      out = out .. seek
+      afterPercent = false
+    end
+  end
+  return out
+end
+
+-- Get a string representing today’s date
+function get_timestamp_string()
+  local timestamp = "Time unknown"
+  if lunacy then
+    local year, mon, day = lunacy.today()
+    if year then
+      timestamp = string.format("%d-%02d-%02d",year, mon, day)
+    else
+      -- lunacy.today() returns nil if time_t is 32-bit
+      -- Linux has had 64-bit time support on 32-bit systems since 2020
+      -- Alpine Linux, for example, has a 64-bit time_t on 32-bit x86
+      -- Another option is to patch the Lunacy source using the
+      -- code at https://github.com/evalEmpire/y2038 and making a
+      -- non-portable syscall() to get the undelying 64-bit timestamp
+      timestamp = "If your time_t is 32-bit, please upgrade"
+    end
+  elseif os.date then
+    local a = os.date("*t")
+    local year = a.year
+    local mon = a.month
+    local day = a.day
+    timestamp = string.format("%d-%02d-%02d",year, mon, day)
+  elseif os.time then
+    timestamp = string.format("Unix timestamp %d",os.time())
+  end
+  return timestamp
+end
+
+-- Add linebreaks to a long string to make it look nice on a 80-column
+-- (or whatever) terminal
+-- Input: The string we will add newlines to (from)
+--        What we will put on lines after adding newlines (this is
+--        so we can use this with lists and have the lines all start
+--        to the right of the bullet) (prefix)
+--        The maximum length of a line before adding a newline (should
+--        there be a word with space longer than len, it will not be
+--        broken up)
+-- Output: The string with newlines added
+function fmt(from, prefix, len)
+  if not prefix then prefix = "" end
+  if not len then len = 72 end
+  out = ""
+  index = 1
+  thisLineStart = 1
+  while index < from:len() do
+    lastIndex = index
+    index = from:find("%s",index + 1)
+    if not index then
+      return out .. from:sub(thisLineStart,-1) .. "\n"
+    end 
+    if from:sub(index,index) == "\n" then 
+      out = out .. from:sub(thisLineStart,index)
+      thisLineStart = index + 1
+    end
+    if index - thisLineStart > len then
+      out = out .. from:sub(thisLineStart,lastIndex) .. "\n" .. prefix
+      if thisLineStart == 1 then len = len - prefix:len() end
+      thisLineStart = lastIndex + 1
+    end
+  end
+  return out .. from:sub(thisLineStart,-1) .. "\n"
+end
+----- END FUNCTIONS -----
+
+-- If they give a filename as an argument try to open that file
+if arg[1] then 
+ fh = io.open(arg[1],"rb")
+ if not fh then
+   print("Error opening file " .. arg[1])
+   os.exit(1)
+ end
+ io.input(fh)
+ fhSave = fh
+else
+ fhSave = io.stdin
+end
+inInclude = false
+
+-- Read the file, making it a single line, unless we’re in a <PRE>
+-- tag
+
+out = ""
+l = io.read()
+inPre = false
+while l do
+
+  -- handle <include "filename"> (doesn’t nest)
+  if l:find(mc('<include%s+"')) and not inInclude then
+    includeFileName=l:gsub(mc('.*<include%s+"([^"]+)".*'),"%1")
+    l=l:gsub(mc('<include%s+"([^"]+)"%s*>'),"")
+    fh = io.open(includeFileName,"rb")
+    if not fh then
+      print("Error opening file " .. includeFileName)
+      os.exit(1)
+    end
+    io.input(fh)
+    inInclude = true
+  end
+
+  l = l:gsub("%s+"," ")
+  out = out .. l .. " "
+  if l:find(mc("<pre>")) then
+    inPre = true
+  elseif l:find(mc("</pre>")) then
+    inPre = false
+  end
+  if inPre then 
+    out = out .. "\n"
+  end
+  l = io.read()
+
+  -- Handle end of included filename (go back to parent)
+  if not l and inInclude then
+    inInclude = false
+    io.input(fhSave)
+    l = io.read()
+  end
+
+end
+out = out:gsub(" +"," ")
+-- Step two: Now that the file is a single line, process EJ (HTML) tags
+
+-- CODE HERE 
+out = fmt(out)
+out = out:gsub("[ ]*\n[ ]*\n[ ]*\n","\n\n")
+out = out:gsub("\n\n\n\n","\n\n")
+out = out:gsub("\n\n\n","\n\n")
+print(out)
