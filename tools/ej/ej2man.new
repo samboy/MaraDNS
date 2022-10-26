@@ -82,6 +82,8 @@ end
 --        there be a word with space longer than len, it will not be
 --        broken up)
 -- Output: The string with newlines added
+-- BUG: No Unicode support at all.  It will kinda-sorta work in lanauges
+--      with mostly ASCII.
 function fmt(from, prefix, len)
   if not prefix then prefix = "" end
   if not len then len = 72 end
