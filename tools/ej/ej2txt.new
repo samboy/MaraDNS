@@ -129,6 +129,20 @@ out = ""
 l = io.read()
 inPre = false
 while l do
+
+  -- handle <include "filename"> (doesn’t nest)
+  if l:find(mc('<include%s+"')) and not inInclude then
+    includeFileName=l:gsub(mc('.*<include%s+"([^"]+)".*'),"%1")
+    l=l:gsub(mc('<include%s+"([^"]+)"%s*>'),"")
+    fh = io.open(includeFileName,"rb")
+    if not fh then
+      print("Error opening file " .. includeFileName)
+      os.exit(1)
+    end
+    io.input(fh)
+    inInclude = true
+  end
+
   l = l:gsub("%s+"," ")
   out = out .. l .. " "
   if l:find(mc("<pre>")) then
@@ -140,11 +154,14 @@ while l do
     out = out .. "\n"
   end
   l = io.read()
+
+  -- Handle end of included filename (go back to parent)
   if not l and inInclude then
     inInclude = false
     io.input(fhSave)
     l = io.read()
   end
+
 end
 out = out:gsub(" +"," ")
 -- Step two: Now that the file is a single line, process EJ (HTML) tags
