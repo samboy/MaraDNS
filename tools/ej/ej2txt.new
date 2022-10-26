@@ -84,7 +84,7 @@ end
 -- Output: The string with newlines added
 function fmt(from, prefix, len)
   if not prefix then prefix = "" end
-  if not len then len = 74 end
+  if not len then len = 72 end
   out = ""
   index = 1
   thisLineStart = 1
@@ -152,15 +152,26 @@ out = out:gsub(" +"," ")
 out = out:gsub(mc("<th%s*>[^<]*</th%s*>"),"") -- EJ for man pages unused here
 out = out:gsub(mc("</?meta[^>]*>"),"") -- Scrub META tag
 out = out:gsub(mc("<a%s+[^>]*>"),"") -- Scrub A tag
-out = out:gsub(mc("</?ul>%s*"),"\n") -- Have space at top and bottom of lists
+-- Lists are a special case
+matchPlace, matchEnd = out:find(mc("<li>[^<]*"))
+while matchPlace and matchPlace > 1 do
+  tail = out:sub(matchEnd)
+  out = out:sub(1, matchPlace - 1) .. "\n* " ..
+        fmt(out:sub(matchPlace + 4,matchEnd),"  ",68) .. "\n" .. tail
+  matchPlace, matchEnd = out:find(mc("<li>[^<]*"),matchPlace + 1)
+end
+-- out = out:gsub(mc("<li>([^<]*)"),"\n* " .. fmt("%1","  ") .. "\n")
+out = out:gsub(mc("</?ul>%s*"),"\n\n") -- Have space at top and bottom of lists
 out = out:gsub(mc("</pre>%s*"),"\n") -- Space after code blocks
 out = out:gsub(mc("<p%s*>%s*"),"\n\n")
 out = out:gsub(mc("<h1%s*>%s*"),"\n\n===")
 out = out:gsub(mc("<h2%s*>%s*"),"\n\n==")
 out = out:gsub(mc("</?h1%s*>%s*"),"===\n\n")
 out = out:gsub(mc("</?h2%s*>%s*"),"==\n\n")
-out = out:gsub(mc("<li>([^<]*)"),"\n* %1\n")
 out = out:gsub("</?%w+%s*>","") -- Remove all other EJ tags
 out = out:gsub("^%s*","") -- Remove whitespace at document top
-
-print(fmt(out))
+out = fmt(out)
+out = out:gsub("[ ]*\n[ ]*\n[ ]*\n","\n\n")
+out = out:gsub("\n\n\n\n","\n\n")
+out = out:gsub("\n\n\n","\n\n")
+print(out)
