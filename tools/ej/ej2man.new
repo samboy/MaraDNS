@@ -74,7 +74,7 @@ end
 
 -- Count the number of UTF-8 codepoints in a string.  Note that this
 -- is only the actual line length for LGC (Latin, Greek, and Cyrillic)
--- languages (i.e. languages where a code point always has the same width
+-- languages (i.e. languages where all code points have the same width
 -- with a monospace font), and that this tool does not support other
 -- languages.
 -- Characters which do not make valid UTF-8 from 128-2097151 
