@@ -226,9 +226,9 @@ out=out:gsub(mc('<head>.*</head>'),"")
 out=out:gsub(mc('</?body>'),"")
 out=out:gsub(mc('<hibit alt=%"([^"]*)%">[^<]*</hibit>'),"%1")
 out=out:gsub(mc("</?hibit[^>]*>"),"")
-out=out:gsub(mc("<pre>"),"\n.nf\n");
-out=out:gsub(mc("</pre>"),"\n.fi\n");
-out=out:gsub(mc("<h1>([^<]*)</h1>"),'\n.SH "%1"\n.PP\n')
+out=out:gsub(mc("<pre>%s*"),"\n.nf\n");
+out=out:gsub(mc("</pre>%s*"),"\n.fi\n");
+out=out:gsub(mc("<h1>([^<]*)</h1>%s*"),'\n.SH "%1"\n.PP\n')
 -- CODE HERE 
 out = fmt(out)
 out = out:gsub("[ ]*\n[ ]*\n[ ]*\n","\n\n")
