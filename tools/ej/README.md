@@ -90,3 +90,10 @@ HIBIT: This is a special tag used to indicate a section that needs
        in HTML documents and the whole section will be removed in 
        man pages.
 
+NOFMT: This is a special tag used to indicate to not attempt to make
+       lines under 72 columns wide when generating text and *ROFF 
+       documents.  This should be placed in the head of documents if
+       the language is not a Latin/Greek/Cyrillic lanaguage (i.e. a
+       language where a given UTF-8 code point does not have a fixed
+       width)
+

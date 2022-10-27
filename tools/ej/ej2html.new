@@ -115,6 +115,7 @@ print("<!-- Last updated " .. get_timestamp_string() .. " -->")
 
 while l do
   -- Process .ej and make it HTML
+  l = l:gsub(mc("<nofmt>"),"") -- Remove <NOFMT> tag
   l = l:gsub("<!%-%-.*%-%->","") -- Remove single line comments
   if l:find("<!%-%-.*") then -- Multi-line comments
     oldstate = state

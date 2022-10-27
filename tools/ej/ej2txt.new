@@ -72,6 +72,11 @@ function get_timestamp_string()
   return timestamp
 end
 
+-- Count the number of UTF-8 codepoints in a string.  Note that this
+-- is only the actual line length for LGC (Latin, Greek, and Cyrillic)
+-- languages (i.e. languages where a code point always has the same width
+-- with a monospace font), and that this tool does not support other
+-- languages.
 -- Add linebreaks to a long string to make it look nice on a 80-column
 -- (or whatever) terminal
 -- Input: The string we will add newlines to (from)
@@ -82,7 +87,9 @@ end
 --        there be a word with space longer than len, it will not be
 --        broken up)
 -- Output: The string with newlines added
+NoFmt = false -- This will be true for non-LGC languages
 function fmt(from, prefix, len)
+  if NoFmt then return from end -- NOFMT option for non-LGC languages
   if not prefix then prefix = "" end
   if not len then len = 72 end
   local out = ""
@@ -172,6 +179,8 @@ end
 out = out:gsub(" +"," ")
 -- Step two: Now that the file is a single line, process EJ (HTML) tags
 
+if out:find(mc("<nofmt>.*<body>")) then NoFmt = true end
+out = out:gsub(mc("<nofmt>"),"")
 out = out:gsub(mc("<th%s*>[^<]*</th%s*>"),"") -- EJ for man pages unused here
 out = out:gsub(mc("</?meta[^>]*>"),"") -- Scrub META tag
 out = out:gsub(mc("<a%s+[^>]*>"),"") -- Scrub A tag
