@@ -72,15 +72,17 @@ function get_timestamp_string()
   return timestamp
 end
 
--- Count the number of UTF-8 codepoints in a string.  Note that this
--- is only the actual line length for LGC (Latin, Greek, and Cyrillic)
--- languages (i.e. languages where all code points have the same width
--- with a monospace font), and that this tool does not support other
--- languages.
--- Characters which do not make valid UTF-8 from 128-2097151 
--- (0x7f-0x1fffff, and I understand UTF-8 isn’t supposed to go that
--- high any more, but I still support it here) will be counted as per
--- their raw binary octet size
+-- Count the number of UTF-8 codepoints in a string.  This function
+-- is used to determine how wide a given string will be on the terminal.
+-- The correct way to determine terminal string width is to get the
+-- toolkit at https://github.com/unicode-org/icu then use
+-- u_getIntPropertyValue() or to use the functions at
+-- https://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c (Which, actually, is
+-- outdated here in 2022) to determine the width.
+-- The way I do it is to assume that all UTF-8 code points have the
+-- same width.  If this isn’t true for your language, put <NOFMT> in
+-- the head of the document and use a version of `fmt` that uses a
+-- proper Unicode library.
 function UTF8count(from)
   local count = 0
   if not from:find("[\128-\255]") then return from:len() end  
