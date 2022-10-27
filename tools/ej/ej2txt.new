@@ -202,8 +202,8 @@ out = out:gsub(mc("</?i>"),"") -- Scrub I tag (italic)
 matchPlace, matchEnd = out:find(mc("<li>[^<]*"))
 while matchPlace and matchPlace > 1 do
   tail = out:sub(matchEnd)
-  out = out:sub(1, matchPlace - 1) .. "\n* " ..
-        fmt(out:sub(matchPlace + 4,matchEnd),"  ",68) .. "\n" .. tail
+  out = out:sub(1, matchPlace - 1) .. "\n\n* " ..
+        fmt(out:sub(matchPlace + 4,matchEnd),"  ",68) .. "\n\n" .. tail
   matchPlace, matchEnd = out:find(mc("<li>[^<]*"),matchPlace + 1)
 end
 
@@ -218,7 +218,12 @@ out = out:gsub(mc("</?dt%s*>%s*"),"\n\n") -- DT tags
 out = out:gsub("</?%w+%s*>","") -- Remove all other EJ tags
 out = out:gsub("^%s*","") -- Remove whitespace at document top
 out = fmt(out)
+out = out:gsub("[ ]*\n[ ]*\n[ ]*\n[ ]*\n[ ]*\n","\n\n")
+out = out:gsub("[ ]*\n[ ]*\n[ ]*\n[ ]*\n","\n\n")
 out = out:gsub("[ ]*\n[ ]*\n[ ]*\n","\n\n")
+out = out:gsub("\n\n\n\n\n\n\n","\n\n")
+out = out:gsub("\n\n\n\n\n\n","\n\n")
+out = out:gsub("\n\n\n\n\n","\n\n")
 out = out:gsub("\n\n\n\n","\n\n")
 out = out:gsub("\n\n\n","\n\n")
 print(out)
