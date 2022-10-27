@@ -240,8 +240,8 @@ out=out:gsub(mc('</?body>'),"") -- Scrub BODY tag
 out=out:gsub(mc('<hibit[^>]*>([^<]*)</hibit>'),"%1") -- HIBIT (2022)
 
 out=out:gsub(mc("</?hibit[^>]*>"),"") -- HIBIT part 2
-out=out:gsub(mc("<pre>%s*"),"\n.nf\n"); -- PRE opener
-out=out:gsub(mc("</pre>%s*"),"\n.fi\n"); -- PRE closer
+out=out:gsub(mc("<pre>%s*"),"\n\n.nf\n"); -- PRE opener
+out=out:gsub(mc("</pre>%s*"),"\n.fi\n\n"); -- PRE closer
 out=out:gsub(mc('&nbsp;'),' ') -- &nbsp; becomes literal space
 out=out:gsub(mc("<h1>([^<]*)</h1>%s*"),'\n.SH "%1"\n.PP\n') -- H1
 
@@ -304,5 +304,8 @@ out = out:gsub("\n\n\n\n\n\n","\n\n")
 out = out:gsub("\n\n\n\n\n","\n\n")
 out = out:gsub("\n\n\n\n","\n\n")
 out = out:gsub("\n\n\n","\n\n")
+out = out:gsub("([^\n])\n%.nf","%1\n\n.nf") -- <pre> fix 
+out = out:gsub("\n%.fi\n([^\n])","\n.fi\n\n%1") -- </pre> fix 1
+out = out:gsub("\n%.fi\n\n%.","\n.fi\n.") -- </pre> fix 2
 
 print(out)
