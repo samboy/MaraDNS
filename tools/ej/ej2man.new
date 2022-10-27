@@ -250,6 +250,7 @@ out=out:gsub(mc("<h1>([^<]*)</h1>%s*"),'\n.SH "%1"\n.PP\n') -- H1
 while out:find(mc("<h2>([^<]*)[\'\"]([^<]*)</h2>")) do
   out = out:gsub(mc("<h2>([^<]*)[\'\"]([^<]*)</h2>"),"<h2>%1%2</h2>")
 end
+out=out:gsub("\\","\\\\") -- escape backslashes
 out=out:gsub(mc("<h2>([^<]*)</h2>%s*"),'\n.PP\n.in -3\n\\fB%1\\fR\n.PP\n')
 
 out=out:gsub(mc("</?a[^<]+>"),"") -- A tag part 1
