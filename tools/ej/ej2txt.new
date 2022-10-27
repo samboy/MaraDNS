@@ -121,7 +121,7 @@ function fmt(from, prefix, len)
       thisLineLength = 0
     end
     if thisLineLength > len then
-      thisLineLength = index - lastIndex
+      thisLineLength = UTF8count(from:sub(lastIndex,index-1))
       out = out .. from:sub(thisLineStart,lastIndex) .. "\n" .. prefix
       if thisLineStart == 1 then len = len - prefix:len() end -- Bullet lists
       thisLineStart = lastIndex + 1
