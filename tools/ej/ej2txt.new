@@ -82,25 +82,29 @@ end
 --        there be a word with space longer than len, it will not be
 --        broken up)
 -- Output: The string with newlines added
--- BUG: No Unicode support at all.  It will kinda-sorta work in lanauges
---      with mostly ASCII.
 function fmt(from, prefix, len)
   if not prefix then prefix = "" end
   if not len then len = 72 end
-  out = ""
-  index = 1
-  thisLineStart = 1
+  local out = ""
+  local index = 1
+  local thisLineStart = 1
+  local UTFplace = from:find("[\128-\255]")
+  local thisLineLength = 0
   while index < from:len() do
     lastIndex = index
     index = from:find("%s",index + 1)
     if not index then
       return out .. from:sub(thisLineStart,-1) .. "\n"
     end 
+    -- CODE HERE: LGC (i.e. fixed length per code point) UTF-8 support
+    thisLineLength = thisLineLength + (index - lastIndex)
     if from:sub(index,index) == "\n" then 
       out = out .. from:sub(thisLineStart,index)
       thisLineStart = index + 1
+      thisLineLength = 0
     end
-    if index - thisLineStart > len then
+    if thisLineLength > len then
+      thisLineLength = 0
       out = out .. from:sub(thisLineStart,lastIndex) .. "\n" .. prefix
       if thisLineStart == 1 then len = len - prefix:len() end
       thisLineStart = lastIndex + 1
