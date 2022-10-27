@@ -192,8 +192,12 @@ out = out:gsub(" +"," ")
 if out:find(mc("<nofmt>.*<body>")) then NoFmt = true end
 out = out:gsub(mc("<nofmt>"),"")
 out = out:gsub(mc("<th%s*>[^<]*</th%s*>"),"") -- EJ for man pages unused here
+out = out:gsub(mc("<dtwidth%s*>[^<]*</dtwidth%s*>"),"") -- DTWIDTH part of man
 out = out:gsub(mc("</?meta[^>]*>"),"") -- Scrub META tag
 out = out:gsub(mc("<a%s+[^>]*>"),"") -- Scrub A tag
+out = out:gsub(mc("</?b>"),"") -- Scrub B tag (bold)
+out = out:gsub(mc("</?i>"),"") -- Scrub I tag (italic)
+
 -- Lists are a special case
 matchPlace, matchEnd = out:find(mc("<li>[^<]*"))
 while matchPlace and matchPlace > 1 do
@@ -202,7 +206,7 @@ while matchPlace and matchPlace > 1 do
         fmt(out:sub(matchPlace + 4,matchEnd),"  ",68) .. "\n" .. tail
   matchPlace, matchEnd = out:find(mc("<li>[^<]*"),matchPlace + 1)
 end
--- out = out:gsub(mc("<li>([^<]*)"),"\n\n* " .. fmt("%1","  ") .. "\n\n")
+
 out = out:gsub(mc("</?ul>%s*"),"\n\n") -- Have space at top and bottom of lists
 out = out:gsub(mc("</?pre>%s*"),"\n\n") -- Space before and after code blocks
 out = out:gsub(mc("<p%s*>%s*"),"\n\n") -- Paragraph is new line
@@ -210,6 +214,7 @@ out = out:gsub(mc("<h1%s*>%s*"),"\n\n===") -- Level 1 headings start
 out = out:gsub(mc("<h2%s*>%s*"),"\n\n==") -- Level 2 headings start
 out = out:gsub(mc("</?h1%s*>%s*"),"===\n\n") -- Level 1 headings end
 out = out:gsub(mc("</?h2%s*>%s*"),"==\n\n") -- Level 2 headings end
+out = out:gsub(mc("</?dt%s*>%s*"),"\n\n") -- DT tags
 out = out:gsub("</?%w+%s*>","") -- Remove all other EJ tags
 out = out:gsub("^%s*","") -- Remove whitespace at document top
 out = fmt(out)
