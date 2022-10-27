@@ -95,5 +95,6 @@ NOFMT: This is a special tag used to indicate to not attempt to make
        documents.  This should be placed in the head of documents if
        the language is not a Latin/Greek/Cyrillic lanaguage (i.e. a
        language where a given UTF-8 code point does not have a fixed
-       width)
+       width).  This tag must be placed in the head section of the
+       document.
 
