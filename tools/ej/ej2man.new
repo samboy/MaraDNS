@@ -232,7 +232,13 @@ print("")
 
 out=out:gsub(mc('<head>.*</head>'),"") -- Scrub HEAD section
 out=out:gsub(mc('</?body>'),"") -- Scrub BODY tag
-out=out:gsub(mc('<hibit alt=%"([^"]*)%">[^<]*</hibit>'),"%1") -- HIBIT
+
+-- The old behavior from the early 2000s to have no non-ASCII in man
+-- pages no longer applies here in 2022.  Now we have `preconv` and
+-- the man program which comes with Ubuntu 22.04 uses it.
+--out=out:gsub(mc('<hibit alt=%"([^"]*)%">[^<]*</hibit>'),"%1") -- HIBIT (old)
+out=out:gsub(mv('<hibit[^>]*>([^<]*)</hibit>'),"%1") -- HIBIT (2022)
+
 out=out:gsub(mc("</?hibit[^>]*>"),"") -- HIBIT part 2
 out=out:gsub(mc("<pre>%s*"),"\n.nf\n"); -- PRE opener
 out=out:gsub(mc("</pre>%s*"),"\n.fi\n"); -- PRE closer
