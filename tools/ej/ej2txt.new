@@ -77,8 +77,8 @@ end
 -- The correct way to determine terminal string width is to get the
 -- toolkit at https://github.com/unicode-org/icu then use
 -- u_getIntPropertyValue() or to use the functions at
--- https://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c (Which, actually, is
--- outdated here in 2022) to determine the width.
+-- https://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c, which I have mirrored
+-- at https://github.com/samboy/wcwidth/
 -- The way I do it is to assume that all UTF-8 code points have the
 -- same width.  If this isn’t true for your language, put <NOFMT> in
 -- the head of the document and use a version of `fmt` that uses a
