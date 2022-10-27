@@ -77,8 +77,8 @@ end
 -- The correct way to determine terminal string width is to get the
 -- toolkit at https://github.com/unicode-org/icu then use
 -- u_getIntPropertyValue() or to use the functions at
--- https://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c (Which, actually, is 
--- outdated here in 2022) to determine the width.
+-- https://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c, which I have mirrored
+-- at https://github.com/samboy/wcwidth/ 
 -- The way I do it is to assume that all UTF-8 code points have the
 -- same width.  If this isn’t true for your language, put <NOFMT> in
 -- the head of the document and use a version of `fmt` that uses a
@@ -222,16 +222,56 @@ print('.ds aq \\(aq')
 print('.if !\\n(.g .if \'\\(aq\'\' .ds aq \\\'')
 print("")
 
-out=out:gsub(mc('<head>.*</head>'),"")
-out=out:gsub(mc('</?body>'),"")
-out=out:gsub(mc('<hibit alt=%"([^"]*)%">[^<]*</hibit>'),"%1")
-out=out:gsub(mc("</?hibit[^>]*>"),"")
-out=out:gsub(mc("<pre>%s*"),"\n.nf\n");
-out=out:gsub(mc("</pre>%s*"),"\n.fi\n");
-out=out:gsub(mc("<h1>([^<]*)</h1>%s*"),'\n.SH "%1"\n.PP\n')
+out=out:gsub(mc('<head>.*</head>'),"") -- Scrub HEAD section
+out=out:gsub(mc('</?body>'),"") -- Scrub BODY tag
+out=out:gsub(mc('<hibit alt=%"([^"]*)%">[^<]*</hibit>'),"%1") -- HIBIT
+out=out:gsub(mc("</?hibit[^>]*>"),"") -- HIBIT part 2
+out=out:gsub(mc("<pre>%s*"),"\n.nf\n"); -- PRE opener
+out=out:gsub(mc("</pre>%s*"),"\n.fi\n"); -- PRE closer
+out=out:gsub(mc('&nbsp;'),' ') -- &nbsp; becomes literal space
+out=out:gsub(mc("<h1>([^<]*)</h1>%s*"),'\n.SH "%1"\n.PP\n') -- H1
+
+-- H2 tag
+-- No quotes in H2 section
+while out:find(mc("<h2>([^<]*)[\'\"]([^<]*)</h2>")) do
+  out = out:gsub(mc("<h2>([^<]*)[\'\"]([^<]*)</h2>"),"<h2>%1%2</h2>")
+end
+out=out:gsub(mc("<h2>([^<]*)</h2>%s*"),'\n.PP\n.in -3\n\\fB%1\\fR\n.PP\n')
+
+out=out:gsub(mc("</?a[^<]+>"),"") -- A tag part 1
+out=out:gsub(mc("</?a>"),"") -- A tag part 2
+out=out:gsub(mc("</?tt>"),"") -- TT tag
+out=out:gsub(mc("<hr>"),'\n.PP\n.RS 28\n* * *\n.RE\n.PP\n') -- HR tag
+out=out:gsub(mc("<hinclude[^>]+>"),"") -- HINCLUDE non-HTML tag
+out=out:gsub(mc("<blockquote>"),'\n.PP\n.RS 4\n') -- BLOCKQUOTE open
+out=out:gsub(mc("</blockquote>"),'\n.RE\n.PP\n') -- BLOCKQUOTE close
+
+-- The B tag
+while out:find(mc("<b>([^<]*)[\'\"]([^<]*)</b>")) do
+  out = out:gsub(mc("<b>([^<]*)[\'\"]([^<]*)</b>"),"<b>%1%2</b>")
+end
+out=out:gsub(mc("<b>([^<]*)</b>(%S+)"),'\n.BR "%1" "%2"\n')
+out=out:gsub(mc("<b>([^<]*)</b>%s*"),'\n.B "%1"\n')
+
+-- The I tag
+while out:find(mc("<i>([^<]*)[\'\"]([^<]*)</i>")) do
+  out = out:gsub(mc("<i>([^<]*)[\'\"]([^<]*)</i>"),"<i>%1%2</i>")
+end
+out=out:gsub(mc("<i>([^<]*)</i>(%S+)"),'\n.IR "%1" "%2"\n')
+out=out:gsub(mc("<i>([^<]*)</i>%s*"),'\n.I "%1"\n')
+
+-- The P tag
+out=out:gsub("\n(%s*)\n","\n")
+out=out:gsub(mc("<p>%s*"),'\n.PP\n')
+
 -- CODE HERE 
 out = fmt(out)
+out = out:gsub("[ ]*\n[ ]*\n[ ]*\n[ ]*\n[ ]*\n","\n\n")
+out = out:gsub("[ ]*\n[ ]*\n[ ]*\n[ ]*\n","\n\n")
 out = out:gsub("[ ]*\n[ ]*\n[ ]*\n","\n\n")
+out = out:gsub("\n\n\n\n\n\n\n","\n\n")
+out = out:gsub("\n\n\n\n\n\n","\n\n")
+out = out:gsub("\n\n\n\n\n","\n\n")
 out = out:gsub("\n\n\n\n","\n\n")
 out = out:gsub("\n\n\n","\n\n")
 
