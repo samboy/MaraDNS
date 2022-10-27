@@ -105,8 +105,9 @@ record for example.net:
 askmara 28:example.net. 
 </pre>
 
-Note that the output will be a raw DNS packet in both the SRV 
-and AAAA examples.
+Note that the output will be a raw DNS packet in the SRV 
+example, but askmara shows an IPv6 address (albeit
+without :: to collapse 0 quads) in the AAAA example.
 
 <h1>BUGS</h1>
 
