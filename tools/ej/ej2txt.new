@@ -202,7 +202,7 @@ while matchPlace and matchPlace > 1 do
         fmt(out:sub(matchPlace + 4,matchEnd),"  ",68) .. "\n" .. tail
   matchPlace, matchEnd = out:find(mc("<li>[^<]*"),matchPlace + 1)
 end
--- out = out:gsub(mc("<li>([^<]*)"),"\n* " .. fmt("%1","  ") .. "\n")
+-- out = out:gsub(mc("<li>([^<]*)"),"\n\n* " .. fmt("%1","  ") .. "\n\n")
 out = out:gsub(mc("</?ul>%s*"),"\n\n") -- Have space at top and bottom of lists
 out = out:gsub(mc("</?pre>%s*"),"\n\n") -- Space before and after code blocks
 out = out:gsub(mc("<p%s*>%s*"),"\n\n") -- Paragraph is new line
