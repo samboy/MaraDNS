@@ -102,7 +102,7 @@ end
 NoFmt = false -- This will be true for non-LGC languages
 function fmt(from, prefix, len)
   if NoFmt then return from end -- NOFMT option for non-LGC languages
-  if not prefix then prefix = "" end
+  if not prefix then prefix = "" end -- Usually for bullet lists
   if not len then len = 72 end
   local out = ""
   local index = 1
@@ -114,16 +114,16 @@ function fmt(from, prefix, len)
     if not index then
       return out .. from:sub(thisLineStart,-1) .. "\n"
     end 
-    thisLineLength = thisLineLength + UTF8count(from:sub(lastIndex,index))
+    thisLineLength = thisLineLength + UTF8count(from:sub(lastIndex,index-1))
     if from:sub(index,index) == "\n" then 
       out = out .. from:sub(thisLineStart,index)
       thisLineStart = index + 1
       thisLineLength = 0
     end
     if thisLineLength > len then
-      thisLineLength = 0
+      thisLineLength = index - lastIndex
       out = out .. from:sub(thisLineStart,lastIndex) .. "\n" .. prefix
-      if thisLineStart == 1 then len = len - prefix:len() end
+      if thisLineStart == 1 then len = len - prefix:len() end -- Bullet lists
       thisLineStart = lastIndex + 1
     end
   end
