@@ -72,6 +72,23 @@ function get_timestamp_string()
   return timestamp
 end
 
+-- Count the number of UTF-8 codepoints in a string.  Note that this
+-- is only the actual line length for LGC (Latin, Greek, and Cyrillic)
+-- languages (i.e. languages where a code point always has the same width
+-- with a monospace font), and that this tool does not support other
+-- languages.
+-- Characters which do not make valid UTF-8 from 128-2097151 
+-- (0x7f-0x1fffff, and I understand UTF-8 isn’t supposed to go that
+-- high any more, but I still support it here) will be counted as per
+-- their raw binary octet size
+function UTF8count(from)
+  local count = 0
+  if not from:find("[\128-\255]") then return from:len() end  
+  from = from:gsub("[\194-\223][\128-\191]","@")
+  from = from:gsub("[\224-\239][\128-\191][\128-\191]","#")
+  from = from:gsub("[\240-\247][\128-\191][\128-\191][\128-\191]","$")
+  return from:len()
+end
 -- Add linebreaks to a long string to make it look nice on a 80-column
 -- (or whatever) terminal
 -- Input: The string we will add newlines to (from)
@@ -82,27 +99,31 @@ end
 --        there be a word with space longer than len, it will not be
 --        broken up)
 -- Output: The string with newlines added
--- BUG: No Unicode support at all.  It will kinda-sorta work in lanauges
---      with mostly ASCII.
+NoFmt = false -- This will be true for non-LGC languages
 function fmt(from, prefix, len)
-  if not prefix then prefix = "" end
+  if NoFmt then return from end -- NOFMT option for non-LGC languages
+  if not prefix then prefix = "" end -- Usually for bullet lists
   if not len then len = 72 end
-  out = ""
-  index = 1
-  thisLineStart = 1
+  local out = ""
+  local index = 1
+  local thisLineStart = 1
+  local thisLineLength = 0
   while index < from:len() do
     lastIndex = index
     index = from:find("%s",index + 1)
     if not index then
       return out .. from:sub(thisLineStart,-1) .. "\n"
     end 
+    thisLineLength = thisLineLength + UTF8count(from:sub(lastIndex,index-1))
     if from:sub(index,index) == "\n" then 
       out = out .. from:sub(thisLineStart,index)
       thisLineStart = index + 1
+      thisLineLength = 0
     end
-    if index - thisLineStart > len then
+    if thisLineLength > len then
+      thisLineLength = index - lastIndex
       out = out .. from:sub(thisLineStart,lastIndex) .. "\n" .. prefix
-      if thisLineStart == 1 then len = len - prefix:len() end
+      if thisLineStart == 1 then len = len - prefix:len() end -- Bullet lists
       thisLineStart = lastIndex + 1
     end
   end
