@@ -237,7 +237,7 @@ out=out:gsub(mc('</?body>'),"") -- Scrub BODY tag
 -- pages no longer applies here in 2022.  Now we have `preconv` and
 -- the man program which comes with Ubuntu 22.04 uses it.
 --out=out:gsub(mc('<hibit alt=%"([^"]*)%">[^<]*</hibit>'),"%1") -- HIBIT (old)
-out=out:gsub(mv('<hibit[^>]*>([^<]*)</hibit>'),"%1") -- HIBIT (2022)
+out=out:gsub(mc('<hibit[^>]*>([^<]*)</hibit>'),"%1") -- HIBIT (2022)
 
 out=out:gsub(mc("</?hibit[^>]*>"),"") -- HIBIT part 2
 out=out:gsub(mc("<pre>%s*"),"\n.nf\n"); -- PRE opener
