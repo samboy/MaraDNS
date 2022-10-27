@@ -195,7 +195,7 @@ if out:find(mc("<nofmt>.*<body>")) then NoFmt = true end
 out = out:gsub(mc("<nofmt>"),"")
 
 if out:find(mc("<dtwidth>([^<]*)</dtwidth>")) then
-  DTROFF = out:gsub(mc(".*<dtwidth>([^<]*)</dtwidth>.*"),"%1")
+  DTROFF = out:gsub(mc(".*<dtwidth>([^<]*)</dtwidth>.*"),".TP %1")
 else
   DTROFF = ".TP 4"
 end
