@@ -51,8 +51,7 @@ tags.
 Comments:
 
 Comments begin with `<!--` and end with `-->`; these comments are removed
-before an ej document is translated.  Comments must not have a `>` 
-character in them.
+before an ej document is translated.  
 
 Tags to put in the header of the document:
 
