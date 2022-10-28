@@ -6,48 +6,28 @@ Authoritative DNS serving
 
 * Requirements
 
-s 
-
 * What is a domain zone?
-
-? 
 
 * Setting up a domain with MaraDNS
 
-S 
-
 * Setting up a domain zone file
-
-e 
 
 * The format of a Domain Zone file
 
-e 
-
 * A single name can have multiple records
-
-s 
 
 * The % character shortcut
 
-t 
-
 * Getting connected to the root name servers
-
-s 
 
 * Getting two IPs
 
-s 
-
 * Names internal to a network
-
-k
 
 ==Requirements==
 
- In order to set up an authoritative DNS server, one needs one or 
-more static IP addresses. With most registries, two or more static IP 
+In order to set up an authoritative DNS server, one needs one or more 
+static IP addresses. With most registries, two or more static IP 
 addresses are needed. 
 
 In addition, the machine(s) with the static IP addresses need to be 
@@ -55,21 +35,20 @@ running an authoritative DNS server, such as MaraDNS.
 
 ==What is a domain zone?==
 
- A name like www.example.com is part of the  domain zone 
-example.com. The name www.yahoo.com, as another example, is part of the 
- domain zone yahoo.com. www.maradns.org is part of the  domain 
-zone maradns.org.  
+A name like www.example.com is part of the  domain zone example.com. 
+The name www.yahoo.com, as another example, is part of the  domain zone 
+yahoo.com. www.maradns.org is part of the  domain zone maradns.org.  
 
 ==Setting up a domain with MaraDNS==
 
- Compile and install MaraDNS on the system which will act as an 
+Compile and install MaraDNS on the system which will act as an 
 authoritative DNS server. 
 
-After doing this, the mararc file needs to be changed 
-before MaraDNS will function as an authoritative DNS server. 
+After doing this, the mararc file needs to be changed before 
+MaraDNS will function as an authoritative DNS server. 
 
-A mararc file which can be used to  serve the  domain zones 
-that one wishes to have control over needs to only be four lines long:
+A mararc file which can be used to  serve the  domain zones that one 
+wishes to have control over needs to only be four lines long:
 
 ipv4_bind_addresses = "10.3.28.79" 
 chroot_dir = "/etc/maradns" 
@@ -115,18 +94,18 @@ ipv4_bind_addresses = "10.3.28.79, 10.9.87.23"
 
 ==Setting up a domain zone file==
 
- Let us suppose that we are setting up a domain for example.com, 
-where we have the following services: 
+Let us suppose that we are setting up a domain for example.com, where 
+we have the following services: 
 
 * We are running a web server for example.com and www.example.com on 
   the IP 10.10.10.12. In other words, people can view web pages on 
   this machine.
 
-* We have a mail server, or  mail transport agent
-
-t for example.com with the IP 10.10.10.15. In other words, the 
-machine with the IP 10.10.10.15 is set up to handle mail addressed to 
-name@example.com, where "name" is any string preceding the '@' sign. 
+* We have a mail server, or  mail transport agent for example.com with 
+  the IP 10.10.10.15. In other words, the machine with the IP 
+  10.10.10.15 is set up to handle mail addressed to 
+  name@example.com, where "name" is any string preceding the '@' 
+  sign.
 
 * Both 10.10.10.11 and 10.10.10.17 are running MaraDNS in 
   authoritative mode to serve DNS requests for example.com.
@@ -170,10 +149,10 @@ directory contains domain zone files.
 
 ==The format of a Domain Zone file==
 
- Here are some example lines in a domain zone file, which is an 
-example of someone using the same IP multiple times. For example, if 
-one is using 10.10.10.19 as one of the DNS servers, the mail server, 
-and the web server, one would have records like this:
+Here are some example lines in a domain zone file, which is an example 
+of someone using the same IP multiple times. For example, if one is 
+using 10.10.10.19 as one of the DNS servers, the mail server, and the 
+web server, one would have records like this:
 
 example.com. NS ns1.example.com. ~ 
 ns1.example.com. 10.10.10.19 ~ 
@@ -208,17 +187,14 @@ and is in this format:
 
 * The next portion of a DNS record, which is optional, tells MaraDNS 
   what kind of DNS record this is. A list of DNS records which 
-  MaraDNS supports is described here
-
-e. If this field is absent, MaraDNS assumes that the record is an 
-"A" (32-bit IP address) record, and that the second portion is the IP 
-address in question. 
+  MaraDNS supports is described here. If this field is absent, 
+  MaraDNS assumes that the record is an "A" (32-bit IP address) 
+  record, and that the second portion is the IP address in 
+  question.
 
 * If the record is not an "A" record, the subsequent fields describe 
   the DNS record in question. The format for this data depends on 
-  the DNS record type being used, and is described here
-
-e. 
+  the DNS record type being used, and is described here.
 
 The reason to use different names for different functions is to 
 minimize the number of problems one will encounter, should one need to 
@@ -226,8 +202,8 @@ change their IPs at a later time.
 
 ==A single name can have multiple records==
 
- A single name can have multiple records. This is useful when one 
-wishes to have, for example, multiple machines processing requests for 
+A single name can have multiple records. This is useful when one wishes 
+to have, for example, multiple machines processing requests for 
 www.example.com. 
 
 For example:
@@ -276,9 +252,9 @@ zone file above.
 
 ==Getting connected to the root name servers==
 
- An authoritative DNS server will not effectively serve a domain 
-unless the root name servers are aware that a given DNS server serves a 
-given domain name. 
+An authoritative DNS server will not effectively serve a domain unless 
+the root name servers are aware that a given DNS server serves a given 
+domain name. 
 
 When a recursive DNS server attempts to find the IP for, say, 
 www.example.com, it firsts asks the root nameservers for this IP. The 
@@ -365,10 +341,10 @@ following section.
 
 ==Getting two IPs==
 
- As stated near the beginning of this document, many registries 
-require that one has two IPs to register a domain. If one has a 
-computer with two or more routable IPs assigned to it, it is simple 
-enough to have MaraDNS bind to these IPs. Change the variable 
+As stated near the beginning of this document, many registries require 
+that one has two IPs to register a domain. If one has a computer with 
+two or more routable IPs assigned to it, it is simple enough to have 
+MaraDNS bind to these IPs. Change the variable 
 ipv4_bind_addresses to include all of the IPs one wishes 
 MaraDNS to have, like the following example: 
 ipv4_bind_addresses = "10.1.2.3, 10.5.6.7" 
@@ -382,14 +358,14 @@ master document.
 
 ==Names internal to a network==
 
- Sometimes one will have a number of computers in an office, or 
-other small network, with a number of different names. It is desirable 
-to use DNS to give these office machines IP addresses. Let us suppose 
-that we have a company with computers named "Mascota", "Paloma", and 
-"Vela". If we want to have computers in the office be accessible with 
-just the name (such as just "Vela"), we set up what is known as a 
-default domain suffix. Let us suppose that the company in question is a 
-company that sells examples of hard work. Hence, the company is called 
+Sometimes one will have a number of computers in an office, or other 
+small network, with a number of different names. It is desirable to use 
+DNS to give these office machines IP addresses. Let us suppose that we 
+have a company with computers named "Mascota", "Paloma", and "Vela". If 
+we want to have computers in the office be accessible with just the 
+name (such as just "Vela"), we set up what is known as a default domain 
+suffix. Let us suppose that the company in question is a company that 
+sells examples of hard work. Hence, the company is called 
 "example.com". We then give our computers the names 
 "mascota.example.com", "paloma.example.com", and "vela.example.com". We 
 then tell computers in the office that, when given a name without a 
@@ -432,8 +408,7 @@ mascota.% 10.1.2.3 ~
 paloma.% 10.5.6.7 ~ 
 vela.% 10.9.8.4 ~
 
-See above for an explanation of what the % symbol 
-does. 
+See above for an explanation of what the % symbol does. 
 
 The above three lines, which is a complete csv2 zone file, is a 
 shorthand for the following:
