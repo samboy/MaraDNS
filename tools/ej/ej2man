@@ -230,7 +230,7 @@ print('.ds aq \\(aq')
 print('.if !\\n(.g .if \'\\(aq\'\' .ds aq \\\'')
 print("")
 
-out = out:gsub("<!%-%-[^%-]*%-%->","") -- Remove HTML comments
+out = out:gsub("<!%-%-[^>]*%-%->","") -- Remove HTML comments
 out=out:gsub(mc('<head>.*</head>'),"") -- Scrub HEAD section
 out=out:gsub(mc('</?body>'),"") -- Scrub BODY tag
 
