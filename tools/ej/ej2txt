@@ -200,6 +200,7 @@ out = out:gsub(mc("</?meta[^>]*>"),"") -- Scrub META tag
 out = out:gsub(mc("</?a[^>]*>"),"") -- Scrub A tag
 out = out:gsub(mc("</?b>"),"") -- Scrub B tag (bold)
 out = out:gsub(mc("</?i>"),"") -- Scrub I tag (italic)
+out = out:gsub(mc("</?tt>"),"") -- Scrub TT tag (monospace)
 
 -- Lists are a special case
 out = out:gsub(mc("<li>%s*"),"<li>")

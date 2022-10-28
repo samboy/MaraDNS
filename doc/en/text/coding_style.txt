@@ -64,17 +64,17 @@ only stopped because I always have these cushions at the end of arrays.
 ==No old MaraDNS configuration file should be broken==
 
 Unless there is a compelling reason to do so, no changes that break or 
-change how an old mararc file or zone file is parsed should be 
-done. For example, there is a mararc variable entitled 
-default_rrany_set that does nothing in MaraDNS 1.2; we still 
-support this variable (and have it do nothing) since people using 
-MaraDNS since 1.0 might have this variable set. 
+change how an old mararc file or zone file is parsed should be done. 
+For example, there is a mararc variable entitled default_rrany_set that 
+does nothing in MaraDNS 1.2; we still support this variable (and have 
+it do nothing) since people using MaraDNS since 1.0 might have this 
+variable set. 
 
 As another example, when I changed the zone file format in MaraDNS 1.3, 
 I went to a good deal of effort to make sure over 99% of MaraDNS 1.2 
 zone files work completely unchanged in MaraDNS 1.3, and that a MaraDNS 
-user can set a single mararc variable, csv2_tilde_handling in 
-order to make MaraDNS 1.4 100% compatible with MaraDNS 1.2 zone files. 
+user can set a single mararc variable, csv2_tilde_handling in order to 
+make MaraDNS 1.4 100% compatible with MaraDNS 1.2 zone files. 
 
 Indeed, MaraDNS 1.4 still supports MaraDNS 1.0 zone files, even though 
 I am encouraging people to upgrade to the newer zone file format, and 
@@ -92,13 +92,12 @@ with newer versions of MaraDNS. These changes are only done when:
   document.
 
 For example, MaraDNS 1.0 had a bug where it would silently ignore a 
-misspelled mararc parameter. In MaraDNS 1.2, I changed this 
-behavior to one where MaraDNS will exit with a fatal error should there 
-be a misspelled mararc variable. I made this change to make 
-life easier for system administrators who are wondering why a change 
-isn't working in MaraDNS because they made a typo in their 
-mararc. This change, of course, is fully documented in the 
-MaraDNS update document. 
+misspelled mararc parameter. In MaraDNS 1.2, I changed this behavior to 
+one where MaraDNS will exit with a fatal error should there be a 
+misspelled mararc variable. I made this change to make life easier for 
+system administrators who are wondering why a change isn't working in 
+MaraDNS because they made a typo in their mararc. This change, of 
+course, is fully documented in the MaraDNS update document. 
 
 The reason for this is because MaraDNS users have better things to do 
 in their life than to follow every single change made to MaraDNS; it's 
@@ -171,11 +170,10 @@ MaraDNS. This means the following:
   compiling MaraDNS with -Wall set (the default when compiling 
   MaraDNS).
 
-* The patched code must pass all tests in the
-
- sqa/regressions directory. To perform this test, first 
-compile the patched MaraDNS. Next, enter the sqa/regressions 
-directory. Next, become root. Finally sh ./do.tests
+* The patched code must pass all tests in the sqa/regressions 
+  directory. To perform this test, first compile the patched 
+  MaraDNS. Next, enter the sqa/regressions directory. Next, become 
+  root. Finally sh ./do.tests
 
 ==Finally, thank you for your interest in MaraDNS==
 
