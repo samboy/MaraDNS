@@ -341,6 +341,9 @@ while start do
   local toFmt = out:sub(lastEnd,start - 1)
   local initial = toFmt:len()
   toFmt=toFmt:gsub("\n[ \t]+","\n") -- Remove leading space; confuses nroff
+  toFmt=toFmt:gsub(mc("&amp;"),"&") -- HTML entities only outside PRE blocks
+  toFmt=toFmt:gsub(mc("&lt;"),"<") -- HTML entities only outside PRE blocks
+  toFmt=toFmt:gsub(mc("&gt;"),">") -- HTML entities only outside PRE blocks
   toFmt = fmt(toFmt)
   local offset = toFmt:len() - initial
   local preend = out:find("\n.fi\n",start + 1)
@@ -353,6 +356,9 @@ end
 local top = out:sub(1,lastEnd)
 local tail = out:sub(lastEnd + 1)
 tail=tail:gsub("\n[ \t]+","\n") -- Remove leading space; confuses nroff
+tail=tail:gsub(mc("&amp;"),"&") -- HTML entities only outside PRE blocks
+tail=tail:gsub(mc("&lt;"),"<") -- HTML entities only outside PRE blocks
+tail=tail:gsub(mc("&gt;"),">") -- HTML entities only outside PRE blocks
 tail=fmt(tail)
 out = top .. tail
 -- Remove blank lines at top and bottom of <pre> blocks

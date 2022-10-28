@@ -261,6 +261,9 @@ while start do
   if lastEnd > 1 then top = out:sub(1,lastEnd-1) end
   local toFmt = out:sub(lastEnd,start - 1)
   local initial = toFmt:len()
+  toFmt=toFmt:gsub(mc("&amp;"),"&") -- HTML entities only outside PRE blocks
+  toFmt=toFmt:gsub(mc("&lt;"),"<") -- HTML entities only outside PRE blocks
+  toFmt=toFmt:gsub(mc("&gt;"),">") -- HTML entities only outside PRE blocks
   toFmt = fmt(toFmt)
   local offset = toFmt:len() - initial
   local preend = out:find(mc("</pre>"),start + 1)
@@ -272,6 +275,9 @@ while start do
 end
 local top = out:sub(1,lastEnd)
 local tail = out:sub(lastEnd + 1)
+tail=tail:gsub(mc("&amp;"),"&") -- HTML entities converted outside PRE blocks
+tail=tail:gsub(mc("&lt;"),"<") -- HTML entities converted outside PRE blocks
+tail=tail:gsub(mc("&gt;"),">") -- HTML entities converted outside PRE blocks
 tail = fmt(tail)
 out = top .. tail
 
