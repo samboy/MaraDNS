@@ -300,6 +300,7 @@ out=out:gsub(mc("<table>"),'\n.ta +5 +7 +7\n')
 out=out:gsub(mc("<td>"),'\t')
 out=out:gsub('<[TtBb][Rr]>\n?','\n.br\n')
 out=out:gsub(mc("</table>"),"")
+out=out:gsub("\n+\n.RE\n.PP",'\n.RE\n.PP\n') -- Remove lines at BLOCKQUOTE end
 
 out = fmt(out)
 out = out:gsub("[ ]*\n[ ]*\n[ ]*\n[ ]*\n[ ]*\n","\n\n")
