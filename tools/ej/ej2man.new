@@ -241,10 +241,7 @@ out=out:gsub(mc('<hibit[^>]*>([^<]*)</hibit>'),"%1") -- HIBIT (2022)
 
 out=out:gsub(mc("</?hibit[^>]*>"),"") -- HIBIT part 2
 out=out:gsub("\\","\\\\") -- escape backslashes
--- Escape quotes in PRE sections
-while out:find(mc("<pre>([^<]*)'([^<]*)</pre>")) do
-  out = out:gsub(mc("<pre>([^<]*)'([^<]*)</pre>"),"<pre>%1\\(aq%2</pre>")
-end
+out=out:gsub("'",'\\(aq') -- escape quotes
 out=out:gsub(mc("<pre>%s*"),"\n\n.nf\n"); -- PRE opener
 out=out:gsub(mc("</pre>%s*"),"\n.fi\n\n"); -- PRE closer
 out=out:gsub(mc('&nbsp;'),' ') -- &nbsp; becomes literal space
