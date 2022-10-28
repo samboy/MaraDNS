@@ -31,9 +31,8 @@ no special meaning, or to escape the backslash character.
 All domain-name labels are converted to their lower-case equivalents 
 before processing is done. This is because domain-name literals in the 
 database with one or more upper-case letters in them are 
-case-sensitive. This is my way to resolve RFC1035 schizophrenic desire 
-to both allow binary domain labels, and its desire to be 
-case-insensitive. 
+case-sensitive. This is my way to resolve RFC1035's desire to both 
+allow binary domain labels and be case-insensitive. 
 
 The file must first have a SOA record, followed by one or more NS 
 records, followed by other records. The initial NS and SOA records must 
