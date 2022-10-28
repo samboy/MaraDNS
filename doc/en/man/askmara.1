@@ -20,7 +20,7 @@
 .ds aq \(aq
 .if !\n(.g .if '\(aq'' .ds aq \'
 
- 
+  
 .SH "NAME"
 .PP
 askmara - do simple dns queries 
@@ -38,6 +38,7 @@ uses).
 [-n] [ -v | -t timeout] query [ server ] 
 .SH "OPTIONS"
 .PP
+
 .TP 4
 -t 
 If this is present, the following argument is the askmara timeout, in 
@@ -123,7 +124,7 @@ Asking the server with the ip address 127.0.0.1 for the IP address of
 example.com, using the rr_number:query format: 
 
 .nf
-askmara 1:example.com. 
+askmara 1:example.com.  
 .fi
 
 Asking the server with the ip address 127.0.0.1 for a SRV record. In 
@@ -139,7 +140,7 @@ Asking the server with the ip address 127.0.0.1 for the AAAA (ipv6 ip)
 record for example.net: 
 
 .nf
-askmara 28:example.net. 
+askmara 28:example.net.  
 .fi
 
 Note that the output will be a raw DNS packet in the SRV example, but 
@@ -159,7 +160,7 @@ incorrectly (it only outputs the first chunk).
 .B "maradns(8)"
 
 .br
- http://www.maradns.org 
+http://www.maradns.org 
 .SH "LEGAL DISCLAIMER"
 .PP
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS \(aq\(aqAS IS\(aq\(aq AND ANY 
@@ -176,5 +177,5 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .SH "AUTHOR"
 .PP
 MaraDNS is written by Sam Trenholme. Jaakko Niemi used 5 minutes to 
-roll this manpage together, which Sam has subsequently revised. 
+roll this manpage together, which Sam has subsequently revised.  
 

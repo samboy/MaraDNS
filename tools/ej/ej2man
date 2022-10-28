@@ -169,7 +169,6 @@ while l do
   end
 
   -- Grab input file line by line, make it one long line
-  l = l:gsub("%s+"," ")
   out = out .. l .. " "
   if l:find(mc("<pre>")) then
     inPre = true
@@ -312,7 +311,6 @@ out=out:gsub(mc("<li>\n?"),'\n.TP 2\n*\n') -- The LI tag
 out=out:gsub(mc("<dt>([^<]*)<dd>\n?"),'\n' .. DTROFF .. '\n%1\n') -- DT tag
 out=out:gsub("</[Dd][TtDd]>","") -- Remove closing DT and DD tags
 out=out:gsub("</[DdUu][Ll]>",'\n.PP\n') -- /UL and /DL not ignored
-out=out:gsub("\n[ \t]+","\n") -- Remove leading space; confuses nroff
 out=out:gsub("\n+(\n%.[TP]P)","%1") -- Zap empty lines before .TP or .PP roff
 out=out:gsub("(\n%.RE)","\n%1") -- Make RE tags look nice
 -- Get rid of empty lines after a .RE flag; this does not look nice
@@ -322,9 +320,8 @@ out=out:gsub("(\n%.in)","\n%1")
 -- Get rid of empty lines after a .TP or .PP flag; this never looks nice
 out=out:gsub("(\n%,[TP]P[^\n]+\n)\n+","%1")
 -- Get rid of multiple spaces; nroff (unlike EJ) honors them
-out=out:gsub("[ \t]+"," ")
 -- Tables, used by csv1.ej
-out=out:gsub(mc("<table>"),'\n.ta +5 +7 +7\n')
+out=out:gsub(mc("<table>"),'\n.ta +8 +8 +8\n')
 out=out:gsub(mc("<td>"),'\t')
 out=out:gsub('<[TtBb][Rr]>\n?','\n.br\n')
 out=out:gsub(mc("</table>"),"")
@@ -339,6 +336,7 @@ while start do
   if lastEnd > 1 then top = out:sub(1,lastEnd-1) end
   local toFmt = out:sub(lastEnd,start - 1)
   local initial = top:len()
+  toFmt=toFmt:gsub("\n[ \t]+","\n") -- Remove leading space; confuses nroff
   toFmt = fmt(toFmt)
   local offset = top:len() - initial
   local preend = out:find("\n.fi\n",start + 1)
@@ -350,7 +348,8 @@ while start do
 end
 local top = out:sub(1,lastEnd)
 local tail = out:sub(lastEnd + 1)
-tail = fmt(tail)
+tail=tail:gsub("\n[ \t]+","\n") -- Remove leading space; confuses nroff
+tail=fmt(tail)
 out = top .. tail
 
 out = out:gsub("[ ]*\n[ ]*\n[ ]*\n[ ]*\n[ ]*\n","\n\n")

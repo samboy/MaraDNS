@@ -20,7 +20,7 @@
 .ds aq \(aq
 .if !\n(.g .if '\(aq'' .ds aq \'
 
- 
+  
 .SH "NAME"
 .PP
 csv1 - Format of the csv1 zone file that MaraDNS uses 
@@ -32,6 +32,7 @@ zone file format. Note that the csv1 zone file format will continue to
 function as long as I am MaraDNS\(aq maintainer. 
 .SH "SPECIAL CHARACTERS"
 .PP
+
 .TP 3
 | 
 This delimits fields 
@@ -84,27 +85,27 @@ files; see
 .B "csv2(5)"
 for details. 
 .br
- 
-.ta +5 +7 +7
- 	Letter	Type	RFC1035 section 3.2.2 value
+
+.ta +8 +8 +8
+Letter	Type	RFC1035 section 3.2.2 value
 .br
- 	A	A	1
+A	A	1
 .br
- 	N	NS	2
+N	NS	2
 .br
- 	C	CNAME	5
+C	CNAME	5
 .br
- 	S	SOA	6
+S	SOA	6
 .br
- 	P	PTR	12
+P	PTR	12
 .br
- 	@	MX	15
+@	MX	15
 .br
- 	T	TXT	16
+T	TXT	16
 .br
- 	U	any	determined in third field of line
+U	any	determined in third field of line
 .br
-  
+
 .SH "FORMAT OF SUPPORTED RR TYPES"
 .PP
 Here are the formats, shown by letter name: 
@@ -125,7 +126,7 @@ record is an IP address for a given host name.
 N: Has three fields 
 field one: the domain name of the record 
 field two: the ttl for the name in seconds 
-field three: the domain name this NS points to. 
+field three: the domain name this NS points to.   
 Example: 
 Nexample.com.|86400|ns.example.com. 
 .fi
@@ -147,15 +148,15 @@ CNAME (which C is short for) records are described in RFC1035
 S: Has nine fields 
 field one: the domain name of the record 
 field two: the TTL of the record 
-field three: the origin of the domain. In other words, the name of the 
-primary name server for the domain. 
-field four: the email address for this domain (in the RFC822, not 
-BIND format) 
+field three: the origin of the domain.  In other words, the name of the 
+             primary name server for the domain. 
+field four: the email address for this domain (in the RFC822, not  
+            BIND format) 
 field five: the serial for the domain 
 field six: the refresh (how often to see updates) for the domain 
 field seven: the retry (how often to try when down) for the domain 
-field eight: the expire (how long before the slave gives up) for the 
-domain 
+field eight: the expire (how long before the slave gives up) for the  
+             domain 
 field nine: the minimum (and default) TTL for the domain 
 Example: 
 Sexample.net.|86400|%|hostmaster@%|19771108|7200|3600|604800|1800 
@@ -167,7 +168,7 @@ SOA (S here) records are described in RFC1035
 P: has three fields 
 field one: the IP we wish to point to (in in-addr.arpa form) 
 field two: the ttl for the name in seconds 
-field three: the FQDN for the IP in question 
+field three: the FQDN for the IP in question   
 Example: 
 P3.2.1.10.in-addr.arpa.|86400|ns.example.com. 
 .fi
@@ -193,9 +194,9 @@ MX (@ here) records are described in RFC1035
 T: has three fields 
 field one: The host someone wants to get additional information about 
 field two: the ttl for this record 
-field three: The desired text. Any data becomes the record up until a 
-new line is reached. The new line is not part of the TXT 
-record 
+field three: The desired text.  Any data becomes the record up until a  
+             new line is reached.  The new line is not part of the TXT  
+             record 
 Example: 
 Texample.com.|86400|Example.com: Buy example products online 
 .fi
@@ -204,8 +205,8 @@ TXT (T here) records are described in RFC1035
 
 .nf
 U: has four fields 
-field one: The host someone wants a data type normally unsupported by 
-MaraDNS for 
+field one: The host someone wants a data type normally unsupported by  
+           MaraDNS for 
 field two: the ttl for this record 
 field three: The numeric code for this data type (33 for SRV, etc.) 
 field four: The raw binary data for this data type 
@@ -224,10 +225,10 @@ the catch-all "unsupported" syntax.
 
 .nf
 # Example CSV1 zone file 
-# This is what is known as a SOA record. All zone files need to have one 
+# This is what is known as a SOA record.  All zone files need to have one 
 # of these 
 S%|86400|%|hostmaster@%|19771108|7200|3600|604800|1800 
-# These are known as authoritative NS records. All zone files need one or 
+# These are known as authoritative NS records.  All zone files need one or 
 # more of these 
 N%|86400|ns1.% 
 N%|86400|ns2.% 
@@ -254,5 +255,5 @@ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 .SH "AUTHOR"
 .PP
-Sam Trenholme http://www.samiam.org/ 
+Sam Trenholme http://www.samiam.org/  
 

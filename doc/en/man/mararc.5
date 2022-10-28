@@ -20,7 +20,7 @@
 .ds aq \(aq
 .if !\n(.g .if '\(aq'' .ds aq \'
 
- 
+  
 .SH "NAME"
 .PP
 mararc - Format of the mararc zone file that MaraDNS uses 
@@ -144,6 +144,7 @@ csv1["zone"] = "filename"
 .BR "csv1" ":"
 A pipe-separated-file. See 
 .BR "csv1(5)" "."
+
 .PP
 .BR "zone" ":"
 the zone that file in question is authoritative for 
@@ -228,7 +229,7 @@ The significance of "match" depends on what we use the ipv4 alias for.
 ipv4 aliases can nest. E.g: 
 
 .nf
-ipv4_alias["susan"] = "10.6.7.8/24" 
+ipv4_alias["susan"] = "10.6.7.8/24"  
 ipv4_alias["office"] = "susan,10.9.9.9" 
 .fi
 
@@ -275,7 +276,7 @@ this: "10.1.2.3, 10.1.2.4, 127.0.0.1"
 \fBadmin_acl\fR
 .PP
 This is a list of ip/netmask pairs that are allowed to get certain 
-administrative information about MaraDNS, including: 
+administrative information about MaraDNS, including:  
 .TP 2
 *
 The version number of MaraDNS running 
@@ -312,7 +313,7 @@ In the case where there is both a star record for a given name and
 recordtype, a non-star record with the same name but a different 
 recordtype, and no record for the given name and recordtype, MaraDNS 
 will usually return the star record. BIND, on the other hand, will 
-return a "not there" reply. In other words: 
+return a "not there" reply. In other words:  
 .TP 2
 *
 If a non-A record for foo.example.com exists 
@@ -341,7 +342,7 @@ record type, when bind_star_handling is 1, it makes sure that MaraDNS
 does not incorrectly return a NXDOMAIN (RFC 4074 section 4.2). 
 .PP
 Also, if bind_star_handling has a value of 2, MaraDNS will handle the 
-following case exactly as per section 4.3.3 of RFC1034: 
+following case exactly as per section 4.3.3 of RFC1034:  
 .TP 2
 *
 If a record for foo.example.com exists 
@@ -381,7 +382,7 @@ load.
 This is a special zone file that allows there to be stars at the 
 .I "end"
 of hostnames. This file is similar to a normal csv2 zone file, but has 
-the following features and limitations: 
+the following features and limitations:  
 .TP 2
 *
 Stars are allowed at the end of hostnames 
@@ -405,6 +406,7 @@ Default zonefiles may not be transferred via zone transfer
 Both recursion and default zonefiles may not be enabled at the same 
 time 
 .PP
+
 .PP
 
 .in -3
@@ -427,7 +429,7 @@ localhost addresses will discard the localhost addresses.
 How the csv2 zone file parser handles tildes (the ~ character) in csv2 
 zone files. This is a numeric record, with a possible value between 0 
 and 3 (four possible values). The way the csv2 parser acts at different 
-csv2_tilde_handling levels: 
+csv2_tilde_handling levels:  
 .TP 2
 *
 0) The csv2 parser behaves the same as it does in old MaraDNS releases: 
@@ -479,7 +481,7 @@ When set to three or higher, a Ttimestamp.maradns. query will return,
 in seconds since the UNIX epoch, the timestamp for the system MaraDNS 
 is running on. 
 .br
- 
+
 .PP
 
 .in -3
@@ -512,7 +514,7 @@ number of queries, such as during a denial of service attack.
 .PP
 This is a numeric variable; its default value is zero, indicating that 
 all of MaraDNS\(aq normal features are enabled. Higher numeric values 
-disable more features: 
+disable more features:  
 .TP 2
 *
 A dos_protection_level between 1 and 78 (inclusive) disables getting 
@@ -714,7 +716,7 @@ synth_soa_origin = "ns1.example.com"
 .fi
 
 If this is not set, a synthetic SOA record will use the name of the 
-zone for the SOA origin (MNAME) field. 
+zone for the SOA origin (MNAME) field.   
 .PP
 .PP
 
@@ -790,7 +792,7 @@ This option also allows people who do not use the duende tool to view
 human-readable timestamps. This option only allows timestamps in GMT, 
 due to issues with showing local times in a chroot() environment. 
 .PP
-This can have the following values: 
+This can have the following values:  
 .TP 4
 0 
 The string "Timestamp" followed by a UNIX timestamp 
@@ -817,6 +819,7 @@ ISO GMT timestamp is shown
 7 
 ISO local timestamp is shown 
 .PP
+
 .PP
 The default value for this variable is 5. 
 .PP
@@ -826,7 +829,7 @@ The default value for this variable is 5.
 .PP
 verbose_level: The number of messages we log to stdout 
 .PP
-This can have five values: 
+This can have five values:  
 .TP 4
 0 
 No messages except for the legal disclaimer and fatal parsing errors 
@@ -843,6 +846,7 @@ All queries logged
 4 
 All actions adding and removing records from the cache logged 
 .PP
+
 .PP
 The default value for this variable is 1. 
 .PP
@@ -866,7 +870,7 @@ entry.
 csv2 = {} 
 # This is just to show the format of the file 
 #csv2["example.com."] = "db.example.com" 
-# The address this DNS server runs on. If you want to bind 
+# The address this DNS server runs on.  If you want to bind  
 # to multiple addresses, separate them with a comma like this: 
 # "10.1.2.3,10.1.2.4,127.0.0.1" 
 ipv4_bind_addresses = "127.0.0.1" 
@@ -877,22 +881,22 @@ maradns_uid = 99
 # The (optional) numeric GID MaraDNS will run as 
 # maradns_gid = 99 
 # Normally, MaraDNS has some MaraDNS-specific features, such as DDIP 
-# synthesizing, a special DNS query ("erre-con-erre-cigarro.maradns.org." 
-# with a TXT query returns the version of MaraDNS that a server is 
-# running), unique handling of multiple QDCOUNTs, etc. Some people 
-# might not like these features, so I have added a switch that lets 
-# a sys admin disable all these features. Just give "no_fingerprint" 
-# a value of one here, and MaraDNS should be more or less 
+# synthesizing, a special DNS query ("erre-con-erre-cigarro.maradns.org."  
+# with a TXT query returns the version of MaraDNS that a server is  
+# running), unique handling of multiple QDCOUNTs, etc.  Some people  
+# might not like these features, so I have added a switch that lets  
+# a sys admin disable all these features.  Just give "no_fingerprint"  
+# a value of one here, and MaraDNS should be more or less  
 # indistinguishable from a tinydns server. 
 no_fingerprint = 0 
 # These constants limit the number of records we will display, in order 
-# to help keep packets 512 bytes or smaller. This, combined with round_robin 
+# to help keep packets 512 bytes or smaller.  This, combined with round_robin 
 # record rotation, help to use DNS as a crude load-balancer. 
 # The maximum number of records to display in a chain of records (list 
 # of records) for a given host name 
 max_chain = 8 
 # The maximum number of records to display in a list of records in the 
-# additional section of a query. If this is any value besides one, 
+# additional section of a query.  If this is any value besides one, 
 # round robin rotation is disabled (due to limitations in the current 
 # data structure MaraDNS uses) 
 max_ar_chain = 1 
@@ -904,12 +908,12 @@ max_total = 20
 # 2: Error queries logged 
 # 3: All queries logged (but not very verbosely right now) 
 verbose_level = 1 
-# Here is a ACL which restricts who is allowed to perform zone transfer from 
+# Here is a ACL which restricts who is allowed to perform zone transfer from  
 # the zoneserver program 
 # Simplest form: 10.1.1.1/24 (IP: 10.1.1.1, 24 left bits in IP need to match) 
 # and 10.100.100.100/255.255.255.224 (IP: 10.100.100.100, netmask 
-# 255.255.255.224) are allowed to connect to the zone server 
-# NOTE: The "maradns" program does not serve zones. Zones are served 
+# 255.255.255.224) are allowed to connect to the zone server  
+# NOTE: The "maradns" program does not serve zones.  Zones are served 
 # by the "zoneserver" program. 
 #zone_transfer_acl = "10.1.1.1/24, 10.100.100.100/255.255.255.224" 
 .fi
@@ -932,5 +936,5 @@ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
 BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
 WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
 OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
-ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  
 

@@ -20,7 +20,7 @@
 .ds aq \(aq
 .if !\n(.g .if '\(aq'' .ds aq \'
 
- 
+  
 .SH "NAME"
 .PP
 csv2_txt - Description of txt and raw resource records in the csv2 zone 
@@ -51,14 +51,14 @@ between quotes. The \(aq~\(aq (tilde) character is not allowed unless
 csv2_tilde_handling has a value of 0; the \(aq|\(aq (pipe), \(aq#\(aq 
 (hash) and non-printable ASCII control characters are not allowed in 
 TXT data if the ~ is used to separate records. If there are any bytes 
-with a value of 0x80 or more, the data must be UTF-8 encoded Unicode. 
+with a value of 0x80 or more, the data must be UTF-8 encoded Unicode.  
 For example: 
 
 .nf
 b.example.com. TXT \(aqThis is an example UTF-8 character: I ♥ MaraDNS\(aq 
 .fi
 
-(If your font does not have this Unicode symbol, it is a heart) 
+(If your font does not have this Unicode symbol, it is a heart)  
 .PP
 The printable ASCII characters not allowed in quotes are the \(aq 
 character, the \(aq|\(aq character, the \(aq~\(aq (tilde) character, 
@@ -109,7 +109,7 @@ of quoted text; if they are placed inside single quotes, they are not
 interpreted and result in a literal backslash being added to the 
 resource record data. 
 .PP
-The following characters can be backslashed: 
+The following characters can be backslashed:  
 .TP 3
 \(aq 
 When backslashed, the adds a literal quote to the resource record. 
@@ -227,11 +227,11 @@ multiple lines:
 
 .nf
 j.example.com. TXT \(aqNot only did the quick brown fox jump \(aq\\ 
-\(aqover the lazy dog, but the lazy dog\(aq\\ 
-\(aq jumped over the cat.\(aq ~ 
+                   \(aqover the lazy dog, but the lazy dog\(aq\\ 
+                   \(aq jumped over the cat.\(aq ~ 
 .fi
 
-Some points: 
+Some points:  
 .TP 2
 *
 The backslash must be outsize of the quotes (or a literal backslash 
@@ -251,8 +251,8 @@ It is also possible to add comments after such a backslash as follows:
 
 .nf
 k.example.com. TXT \(aqNot only did the quick brown fox jump \(aq\\ # The fox 
-\(aqover the lazy dog, but the lazy dog\(aq\\ # The dog 
-\(aq jumped over the cat.\(aq ~ # The cat 
+                   \(aqover the lazy dog, but the lazy dog\(aq\\    # The dog 
+                   \(aq jumped over the cat.\(aq ~                 # The cat 
 .fi
 
 Note that, since the third comment is not preceded by a backslash, this 
@@ -264,9 +264,9 @@ optionally, even blank lines) in the middle of TXT and RAW record data:
 .nf
 k2.example.com. TXT \(aqThis is some data \(aq\\ 
 # Here we have some comments followed by a blank line 
-# Now we have some more comments, 
+# Now we have some more comments,  
 # followed by the rest of the data 
-\(aqand this is the rest of the data\(aq ~ 
+    \(aqand this is the rest of the data\(aq ~ 
 .fi
 .PP
 .PP
@@ -292,9 +292,9 @@ p.example.com. TXT \(aqThis is chunk one\(aq;\(aqThis is chunk two\(aq ~
 Or: 
 
 .nf
-q.example.com. TXT \(aqThis is chunk one\(aq;\\ # Our first chunk 
-This_is_chunk_two;\\ # Our second chunk 
-\(aqThis is chunk three\(aq ~ # Our final chunk 
+q.example.com. TXT \(aqThis is chunk one\(aq;\\   # Our first chunk 
+                    This_is_chunk_two;\\    # Our second chunk 
+                   \(aqThis is chunk three\(aq ~ # Our final chunk 
 .fi
 
 Quoted ; characters simply add a ; to the record data. 
@@ -347,13 +347,13 @@ u.example.com. RAW 40 \\x10\\x01\\x02Kitchen\\x20sink+\\x20data ~
 .fi
 .nf
 v.example.com. RAW 40 \\x10\\001\\x02\\ 
-\(aqKitchen sink+ data\(aq ~ 
+                      \(aqKitchen sink+ data\(aq ~ 
 .fi
 .nf
 w.example.com. RAW 40 \\x10\\ # Meaning: 16 
-\\x01\\ # Coding: 1 
-\\x02\\ # Sub-coding: 2 
-\(aqKitchen sink+ data\(aq ~ # Data: \(aqKitchen sink+ data\(aq 
+                      \\x01\\ # Coding: 1 
+                      \\x02\\ # Sub-coding: 2 
+                      \(aqKitchen sink+ data\(aq ~ # Data: \(aqKitchen sink+ data\(aq 
 .fi
 .PP
 
@@ -380,19 +380,19 @@ Here is a real-world DKIM key stored in a MaraDNS zone file:
 .PP
 
 .nf
-x._domainkey.% +600 TXT \(aqv=DKIM1; k=rsa; \(aq\\ 
-\(aqp=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCg\(aq\\ 
-\(aqKCAQEAuhKjx2Aepa3rllxUEZLgF3x\(aq\\ 
-\(aq68SWvZ8pEgnjZvxtqp94Vkra3AUC4C8dRLKf5SvT\(aq\\ 
-\(aqxFtIl6pF27jn+M/w2MzYwPFjBgqVf\(aq\\ 
-\(aqp2lf7xuKsrus63m0T9Sq958nIt1yuUlLDr71bFs7\(aq\\ 
-\(aqZuZyQid0ciCc2JF5lwHno10cAvuNJ\(aq;\(aqy1Q\(aq\\ 
-\(aqtFJa+lRJI6/kzY20Hi/ZTzFzctqgqaRZnSoJlTZHf\(aq\\ 
-\(aqOy0uwfmF5ejkJ8xvHbEJp6TEc\(aq\\ 
-\(aq30DwsqrjVWSFLnUWYBv7lrAPB9sAHN7fCayhEuORn\(aq\\ 
-\(aqAp+YUhjjMPWyPla1pvTS9h/LTE7g\(aq\\ 
-\(aq2d+jR/zOkRpV2Ak/4KpeP9dpsRJEOsPEaWGG1pQXgPw\(aq\\ 
-\(aqIDAQAB\(aq 
+x._domainkey.% +600 TXT \(aqv=DKIM1; k=rsa; \(aq\\   
+\(aqp=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCg\(aq\\   
+\(aqKCAQEAuhKjx2Aepa3rllxUEZLgF3x\(aq\\   
+\(aq68SWvZ8pEgnjZvxtqp94Vkra3AUC4C8dRLKf5SvT\(aq\\   
+\(aqxFtIl6pF27jn+M/w2MzYwPFjBgqVf\(aq\\   
+\(aqp2lf7xuKsrus63m0T9Sq958nIt1yuUlLDr71bFs7\(aq\\   
+\(aqZuZyQid0ciCc2JF5lwHno10cAvuNJ\(aq;\(aqy1Q\(aq\\   
+\(aqtFJa+lRJI6/kzY20Hi/ZTzFzctqgqaRZnSoJlTZHf\(aq\\    
+\(aqOy0uwfmF5ejkJ8xvHbEJp6TEc\(aq\\   
+\(aq30DwsqrjVWSFLnUWYBv7lrAPB9sAHN7fCayhEuORn\(aq\\   
+\(aqAp+YUhjjMPWyPla1pvTS9h/LTE7g\(aq\\   
+\(aq2d+jR/zOkRpV2Ak/4KpeP9dpsRJEOsPEaWGG1pQXgPw\(aq\\  
+\(aqIDAQAB\(aq  
 .fi
 .SH "LEGAL DISCLAIMER"
 .PP
@@ -409,5 +409,5 @@ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 .SH "AUTHOR"
 .PP
-Sam Trenholme http://www.samiam.org/ 
+Sam Trenholme http://www.samiam.org/  
 

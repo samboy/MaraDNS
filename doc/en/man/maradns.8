@@ -20,7 +20,7 @@
 .ds aq \(aq
 .if !\n(.g .if '\(aq'' .ds aq \'
 
- 
+  
 
 .nf
 Erre con erre cigarro 
@@ -41,7 +41,7 @@ This man page has the following sections:
 .RS 4
 
 .nf
-Name 
+Name  
 Synopsis 
 Table of Contents 
 Description 
@@ -107,7 +107,7 @@ When using the maradns authoritative nameserver, allow UDP connections
 from all hosts on the internet to UDP port 53 for the IP that the 
 authoritative nameserver uses. 
 .PP
-When using the Deadwood recursive nameserver: 
+When using the Deadwood recursive nameserver:  
 .TP 2
 *
 Allow UDP connections from the Deadwood server to any machine on the 
@@ -283,7 +283,7 @@ denial-of-service attack?
 .PP
 Upgrade to MaraDNS 2.0. Here is an upgrade guide. 
 .PP
-MaraDNS 1 is no longer supported; support ended on June 21, 2015. 
+MaraDNS 1 is no longer supported; support ended on June 21, 2015.   
 .PP
 
 .in -3
@@ -326,14 +326,14 @@ correctness or fitness for purpose.
 .in -3
 \fB4. How do I report bugs in MaraDNS?\fR
 .PP
-Post your bug report as a Github issue. 
+Post your bug report as a Github issue.   
 .PP
 
 .in -3
 \fB5. Some of the postings to the mailing list do not talk about MaraDNS!\fR
 .PP
 As of September 2013, the mailing list has become moderated and only 
-postings on the mailing list are relevant MaraDNS announcements. 
+postings on the mailing list are relevant MaraDNS announcements.   
 .PP
 
 .in -3
@@ -344,7 +344,7 @@ list-request@maradns.org with "unsubscribe" as the subject line.
 .PP
 The mailing list will send you an email confirming the unsubscribe 
 request; this email needs to be replied to in order to get off the 
-list. 
+list.   
 .PP
 
 .in -3
@@ -356,7 +356,7 @@ reverse DNS lookup for the ip 10.2.3.4 looks like this in a CSV2 zone
 file: 
 .PP
 .RS 4
-4.3.2.10.in-addr.arpa. PTR www.example.com. 
+4.3.2.10.in-addr.arpa. PTR www.example.com.  
 .RE
 .PP
 
@@ -365,7 +365,7 @@ It is also possible to use a special "FQDN4" which automatically sets
 up the reverse mapping of a given record: 
 .PP
 .RS 4
-www.example.com. FQDN4 10.2.3.4 
+www.example.com. FQDN4 10.2.3.4  
 .RE
 .PP
 
@@ -385,7 +385,7 @@ also given control of the DNS zones which allow them to control reverse
 DNS lookups for those IPs. While it is possible to obtain a domain and 
 run a DNS server without the knowledge or intervention of an ISP, being 
 able to control reverse DNS lookups for those IPs requires ISP 
-intervention. 
+intervention.   
 .PP
 
 .in -3
@@ -404,7 +404,7 @@ timeout_seconds = 5
 .PP
 
 Note that making this too high will slow MaraDNS down when DNS servers 
-are down, which is, alas, all too common on today\(aqs internet. 
+are down, which is, alas, all too common on today\(aqs internet.    
 .PP
 
 .in -3
@@ -418,7 +418,7 @@ what point it had to terminate parsing of the zone file.
 If MaraDNS does return a cryptic error message without letting you know 
 what is wrong, let us know in a Github issue so that we can fix the 
 bug. MaraDNS is designed to be easy to use; cryptic error messages go 
-against this spirit. 
+against this spirit.   
 .PP
 
 .in -3
@@ -428,11 +428,11 @@ netstat -na \fR
 Udp services do not have a prominent "LISTEN" when netstat is run. 
 .PP
 When MaraDNS is up, the relevant line in the netstat output looks like 
-this: udp 0 0 127.0.0.1:53 0.0.0.0:* 
+this:  udp 0 0 127.0.0.1:53 0.0.0.0:*  
 .PP
 While on the topic of netstat, if you run netstat -nap as root on Linux 
 and some other *nix operating systems, you can see the names of the 
-processes which are providing internet services. 
+processes which are providing internet services.   
 .PP
 
 .in -3
@@ -441,7 +441,7 @@ processes which are providing internet services.
 .PP
 MaraDNS uses its own string library, which is called the "js_string" 
 library. Man pages for most of the functions in the js_string library 
-are in the folder doc/man of the MaraDNS distribution 
+are in the folder doc/man of the MaraDNS distribution   
 .PP
 
 .in -3
@@ -452,7 +452,7 @@ MaraDNS 2.0 no longer uses threads.
 .PP
 It took me three years to rewrite MaraDNS\(aq recursive resolver as a 
 separate non-threaded daemon. This has been done, and now all recursion 
-is done with Deadwood which does not need threads. 
+is done with Deadwood which does not need threads.   
 .PP
 
 .in -3
@@ -460,7 +460,7 @@ is done with Deadwood which does not need threads.
 .PP
 .PP
 There are no plans to add new features to MaraDNS or Deadwood at this 
-time. 
+time.   
 .PP
 
 .in -3
@@ -483,14 +483,14 @@ hi-bit characters, and other document formats to retain hi-bit
 characters. 
 .PP
 Having a given program have its own documentation format is not without 
-precedent; Perl uses its own "pod" documentation format. 
+precedent; Perl uses its own "pod" documentation format.   
 .PP
 
 .in -3
 \fB15. Is there any process I need to follow to add a patch to MaraDNS?\fR
 .PP
 .PP
-I no longer accept third party patches 
+I no longer accept third party patches   
 .PP
 
 .in -3
@@ -504,7 +504,7 @@ secondaries for zones which MaraDNS serves. This is a separate program
 from the maradns server, which processes authoritative UDP DNS queries, 
 and Deadwood which processes recursive DNS queries. 
 .PP
-See the DNS master document in the MaraDNS tutorial for details. 
+See the DNS master document in the MaraDNS tutorial for details.   
 .PP
 
 .in -3
@@ -513,8 +513,8 @@ See the DNS master document in the MaraDNS tutorial for details.
 .PP
 Yes. 
 .PP
-Please read the DNS slave document, which is part of the MaraDNS 
-tutorial. 
+Please read the  DNS slave document, which is part of the MaraDNS 
+tutorial.   
 .PP
 
 .in -3
@@ -528,7 +528,7 @@ Deadwood daemon to process recursive DNS queries.
 .PP
 An authoritative DNS server is a DNS server that a recursive server 
 contacts in order to find out the answer to a given DNS query. The 
-maradns daemon processes authoritative DNS queries. 
+maradns daemon processes authoritative DNS queries.   
 .PP
 
 .in -3
@@ -539,7 +539,7 @@ For security reasons, MaraDNS\(aq fetchzone client does not add records
 which are not part of the zone in question. For example, if someone has 
 a zone for example.com, and this record in the zone: 
 .PP
-1.1.1.10.in-addr.arpa. PTR dns.example.com. 
+1.1.1.10.in-addr.arpa. PTR dns.example.com.  
 .PP
 MaraDNS will not add the record, since the record is out-of-bailiwick. 
 In other words, it is a host name that does not end in .example.com. 
@@ -554,6 +554,7 @@ there.
 Use rcp, rsync, or another method to copy over the zone files in 
 question. 
 .PP
+
 .PP
 
 .in -3
@@ -561,7 +562,7 @@ question.
 .PP
 .PP
 MaraDNS is developed in CentOS 6 and Windows 7. MaraDNS may or may not 
-compile and run on other systems. 
+compile and run on other systems.   
 .PP
 
 .in -3
@@ -571,7 +572,7 @@ compile and run on other systems.
 Yes. There is both a partial mingw32 (native win32 binary) port and a 
 full Cygwin port of MaraDNS; both of these ports are part of the native 
 build of MaraDNS. Deadwood has full Windows support, including the 
-ability to run as a service. 
+ability to run as a service.   
 .PP
 
 .in -3
@@ -584,7 +585,7 @@ using the upstream_servers dictionary variable instead of the
 root_servers dictionary variable. 
 .PP
 If you still see MaraDNS freeze up after making this correction, please 
-send a bug report as a Github issue. 
+send a bug report as a Github issue.   
 .PP
 
 .in -3
@@ -593,7 +594,7 @@ send a bug report as a Github issue.
 The mararc file uses the same syntax that Python uses; in fact, Python 
 can parse a properly formatted mararc file. 
 .PP
-There is no other integration with Python. 
+There is no other integration with Python.   
 .PP
 
 .in -3
@@ -602,7 +603,7 @@ There is no other integration with Python.
 Indeed, it does. However the use of "kvar" in the MaraDNS source code 
 only coincidentally is an Esperanto word. "kvar" is short for "Kiwi 
 variable"; a lot of the parsing code comes from the code used in the 
-Kiwi spam filter project. 
+Kiwi spam filter project.   
 .PP
 
 .in -3
@@ -620,16 +621,17 @@ served:
 .PP
 
 .nf
-Startup time N 
-Memory usage N 
-Processing incoming DNS requests 1 
+Startup time                            N 
+Memory usage                            N 
+Processing incoming DNS requests        1 
 .fi
 .PP
 As can be seen, MaraDNS will process 1 or 100000 domains in the same 
-amount of time, once the domain names are loaded in to memory. <h2>26. 
-I am having problems setting upstream_servers</h2> upstream_servers is 
-only supported by Deadwood, and is no longer supported in MaraDNS 2.0. 
-The upstream_servers dwood3rc variable is set thusly: 
+amount of time, once the domain names are loaded in to memory.   
+<h2>26. I am having problems setting upstream_servers</h2> 
+upstream_servers is only supported by Deadwood, and is no longer 
+supported in MaraDNS 2.0. The upstream_servers dwood3rc variable is set 
+thusly: 
 .PP
 .RS 4
 upstream_servers["."] = "10.3.28.79, 10.2.19.83" 
@@ -679,13 +681,13 @@ of the layout is because Microsoft Internet Explorer 6 and other
 browsers do not have support for the max-width CSS property. Without 
 this property, the web page will not scale down correctly without using 
 tables. Additionally, tables allow a reasonably attractive header in 
-browsers without CSS support. 
+browsers without CSS support.   
 .PP
 
 .in -3
 \fB28. How do MX records work?\fR
 .PP
-How MX records work: 
+How MX records work:  
 .TP 2
 *
 The mail transport agent (Sendmail, Postfix, Qmail, MS Exchange, etc.) 
@@ -708,7 +710,7 @@ Should all MX records with a given priority number fail, the MTA will
 try sending email to any of the MX records with the second-lowest 
 priority value. 
 .PP
-As an aside, do not have MX records point to CNAMEs. 
+As an aside, do not have MX records point to CNAMEs.   
 .PP
 
 .in -3
@@ -733,7 +735,7 @@ corresponding SPF record, which will have the syntax example.net. SPF
 Use \(aq\\x7e\(aq to put a tilde ("~" character) in a SPF record: 
 .PP
 example.com. SPF \(aqv=spf1 +mx a:colo.example.com/28 
-\(aq\\x7e\(aqall\(aq 
+\(aq\\x7e\(aqall\(aq   
 .PP
 
 .in -3
@@ -755,7 +757,7 @@ www.google.com, and render the above record like this:
 
 .nf
 google.example.com. CNAME www.google.com. 
-www.google.com. A 66.102.7.104 
+	www.google.com. A 66.102.7.104 
 .fi
 .PP
 For security reasons, MaraDNS doesn\(aqt do this. Instead, MaraDNS will 
@@ -779,14 +781,14 @@ no_cname_warnings = 1
 .fi
 .PP
 Information about how to get MaraDNS to resolve dangling CNAME records 
-is in the tutorial file dangling.html 
+is in the tutorial file dangling.html   
 .PP
 
 .in -3
 \fB31. I have a NS delegation, and MaraDNS is doing strange things.\fR
 .PP
 This is only an issue in MaraDNS 1.4. MaraDNS 2.0 does not allow the 
-same IP to both authoritatively and recursively resolve records. 
+same IP to both authoritatively and recursively resolve records.   
 .PP
 
 .in -3
@@ -799,7 +801,7 @@ be between the SOA record and the first non-NS record.
 If a zone looks like this: 
 
 .nf
-example.net. +600 soa ns1.example.net. 
+example.net. +600 soa ns1.example.net.  
 hostmaster@example.net 10 10800 3600 604800 1080 
 example.net. +600 mx 10 mail.example.net. 
 example.net. +600 a 10.2.3.5 
@@ -814,7 +816,7 @@ Then the NS records will be "synth-ip" records.
 The zone should look like this: 
 
 .nf
-example.net. +600 soa ns1.example.net. 
+example.net. +600 soa ns1.example.net.  
 hostmaster@example.net 10 10800 3600 604800 1080 
 example.net. +600 ns ns1.example.net. 
 example.net. +600 ns ns3.example.net. 
@@ -837,7 +839,7 @@ END{print a}\(aq > zonefile.csv2
 
 Replace "whatever.zone.foo" with the name of the zone you are fetchin 
 10.1.2.3 with the IP address of the DNS master, and zonefile.csv2 with 
-the name of the zone file MaraDNS loads. 
+the name of the zone file MaraDNS loads.   
 .PP
 
 .in -3
@@ -849,7 +851,7 @@ change the root.hints file, add something like this to your dwood3rc
 file: 
 
 .nf
-root_servers["."] = "131.161.247.232," 
+root_servers["."] =  "131.161.247.232," 
 root_servers["."] += "208.185.249.250," 
 root_servers["."] += "66.227.42.140," 
 root_servers["."] += "66.227.42.149," 
@@ -858,7 +860,7 @@ root_servers["."] += "65.243.92.254"
 
 Note that there is no "+=" in the first line, and the last line does 
 not have a comma at the end. Read the recursive tutorial document for 
-more information. 
+more information.   
 .PP
 
 .in -3
@@ -867,7 +869,7 @@ more information.
 No. 
 .PP
 In more detail, MaraDNS does not use autoconf for the following 
-reasons: 
+reasons:  
 .TP 2
 *
 Autoconf is designed to solve a problem that existed in the mid 1990s 
@@ -886,14 +888,14 @@ is licensed under a BSD license that is
 GPL-compatible, so MaraDNS can not be distributed with these 
 GPL-licensed files. 
 .PP
-This leads us to the next question: 
+This leads us to the next question:   
 .PP
 
 .in -3
 \fB35. How do I change the compiler or compile-time flags with 
 MaraDNS\(aq build process?\fR
 .PP
-To change the compiler used by MaraDNS: 
+To change the compiler used by MaraDNS:  
 .TP 2
 *
 Run the ./configure script 
@@ -921,7 +923,7 @@ CC=gcc $(LDFLAGS) -DNO_FLOCK and you want to compile with gcc 2.96,
 change the line to look like CC=gcc296 $(LDFLAGS) -DNO_FLOCK retaining 
 the flags added by the configuration script. 
 .PP
-Changing compile-time flags is a similar process: 
+Changing compile-time flags is a similar process:  
 .TP 2
 *
 Run the ./configure script 
@@ -947,6 +949,7 @@ optimization level three, change this line to look like FLAGS=-O2 -Wall
 -DSELECT_PROBLEM for example, is needed in the Linux compile or MaraDNS 
 will have problems with freezing up. 
 .PP
+
 .PP
 
 .in -3
@@ -956,7 +959,7 @@ am using?\fR
 No. 
 .PP
 There is, however, a CentOS 5-compatible RPM spec file in the build 
-directory. 
+directory.   
 .PP
 
 .in -3
@@ -966,6 +969,7 @@ are not working.\fR
 Since Windows 32 does not have some features that *NIX OSes have, the 
 native Windows port does not have all of the features of the *NIX 
 version of MaraDNS. In particular, the following features are disabled: 
+ 
 .TP 2
 *
 ipv6 (this is actually a mingw32, not a Windows deficiency) 
@@ -988,7 +992,7 @@ There is no DNS-over-TCP support
 If any of the above features are desired, try compiling MaraDNS using 
 Cygwin. Note that the Cygwin port of MaraDNS does not have ipv6 
 support, and that while chroot_dir works in Cygwin, it does not have 
-the security that the *NIX chroot() call has. 
+the security that the *NIX chroot() call has.   
 .PP
 
 .in -3
@@ -999,7 +1003,7 @@ another MaraDNS process already running. To see what is happening, look
 at your system log (/var/log/messages in Centos 3) to see what errors 
 MaraDNS reports. If you do not know how to look at a system log, you 
 can also invoke MaraDNS from the command line as root; any errors will 
-be visible when starting MaraDNS. 
+be visible when starting MaraDNS.   
 .PP
 
 .in -3
@@ -1014,21 +1018,21 @@ Since MaraDNS is finished, updates usually only happen about once a
 year. 
 .PP
 The last security bug which required a MaraDNS update was made before 
-September 28, 2015. 
+September 28, 2015.   
 .PP
 
 .in -3
 \fB40. I have star records in my zones, and am having problems with 
 NXDOMAINs/IPV6 resolution\fR
 .PP
-This was a bug in MaraDNS 1.2 which has long since been fixed. 
+This was a bug in MaraDNS 1.2 which has long since been fixed.   
 .PP
 
 .in -3
 \fB41. I have a zone with only SOA/NS records, and the zone is not working.\fR
 .PP
 MaraDNS 1.2 had a bug where it did not correctly process zones without 
-any "normal" records. Upgrade to MaraDNS 2.0. 
+any "normal" records. Upgrade to MaraDNS 2.0.   
 .PP
 
 .in -3
@@ -1038,7 +1042,7 @@ registrar for .fr domains)\fR
 Because of an issue with AFNIC (who, annoyingly enough, check the RA 
 bit when registering a domain), in order to register a domain with 
 AFNIC using MaraDNS as your DNS server, the following steps need to be 
-followed: 
+followed:  
 .TP 2
 *
 MaraDNS version 1.4 or 2.0 needs to be used; if you\(aqre using an 
@@ -1061,7 +1065,7 @@ Note also: AFNIC gives warnings about reverse DNS lookups; more
 information about this issue can be found in the FAQ entry about 
 reverse DNS mappings (question 7). In addition, AFNIC requires 
 DNS-over-TCP to work; information on configuring MaraDNS to have this 
-can be found in the DNS-over-TCP tutorial. 
+can be found in the DNS-over-TCP tutorial.   
 .PP
 
 .in -3
@@ -1070,7 +1074,7 @@ can be found in the DNS-over-TCP tutorial.
 To have the subdomains be visible to MaraDNS 1.4 recursive nameservers, 
 add the following to your mararc file: 
 .PP
-recurse_delegation = 1 
+recurse_delegation = 1   
 .PP
 
 .in -3
@@ -1101,14 +1105,14 @@ resolver.
 .PP
 There was a known bug in MaraDNS 1.2.12 where, should a client ask for 
 a non-existent record in all caps, MaraDNS 1.2.12 will return a 
-NXDOMAIN instead of a "not there" reply. Upgrade to 2.0. 
+NXDOMAIN instead of a "not there" reply. Upgrade to 2.0.   
 .PP
 
 .in -3
 \fB46. Can MaraDNS offer protection from phishing and malicious sites?\fR
 .PP
 Deadwood can block up to about 20,000 domains. More details are in the 
-Deadwood FAQ. 
+Deadwood FAQ.   
 .PP
 
 .in -3
@@ -1125,7 +1129,7 @@ have the IP 10.1.2.3, add this line to the zone file for example.com:
 .PP
 To have stars at the end of records, csv2_default_zonefile has to be 
 set. The mararc parameter bind_star_handling affects how star records 
-are handled. More information is in the mararc man page. 
+are handled. More information is in the mararc man page.   
 .PP
 
 .in -3
@@ -1146,7 +1150,7 @@ reject_aaaa = 1
 If knowing the hostname a given IP has isn\(aqt important, these kinds 
 of lookups can also be disabled: 
 .PP
-reject_ptr = 1 
+reject_ptr = 1   
 .PP
 
 .in -3
@@ -1164,7 +1168,7 @@ scanner has not reported a false positive.
 If you have verified the GPG signature of the program and AVG reports a 
 virus, please let us know with a Github issue. Otherwise, please use a 
 better virus scanner and make sure there are no viruses on your 
-computer. 
+computer.   
 .PP
 
 .in -3
@@ -1174,7 +1178,7 @@ computer.
 MaraDNS support requests. Please file a Github issue at 
 https://github.com/samboy/MaraDNS/issues to file a MaraDNS bug report."
 .PP
-The procedure for subscribing to the mailing list is as follows: 
+The procedure for subscribing to the mailing list is as follows:  
 .TP 2
 *
 Send an email to list-request@maradns.org with "Subscribe" as the 
@@ -1207,7 +1211,7 @@ for a confirmation, ensure that this email is not in your "spam" or
 "junk mail" folder. If you are unable to get these emails at your email 
 address, please get a gmail email account, which can successfully 
 subscribe to the MaraDNS mailing list. Note that subscription 
-confirmation emails may be in Gmail\(aqs "promotions" tab. 
+confirmation emails may be in Gmail\(aqs "promotions" tab.   
 .PP
 
 .in -3
@@ -1223,14 +1227,14 @@ giving back "NOTIMPL" instead of answering the query with the default
 IP. NanoDNS, in the interest of minimizing code side, responds to EDNS 
 requests by returning NOTIMPL in the header, giving the OPT query in 
 the AN section of the response, and giving the default IP in the AR 
-section of the DNS reply packet. 
+section of the DNS reply packet.   
 .PP
 
 .in -3
 \fB52. How to I get MaraDNS to always give the same IP to all DNS queries?\fR
 .PP
 There are three ways to have MaraDNS always give the same IP in reply 
-to any DNS query given to it: 
+to any DNS query given to it:  
 .TP 2
 *
 The best way to do this is to set up a default zonefile that causes any 
@@ -1268,7 +1272,7 @@ d.sin_port=htons(53);bind(a,(Z*)&amp;d,Y);for(;;){i
 .fi
 
 NanoDNS takes one argument: The IP we return. This program binds to all 
-IP addresses a given machine has on the UDP DNS port (port 53). For 
+ IP addresses a given machine has on the UDP DNS port (port 53).  For 
 example, to make a DNS server that binds to all IPs your system has and 
 return the IP 10.11.12.13 to any UDP DNS queries sent to it, compile 
 the above C program, call it NanoDNS, and invoke it with NanoDNS 
@@ -1303,31 +1307,31 @@ queries every four seconds:
 iptables -A INPUT -p udp --dport 53 -m state --state NEW -m recent 
 --set --name DDOS --rsource
 .br
- 
+
 .PP
 iptables -A INPUT -p udp --dport 53 -m state --state NEW -m recent 
 --update --seconds 4 --hitcount 20 --name DDOS --rsource -j DROP
 .br
- 
+
 .PP
 To verify they are applied: 
 .PP
 iptables --list
 .br
- 
+
 .PP
 To save these commands in CentOS so they are applied at system boot 
 time: 
 .PP
 iptables-save &gt; /etc/sysconfig/iptables
 .br
- 
+
 .PP
 .I "Disclaimer"
 .PP
 These incantations work in CentOS 6 but may or may not work in other 
 versions of Linux. I do not support non-CentOS6 Linux installs of 
-MaraDNS. 
+MaraDNS.   
 .PP
 
 .in -3
@@ -1342,7 +1346,7 @@ section 6.1.3.2 of RFC1123; any program or web service that considers
 no DNS-over-TCP an error is not RFC-compliant. 
 .PP
 Not having DNS-over-TCP is more secure, because it gives attackers a 
-smaller surface to attack. 
+smaller surface to attack.   
 .PP
 
 .in -3
@@ -1357,7 +1361,7 @@ which people are free to use.
 .PP
 As an aside, I do not like the fact that Debian will probably not make 
 systemd the default init; I do not think this kind of fragmentation is 
-good for Linux. 
+good for Linux.   
 .PP
 
 .in -3
@@ -1372,13 +1376,13 @@ When I say that Windows 7 and CentOS 6 are the only supported operating
 systems for MaraDNS, this does not mean that MaraDNS will not compile 
 and run on other systems; it merely means that I can not provide 
 support for Github bug reports for people who want to run MaraDNS in 
-Minix, one of the open-source BSD variants, or what not. 
+Minix, one of the open-source BSD variants, or what not.   
 .PP
 
 .in -3
 \fBIs there a web interface for MaraDNS?\fR
 .PP
-The Kloxo-MR control panel has MaraDNS support. 
+The Kloxo-MR control panel has MaraDNS support.   
 .PP
 
 .in -3
@@ -1392,7 +1396,7 @@ an error with a note to not forget the trailing dot.
 .PP
 To fix this, put a trailing dot at the end of the hostname, so it looks 
 like “foo.example.com.” (observe that dot at the end) instead of 
-“foo.example.com” 
+“foo.example.com”   
 .PP
 
 .in -3
@@ -1405,7 +1409,7 @@ level domains like “today.”
 Note that, if using an internationalized domain name, it needs to be 
 translated in to Punycode first. For example, if using the domain name 
 “ñ.com.”, it needs to be in the form “xn--ida.com.” in MaraDNS’ mararc 
-and zone files. 
+and zone files.   
 .PP
 
 .in -3
@@ -1555,5 +1559,5 @@ I also appreciate the work of Dr. Brian Gladman and Fritz Schneider,
 who have both written independent implementations of AES from which I 
 obtained test vectors. With the help of their hard work, I was able to 
 discover a subtle security problem that previous releases of MaraDNS 
-had. 
+had.  
 

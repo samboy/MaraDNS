@@ -20,7 +20,7 @@
 .ds aq \(aq
 .if !\n(.g .if '\(aq'' .ds aq \'
 
- 
+  
 .SH "NAME"
 .PP
 duende - run a child process as a daemon 
@@ -93,7 +93,7 @@ invoke duende with something like:
 
 .nf
 export PATH=$PATH:/usr/local/sbin 
-duende maradns 
+	duende maradns 
 .fi
 
 This will log messages with a (more sensible) "ident" of maradns. 
@@ -130,7 +130,7 @@ TERM signal.
 .B "syslog(3)"
 
 .br
- http://www.maradns.org 
+http://www.maradns.org 
 .SH "LEGAL DISCLAIMER"
 .PP
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS \(aq\(aqAS IS\(aq\(aq AND ANY 
@@ -149,5 +149,5 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Duende and this man page are written by Sam Trenholme. D Richard Felker 
 III provided some invaluable assistance with the piping code which 
 .B "duende"
-uses. 
+uses.  
 
