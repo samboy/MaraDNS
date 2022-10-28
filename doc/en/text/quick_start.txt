@@ -26,8 +26,8 @@ To try out Deadwood as a recursive nameserver:
 Here is a sample dwood3rc file:
 
 ipv4_bind_addresses = "127.0.0.1" 
- chroot_dir = "/etc/maradns" 
- recursive_acl = "127.0.0.1"
+	chroot_dir = "/etc/maradns" 
+	recursive_acl = "127.0.0.1"
 
 This dwood3rc file says that MaraDNS will have the ip 
 "127.0.0.1" (this is the bind_address), run from the directory 
@@ -72,14 +72,12 @@ name server:
 * Here is the MaraRC file:
 
 ipv4_bind_addresses = "127.0.0.1" 
- chroot_dir = "/etc/maradns" 
- csv2 = {} 
- csv2["example.com."] = "db.example.com"
+	chroot_dir = "/etc/maradns" 
+	csv2 = {} 
+	csv2["example.com."] = "db.example.com"
 
-* Have a zone file named db.example.com in the
-
- chroot_dir (/etc/maradns above) that looks like 
-this:
+* Have a zone file named db.example.com in the chroot_dir 
+  (/etc/maradns above) that looks like this:
 
 example.com. 10.1.2.3
 
@@ -87,14 +85,10 @@ example.com. 10.1.2.3
 any other kind of DNS data stored in a csv2 zone file. Read the csv2 
 man page for details) 
 
-* Queries for
+* Queries for example.com will resolve to 10.1.2.3
 
- example.com will resolve to 10.1.2.3 
-
-* Any other
-
- name.example.com query will return a "this host does not 
-exist" DNS reply. 
+* Any other name.example.com query will return a "this host does not 
+  exist" DNS reply.
 
 Look in doc (in particular, the tutorial), or read the relevant man 
 pages for more information on how to set up Deadwood and MaraDNS.

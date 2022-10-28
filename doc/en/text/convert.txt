@@ -11,9 +11,7 @@ MaraDNS is as follows:
 * Configure the other DNS server to allow the IP of the machine which 
   will run MaraDNS to perform zone transfers.
 
-* Use the
-
- fetchzone client to transfer the zones over. 
+* Use the fetchzone client to transfer the zones over.
 
 Assuming that one needs to transfer the zones for example.com, 
 maradns.org, and heaven.af.mil over, the procedure would be as follows: 

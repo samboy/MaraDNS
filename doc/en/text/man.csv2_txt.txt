@@ -152,8 +152,8 @@ Without affecting this resource record, the same data can be
 split over multiple lines:
 
 j.example.com. TXT 'Not only did the quick brown fox jump '\ 
- 'over the lazy dog, but the lazy dog'\ 
- ' jumped over the cat.' ~
+                   'over the lazy dog, but the lazy dog'\ 
+                   ' jumped over the cat.' ~
 
 Some points: 
 
@@ -170,8 +170,8 @@ Some points:
 It is also possible to add comments after such a backslash as follows:
 
 k.example.com. TXT 'Not only did the quick brown fox jump '\ # The fox 
- 'over the lazy dog, but the lazy dog'\ # The dog 
- ' jumped over the cat.' ~ # The cat
+                   'over the lazy dog, but the lazy dog'\    # The dog 
+                   ' jumped over the cat.' ~                 # The cat
 
 Note that, since the third comment is not preceded by a 
 backslash, this indicates the end of the resource record. 
@@ -182,9 +182,9 @@ optionally, even blank lines) in the middle of TXT and RAW record data:
 k2.example.com. TXT 'This is some data '\ 
 # Here we have some comments followed by a blank line 
  
-# Now we have some more comments, 
+# Now we have some more comments,  
 # followed by the rest of the data 
- 'and this is the rest of the data' ~
+    'and this is the rest of the data' ~
 
 ==MULTIPLE TXT CHUNKS==
 
@@ -201,9 +201,9 @@ p.example.com. TXT 'This is chunk one';'This is chunk two' ~
 
 Or:
 
-q.example.com. TXT 'This is chunk one';\ # Our first chunk 
- This_is_chunk_two;\ # Our second chunk 
- 'This is chunk three' ~ # Our final chunk
+q.example.com. TXT 'This is chunk one';\   # Our first chunk 
+                    This_is_chunk_two;\    # Our second chunk 
+                   'This is chunk three' ~ # Our final chunk
 
 Quoted ; characters simply add a ; to the record data. 
 
@@ -245,12 +245,12 @@ t.example.com. RAW 40 \020\001\002Kitchen' sink+ data' ~
 u.example.com. RAW 40 \x10\x01\x02Kitchen\x20sink+\x20data ~
 
 v.example.com. RAW 40 \x10\001\x02\ 
- 'Kitchen sink+ data' ~
+                      'Kitchen sink+ data' ~
 
 w.example.com. RAW 40 \x10\ # Meaning: 16 
- \x01\ # Coding: 1 
- \x02\ # Sub-coding: 2 
- 'Kitchen sink+ data' ~ # Data: 'Kitchen sink+ data'
+                      \x01\ # Coding: 1 
+                      \x02\ # Sub-coding: 2 
+                      'Kitchen sink+ data' ~ # Data: 'Kitchen sink+ data'
 
 ==DKIM RECORDS==
 
@@ -260,30 +260,30 @@ MaraDNS can store a 2048-bit RSA DKIM key. Longer keys are not
 supported because of the 512-byte limit for traditional DNS packets. 
 
 A DKIM record is a long “multi chunk” TXT record; DKIM records are 
-stored in a special _domainkey.example.com record. As per 
-RFC6376 section 3.6.2.2, “Strings in a TXT RR MUST be concatenated 
-together before use with no intervening whitespace”; a single TXT 
-“chunk” can only be up to 255 bytes in length, but we need more than 
-255 bytes to store a 2048 bit RSA key (6 bits per character, so we need 
-342 characters to store just the key) and a little more overhead to 
-store the other bits in our DKIM record. But, it doesn’t matter where 
-we split the chunks as long as each individual chunk is under 256 bytes 
-in size. 
+stored in a special _domainkey.example.com record. As per RFC6376 
+section 3.6.2.2, “Strings in a TXT RR MUST be concatenated together 
+before use with no intervening whitespace”; a single TXT “chunk” can 
+only be up to 255 bytes in length, but we need more than 255 bytes to 
+store a 2048 bit RSA key (6 bits per character, so we need 342 
+characters to store just the key) and a little more overhead to store 
+the other bits in our DKIM record. But, it doesn’t matter where we 
+split the chunks as long as each individual chunk is under 256 bytes in 
+size. 
 
 Here is a real-world DKIM key stored in a MaraDNS zone file:
 
-x._domainkey.% +600 TXT 'v=DKIM1; k=rsa; '\ 
-'p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCg'\ 
-'KCAQEAuhKjx2Aepa3rllxUEZLgF3x'\ 
-'68SWvZ8pEgnjZvxtqp94Vkra3AUC4C8dRLKf5SvT'\ 
-'xFtIl6pF27jn+M/w2MzYwPFjBgqVf'\ 
-'p2lf7xuKsrus63m0T9Sq958nIt1yuUlLDr71bFs7'\ 
-'ZuZyQid0ciCc2JF5lwHno10cAvuNJ';'y1Q'\ 
-'tFJa+lRJI6/kzY20Hi/ZTzFzctqgqaRZnSoJlTZHf'\ 
-'Oy0uwfmF5ejkJ8xvHbEJp6TEc'\ 
-'30DwsqrjVWSFLnUWYBv7lrAPB9sAHN7fCayhEuORn'\ 
-'Ap+YUhjjMPWyPla1pvTS9h/LTE7g'\ 
-'2d+jR/zOkRpV2Ak/4KpeP9dpsRJEOsPEaWGG1pQXgPw'\ 
+x._domainkey.% +600 TXT 'v=DKIM1; k=rsa; '\   
+'p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCg'\   
+'KCAQEAuhKjx2Aepa3rllxUEZLgF3x'\   
+'68SWvZ8pEgnjZvxtqp94Vkra3AUC4C8dRLKf5SvT'\   
+'xFtIl6pF27jn+M/w2MzYwPFjBgqVf'\   
+'p2lf7xuKsrus63m0T9Sq958nIt1yuUlLDr71bFs7'\   
+'ZuZyQid0ciCc2JF5lwHno10cAvuNJ';'y1Q'\   
+'tFJa+lRJI6/kzY20Hi/ZTzFzctqgqaRZnSoJlTZHf'\    
+'Oy0uwfmF5ejkJ8xvHbEJp6TEc'\   
+'30DwsqrjVWSFLnUWYBv7lrAPB9sAHN7fCayhEuORn'\   
+'Ap+YUhjjMPWyPla1pvTS9h/LTE7g'\   
+'2d+jR/zOkRpV2Ak/4KpeP9dpsRJEOsPEaWGG1pQXgPw'\  
 'IDAQAB'
 
 ===LEGAL DISCLAIMER===

@@ -17,17 +17,13 @@ CentOS Linux version has.
 
 * Obtain MaraDNS from www.maradns.org
 
-g 
-
 * Extract the MaraDNS tarball:
 
 bzip2 -cd maradns-*.tar.bz2 | tar xvf - 
 * Enter the directory that the above extraction generated.
 
-* Compile MaraDNS. Type in
-
- ./configure followed by make in the top-level 
-MaraDNS directory. 
+* Compile MaraDNS. Type in ./configure followed by make in the 
+  top-level MaraDNS directory.
 
 * Install the MaraDNS package. As root:
 

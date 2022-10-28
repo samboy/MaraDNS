@@ -8,16 +8,13 @@ appear:
 
 * When a CNAME points to an external host name.
 
-. 
+* When a CNAME is misspelled or the host the CNAME points to is 
+  misspelled
 
-* When a CNAME is misspelled or the host the CNAME points to is misspelled
-
-d 
-
-CNAMEs pointing to external host names  Sometimes, people 
-may wish to have local names point to external entries with CNAME 
-records. For example, it may be desirable to have the shortcut "google" 
-for "www.google.com". One way one may wish to do this is as follows:
+CNAMEs pointing to external host names  Sometimes, people may 
+wish to have local names point to external entries with CNAME records. 
+For example, it may be desirable to have the shortcut "google" for 
+"www.google.com". One way one may wish to do this is as follows:
 
 google.example.com. +86400 CNAME www.google.com.
 
@@ -26,7 +23,7 @@ other words, some people may expect Mara to output the following for
 "google.example.com":
 
 google.example.com. +86400 CNAME www.google.com. 
- www.google.com. +900 A 66.102.7.104
+	www.google.com. +900 A 66.102.7.104
 
 Instead, Mara simply outputs:
 
@@ -93,8 +90,8 @@ a mararc file:
 
 no_cname_warnings = 1
 
-A typo can cause a dangling CNAME record  A typo 
-can also cause a dangling CNAME record. E.g:
+A typo can cause a dangling CNAME record  A typo can 
+also cause a dangling CNAME record. E.g:
 
 www.example.com. CNAME hoost1.example.com. 
 host1.example.com. A 10.1.2.3

@@ -58,7 +58,7 @@ $ export PATH=$PATH:/sbin:/usr/sbin:/usr/local/sbin
 
 This gives us access to commands like ifconfig and what not.
 
- $ su
+$ su
  Password: type in your root password here
 
 $ ifconfig lo 127.0.0.1 
@@ -76,12 +76,12 @@ MaraDNS should have been stopped
 Starting all maradns processes 
 Starting maradns process which uses Mararc file /etc/mararc
 
-If /etc/rc.d/init.d/maradns restart doesn't generate 
-the above output, this indicates that either MaraDNS was not correctly 
-installed, or that you are using MaraDNS on another Linux/*NIX 
-distribution. If you're not using CentOS or Red Hat Enterprise Linux, 
-replace this command with the appropriate command for restarting a 
-daemon/service for your operating system. 
+If /etc/rc.d/init.d/maradns restart doesn't generate the above 
+output, this indicates that either MaraDNS was not correctly installed, 
+or that you are using MaraDNS on another Linux/*NIX distribution. If 
+you're not using CentOS or Red Hat Enterprise Linux, replace this 
+command with the appropriate command for restarting a daemon/service 
+for your operating system. 
 
 Now, the dhclient that CentOS 3.8 comes with is buggy, and breaks lo 
 (the loopback interface which gives CentOS the 127.0.0.1 IP address). 
@@ -145,17 +145,17 @@ $ ps auxw | grep maradns
 
 If MaraDNS is running, the output will look like this:
 
-root 2023 0.0 0.0 1516 304 pts/1 S 11:46 0:00 /usr/bin/duende 
+root      2023  0.0  0.0  1516  304 pts/1    S    11:46   0:00 /usr/bin/duende  
 /usr/sbin/maradns -f /etc/mararc 
-nobody 2024 0.3 0.1 1748 596 pts/1 S 11:46 0:00 /usr/sbin/maradns 
+nobody    2024  0.3  0.1  1748  596 pts/1    S    11:46   0:00 /usr/sbin/maradns 
  -f /etc/mararc 
-#66 2025 0.0 0.0 1520 440 pts/1 S 11:46 0:00 /usr/bin/duende 
+#66       2025  0.0  0.0  1520  440 pts/1    S    11:46   0:00 /usr/bin/duende  
 /usr/sbin/maradns -f /etc/mararc 
-user 2027 0.0 0.1 3720 700 pts/1 S 11:46 0:00 grep maradns
+user      2027  0.0  0.1  3720  700 pts/1    S    11:46   0:00 grep maradns
 
 If MaraDNS is not running, the output will look like this:
 
-user 1983 0.0 0.1 3728 696 pts/1 S 11:45 0:00 grep maradns
+user      1983  0.0  0.1  3728  696 pts/1    S    11:45   0:00 grep maradns
 
 If MaraDNS is not running, there may be a message in the log files 
 indicating why MaraDNS failed when you tried to start MaraDNS. Look at 

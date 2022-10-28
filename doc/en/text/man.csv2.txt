@@ -60,9 +60,9 @@ An A record stores an ipv4 address. This is the default record type
 should the record type not be specified. The record type has one field 
 in it: the IP for the record. Examples:
 
-a.example.net. 10.11.12.13 ~ 
-b.example.net. A 10.11.12.14 ~ 
-c.example.net. +64000 A 10.11.12.15 ~
+a.example.net.              10.11.12.13 ~ 
+b.example.net.        A     10.11.12.14 ~ 
+c.example.net. +64000 A     10.11.12.15 ~
 
 ==PTR==
 
@@ -70,9 +70,9 @@ A PTR record stores the name for a given ipv4 or ipv6 address, and is
 used for reverse DNS lookups. This record type has one field in it: The 
 name for the record in question. Examples:
 
-13.12.11.10.in-addr.arpa. PTR a.example.net. ~ 
-14.12.11.10.in-addr.arpa. PTR b.example.net. ~ 
-15.12.11.10.in-addr.arpa. +64000 PTR c.example.net. ~
+13.12.11.10.in-addr.arpa.        PTR    a.example.net. ~ 
+14.12.11.10.in-addr.arpa.        PTR    b.example.net. ~ 
+15.12.11.10.in-addr.arpa. +64000 PTR    c.example.net. ~
 
 ==MX==
 
@@ -83,8 +83,8 @@ numbers get higher priority), and the name of the mail exchanger.
 Example of mail for example.net being mailed to mail.example.net, which 
 has the IP "10.11.12.16":
 
-example.net. MX 10 mail.example.net. ~ 
-mail.example.net. 10.11.12.16 ~
+example.net.      MX   10 mail.example.net. ~ 
+mail.example.net.      10.11.12.16 ~
 
 ==AAAA==
 
@@ -94,7 +94,7 @@ numbers are separated by colons. Two colons together indicate multiple
 streams of all-zero hex numbers. This record has only one field, the v6 
 IP. Example:
 
-a.example.net. AAAA 2001:db8:dec:ade::f ~
+a.example.net.   AAAA    2001:db8:dec:ade::f ~
 
 ==SRV==
 
@@ -125,8 +125,8 @@ not present, MaraDNS will make an educated guess of that NS records
 should be there, based on the IPs the MaraDNS process is bound to. This 
 record has one field: The name of the name server machine. Example:
 
-example.net. NS ns1.example.net. ~ 
-example.net. NS ns2.example.net. ~
+example.net.    NS    ns1.example.net. ~ 
+example.net.    NS    ns2.example.net. ~
 
 ==SOA==
 
@@ -261,7 +261,7 @@ creates both a "forward" and "reverse" DNS record for a given host
 name. For example, one may have:
 
 x.example.net. AAAA 2001:db8:dec:ade::b:c:d ~ 
-d.0.0.0.c.0.0.0.b.0.0.0.0.0.0.0.e.d.a.0.c.e.d.0.8.b.d.0.1.0.0.2 PTR 
+d.0.0.0.c.0.0.0.b.0.0.0.0.0.0.0.e.d.a.0.c.e.d.0.8.b.d.0.1.0.0.2 PTR  
 x.example.net. ~
 
 But the above two lines in a zone file can also be represented 
@@ -450,13 +450,13 @@ example.com. RAW 257 \x00\x05'issueletsencrypt.org' ~
 
 MaraDNS has support for star records in zone files:
 
-*.example.net. A 10.11.12.13 ~
+*.example.net.  A		10.11.12.13 ~
 
 In this example, anything.example.net will have the IP 
 10.11.12.13. Note that this does not set the ip for "example.net", 
 which needs a separate record:
 
-example.net. A 10.11.12.13 ~
+example.net.  A                 10.11.12.13 ~
 
 Note also that stars must be at the beginining of a name; to 
 have stars at the end of a name, use the csv2_default_zonefile feature 
@@ -471,7 +471,7 @@ For example, in the zone for example.net. (e.g. one's mararc file has
 csv2["example.net."] = "db.example.net", and we are editing the 
 "db.example.net" file):
 
-www.% A 10.10.10.10 ~
+www.%	A	10.10.10.10 ~
 
 This will cause "www.example.net" to have the ip 10.10.10.10. 
 
@@ -505,13 +505,13 @@ used the '/ttl' slash command), b.ttl.example.com and d.ttl.example.com
 will have a TTL of 3600 seconds, c.ttl.example.com will have a TTL of 
 9600 seconds, and e.ttl.example.com will have a TTL of 7200 seconds:
 
-a.ttl.example.com. 10.0.0.1 ~ 
+a.ttl.example.com.       10.0.0.1 ~ 
 /ttl 3600 ~ 
-b.ttl.example.com. 10.0.0.2 ~ 
+b.ttl.example.com.       10.0.0.2 ~ 
 c.ttl.example.com. +9600 10.0.0.3 ~ 
-d.ttl.example.com. 10.0.0.4 ~ 
+d.ttl.example.com.       10.0.0.4 ~ 
 /ttl 7200 ~ 
-e.ttl.example.com. 10.0.0.5 ~
+e.ttl.example.com.       10.0.0.5 ~
 
 ==Origin==
 
@@ -622,9 +622,9 @@ And the file foo looks like this:
 
 Then the following records will be created:
 
-foo.example.com. TXT 'Foomatic!' ~ 
-foo.example.com. A 10.1.2.3 ~ 
-mail.foo.example.com. A 10.3.2.1 ~ 
+foo.example.com.      TXT   'Foomatic!' ~ 
+foo.example.com.      A     10.1.2.3 ~ 
+mail.foo.example.com. A     10.3.2.1 ~ 
 mail.foo.example.com. MX 10 mail.foo.example.com. ~
 
 To have something that works like '$INCLUDE filename' in a 
@@ -650,53 +650,53 @@ neworigin':
 # The SOA record needs to be the first record in the zone if provided 
 # This is a commented out record and disabled. 
  
-#% SOA % email@% 1 7200 3600 604800 1800 ~ 
+#% 	SOA	% email@% 1 7200 3600 604800 1800 ~ 
  
 # Second of all, csv2 zone files do not need authoritative NS records. 
 # If they aren't there, MaraDNS will synthesize them, based on the IP 
-# addresses MaraDNS is bound to. (She's pretty smart about this; if 
+# addresses MaraDNS is bound to.  (She's pretty smart about this; if 
 # Mara is bound to both public and private IPs, only the public IPs will 
 # be synthesized as NS records)
 
-#% NS a.% ~ 
-#% NS b.% ~ 
+#% 	NS 	a.% ~ 
+#%	NS	b.% ~ 
  
 # Here are some A (ipv4 address) records; since this is the most 
 # common field, the zone file format allows a compact representation 
 # of it. 
-a.example.net. 10.10.10.10 ~ 
+a.example.net. 	10.10.10.10 ~ 
 # Here, you can see that a single name, "b.example.net." has multiple IPs 
 # This can be used as a primitive form of load balancing; MaraDNS will 
 # rotate the IPs so that first IP seen by a DNS client changes every time 
 # a query for "b.example.net." is made 
-b.example.net. 10.10.10.11 ~ 
-b.example.net. 10.10.10.12 ~ 
+b.example.net.  10.10.10.11 ~ 
+b.example.net.  10.10.10.12 ~ 
  
 # We can have the label in either case; it makes no difference 
-Z.EXAMPLE.NET. 10.2.3.4 ~ 
-Y.EXAMPLE.net. 10.3.4.5 ~ 
+Z.EXAMPLE.NET. 	10.2.3.4 ~ 
+Y.EXAMPLE.net.  10.3.4.5 ~ 
  
-# We can use the percent shortcut. When the percent shortcut is present, 
+# We can use the percent shortcut.  When the percent shortcut is present, 
 # it indicates that the name in question should terminate with the name 
 # of the zone we are processing. 
-percent.% a 10.9.8.7 ~ 
+percent.%	a 		10.9.8.7 ~ 
  
 # And we can have star records 
-#*.example.net. A 10.11.12.13 ~ 
+#*.example.net.  A		10.11.12.13 ~ 
  
 # We can have a ttl in a record; however the ttl needs a '+' before it: 
 # Note that the ttl has to be in seconds, and is before the RTYPE 
 d.example.net. +86400 A 10.11.12.13 ~ 
  
 f.example.net. # As you can see, records can span multiple lines 
- A 10.2.19.83 ~ 
+        	A 	10.2.19.83 ~ 
  
 # This allows well-commented records, like this: 
-c.example.net. # Our C class machine 
- +86400 # This record is stored for one day 
- A # A record 
- 10.1.1.1 # Where we are 
- ~ # End of record 
+c.example.net. 		# Our C class machine 
+        +86400  	# This record is stored for one day 
+        A       	# A record 
+        10.1.1.1 	# Where we are  
+        ~               # End of record 
  
 # We can even have something similar to csv1 if we want... 
 e.example.net.|+86400|a|10.2.3.4|~ 
@@ -712,17 +712,17 @@ g.example.net.|+86400|10.11.9.8|~
 mail.% +86400 IN A 10.22.23.24 ~ 
  
 # We even have a bit of ipv6 support 
-a.example.net. aaaa 2001:db8:1:2::3:f ~ 
+a.example.net. 		aaaa 	2001:db8:1:2::3:f ~ 
  
 # Not to mention support for SRV records 
-_http._tcp.% srv 0 0 80 a.% ~ 
+_http._tcp.%    srv   0 0 80 a.% ~ 
  
 # TXT records, naturally 
-example.net. txt 'This is some text' ~ 
+example.net.    txt 'This is some text' ~ 
  
 # Starting with MaraDNS 1.2.08, there is also support for SPF records, 
-# which are identical to TXT records. See RFC4408 for more details. 
-example.net. spf 'v=spf1 +mx a:colo.example.com/28 -all' ~
+# which are identical to TXT records.  See RFC4408 for more details. 
+example.net.    spf 'v=spf1 +mx a:colo.example.com/28 -all' ~
 
 ===LEGAL DISCLAIMER===
 

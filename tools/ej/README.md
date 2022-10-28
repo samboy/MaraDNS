@@ -49,7 +49,6 @@ UL: Start a bulleted list; terminated by /UL
 LI: Bulleted list item 
 
 PRE: Unformatted text follows; this tag is terminated by /PRE
-     PRE blocks must not have leading whitespace in them
 
 NB: The next word should not be broken if there is a hyphen in the word
     (Not currently supported; to do)

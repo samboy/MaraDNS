@@ -27,23 +27,23 @@ bounds of the array. For example, this code violates MaraDNS coding
 styles:
 
 c = &some_array; 
- while(*c != 0) { 
- if(*c > 'A' && *c < 'Z') 
- *c += 32; 
- c++; 
- }
+	while(*c != 0) { 
+		if(*c > 'A' && *c < 'Z')  
+			*c += 32;	 
+		c++; 
+	}
 
 In order for this kind of code to be accepted in to MaraDNS 
 code, it must be revised to look like this:
 
 c = &some_array; 
- limit = size_of_array; 
- while(*c != 0 && limit > 0) { 
- if(*c > 'A' && *c < 'Z') 
- *c += 32; 
- c++; 
- limit--; 
- }
+	limit = size_of_array; 
+	while(*c != 0 && limit > 0) { 
+		if(*c > 'A' && *c < 'Z')  
+			*c += 32;	 
+		c++; 
+		limit--; 
+	}
 
 ==All arrays must be at least one byte bigger than they should be==
 
@@ -132,10 +132,10 @@ new code to MaraDNS, keep this in mind:
 Here is the bracing and tab style for new code in MaraDNS:
 
 int main() { 
- int a; 
- for(a = 0; a < 100; a++ ) { 
- printf("a is %c\n",a); 
- } 
+	int a; 
+	for(a = 0; a < 100; a++ ) { 
+		printf("a is %c\n",a); 
+	} 
 }
 
 ==Licensing and copyright issues==

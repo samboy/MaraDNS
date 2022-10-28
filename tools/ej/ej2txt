@@ -168,7 +168,6 @@ while l do
     inInclude = true
   end
 
-  l = l:gsub("%s+"," ")
   out = out .. l .. " "
   if l:find(mc("<pre>")) then
     inPre = true
@@ -177,6 +176,9 @@ while l do
   end
   if inPre then 
     out = out .. "\n"
+  else
+    l = l:gsub("%s+"," ")
+    l = l:gsub("^ ","")
   end
   l = io.read()
 
@@ -188,8 +190,29 @@ while l do
   end
 
 end
-out = out:gsub(" +"," ")
 -- Step two: Now that the file is a single line, process EJ (HTML) tags
+
+-- Collapse white space except in <pre> blocks
+start = out:find(mc("<pre>"))
+lastEnd = 1
+while start do
+  local top = ""
+  if lastEnd > 1 then top = out:sub(1,lastEnd-1) end
+  local toAlter = out:sub(lastEnd,start - 1)
+  local initial = top:len()
+  toAlter = toAlter:gsub("%s+"," ")
+  local offset = top:len() - initial
+  local preend = out:find(mc("</pre>"),start + 1)
+  local mid = out:sub(start,preend)
+  local tail = out:sub(preend + 1)
+  out = top .. toAlter .. mid .. tail
+  lastEnd = preend
+  start = out:find(mc("<pre>"),preend + offset)
+end
+local top = out:sub(1,lastEnd)
+local tail = out:sub(lastEnd + 1)
+tail = tail:gsub("%s+"," ")
+out = top .. tail
 
 if out:find(mc("<nofmt>.*<body>")) then NoFmt = true end
 out = out:gsub("<!%-%-[^>]*%-%->","") -- Remove HTML comments
@@ -252,6 +275,7 @@ local tail = out:sub(lastEnd + 1)
 tail = fmt(tail)
 out = top .. tail
 
+out = out:gsub(mc("<pre>[ \t]*\n"),"<pre>\n") -- Fix up <pre>
 out = out:gsub(mc("</?pre>%s*"),"\n\n") -- Space before and after code blocks
 out = out:gsub("</?%w+%s*>","") -- Remove all other EJ tags
 out = out:gsub("^%s*","") -- Remove whitespace at document top

@@ -19,8 +19,7 @@ spawning the daemonized child process, duende also spawns a process
 which reads and logs the standard output of the daemonized process. The 
 parent process stays alive so as to monitor the daemonized process. 
 
-duende requires a blank directory named /etc/maradns/logger to 
-run. 
+duende requires a blank directory named /etc/maradns/logger to run. 
 
 Should the parent duende process a HUP signal, duende will restart the 
 child process. Should the daemonized or logging process received an 
@@ -53,12 +52,12 @@ For example, suppose one invokes duende thusly:
 
 duende /usr/local/sbin/maradns
 
-If invoked thusly, duende will log all messages with the "ident" 
-(program name) of "/usr/local/sbin/maradns". If this is not desired, 
-invoke duende with something like:
+If invoked thusly, duende will log all messages with the 
+"ident" (program name) of "/usr/local/sbin/maradns". If this is not 
+desired, invoke duende with something like:
 
 export PATH=$PATH:/usr/local/sbin 
- duende maradns
+	duende maradns
 
 This will log messages with a (more sensible) "ident" of 
 maradns. 

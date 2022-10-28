@@ -10,41 +10,25 @@ compiled and installed.
 
 * Basic configuration
 
-n 
-
 * Using Deadwood on a slow network
-
-k 
 
 * Using other recursive DNS servers
 
-s 
-
 * Using different root servers
-
-s 
 
 * Having private host names
 
-s 
-
 * Using authoritative records for private names
-
-s 
 
 * Private names with custom root servers
 
-s 
-
 * Customizing the resolution of some names
-
-s
 
 ==Basic configuration==
 
- Once Deadwood is installed, the dwood3rc file needs to be 
-set up before Deadwood will function as a recursive DNS server. This 
-file only needs to be three lines long:
+Once Deadwood is installed, the dwood3rc file needs to be set up before 
+Deadwood will function as a recursive DNS server. This file only needs 
+to be three lines long:
 
 ipv4_bind_addresses = "127.0.0.1" 
 chroot_dir = "/etc/maradns" 
@@ -65,15 +49,15 @@ It is possible to have Deadwood run on multiple IP addresses:
 
 ipv4_bind_addresses = "10.1.3.2, 192.168.0.1, 127.0.0.1"
 
-The second line, chroot_dir is the directory Deadwood 
-will be run from. This just has to be an empty directory, ideally owned 
-by the root user. 
+The second line, chroot_dir is the directory Deadwood will be 
+run from. This just has to be an empty directory, ideally owned by the 
+root user. 
 
-The third line, recursive_acl, determines the range of IPs 
-that can access the recursive DNS server. This is in IP/netmask format. 
-For example, if one has an office which uses IPs in the form 
-192.168.1.1, 192.168.1.2, etc., and wishes to have only 192.168.1.any 
-be allowed to make recursive queries:
+The third line, recursive_acl, determines the range of IPs that can 
+access the recursive DNS server. This is in IP/netmask format. For 
+example, if one has an office which uses IPs in the form 192.168.1.1, 
+192.168.1.2, etc., and wishes to have only 192.168.1.any be allowed to 
+make recursive queries:
 
 recursive_acl = "192.168.1.0/24"
 
@@ -83,15 +67,14 @@ IP when determining who can contact Deadwood.
 Once this is done, other machines can contact the Deadwood server to 
 perform DNS queries. For example, Deadwood is now a DNS server which 
 Windows 98 can use in "Control Panel -> Network -> TCP/IP -> DNS 
-configuration", or a UNIX system can point to from 
-/etc/resolv.conf.  
+configuration", or a UNIX system can point to from /etc/resolv.conf.  
 
 ==Using Deadwood on a slow network==
 
- Deadwood, on a slow network, may time out. Deadwood normally only 
-waits two seconds for a reply from a remote DNS server. This is not 
-enough time to process queries on some slow networks. This can be 
-changed by increasing the timeout_seconds value. 
+Deadwood, on a slow network, may time out. Deadwood normally only waits 
+two seconds for a reply from a remote DNS server. This is not enough 
+time to process queries on some slow networks. This can be changed by 
+increasing the timeout_seconds value. 
 
 Here is a mararc file which waits six seconds (instead of the default 
 two) for a reply from a remote DNS server:
@@ -103,10 +86,9 @@ timeout_seconds = 6
 
 ==Using other recursive DNS servers==
 
- It is possible to have Deadwood contact other recursive name 
-servers, instead of contacting the actual root servers to process 
-recursive queries by using the variable upstream_servers in 
-the dwood3rc file. 
+It is possible to have Deadwood contact other recursive name servers, 
+instead of contacting the actual root servers to process recursive 
+queries by using the variable upstream_servers in the dwood3rc file. 
 
 In other words, one can use one's, say, ISP's DNS servers to resolve 
 the names, and have MaraDNS act as a cache for the ISP's DNS servers. 
@@ -121,23 +103,23 @@ upstream_servers["."] = "10.66.77.88, 10.99.11.22"
 
 ==Using different root servers==
 
- Deadwood, by default, uses the ICANN name servers as the root name 
+Deadwood, by default, uses the ICANN name servers as the root name 
 servers. The reason for this default is practical: In my experience, 
 the ICANN root name servers are the ones which least frequently change 
 their IP addresses. They are the best name servers for simple "set and 
 forget" recursive environments. 
 
 It is possible, however, to change the root DNS servers used by setting 
-the root_servers variable in the mararc file. Here is what 
-such a recursive configuration (this example uses the ICANN root 
-servers; change this example to use another set of root servers as 
-needed) looks like:
+the root_servers variable in the mararc file. Here is what such a 
+recursive configuration (this example uses the ICANN root servers; 
+change this example to use another set of root servers as needed) looks 
+like:
 
 ipv4_bind_addresses = "127.0.0.1" 
 chroot_dir = "/etc/maradns" 
 recursive_acl = "127.0.0.1" 
 root_servers = {} 
-root_servers["."] = "198.41.0.4," 
+root_servers["."] = "198.41.0.4,"      
 root_servers["."] += "192.228.79.201," 
 root_servers["."] += "192.33.4.12," 
 root_servers["."] += "128.8.10.90," 
@@ -151,8 +133,8 @@ root_servers["."] += "193.0.14.129,"
 root_servers["."] += "199.7.83.42," 
 root_servers["."] += "202.12.27.33"
 
-This file will do the exact same thing as the following 
-mararc file:
+This file will do the exact same thing as the following mararc 
+file:
 
 ipv4_bind_addresses = "127.0.0.1" 
 chroot_dir = "/etc/maradns" 
@@ -163,10 +145,10 @@ when no root servers are specified.
 
 ==Private names with custom root servers==
 
- Deadwood can have custom root name servers that only resolve names 
-in a subtree of the DNS space. In other words, we can tell Deadwood to 
-have 192.168.0.7 resolve all names ending in office by having 
-a line like this in one's mararc file:
+Deadwood can have custom root name servers that only resolve names in a 
+subtree of the DNS space. In other words, we can tell Deadwood to have 
+192.168.0.7 resolve all names ending in office by having a line like 
+this in one's mararc file:
 
 root_servers["office."] = "192.168.0.7"
 
@@ -178,7 +160,7 @@ chroot_dir = "/etc/maradns"
 recursive_acl = "192.168.0.0/24" 
 root_servers = {} 
 root_servers["office."] = "192.168.0.7" 
-root_servers["."] = "198.41.0.4," 
+root_servers["."] = "198.41.0.4,"      
 root_servers["."] += "192.228.79.201," 
 root_servers["."] += "192.33.4.12," 
 root_servers["."] += "128.8.10.90," 

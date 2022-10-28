@@ -15,7 +15,7 @@ maradns [ -v | -f mararc_file_location ]
 
 This man page has the following sections:
 
-Name 
+Name  
 Synopsis 
 Table of Contents 
 Description 
@@ -200,8 +200,7 @@ applications like telnet
 
 51. How does MaraDNS respond to EDNS (RFC2671) packets? 
 
-52. How to I get MaraDNS to always give the same IP to all DNS 
-queries? 
+52. How to I get MaraDNS to always give the same IP to all DNS queries? 
 
 53. Why did you change MaraDNS' tagline? 
 
@@ -231,8 +230,8 @@ MaraDNS 1 is no longer supported; support ended on June 21, 2015.
 
 ==2. How do I try out MaraDNS?==
 
-Read the quick start guide, which is the file named 0QuickStart in 
-the MaraDNS distribution.
+Read the quick start guide, which is the file named 0QuickStart in the 
+MaraDNS distribution.
 
 ==3. What license is MaraDNS released under?==
 
@@ -253,8 +252,7 @@ notice, this list of conditions and the following disclaimer in the
 documentation and/or other materials provided with the distribution. 
 
 This software is provided 'as is' with no guarantees of correctness or 
-fitness for purpose.
-
+fitness for purpose. 
 ==4. How do I report bugs in MaraDNS?==
 
 Post your bug report as a Github issue.   
@@ -279,10 +277,10 @@ Reverse DNS (sometimes called "reverse mapping") is set up by using PTR
 (pointer) records. For example, the PTR record which performs the 
 reverse DNS lookup for the ip 10.2.3.4 looks like this in a CSV2 zone 
 file: 
- 4.3.2.10.in-addr.arpa. PTR www.example.com.  
+4.3.2.10.in-addr.arpa. PTR www.example.com.  
 It is also possible to use a special "FQDN4" which automatically sets 
 up the reverse mapping of a given record: 
- www.example.com. FQDN4 10.2.3.4  
+www.example.com. FQDN4 10.2.3.4  
 If you wish to have a PTR (reverse DNS lookup; getting a DNS name from 
 a numeric IP) record work on the internet at large, it is not a simple 
 matter of just adding a record like this to a MaraDNS zonefile. One 
@@ -310,7 +308,7 @@ the mararc file:
 timeout_seconds = 5
 
 Note that making this too high will slow MaraDNS down when DNS servers 
-are down, which is, alas, all too common on today's internet.   
+are down, which is, alas, all too common on today's internet.    
 
 ==9. When I try to run MaraDNS, I get a cryptic error message.==
 
@@ -332,15 +330,15 @@ Udp services do not have a prominent "LISTEN" when netstat is run.
 When MaraDNS is up, the relevant line in the netstat output looks like 
 this:  udp 0 0 127.0.0.1:53 0.0.0.0:*  
 
-While on the topic of netstat, if you run netstat -nap as root 
-on Linux and some other *nix operating systems, you can see the names 
-of the processes which are providing internet services.   
+While on the topic of netstat, if you run netstat -nap as root on Linux 
+and some other *nix operating systems, you can see the names of the 
+processes which are providing internet services.   
 
 ==11. What string library does MaraDNS use?==
 
 MaraDNS uses its own string library, which is called the "js_string" 
 library. Man pages for most of the functions in the js_string library 
-are in the folder doc/man of the MaraDNS distribution
+are in the folder doc/man of the MaraDNS distribution   
 
 ==12. Why does MaraDNS use a multi-threaded model?==
 
@@ -383,12 +381,12 @@ I no longer accept third party patches
 
 Yes. 
 
-The zoneserver program serves zones so that other DNS servers 
-can be secondaries for zones which MaraDNS serves. This is a separate 
-program from the maradns server, which processes authoritative 
-UDP DNS queries, and Deadwood which processes recursive DNS queries. 
+The zoneserver program serves zones so that other DNS servers can be 
+secondaries for zones which MaraDNS serves. This is a separate program 
+from the maradns server, which processes authoritative UDP DNS queries, 
+and Deadwood which processes recursive DNS queries. 
 
-See the DNS master document in the MaraDNS tutorial for details.
+See the DNS master document in the MaraDNS tutorial for details.   
 
 ==17. Can MaraDNS act as a secondary nameserver?==
 
@@ -402,8 +400,8 @@ DNS server?==
 
 A recursive DNS server is a DNS server that is able to contact other 
 DNS servers in order to resolve a given domain name label. This is the 
-kind of DNS server one points to in /etc/resolv.conf. MaraDNS 
-uses the Deadwood daemon to process recursive DNS queries. 
+kind of DNS server one points to in /etc/resolv.conf. MaraDNS uses the 
+Deadwood daemon to process recursive DNS queries. 
 
 An authoritative DNS server is a DNS server that a recursive server 
 contacts in order to find out the answer to a given DNS query. The 
@@ -416,7 +414,7 @@ For security reasons, MaraDNS' fetchzone client does not add records
 which are not part of the zone in question. For example, if someone has 
 a zone for example.com, and this record in the zone: 
 
- 1.1.1.10.in-addr.arpa. PTR dns.example.com.  
+1.1.1.10.in-addr.arpa. PTR dns.example.com.  
 
 MaraDNS will not add the record, since the record is out-of-bailiwick. 
 In other words, it is a host name that does not end in .example.com. 
@@ -477,26 +475,25 @@ The "big-O" or "theta" growth rates for various MaraDNS functions are
 as follows, where N is the number of authoritative host names being 
 served:
 
-Startup time N 
-Memory usage N 
-Processing incoming DNS requests 1
+Startup time                            N 
+Memory usage                            N 
+Processing incoming DNS requests        1
 
 As can be seen, MaraDNS will process 1 or 100000 domains in the same 
 amount of time, once the domain names are loaded in to memory.   
 
 ==26. I am having problems setting upstream_servers==
 
-upstream_servers is only supported by Deadwood, and is no 
-longer supported in MaraDNS 2.0. The upstream_servers dwood3rc 
-variable is set thusly: 
+upstream_servers is only supported by Deadwood, and is no longer 
+supported in MaraDNS 2.0. The upstream_servers dwood3rc variable is set 
+thusly: 
 upstream_servers["."] = "10.3.28.79, 10.2.19.83" 
 Note the ["."]. 
 
-Note that the upstream_servers variable needs to be 
-initialized before being used via upstream_servers = {} (the 
-reason for this is so that a dwood3rc file has 100% Python-compatible 
-syntax). A complete dwood3rc file that uses upstream_servers 
-may look like this:
+Note that the upstream_servers variable needs to be initialized before 
+being used via upstream_servers = {} (the reason for this is so that a 
+dwood3rc file has 100% Python-compatible syntax). A complete dwood3rc 
+file that uses upstream_servers may look like this:
 
 ipv4_bind_addresses = "127.0.0.1" 
 chroot_dir = "/etc/maradns" 
@@ -511,12 +508,12 @@ Transitional. However, the CSS will not validate.
 
 I have designed MaraDNS' web page to be usable and as attractive as 
 possible in any major browser released in the last ten years. 
-Cross-browser support is more important than strict W3 validation. 
-The reason why the CSS does not validate is because I need a way to 
-make sure there is always a scrollbar on the web page, even if the 
-content is not big enough to merit one; this is to avoid the content 
-jumping from page to page. There is no standard CSS tag that lets me do 
-this. I'm using a non-standard tag to enable this in Gecko (Firefox's 
+Cross-browser support is more important than strict W3 validation. The 
+reason why the CSS does not validate is because I need a way to make 
+sure there is always a scrollbar on the web page, even if the content 
+is not big enough to merit one; this is to avoid the content jumping 
+from page to page. There is no standard CSS tag that lets me do this. 
+I'm using a non-standard tag to enable this in Gecko (Firefox's 
 rendering engine); this is enabled by default in Trident (Internet 
 Explorer's rendering engine). The standards are deficient and blind 
 adherence to them would result in an inferior web site. 
@@ -527,10 +524,10 @@ on older browsers with limited CSS support.
 
 On a related note, the reason why I use tables instead of CSS for some 
 of the layout is because Microsoft Internet Explorer 6 and other 
-browsers do not have support for the max-width CSS property. 
-Without this property, the web page will not scale down correctly 
-without using tables. Additionally, tables allow a reasonably 
-attractive header in browsers without CSS support.   
+browsers do not have support for the max-width CSS property. Without 
+this property, the web page will not scale down correctly without using 
+tables. Additionally, tables allow a reasonably attractive header in 
+browsers without CSS support.   
 
 ==28. How do MX records work?==
 
@@ -563,18 +560,18 @@ via TXT records and RFC4408 SPF records.
 SPF configuration is beyond the scope of MaraDNS' documentation. 
 However, at the time this FAQ entry was last updated (July, 2013), 
 information and documentation concerning SPF is available at 
-http://openspf.org. The BIND examples will work in MaraDNS csv2 
-zone files as long as the double quotes (") are replaced by single 
-quotes ('). For example, a SPF TXT record that looks like 
-example.net. IN TXT "v=spf1 +mx a:colo.example.com/28 -all" in 
-a BIND zone file will look like example.net. TXT 'v=spf1 +mx 
-a:colo.example.com/28 -all' in a MaraDNS zone file. MaraDNS can 
-also make the corresponding SPF record, which will have the syntax 
-example.net. SPF 'v=spf1 +mx a:colo.example.com/28 -all'. 
+http://openspf.org. The BIND examples will work in MaraDNS csv2 zone 
+files as long as the double quotes (") are replaced by single quotes 
+('). For example, a SPF TXT record that looks like example.net. IN TXT 
+"v=spf1 +mx a:colo.example.com/28 -all" in a BIND zone file will look 
+like example.net. TXT 'v=spf1 +mx a:colo.example.com/28 -all' in a 
+MaraDNS zone file. MaraDNS can also make the corresponding SPF record, 
+which will have the syntax example.net. SPF 'v=spf1 +mx 
+a:colo.example.com/28 -all'. 
 
 Use '\x7e' to put a tilde ("~" character) in a SPF record: 
 
-example.com. SPF 'v=spf1 +mx a:colo.example.com/28 '\x7e'all'
+example.com. SPF 'v=spf1 +mx a:colo.example.com/28 '\x7e'all'   
 
 ==30. I'm having problems resolving CNAMES I have set up.==
 
@@ -591,7 +588,7 @@ to "www.google.com". Some DNS servers will recursively look up
 www.google.com, and render the above record like this:
 
 google.example.com. CNAME www.google.com. 
- www.google.com. A 66.102.7.104
+	www.google.com. A 66.102.7.104
 
 For security reasons, MaraDNS doesn't do this. Instead, MaraDNS will 
 simply output:
@@ -625,7 +622,7 @@ be between the SOA record and the first non-NS record.
 
 If a zone looks like this:
 
-example.net. +600 soa ns1.example.net. 
+example.net. +600 soa ns1.example.net.  
 hostmaster@example.net 10 10800 3600 604800 1080 
 example.net. +600 mx 10 mail.example.net. 
 example.net. +600 a 10.2.3.5 
@@ -638,7 +635,7 @@ Then the NS records will be "synth-ip" records.
 
 The zone should look like this:
 
-example.net. +600 soa ns1.example.net. 
+example.net. +600 soa ns1.example.net.  
 hostmaster@example.net 10 10800 3600 604800 1080 
 example.net. +600 ns ns1.example.net. 
 example.net. +600 ns ns3.example.net. 
@@ -667,7 +664,7 @@ root.hints file in order to have custom root servers. In order to
 change the root.hints file, add something like this to your dwood3rc 
 file:
 
-root_servers["."] = "131.161.247.232," 
+root_servers["."] =  "131.161.247.232," 
 root_servers["."] += "208.185.249.250," 
 root_servers["."] += "66.227.42.140," 
 root_servers["."] += "66.227.42.149," 
@@ -689,11 +686,10 @@ reasons:
   incompatible C compilers and libc implementations. These days, 
   most systems are using gcc as the compiler and some version of 
   glibc as the libc. There is no longer a need, for example, to 
-  figure out whether a given implementation of
-
- getopt() allows '--' options. MaraDNS's 
-./configure script can be run in only a second or two; compare 
-this to the 3-5 minute process autoconf's ./configure needs. 
+  figure out whether a given implementation of getopt() allows '--' 
+  options. MaraDNS's ./configure script can be run in only a second 
+  or two; compare this to the 3-5 minute process autoconf's 
+  ./configure needs.
 
 * Autoconf leaves GPL-tained files in a program's build tree. MaraDNS 
   is licensed under a BSD license that is not GPL-compatible, so 
@@ -706,66 +702,46 @@ build process?==
 
 To change the compiler used by MaraDNS: 
 
-* Run the
+* Run the ./configure script
 
- ./configure script 
+* Open up the file Makefile with an editor
 
-* Open up the file
+* Look for a line that starts with CC
 
- Makefile with an editor 
+* If there is no line that starts with CC, create one just before the 
+  line that starts with FLAGS
 
-* Look for a line that starts with
-
- CC 
-
-* If there is no line that starts with
-
- CC, create one just before the line that starts with 
-FLAGS 
-
-* Change (or create) that line to look something like
-
- CC=gcc296 In this example, the 2.96 version of gcc is used to 
-compile MaraDNS. 
+* Change (or create) that line to look something like CC=gcc296 In 
+  this example, the 2.96 version of gcc is used to compile MaraDNS.
 
 * Note that it is important to not remove anything from this line you 
   do not understand; doing so will make MaraDNS unable to compile 
-  or run. So, if the CC line looks like
-
- CC=gcc&nbsp;$(LDFLAGS)&nbsp;-DNO_FLOCK and you want to 
-compile with gcc 2.96, change the line to look like 
-CC=gcc296&nbsp;$(LDFLAGS)&nbsp;-DNO_FLOCK retaining the flags 
-added by the configuration script. 
+  or run. So, if the CC line looks like 
+  CC=gcc&nbsp;$(LDFLAGS)&nbsp;-DNO_FLOCK and you want to compile 
+  with gcc 2.96, change the line to look like 
+  CC=gcc296&nbsp;$(LDFLAGS)&nbsp;-DNO_FLOCK retaining the flags 
+  added by the configuration script.
 
 Changing compile-time flags is a similar process: 
 
-* Run the
+* Run the ./configure script
 
- ./configure script 
+* Open up the file Makefile with an editor
 
-* Open up the file
+* Look for a line that starts with FLAGS
 
- Makefile with an editor 
-
-* Look for a line that starts with
-
- FLAGS 
-
-* Change (or create) that line to look something like
-
- FLAGS=-O3 In this example, MaraDNS is compiled with the -O3 
-option. 
+* Change (or create) that line to look something like FLAGS=-O3 In 
+  this example, MaraDNS is compiled with the -O3 option.
 
 * Note that it is important to not remove anything from this line you 
   do not understand; doing so will make MaraDNS unable to compile 
-  or run. So, if the FLAGS line looks like
-
- FLAGS=-O2&nbsp;-Wall&nbsp;-DSELECT_PROBLEM and you want to 
-compile at optimization level three, change this line to look like 
-FLAGS=-O2&nbsp;-Wall&nbsp;-DSELECT_PROBLEM retaining the flags 
-added by the configuration script. -DSELECT_PROBLEM for 
-example, is needed in the Linux compile or MaraDNS will have problems 
-with freezing up.
+  or run. So, if the FLAGS line looks like 
+  FLAGS=-O2&nbsp;-Wall&nbsp;-DSELECT_PROBLEM and you want to 
+  compile at optimization level three, change this line to look 
+  like FLAGS=-O2&nbsp;-Wall&nbsp;-DSELECT_PROBLEM retaining the 
+  flags added by the configuration script. -DSELECT_PROBLEM for 
+  example, is needed in the Linux compile or MaraDNS will have 
+  problems with freezing up.
 
 ==36. Will you make a package for the particular Linux distribution I 
 am using?==
@@ -784,37 +760,29 @@ version of MaraDNS. In particular, the following features are disabled:
 
 * ipv6 (this is actually a mingw32, not a Windows deficiency)
 
-* The
+* The chroot_dir mararc variable
 
- chroot_dir mararc variable 
+* The maradns_gid and maradns_uid mararc variables
 
-* The
+* The maxprocs mararc variable
 
- maradns_gid and maradns_uid mararc variables 
-
-* The
-
- maxprocs mararc variable 
-
-* The
-
- synth_soa_serial variable can not have a value of 2 
+* The synth_soa_serial variable can not have a value of 2
 
 * There is no DNS-over-TCP support
 
 If any of the above features are desired, try compiling MaraDNS using 
 Cygwin. Note that the Cygwin port of MaraDNS does not have ipv6 
-support, and that while chroot_dir works in Cygwin, it does 
-not have the security that the *NIX chroot() call has.   
+support, and that while chroot_dir works in Cygwin, it does not have 
+the security that the *NIX chroot() call has.   
 
 ==38. MaraDNS isn't starting up==
 
 This is usually caused by a syntax error in one's mararc file, or by 
 another MaraDNS process already running. To see what is happening, look 
-at your system log (/var/log/messages in Centos 3) to see what 
-errors MaraDNS reports. If you do not know how to look at a system log, 
-you can also invoke MaraDNS from the command line as root; any errors 
-will be visible when starting MaraDNS.   
+at your system log (/var/log/messages in Centos 3) to see what errors 
+MaraDNS reports. If you do not know how to look at a system log, you 
+can also invoke MaraDNS from the command line as root; any errors will 
+be visible when starting MaraDNS.   
 
 ==39. You make a lot of releases of MaraDNS; at our ISP/IT department, 
 updating software is non-trivial.==
@@ -853,9 +821,8 @@ followed:
 * It is necessary to have recursion disabled, if using MaraDNS 1.4, 
   either by compiling MaraDNS without recursive support 
   (./configure --authonly ; make), or by making sure MaraDNS does 
-  not have recursion enabled (by not having
-
- recursive_acl set in one's MaraDNS 1.4 mararc file) 
+  not have recursion enabled (by not having recursive_acl set in 
+  one's MaraDNS 1.4 mararc file)
 
 If one wishes to both register domains with AFNIC and use MaraDNS 1.4 
 as a recursive DNS server, it is required to have the recursive server 
@@ -917,10 +884,9 @@ end of records. For example, to have anything.example.com. have the IP
 
 *.example.com. A 10.1.2.3 
 
-To have stars at the end of records, csv2_default_zonefile has 
-to be set. The mararc parameter bind_star_handling affects how 
-star records are handled. More information is in the mararc man 
-page.   
+To have stars at the end of records, csv2_default_zonefile has to be 
+set. The mararc parameter bind_star_handling affects how star records 
+are handled. More information is in the mararc man page.   
 
 ==48. I'm having problems using MaraDNS with some *NIX command line 
 applications like telnet.==
@@ -953,16 +919,15 @@ file with AVG (free for non-commercial use) to verify your virus
 scanner has not reported a false positive. 
 
 If you have verified the GPG signature of the program and AVG reports a 
-virus, please let us know with a Github issue. Otherwise, please 
-use a better virus scanner and make sure there are no viruses on your 
+virus, please let us know with a Github issue. Otherwise, please use a 
+better virus scanner and make sure there are no viruses on your 
 computer.   
 
 ==50. I can not subscribe to the MaraDNS mailing list==
 
 Please note that the mailing list is no longer used to handle MaraDNS 
 support requests. Please file a Github issue at 
-https://github.com/samboy/MaraDNS/issues to file a MaraDNS bug 
-report. 
+https://github.com/samboy/MaraDNS/issues to file a MaraDNS bug report. 
 
 The procedure for subscribing to the mailing list is as follows: 
 
@@ -980,9 +945,8 @@ The procedure for subscribing to the mailing list is as follows:
   list'.
 
 * Note that the mailing list is moderated and only relevant MaraDNS 
-  announcements are approved. People who need help should read the manuals
-
-s or search the MaraDNS webpage for support. 
+  announcements are approved. People who need help should read the 
+  manuals or search the MaraDNS webpage for support.
 
 If you get an email from list-request@maradns.org with the subject "The 
 results of your email commands", you did not correctly send an email to 
@@ -1001,34 +965,31 @@ MaraDNS 2 (both the authoritative maradns server and the recursive
 Deadwood server) responds to EDNS packets by ignoring the OPT record 
 and acting as if it the packet did not have an OPT record. 
 
-MicroDNS (available in the tools/misc directory of any 
-MaraDNS 2 release) responds to EDNS queries the same way Deadwood 
-2.9.03 did: By giving back "NOTIMPL" instead of answering the query 
-with the default IP. NanoDNS, in the interest of minimizing code 
-side, responds to EDNS requests by returning NOTIMPL in the header, 
-giving the OPT query in the AN section of the response, and giving the 
-default IP in the AR section of the DNS reply packet.   
+MicroDNS (available in the tools/misc directory of any MaraDNS 2 
+release) responds to EDNS queries the same way Deadwood 2.9.03 did: By 
+giving back "NOTIMPL" instead of answering the query with the default 
+IP. NanoDNS, in the interest of minimizing code side, responds to EDNS 
+requests by returning NOTIMPL in the header, giving the OPT query in 
+the AN section of the response, and giving the default IP in the AR 
+section of the DNS reply packet.   
 
 ==52. How to I get MaraDNS to always give the same IP to all DNS queries?==
 
 There are three ways to have MaraDNS always give the same IP in reply 
 to any DNS query given to it: 
 
-* The best way to do this is to set up a default zonefile
-
-e that causes any and all A queries to always give the IP (and also 
-allows all AAAA queries to always give out the same IP6, all SPF or TXT 
-queries to give out the same SPF record, etc.). 
+* The best way to do this is to set up a default zonefile that causes 
+  any and all A queries to always give the IP (and also allows all 
+  AAAA queries to always give out the same IP6, all SPF or TXT 
+  queries to give out the same SPF record, etc.).
 
 * Another possibility, if someone just wants a simple DNS server that 
   always gives out the same IP address to any and all DNS queries, 
-  is to use the MicroDNS program, available in
+  is to use the MicroDNS program, available in tools/misc, as well 
+  as having its own web page.
 
- tools/misc, as well as having its own web page. 
-
-* If MicroDNS is too bloated, there is also NanoDNS
-
-S, which I will include the source code of below:
+* If MicroDNS is too bloated, there is also NanoDNS, which I will 
+  include the source code of below:
 
 /*Placed in the public domain by Sam Trenholme*/ 
 #include &lt;arpa/inet.h&gt; 
@@ -1046,21 +1007,20 @@ d.sin_port=htons(53);bind(a,(Z*)&amp;d,Y);for(;;){i
 {q[2]|=128;q[11]?q[3]|=4:1;q[7]++;memcpy(q+i,p, 
 16);sendto(a,q,i+16,0,(Z*)&amp;d,Y);}}}return 0;}
 
-NanoDNS takes one argument: The IP we return. This program binds 
-to all IP addresses a given machine has on the UDP DNS port (port 53). 
-For example, to make a DNS server that binds to all IPs your system has 
-and return the IP 10.11.12.13 to any UDP DNS queries sent to it, 
-compile the above C program, call it NanoDNS, and invoke it 
-with NanoDNS 10.11.12.13 Note that NanoDNS does not daemonize, 
-nor log anything, nor have any other space-wasting features.
+NanoDNS takes one argument: The IP we return. This program 
+binds to all  IP addresses a given machine has on the UDP DNS port 
+(port 53).  For example, to make a DNS server that binds to all IPs 
+your system has and return the IP 10.11.12.13 to any UDP DNS queries 
+sent to it, compile the above C program, call it NanoDNS, and invoke it 
+with NanoDNS 10.11.12.13 Note that NanoDNS does not daemonize, nor log 
+anything, nor have any other space-wasting features.
 
 ==Why did you change MaraDNS' tagline?==
 
 I have changed MaraDNS' tagline from "MaraDNS: A security-aware DNS 
 server" to "MaraDNS: A small open-source DNS server" because MaraDNS 
 does not support DNSSEC. I have blogged about this: 
-http://samiam.org/blog/20120326.html
-
+http://samiam.org/blog/20120326.html 
 ==How do you stop MaraDNS from taking part in a distributed 
 denial-of-service attack?==
 
@@ -1109,12 +1069,12 @@ While I like systemd, it is not part of CentOS 6 nor, obviously,
 Windows 7. That in mind, I have no plans to support systemd until 2017, 
 when I plan to update MaraDNS' supported operating systems. 
 
-However, Tomasz Torcz has kindly made some systemd files for 
-MaraDNS, which people are free to use. 
+However, Tomasz Torcz has kindly made some systemd files for MaraDNS, 
+which people are free to use. 
 
 As an aside, I do not like the fact that Debian will probably not make 
-systemd the default init; I do not think this kind of fragmentation 
-is good for Linux.   
+systemd the default init; I do not think this kind of fragmentation is 
+good for Linux.   
 
 ==Why doesn't MaraDNS use IP_FREEBIND?==
 
@@ -1126,8 +1086,8 @@ systems as possible.
 When I say that Windows 7 and CentOS 6 are the only supported operating 
 systems for MaraDNS, this does not mean that MaraDNS will not compile 
 and run on other systems; it merely means that I can not provide 
-support for Github bug reports for people who want to run MaraDNS 
-in Minix, one of the open-source BSD variants, or what not.   
+support for Github bug reports for people who want to run MaraDNS in 
+Minix, one of the open-source BSD variants, or what not.   
 
 ==Is there a web interface for MaraDNS?==
 
@@ -1187,8 +1147,8 @@ MX record for "www.example.com", the correct behavior (based on RFC1034
 §4.3.3) is to return "no host" (nothing in the answer section, SOA in 
 the authority section, 0 result code) for a MX request to 
 "www.example.com". Instead, MaraDNS returns the MX record attached to 
-"*.example.com". This can be changed by setting 
-bind_star_handling to 1. 
+"*.example.com". This can be changed by setting bind_star_handling to 
+1. 
 
 Star records (what RFC1034 calls "wildcards") can not be attached to NS 
 records. 
@@ -1237,8 +1197,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 ===AUTHORS===
 
-Sam Trenholme (http://www.samiam.org) is responsible for this man 
-page. 
+Sam Trenholme (http://www.samiam.org) is responsible for this man page. 
 
 MaraDNS is written by me, Sam Trenholme, with a little help from my 
 friends. Naturally, all errors in MaraDNS are my own (but read the 

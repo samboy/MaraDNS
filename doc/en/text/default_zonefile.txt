@@ -31,10 +31,10 @@ A default zone file looks like this:
 
 # This is an example csv2_default_zonefile 
  
-* SOA example.com. email@example.com. 1 7200 3600 604800 1800 
+*       SOA     example.com. email@example.com. 1 7200 3600 604800 1800 
  
-* NS a.example.com. 
-* NS b.example.com. 
+*       NS      a.example.com. 
+*       NS      b.example.com. 
  
 # Here are some A (ipv4 address) records; since this is the most 
 # common field, the zone file format allows a compact representation 
@@ -49,11 +49,11 @@ www.* A 10.10.10.10
 # Here is a MX record 
 * MX 10 mail.example.com.
 
-Here, "example.com" is replaced with the name of the zone server 
-running MaraDNS, "a.example.com." and "b.example.com." replaced with 
-the NS entries running MaraDNS, 10.10.10.10 is replaced with the IP for 
-the machine in question, and "mail.example.com." is replaced with the 
-name of the machine that accepts mail for this domain. 
+Here, "example.com" is replaced with the name of the zone 
+server running MaraDNS, "a.example.com." and "b.example.com." replaced 
+with the NS entries running MaraDNS, 10.10.10.10 is replaced with the 
+IP for the machine in question, and "mail.example.com." is replaced 
+with the name of the machine that accepts mail for this domain. 
 
 NS entries are the names of machines which are running this instance of 
 MaraDNS. In the above example, we will also have an "example.com" zone 
