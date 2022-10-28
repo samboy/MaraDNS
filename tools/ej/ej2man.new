@@ -303,7 +303,29 @@ out=out:gsub('<[TtBb][Rr]>\n?','\n.br\n')
 out=out:gsub(mc("</table>"),"")
 out=out:gsub("\n+\n.RE\n.PP",'\n.RE\n.PP\n') -- Remove lines at BLOCKQUOTE end
 
-out = fmt(out)
+-- fmt: Add line breaks to fit on an 80-column terminal
+-- Do not fmt pre sections, fmt everything else
+start = out:find("\n.nf\n")
+lastEnd = 1
+while start do
+  local top = ""
+  if lastEnd > 1 then top = out:sub(1,lastEnd-1) end
+  local toFmt = out:sub(lastEnd,start - 1)
+  local initial = top:len()
+  toFmt = fmt(toFmt)
+  local offset = top:len() - initial
+  local preend = out:find("\n.fi\n",start + 1)
+  local mid = out:sub(start,preend)
+  local tail = out:sub(preend + 1)
+  out = top .. toFmt .. mid .. tail
+  lastEnd = preend
+  start = out:find("\n.nf\n",preend + offset)
+end
+local top = out:sub(1,lastEnd)
+local tail = out:sub(lastEnd + 1)
+tail = fmt(tail)
+out = top .. tail
+
 out = out:gsub("[ ]*\n[ ]*\n[ ]*\n[ ]*\n[ ]*\n","\n\n")
 out = out:gsub("[ ]*\n[ ]*\n[ ]*\n[ ]*\n","\n\n")
 out = out:gsub("[ ]*\n[ ]*\n[ ]*\n","\n\n")
