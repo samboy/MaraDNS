@@ -1,36 +1,50 @@
-                    Compiling MaraDNS and Deadwood
+Compiling MaraDNS and Deadwood   <!-- 
+Copyright 2005-2010 Sam Trenholme TERMS Redistribution and use, with or 
+without modification, are permitted provided that the following 
+condition is met: 1. Redistributions must retain the above copyright 
+notice, this list of conditions and the following disclaimer. This 
+documentation is provided 'as is' with no guarantees of correctness or 
+fitness for purpose. --> 
 
-Requirements
+===Compiling MaraDNS and Deadwood===
 
-   MaraDNS is supported on two platforms: CentOS Linux 5, and
-   Windows XP (via MinGW32).
+==Requirements==
 
-   Other systems can be easily ported to, but are not supported.
-   This means that, while it should be fairly easy to port MaraDNS
-   to another platform, you will have to port it yourself or pay me
-   to port it for you. The Windows XP port does not support all of
-   the features the CentOS Linux version has.
+MaraDNS is supported on two platforms: CentOS Linux 5, and Windows XP 
+(via MinGW32). 
 
-Downloading, compiling, and installing MaraDNS
+Other systems can be easily ported to, but are not supported. This 
+means that, while it should be fairly easy to port MaraDNS to another 
+platform, you will have to port it yourself or pay me to port it for 
+you. The Windows XP port does not support all of the features the 
+CentOS Linux version has. 
 
-     * Obtain MaraDNS from www.maradns.org
-     * Extract the MaraDNS tarball:
+==Downloading, compiling, and installing MaraDNS==
 
-         bzip2 -cd maradns-*.tar.bz2 | tar xvf -
+* Obtain MaraDNS from www.maradns.org
 
-     * Enter the directory that the above extraction generated.
-     * Compile MaraDNS. Type in ./configure followed by make in the
-       top-level MaraDNS directory.
-     * Install the MaraDNS package. As root:
+g 
 
-         make install
+* Extract the MaraDNS tarball:
 
-       This will install both the binaries and the man pages for
-       'maradns', 'Deadwood' (MaraDNS 2.0's recursive DNS server),
-       'askmara', 'duende', 'fetchzone', and 'zoneserver'. In
-       addition, this will (if the files are not already present),
-       install an example /etc/mararc, make the /etc/maradns
-       directory, and place an example zone file (db.example.com)
-       in /etc/maradns. Finally, this will place MaraDNS
-       documentation in /usr/local/doc ; man pages will be placed
-       in /usr/local/man or /usr/local/share/man.
+bzip2 -cd maradns-*.tar.bz2 | tar xvf - 
+* Enter the directory that the above extraction generated.
+
+* Compile MaraDNS. Type in
+
+ ./configure followed by make in the top-level 
+MaraDNS directory. 
+
+* Install the MaraDNS package. As root:
+
+make install 
+This will install both the binaries and the man pages for 'maradns', 
+'Deadwood' (MaraDNS 2.0's recursive DNS server), 'askmara', 'duende', 
+'fetchzone', and 'zoneserver'. In addition, this will (if the files are 
+not already present), install an example /etc/mararc, make the 
+/etc/maradns directory, and place an example zone file (db.example.com) 
+in /etc/maradns. Finally, this will place MaraDNS documentation in 
+/usr/local/doc ; man pages will be placed in /usr/local/man or 
+/usr/local/share/man.
+
+

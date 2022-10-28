@@ -1,130 +1,133 @@
-   I should point out here that "master" and "slave" is somewhat 
-   outdated wording.  The more modern wording, "primary" and 
-   "replica", is more accurate.  However, since this document was 
-   written back when "master" and "slave" was standard terminology, 
-   since other mainstream DNS servers still use the "master" and 
-   "slave" terminology, and since the relevant DNS RFCs MaraDNS is 
-   based on use the words "master" and "slave", this document
-   uses that wording.
+Being a slave DNS server   <!-- 
+Copyright 2005,2020 Sam Trenholme TERMS Redistribution and use, with or 
+without modification, are permitted provided that the following 
+condition is met: 1. Redistributions must retain the above copyright 
+notice, this list of conditions and the following disclaimer. This 
+documentation is provided 'as is' with no guarantees of correctness or 
+fitness for purpose. --> I should point out here that "master" and 
+"slave" is somewhat outdated wording. The more modern wording, 
+"primary" and "replica", is more accurate. However, since this document 
+was written back when "master" and "slave" was standard terminology, 
+since other mainstream DNS servers still use the "master" and "slave" 
+terminology, and since the relevant DNS RFCs MaraDNS is based on use 
+the words "master" and "slave", this document uses that wording. 
 
-                 Having MaraDNS be a slave DNS server
+===Having MaraDNS be a slave DNS server===
 
-   MaraDNS does not have direct support for being a slave DNS
-   server. However, MaraDNS can transfer zone files from other
-   servers by using the fetchzone client.
+MaraDNS does not have direct support for being a slave DNS server. 
+However, MaraDNS can transfer zone files from other servers by using 
+the fetchzone client. 
 
-   fetchzone is a program that can transfer a zone from another
-   name server; the transferred zone is in the csv2 zone file
-   format, which can then be loaded by MaraDNS.
+fetchzone is a program that can transfer a zone from another 
+name server; the transferred zone is in the csv2 zone file format, 
+which can then be loaded by MaraDNS. 
 
-   Here is an example of using fetchzone to transfer the zone
-   example.com from the server with the IP 10.5.6.7, placing the
-   output in the file "db.example.com":
+Here is an example of using fetchzone to transfer the zone 
+example.com from the server with the IP 10.5.6.7, placing the output in 
+the file "db.example.com":
 
- fetchzone example.com 10.5.6.7 > db.example.com
+fetchzone example.com 10.5.6.7 > db.example.com
 
-Automating this with a shell script
+==Automating this with a shell script==
 
-   If one wishes to use fetchzone to grab a number of zones, this
-   can be automated with a shell script:
+If one wishes to use fetchzone to grab a number of zones, this can be 
+automated with a shell script:
 
- #!/bin/bash
+#!/bin/bash 
+ 
+cd /etc/maradns 
+fetchzone example.com 10.5.6.7 > db.example.com 
+fetchzone example.org 192.168.5.67 > db.example.org 
+fetchzone example.net 172.19.2.83 > db.example.net
 
- cd /etc/maradns
- fetchzone example.com 10.5.6.7 > db.example.com
- fetchzone example.org 192.168.5.67 > db.example.org
- fetchzone example.net 172.19.2.83 > db.example.net
+This shell script, however, has a problem. Should there be a 
+problem getting a zone file from a remote system, the zone file in 
+question will be destroyed. This can be avoided by checking the exit 
+status of fetchzone in the shell script, making sure that the 
+zone was obtained normally before overwriting the zone file:
 
-   This shell script, however, has a problem. Should there be a
-   problem getting a zone file from a remote system, the zone file
-   in question will be destroyed. This can be avoided by checking
-   the exit status of fetchzone in the shell script, making sure
-   that the zone was obtained normally before overwriting the zone
-   file:
+#!/bin/bash 
+ 
+# For security reasons, put this file in a directory that only root 
+# may write to. 
+TEMP=/root/tmp/foo 
+ 
+cd /etc/maradns 
+fetchzone example.com 10.5.6.7 > $TEMP 
+if [ $? -eq 0 ] ; then 
+ mv $TEMP db.example.com 
+fi 
+fetchzone example.org 192.168.5.67 > $TEMP 
+if [ $? -eq 0 ] ; then 
+ mv $TEMP db.example.org 
+fi 
+fetchzone example.net 172.19.2.83 > $TEMP 
+if [ $? -eq 0 ] ; then 
+ mv $TEMP db.example.net 
+fi
 
- #!/bin/bash
+Note that this script needs a directory, which only root may 
+write to, named /root/tmp (Linux has a long-standing tradition 
+of making root's home directory /root; place this file elsewhere on a 
+system with a different root directory). 
 
- # For security reasons, put this file in a directory that only root
- # may write to.
- TEMP=/root/tmp/foo
+While this script is workable for a small number of zones, this script 
+will quickly become unwieldy for a large number of zones. If one wants 
+to grab a large number of zones, it makes more sense to have the list 
+of zones in a separate file. We then have the shell script read this 
+file (list of zones and IPs), and make the zone files live if the zones 
+have been successfully fetched. 
 
- cd /etc/maradns
- fetchzone example.com 10.5.6.7 > $TEMP
- if [ $? -eq 0 ] ; then
-         mv $TEMP db.example.com
- fi
- fetchzone example.org 192.168.5.67 > $TEMP
- if [ $? -eq 0 ] ; then
-         mv $TEMP db.example.org
- fi
- fetchzone example.net 172.19.2.83 > $TEMP
- if [ $? -eq 0 ] ; then
-         mv $TEMP db.example.net
- fi
+Here is what a shell script may look like:
 
-   Note that this script needs a directory, which only root may
-   write to, named /root/tmp (Linux has a long-standing tradition
-   of making root's home directory /root; place this file elsewhere
-   on a system with a different root directory).
+#!/bin/bash 
+ 
+ZONELIST=/etc/maradns.zonelist 
+# For security reasons, put this file in a directory that only root 
+# may write to. 
+TEMP=/root/tmp/foo 
+ 
+cd /etc/maradns 
+ 
+cat $ZONELIST | awk '{print "fetchzone "$1" "$2" > '$TEMP'" 
+ print "if [ $? -eq 0 ] ; then" 
+ print " mv '$TEMP' db."$1 
+ print "fi";}' | sh
 
-   While this script is workable for a small number of zones, this
-   script will quickly become unwieldy for a large number of zones.
-   If one wants to grab a large number of zones, it makes more
-   sense to have the list of zones in a separate file. We then have
-   the shell script read this file (list of zones and IPs), and
-   make the zone files live if the zones have been successfully
-   fetched.
+The list of zones, which is in the file 
+/etc/maradns.zonelist in the above example, will look like 
+this:
 
-   Here is what a shell script may look like:
+example.com 10.5.6.7 
+example.org 192.168.5.67 
+example.net 172.19.2.83
 
- #!/bin/bash
+Note that the presence of a given db.name file in the 
+/etc/maradns directory is not sufficient for MaraDNS to load a given 
+zone file; the zone file in question must be pointed to in the 
+mararc file. Note also that maradns must be restarted 
+to reload the updated zone files. 
 
- ZONELIST=/etc/maradns.zonelist
- # For security reasons, put this file in a directory that only root
- # may write to.
- TEMP=/root/tmp/foo
+More complicated scripting, such as checking the serial number before 
+loading a given zone, is left as an exercise for the reader. 
 
- cd /etc/maradns
+==Bailiwick==
 
- cat $ZONELIST | awk '{print "fetchzone "$1" "$2" > '$TEMP'"
-                       print "if [ $? -eq 0 ] ; then"
-                       print "    mv '$TEMP' db."$1
-                       print "fi";}' | sh
+For security reasons, the fetchzone client only allows records 
+that end in the zone name to be in a given zone. In other words, let us 
+suppose we have a zone for example.com that looks like this:
 
-   The list of zones, which is in the file /etc/maradns.zonelist in
-   the above example, will look like this:
+example.com. 10.1.2.3 
+www.example.com. 10.99.88.76 
+www.google.com. 10.99.88.76
 
- example.com 10.5.6.7
- example.org 192.168.5.67
- example.net 172.19.2.83
+fetchzone, when grabbing this zone, will disable the 
+"www.google.com" record because it doesn't end with "example.com". The 
+disabling will look something like this when the zone file is grabbed:
 
-   Note that the presence of a given db.name file in the
-   /etc/maradns directory is not sufficient for MaraDNS to load a
-   given zone file; the zone file in question must be pointed to in
-   the mararc file. Note also that maradns must be restarted to
-   reload the updated zone files.
+example.com. 10.1.2.3 
+www.example.com. 10.99.88.76 
+# Disabled out-of-bailiwick record follows 
+#www.google.com. 10.99.88.76
 
-   More complicated scripting, such as checking the serial number
-   before loading a given zone, is left as an exercise for the
-   reader.
 
-Bailiwick
-
-   For security reasons, the fetchzone client only allows records
-   that end in the zone name to be in a given zone. In other words,
-   let us suppose we have a zone for example.com that looks like
-   this:
-
- example.com.      10.1.2.3
- www.example.com.  10.99.88.76
- www.google.com.   10.99.88.76
-
-   fetchzone, when grabbing this zone, will disable the
-   "www.google.com" record because it doesn't end with
-   "example.com". The disabling will look something like this when
-   the zone file is grabbed:
-
- example.com. 10.1.2.3
- www.example.com. 10.99.88.76
- # Disabled out-of-bailiwick record follows
- #www.google.com. 10.99.88.76

@@ -1,47 +1,119 @@
-                  MaraDNS tutorials and usage guides
+MaraDNS tutorial   <!-- Copyright 
+2005-2007 Sam Trenholme TERMS Redistribution and use, with or without 
+modification, are permitted provided that the following condition is 
+met: 1. Redistributions must retain the above copyright notice, this 
+list of conditions and the following disclaimer. This documentation is 
+provided 'as is' with no guarantees of correctness or fitness for 
+purpose. --> 
 
-   MaraDNS includes a number of tutorials and usage guides which
-   cover everything from teaching DNS basics for someone who has
-   never administered a DNS server before to usage guides on exotic
-   things such as using private CNAME records that point to public
-   DNS entries.
+===MaraDNS tutorials and usage guides===
 
-   For people who have never used DNS before, the DNS
-   introduction guide is a good place to start. For people who have
-   some experience with DNS servers, the quick start guide is a
-   good place to start.
+MaraDNS includes a number of tutorials and usage guides which cover 
+everything from teaching DNS basics for someone who has never 
+administered a DNS server before to usage guides on exotic things such 
+as using private CNAME records that point to public DNS entries. 
 
-Tutorials and usage guides
+For people who have never used DNS before, the DNS introduction 
+guide is a good place to start. For people who have some experience 
+with DNS servers, the quick start guide is a good place to start. 
 
-     * An introduction to DNS
-     * Using MaraDNS as a recursive DNS server
-     * Using MaraDNS as an authoritative DNS server
-     * A guide on how to compile and install MaraDNS
-     * How to update from an earlier MaraDNS release up to
-       MaraDNS 1.4
-     * MaraDNS' default zonefile allows you to have a large
-       number of zones served by MaraDNS, with a minimum of memory
-       use, and a fast startup time
-     * How to allow other DNS servers to transfer zones over DNS
-     * How to transfers zones from other DNS servers to MaraDNS
-     * How to serve DNS records over TCP
-     * A glossary
-     * A quick-start guide for experienced UNIX and Linux
-       admins
-     * A summary of some record types supported by MaraDNS.
-       Also describes how to delegate sub-zones
-     * How to resolve "dangling" CNAME records
-     * MaraDNS troubleshooting guide
-     * How to convert BIND zone files in to MaraDNS-compatible
-       zone files.
+==Tutorials and usage guides==
 
-Man pages
+* An introduction to DNS
 
-     * The askmara (DNS query client) man page
-     * The csv2 zone file format man page
-     * The man page for csv2 txt and raw records
-     * The duende (MaraDNS daemonizer) man page
-     * The fetchzone (zone transfer client) man page
-     * The maradns (UDP DNS server) daemon man page
-     * The mararc configuration file man page
-     * The zoneserver (TCP DNS server) man page
+S 
+
+* Using MaraDNS as a recursive DNS server
+
+r 
+
+* Using MaraDNS as an authoritative DNS server
+
+r 
+
+* A guide on how to compile and install MaraDNS
+
+S 
+
+* How to update from an earlier MaraDNS release up to MaraDNS 1.4
+
+4 
+
+* MaraDNS' default zonefile allows you to have a large number of zones 
+  served by MaraDNS, with a minimum of memory use, and a fast 
+  startup time
+
+e 
+
+* How to allow other DNS servers to transfer zones over DNS
+
+S 
+
+* How to transfers zones from other DNS servers to MaraDNS
+
+S 
+
+* How to serve DNS records over TCP
+
+P 
+
+* A glossary
+
+y 
+
+* A quick-start guide for experienced UNIX and Linux admins
+
+s 
+
+* A summary of some record types supported by MaraDNS. Also describes 
+  how to delegate sub-zones
+
+s 
+
+* How to resolve "dangling" CNAME records
+
+s 
+
+* MaraDNS troubleshooting guide
+
+e 
+
+* How to convert BIND zone files in to MaraDNS-compatible zone files.
+
+.
+
+==Man pages==
+
+* The askmara (DNS query client) man page
+
+e 
+
+* The csv2 zone file format man page
+
+e 
+
+* The man page for csv2 txt and raw records
+
+s 
+
+* The duende (MaraDNS daemonizer) man page
+
+e 
+
+* The fetchzone (zone transfer client) man page
+
+e 
+
+* The maradns (UDP DNS server) daemon man page
+
+e 
+
+* The mararc configuration file man page
+
+e 
+
+* The zoneserver (TCP DNS server) man page
+
+e
+
+
