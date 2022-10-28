@@ -59,7 +59,7 @@ example, if one has an office which uses IPs in the form 192.168.1.1,
 192.168.1.2, etc., and wishes to have only 192.168.1.any be allowed to 
 make recursive queries:
 
-recursive_acl = "192.168.1.0/24"
+recursive_acl = "<b>192.168.1.0/24</b>"</tt>
 
 Here the "/24" indicates that we ignore the fourth number in an 
 IP when determining who can contact Deadwood. 

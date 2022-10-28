@@ -289,12 +289,12 @@ look something like this:
 
 # Querying the server with the IP 127.0.0.1 
 # Question: Nexample.com. 
-example.com. +86400 ns synth-ip-0a010203.example.com. ~ 
-example.com. +86400 ns synth-ip-0a040506.example.com. ~ 
+example.com. +86400 ns <b>synth-ip-0a010203.example.com.</b> ~ 
+example.com. +86400 ns <b>synth-ip-0a040506.example.com.</b> ~ 
 # NS replies: 
 # AR replies: 
-#synth-ip-0a010203.example.com. +86400 a 10.1.2.3 ~ 
-#synth-ip-0a040506.example.com. +86400 a 10.4.5.6 ~
+#synth-ip-0a010203.example.com. +86400 a <b>10.1.2.3</b> ~ 
+#synth-ip-0a040506.example.com. +86400 a <b>10.4.5.6</b> ~
 
 The names for the name servers we wish to submit to the registrar 
 are the synth-ip-0a010203.example.com and synth-ip-0a040506.example.com 

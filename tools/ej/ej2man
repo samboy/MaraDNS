@@ -196,14 +196,16 @@ lastEnd = 1
 while start do
   local top = ""
   if lastEnd > 1 then top = out:sub(1,lastEnd-1) end
-  local toAlter = out:sub(lastEnd,start - 1)
+  local toAlter = out:sub(lastEnd,start + 4)
   local initial = toAlter:len()
   toAlter = toAlter:gsub("%s+"," ")
   toAlter = toAlter:gsub("\n(%s*)\n","\n")
   local offset = toAlter:len() - initial
   local preend = out:find(mc("</pre>"),start + 1)
-  local mid = out:sub(start,preend)
-  local tail = out:sub(preend + 1)
+  local mid = out:sub(start + 5,preend - 1)
+  mid = mid:gsub("<","\192") -- Allow HTML in PRE, 192 never in valid UTF-8
+  mid = mid:gsub(">","\193") -- Allow HTML in PRE, 193 never in valid UTF-8
+  local tail = out:sub(preend)
   out = top .. toAlter .. mid .. tail
   lastEnd = preend + offset
   start = out:find(mc("<pre>"),preend + offset)
@@ -368,5 +370,7 @@ out = out:gsub("\n\n\n","\n\n")
 out = out:gsub("([^\n])\n%.nf","%1\n\n.nf") -- <pre> fix 
 out = out:gsub("\n%.fi\n([^\n])","\n.fi\n\n%1") -- </pre> fix 1
 out = out:gsub("\n%.fi\n\n%.","\n.fi\n.") -- </pre> fix 2
+out = out:gsub("\192","<") -- Allow HTML in PRE, 192 never in valid UTF-8
+out = out:gsub("\193",">") -- Allow HTML in PRE, 193 never in valid UTF-8
 
 print(out)
