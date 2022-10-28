@@ -13,35 +13,12 @@ no longer need a non-POSIX tool which isn’t included with MaraDNS.
 # Getting the EJ tools to work
 
 The EJ tools are Lua scripts, written for Lua 5.1.  Should the scripts
-not run, one may add a small shell script, with the name `lunacy`,
-to call Lua 5.1 like this:
+not run, make sure to have either Lua 5.1 (a standard package for 
+man *NIX distributions) or Lunacy (see below) installed.
 
-```bash
-# Find lua
-LUNACY=""
-if command -v lunacy64 >/dev/null 2>&1 ; then
-  LUNACY=lunacy64
-elif command -v lua5.1 >/dev/null 2>&1 ; then
-  LUNACY=lua5.1
-elif command -v lua-5.1 >/dev/null 2>&1 ; then
-  LUNACY=lua-5.1
-elif command -v lua >/dev/null 2>&1 ; then
-  # This may or may not work, depending on how much
-  # Lua deviates from Lua 5.1
-  LUNACY=lua
-fi
-if [ -z "$LUNACY" ] ; then
-  echo Please install Lunacy or Lua 5.1
-  echo Either the version included with MaraDNS -or- the version at
-  echo https://github.com/samboy/lunacy
-  exit 1
-fi
-exec $LUNACY "$@"
-```
-
-Since MaraDNS includes a full fork of Lua5.1 called `lunacy`,
-another option is to enter the `coLunacyDNS/lunacy` directory, use
-`make` to compile `lunacy`, then, as root `cp lunacy /usr/local/bin`.
+MaraDNS includes a full fork of Lua5.1 called `lunacy`, to compile it,
+enter the `coLunacyDNS/lunacy` directory, use `make` to compile `lunacy`,
+then, as root `cp lunacy /usr/local/bin`.
 
 # Using EJ
 
