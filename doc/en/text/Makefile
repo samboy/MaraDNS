@@ -5,7 +5,8 @@ all: tutorial.txt \
      man.csv2.txt dnsslave.txt update.txt man.askmara.txt \
      man.fetchzone.txt man.zoneserver.txt man.maradns.txt \
      man.mararc.txt quick_start.txt dnsintro.txt \
-     win_service.txt troubleshoot.txt bind2csv2.txt coding_style.txt
+     win_service.txt troubleshoot.txt bind2csv2.txt coding_style.txt \
+     man.csv1.txt
 
 clean:
 	rm -f *.txt 
@@ -26,6 +27,9 @@ man.zoneserver.txt: ../source/zoneserver.ej
 
 man.askmara.txt: ../source/askmara.ej
 	../../../tools/ej/ej2txt ../source/askmara.ej > man.askmara.txt
+
+man.csv1.txt: ../source/csv1.ej
+	../../../tools/ej/ej2txt ../source/csv1.ej > man.csv1.txt
 
 man.csv2.txt: ../source/csv2.ej
 	../../../tools/ej/ej2txt ../source/csv2.ej > man.csv2.txt
