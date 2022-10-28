@@ -1,7 +1,10 @@
 EJ (short for “Easy Journal”) is the document system that MaraDNS
 uses; this is in response to my translators asking for a single unified
-document format which can be converted in to HTML; man pages; text
-documents; etc.
+document format which can be converted in to the following three formats:
+
+* HTML documents
+* Man pages
+* Plain text documents
 
 EJ is an XML-like format (without a DTD, alas) which has the following 
 tags.
@@ -27,8 +30,8 @@ TITLE: The title of the document when the document is translated to HTML
 BODYFLAGS: Flags given to the BODY tag when this document is translated
            to HTML
 
-meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=XXX": Mandatory;
-XXX is the character set this document is encoded in
+meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8": Mandatory;
+all documents must be encoded as utf-8 documents.
 
 Tags to put in the body of the document:
 
@@ -46,17 +49,12 @@ I: Italic text; terminated by /I
 
 UL: Start a bulleted list; terminated by /UL
 
-LI: Bulleted list item 
+LI: Bulleted list item.  Please minimize tag use in bulleted lists,
+    using only B and I tags.
 
 PRE: Unformatted text follows; this tag is terminated by /PRE
 
-NB: The next word should not be broken if there is a hyphen in the word
-    (Not currently supported; to do)
-
 INCLUDE "filename": Embed the listed filename as the next section of the doc
-
-HINCLUDE "filename": Embed the listed filename as the next section of the doc
-                     if this document is being translated to HTML
 
 BLOCKQUOTE: Move the following text over; terminated by /BLOCKQUOTE
 
@@ -81,14 +79,13 @@ DT: Start to describe the item to define; can be closed by /DT
     (to work around a bug in the Konqueror web browser)
 
 DD: Start to define the item just declared with the DL tag; can be closed
-    by /DD (to work around Konqueror bug)
+    by /DD 
 
 HR: This is used to split up sections of the document
 
-HIBIT: This is a special tag used to indicate a section that needs
-       hi-bit (non-ASCII Unicode) characters.  This tag will be removed 
-       in HTML documents and the whole section will be removed in 
-       man pages.
+HIBIT: This was a special tag used to indicate a section that needs
+       hi-bit (non-ASCII Unicode) characters.  Now that UTF-8 is universal,
+       this tag is no longer used.
 
 NOFMT: This is a special tag used to indicate to not attempt to make
        lines under 72 columns wide when generating text and *ROFF 
