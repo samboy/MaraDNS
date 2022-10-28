@@ -240,17 +240,21 @@ out=out:gsub(mc('</?body>'),"") -- Scrub BODY tag
 out=out:gsub(mc('<hibit[^>]*>([^<]*)</hibit>'),"%1") -- HIBIT (2022)
 
 out=out:gsub(mc("</?hibit[^>]*>"),"") -- HIBIT part 2
+out=out:gsub("\\","\\\\") -- escape backslashes
+-- Escape quotes in PRE sections
+while out:find(mc("<pre>([^<]*)'([^<]*)</pre>")) do
+  out = out:gsub(mc("<pre>([^<]*)'([^<]*)</pre>"),"<pre>%1\\(aq%2</pre>")
+end
 out=out:gsub(mc("<pre>%s*"),"\n\n.nf\n"); -- PRE opener
 out=out:gsub(mc("</pre>%s*"),"\n.fi\n\n"); -- PRE closer
 out=out:gsub(mc('&nbsp;'),' ') -- &nbsp; becomes literal space
 out=out:gsub(mc("<h1>([^<]*)</h1>%s*"),'\n.SH "%1"\n.PP\n') -- H1
 
 -- H2 tag
--- No quotes in H2 section
+-- No quotes in H2 sections
 while out:find(mc("<h2>([^<]*)[\'\"]([^<]*)</h2>")) do
   out = out:gsub(mc("<h2>([^<]*)[\'\"]([^<]*)</h2>"),"<h2>%1%2</h2>")
 end
-out=out:gsub("\\","\\\\") -- escape backslashes
 out=out:gsub(mc("<h2>([^<]*)</h2>%s*"),'\n.PP\n.in -3\n\\fB%1\\fR\n.PP\n')
 
 out=out:gsub(mc("</?a[^<]+>"),"") -- A tag part 1
