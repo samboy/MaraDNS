@@ -6,8 +6,9 @@ document format which can be converted in to the following three formats:
 * Man pages
 * Plain text documents
 
-EJ is an XML-like format (without a DTD, alas) which has the following 
-tags.
+The EJ tools were originally written in Perl in 2002.  In 2022, the
+tools were re-written in Lua 5.1 so that building MaraDNS’s documents
+no longer need a non-POSIX tool which isn’t included with MaraDNS.
 
 # Getting the EJ tools to work
 
@@ -44,20 +45,22 @@ another option is to enter the `coLunacyDNS/lunacy` directory, use
 
 # Using EJ
 
-Here is a summary of EJ’s syntax
+EJ is an XML-like format (without a DTD, alas) which has the following 
+tags.
 
 Comments:
 
-Comments begin with <!-- and end with -->; these comments are removed
-before an ej doc is translated in to any other format
+Comments begin with `<!--` and end with `-->`; these comments are removed
+before an ej document is translated.  Comments must not have a `>` 
+character in them.
 
 Tags to put in the header of the document:
 
 HEAD: Marks the beginning of the header; terminated by /HEAD
 
 TH: Placed in the HEAD of the document; this is the arguments to give TH 
-when translated to a web page; terminated by /TH; only applies when 
-converting ej documents to man page sources
+when translated to a man page; terminated by /TH; only applies when 
+converting ej documents to *ROFF man pages
 
 DTWIDTH: How wide to make DT entries when translating to the man page
          format
@@ -99,7 +102,7 @@ P: Indicates a new paragraph
 
 A: Indicates an anchor; same as a HTML anchor; terminated with /A
 
-TT: Indicates fix-point text
+TT: Indicates fix-point text (only rendered in HTML pages)
 
 TABLE: Signifies the beginning of a basic three-column table; terminated
        with /TABLE
