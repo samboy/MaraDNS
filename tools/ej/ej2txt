@@ -1,39 +1,265 @@
-#!/bin/bash
+#!/usr/bin/env lunacy
 
-# Convert an ej document to a htmlpage document; which we then make a utf-8
-# text document
+-- This script has been donated to the public domain in 2022 by Sam Trenholme
+-- If, for some reason, a public domain declation is not acceptable, it
+-- may be licensed under the following terms:
 
-TMP=$HOME/tmp
-LINKS=$( which elinks )
-LYNX=0
-if [ -z "$LINKS" ] ; then
-	LINKS=$( which links )
-fi
-if [ -z "$LINKS" ] ; then
-	LINKS=$( which lynx )
-	LYNX=1
-fi
+-- Copyright 2022 Sam Trenholme
+-- Permission to use, copy, modify, and/or distribute this software for
+-- any purpose with or without fee is hereby granted.
+-- THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+-- WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+-- OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+-- ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+-- WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+-- ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+-- OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-if which ej2html > /dev/null 2>&1 ; then
-	CMD=ej2html
-elif [ -e ../tools/ej/ej2html ] ; then
-	CMD=../tools/ej/ej2html
-elif [ -e ../../tools/ej/ej2html ] ; then
-	CMD=../../tools/ej/ej2html
-elif [ -e ../../../tools/ej/ej2html ] ; then
-	CMD=../../../tools/ej/ej2html
-elif [ -e ../../../../tools/ej/ej2html ] ; then
-	CMD=../../../../tools/ej/ej2html
+-- Convert an ej-formatted doc in to a plain text page
+-- Input: First argument or standard input
+-- Output: Standard output
+
+-- mc() converts a string in to a case insensitive regex; mc('th') is [Tt][Hh]
+function mc(i) 
+  local out = ""
+  local afterPercent = false
+  for a=1,i:len() do
+    seek = i:sub(a,a) 
+    -- Do not mangle anything right after a %
+    if seek == "%" and not afterPercent then
+      out = out .. seek
+      afterPercent = true
+    -- Only letters not after a % get mangled
+    elseif seek:find("%a") and not afterPercent then 
+      out = out .. "[" .. seek:upper() .. seek:lower() .. "]"
+    -- Other stuff is copied as is
+    elseif seek and not afterPercent then
+      out = out .. seek
+    -- Everything right after a % is passed as-is
+    elseif afterPercent then
+      out = out .. seek
+      afterPercent = false
+    end
+  end
+  return out
+end
+
+-- Get a string representing today’s date
+function get_timestamp_string()
+  local timestamp = "Time unknown"
+  if lunacy then
+    local year, mon, day = lunacy.today()
+    if year then
+      timestamp = string.format("%d-%02d-%02d",year, mon, day)
+    else
+      -- lunacy.today() returns nil if time_t is 32-bit
+      -- Linux has had 64-bit time support on 32-bit systems since 2020
+      -- Alpine Linux, for example, has a 64-bit time_t on 32-bit x86
+      -- Another option is to patch the Lunacy source using the
+      -- code at https://github.com/evalEmpire/y2038 and making a
+      -- non-portable syscall() to get the undelying 64-bit timestamp
+      timestamp = "If your time_t is 32-bit, please upgrade"
+    end
+  elseif os.date then
+    local a = os.date("*t")
+    local year = a.year
+    local mon = a.month
+    local day = a.day
+    timestamp = string.format("%d-%02d-%02d",year, mon, day)
+  elseif os.time then
+    timestamp = string.format("Unix timestamp %d",os.time())
+  end
+  return timestamp
+end
+
+-- Count the number of UTF-8 codepoints in a string.  This function
+-- is used to determine how wide a given string will be on the terminal.
+-- The correct way to determine terminal string width is to get the
+-- toolkit at https://github.com/unicode-org/icu then use
+-- u_getIntPropertyValue() or to use the functions at
+-- https://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c, which I have mirrored
+-- at https://github.com/samboy/wcwidth/
+-- The way I do it is to assume that all UTF-8 code points have the
+-- same width.  If this isn’t true for your language, put <NOFMT> in
+-- the head of the document and use a version of `fmt` that uses a
+-- proper Unicode library.
+function UTF8count(from)
+  local count = 0
+  if not from:find("[\128-\255]") then return from:len() end  
+  from = from:gsub("[\194-\223][\128-\191]","@")
+  from = from:gsub("[\224-\239][\128-\191][\128-\191]","#")
+  from = from:gsub("[\240-\247][\128-\191][\128-\191][\128-\191]","$")
+  return from:len()
+end
+-- Add linebreaks to a long string to make it look nice on a 80-column
+-- (or whatever) terminal
+-- Input: The string we will add newlines to (from)
+--        What we will put on lines after adding newlines (this is
+--        so we can use this with lists and have the lines all start
+--        to the right of the bullet) (prefix)
+--        The maximum length of a line before adding a newline (should
+--        there be a word with space longer than len, it will not be
+--        broken up)
+-- Output: The string with newlines added
+NoFmt = false -- This will be true for non-LGC languages
+function fmt(from, prefix, len)
+  if NoFmt then return from end -- NOFMT option for non-LGC languages
+  if not prefix then prefix = "" end -- Usually for bullet lists
+  if not len then len = 72 end
+  local out = ""
+  local index = 1
+  local thisLineStart = 1
+  local thisLineLength = 0
+  while index < from:len() do
+    lastIndex = index
+    index = from:find("%s",index + 1)
+    if not index then
+      return out .. from:sub(thisLineStart,-1) .. "\n"
+    end 
+    thisLineLength = thisLineLength + UTF8count(from:sub(lastIndex,index-1))
+    if from:sub(index,index) == "\n" then 
+      out = out .. from:sub(thisLineStart,index)
+      thisLineStart = index + 1
+      thisLineLength = 0
+    end
+    if thisLineLength > len then
+      thisLineLength = UTF8count(from:sub(lastIndex,index-1))
+      out = out .. from:sub(thisLineStart,lastIndex) .. "\n" .. prefix
+      if thisLineStart == 1 then len = len - prefix:len() end -- Bullet lists
+      thisLineStart = lastIndex + 1
+    end
+  end
+  return out .. from:sub(thisLineStart,-1) .. "\n"
+end
+----- END FUNCTIONS -----
+
+-- If they give a filename as an argument try to open that file
+if arg[1] then 
+ fh = io.open(arg[1],"rb")
+ if not fh then
+   print("Error opening file " .. arg[1])
+   os.exit(1)
+ end
+ io.input(fh)
+ fhSave = fh
 else
-	echo Sorry\, can not find ej2html
-	exit 1
-fi
+ fhSave = io.stdin
+end
+inInclude = false
 
-$CMD $1 > $TMP/$$.html
-if [ "$LYNX" < 1 ] ; then
-	$LINKS -dump-width 70 -dump -no-references -no-numbering $TMP/$$.html 
-else
-	lynx -dump -nolist $TMP/$$.html
-fi
-rm $TMP/$$.html
+-- Read the file, making it a single line, unless we’re in a <PRE>
+-- tag
 
+out = ""
+l = io.read()
+inPre = false
+while l do
+
+  -- handle <include "filename"> (doesn’t nest)
+  if l:find(mc('<include%s+"')) and not inInclude then
+    includeFileName=l:gsub(mc('.*<include%s+"([^"]+)".*'),"%1")
+    l=l:gsub(mc('<include%s+"([^"]+)"%s*>'),"")
+    fh = io.open(includeFileName,"rb")
+    if not fh then
+      print("Error opening file " .. includeFileName)
+      os.exit(1)
+    end
+    io.input(fh)
+    inInclude = true
+  end
+
+  l = l:gsub("%s+"," ")
+  out = out .. l .. " "
+  if l:find(mc("<pre>")) then
+    inPre = true
+  elseif l:find(mc("</pre>")) then
+    inPre = false
+  end
+  if inPre then 
+    out = out .. "\n"
+  end
+  l = io.read()
+
+  -- Handle end of included filename (go back to parent)
+  if not l and inInclude then
+    inInclude = false
+    io.input(fhSave)
+    l = io.read()
+  end
+
+end
+out = out:gsub(" +"," ")
+-- Step two: Now that the file is a single line, process EJ (HTML) tags
+
+if out:find(mc("<nofmt>.*<body>")) then NoFmt = true end
+out = out:gsub(mc("<nofmt>"),"")
+out = out:gsub(mc("<th%s*>[^<]*</th%s*>"),"") -- EJ for man pages unused here
+out = out:gsub(mc("<dtwidth%s*>[^<]*</dtwidth%s*>"),"") -- DTWIDTH part of man
+out = out:gsub(mc("</?meta[^>]*>"),"") -- Scrub META tag
+out = out:gsub(mc("<a%s+[^>]*>"),"") -- Scrub A tag
+out = out:gsub(mc("</?b>"),"") -- Scrub B tag (bold)
+out = out:gsub(mc("</?i>"),"") -- Scrub I tag (italic)
+
+-- Lists are a special case
+out = out:gsub(mc("<li>%s*"),"<li>")
+matchPlace, matchEnd = out:find(mc("<li>[^<]*")) -- LI
+while matchPlace and matchPlace > 1 do
+  tail = out:sub(matchEnd)
+  out = out:sub(1, matchPlace - 1) .. "\n\n* " ..
+        fmt(out:sub(matchPlace + 4,matchEnd),"  ",68) .. "\n\n" .. tail
+  matchPlace, matchEnd = out:find(mc("<li>[^<]*"),matchPlace + 1)
+end
+
+out = out:gsub(mc("</?ul>%s*"),"\n\n") -- Have space at top and bottom of lists
+out = out:gsub(mc("<p%s*>%s*"),"\n\n") -- Paragraph is new line
+out = out:gsub(mc("<h1%s*>%s*"),"\n\n===") -- Level 1 headings start
+out = out:gsub(mc("<h2%s*>%s*"),"\n\n==") -- Level 2 headings start
+out = out:gsub(mc("</?h1%s*>%s*"),"===\n\n") -- Level 1 headings end
+out = out:gsub(mc("</?h2%s*>%s*"),"==\n\n") -- Level 2 headings end
+out = out:gsub(mc("</?dt%s*>%s*"),"\n\n") -- DT tags
+-- Tables, used by csv1.ej
+out=out:gsub(mc("<table>%s*"),"\n")
+out=out:gsub(mc("</table>"),"")
+out=out:gsub(mc("<td>"),'\t')
+out=out:gsub('<[TtBb][Rr]>\n?','\n')
+-- HiBit, also used by csv1.ej
+out=out:gsub(mc('<hibit[^>]*>([^<]*)</hibit>'),"%1") -- HIBIT (2022)
+-- Blockquote, used by faq.embed.  Just ignore it
+out=out:gsub(mc("</?blockquote>%s*"),"\n")
+
+-- fmt: Add line breaks to fit on an 80-column terminal
+-- Do not fmt pre sections, fmt everything else
+start = out:find(mc("<pre>"))
+lastEnd = 1
+while start do
+  local top = ""
+  if lastEnd > 1 then top = out:sub(1,lastEnd-1) end
+  local toFmt = out:sub(lastEnd,start - 1)
+  local initial = top:len()
+  toFmt = fmt(toFmt)
+  local offset = top:len() - initial
+  local preend = out:find(mc("</pre>"),start + 1)
+  local mid = out:sub(start,preend)
+  local tail = out:sub(preend + 1)
+  out = top .. toFmt .. mid .. tail
+  lastEnd = preend
+  start = out:find(mc("<pre>"),preend + offset)
+end
+local top = out:sub(1,lastEnd)
+local tail = out:sub(lastEnd + 1)
+tail = fmt(tail)
+out = top .. tail
+
+out = out:gsub(mc("</?pre>%s*"),"\n\n") -- Space before and after code blocks
+out = out:gsub("</?%w+%s*>","") -- Remove all other EJ tags
+out = out:gsub("^%s*","") -- Remove whitespace at document top
+
+out = out:gsub("[ ]*\n[ ]*\n[ ]*\n[ ]*\n[ ]*\n","\n\n")
+out = out:gsub("[ ]*\n[ ]*\n[ ]*\n[ ]*\n","\n\n")
+out = out:gsub("[ ]*\n[ ]*\n[ ]*\n","\n\n")
+out = out:gsub("\n\n\n\n\n\n\n","\n\n")
+out = out:gsub("\n\n\n\n\n\n","\n\n")
+out = out:gsub("\n\n\n\n\n","\n\n")
+out = out:gsub("\n\n\n\n","\n\n")
+out = out:gsub("\n\n\n","\n\n")
+print(out)
