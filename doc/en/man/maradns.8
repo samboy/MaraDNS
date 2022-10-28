@@ -748,7 +748,7 @@ Let us suppose we have a CNAME record without an A record in the local
 DNS server\(aqs database, such as: 
 
 .nf
-google.example.com. CNAME www.google.com. 
+	google.example.com. CNAME www.google.com. 
 .fi
 .PP
 This record, which is a CNAME record for "google.example.com", points 
@@ -756,7 +756,7 @@ to "www.google.com". Some DNS servers will recursively look up
 www.google.com, and render the above record like this: 
 
 .nf
-google.example.com. CNAME www.google.com. 
+	google.example.com. CNAME www.google.com. 
 	www.google.com. A 66.102.7.104 
 .fi
 .PP
@@ -764,7 +764,7 @@ For security reasons, MaraDNS doesn\(aqt do this. Instead, MaraDNS will
 simply output: 
 
 .nf
-google.example.com. CNAME www.google.com. 
+	google.example.com. CNAME www.google.com. 
 .fi
 
 Some stub resolvers will be unable to resolve google.example.com as a 
@@ -777,7 +777,7 @@ If you want to remove these warnings, add the following to your mararc
 file: 
 
 .nf
-no_cname_warnings = 1 
+	no_cname_warnings = 1 
 .fi
 .PP
 Information about how to get MaraDNS to resolve dangling CNAME records 

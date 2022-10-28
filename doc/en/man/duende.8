@@ -84,7 +84,7 @@ error, it will send messages to syslog() with a priority of LOG_ALERT.
 For example, suppose one invokes duende thusly: 
 
 .nf
-duende /usr/local/sbin/maradns 
+	duende /usr/local/sbin/maradns 
 .fi
 
 If invoked thusly, duende will log all messages with the "ident" 
@@ -92,7 +92,7 @@ If invoked thusly, duende will log all messages with the "ident"
 invoke duende with something like: 
 
 .nf
-export PATH=$PATH:/usr/local/sbin 
+	export PATH=$PATH:/usr/local/sbin 
 	duende maradns 
 .fi
 
@@ -109,14 +109,14 @@ configures syslog to store messages there.
 Using duende to start maradns, where the mararc file is /etc/mararc.2 
 
 .nf
-duende maradns -f /etc/mararc.2 
+	duende maradns -f /etc/mararc.2 
 .fi
 
 Using duende to start zoneserver, where the mararc file is 
 /etc/mararc.4 
 
 .nf
-duende zoneserver -f /etc/mararc.4 
+	duende zoneserver -f /etc/mararc.4 
 .fi
 .SH "BUGS"
 .PP

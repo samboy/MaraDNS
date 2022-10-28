@@ -176,9 +176,6 @@ while l do
   end
   if inPre then 
     out = out .. "\n"
-  else
-    l = l:gsub("%s+"," ")
-    l = l:gsub("^ ","")
   end
   l = io.read()
 
@@ -276,7 +273,7 @@ tail = fmt(tail)
 out = top .. tail
 
 out = out:gsub(mc("<pre>[ \t]*\n"),"<pre>\n") -- Fix up <pre>
-out = out:gsub(mc("</?pre>%s*"),"\n\n") -- Space before and after code blocks
+out = out:gsub(mc("</?pre>[ \t]*"),"\n\n") -- Space before and after code blocks
 out = out:gsub("</?%w+%s*>","") -- Remove all other EJ tags
 out = out:gsub("^%s*","") -- Remove whitespace at document top
 
