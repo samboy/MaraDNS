@@ -20,7 +20,7 @@
 .ds aq \(aq
 .if !\n(.g .if '\(aq'' .ds aq \'
 
-  
+
 
 .nf
 Erre con erre cigarro 
@@ -33,6 +33,7 @@ En el ferrocarril
 maradns - DNS server 
 .SH "SYNOPSIS"
 .PP
+
 .B "maradns [ -v | -f mararc_file_location ]"
 .SH "TABLE OF CONTENTS"
 .PP
@@ -58,6 +59,7 @@ Authors
 
 .SH "DESCRIPTION"
 .PP
+
 .B "maradns"
 is a DNS server written with security, simplicity, and performance in 
 mind. 
@@ -72,6 +74,7 @@ default location of this file is
 .BR "/etc/mararc" "."
 This is specified in the form 
 .BR "maradns -f mararc_file_location" ";"
+
 .I "mararc_file_location"
 is the location of the mararc file. 
 .PP
@@ -276,6 +279,7 @@ denial-of-service attack?
 .in -3
 \fBANSWERS\fR
 .PP
+
 .PP
 
 .in -3
@@ -404,7 +408,7 @@ timeout_seconds = 5
 .PP
 
 Note that making this too high will slow MaraDNS down when DNS servers 
-are down, which is, alas, all too common on today\(aqs internet.    
+are down, which is, alas, all too common on today\(aqs internet.   
 .PP
 
 .in -3
@@ -643,7 +647,7 @@ Note the ["."].
 Note that the upstream_servers variable needs to be initialized before 
 being used via upstream_servers = {} (the reason for this is so that a 
 dwood3rc file has 100% Python-compatible syntax). A complete dwood3rc 
-file that uses upstream_servers may look like this: 
+file that uses upstream_servers may look like this:
 
 .nf
 ipv4_bind_addresses = "127.0.0.1" 
@@ -745,7 +749,7 @@ This is probably because you have set up what MaraDNS calls a dangling
 CNAME record. 
 .PP
 Let us suppose we have a CNAME record without an A record in the local 
-DNS server\(aqs database, such as: 
+DNS server\(aqs database, such as:
 
 .nf
 	google.example.com. CNAME www.google.com. 
@@ -753,7 +757,7 @@ DNS server\(aqs database, such as:
 .PP
 This record, which is a CNAME record for "google.example.com", points 
 to "www.google.com". Some DNS servers will recursively look up 
-www.google.com, and render the above record like this: 
+www.google.com, and render the above record like this:
 
 .nf
 	google.example.com. CNAME www.google.com. 
@@ -761,7 +765,7 @@ www.google.com, and render the above record like this:
 .fi
 .PP
 For security reasons, MaraDNS doesn\(aqt do this. Instead, MaraDNS will 
-simply output: 
+simply output:
 
 .nf
 	google.example.com. CNAME www.google.com. 
@@ -774,7 +778,7 @@ If you set up MaraDNS to resolve CNAMEs thusly, you will get a warning
 in your logs about having a dangling CNAME record. 
 .PP
 If you want to remove these warnings, add the following to your mararc 
-file: 
+file:
 
 .nf
 	no_cname_warnings = 1 
@@ -798,7 +802,7 @@ are these strange synth-ip records. \fR
 MaraDNS expects, in csv2 zone files, for all delegation NS records to 
 be between the SOA record and the first non-NS record. 
 .PP
-If a zone looks like this: 
+If a zone looks like this:
 
 .nf
 example.net. +600 soa ns1.example.net.  
@@ -813,7 +817,7 @@ www.example.net. +600 a 10.2.3.11
 
 Then the NS records will be "synth-ip" records. 
 .PP
-The zone should look like this: 
+The zone should look like this:
 
 .nf
 example.net. +600 soa ns1.example.net.  
@@ -828,7 +832,7 @@ www.example.net. +600 a 10.2.3.11
 
 This will remove the "synth-ip" records. 
 .PP
-To automate this process, this awk script is useful: 
+To automate this process, this awk script is useful:
 
 .nf
 fetchzone whatever.zone.foo 10.1.2.3 | awk \(aq 
@@ -848,7 +852,7 @@ the name of the zone file MaraDNS loads.
 MaraDNS (actually, Deadwood), unlike BIND, does not need a complicated 
 root.hints file in order to have custom root servers. In order to 
 change the root.hints file, add something like this to your dwood3rc 
-file: 
+file:
 
 .nf
 root_servers["."] =  "131.161.247.232," 
@@ -1174,6 +1178,7 @@ computer.
 .in -3
 \fB50. I can not subscribe to the MaraDNS mailing list\fR
 .PP
+
 .I "Please note that the mailing list is no longer used to handle 
 MaraDNS support requests. Please file a Github issue at 
 https://github.com/samboy/MaraDNS/issues to file a MaraDNS bug report."
@@ -1272,7 +1277,7 @@ d.sin_port=htons(53);bind(a,(Z*)&amp;d,Y);for(;;){i
 .fi
 
 NanoDNS takes one argument: The IP we return. This program binds to all 
- IP addresses a given machine has on the UDP DNS port (port 53).  For 
+IP addresses a given machine has on the UDP DNS port (port 53). For 
 example, to make a DNS server that binds to all IPs your system has and 
 return the IP 10.11.12.13 to any UDP DNS queries sent to it, compile 
 the above C program, call it NanoDNS, and invoke it with NanoDNS 
@@ -1458,6 +1463,7 @@ MaraDNS, like every other known DNS implementation, only supports a
 QDCOUNT of 0 or 1. 
 .SH "UNIMPLEMENTED FEATURES"
 .PP
+
 .I "These are features which I do not plan to implement in MaraDNS."
 .PP
 MaraDNS does not have a disk-based caching scheme for authoritative 

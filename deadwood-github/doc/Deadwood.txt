@@ -70,8 +70,8 @@ Deadwood has three different parameter types:
 
 filter_rfc1918 = 0
 
-If a numeric parameter is surrounded by quotes, the error 
-message "Unknown dwood3rc string parameter" will appear. 
+If a numeric parameter is surrounded by quotes, the error message 
+"Unknown dwood3rc string parameter" will appear. 
 
 * String parameters. String parameters must be surrounded by quotes, 
   such as in this example:
@@ -221,8 +221,8 @@ ip4 = {}
 ip4["maradns.foo."] = "10.10.10.10" 
 ip4["kabah.foo."] = "10.11.11.11"
 
-Note that a given name can only resolve to a single IP, and 
-that the records have a fixed TTL of 30 seconds. 
+Note that a given name can only resolve to a single IP, and that 
+the records have a fixed TTL of 30 seconds. 
 
 It is also possible to use ip4 to set up a blocklist by using "X" for 
 the IP. When this is done, an IPv4 request for a given hostname results 
@@ -563,8 +563,8 @@ upstream_servers["foo.example.com."] = "192.168.42.1"
 upstream_servers["example.com."] = "192.168.99.254" 
 upstream_servers["."] = "10.1.2.3, 10.1.2.4"
 
-In this example, anything ending in "foo.example.com" is 
-resolved  by the DNS server at 192.168.42.1; anything else ending in 
+In this example, anything ending in "foo.example.com" is resolved 
+by the DNS server at 192.168.42.1; anything else ending in 
 "example.com" is resolved by 192.168.99.254; and anything not ending in 
 "example.com" is resolved by either 10.1.2.3 or 10.1.2.4. 
 

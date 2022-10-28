@@ -104,7 +104,7 @@ Deadwood has three different parameter types:
 .TP 2
 *
 Numeric parameters. Numeric parameters must not be surrounded by 
-quotes, such as this example: 
+quotes, such as this example:
 
 .nf
 filter_rfc1918 = 0 
@@ -115,7 +115,7 @@ If a numeric parameter is surrounded by quotes, the error message
 .TP 2
 *
 String parameters. String parameters must be surrounded by quotes, such 
-as in this example: 
+as in this example:
 
 .nf
 bind_address = "127.0.0.1" 
@@ -125,7 +125,7 @@ bind_address = "127.0.0.1"
 Dictionary parameters. All dictionary parameters must be initialized 
 before use, and dictionary parameters must have both the dictionary 
 index and the value for said index surrounded by quotes, such as in 
-this example: 
+this example:
 
 .nf
 upstream_servers = {} 
@@ -304,7 +304,7 @@ older configuration files do not break in Deadwood 3.0.
 This is a dictionary variable which allows us to have given names 
 resolve to bogus IPv4 addresses. Here, we have the name "maradns.foo" 
 resolve to "10.10.10.10" and "kabah.foo" resolve to "10.11.11.11", 
-regardless of what real values these DNS records may have: 
+regardless of what real values these DNS records may have:
 
 .nf
 ip4 = {} 
@@ -320,7 +320,7 @@ the IP. When this is done, an IPv4 request for a given hostname results
 in a synthetic "this name does not exist" response. In addition, the 
 corresponding IPv6 request will 
 .I "also"
-return that "name does not exist" reply. For example: 
+return that "name does not exist" reply. For example:
 
 .nf
 ip4 = {} 
@@ -339,7 +339,7 @@ Like ip4, ip6 uses a similar syntax to have bogus IPv6 addresses. We
 don\(aqt use standard notation for IPv6 addresses. Instead, we we use 
 32-character hex addresses (case insensitive); to make it easier to 
 count long strings of "0"s, the "_" acts like a 0; we also ignore "-" 
-(dash) and " " (space) in ip6 strings. Here is an example: 
+(dash) and " " (space) in ip6 strings. Here is an example:
 
 .nf
 ip6 = {} 
@@ -713,7 +713,7 @@ Deadwood, Deadwood will first see if there is an upstream_servers
 variable for "www.foo.example.com.", then look for "foo.example.com.", 
 then look for "example.com.", then "com.", and finally ".". 
 .PP
-Here is an example of upstream_servers: 
+Here is an example of upstream_servers:
 
 .nf
 upstream_servers = {} # Initialize dictionary variable 
@@ -722,14 +722,14 @@ upstream_servers["example.com."] = "192.168.99.254"
 upstream_servers["."] = "10.1.2.3, 10.1.2.4" 
 .fi
 
-In this example, anything ending in "foo.example.com" is resolved  by 
+In this example, anything ending in "foo.example.com" is resolved by 
 the DNS server at 192.168.42.1; anything else ending in "example.com" 
 is resolved by 192.168.99.254; and anything not ending in "example.com" 
 is resolved by either 10.1.2.3 or 10.1.2.4. 
 .PP
 .B "Important:"
 the domain name upstream_servers points to must end in a "." character. 
-This is OK: 
+This is OK:
 
 .nf
 upstream_servers["example.com."] = "192.168.42.1" 
@@ -737,7 +737,7 @@ upstream_servers["example.com."] = "192.168.42.1"
 
 But this is 
 .B "not"
-OK: 
+OK:
 
 .nf
 upstream_servers["example.com"] = "192.168.42.1" 
@@ -838,11 +838,11 @@ file to to parsed via execfile.
 This server can also be optionally compiled to have IPv6 support. In 
 order to enable IPv6 support, add \(aq-DIPV6\(aq to the compile-time 
 flags. For example, to compile this to make a small binary, and to have 
-IPv6 support: 
+IPv6 support:
 
 .nf
 	export FLAGS=\(aq-Os -DIPV6\(aq 
-make 
+	make 
 .fi
 .SH "SECURITY"
 .PP
@@ -900,13 +900,13 @@ Deadwood\(aqs configuration file format supports two kinds of comments:
 
 Here, a comment starts with the # character and continues until the end 
 of the line. In some circumstances, a comment can start after a 
-variable is set, for example: 
+variable is set, for example:
 
 .nf
 bind_address="127.0.0.1" # IP we bind to 
 .fi
 
-The second comment type supports multi-line comments. For example: 
+The second comment type supports multi-line comments. For example:
 
 .nf
 _rem={} 
@@ -930,16 +930,20 @@ Deadwood does not have any built-in daemonization facilities; this is
 handled by the external program Duende or any other daemonizer. 
 .SH "Example configuration file"
 .PP
-Here is an example dwood3rc configuration file: 
+Here is an example dwood3rc configuration file:
 
 .nf
 # This is an example deadwood rc file  
 # Note that comments are started by the hash symbol 
+ 
 bind_address="127.0.0.1" # IP we bind to 
+ 
 # The following line is disabled by being commented out 
 #bind_address="::1" # We have optional IPv6 support 
+ 
 # Directory we run program from (not used in Win32) 
 chroot_dir = "/etc/deadwood"  
+ 
 # The following upstream DNS servers are Google\(aqs  
 # (as of December 2009) public DNS servers.  For  
 # more information, see the page at 
@@ -949,28 +953,36 @@ chroot_dir = "/etc/deadwood"
 # Deadwood will use the default ICANN root servers. 
 #upstream_servers = {} 
 #upstream_servers["."]="8.8.8.8, 8.8.4.4"  
+ 
 # Who is allowed to use the cache.  This line 
 # allows anyone with "127.0" as the first two 
 # digits of their IP to use Deadwood 
 recursive_acl = "127.0.0.1/16"  
+ 
 # Maximum number of pending requests 
 maxprocs = 2048 
+ 
 # Send SERVER FAIL when overloaded 
 handle_overload = 1  
+ 
 maradns_uid = 99 # UID Deadwood runs as 
 maradns_gid = 99 # GID Deadwood runs as 
+ 
 maximum_cache_elements = 60000 
+ 
 # If you want to read and write the cache from disk,  
 # make sure chroot_dir above is readable and writable  
 # by the maradns_uid/gid above, and uncomment the  
 # following line.  
 #cache_file = "dw_cache" 
+ 
 # If your upstream DNS server converts "not there" DNS replies 
 # in to IPs, this parameter allows Deadwood to convert any reply 
 # with a given IP back in to a "not there" IP.  If any of the IPs 
 # listed below are in a DNS answer, Deadwood converts the answer 
 # in to a "not there" 
 #ip_blocklist = "10.222.33.44, 10.222.3.55" 
+ 
 # By default, for security reasons, Deadwood does not allow IPs in  
 # the 192.168.x.x, 172.[16-31].x.x, 10.x.x.x, 127.x.x.x,  
 # 169.254.x.x, 224.x.x.x, or 0.0.x.x range.  If using Deadwood  

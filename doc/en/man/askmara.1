@@ -26,6 +26,7 @@
 askmara - do simple dns queries 
 .SH "DESCRIPTION"
 .PP
+
 .B "askmara"
 queries the user-specified dns server for records, and outputs the 
 reply in a csv2-compatible format (csv2 is the format of zone files 
@@ -34,6 +35,7 @@ that
 uses). 
 .SH "USAGE"
 .PP
+
 .B "askmara"
 [-n] [ -v | -t timeout] query [ server ] 
 .SH "OPTIONS"
@@ -107,21 +109,21 @@ askmara will query 127.0.0.1.
 .SH "EXAMPLES"
 .PP
 Asking the server with the ip 127.0.0.1 for the IP address of 
-example.com: 
+example.com:
 
 .nf
 askmara Aexample.com. 
 .fi
 
 Asking the server with the ip 198.41.0.4 for the IP address of 
-example.com: 
+example.com:
 
 .nf
 askmara Aexample.com. 198.41.0.4 
 .fi
 
 Asking the server with the ip address 127.0.0.1 for the IP address of 
-example.com, using the rr_number:query format: 
+example.com, using the rr_number:query format:
 
 .nf
 askmara 1:example.com.  
@@ -130,14 +132,14 @@ askmara 1:example.com.
 Asking the server with the ip address 127.0.0.1 for a SRV record. In 
 particular, we ask for the "http over tcp" service for example.net. 
 Since askmara doesn\(aqt have a mnemonic for SRV record types, we use 
-the numeric code (33 for SRV): 
+the numeric code (33 for SRV):
 
 .nf
 askmara 33:_http._tcp.example.net. 
 .fi
 
 Asking the server with the ip address 127.0.0.1 for the AAAA (ipv6 ip) 
-record for example.net: 
+record for example.net:
 
 .nf
 askmara 28:example.net.  
@@ -157,6 +159,7 @@ askmara outputs multi-chunk ("character-string") TXT records
 incorrectly (it only outputs the first chunk). 
 .SH "SEE ALSO"
 .PP
+
 .B "maradns(8)"
 
 .br

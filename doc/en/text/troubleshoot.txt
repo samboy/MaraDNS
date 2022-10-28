@@ -165,9 +165,9 @@ $ su
 Password: 
 $ grep maradns /var/log/messages | more
 
-The messages will give you a hint as to what is preventing 
-MaraDNS from starting up. If there are no MaraDNS messages in your log, 
-there is something wrong with your MaraDNS installation. 
+The messages will give you a hint as to what is preventing MaraDNS 
+from starting up. If there are no MaraDNS messages in your log, there 
+is something wrong with your MaraDNS installation. 
 
 ==Conclusion==
 

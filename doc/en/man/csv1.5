@@ -108,7 +108,7 @@ U	any	determined in third field of line
 
 .SH "FORMAT OF SUPPORTED RR TYPES"
 .PP
-Here are the formats, shown by letter name: 
+Here are the formats, shown by letter name:
 
 .nf
 A: Has three fields 
@@ -120,7 +120,7 @@ Ahost.example.com.|7200|10.1.2.3
 .fi
 
 A records are described with grueling detail in RFC1035. In short, an A 
-record is an IP address for a given host name. 
+record is an IP address for a given host name.
 
 .nf
 N: Has three fields 
@@ -131,7 +131,7 @@ Example:
 Nexample.com.|86400|ns.example.com. 
 .fi
 
-NS (N here) records are described in RFC1035 
+NS (N here) records are described in RFC1035
 
 .nf
 C: Has three fields 
@@ -142,7 +142,7 @@ Example:
 Calias.example.org.|3200|realname.example.org. 
 .fi
 
-CNAME (which C is short for) records are described in RFC1035 
+CNAME (which C is short for) records are described in RFC1035
 
 .nf
 S: Has nine fields 
@@ -162,7 +162,7 @@ Example:
 Sexample.net.|86400|%|hostmaster@%|19771108|7200|3600|604800|1800 
 .fi
 
-SOA (S here) records are described in RFC1035 
+SOA (S here) records are described in RFC1035
 
 .nf
 P: has three fields 
@@ -176,7 +176,7 @@ P3.2.1.10.in-addr.arpa.|86400|ns.example.com.
 PTR (P here) records, which are used for reverse DNS lookups, are 
 described in RFC1035. Note that one needs control of the appropriate 
 in-addr.arpa subdomain to make PTR records visible on the internet at 
-large. 
+large.
 
 .nf
 @: has four fields 
@@ -188,7 +188,7 @@ Example:
 @example.com.|86400|10|mail.example.com. 
 .fi
 
-MX (@ here) records are described in RFC1035 
+MX (@ here) records are described in RFC1035
 
 .nf
 T: has three fields 
@@ -201,7 +201,7 @@ Example:
 Texample.com.|86400|Example.com: Buy example products online 
 .fi
 
-TXT (T here) records are described in RFC1035 
+TXT (T here) records are described in RFC1035
 
 .nf
 U: has four fields 
@@ -224,7 +224,9 @@ the catch-all "unsupported" syntax.
 .PP
 
 .nf
+ 
 # Example CSV1 zone file 
+ 
 # This is what is known as a SOA record.  All zone files need to have one 
 # of these 
 S%|86400|%|hostmaster@%|19771108|7200|3600|604800|1800 
@@ -232,13 +234,16 @@ S%|86400|%|hostmaster@%|19771108|7200|3600|604800|1800
 # more of these 
 N%|86400|ns1.% 
 N%|86400|ns2.% 
+ 
 # Some IP addresses 
 Ans1.%|86400|10.0.0.1 
 Ans2.%|86400|192.168.0.1 
 A%|86400|10.1.2.3 
 Amx.%|86400|10.1.2.4 
+ 
 # An \(aqIN MX\(aq record 
 @%|86400|10|mx.% 
+ 
 .fi
 .SH "LEGAL DISCLAIMER"
 .PP

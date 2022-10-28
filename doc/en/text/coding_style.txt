@@ -26,17 +26,17 @@ a write is made, to verify that the write in question is within the
 bounds of the array. For example, this code violates MaraDNS coding 
 styles:
 
-c = &some_array; 
+	c = &some_array; 
 	while(*c != 0) { 
 		if(*c > 'A' && *c < 'Z')  
 			*c += 32;	 
 		c++; 
 	}
 
-In order for this kind of code to be accepted in to MaraDNS 
-code, it must be revised to look like this:
+In order for this kind of code to be accepted in to MaraDNS code, 
+it must be revised to look like this:
 
-c = &some_array; 
+	c = &some_array; 
 	limit = size_of_array; 
 	while(*c != 0 && limit > 0) { 
 		if(*c > 'A' && *c < 'Z')  
@@ -53,7 +53,7 @@ other words, let us suppose we have a character array that is MAX_BYTES
 long, where the bounds checking makes sure we don't write past 
 MAX_BYTES. Then we declare the array in this form:
 
-char s[MAX_BYTES + 3];
+	char s[MAX_BYTES + 3];
 
 The reason for this 3-byte cushion is to prevent off-by-one 
 errors. An off-by-one error can be very dangerous. This kind of error 

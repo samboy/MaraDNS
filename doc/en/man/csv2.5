@@ -92,7 +92,7 @@ data format accommodates the record type:
 .PP
 An A record stores an ipv4 address. This is the default record type 
 should the record type not be specified. The record type has one field 
-in it: the IP for the record. Examples: 
+in it: the IP for the record. Examples:
 
 .nf
 a.example.net.              10.11.12.13 ~ 
@@ -106,7 +106,7 @@ c.example.net. +64000 A     10.11.12.15 ~
 .PP
 A PTR record stores the name for a given ipv4 or ipv6 address, and is 
 used for reverse DNS lookups. This record type has one field in it: The 
-name for the record in question. Examples: 
+name for the record in question. Examples:
 
 .nf
 13.12.11.10.in-addr.arpa.        PTR    a.example.net. ~ 
@@ -123,7 +123,7 @@ delivery. This record type has two fields in it: The priority (or
 "preference" in traditional DNS parlance) of the MX record (lower 
 numbers get higher priority), and the name of the mail exchanger. 
 Example of mail for example.net being mailed to mail.example.net, which 
-has the IP "10.11.12.16": 
+has the IP "10.11.12.16":
 
 .nf
 example.net.      MX   10 mail.example.net. ~ 
@@ -138,7 +138,7 @@ An AAAA record stores the ipv6 address for a given name. The IP is in
 standard ipv6 "colon delimited" format: eight 16-bit hexadecimal 
 numbers are separated by colons. Two colons together indicate multiple 
 streams of all-zero hex numbers. This record has only one field, the v6 
-IP. Example: 
+IP. Example:
 
 .nf
 a.example.net.   AAAA    2001:db8:dec:ade::f ~ 
@@ -150,7 +150,7 @@ a.example.net.   AAAA    2001:db8:dec:ade::f ~
 .PP
 An SRV record stores a "service" definition. This record has four 
 fields: Priority, weight, port, and target. For more information, 
-please refer to RFC 2782. Example: 
+please refer to RFC 2782. Example:
 
 .nf
 _http._tcp.% SRV 0 0 80 a.% ~ 
@@ -160,7 +160,7 @@ _http._tcp.% SRV 0 0 80 a.% ~
 .in -3
 \fBNAPTR\fR
 .PP
-A NAPTR record is described in RFC 2915. Example: 
+A NAPTR record is described in RFC 2915. Example:
 
 .nf
 www.example.com. NAPTR 100 100 \(aqs\(aq;\(aqhttp+I2R\(aq;\(aq\(aq _http._tcp.example.com. ~  
@@ -182,7 +182,7 @@ be at the beginning of the zone, either as the first records in the
 zone, or right after the SOA record. The NS records are optional; if 
 not present, MaraDNS will make an educated guess of that NS records 
 should be there, based on the IPs the MaraDNS process is bound to. This 
-record has one field: The name of the name server machine. Example: 
+record has one field: The name of the name server machine. Example:
 
 .nf
 example.net.    NS    ns1.example.net. ~ 
@@ -202,14 +202,14 @@ email address of the person responsible for the zone, and five numeric
 fields (serial, refresh, retry, expire, and minimum). Note that the SOA 
 minimum does 
 .I "not"
-affect other TTLs in MaraDNS. Example: 
+affect other TTLs in MaraDNS. Example:
 
 .nf
 x.org. SOA x.org. email@x.org. 1 7200 3600 604800 1800 ~ 
 .fi
 
 If there is a \(aq.\(aq (dot) character in the part of the email 
-address before the \(aq@\(aq, it needs to be escaped thusly: 
+address before the \(aq@\(aq, it needs to be escaped thusly:
 
 .nf
 x.org. SOA x.org. john\\.doe@x.org. 1 7200 3600 604800 1800 ~ 
@@ -223,7 +223,7 @@ The serial numeric field may be replaced by the string \(aq/serial\(aq;
 this string tells the CSV2 zone parser to synthesize a serial number 
 for the zone based on the timestamp for the zone file. This allows one 
 to have the serial number be automatically updated whenever the zone 
-file is edited. Here is how this special field looks in a SOA record: 
+file is edited. Here is how this special field looks in a SOA record:
 
 .nf
 x.org. SOA x.org. email@x.org. /serial 7200 3600 604800 1800 ~ 
@@ -240,7 +240,7 @@ A TXT record stores arbitrary text and/or binary data for a given host
 name. This record has one field: The text data for the record. 
 .PP
 A basic text record can be stored by placing ASCII data between two 
-single quotes, as follows: 
+single quotes, as follows:
 
 .nf
 example.com. TXT \(aqThis is an example text field\(aq ~ 
@@ -264,13 +264,13 @@ A SPF record is, with the exception of the numeric rtype, identical to
 a TXT record. SPF records are designed to make it more difficult to 
 forge email. 
 .PP
-Here is one example SPF record: 
+Here is one example SPF record:
 
 .nf
 example.com. SPF \(aqv=spf1 +mx a:colo.example.com/28 -all\(aq ~ 
 .fi
 
-Use \(aq\\x7e\(aq to put a tilde ("~" character) in a SPF record: 
+Use \(aq\\x7e\(aq to put a tilde ("~" character) in a SPF record:
 
 .nf
 example.com. SPF \(aqv=spf1 +mx a:colo.example.com/28 \(aq\\x7e\(aqall\(aq ~ 
@@ -288,7 +288,7 @@ by TXT records.
 .PP
 The RAW record is a special meta-record that allows any otherwise 
 unsupported record type to be stored in a csv2 zone file. The syntax 
-is: 
+is:
 
 .nf
 RAW [numeric rtype] [data] ~ 
@@ -298,7 +298,7 @@ The numeric rtype is a decimal number.
 .PP
 The data field can, among other thing, have backslashed hex sequences 
 outside of quotes, concatenated by ASCII data inside quotes, such as 
-the following example: 
+the following example:
 
 .nf
 example.com. RAW 40 \\x10\\x01\\x02\(aqKitchen sink\(aq\\x40\(aq data\(aq ~ 
@@ -325,14 +325,14 @@ The FQDN4 (short for "Fully Qualified Domain Name for IPv4") record is
 a special form of the "A" record (see above) that instructs MaraDNS to 
 automatically create the corresponding PTR record. For example, the 
 following is one way of setting up the reverse DNS lookup for 
-x.example.net: 
+x.example.net:
 
 .nf
 x.example.net. A 10.3.28.79 ~ 
 79.28.3.10.in-addr.arpa. PTR x.example.net. ~ 
 .fi
 
-But the above two lines in a zone file can also be represented thusly: 
+But the above two lines in a zone file can also be represented thusly:
 
 .nf
 x.example.net. FQDN4 10.3.28.79 ~ 
@@ -356,7 +356,7 @@ about this limitation.
 The FQDN6 (short for "Fully Qualified Domain Name for IPv6") record is 
 the ipv6 form for the FQDN4 record. Like the FQDN4 record, this record 
 creates both a "forward" and "reverse" DNS record for a given host 
-name. For example, one may have: 
+name. For example, one may have:
 
 .nf
 x.example.net. AAAA 2001:db8:dec:ade::b:c:d ~ 
@@ -364,7 +364,7 @@ d.0.0.0.c.0.0.0.b.0.0.0.0.0.0.0.e.d.a.0.c.e.d.0.8.b.d.0.1.0.0.2 PTR
 x.example.net. ~ 
 .fi
 
-But the above two lines in a zone file can also be represented thusly: 
+But the above two lines in a zone file can also be represented thusly:
 
 .nf
 x.example.net. FQDN6 2001:db8:dec:ade::b:c:d ~ 
@@ -407,7 +407,7 @@ record, except that the field must have precisely two chunks.
 The first chunk of a HINFO record is the CPU the host is running; the 
 second chunk is the OS the host is running. 
 .PP
-Example: 
+Example:
 
 .nf
 example.com. HINFO \(aqIntel Pentium III\(aq;\(aqCentOS Linux 3.7\(aq ~ 
@@ -427,7 +427,7 @@ number (6 means TCP), followed by a list of ports that a given server
 has available for services. 
 .PP
 For example, to advertise that example.net has the IP 10.1.2.3, and has 
-a SSH, HTTP (web), and NNTP server: 
+a SSH, HTTP (web), and NNTP server:
 
 .nf
 example.net. WKS 10.1.2.3 6 22,80,119 ~ 
@@ -445,14 +445,14 @@ made obsolete by MX records. RFC1035 says that a DNS server can either
 reject these records or convert these records in to MX records. BIND 
 rejects these records; MaraDNS converts them. 
 .PP
-Example: 
+Example:
 
 .nf
 example.net. MD a.example.net. ~ 
 example.net. MF b.example.net. ~ 
 .fi
 
-Is equivalent to: 
+Is equivalent to:
 
 .nf
 example.net. MX 0 a.example.net. ~ 
@@ -467,7 +467,7 @@ In the late 1980s, an alternative to MX records was proposed. This
 alternative utilized MB, MG, MINFO, and MR records. This alternative 
 failed to gather popularity. However, these records were codified in 
 RFC1035, and are supported by MaraDNS. Here is what the records look 
-like: 
+like:
 
 .nf
 example.net. MB mail.example.net. ~ 
@@ -491,7 +491,7 @@ identical unless the record has a subaddress (SA). If an ISDN record
 has a subaddress, it is separated from the ISDN-address by a \(aq;\(aq 
 instead of whitespace. 
 .PP
-If used, here is how the records would look in a csv2 zone file: 
+If used, here is how the records would look in a csv2 zone file:
 
 .nf
 example.net. AFSDB 1 afsdb.example.net. ~ 
@@ -515,7 +515,7 @@ has a different RTYPE.
 .PP
 More information about these records can be obtained from RFC1706. 
 .PP
-If used, here is how the records would look in a csv2 zone file: 
+If used, here is how the records would look in a csv2 zone file:
 
 .nf
 example.net. NSAP 0x47.0005.80.005a00.0000.0001.e133.ffffff000162.00 ~ 
@@ -527,7 +527,7 @@ example.net. NSAP-PTR nsap.example.net. ~
 \fBPX\fR
 .PP
 The PX RR is an obscure RR described in RFC2163. A PX record looks like 
-this in a CSV2 zone file: 
+this in a CSV2 zone file:
 
 .nf
 example.net. PX 15 px1.example.net. px2.example.net. ~ 
@@ -544,7 +544,7 @@ field must have precisely three chunks.
 The first chunk of a GPOS record is the longitude; the second chunk is 
 the latitude; the third chunk is the altitude (in meters). 
 .PP
-Example: 
+Example:
 
 .nf
 example.net. GPOS \(aq-98.6502\(aq;\(aq19.283\(aq;\(aq2134\(aq ~ 
@@ -570,7 +570,7 @@ meters. Also note that that sub-meter values for size, horizontal, and
 vertical precision are not allowed. Additionally, the altitude can not 
 be greater than 21374836.47 meters. 
 .PP
-Example: 
+Example:
 
 .nf
 example.net. LOC 19 31 2.123 N 98 3 4 W 2000m 2m 4m 567m ~ 
@@ -583,14 +583,14 @@ example.net. LOC 19 31 2.123 N 98 3 4 W 2000m 2m 4m 567m ~
 MaraDNS does not have direct support for CAA records. However, the RAW 
 record type can generate CAA records. For example, to have 
 "example.com" have a CAA record with the value of "issue 
-letsencrypt.org": 
+letsencrypt.org":
 
 .nf
 example.com. RAW 257 \\x00\\x05\(aqissueletsencrypt.org\(aq ~ 
 .fi
 .SH "STAR RECORDS"
 .PP
-MaraDNS has support for star records in zone files: 
+MaraDNS has support for star records in zone files:
 
 .nf
 *.example.net.  A		10.11.12.13 ~ 
@@ -598,7 +598,7 @@ MaraDNS has support for star records in zone files:
 
 In this example, anything.example.net will have the IP 10.11.12.13. 
 Note that this does not set the ip for "example.net", which needs a 
-separate record: 
+separate record:
 
 .nf
 example.net.  A                 10.11.12.13 ~ 
@@ -614,7 +614,7 @@ percent should be replaced with the domain name for the zone.
 .PP
 For example, in the zone for example.net. (e.g. one\(aqs mararc file 
 has csv2["example.net."] = "db.example.net", and we are editing the 
-"db.example.net" file): 
+"db.example.net" file):
 
 .nf
 www.%	A	10.10.10.10 ~ 
@@ -652,7 +652,7 @@ seconds (as long as the zone file with this record has not previously
 used the \(aq/ttl\(aq slash command), b.ttl.example.com and 
 d.ttl.example.com will have a TTL of 3600 seconds, c.ttl.example.com 
 will have a TTL of 9600 seconds, and e.ttl.example.com will have a TTL 
-of 7200 seconds: 
+of 7200 seconds:
 
 .nf
 a.ttl.example.com.       10.0.0.1 ~ 
@@ -677,7 +677,7 @@ argument to this function. Note that changing the origin does
 change the domain suffix used to determine whether a given domain name 
 is authoritative. 
 .PP
-Here is one example usage of the \(aq/origin\(aq slash command: 
+Here is one example usage of the \(aq/origin\(aq slash command:
 
 .nf
 /origin example.com. ~ 
@@ -690,7 +690,7 @@ www.% 10.2.0.1 ~
 mail.% 10.2.0.2 ~ 
 .fi
 
-Which is equivalent to: 
+Which is equivalent to:
 
 .nf
 www.example.com. 10.1.0.1 ~ 
@@ -702,7 +702,7 @@ mail.example.org. 10.2.0.2 ~
 .fi
 
 It is also possible to make the current origin be part of the new 
-origin: 
+origin:
 
 .nf
 /origin example.com. ~ 
@@ -722,7 +722,7 @@ however, the current origin is placed on a stack instead of discarded.
 The \(aq/opop\(aq command removes ("pops") the top element from this 
 stack and makes the element the origin. 
 .PP
-For example: 
+For example:
 
 .nf
 /origin example.com. ~ 
@@ -755,7 +755,7 @@ will be read with the same privileges as the zone file; content in the
 file should come from a trusted source or be controlled by the system 
 administrator. 
 .PP
-Let us suppose that we have the following in a zone file: 
+Let us suppose that we have the following in a zone file:
 
 .nf
 mail.foo.example.com. 10.3.2.1 ~ 
@@ -763,7 +763,7 @@ mail.foo.example.com. 10.3.2.1 ~
 foo.example.com. MX 10 mail.foo.example.com. ~ 
 .fi
 
-And a file foo with the following contents: 
+And a file foo with the following contents:
 
 .nf
 foo.example.com. 10.1.2.3 ~ 
@@ -778,7 +778,7 @@ pointing to mail.foo.example.com. mail.foo.example.com will have the IP
 Note that no pre-processing nor post-processing of the origin is done 
 by the \(aq/read\(aq command; should the file read change the origin, 
 this changed value will affect any records after the \(aq/read\(aq 
-command. For example, let us suppose db.example.com looks like this: 
+command. For example, let us suppose db.example.com looks like this:
 
 .nf
 /origin foo.example.com. ~ 
@@ -787,7 +787,7 @@ command. For example, let us suppose db.example.com looks like this:
 % MX 10 mail.foo.example.com. ~ 
 .fi
 
-And the file foo looks like this: 
+And the file foo looks like this:
 
 .nf
 % 10.1.2.3 ~ 
@@ -795,7 +795,7 @@ And the file foo looks like this:
 % 10.3.2.1 ~ 
 .fi
 
-Then the following records will be created: 
+Then the following records will be created:
 
 .nf
 foo.example.com.      TXT   \(aqFoomatic!\(aq ~ 
@@ -805,7 +805,7 @@ mail.foo.example.com. MX 10 mail.foo.example.com. ~
 .fi
 
 To have something that works like \(aq$INCLUDE filename\(aq in a 
-RFC1035 master file, do the following: 
+RFC1035 master file, do the following:
 
 .nf
 /opush % ~ 
@@ -814,7 +814,7 @@ RFC1035 master file, do the following:
 .fi
 
 Or, for that matter, the equivalent of \(aq$INCLUDE filename 
-neworigin\(aq: 
+neworigin\(aq:
 
 .nf
 /opush neworigin. ~ 
@@ -825,19 +825,25 @@ neworigin\(aq:
 .PP
 
 .nf
+ 
 # This is an example csv2 zone file 
+ 
 # First of all, csv2 zone files do not need an SOA record; however, if 
 # one is provided, we will make it the SOA record for our zone 
 # The SOA record needs to be the first record in the zone if provided 
 # This is a commented out record and disabled. 
+ 
 #% 	SOA	% email@% 1 7200 3600 604800 1800 ~ 
+ 
 # Second of all, csv2 zone files do not need authoritative NS records. 
 # If they aren\(aqt there, MaraDNS will synthesize them, based on the IP 
 # addresses MaraDNS is bound to.  (She\(aqs pretty smart about this; if 
 # Mara is bound to both public and private IPs, only the public IPs will 
-# be synthesized as NS records) 
+# be synthesized as NS records)
+
 #% 	NS 	a.% ~ 
 #%	NS	b.% ~ 
+ 
 # Here are some A (ipv4 address) records; since this is the most 
 # common field, the zone file format allows a compact representation 
 # of it. 
@@ -848,46 +854,59 @@ a.example.net. 	10.10.10.10 ~
 # a query for "b.example.net." is made 
 b.example.net.  10.10.10.11 ~ 
 b.example.net.  10.10.10.12 ~ 
+ 
 # We can have the label in either case; it makes no difference 
 Z.EXAMPLE.NET. 	10.2.3.4 ~ 
 Y.EXAMPLE.net.  10.3.4.5 ~ 
+ 
 # We can use the percent shortcut.  When the percent shortcut is present, 
 # it indicates that the name in question should terminate with the name 
 # of the zone we are processing. 
 percent.%	a 		10.9.8.7 ~ 
+ 
 # And we can have star records 
 #*.example.net.  A		10.11.12.13 ~ 
+ 
 # We can have a ttl in a record; however the ttl needs a \(aq+\(aq before it: 
 # Note that the ttl has to be in seconds, and is before the RTYPE 
 d.example.net. +86400 A 10.11.12.13 ~ 
+ 
 f.example.net. # As you can see, records can span multiple lines 
         	A 	10.2.19.83 ~ 
+ 
 # This allows well-commented records, like this: 
 c.example.net. 		# Our C class machine 
         +86400  	# This record is stored for one day 
         A       	# A record 
         10.1.1.1 	# Where we are  
         ~               # End of record 
+ 
 # We can even have something similar to csv1 if we want... 
 e.example.net.|+86400|a|10.2.3.4|~ 
 h.example.net.|a|10.9.8.7|~ 
 # Here, we see we can specify the ttl but not the rtype if desired 
 g.example.net.|+86400|10.11.9.8|~ 
+ 
 # Here is a MX record 
 # Note that "IN" is a pseudo-RR which means to ignore the RR type and 
 # look at the next RR type in the zone file; this allows MaraDNS zone 
 # files to look more like BIND zone files. 
 % mx 10 mail.% ~ 
 mail.% +86400 IN A 10.22.23.24 ~ 
+ 
 # We even have a bit of ipv6 support 
 a.example.net. 		aaaa 	2001:db8:1:2::3:f ~ 
+ 
 # Not to mention support for SRV records 
 _http._tcp.%    srv   0 0 80 a.% ~ 
+ 
 # TXT records, naturally 
 example.net.    txt \(aqThis is some text\(aq ~ 
+ 
 # Starting with MaraDNS 1.2.08, there is also support for SPF records, 
 # which are identical to TXT records.  See RFC4408 for more details. 
-example.net.    spf \(aqv=spf1 +mx a:colo.example.com/28 -all\(aq ~ 
+example.net.    spf \(aqv=spf1 +mx a:colo.example.com/28 -all\(aq ~
+
 .fi
 .SH "LEGAL DISCLAIMER"
 .PP

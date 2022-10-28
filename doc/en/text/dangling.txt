@@ -16,18 +16,18 @@ wish to have local names point to external entries with CNAME records.
 For example, it may be desirable to have the shortcut "google" for 
 "www.google.com". One way one may wish to do this is as follows:
 
-google.example.com. +86400 CNAME www.google.com.
+	google.example.com. +86400 CNAME www.google.com.
 
 MaraDNS' default configuration will not complete the record. In 
 other words, some people may expect Mara to output the following for 
 "google.example.com":
 
-google.example.com. +86400 CNAME www.google.com. 
+	google.example.com. +86400 CNAME www.google.com. 
 	www.google.com. +900 A 66.102.7.104
 
 Instead, Mara simply outputs:
 
-google.example.com. +86400 CNAME www.google.com.
+	google.example.com. +86400 CNAME www.google.com.
 
 I call this a "dangling CNAME record", since the CNAME record is 
 not resolvable by some stub resolvers. In order to resolve dangling 
@@ -83,10 +83,10 @@ chroot_dir = "/etc/maradns"
 csv2 = {} 
 csv2["example.com."] = "db.example.com"
 
-If dangling CNAMEs are not an issue for a given setup, or if 
-they are resolved by the above setup using both MaraDNS and Deadwood, 
-the warnings about dangling CNAMEs can be turned off by adding this to 
-a mararc file:
+If dangling CNAMEs are not an issue for a given setup, or if they 
+are resolved by the above setup using both MaraDNS and Deadwood, the 
+warnings about dangling CNAMEs can be turned off by adding this to a 
+mararc file:
 
 no_cname_warnings = 1
 

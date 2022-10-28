@@ -40,7 +40,7 @@ are described below).
 \fBASCII AND UTF-8 DATA\fR
 .PP
 If a given TXT field or RAW record contains only ASCII data, creating a 
-record is easy: Place the full data between single quotes, like this: 
+record is easy: Place the full data between single quotes, like this:
 
 .nf
 a.example.com. TXT \(aqThis is some text\(aq ~ 
@@ -52,7 +52,7 @@ csv2_tilde_handling has a value of 0; the \(aq|\(aq (pipe), \(aq#\(aq
 (hash) and non-printable ASCII control characters are not allowed in 
 TXT data if the ~ is used to separate records. If there are any bytes 
 with a value of 0x80 or more, the data must be UTF-8 encoded Unicode.  
-For example: 
+For example:
 
 .nf
 b.example.com. TXT \(aqThis is an example UTF-8 character: I ♥ MaraDNS\(aq 
@@ -72,19 +72,19 @@ information on adding these characters to TXT or RAW fields.
 Note that the record does not have to be quoted. As long as the record 
 only contains ASCII alphanumeric data, and/or the characters \(aq-\(aq, 
 \(aq_\(aq, \(aq+\(aq, \(aq%\(aq, \(aq!\(aq, \(aq^\(aq, and \(aq=\(aq, 
-the data can be unquoted as follows: 
+the data can be unquoted as follows:
 
 .nf
 c.example.com. TXT This_is_100%_unquoted_text_+symbols! 
 .fi
 
-It is also possible to mix quoted and unquoted text, such as this: 
+It is also possible to mix quoted and unquoted text, such as this:
 
 .nf
 d.example.com. TXT This\(aq is a mix \(aqof_unquoted\(aq and quoted \(aqtext! 
 .fi
 
-Which will have its data look like this: 
+Which will have its data look like this:
 
 .nf
 This is a mix of_unquoted and quoted text! 
@@ -143,68 +143,68 @@ spaces. Spaces can be represented either as \(aq \(aq in quotes, \\x20,
 or as \\040. 
 .PP
 Here are some examples of backslashed data. In this example, we see 
-backslash sequences being used to store non-UTF-8 hi-bit data: 
+backslash sequences being used to store non-UTF-8 hi-bit data:
 
 .nf
 e.example.com. TXT \\x80\\x81\\x82\\x83 ~ 
 .fi
 
-This same data can also be created as follows: 
+This same data can also be created as follows:
 
 .nf
 f.example.com. TXT \\200\\201\\202\\203 ~ 
 .fi
 
-Octal and hex information can be mixed: 
+Octal and hex information can be mixed:
 
 .nf
 g.example.com. TXT \\200\\x81\\202\\x83 ~ 
 .fi
 
-Literal single quotes can be placed in resource records: 
+Literal single quotes can be placed in resource records:
 
 .nf
 h.example.com. TXT \(aqperl -e \(aq\\\(aq\(aqprint "A Perl of a TXT record!\\n"\(aq\\\(aq ~ 
 .fi
 
-The above example produces this record: 
+The above example produces this record:
 
 .nf
 perl -e \(aqprint "A Perl of a TXT record!\\n"\(aq ~ 
 .fi
 
 To render the \(aq~\(aq character, use the escape sequence \\x7e 
-(outside of quotes). For example: 
+(outside of quotes). For example:
 
 .nf
 h1.example.com. TXT \(aqhttp://ocf.berkeley.edu/\(aq\\x7e\(aqset\(aq ~ 
 .fi
 
-Produces this record: 
+Produces this record:
 
 .nf
 http://ocf.berkeley.edu/~set 
 .fi
 
-To render the \(aq|\(aq character, use the escape sequence \\x7c: 
+To render the \(aq|\(aq character, use the escape sequence \\x7c:
 
 .nf
 h2.example.com. TXT \(aqls \(aq\\x7c\(aq more\(aq ~ 
 .fi
 
-Produces this record: 
+Produces this record:
 
 .nf
 ls | more 
 .fi
 
-To render the \(aq#\(aq character, use the escape sequence \\x23: 
+To render the \(aq#\(aq character, use the escape sequence \\x23:
 
 .nf
 h3.example.com. TXT \(aqPress \(aq\\x23\(aq for customer service\(aq ~ 
 .fi
 
-Produces this record: 
+Produces this record:
 
 .nf
 Press # for customer service 
@@ -216,14 +216,14 @@ Press # for customer service
 .PP
 By utilizing backslashes followed by comments, it is possible to have 
 multi-line and commented TXT and RAW records. The following resource 
-record will span more than one line on an 80-column display: 
+record will span more than one line on an 80-column display:
 
 .nf
 i.example.com. TXT \(aqNot only did the quick brown fox jump over the lazy dog, but the lazy dog jumped over the cat.\(aq ~ 
 .fi
 
 Without affecting this resource record, the same data can be split over 
-multiple lines: 
+multiple lines:
 
 .nf
 j.example.com. TXT \(aqNot only did the quick brown fox jump \(aq\\ 
@@ -247,7 +247,7 @@ after the quote character.
 Unlike other environments, it does not matter whether or not there is 
 invisible whitespace after the backslash. 
 .PP
-It is also possible to add comments after such a backslash as follows: 
+It is also possible to add comments after such a backslash as follows:
 
 .nf
 k.example.com. TXT \(aqNot only did the quick brown fox jump \(aq\\ # The fox 
@@ -259,11 +259,12 @@ Note that, since the third comment is not preceded by a backslash, this
 indicates the end of the resource record. 
 .PP
 There can also be multiple lines dedicated to comments (and, 
-optionally, even blank lines) in the middle of TXT and RAW record data: 
+optionally, even blank lines) in the middle of TXT and RAW record data:
 
 .nf
 k2.example.com. TXT \(aqThis is some data \(aq\\ 
 # Here we have some comments followed by a blank line 
+ 
 # Now we have some more comments,  
 # followed by the rest of the data 
     \(aqand this is the rest of the data\(aq ~ 
@@ -276,20 +277,20 @@ k2.example.com. TXT \(aqThis is some data \(aq\\
 .PP
 TXT RRs may be divided up in to multiple "chunks" (RFC1035 calls these 
 "character-string"s). A single chunk can be anywhere from zero to 255 
-bytes long. The default is to have one chunk, as follows: 
+bytes long. The default is to have one chunk, as follows:
 
 .nf
 o.example.com. TXT \(aqTXT record with only one chunk\(aq ~ 
 .fi
 
 It is also possible to have a record with multiple chunks. Chunks are 
-delimited by an unquoted \(aq;\(aq character: 
+delimited by an unquoted \(aq;\(aq character:
 
 .nf
 p.example.com. TXT \(aqThis is chunk one\(aq;\(aqThis is chunk two\(aq ~ 
 .fi
 
-Or: 
+Or:
 
 .nf
 q.example.com. TXT \(aqThis is chunk one\(aq;\\   # Our first chunk 
@@ -306,14 +307,14 @@ In order to resolve this, place unquoted ; characters in the record
 data so that each chunk is under 255 octets (bytes or characters) in 
 length. 
 .PP
-It is possible to have zero length chunks: 
+It is possible to have zero length chunks:
 
 .nf
 r.example.com. TXT \(aqchunk one\(aq;;\(aqchunk three\(aq ~ # Chunk two zero-length 
 .fi
 
 In particular, is is possible to have zero length chunks at the 
-beginning and end of a TXT record: 
+beginning and end of a TXT record:
 
 .nf
 s.example.com. TXT ;\(aqchunk two\(aq; ~ # Chunks one and three zero-length 
@@ -334,7 +335,7 @@ of a numeric record type before the record data, the format for RAW
 records is identical to text records. For example, if we wish to have a 
 "Kitchen Sink" RR record, which has the 8-bit binary numbers "16", "1", 
 and "2", followed by the ASCII string "Kitchen sink+ data", we can 
-specify this in any of the following manners: 
+specify this in any of the following manners:
 
 .nf
 t1.example.com. RAW 40 \\x10\\x01\\x02\(aqKitchen sink\(aq\\x2b\(aq data\(aq ~ 

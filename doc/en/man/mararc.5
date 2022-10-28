@@ -36,7 +36,7 @@ names, and the variables can only be declared as described below.
 .SH "COMMENTS"
 .PP
 Comments (lines ignored by the MaraDNS parser) start with the \(aq#\(aq 
-character, like this: 
+character, like this:
 
 .nf
 # This is a comment 
@@ -53,7 +53,7 @@ The += operator can only be used on string values, and concatenates the
 value to the right of the += operator to the string specified to the 
 left of the += operator. 
 .PP
-Examples: 
+Examples:
 
 .nf
 ipv4_bind_addresses = "10.2.19.83" 
@@ -62,7 +62,7 @@ ipv4_bind_addresses += ",10.3.87.13"
 .fi
 
 ipv4_bind_addresses now has the value 
-"10.2.19.83,10.2.66.74,10.3.87.13" 
+"10.2.19.83,10.2.66.74,10.3.87.13"
 
 .nf
 ipv4_alias["icann"] = "198.41.0.4" 
@@ -82,7 +82,7 @@ array, these arrays are indexed by strings instead of numbers. These
 are analogous to associative arrays, or what Perl somewhat inaccurately 
 calls hashes. 
 .PP
-The syntax of a dictionary variable is in the following form: 
+The syntax of a dictionary variable is in the following form:
 
 .nf
 name["index"] = "value" 
@@ -97,7 +97,7 @@ is the index of the array, and
 is the value stored at that index. 
 .PP
 Every time we have a dictionary-type variable (such as csv2), we must 
-first initialize it using a line in the following form: 
+first initialize it using a line in the following form:
 
 .nf
 csv2 = {} 
@@ -117,7 +117,7 @@ uses:
 The csv2 dictionary variable stores all of the zone names and file 
 names for the zone files that MaraDNS uses. Note that csv2 files are 
 read after MaraDNS is chrooted. Hence the filename is relative to the 
-chroot_dir. Example: 
+chroot_dir. Example:
 
 .nf
 csv2["example.net."] = "db.example.net" 
@@ -136,7 +136,7 @@ MaraDNS will terminate with an "Illegal zone name" error.
 .PP
 csv1: Used to indicate the filename to use for a given zone stored in 
 the legacy csv1 zone file format. This is primarily for compatibility 
-with people who have maradns-1.0 zone files. 
+with people who have maradns-1.0 zone files.
 
 .nf
 csv1["zone"] = "filename" 
@@ -164,7 +164,7 @@ man page for more information on this file format.
 \fBipv4_alias\fR
 .PP
 ipv4_alias: Used to give nicknames or aliases for ip/netmask pairs for 
-ipv4 (standard 32-bit) IP addresses. 
+ipv4 (standard 32-bit) IP addresses.
 
 .nf
 ipv4_alias["name"] = "ip1/netmask,ip2/netmask,etc" 
@@ -195,6 +195,7 @@ The netmask is used to specify a range of IPs.
 .in -3
 \fBipv4_alias examples\fR
 .PP
+
 .B "10.1.1.1/24"
 indicates that any ip from 10.1.1.0 to 10.1.1.255 will match. 
 .PP
@@ -218,6 +219,7 @@ The netmask is optional, and, if not present, indicates that only a
 single IP will "match". e.g: 
 .PP
 .BR "10.9.9.9/32" ","
+
 .BR "10.9.9.9/255.255.255.255" ","
 and 
 .B "10.9.9.9"
@@ -226,7 +228,7 @@ will match.
 .PP
 The significance of "match" depends on what we use the ipv4 alias for. 
 .PP
-ipv4 aliases can nest. E.g: 
+ipv4 aliases can nest. E.g:
 
 .nf
 ipv4_alias["susan"] = "10.6.7.8/24"  
@@ -244,7 +246,7 @@ result in an error.
 Normal variables. These are variables that can only take a single 
 value. 
 .PP
-The syntax of a normal variable is in the form 
+The syntax of a normal variable is in the form
 
 .nf
 name = "value" 
@@ -716,7 +718,7 @@ synth_soa_origin = "ns1.example.com"
 .fi
 
 If this is not set, a synthetic SOA record will use the name of the 
-zone for the SOA origin (MNAME) field.   
+zone for the SOA origin (MNAME) field. 
 .PP
 .PP
 
@@ -863,13 +865,18 @@ entry.
 .PP
 
 .nf
+ 
 # Example mararc file (unabridged version) 
+ 
 # The various zones we support 
+ 
 # We must initialize the csv2 hash, or MaraDNS will be unable to 
 # load any csv2 zone files 
 csv2 = {} 
+ 
 # This is just to show the format of the file 
 #csv2["example.com."] = "db.example.com" 
+ 
 # The address this DNS server runs on.  If you want to bind  
 # to multiple addresses, separate them with a comma like this: 
 # "10.1.2.3,10.1.2.4,127.0.0.1" 
@@ -880,6 +887,7 @@ chroot_dir = "/etc/maradns"
 maradns_uid = 99 
 # The (optional) numeric GID MaraDNS will run as 
 # maradns_gid = 99 
+ 
 # Normally, MaraDNS has some MaraDNS-specific features, such as DDIP 
 # synthesizing, a special DNS query ("erre-con-erre-cigarro.maradns.org."  
 # with a TXT query returns the version of MaraDNS that a server is  
@@ -889,9 +897,11 @@ maradns_uid = 99
 # a value of one here, and MaraDNS should be more or less  
 # indistinguishable from a tinydns server. 
 no_fingerprint = 0 
+ 
 # These constants limit the number of records we will display, in order 
 # to help keep packets 512 bytes or smaller.  This, combined with round_robin 
 # record rotation, help to use DNS as a crude load-balancer. 
+ 
 # The maximum number of records to display in a chain of records (list 
 # of records) for a given host name 
 max_chain = 8 
@@ -902,20 +912,24 @@ max_chain = 8
 max_ar_chain = 1 
 # The maximum number of records to show total for a given question 
 max_total = 20 
+ 
 # The number of messages we log to stdout 
 # 0: No messages except for fatal parsing errors and the legal disclaimer 
 # 1: Only startup messages logged (default) 
 # 2: Error queries logged 
 # 3: All queries logged (but not very verbosely right now) 
 verbose_level = 1 
+ 
 # Here is a ACL which restricts who is allowed to perform zone transfer from  
 # the zoneserver program 
+ 
 # Simplest form: 10.1.1.1/24 (IP: 10.1.1.1, 24 left bits in IP need to match) 
 # and 10.100.100.100/255.255.255.224 (IP: 10.100.100.100, netmask 
 # 255.255.255.224) are allowed to connect to the zone server  
 # NOTE: The "maradns" program does not serve zones.  Zones are served 
 # by the "zoneserver" program. 
 #zone_transfer_acl = "10.1.1.1/24, 10.100.100.100/255.255.255.224" 
+ 
 .fi
 .SH "BUGS"
 .PP

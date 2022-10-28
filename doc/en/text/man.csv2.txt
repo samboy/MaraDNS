@@ -171,8 +171,8 @@ single quotes, as follows:
 
 example.com. TXT 'This is an example text field' ~
 
-Any binary data can be specified; see the csv2_txt(5) manual 
-page for full details. 
+Any binary data can be specified; see the csv2_txt(5) manual page 
+for full details. 
 
 If tildes are used to separate records, a TXT record can not contain a 
 literal '|' (pipe) character, a '#' literal, a '~' literal, nor any 
@@ -194,8 +194,8 @@ Use '\x7e' to put a tilde ("~" character) in a SPF record:
 
 example.com. SPF 'v=spf1 +mx a:colo.example.com/28 '\x7e'all' ~
 
-More information about SPF records can be found in RFC4408, or 
-by performing a web search for 'sender policy framework'. 
+More information about SPF records can be found in RFC4408, or by 
+performing a web search for 'sender policy framework'. 
 
 Note that SPF records never gained traction, and their role is handled 
 by TXT records. 
@@ -242,12 +242,12 @@ thusly:
 
 x.example.net. FQDN4 10.3.28.79 ~
 
-Note that the csv2 parser does not bother to check that any 
-given IP only has a single FQDN4 record; it is up to the DNS 
-administrator to ensure that a given IP has only one FQDN4 record. In 
-the case of there being multiple FQDN4 records with the same IP, 
-MaraDNS will have multiple entries in the corresponding PTR record, 
-which is usually not the desired behavior. 
+Note that the csv2 parser does not bother to check that any given 
+IP only has a single FQDN4 record; it is up to the DNS administrator to 
+ensure that a given IP has only one FQDN4 record. In the case of there 
+being multiple FQDN4 records with the same IP, MaraDNS will have 
+multiple entries in the corresponding PTR record, which is usually not 
+the desired behavior. 
 
 FQDN4 records are not permitted in a csv2_default_zonefile. If you do 
 not know what a csv2_default_zonefile is, you do not have to worry 
@@ -307,9 +307,9 @@ Example:
 
 example.com. HINFO 'Intel Pentium III';'CentOS Linux 3.7' ~
 
-This resource record is not actively used--the IANA has a list 
-of CPUs and OSes that this record is supposed to have. However, this 
-list has not been updated since 2002. 
+This resource record is not actively used--the IANA has a list of 
+CPUs and OSes that this record is supposed to have. However, this list 
+has not been updated since 2002. 
 
 ==WKS==
 
@@ -458,9 +458,9 @@ which needs a separate record:
 
 example.net.  A                 10.11.12.13 ~
 
-Note also that stars must be at the beginining of a name; to 
-have stars at the end of a name, use the csv2_default_zonefile feature 
-as described in the mararc man page. 
+Note also that stars must be at the beginining of a name; to have 
+stars at the end of a name, use the csv2_default_zonefile feature as 
+described in the mararc man page. 
 
 ===PERCENT SYMBOL===
 
@@ -542,8 +542,8 @@ www.example.org. 10.2.0.1 ~
 example.org. MX 10 mail.example.org. ~ 
 mail.example.org. 10.2.0.2 ~
 
-It is also possible to make the current origin be part of the 
-new origin:
+It is also possible to make the current origin be part of the new 
+origin:
 
 /origin example.com. ~ 
 % 10.3.2.1 ~ # example.com now has IP 10.3.2.1 

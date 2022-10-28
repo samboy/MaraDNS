@@ -54,8 +54,8 @@ Which will have its data look like this:
 
 This is a mix of_unquoted and quoted text!
 
-When mixing quoted and unquoted data, it is important to have 
-all whitespace inside quotes. 
+When mixing quoted and unquoted data, it is important to have all 
+whitespace inside quotes. 
 
 ==BACKSLASH ESCAPE SEQUENCES==
 
@@ -194,8 +194,8 @@ bytes long. The default is to have one chunk, as follows:
 
 o.example.com. TXT 'TXT record with only one chunk' ~
 
-It is also possible to have a record with multiple chunks. 
-Chunks are delimited by an unquoted ';' character:
+It is also possible to have a record with multiple chunks. Chunks 
+are delimited by an unquoted ';' character:
 
 p.example.com. TXT 'This is chunk one';'This is chunk two' ~
 

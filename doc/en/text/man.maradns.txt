@@ -308,7 +308,7 @@ the mararc file:
 timeout_seconds = 5
 
 Note that making this too high will slow MaraDNS down when DNS servers 
-are down, which is, alas, all too common on today's internet.    
+are down, which is, alas, all too common on today's internet.   
 
 ==9. When I try to run MaraDNS, I get a cryptic error message.==
 
@@ -581,19 +581,19 @@ CNAME record.
 Let us suppose we have a CNAME record without an A record in the local 
 DNS server's database, such as:
 
-google.example.com. CNAME www.google.com.
+	google.example.com. CNAME www.google.com.
 
 This record, which is a CNAME record for "google.example.com", points 
 to "www.google.com". Some DNS servers will recursively look up 
 www.google.com, and render the above record like this:
 
-google.example.com. CNAME www.google.com. 
+	google.example.com. CNAME www.google.com. 
 	www.google.com. A 66.102.7.104
 
 For security reasons, MaraDNS doesn't do this. Instead, MaraDNS will 
 simply output:
 
-google.example.com. CNAME www.google.com.
+	google.example.com. CNAME www.google.com.
 
 Some stub resolvers will be unable to resolve google.example.com 
 as a consequence. 
@@ -604,7 +604,7 @@ in your logs about having a dangling CNAME record.
 If you want to remove these warnings, add the following to your mararc 
 file:
 
-no_cname_warnings = 1
+	no_cname_warnings = 1
 
 Information about how to get MaraDNS to resolve dangling CNAME records 
 is in the tutorial file dangling.html   
@@ -1007,12 +1007,12 @@ d.sin_port=htons(53);bind(a,(Z*)&amp;d,Y);for(;;){i
 {q[2]|=128;q[11]?q[3]|=4:1;q[7]++;memcpy(q+i,p, 
 16);sendto(a,q,i+16,0,(Z*)&amp;d,Y);}}}return 0;}
 
-NanoDNS takes one argument: The IP we return. This program 
-binds to all  IP addresses a given machine has on the UDP DNS port 
-(port 53).  For example, to make a DNS server that binds to all IPs 
-your system has and return the IP 10.11.12.13 to any UDP DNS queries 
-sent to it, compile the above C program, call it NanoDNS, and invoke it 
-with NanoDNS 10.11.12.13 Note that NanoDNS does not daemonize, nor log 
+NanoDNS takes one argument: The IP we return. This program binds 
+to all IP addresses a given machine has on the UDP DNS port (port 53). 
+For example, to make a DNS server that binds to all IPs your system has 
+and return the IP 10.11.12.13 to any UDP DNS queries sent to it, 
+compile the above C program, call it NanoDNS, and invoke it with 
+NanoDNS 10.11.12.13 Note that NanoDNS does not daemonize, nor log 
 anything, nor have any other space-wasting features.
 
 ==Why did you change MaraDNS' tagline?==

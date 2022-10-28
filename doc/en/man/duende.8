@@ -26,12 +26,14 @@
 duende - run a child process as a daemon 
 .SH "DESCRIPTION"
 .PP
+
 .B "duende"
 makes a given child process a daemon. The standard output and standard 
 error of the child process is logged via syslog() with a priority of 
 LOG_INFO. 
 .SH "USAGE"
 .PP
+
 .B "duende"
 child_process [ all subsequent arguments passed on to child ] 
 .SH "DETAILS"
@@ -68,6 +70,7 @@ bind to privileged ports, and because duende uses a setuid() call to
 change the user ID of the logging process to the user with ID 707. 
 .SH "LOGGING"
 .PP
+
 .B "duende"
 uses the syslog() facility to log the standard output of the program 
 that it invokes. The name of the program (in other words, the "ident" 
@@ -81,7 +84,7 @@ are logged with a priority of LOG_ALERT and a "facility" of LOG_DAEMON
 (daemon.alert in /etc/syslog.conf). Should duende itself encounter an 
 error, it will send messages to syslog() with a priority of LOG_ALERT. 
 .PP
-For example, suppose one invokes duende thusly: 
+For example, suppose one invokes duende thusly:
 
 .nf
 	duende /usr/local/sbin/maradns 
@@ -89,7 +92,7 @@ For example, suppose one invokes duende thusly:
 
 If invoked thusly, duende will log all messages with the "ident" 
 (program name) of "/usr/local/sbin/maradns". If this is not desired, 
-invoke duende with something like: 
+invoke duende with something like:
 
 .nf
 	export PATH=$PATH:/usr/local/sbin 
@@ -106,27 +109,30 @@ used to store any log messages. That is unless, for some reason, one
 configures syslog to store messages there. 
 .SH "EXAMPLES"
 .PP
-Using duende to start maradns, where the mararc file is /etc/mararc.2 
+Using duende to start maradns, where the mararc file is /etc/mararc.2
 
 .nf
 	duende maradns -f /etc/mararc.2 
 .fi
 
 Using duende to start zoneserver, where the mararc file is 
-/etc/mararc.4 
+/etc/mararc.4
 
 .nf
 	duende zoneserver -f /etc/mararc.4 
 .fi
 .SH "BUGS"
 .PP
+
 .B "Duende"
 assumes that all of its children are well-behaved, eating their 
 vegetables, going to bed when told, and terminating when receiving a 
 TERM signal. 
 .SH "SEE ALSO"
 .PP
+
 .BR "maradns(8)" ","
+
 .B "syslog(3)"
 
 .br

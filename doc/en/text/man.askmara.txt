@@ -78,10 +78,10 @@ address of example.com, using the rr_number:query format:
 
 askmara 1:example.com.
 
-Asking the server with the ip address 127.0.0.1 for a SRV 
-record. In particular, we ask for the "http over tcp" service for 
-example.net. Since askmara doesn't have a mnemonic for SRV record 
-types, we use the numeric code (33 for SRV):
+Asking the server with the ip address 127.0.0.1 for a SRV record. 
+In particular, we ask for the "http over tcp" service for example.net. 
+Since askmara doesn't have a mnemonic for SRV record types, we use the 
+numeric code (33 for SRV):
 
 askmara 33:_http._tcp.example.net.
 
@@ -90,9 +90,9 @@ Asking the server with the ip address 127.0.0.1 for the AAAA
 
 askmara 28:example.net.
 
-Note that the output will be a raw DNS packet in the SRV 
-example, but askmara shows an IPv6 address (albeit without :: to 
-collapse 0 quads) in the AAAA example. 
+Note that the output will be a raw DNS packet in the SRV example, 
+but askmara shows an IPv6 address (albeit without :: to collapse 0 
+quads) in the AAAA example. 
 
 ===BUGS===
 

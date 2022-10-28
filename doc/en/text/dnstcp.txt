@@ -42,8 +42,8 @@ csv2["example.com."] = "db.example.com"
 tcp_convert_acl = "0.0.0.0/0" 
 tcp_convert_server = "10.1.2.3"
 
-With this mararc file, and the csv2 zone file "db.example.com" 
-in the directory /etc/maradns, the program maradns will process UDP DNS 
+With this mararc file, and the csv2 zone file "db.example.com" in 
+the directory /etc/maradns, the program maradns will process UDP DNS 
 queries, and zoneserver will process TCP DNS queries. maradns is a 
 standalone UDP DNS server; zoneserver is a TCP proxy that converts TCP 
 requests in to UDP requests. Both daemons must be running to process 

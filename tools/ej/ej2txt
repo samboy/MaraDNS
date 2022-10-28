@@ -196,14 +196,14 @@ while start do
   local top = ""
   if lastEnd > 1 then top = out:sub(1,lastEnd-1) end
   local toAlter = out:sub(lastEnd,start - 1)
-  local initial = top:len()
+  local initial = toAlter:len()
   toAlter = toAlter:gsub("%s+"," ")
-  local offset = top:len() - initial
+  local offset = toAlter:len() - initial
   local preend = out:find(mc("</pre>"),start + 1)
   local mid = out:sub(start,preend)
   local tail = out:sub(preend + 1)
   out = top .. toAlter .. mid .. tail
-  lastEnd = preend
+  lastEnd = preend + offset
   start = out:find(mc("<pre>"),preend + offset)
 end
 local top = out:sub(1,lastEnd)
@@ -257,14 +257,14 @@ while start do
   local top = ""
   if lastEnd > 1 then top = out:sub(1,lastEnd-1) end
   local toFmt = out:sub(lastEnd,start - 1)
-  local initial = top:len()
+  local initial = toFmt:len()
   toFmt = fmt(toFmt)
-  local offset = top:len() - initial
+  local offset = toFmt:len() - initial
   local preend = out:find(mc("</pre>"),start + 1)
   local mid = out:sub(start,preend)
   local tail = out:sub(preend + 1)
   out = top .. toFmt .. mid .. tail
-  lastEnd = preend
+  lastEnd = preend + offset
   start = out:find(mc("<pre>"),preend + offset)
 end
 local top = out:sub(1,lastEnd)

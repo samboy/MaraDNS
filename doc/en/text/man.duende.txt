@@ -50,17 +50,16 @@ with a priority of LOG_ALERT.
 
 For example, suppose one invokes duende thusly:
 
-duende /usr/local/sbin/maradns
+	duende /usr/local/sbin/maradns
 
-If invoked thusly, duende will log all messages with the 
-"ident" (program name) of "/usr/local/sbin/maradns". If this is not 
-desired, invoke duende with something like:
+If invoked thusly, duende will log all messages with the "ident" 
+(program name) of "/usr/local/sbin/maradns". If this is not desired, 
+invoke duende with something like:
 
-export PATH=$PATH:/usr/local/sbin 
+	export PATH=$PATH:/usr/local/sbin 
 	duende maradns
 
-This will log messages with a (more sensible) "ident" of 
-maradns. 
+This will log messages with a (more sensible) "ident" of maradns. 
 
 Note: If a non-POSIX Bourne shell (such as csh, es, rc, or fish) is 
 used to invoke MaraDNS, the above syntax needs to be changed. 
@@ -73,12 +72,12 @@ configures syslog to store messages there.
 
 Using duende to start maradns, where the mararc file is /etc/mararc.2
 
-duende maradns -f /etc/mararc.2
+	duende maradns -f /etc/mararc.2
 
 Using duende to start zoneserver, where the mararc file is 
 /etc/mararc.4
 
-duende zoneserver -f /etc/mararc.4
+	duende zoneserver -f /etc/mararc.4
 
 ===BUGS===
 

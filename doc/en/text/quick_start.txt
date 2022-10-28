@@ -25,21 +25,21 @@ To try out Deadwood as a recursive nameserver:
 
 Here is a sample dwood3rc file:
 
-ipv4_bind_addresses = "127.0.0.1" 
+	ipv4_bind_addresses = "127.0.0.1" 
 	chroot_dir = "/etc/maradns" 
 	recursive_acl = "127.0.0.1"
 
-This dwood3rc file says that MaraDNS will have the ip 
-"127.0.0.1" (this is the bind_address), run from the directory 
-/etc/maradns (the chroot_dir value), and only allow the ip "127.0.0.1" 
-to make recursive queries (the recursive_acl value). 
+This dwood3rc file says that MaraDNS will have the ip "127.0.0.1" 
+(this is the bind_address), run from the directory /etc/maradns (the 
+chroot_dir value), and only allow the ip "127.0.0.1" to make recursive 
+queries (the recursive_acl value). 
 
 * Place the dwood3rc file in the location /etc/dwood3rc on your 
   system.
 
 * Run Deadwood as a non-daemon:
 
-/usr/local/sbin/Deadwood
+	/usr/local/sbin/Deadwood
 
 Since Deadwood needs to bind to a privileged port (port 53), it needs 
 to start up running as root. Deadwood is designed with security in 
@@ -48,30 +48,30 @@ internet.
 
 * Test Deadwood in another window or virtual terminal
 
-dig @127.0.0.1 www.yahoo.com
+	dig @127.0.0.1 www.yahoo.com
 
 * In order to make the duende daemonizing tool usable, create a 
   directory named /etc/maradns/logger/
 
-mkdir /etc/maradns/logger
+	mkdir /etc/maradns/logger
 
 * If this works, make Deadwood run as a daemon:
 
-/usr/local/sbin/duende /usr/local/sbin/Deadwood
+	/usr/local/sbin/duende /usr/local/sbin/Deadwood
 
 duende is a tool that daemonizes maradns; the daemonizer is a separate 
 program. 
 
 * If this all works, install MaraDNS and Deadwood:
 
-make install
+	make install
 
 It is also possible to set up the program "maradns" as an authoritative 
 name server: 
 
 * Here is the MaraRC file:
 
-ipv4_bind_addresses = "127.0.0.1" 
+	ipv4_bind_addresses = "127.0.0.1" 
 	chroot_dir = "/etc/maradns" 
 	csv2 = {} 
 	csv2["example.com."] = "db.example.com"

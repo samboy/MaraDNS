@@ -26,6 +26,7 @@
 zoneserver - handle zone transfers and other TCP functions for MaraDNS 
 .SH "DESCRIPTION"
 .PP
+
 .B "zoneserver"
 listens on port 53/tcp and handles DNS zone transfers and any DNS query 
 done over TCP instead of UDP. 
@@ -35,6 +36,7 @@ uses a configuration file,
 by default, to determine its parameters. 
 .SH "USAGE"
 .PP
+
 .B "zoneserver -f"
 pointer_to_mararc_file 
 .SH "OPTIONS"
@@ -58,7 +60,7 @@ parameters.
 In this example mararc file, which is used both by maradns and 
 zoneserver, we allow 10.1.2.3, 10.1.14.7, and 192.168.116.{any} to 
 transfer zones, and we allow anyone on the internet to perform TCP 
-queries. The only zone served in this example is example.com: 
+queries. The only zone served in this example is example.com:
 
 .nf
 ipv4_bind_addresses = "10.1.1.1" # Our IP 
@@ -80,6 +82,7 @@ and
 http://www.maradns.org 
 .SH "BUGS"
 .PP
+
 .B "zoneserver"
 assumes that the authoritative NS records are immediately after the SOA 
 record, and that there is at least one non-NS between that last 

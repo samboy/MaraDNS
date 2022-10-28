@@ -49,8 +49,8 @@ john.example.com. NS ns2.john.example.com.
 ns1.john.example.com. 10.9.8.7 
 ns2.john.example.com. 10.5.77.65
 
-John, who is running is own nameservers with the IPs 10.9.8.7 
-and 10.5.77.65 then has a zone file for john.example.com. that looks 
+John, who is running is own nameservers with the IPs 10.9.8.7 and 
+10.5.77.65 then has a zone file for john.example.com. that looks 
 something like this:
 
 # It is best if the NS records for a subzone agree with the delegation 

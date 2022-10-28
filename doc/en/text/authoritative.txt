@@ -55,7 +55,7 @@ chroot_dir = "/etc/maradns"
 csv2 = {} 
 csv2["example.com."] = "db.example.com"
 
-Lets look at these four lines.  The first line, 
+Lets look at these four lines. The first line, 
 ipv4_bind_addresses, is the IP address (or addresses) this DNS server 
 will have. Since we're running an authoritative DNS server, it is 
 important that this IP address be a routable IP address--an IP address 
@@ -211,10 +211,10 @@ www.example.com.	10.10.10.10 ~
 www.example.com.	10.10.10.11 ~ 
 www.example.com.	10.10.10.12 ~
 
-In this example, a query to www.example.com will return a list 
-of three IPs. MaraDNS rotates the records so that the first IP given to 
-a client changes each time a query for www.example.com is made. This 
-can be used as a primitive kind of load balancing.  
+In this example, a query to www.example.com will return a list of 
+three IPs. MaraDNS rotates the records so that the first IP given to a 
+client changes each time a query for www.example.com is made. This can 
+be used as a primitive kind of load balancing.  
 
 ==The % character shortcut==
 
@@ -296,13 +296,13 @@ example.com. +86400 ns synth-ip-0a040506.example.com. ~
 #synth-ip-0a010203.example.com. +86400 a 10.1.2.3 ~ 
 #synth-ip-0a040506.example.com. +86400 a 10.4.5.6 ~
 
-The names for the name servers we wish to submit to the 
-registrar are the synth-ip-0a010203.example.com and 
-synth-ip-0a040506.example.com names above. These somewhat long names 
-are the names for the nameservers for the (in the above example) 
-example.com. domain. At the end of the askmara output, you can see the 
-IPs for these name servers; place these IPs in the field where they ask 
-for the IP of the name servers for your domain. 
+The names for the name servers we wish to submit to the registrar 
+are the synth-ip-0a010203.example.com and synth-ip-0a040506.example.com 
+names above. These somewhat long names are the names for the 
+nameservers for the (in the above example) example.com. domain. At the 
+end of the askmara output, you can see the IPs for these name servers; 
+place these IPs in the field where they ask for the IP of the name 
+servers for your domain. 
 
 For example, if the registrar's form looks like this:
 

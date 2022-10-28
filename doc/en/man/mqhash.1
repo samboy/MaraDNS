@@ -26,9 +26,11 @@
 mqhash - Simple secure password generator 
 .SH "SYNOPSIS"
 .PP
+
 .B "mqhash [-n #] [-s] [-u] {data to hash}"
 .SH "DESCRIPTION"
 .PP
+
 .B "mqhash"
 is a simple secure password generator. 
 .PP
@@ -52,7 +54,7 @@ This secure secret is put in the file ~/.mhash_prefix. It is important
 that this secret is hard to guess; the security of all generated 
 passwords is only as secure as the master secret. 
 .PP
-Once the ~/.mhash_prefix file is set up, mqhash is run thusly: 
+Once the ~/.mhash_prefix file is set up, mqhash is run thusly:
 
 .nf
 mqhash -s {location} 

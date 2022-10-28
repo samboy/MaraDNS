@@ -196,10 +196,10 @@ toggle.www.ms.akadns.net. +300 a 207.46.19.30
 # NS replies: 
 # AR replies:
 
-Please replace "example.com" above with any domain that MaraDNS 
-is resolving. 
+Please replace "example.com" above with any domain that MaraDNS is 
+resolving. 
 
-If not, verify that you have a working internet connection.  If you do, 
+If not, verify that you have a working internet connection. If you do, 
 make sure MaraDNS is running by seeing if it is listed as "maradns.exe" 
 in the task manager (Ctrl + Alt + Del) under the "Processes" tab. Note: 
 If you can't see tabs in the task manager, simply double click in the 

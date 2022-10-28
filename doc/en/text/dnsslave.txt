@@ -89,8 +89,8 @@ cat $ZONELIST | awk '{print "fetchzone "$1" "$2" > '$TEMP'"
 		      print "    mv '$TEMP' db."$1 
 		      print "fi";}' | sh
 
-The list of zones, which is in the file /etc/maradns.zonelist 
-in the above example, will look like this:
+The list of zones, which is in the file /etc/maradns.zonelist in 
+the above example, will look like this:
 
 example.com 10.5.6.7  
 example.org 192.168.5.67  

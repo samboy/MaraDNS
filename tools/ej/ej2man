@@ -196,19 +196,21 @@ while start do
   local top = ""
   if lastEnd > 1 then top = out:sub(1,lastEnd-1) end
   local toAlter = out:sub(lastEnd,start - 1)
-  local initial = top:len()
+  local initial = toAlter:len()
   toAlter = toAlter:gsub("%s+"," ")
-  local offset = top:len() - initial
+  toAlter = toAlter:gsub("\n(%s*)\n","\n")
+  local offset = toAlter:len() - initial
   local preend = out:find(mc("</pre>"),start + 1)
   local mid = out:sub(start,preend)
   local tail = out:sub(preend + 1)
   out = top .. toAlter .. mid .. tail
-  lastEnd = preend
+  lastEnd = preend + offset
   start = out:find(mc("<pre>"),preend + offset)
 end
 local top = out:sub(1,lastEnd)
 local tail = out:sub(lastEnd + 1)
 tail = tail:gsub("%s+"," ")
+tail = tail:gsub("\n(%s*)\n","\n")
 out = top .. tail
 
 -- Step two: Now that the file is a single line (except for PRE blocks), 
@@ -303,7 +305,6 @@ out=out:gsub(mc("<i>([^<]*)</i>(%S+)"),'\n.IR "%1" "%2"\n')
 out=out:gsub(mc("<i>([^<]*)</i>%s*"),'\n.I "%1"\n')
 
 -- The P tag
-out=out:gsub("\n(%s*)\n","\n")
 out=out:gsub(mc("<p>%s*"),'\n.PP\n')
 
 out=out:gsub("<[DdUu]l>","") -- DL and UL tags removed
@@ -335,15 +336,15 @@ while start do
   local top = ""
   if lastEnd > 1 then top = out:sub(1,lastEnd-1) end
   local toFmt = out:sub(lastEnd,start - 1)
-  local initial = top:len()
+  local initial = toFmt:len()
   toFmt=toFmt:gsub("\n[ \t]+","\n") -- Remove leading space; confuses nroff
   toFmt = fmt(toFmt)
-  local offset = top:len() - initial
+  local offset = toFmt:len() - initial
   local preend = out:find("\n.fi\n",start + 1)
   local mid = out:sub(start,preend)
   local tail = out:sub(preend + 1)
   out = top .. toFmt .. mid .. tail
-  lastEnd = preend
+  lastEnd = preend + offset
   start = out:find("\n.nf\n",preend + offset)
 end
 local top = out:sub(1,lastEnd)
@@ -351,6 +352,9 @@ local tail = out:sub(lastEnd + 1)
 tail=tail:gsub("\n[ \t]+","\n") -- Remove leading space; confuses nroff
 tail=fmt(tail)
 out = top .. tail
+-- Remove blank lines at top and bottom of <pre> blocks
+out = out:gsub('\n.nf\n+','\n.nf\n')
+out = out:gsub('\n+.fi\n','\n.fi\n')
 
 out = out:gsub("[ ]*\n[ ]*\n[ ]*\n[ ]*\n[ ]*\n","\n\n")
 out = out:gsub("[ ]*\n[ ]*\n[ ]*\n[ ]*\n","\n\n")
