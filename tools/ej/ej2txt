@@ -1,4 +1,5 @@
 #!/usr/bin/env lunacy
+-- This script is written in Lua 5.1
 
 -- This script has been donated to the public domain in 2022 by Sam Trenholme
 -- If, for some reason, a public domain declation is not acceptable, it
