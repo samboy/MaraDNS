@@ -77,7 +77,7 @@ see <b>csv2(5)</b> for details.
 
 <br>
 <table> 
-<td>Letter<td>Type<td>RFC1035 <hibit alt="section ">§</hibit>3.2.2 value<tr>
+<td>Letter<td>Type<td>RFC1035 section 3.2.2 value<tr>
 <td>A<td>A<td>1<tr>
 <td>N<td>NS<td>2<tr>
 <td>C<td>CNAME<td>5<tr>
