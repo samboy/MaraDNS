@@ -217,6 +217,14 @@ out = out:gsub(mc("<h2%s*>%s*"),"\n\n==") -- Level 2 headings start
 out = out:gsub(mc("</?h1%s*>%s*"),"===\n\n") -- Level 1 headings end
 out = out:gsub(mc("</?h2%s*>%s*"),"==\n\n") -- Level 2 headings end
 out = out:gsub(mc("</?dt%s*>%s*"),"\n\n") -- DT tags
+-- Tables, used by csv1.ej
+out=out:gsub(mc("<table>%s*"),"\n")
+out=out:gsub(mc("</table>"),"")
+out=out:gsub(mc("<td>"),'\t')
+out=out:gsub('<[TtBb][Rr]>\n?','\n')
+-- HiBit, also used by csv1.ej
+out=out:gsub(mc('<hibit[^>]*>([^<]*)</hibit>'),"%1") -- HIBIT (2022)
+
 out = out:gsub("</?%w+%s*>","") -- Remove all other EJ tags
 out = out:gsub("^%s*","") -- Remove whitespace at document top
 out = fmt(out)

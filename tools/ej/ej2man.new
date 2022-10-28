@@ -295,6 +295,11 @@ out=out:gsub("(\n%.in)","\n%1")
 out=out:gsub("(\n%,[TP]P[^\n]+\n)\n+","%1")
 -- Get rid of multiple spaces; nroff (unlike EJ) honors them
 out=out:gsub("[ \t]+"," ")
+-- Tables, used by csv1.ej
+out=out:gsub(mc("<table>"),'\n.ta +5 +7 +7\n')
+out=out:gsub(mc("<td>"),'\t')
+out=out:gsub('<[TtBb][Rr]>\n?','\n.br\n')
+out=out:gsub(mc("</table>"),"")
 
 out = fmt(out)
 out = out:gsub("[ ]*\n[ ]*\n[ ]*\n[ ]*\n[ ]*\n","\n\n")
