@@ -201,7 +201,8 @@ out = out:gsub(mc("</?b>"),"") -- Scrub B tag (bold)
 out = out:gsub(mc("</?i>"),"") -- Scrub I tag (italic)
 
 -- Lists are a special case
-matchPlace, matchEnd = out:find(mc("<li>[^<]*"))
+out = out:gsub(mc("<li>%s*"),"<li>")
+matchPlace, matchEnd = out:find(mc("<li>[^<]*")) -- LI
 while matchPlace and matchPlace > 1 do
   tail = out:sub(matchEnd)
   out = out:sub(1, matchPlace - 1) .. "\n\n* " ..
@@ -223,6 +224,8 @@ out=out:gsub(mc("<td>"),'\t')
 out=out:gsub('<[TtBb][Rr]>\n?','\n')
 -- HiBit, also used by csv1.ej
 out=out:gsub(mc('<hibit[^>]*>([^<]*)</hibit>'),"%1") -- HIBIT (2022)
+-- Blockquote, used by faq.embed.  Just ignore it
+out=out:gsub(mc("</?blockquote>%s*"),"\n")
 
 -- fmt: Add line breaks to fit on an 80-column terminal
 -- Do not fmt pre sections, fmt everything else
