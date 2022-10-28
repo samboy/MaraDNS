@@ -733,8 +733,8 @@ to enable IPv6 support, add '-DIPV6' to the compile-time flags.  For
 example, to compile this to make a small binary, and to have IPv6 support:
 
 <pre>
-export FLAGS='-Os -DIPV6'
-make
+	export FLAGS='-Os -DIPV6'
+	make
 </pre>
 
 <h1>SECURITY</h1>

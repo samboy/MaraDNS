@@ -1,813 +1,866 @@
-                                      NAME
+===NAME===
 
-   Deadwood - A fully recursive caching DNS resolver
+Deadwood - A fully recursive caching DNS resolver 
 
-                                  DESCRIPTION
+===DESCRIPTION===
 
-   Deadwood is a fully recursive DNS cache. This is a DNS server with the
-   following features:
-     * Full support for both DNS recursion and DNS forwarding caching
-     * Small size and memory footprint suitable for embedded systems
-     * Simple and clean codebase
-     * Secure design
-     * Spoof protection: Strong cryptography used to determine the Query
-       ID and source port
-     * Ability to read and write the cache to a file
-     * Dynamic cache that deletes entries not recently used
-     * Ability to use expired entries in the cache when it is impossible
-       to contact upstream DNS servers.
-     * IPv6 support can be compiled in if desired
-     * Both DNS-over-UDP and DNS-over-TCP are handled by the same daemon
-     * Built-in dnswall functionality
-     * The ability to assign names to IPv4 IPs as specified in one's
-       dwood3rc file.
-     * The ability to quickly load and use a large blocklist of names to
-       not resolve.
+Deadwood is a fully recursive DNS cache. This is a DNS server with the 
+following features: 
 
-                             COMMAND LINE ARGUMENTS
+* Full support for both DNS recursion and DNS forwarding caching
 
-   Deadwood has a single optional command line argument: The location of
-   the configuration file that Deadwood uses, specified with the "-f"
-   flag. If this is not defined, Deadwood uses the file "/etc/dwood3rc" as
-   the configuration file.
+* Small size and memory footprint suitable for embedded systems
 
-   In other words, invoking Deadwood as Deadwood will cause Deadwood to
-   use /etc/dwood3rc as the configuration file; invoking Deadwood as
-   Deadwood -f foobar will cause Deadwood to use the file "foobar" in the
-   current working directory (the directory one is in when starting
-   Deadwood) as the configuration file.
+* Simple and clean codebase
 
-                           CONFIGURATION FILE FORMAT
+* Secure design
 
-   The Deadwood configuration file is modeled after Python 2's syntax.
-   However, since Deadwood 2 is no longer supported by the Python Software
-   Foundation, and since Deadwood configuration files can sometimes fail
-   to parse in Python 3, Deadwood does not strictly follow Python 2
-   syntax.
+* Spoof protection: Strong cryptography used to determine the Query ID 
+  and source port
 
-   In particular, leading whitespace is allowed in Deadwood configuration
-   files.
+* Ability to read and write the cache to a file
 
-                                PARAMETER TYPES
+* Dynamic cache that deletes entries not recently used
 
-   Deadwood has three different parameter types:
-     * Numeric parameters. Numeric parameters must not be surrounded by
-       quotes, such as this example:
+* Ability to use expired entries in the cache when it is impossible to 
+  contact upstream DNS servers.
+
+* IPv6 support can be compiled in if desired
+
+* Both DNS-over-UDP and DNS-over-TCP are handled by the same daemon
+
+* Built-in dnswall functionality
+
+* The ability to assign names to IPv4 IPs as specified in one's 
+  dwood3rc file.
+
+* The ability to quickly load and use a large blocklist of names to 
+  not resolve.
+
+===COMMAND LINE ARGUMENTS===
+
+Deadwood has a single optional command line argument: The location of 
+the configuration file that Deadwood uses, specified with the "-f" 
+flag. If this is not defined, Deadwood uses the file "/etc/dwood3rc" as 
+the configuration file. 
+
+In other words, invoking Deadwood as Deadwood will cause Deadwood to 
+use /etc/dwood3rc as the configuration file; invoking Deadwood as 
+Deadwood -f foobar will cause Deadwood to use the file "foobar" in the 
+current working directory (the directory one is in when starting 
+Deadwood) as the configuration file. 
+
+===CONFIGURATION FILE FORMAT===
+
+The Deadwood configuration file is modeled after Python 2's syntax. 
+However, since Deadwood 2 is no longer supported by the Python Software 
+Foundation, and since Deadwood configuration files can sometimes fail 
+to parse in Python 3, Deadwood does not strictly follow Python 2 
+syntax. 
+
+In particular, leading whitespace is allowed in Deadwood configuration 
+files. 
+
+===PARAMETER TYPES===
+
+Deadwood has three different parameter types: 
+
+* Numeric parameters. Numeric parameters must not be surrounded by 
+  quotes, such as this example:
+
 filter_rfc1918 = 0
 
-       If a numeric parameter is surrounded by quotes, the error message
-       "Unknown dwood3rc string parameter" will appear.
-     * String parameters. String parameters must be surrounded by quotes,
-       such as in this example:
+If a numeric parameter is surrounded by quotes, the error 
+message "Unknown dwood3rc string parameter" will appear. 
+
+* String parameters. String parameters must be surrounded by quotes, 
+  such as in this example:
+
 bind_address = "127.0.0.1"
 
-     * Dictionary parameters. All dictionary parameters must be
-       initialized before use, and dictionary parameters must have both
-       the dictionary index and the value for said index surrounded by
-       quotes, such as in this example:
-upstream_servers = {}
+* Dictionary parameters. All dictionary parameters must be initialized 
+  before use, and dictionary parameters must have both the 
+  dictionary index and the value for said index surrounded by 
+  quotes, such as in this example:
+
+upstream_servers = {} 
 upstream_servers["."]="8.8.8.8, 8.8.4.4"
 
-   All dwood3rc parameters except the following are numeric parameters:
-     * bind_address (string)
-     * cache_file (string)
-     * chroot_dir (string)
-     * ip_blacklist (string)
-     * ip_blocklist (string)
-     * ipv4_bind_addresses (string)
-     * random_seed_file (string)
-     * recursive_acl (string)
-     * root_servers (dictionary)
-     * upstream_servers (dictionary)
-     * ip4 (dictionary)
-     * ip6 (dictionary)
-     * source_ip4 (string)
+All dwood3rc parameters except the following are numeric parameters: 
 
-                              SUPPORTED PARAMETERS
+* bind_address (string)
 
-   The Deadwood configuration file supports the following parameters:
+* cache_file (string)
 
-bind_address
+* chroot_dir (string)
 
-   This is the IP (or possibly IPv6) address we bind to.
+* ip_blacklist (string)
 
-cache_file
+* ip_blocklist (string)
 
-   This is the filename of the file used for reading and writing the cache
-   to disk; this string can have lowercase letters, the '-' symbol, the
-   '_' symbol, and the '/' symbol (for putting the cache in a
-   subdirectory). All other symbols become a '_' symbol.
+* ipv4_bind_addresses (string)
 
-   This file is read and written as the user Deadwood runs as.
+* random_seed_file (string)
 
-chroot_dir
+* recursive_acl (string)
 
-   This is the directory the program will run from.
+* root_servers (dictionary)
 
-deliver_all
+* upstream_servers (dictionary)
 
-   This affects behavior in Deadwood 2.3, but has no effect in Deadwood 3.
-   This variable is only here so Deadwood 2 rc files can run in Deadwood
-   3.
+* ip4 (dictionary)
 
-dns_port
+* ip6 (dictionary)
 
-   This is the port Deadwood binds to and listens on for incoming
-   connections. The default value for this is the standard DNS port: port
-   53
+* source_ip4 (string)
 
-filter_rfc1918
+===SUPPORTED PARAMETERS===
 
-   When this has a value of 1, a number of different IP ranges are not
-   allowed to be in DNS A replies:
-     * 192.168.x.x
-     * 172.[16-31].x.x
-     * 10.x.x.x
-     * 127.x.x.x
-     * 169.254.x.x
-     * 224.x.x.x
-     * 0.0.x.x
+The Deadwood configuration file supports the following parameters: 
 
-   If one of the above IPs is detected in a DNS reply, and filter_rfc1918
-   has a value of 1, Deadwood will return a synthetic "this host does not
-   reply" response (a SOA record in the NS section) instead of the A
-   record.
+==bind_address==
 
-   The reason for this is to provide a "dnswall" that protects users for
-   some kinds of attacks, as described at http://crypto.stanford.edu/dns/
+This is the IP (or possibly IPv6) address we bind to. 
 
-   Please note that Deadwood only provides IPv4 "dnswall" functionality
-   and does not help protect against IPv6 answers. If protection against
-   certain IPv6 AAAA records is needed, either disable all AAAA answers by
-   setting reject_aaaa to have a value of 1, or use an external program to
-   filter undesired IPv4 answers (such as the dnswall program).
+==cache_file==
 
-   The default value for this is 1
+This is the filename of the file used for reading and writing the cache 
+to disk; this string can have lowercase letters, the '-' symbol, the 
+'_' symbol, and the '/' symbol (for putting the cache in a 
+subdirectory). All other symbols become a '_' symbol. 
 
-handle_noreply
+This file is read and written as the user Deadwood runs as. 
 
-   When this is set to 0, Deadwood sends no reply back to the client (when
-   the client is a TCP client, Deadwood closes the TCP connection) when a
-   UDP query is sent upstream and the upstream DNS never sends a reply.
+==chroot_dir==
 
-   When this is set to 1, Deadwood sends a SERVER FAIL back to the client
-   when a UDP query is sent upstream and the upstream DNS never sends a
-   reply.
+This is the directory the program will run from. 
 
-   The default value for this is 1
+==deliver_all==
 
-handle_overload
+This affects behavior in Deadwood 2.3, but has no effect in Deadwood 3. 
+This variable is only here so Deadwood 2 rc files can run in Deadwood 
+3. 
 
-   When this has a value of 0, Deadwood sends no reply when a UDP query is
-   sent and the server is overloaded (has too many pending connections);
-   when it has a value of 1, Deadwood sends a SERVER FAIL packet back to
-   the sender of the UDP query. The default value for this is 1.
+==dns_port==
 
-hash_magic_number
+This is the port Deadwood binds to and listens on for incoming 
+connections. The default value for this is the standard DNS port: port 
+53 
 
-   This used to be used for Deadwood's internal hash generator to keep the
-   hash generator somewhat random and immune to certain types of attacks.
-   In Deadwood 3.0, entropy for the hash function is created by looking at
-   the contents of /dev/urandom (secret.txt on Windows machines) and the
-   current timestamp. This parameter is only here so older configuration
-   files do not break in Deadwood 3.0.
+==filter_rfc1918==
 
-ip4
+When this has a value of 1, a number of different IP ranges are not 
+allowed to be in DNS A replies: 
 
-   This is a dictionary variable which allows us to have given names
-   resolve to bogus IPv4 addresses. Here, we have the name "maradns.foo"
-   resolve to "10.10.10.10" and "kabah.foo" resolve to "10.11.11.11",
-   regardless of what real values these DNS records may have:
-ip4 = {}
-ip4["maradns.foo."] = "10.10.10.10"
+* 192.168.x.x
+
+* 172.[16-31].x.x
+
+* 10.x.x.x
+
+* 127.x.x.x
+
+* 169.254.x.x
+
+* 224.x.x.x
+
+* 0.0.x.x
+
+If one of the above IPs is detected in a DNS reply, and filter_rfc1918 
+has a value of 1, Deadwood will return a synthetic "this host does not 
+reply" response (a SOA record in the NS section) instead of the A 
+record. 
+
+The reason for this is to provide a "dnswall" that protects users for 
+some kinds of attacks, as described at http://crypto.stanford.edu/dns/ 
+
+Please note that Deadwood only provides IPv4 "dnswall" functionality 
+and does not help protect against IPv6 answers. If protection against 
+certain IPv6 AAAA records is needed, either disable all AAAA answers by 
+setting reject_aaaa to have a value of 1, or use an external program to 
+filter undesired IPv4 answers (such as the dnswall program). 
+
+The default value for this is 1 
+
+==handle_noreply==
+
+When this is set to 0, Deadwood sends no reply back to the client (when 
+the client is a TCP client, Deadwood closes the TCP connection) when a 
+UDP query is sent upstream and the upstream DNS never sends a reply. 
+
+When this is set to 1, Deadwood sends a SERVER FAIL back to the client 
+when a UDP query is sent upstream and the upstream DNS never sends a 
+reply. 
+
+The default value for this is 1 
+
+==handle_overload==
+
+When this has a value of 0, Deadwood sends no reply when a UDP query is 
+sent and the server is overloaded (has too many pending connections); 
+when it has a value of 1, Deadwood sends a SERVER FAIL packet back to 
+the sender of the UDP query. The default value for this is 1. 
+
+==hash_magic_number==
+
+This used to be used for Deadwood's internal hash generator to keep the 
+hash generator somewhat random and immune to certain types of attacks. 
+In Deadwood 3.0, entropy for the hash function is created by looking at 
+the contents of /dev/urandom (secret.txt on Windows machines) and the 
+current timestamp. This parameter is only here so older configuration 
+files do not break in Deadwood 3.0. 
+
+==ip4==
+
+This is a dictionary variable which allows us to have given names 
+resolve to bogus IPv4 addresses. Here, we have the name "maradns.foo" 
+resolve to "10.10.10.10" and "kabah.foo" resolve to "10.11.11.11", 
+regardless of what real values these DNS records may have:
+
+ip4 = {} 
+ip4["maradns.foo."] = "10.10.10.10" 
 ip4["kabah.foo."] = "10.11.11.11"
 
-   Note that a given name can only resolve to a single IP, and that the
-   records have a fixed TTL of 30 seconds.
+Note that a given name can only resolve to a single IP, and 
+that the records have a fixed TTL of 30 seconds. 
 
-   It is also possible to use ip4 to set up a blocklist by using "X" for
-   the IP. When this is done, an IPv4 request for a given hostname results
-   in a synthetic "this name does not exist" response. In addition, the
-   corresponding IPv6 request will also return that "name does not exist"
-   reply. For example:
-ip4 = {}
+It is also possible to use ip4 to set up a blocklist by using "X" for 
+the IP. When this is done, an IPv4 request for a given hostname results 
+in a synthetic "this name does not exist" response. In addition, the 
+corresponding IPv6 request will also return that "name does not exist" 
+reply. For example:
+
+ip4 = {} 
 ip4["evil.example.com."] = "X"
 
-   Here, both the IPv4 and the IPv6 query for "evil.example.com" will not
-   resolve in Deadwood.
+Here, both the IPv4 and the IPv6 query for "evil.example.com" 
+will not resolve in Deadwood. 
 
-ip6
+==ip6==
 
-   Like ip4, ip6 uses a similar syntax to have bogus IPv6 addresses. We
-   don't use standard notation for IPv6 addresses. Instead, we we use
-   32-character hex addresses (case insensitive); to make it easier to
-   count long strings of "0"s, the "_" acts like a 0; we also ignore "-"
-   (dash) and " " (space) in ip6 strings. Here is an example:
-ip6 = {}
-ip6["maradns.foo."] = "20010db84d617261444e530000001234"
+Like ip4, ip6 uses a similar syntax to have bogus IPv6 addresses. We 
+don't use standard notation for IPv6 addresses. Instead, we we use 
+32-character hex addresses (case insensitive); to make it easier to 
+count long strings of "0"s, the "_" acts like a 0; we also ignore "-" 
+(dash) and " " (space) in ip6 strings. Here is an example:
+
+ip6 = {} 
+ip6["maradns.foo."] = "20010db84d617261444e530000001234" 
 ip6["kabah.foo."] = "2001-0DB8-4D61-7261 444E-5300-__00-2345"
 
-ip_blocklist
+==ip_blocklist==
 
-   This is a list of IPs that we do not allow to be in the answer to a DNS
-   request. The reason for this is to counteract the practice some ISPs
-   have of converting a "this site does not exist" DNS answer in to a page
-   controlled by the ISP; this results in possible security issues.
+This is a list of IPs that we do not allow to be in the answer to a DNS 
+request. The reason for this is to counteract the practice some ISPs 
+have of converting a "this site does not exist" DNS answer in to a page 
+controlled by the ISP; this results in possible security issues. 
 
-   This parameter only accepts individual IPs, and does not use netmasks.
+This parameter only accepts individual IPs, and does not use netmasks. 
 
-   Note that this parameter used to be called ip_blacklist; while the
-   ip_blacklist name still works as before, ip_blocklist is the current
-   name.
+Note that this parameter used to be called ip_blacklist; while the 
+ip_blacklist name still works as before, ip_blocklist is the current 
+name. 
 
-maradns_uid
+==maradns_uid==
 
-   The user-id Deadwood runs as. This can be any number between 10 and
-   16777216; the default value is 707 (a system UID which should be
-   unused). This value is not used on Windows systems.
+The user-id Deadwood runs as. This can be any number between 10 and 
+16777216; the default value is 707 (a system UID which should be 
+unused). This value is not used on Windows systems. 
 
-maradns_gid
+==maradns_gid==
 
-   The group-id Deadwood runs as. This can be any number between 10 and
-   16777216; the default value is 707. This value is not used on Windows
-   systems.
+The group-id Deadwood runs as. This can be any number between 10 and 
+16777216; the default value is 707. This value is not used on Windows 
+systems. 
 
-max_ar_chain
+==max_ar_chain==
 
-   Whether resource record rotation is enabled. If this has a value of 1,
-   resource record rotation is enabled, otherwise resource record rotation
-   is disabled.
+Whether resource record rotation is enabled. If this has a value of 1, 
+resource record rotation is enabled, otherwise resource record rotation 
+is disabled. 
 
-   Resource record rotation is usually desirable, since it allows DNS to
-   act like a crude load balancer. However, on heavily loaded systems it
-   may be desirable to disable it to reduce CPU usage.
+Resource record rotation is usually desirable, since it allows DNS to 
+act like a crude load balancer. However, on heavily loaded systems it 
+may be desirable to disable it to reduce CPU usage. 
 
-   The reason for the unusual name for this variable is to retain
-   compatibility with MaraDNS mararc files.
+The reason for the unusual name for this variable is to retain 
+compatibility with MaraDNS mararc files. 
 
-   The default value is 1: Resource record rotation enabled.
+The default value is 1: Resource record rotation enabled. 
 
-max_inflights
+==max_inflights==
 
-   The maximum number of simultaneous clients we process at the same time
-   for the same query.
+The maximum number of simultaneous clients we process at the same time 
+for the same query. 
 
-   If, while processing a query for, say, "example.com.", another DNS
-   client sends to Deadwood another query for example.com, instead of
-   creating a new query to process example.com, Deadwood will attach the
-   new client to the same query that is already "in flight", and send a
-   reply to both clients once we have an answer for example.com.
+If, while processing a query for, say, "example.com.", another DNS 
+client sends to Deadwood another query for example.com, instead of 
+creating a new query to process example.com, Deadwood will attach the 
+new client to the same query that is already "in flight", and send a 
+reply to both clients once we have an answer for example.com. 
 
-   This is the number of simultaneous clients a given query can have. If
-   this limit is exceeded, subsequents clients with the same query are
-   refused until an answer is found. If this has a value of 1, we do not
-   merge multiple requests for the same query, but give each request its
-   own connection.
+This is the number of simultaneous clients a given query can have. If 
+this limit is exceeded, subsequents clients with the same query are 
+refused until an answer is found. If this has a value of 1, we do not 
+merge multiple requests for the same query, but give each request its 
+own connection. 
 
-   The default value is 8.
+The default value is 8. 
 
-max_ttl
+==max_ttl==
 
-   The maximum amount of time we will keep an entry in the cache, in
-   seconds (also called "Maximum TTL").
+The maximum amount of time we will keep an entry in the cache, in 
+seconds (also called "Maximum TTL"). 
 
-   This is the longest we will keep an entry cached. The default value for
-   this parameter is 86400 (one day); the minimum value is 300 (5 minutes)
-   and the maximum value this can have is 7776000 (90 days).
+This is the longest we will keep an entry cached. The default value for 
+this parameter is 86400 (one day); the minimum value is 300 (5 minutes) 
+and the maximum value this can have is 7776000 (90 days). 
 
-   The reason why this parameter is here is to protect Deadwood from
-   attacks which exploit there being stale data in the cache, such as the
-   "Ghost Domain Names" attack.
+The reason why this parameter is here is to protect Deadwood from 
+attacks which exploit there being stale data in the cache, such as the 
+"Ghost Domain Names" attack. 
 
-maximum_cache_elements
+==maximum_cache_elements==
 
-   The maximum number of elements our cache is allowed to have. This is a
-   number between 32 and 16,777,216; the default value for this is 1024.
-   Note that, if writing the cache to disk or reading the cache from disk,
-   higher values of this will slow down cache reading/writing.
+The maximum number of elements our cache is allowed to have. This is a 
+number between 32 and 16,777,216; the default value for this is 1024. 
+Note that, if writing the cache to disk or reading the cache from disk, 
+higher values of this will slow down cache reading/writing. 
 
-   The amount of memory each cache entry uses is variable depending on the
-   operating system used and the size of memory allocation pages assigned.
-   In Windows XP, for example, each entry uses approximately four
-   kilobytes of memory and Deadwood has an overhead of approximately 512
-   kilobytes. So, if there are 512 cache elements, Deadwood uses
-   approximately 2.5 megabytes of memory, and if there are 1024 cache
-   elements, Deadwood uses approximately 4.5 megabytes of memory. Again,
-   these numbers are for Windows XP and other operating systems will have
-   different memory allocation numbers.
+The amount of memory each cache entry uses is variable depending on the 
+operating system used and the size of memory allocation pages assigned. 
+In Windows XP, for example, each entry uses approximately four 
+kilobytes of memory and Deadwood has an overhead of approximately 512 
+kilobytes. So, if there are 512 cache elements, Deadwood uses 
+approximately 2.5 megabytes of memory, and if there are 1024 cache 
+elements, Deadwood uses approximately 4.5 megabytes of memory. Again, 
+these numbers are for Windows XP and other operating systems will have 
+different memory allocation numbers. 
 
-   Please note that, as of Deadwood 3.5.0004, is is no longer needed to
-   increase maximum_cache_elements to store upstream_server and
-   root_server entries.
+Please note that, as of Deadwood 3.5.0004, is is no longer needed to 
+increase maximum_cache_elements to store upstream_server and 
+root_server entries. 
 
-maxprocs
+==maxprocs==
 
-   This is the maximum number of pending remote UDP connections Deadwood
-   can have. The default value for this is 1024.
+This is the maximum number of pending remote UDP connections Deadwood 
+can have. The default value for this is 1024. 
 
-max_tcp_procs
+==max_tcp_procs==
 
-   This is the number of allowed open TCP connections. Default value: 8
+This is the number of allowed open TCP connections. Default value: 8 
 
-min_ttl
+==min_ttl==
 
-   The minimum amount of time we will keep an entry in the cache, in
-   seconds (also called "Minimum TTL").
+The minimum amount of time we will keep an entry in the cache, in 
+seconds (also called "Minimum TTL"). 
 
-num_retries
+==num_retries==
 
-   The number of times we retry to send a query upstream before giving up.
-   If this is 0, we only try once; if this is 1, we try twice, and so on,
-   up to 32 retries. Note that each retry takes timeout_seconds seconds
-   before we retry again. Default value: 5
-
-ns_glueless_type
-
-   The RR type we send to resolve glueless records. This should always be
-   1 (A; i.e. IPv4 DNS servers). This should never be ANY, see RFC8482.
-   This should not be any other value, since only A glueless NS referrals
-   have ever been tested with Deadwood.
-
-   The reason why this exists is because, often times in DNS, we get a
-   reply like "The name server for this foo.example.com and no I do not
-   have the IP for foo.example.com" when recursively solving an answer.
-   So, the question is this: Is foo.example.com an IPv4 DNS server, an
-   IPv6 server, or both?
-
-   On today's internet (mid-2020, during the COVID-19 crisis), the answer
-   is that the name server in question is only on the IPv4 Internet. IPv6
-   is now mainstream (e.g. my ISP gives me a /64 and I no longer have to
-   tunnel through he.net to try out IPv6), but most servers are still IPv4
-   only (e.g. my domains are only on IPv4, and amazon.com does not have an
-   IPv6 address).
-
-   The reason this parameter exists is because, when I was writing the
-   recursive code for Deadwood, I was thinking of a future where IPv6 is
-   prevalent enough that we would have DNS servers with only IPv6
-   addresses, and glueless NS referrals (the "foo.example.com" case above)
-   would point to servers with IPv6, but not IPv4, addresses.
+The number of times we retry to send a query upstream before giving up. 
+If this is 0, we only try once; if this is 1, we try twice, and so on, 
+up to 32 retries. Note that each retry takes timeout_seconds seconds 
+before we retry again. Default value: 5 
+
+==ns_glueless_type==
+
+The RR type we send to resolve glueless records. This should always be 
+1 (A; i.e. IPv4 DNS servers). This should never be ANY, see RFC8482. 
+This should not be any other value, since only A glueless NS referrals 
+have ever been tested with Deadwood. 
+
+The reason why this exists is because, often times in DNS, we get a 
+reply like "The name server for this foo.example.com and no I do not 
+have the IP for foo.example.com" when recursively solving an answer. 
+So, the question is this: Is foo.example.com an IPv4 DNS server, an 
+IPv6 server, or both? 
+
+On today's internet (mid-2020, during the COVID-19 crisis), the answer 
+is that the name server in question is only on the IPv4 Internet. IPv6 
+is now mainstream (e.g. my ISP gives me a /64 and I no longer have to 
+tunnel through he.net to try out IPv6), but most servers are still IPv4 
+only (e.g. my domains are only on IPv4, and amazon.com does not have an 
+IPv6 address). 
+
+The reason this parameter exists is because, when I was writing the 
+recursive code for Deadwood, I was thinking of a future where IPv6 is 
+prevalent enough that we would have DNS servers with only IPv6 
+addresses, and glueless NS referrals (the "foo.example.com" case above) 
+would point to servers with IPv6, but not IPv4, addresses. 
 
-   That day may yet come, but preparing Deadwood to still be a viable DNS
-   server when that day comes will require more than changing the RR type
-   sent when it gets a glueless NS referral.
+That day may yet come, but preparing Deadwood to still be a viable DNS 
+server when that day comes will require more than changing the RR type 
+sent when it gets a glueless NS referral. 
 
-random_seed_file
+==random_seed_file==
 
-   This is a file that contains random numbers, and is used as a seed for
-   the cryptographically strong random number generator. Deadwood will try
-   to read 256 bytes from this file (the RNG Deadwood uses can accept a
-   stream of any arbitrary length).
+This is a file that contains random numbers, and is used as a seed for 
+the cryptographically strong random number generator. Deadwood will try 
+to read 256 bytes from this file (the RNG Deadwood uses can accept a 
+stream of any arbitrary length). 
 
-   Note that the hash compression function obtains some of its entropy
-   before parsing the mararc file, and is hard-coded to get entropy from
-   /dev/urandom (secret.txt on Windows systems). Most other entropy used
-   by Deadwood comes from the file pointed to by random_seed_file.
+Note that the hash compression function obtains some of its entropy 
+before parsing the mararc file, and is hard-coded to get entropy from 
+/dev/urandom (secret.txt on Windows systems). Most other entropy used 
+by Deadwood comes from the file pointed to by random_seed_file. 
 
-recurse_min_bind_port
+==recurse_min_bind_port==
 
-   The lowest numbered port Deadwood is allowed to bind to; this is a
-   random port number used for the source port of outgoing queries, and is
-   not 53 (see dns_port above). This is a number between 1025 and 32767,
-   and has a default value of 15000. This is used to make DNS spoofing
-   attacks more difficult.
+The lowest numbered port Deadwood is allowed to bind to; this is a 
+random port number used for the source port of outgoing queries, and is 
+not 53 (see dns_port above). This is a number between 1025 and 32767, 
+and has a default value of 15000. This is used to make DNS spoofing 
+attacks more difficult. 
 
-recurse_number_ports
+==recurse_number_ports==
 
-   The number of ports Deadwood binds to for the source port for outgoing
-   connections; this is a power of 2 between 256 and 32768. This is used
-   to make DNS spoofing attacks more difficult. The default value is 4096.
+The number of ports Deadwood binds to for the source port for outgoing 
+connections; this is a power of 2 between 256 and 32768. This is used 
+to make DNS spoofing attacks more difficult. The default value is 4096. 
 
-recursive_acl
+==recursive_acl==
 
-   This is a list of who is allowed to use Deadwood to perform DNS
-   recursion, in "ip/mask" format. Mask must be a number between 0 and 32
-   (for IPv6, between 0 and 128). For example, "127.0.0.1/8" allows local
-   connections.
+This is a list of who is allowed to use Deadwood to perform DNS 
+recursion, in "ip/mask" format. Mask must be a number between 0 and 32 
+(for IPv6, between 0 and 128). For example, "127.0.0.1/8" allows local 
+connections. 
 
-reject_aaaa
+==reject_aaaa==
 
-   If this has a value of 1, a bogus SOA "not there" reply is sent
-   whenever an AAAA query is sent to Deadwood. In other words, every time
-   a program asks Deadwood for an IPv6 IP address, instead of trying to
-   process the request, when this is set to 1, Deadwood pretends the host
-   name in question does not have an IPv6 address.
+If this has a value of 1, a bogus SOA "not there" reply is sent 
+whenever an AAAA query is sent to Deadwood. In other words, every time 
+a program asks Deadwood for an IPv6 IP address, instead of trying to 
+process the request, when this is set to 1, Deadwood pretends the host 
+name in question does not have an IPv6 address. 
 
-   This is useful for people who aren't using IPv6 but use applications
-   (usually *NIX command like applications like "telnet") which slow
-   things down trying to find an IPv6 address.
+This is useful for people who aren't using IPv6 but use applications 
+(usually *NIX command like applications like "telnet") which slow 
+things down trying to find an IPv6 address. 
 
-   This has a default value of 0. In other words, AAAA queries are
-   processed normally unless this is set.
+This has a default value of 0. In other words, AAAA queries are 
+processed normally unless this is set. 
 
-reject_mx
+==reject_mx==
 
-   When this has the default value of 1, MX queries are silently dropped
-   with their IP logged. A MX query is a query that is only done by a
-   machine if it wishes to be its own mail server sending mail to machines
-   on the internet. This is a query an average desktop machine (including
-   one that uses Outlook or another mail user agent to read and send
-   email) will never make.
+When this has the default value of 1, MX queries are silently dropped 
+with their IP logged. A MX query is a query that is only done by a 
+machine if it wishes to be its own mail server sending mail to machines 
+on the internet. This is a query an average desktop machine (including 
+one that uses Outlook or another mail user agent to read and send 
+email) will never make. 
 
-   Most likely, if a machine is trying to make a MX query, the machine is
-   being controlled by a remote source to send out undesired "spam" email.
-   This in mind, Deadwood will not allow MX queries to be made unless
-   reject_mx is explicitly set with a value of 0.
+Most likely, if a machine is trying to make a MX query, the machine is 
+being controlled by a remote source to send out undesired "spam" email. 
+This in mind, Deadwood will not allow MX queries to be made unless 
+reject_mx is explicitly set with a value of 0. 
 
-   Before disabling this, please keep in mind that Deadwood is optimized
-   to be used for web surfing, not as a DNS server for a mail hub. In
-   particular, the IPs for MX records are removed from Deadwood's replies
-   and Deadwood needs to perform additional DNS queries to get the IPs
-   corresponding to MX records, and Deadwood's testing is more geared for
-   web surfing (almost 100% A record lookup) and not for mail delivery
-   (extensive MX record lookup).
+Before disabling this, please keep in mind that Deadwood is optimized 
+to be used for web surfing, not as a DNS server for a mail hub. In 
+particular, the IPs for MX records are removed from Deadwood's replies 
+and Deadwood needs to perform additional DNS queries to get the IPs 
+corresponding to MX records, and Deadwood's testing is more geared for 
+web surfing (almost 100% A record lookup) and not for mail delivery 
+(extensive MX record lookup). 
 
-reject_ptr
+==reject_ptr==
 
-   If this has a value of 1, a bogus SOA "not there" reply is sent
-   whenever a PTR query is sent to Deadwood. In other words, every time a
-   program asks Deadwood for "reverse DNS lookup" -- the hostname for a
-   given IP address -- instead of trying to process the request, when this
-   is set to 1, Deadwood pretends the IP address in question does not have
-   a hostname.
+If this has a value of 1, a bogus SOA "not there" reply is sent 
+whenever a PTR query is sent to Deadwood. In other words, every time a 
+program asks Deadwood for "reverse DNS lookup" -- the hostname for a 
+given IP address -- instead of trying to process the request, when this 
+is set to 1, Deadwood pretends the IP address in question does not have 
+a hostname. 
 
-   This is useful for people who are getting slow DNS timeouts when trying
-   to perform a reverse DNS lookups on IPs.
+This is useful for people who are getting slow DNS timeouts when trying 
+to perform a reverse DNS lookups on IPs. 
 
-   This has a default value of 0. In other words, PTR queries are
-   processed normally unless this is set.
+This has a default value of 0. In other words, PTR queries are 
+processed normally unless this is set. 
 
-resurrections
+==resurrections==
 
-   If this is set to 1, Deadwood will try to send an expired record to the
-   user before giving up. If it is 0, we don't. Default value: 1
+If this is set to 1, Deadwood will try to send an expired record to the 
+user before giving up. If it is 0, we don't. Default value: 1 
 
-root_servers
+==root_servers==
 
-   This is a list of root servers; its syntax is identical to
-   upstream_servers (see below). This is the type of DNS service ICANN,
-   for example, runs. These are servers used that do not give us complete
-   answers to DNS questions, but merely tell us which DNS servers to
-   connect to to get an answer closer to our desired answer.
+This is a list of root servers; its syntax is identical to 
+upstream_servers (see below). This is the type of DNS service ICANN, 
+for example, runs. These are servers used that do not give us complete 
+answers to DNS questions, but merely tell us which DNS servers to 
+connect to to get an answer closer to our desired answer. 
 
-   As of Deadwood 3.5.0004, it is no longer needed to increase
-   maximum_cache_elements to store root_server entries.
+As of Deadwood 3.5.0004, it is no longer needed to increase 
+maximum_cache_elements to store root_server entries. 
 
-   Please be aware that this parameter is deprecated. While there are no
-   plans to remove this parameter, Deadwood is no longer being updated to
-   resolve DNS resolution issues when using root_servers to resolve names
-   on the internet. Please use upstream_servers instead.
+Please be aware that this parameter is deprecated. While there are no 
+plans to remove this parameter, Deadwood is no longer being updated to 
+resolve DNS resolution issues when using root_servers to resolve names 
+on the internet. Please use upstream_servers instead. 
 
-source_ip4
+==source_ip4==
 
-   With certain complicated networks, it may be desirable to set the
-   source IP of queries sent to upstream or root DNS servers. If so, set
-   this parameter to have the dotted decimal IPv4 address to use when
-   sending IPv4 queries to an upstream DNS server.
+With certain complicated networks, it may be desirable to set the 
+source IP of queries sent to upstream or root DNS servers. If so, set 
+this parameter to have the dotted decimal IPv4 address to use when 
+sending IPv4 queries to an upstream DNS server. 
 
-   Use this parameter with caution; Deadwood can very well become
-   non-functional if one uses a source IPv4 address which Deadwood is not
-   bound to.
+Use this parameter with caution; Deadwood can very well become 
+non-functional if one uses a source IPv4 address which Deadwood is not 
+bound to. 
 
-tcp_listen
+==tcp_listen==
 
-   In order to enable DNS-over-TCP, this variable must be set and have a
-   value of 1. Default value: 0
+In order to enable DNS-over-TCP, this variable must be set and have a 
+value of 1. Default value: 0 
 
-timeout_seconds
+==timeout_seconds==
 
-   This is how long Deadwood will wait before giving up and discarding a
-   pending UDP DNS reply. The default value for this is 1, as in 1 second,
-   unless Deadwood was compiled with FALLBACK_TIME enabled.
+This is how long Deadwood will wait before giving up and discarding a 
+pending UDP DNS reply. The default value for this is 1, as in 1 second, 
+unless Deadwood was compiled with FALLBACK_TIME enabled. 
 
-timeout_seconds_tcp
+==timeout_seconds_tcp==
 
-   How long to wait on an idle TCP connection before dropping it. The
-   default value for this is 4, as in 4 seconds.
+How long to wait on an idle TCP connection before dropping it. The 
+default value for this is 4, as in 4 seconds. 
 
-ttl_age
+==ttl_age==
 
-   Whether TTL aging is enabled; whether entries in the cache have their
-   TTLs set to be the amount of time the entries have left in the cache.
+Whether TTL aging is enabled; whether entries in the cache have their 
+TTLs set to be the amount of time the entries have left in the cache. 
 
-   If this has a value of 1, TTL entries are aged. Otherwise, they are
-   not. The default value for this is 1.
+If this has a value of 1, TTL entries are aged. Otherwise, they are 
+not. The default value for this is 1. 
 
-upstream_port
+==upstream_port==
 
-   This is the port Deadwood uses to connect or send packets to the
-   upstream servers. The default value for this is 53; the standard DNS
-   port.
+This is the port Deadwood uses to connect or send packets to the 
+upstream servers. The default value for this is 53; the standard DNS 
+port. 
 
-upstream_servers
+==upstream_servers==
 
-   This is a list of DNS servers that the load balancer will try to
-   contact. This is a dictionary variable (array indexed by a string
-   instead of by a number) instead of a simple variable. Since
-   upstream_servers is a dictionary variable, it needs to be initialized
-   before being used.
+This is a list of DNS servers that the load balancer will try to 
+contact. This is a dictionary variable (array indexed by a string 
+instead of by a number) instead of a simple variable. Since 
+upstream_servers is a dictionary variable, it needs to be initialized 
+before being used. 
 
-   Deadwood will look at the name of the host that it is trying to find
-   the upstream server for, and will match against the longest suffix it
-   can find.
+Deadwood will look at the name of the host that it is trying to find 
+the upstream server for, and will match against the longest suffix it 
+can find. 
 
-   For example, if someone sends a query for "www.foo.example.com" to
-   Deadwood, Deadwood will first see if there is an upstream_servers
-   variable for "www.foo.example.com.", then look for "foo.example.com.",
-   then look for "example.com.", then "com.", and finally ".".
+For example, if someone sends a query for "www.foo.example.com" to 
+Deadwood, Deadwood will first see if there is an upstream_servers 
+variable for "www.foo.example.com.", then look for "foo.example.com.", 
+then look for "example.com.", then "com.", and finally ".". 
 
-   Here is an example of upstream_servers:
-upstream_servers = {} # Initialize dictionary variable
-upstream_servers["foo.example.com."] = "192.168.42.1"
-upstream_servers["example.com."] = "192.168.99.254"
+Here is an example of upstream_servers:
+
+upstream_servers = {} # Initialize dictionary variable 
+upstream_servers["foo.example.com."] = "192.168.42.1" 
+upstream_servers["example.com."] = "192.168.99.254" 
 upstream_servers["."] = "10.1.2.3, 10.1.2.4"
 
-   In this example, anything ending in "foo.example.com" is resolved by
-   the DNS server at 192.168.42.1; anything else ending in "example.com"
-   is resolved by 192.168.99.254; and anything not ending in "example.com"
-   is resolved by either 10.1.2.3 or 10.1.2.4.
+In this example, anything ending in "foo.example.com" is 
+resolved  by the DNS server at 192.168.42.1; anything else ending in 
+"example.com" is resolved by 192.168.99.254; and anything not ending in 
+"example.com" is resolved by either 10.1.2.3 or 10.1.2.4. 
 
-   Important: the domain name upstream_servers points to must end in a "."
-   character. This is OK:
+Important: the domain name upstream_servers points to must end in a "." 
+character. This is OK:
+
 upstream_servers["example.com."] = "192.168.42.1"
 
-   But this is not OK:
+But this is not OK:
+
 upstream_servers["example.com"] = "192.168.42.1"
 
-   The reason for this is because BIND engages in unexpected behavior when
-   a host name doesn't end in a dot, and by forcing a dot at the end of a
-   hostname, Deadwood doesn't have to guess whether the user wants BIND's
-   behavior or the "normal" behavior.
+The reason for this is because BIND engages in unexpected 
+behavior when a host name doesn't end in a dot, and by forcing a dot at 
+the end of a hostname, Deadwood doesn't have to guess whether the user 
+wants BIND's behavior or the "normal" behavior. 
 
-   If neither root_servers nor upstream_servers are set, Deadwood sets
-   upstream_servers to use the https://quad9.net servers, as follows:
+If neither root_servers nor upstream_servers are set, Deadwood sets 
+upstream_servers to use the https://quad9.net servers, as follows:
 
-9.9.9.9
+9.9.9.9 
 149.112.112.112
 
-   Please note that, as of Deadwood 3.5.0004, is is no longer needed to
-   increase maximum_cache_elements to store upstream_server entries.
+Please note that, as of Deadwood 3.5.0004, is is no longer needed to 
+increase maximum_cache_elements to store upstream_server entries. 
 
-verbose_level
+==verbose_level==
 
-   This determines how many messages are logged on standard output; larger
-   values log more messages. The default value for this is 3.
+This determines how many messages are logged on standard output; larger 
+values log more messages. The default value for this is 3. 
 
-                             ip/mask format of IPs
+===ip/mask format of IPs===
 
-   Deadwood uses a standard ip/netmask formats to specify IPs. An ip is in
-   dotted-decimal format, e.g. "10.1.2.3" (or in IPv6 format when IPv6
-   support is compiled in).
+Deadwood uses a standard ip/netmask formats to specify IPs. An ip is in 
+dotted-decimal format, e.g. "10.1.2.3" (or in IPv6 format when IPv6 
+support is compiled in). 
 
-   The netmask is used to specify a range of IPs. The netmask is a single
-   number between 1 and 32 (128 when IPv6 support is compiled in), which
-   indicates the number of leading "1" bits in the netmask.
+The netmask is used to specify a range of IPs. The netmask is a single 
+number between 1 and 32 (128 when IPv6 support is compiled in), which 
+indicates the number of leading "1" bits in the netmask. 
 
-   10.1.1.1/24 indicates that any ip from 10.1.1.0 to 10.1.1.255 will
-   match.
+10.1.1.1/24 indicates that any ip from 10.1.1.0 to 10.1.1.255 will 
+match. 
 
-   10.2.3.4/16 indicates that any ip from 10.2.0.0 to 10.2.255.255 will
-   match.
+10.2.3.4/16 indicates that any ip from 10.2.0.0 to 10.2.255.255 will 
+match. 
 
-   127.0.0.0/8 indicates that any ip with "127" as the first octet
-   (number) will match.
+127.0.0.0/8 indicates that any ip with "127" as the first octet 
+(number) will match. 
 
-   The netmask is optional, and, if not present, indicates that only a
-   single IP will match.
+The netmask is optional, and, if not present, indicates that only a 
+single IP will match. 
 
-                                  DNS over TCP
+===DNS over TCP===
 
-   DNS-over-TCP needs to be explicitly enabled by setting tcp_listen to 1.
+DNS-over-TCP needs to be explicitly enabled by setting tcp_listen to 1. 
 
-   Deadwood extracts useful information from UDP DNS packets marked
-   truncated which almost always removes the need to have DNS-over-TCP.
-   However, Deadwood does not cache DNS packets larger than 512 bytes in
-   size that need to be sent using TCP. In addition, DNS-over-TCP packets
-   which are "incomplete" DNS replies (replies which a stub resolver can
-   not use, which can be either a NS referral or an incomplete CNAME
-   reply) are not handled correctly by Deadwood.
+Deadwood extracts useful information from UDP DNS packets marked 
+truncated which almost always removes the need to have DNS-over-TCP. 
+However, Deadwood does not cache DNS packets larger than 512 bytes in 
+size that need to be sent using TCP. In addition, DNS-over-TCP packets 
+which are "incomplete" DNS replies (replies which a stub resolver can 
+not use, which can be either a NS referral or an incomplete CNAME 
+reply) are not handled correctly by Deadwood. 
 
-   Deadwood has support for both DNS-over-UDP and DNS-over-TCP; the same
-   daemon listens on both the UDP and TCP DNS port.
+Deadwood has support for both DNS-over-UDP and DNS-over-TCP; the same 
+daemon listens on both the UDP and TCP DNS port. 
 
-   Only UDP DNS queries are cached. Deadwood does not support caching over
-   TCP; it handles TCP to resolve the rare truncated reply without any
-   useful information or to work with very uncommon non-RFC-compliant
-   TCP-only DNS resolvers. In the real world, DNS-over-TCP is almost never
-   used.
+Only UDP DNS queries are cached. Deadwood does not support caching over 
+TCP; it handles TCP to resolve the rare truncated reply without any 
+useful information or to work with very uncommon non-RFC-compliant 
+TCP-only DNS resolvers. In the real world, DNS-over-TCP is almost never 
+used. 
 
-                              Parsing other files
+===Parsing other files===
 
-   It is possible to have Deadwood, while parsing the dwood3rc file, read
-   other files and parse them as if they were dwood3rc files.
+It is possible to have Deadwood, while parsing the dwood3rc file, read 
+other files and parse them as if they were dwood3rc files. 
 
-   This is done using execfile. To use execfile, place a line like this in
-   the dwood3rc file:
+This is done using execfile. To use execfile, place a line like this in 
+the dwood3rc file: 
 
-   execfile("path/to/filename")
+execfile("path/to/filename") 
 
-   Where path/to/filename is the path to the file to be parsed like a
-   dwood3rc file.
+Where path/to/filename is the path to the file to be parsed like a 
+dwood3rc file. 
 
-   All files must be in or under the directory /etc/deadwood/execfile.
-   Filenames can only have lower-case letters and the underscore character
-   ("_"). Absolute paths are not allowed as the argument to execfile; the
-   filename can not start with a slash ("/") character.
+All files must be in or under the directory /etc/deadwood/execfile. 
+Filenames can only have lower-case letters and the underscore character 
+("_"). Absolute paths are not allowed as the argument to execfile; the 
+filename can not start with a slash ("/") character. 
 
-   If there is a parse error in the file pointed to by execfile, Deadwood
-   will report the error as being on the line with the execfile command in
-   the main dwood3rc file. To find where a parse error is in the sub-file,
-   use something like "Deadwood -f /etc/deadwood/execfile/filename" to
-   find the parse error in the offending file, where "filename" is the
-   file to to parsed via execfile.
+If there is a parse error in the file pointed to by execfile, Deadwood 
+will report the error as being on the line with the execfile command in 
+the main dwood3rc file. To find where a parse error is in the sub-file, 
+use something like 
+"Deadwood&nbsp;-f&nbsp;/etc/deadwood/execfile/filename" to find the 
+parse error in the offending file, where "filename" is the file to to 
+parsed via execfile. 
 
-                                  IPV6 support
+===IPV6 support===
 
-   This server can also be optionally compiled to have IPv6 support. In
-   order to enable IPv6 support, add '-DIPV6' to the compile-time flags.
-   For example, to compile this to make a small binary, and to have IPv6
-   support:
-        export FLAGS='-Os -DIPV6'
-        make
+This server can also be optionally compiled to have IPv6 support. In 
+order to enable IPv6 support, add '-DIPV6' to the compile-time flags. 
+For example, to compile this to make a small binary, and to have IPv6 
+support:
 
-                                    SECURITY
+	export FLAGS='-Os -DIPV6' 
+	make
 
-   Deadwood is a program written with security in mind.
+===SECURITY===
 
-   In addition to use a buffer-overflow resistant string library and a
-   coding style and SQA process that checks for buffer overflows and
-   memory leaks, Deadwood uses a strong pseudo-random number generator
-   (The 32-bit version of RadioGatun) to generate both the query ID and
-   source port. For the random number generator to be secure, Deadwood
-   needs a good source of entropy; by default Deadwood will use
-   /dev/urandom to get this entropy. If you are on a system without
-   /dev/urandom support, it is important to make sure that Deadwood has a
-   good source of entropy so that the query ID and source port are hard to
-   guess (otherwise it is possible to forge DNS packets).
+Deadwood is a program written with security in mind. 
 
-   The Windows port of Deadwood includes a program called
-   "mkSecretTxt.exe" that creates a 64-byte (512 bit) random file called
-   "secret.txt" that can be used by Deadwood (via the "random_seed_file"
-   parameter); Deadwood also gets entropy from the timestamp when Deadwood
-   is started and Deadwood's process ID number, so it is same to use the
-   same static secret.txt file as the random_seed_file for multiple
-   invocations of Deadwood.
+In addition to use a buffer-overflow resistant string library and a 
+coding style and SQA process that checks for buffer overflows and 
+memory leaks, Deadwood uses a strong pseudo-random number generator 
+(The 32-bit version of RadioGatun) to generate both the query ID and 
+source port. For the random number generator to be secure, Deadwood 
+needs a good source of entropy; by default Deadwood will use 
+/dev/urandom to get this entropy. If you are on a system without 
+/dev/urandom support, it is important to make sure that Deadwood has a 
+good source of entropy so that the query ID and source port are hard to 
+guess (otherwise it is possible to forge DNS packets). 
 
-   Note that Deadwood is not protected from someone on the same network
-   viewing packets sent by Deadwood and sending forged packets as a reply.
+The Windows port of Deadwood includes a program called 
+"mkSecretTxt.exe" that creates a 64-byte (512 bit) random file called 
+"secret.txt" that can be used by Deadwood (via the "random_seed_file" 
+parameter); Deadwood also gets entropy from the timestamp when Deadwood 
+is started and Deadwood's process ID number, so it is same to use the 
+same static secret.txt file as the random_seed_file for multiple 
+invocations of Deadwood. 
 
-   To protect Deadwood from certain possible denial-of-service attacks, it
-   is best if Deadwood's prime number used for hashing elements in the
-   cache is a random 31-bit prime number. The program RandomPrime.c
-   generates a random prime that is placed in the file DwRandPrime.h that
-   is regenerated whenever either the program is compiled or things are
-   cleaned up with make clean. This program uses /dev/urandom for its
-   entropy; the file DwRandPrime.h will not be regenerated on systems
-   without /dev/urandom.
+Note that Deadwood is not protected from someone on the same network 
+viewing packets sent by Deadwood and sending forged packets as a reply. 
 
-   On systems without direct /dev/urandom support, it is suggested to see
-   if there is a possible way to give the system a working /dev/urandom.
-   This way, when Deadwood is compiled, the hash magic number will be
-   suitably random.
+To protect Deadwood from certain possible denial-of-service attacks, it 
+is best if Deadwood's prime number used for hashing elements in the 
+cache is a random 31-bit prime number. The program RandomPrime.c 
+generates a random prime that is placed in the file DwRandPrime.h that 
+is regenerated whenever either the program is compiled or things are 
+cleaned up with make clean. This program uses /dev/urandom for its 
+entropy; the file DwRandPrime.h will not be regenerated on systems 
+without /dev/urandom. 
 
-   If using a precompiled binary of Deadwood, please ensure that the
-   system has /dev/urandom support (on Windows system, please ensure that
-   the file with the name secret.txt is generated by the included
-   mkSecretTxt.exe program); Deadwood, at runtime, uses /dev/urandom
-   (secret.txt in Windows) as a hardcoded path to get entropy (along with
-   the timestamp) for the hash algorithm.
+On systems without direct /dev/urandom support, it is suggested to see 
+if there is a possible way to give the system a working /dev/urandom. 
+This way, when Deadwood is compiled, the hash magic number will be 
+suitably random. 
 
-                                    COMMENTS
+If using a precompiled binary of Deadwood, please ensure that the 
+system has /dev/urandom support (on Windows system, please ensure that 
+the file with the name secret.txt is generated by the included 
+mkSecretTxt.exe program); Deadwood, at runtime, uses /dev/urandom 
+(secret.txt in Windows) as a hardcoded path to get entropy (along with 
+the timestamp) for the hash algorithm. 
 
-   Deadwood's configuration file format supports two kinds of comments:
+===COMMENTS===
+
+Deadwood's configuration file format supports two kinds of comments:
+
 # This is a comment
 
-   Here, a comment starts with the # character and continues until the end
-   of the line. In some circumstances, a comment can start after a
-   variable is set, for example:
+Here, a comment starts with the # character and continues until 
+the end of the line. In some circumstances, a comment can start after a 
+variable is set, for example:
+
 bind_address="127.0.0.1" # IP we bind to
 
-   The second comment type supports multi-line comments. For example:
-_rem={}
-_rem={ #_rem --[=[
-"""
- We are now in a multi-line comment.
- This allows a long explanation to be
- in a Deadwood configuration file
-""" # ]=]
+The second comment type supports multi-line comments. For 
+example:
+
+_rem={} 
+_rem={ #_rem --[=[ 
+""" 
+ We are now in a multi-line comment. 
+ This allows a long explanation to be 
+ in a Deadwood configuration file 
+""" # ]=] 
 }
 
-   The actual format is _rem={ at the start of a line, which begins a
-   multi-line comment. The comment continues until a } is seen. The reason
-   for this unusual format is that it allows a Deadwood configuration file
-   to have multi-line comments in a form which are compatible with both
-   Lua and Python, as can be seen in the above example.
+The actual format is _rem={ at the start of a line, which begins 
+a multi-line comment. The comment continues until a } is seen. The 
+reason for this unusual format is that it allows a Deadwood 
+configuration file to have multi-line comments in a form which are 
+compatible with both Lua and Python, as can be seen in the above 
+example. 
 
-                                 DAEMONIZATION
+===DAEMONIZATION===
 
-   Deadwood does not have any built-in daemonization facilities; this is
-   handled by the external program Duende or any other daemonizer.
+Deadwood does not have any built-in daemonization facilities; this is 
+handled by the external program Duende or any other daemonizer. 
 
-                           Example configuration file
+===Example configuration file===
 
-   Here is an example dwood3rc configuration file:
-# This is an example deadwood rc file
-# Note that comments are started by the hash symbol
+Here is an example dwood3rc configuration file:
 
-bind_address="127.0.0.1" # IP we bind to
-
-# The following line is disabled by being commented out
-#bind_address="::1" # We have optional IPv6 support
-
-# Directory we run program from (not used in Win32)
-chroot_dir = "/etc/deadwood"
-
-# The following upstream DNS servers are Google's
-# (as of December 2009) public DNS servers.  For
-# more information, see the page at
-# http://code.google.com/speed/public-dns/
-#
-# If neither root_servers nor upstream_servers are set,
-# Deadwood will use the default ICANN root servers.
-#upstream_servers = {}
-#upstream_servers["."]="8.8.8.8, 8.8.4.4"
-
-# Who is allowed to use the cache.  This line
-# allows anyone with "127.0" as the first two
-# digits of their IP to use Deadwood
-recursive_acl = "127.0.0.1/16"
-
-# Maximum number of pending requests
-maxprocs = 2048
-
-# Send SERVER FAIL when overloaded
-handle_overload = 1
-
-maradns_uid = 99 # UID Deadwood runs as
-maradns_gid = 99 # GID Deadwood runs as
-
-maximum_cache_elements = 60000
-
-# If you want to read and write the cache from disk,
-# make sure chroot_dir above is readable and writable
-# by the maradns_uid/gid above, and uncomment the
-# following line.
-#cache_file = "dw_cache"
-
-# If your upstream DNS server converts "not there" DNS replies
-# in to IPs, this parameter allows Deadwood to convert any reply
-# with a given IP back in to a "not there" IP.  If any of the IPs
-# listed below are in a DNS answer, Deadwood converts the answer
-# in to a "not there"
-#ip_blocklist = "10.222.33.44, 10.222.3.55"
-
-# By default, for security reasons, Deadwood does not allow IPs in
-# the 192.168.x.x, 172.[16-31].x.x, 10.x.x.x, 127.x.x.x,
-# 169.254.x.x, 224.x.x.x, or 0.0.x.x range.  If using Deadwood
-# to resolve names on an internal network, uncomment the
-# following line:
+# This is an example deadwood rc file  
+# Note that comments are started by the hash symbol 
+ 
+bind_address="127.0.0.1" # IP we bind to 
+ 
+# The following line is disabled by being commented out 
+#bind_address="::1" # We have optional IPv6 support 
+ 
+# Directory we run program from (not used in Win32) 
+chroot_dir = "/etc/deadwood"  
+ 
+# The following upstream DNS servers are Google's  
+# (as of December 2009) public DNS servers.  For  
+# more information, see the page at 
+# http://code.google.com/speed/public-dns/ 
+# 
+# If neither root_servers nor upstream_servers are set, 
+# Deadwood will use the default ICANN root servers. 
+#upstream_servers = {} 
+#upstream_servers["."]="8.8.8.8, 8.8.4.4"  
+ 
+# Who is allowed to use the cache.  This line 
+# allows anyone with "127.0" as the first two 
+# digits of their IP to use Deadwood 
+recursive_acl = "127.0.0.1/16"  
+ 
+# Maximum number of pending requests 
+maxprocs = 2048 
+ 
+# Send SERVER FAIL when overloaded 
+handle_overload = 1  
+ 
+maradns_uid = 99 # UID Deadwood runs as 
+maradns_gid = 99 # GID Deadwood runs as 
+ 
+maximum_cache_elements = 60000 
+ 
+# If you want to read and write the cache from disk,  
+# make sure chroot_dir above is readable and writable  
+# by the maradns_uid/gid above, and uncomment the  
+# following line.  
+#cache_file = "dw_cache" 
+ 
+# If your upstream DNS server converts "not there" DNS replies 
+# in to IPs, this parameter allows Deadwood to convert any reply 
+# with a given IP back in to a "not there" IP.  If any of the IPs 
+# listed below are in a DNS answer, Deadwood converts the answer 
+# in to a "not there" 
+#ip_blocklist = "10.222.33.44, 10.222.3.55" 
+ 
+# By default, for security reasons, Deadwood does not allow IPs in  
+# the 192.168.x.x, 172.[16-31].x.x, 10.x.x.x, 127.x.x.x,  
+# 169.254.x.x, 224.x.x.x, or 0.0.x.x range.  If using Deadwood  
+# to resolve names on an internal network, uncomment the  
+# following line: 
 #filter_rfc1918 = 0
 
-                                      BUGS
+===BUGS===
 
-   Deadwood does not follow RFC2181's advice to ignore DNS responses with
-   the TC (truncated) bit set, but instead extracts the first RR. If this
-   is not desired, set the undocumented parameter truncation_hack to 0
-   (but read the DNS over TCP section of this man page).
+Deadwood does not follow RFC2181's advice to ignore DNS responses with 
+the TC (truncated) bit set, but instead extracts the first RR. If this 
+is not desired, set the undocumented parameter truncation_hack to 0 
+(but read the DNS over TCP section of this man page). 
 
-   Deadwood can not process DNS resource record types with numbers between
-   65392 and 65407. These RR types are marked by the IANA for "private
-   use"; Deadwood reserves these record types for internal use. This is
-   only 16 record types out of the 65536 possible DNS record types (only
-   71 have actually been assigned by IANA, so this is a non-issue in the
-   real world).
+Deadwood can not process DNS resource record types with numbers between 
+65392 and 65407. These RR types are marked by the IANA for "private 
+use"; Deadwood reserves these record types for internal use. This is 
+only 16 record types out of the 65536 possible DNS record types (only 
+71 have actually been assigned by IANA, so this is a non-issue in the 
+real world). 
 
-   It is not clear whether the DNS RFCs allow ASCII control characters in
-   DNS names. Even if they were, Deadwood does not allow ASCII control
-   characters (bytes with a value less then 32) in DNS names. Other
-   characters (UTF-8, etc.) are allowed.
+It is not clear whether the DNS RFCs allow ASCII control characters in 
+DNS names. Even if they were, Deadwood does not allow ASCII control 
+characters (bytes with a value less then 32) in DNS names. Other 
+characters (UTF-8, etc.) are allowed. 
 
-   Combining a CNAME record with other records is prohibited in RFC1034
-   section 3.6.2 and RFC1912 section 2.4; it makes an answer ambiguous.
-   Deadwood handles this ambiguity differently than some other DNS
-   servers.
+Combining a CNAME record with other records is prohibited in RFC1034 
+section 3.6.2 and RFC1912 section 2.4; it makes an answer ambiguous. 
+Deadwood handles this ambiguity differently than some other DNS 
+servers. 
 
-                                LEGAL DISCLAIMER
+===LEGAL DISCLAIMER===
 
-   THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR
-   IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-   DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE FOR
-   ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-   DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-   OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-   HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-   STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
-   IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-   POSSIBILITY OF SUCH DAMAGE.
+THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE FOR 
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+POSSIBILITY OF SUCH DAMAGE. 
 
-                                    AUTHORS
+===AUTHORS===
 
-   Sam Trenholme (http://www.samiam.org) is responsible for this program
-   and man page. He appreciates all of Jean-Jacques Sarton's help giving
-   this program IPv6 support.
+Sam Trenholme (http://www.samiam.org) is responsible for this program 
+and man page. He appreciates all of Jean-Jacques Sarton's help giving 
+this program IPv6 support.  
+
 
