@@ -182,8 +182,9 @@ while l do
         l=l:gsub("<"..bodyflags..">[^<]*","")
       end
       l=l:gsub("</"..bodyflags.."%s*>","") -- Remove closing </BODYTAGS>
-    -- Show HTML tags as-is in PRE blocks
+    -- Show HTML tags and entities as-is in PRE blocks
     elseif state == 'PRE' and not l:find(mc("<pre>")) then 
+      l=l:gsub("&","&amp;")
       l=l:gsub("<","&lt;")
       l=l:gsub(">","&gt;")
     end
