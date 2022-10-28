@@ -243,7 +243,7 @@ if TH then
 else
   print(".TH ")
 end
-print('.\\" We don\'t t want hyphenation (it\'s too ugly)')
+print('.\\" We don\'t want hyphenation (it\'s too ugly)')
 print('.\\" We also disable justification when using nroff')
 print('.\\" Due to the way the -mandoc macro works, this needs to be placed')
 print('.\\" after the .TH heading')
