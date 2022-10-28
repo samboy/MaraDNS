@@ -192,6 +192,7 @@ out = out:gsub(" +"," ")
 -- Step two: Now that the file is a single line, process EJ (HTML) tags
 
 if out:find(mc("<nofmt>.*<body>")) then NoFmt = true end
+out = out:gsub("<!%-%-[^%-]*%-%->","") -- Remove HTML comments
 out = out:gsub(mc("<nofmt>"),"")
 out = out:gsub(mc("<th%s*>[^<]*</th%s*>"),"") -- EJ for man pages unused here
 out = out:gsub(mc("<dtwidth%s*>[^<]*</dtwidth%s*>"),"") -- DTWIDTH part of man
