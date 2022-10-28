@@ -89,7 +89,7 @@ and wishes to have only 192.168.1.<i>any</i> be allowed to make
 recursive queries:
 
 <pre>
-recursive_acl = "<b>192.168.1.0/24</b>"</tt>
+recursive_acl = "192.168.1.0/24"
 </pre>
 
 Here the "/24" indicates that we ignore the fourth number in an IP
