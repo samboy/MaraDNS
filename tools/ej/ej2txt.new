@@ -210,7 +210,6 @@ while matchPlace and matchPlace > 1 do
 end
 
 out = out:gsub(mc("</?ul>%s*"),"\n\n") -- Have space at top and bottom of lists
-out = out:gsub(mc("</?pre>%s*"),"\n\n") -- Space before and after code blocks
 out = out:gsub(mc("<p%s*>%s*"),"\n\n") -- Paragraph is new line
 out = out:gsub(mc("<h1%s*>%s*"),"\n\n===") -- Level 1 headings start
 out = out:gsub(mc("<h2%s*>%s*"),"\n\n==") -- Level 2 headings start
@@ -225,9 +224,33 @@ out=out:gsub('<[TtBb][Rr]>\n?','\n')
 -- HiBit, also used by csv1.ej
 out=out:gsub(mc('<hibit[^>]*>([^<]*)</hibit>'),"%1") -- HIBIT (2022)
 
+-- fmt: Add line breaks to fit on an 80-column terminal
+-- Do not fmt pre sections, fmt everything else
+start = out:find(mc("<pre>"))
+lastEnd = 1
+while start do
+  local top = ""
+  if lastEnd > 1 then top = out:sub(1,lastEnd-1) end
+  local toFmt = out:sub(lastEnd,start - 1)
+  local initial = top:len()
+  toFmt = fmt(toFmt)
+  local offset = top:len() - initial
+  local preend = out:find(mc("</pre>"),start + 1)
+  local mid = out:sub(start,preend)
+  local tail = out:sub(preend + 1)
+  out = top .. toFmt .. mid .. tail
+  lastEnd = preend
+  start = out:find(mc("<pre>"),preend + offset)
+end
+local top = out:sub(1,lastEnd)
+local tail = out:sub(lastEnd + 1)
+tail = fmt(tail)
+out = top .. tail
+
+out = out:gsub(mc("</?pre>%s*"),"\n\n") -- Space before and after code blocks
 out = out:gsub("</?%w+%s*>","") -- Remove all other EJ tags
 out = out:gsub("^%s*","") -- Remove whitespace at document top
-out = fmt(out)
+
 out = out:gsub("[ ]*\n[ ]*\n[ ]*\n[ ]*\n[ ]*\n","\n\n")
 out = out:gsub("[ ]*\n[ ]*\n[ ]*\n[ ]*\n","\n\n")
 out = out:gsub("[ ]*\n[ ]*\n[ ]*\n","\n\n")
