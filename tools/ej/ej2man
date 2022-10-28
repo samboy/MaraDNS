@@ -189,8 +189,31 @@ while l do
   end
 
 end
-out = out:gsub(" +"," ")
--- Step two: Now that the file is a single line, process EJ (HTML) tags
+
+-- Collapse white space except in <pre> blocks
+start = out:find(mc("<pre>"))
+lastEnd = 1
+while start do
+  local top = ""
+  if lastEnd > 1 then top = out:sub(1,lastEnd-1) end
+  local toAlter = out:sub(lastEnd,start - 1)
+  local initial = top:len()
+  toAlter = toAlter:gsub("%s+"," ")
+  local offset = top:len() - initial
+  local preend = out:find(mc("</pre>"),start + 1)
+  local mid = out:sub(start,preend)
+  local tail = out:sub(preend + 1)
+  out = top .. toAlter .. mid .. tail
+  lastEnd = preend
+  start = out:find(mc("<pre>"),preend + offset)
+end
+local top = out:sub(1,lastEnd)
+local tail = out:sub(lastEnd + 1)
+tail = tail:gsub("%s+"," ")
+out = top .. tail
+
+-- Step two: Now that the file is a single line (except for PRE blocks), 
+-- process EJ (HTML) tags
 if out:find(mc("<nofmt>.*<body>")) then NoFmt = true end
 out = out:gsub(mc("<nofmt>"),"")
 
@@ -210,7 +233,10 @@ print('.\\"')
 print('.\\" Last updated ' .. get_timestamp_string())
 print('.\\"')
 -- The TH heading is placed here
-TH = out:gsub(mc('.*<th>([^<]*)</th>.*'),'%1')
+TH = nil
+if out:find(mc('.*<th>([^<]*)</th>.*')) then
+  TH = out:gsub(mc('.*<th>([^<]*)</th>.*'),'%1')
+end
 if TH then 
   print(".TH " .. TH)
 else
