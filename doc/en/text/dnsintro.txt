@@ -1,10 +1,4 @@
-MaraDNS tutorial   <!-- Copyright 
-2005-2010 Sam Trenholme TERMS Redistribution and use, with or without 
-modification, are permitted provided that the following condition is 
-met: 1. Redistributions must retain the above copyright notice, this 
-list of conditions and the following disclaimer. This documentation is 
-provided 'as is' with no guarantees of correctness or fitness for 
-purpose. --> 
+MaraDNS tutorial    
 
 ===Introduction to DNS===
 
@@ -23,9 +17,8 @@ uses difficult-to-remember numbers to connect to other computers.
 
 ==What is a DNS server==
 
-A <!-- This 'A' should be here -->  DNS server is a program that 
-performs the DNS conversion from names in to number. There are three 
-kinds of DNS servers out there: 
+A   DNS server is a program that performs the DNS conversion from 
+names in to number. There are three kinds of DNS servers out there: 
 
 * DNS servers which can convert most DNS nodes
 

@@ -1,10 +1,4 @@
-Updating MaraDNS    <!-- Copyright 
-2005-2010 Sam Trenholme TERMS Redistribution and use, with or without 
-modification, are permitted provided that the following condition is 
-met: 1. Redistributions must retain the above copyright notice, this 
-list of conditions and the following disclaimer. This documentation is 
-provided 'as is' with no guarantees of correctness or fitness for 
-purpose. --> 
+Updating MaraDNS     
 
 ===Table of contents===
 

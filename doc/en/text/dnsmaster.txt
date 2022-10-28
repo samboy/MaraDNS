@@ -1,16 +1,11 @@
-Being a master DNS server   <!-- 
-Copyright 2005,2020 Sam Trenholme TERMS Redistribution and use, with or 
-without modification, are permitted provided that the following 
-condition is met: 1. Redistributions must retain the above copyright 
-notice, this list of conditions and the following disclaimer. This 
-documentation is provided 'as is' with no guarantees of correctness or 
-fitness for purpose. --> I should point out here that "master" and 
-"slave" is somewhat outdated wording. The more modern wording, 
-"primary" and "replica", is more accurate. However, since this document 
-was written back when "master" and "slave" was standard terminology, 
-since other mainstream DNS servers still use the "master" and "slave" 
-terminology, and since the relevant DNS RFCs MaraDNS is based on use 
-the words "master" and "slave", this document uses that wording. 
+Being a master DNS server    I should 
+point out here that "master" and "slave" is somewhat outdated wording. 
+The more modern wording, "primary" and "replica", is more accurate. 
+However, since this document was written back when "master" and "slave" 
+was standard terminology, since other mainstream DNS servers still use 
+the "master" and "slave" terminology, and since the relevant DNS RFCs 
+MaraDNS is based on use the words "master" and "slave", this document 
+uses that wording. 
 
 ===Having MaraDNS be a master DNS server===
 

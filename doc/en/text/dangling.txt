@@ -1,12 +1,7 @@
-Resolving dangling CNAME records    
-<!-- Copyright 2005,2010 Sam Trenholme TERMS Redistribution and use, 
-with or without modification, are permitted provided that the following 
-condition is met: 1. Redistributions must retain the above copyright 
-notice, this list of conditions and the following disclaimer. This 
-documentation is provided 'as is' with no guarantees of correctness or 
-fitness for purpose. --> This document is for people who are getting a 
-"dangling CNAME" warning, or who wish to have CNAME records that point 
-to records served by other DNS servers. 
+Resolving dangling CNAME records     
+This document is for people who are getting a "dangling CNAME" warning, 
+or who wish to have CNAME records that point to records served by other 
+DNS servers. 
 
 There are two cases that can cause the "dangling CNAME" message to 
 appear: 
