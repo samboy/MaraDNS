@@ -46,7 +46,7 @@ zone_transfer_acl = "10.1.2.3, 10.1.14.7, 192,168.116.0/24"
 
 The man pages maradns(8) and mararc(5) 
 
-http://www.maradns.org 
+http://www.maradns.org
 
 === BUGS ===
 

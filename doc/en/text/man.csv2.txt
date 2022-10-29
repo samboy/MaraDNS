@@ -179,8 +179,7 @@ for full details.
 If tildes are used to separate records, a TXT record can not contain a 
 literal '|' (pipe) character, a '#' literal, a '~' literal, nor any 
 ASCII control literal; these characters can be added to a TXT record 
-via the use of escape sequences; read the csv2_txt man page for 
-details. 
+via the use of escape sequences; read the csv2_txt man pagefor details. 
 
 == SPF ==
 
@@ -742,5 +741,5 @@ POSSIBILITY OF SUCH DAMAGE.
 
 === AUTHOR ===
 
-Sam Trenholme http://www.samiam.org/  
+Sam Trenholme http://www.samiam.org/ 
 

@@ -102,7 +102,7 @@ Starting maradns process which uses Mararc file /etc/mararc
 
 Keep in mind that MaraDNS binds to high-numbered ports when 
 sending outgoing DNS requests. The "Firewall Configuration" section of 
-the MaraDNS man page gives details. 
+the MaraDNS man pagegives details. 
 
 The problem with UNIX firewalls is that there is no standard interface 
 for configuring them, so I can't help you as well as I would like here. 

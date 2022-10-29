@@ -88,7 +88,7 @@ TERM signal.
 === SEE ALSO ===
 
 maradns(8), syslog(3) 
- http://www.maradns.org 
+ http://www.maradns.org
 
 === LEGAL DISCLAIMER ===
 

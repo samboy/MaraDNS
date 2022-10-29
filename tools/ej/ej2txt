@@ -252,7 +252,8 @@ out = out:gsub(mc("<head>.-<title>(.-)</title>.-</head>%s*"),
                "==== %1 ====\n\n") -- Handle titles; otherwise scrub HEAD
 out = out:gsub(mc("<head>.-</head>%s*"),"") -- Scrub HEAD w/o title
 out = out:gsub(mc("<body>%s*"),"") -- Scrub BODY tag
-out = out:gsub(mc("</?a[^>]*>"),"") -- Scrub A tag
+out = out:gsub(mc("<a[^>]->%s*"),"") -- Scrub A tag
+out = out:gsub(mc("</a[^>]->%s*"),"") -- Scrub /A tag
 out = out:gsub(mc("</?b>"),"") -- Scrub B tag (bold)
 out = out:gsub(mc("</?i>"),"") -- Scrub I tag (italic)
 out = out:gsub(mc("</?tt>"),"") -- Scrub TT tag (monospace)
@@ -261,7 +262,8 @@ out = out:gsub(mc("</?tt>"),"") -- Scrub TT tag (monospace)
 out = out:gsub(mc("<li>%s*"),"<li>")
 matchPlace, matchEnd = out:find(mc("<li>[^<]*")) -- LI
 while matchPlace and matchPlace > 1 do
-  tail = out:sub(matchEnd)
+  tail = out:sub(matchEnd + 1)
+  --print(tail) print("FOO3")-- DEBUG
   out = out:sub(1, matchPlace - 1) .. "\n\n* " ..
         fmt(out:sub(matchPlace + 4,matchEnd),"  ",68) .. "\n\n" .. tail
   matchPlace, matchEnd = out:find(mc("<li>[^<]*"),matchPlace + 1)

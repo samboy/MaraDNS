@@ -69,7 +69,7 @@ mail.john.example.com. 10.9.8.7
 
 SOA  This is a record used when using DNS to synchronize data 
 between multiple computers. Details on how this record works is in the 
-DNS master document. 
+DNS masterdocument. 
 
 A given zone must have precisely one SOA record. If a SOA record is not 
 present in a zone file, MaraDNS will synthesize a SOA record. If the 
@@ -83,6 +83,6 @@ field to store protocol-specific data.
 
 This has one data-dependent field: The text string in question.  
 Note that this document does not describe every single record type that 
-MaraDNS support. Please refer to the CSV2 manual page for a more 
+MaraDNS support. Please refer to the CSV2 manual pagefor a more 
 complete reference.  
 

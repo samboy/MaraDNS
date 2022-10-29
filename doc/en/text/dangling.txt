@@ -9,10 +9,9 @@ appear:
 
 * When a CNAME points to an external host name.
 
-* When a CNAME is misspelled or the host the CNAME points to is 
-  misspelled
+* When a CNAME is misspelled or the host the CNAME points to is misspelled
 
-CNAMEs pointing to external host names  Sometimes, people may 
+CNAMEs pointing to external host names Sometimes, people may 
 wish to have local names point to external entries with CNAME records. 
 For example, it may be desirable to have the shortcut "google" for 
 "www.google.com". One way one may wish to do this is as follows:
@@ -91,8 +90,8 @@ mararc file:
 
 no_cname_warnings = 1
 
-A typo can cause a dangling CNAME record  A typo can 
-also cause a dangling CNAME record. E.g:
+A typo can cause a dangling CNAME record A typo can also 
+cause a dangling CNAME record. E.g:
 
 www.example.com. CNAME hoost1.example.com. 
 host1.example.com. A 10.1.2.3

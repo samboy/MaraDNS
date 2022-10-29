@@ -46,5 +46,5 @@ line to the mararc configuration file:
 bind_star_handling = 1 
 
 To give MaraDNS full DNS-over-TCP support, follow the directions in the 
-dnstcp document.  
+dnstcpdocument.  
 

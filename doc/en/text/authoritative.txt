@@ -31,24 +31,24 @@ static IP addresses. With most registries, two or more static IP
 addresses are needed. 
 
 In addition, the machine(s) with the static IP addresses need to be 
-running an authoritative DNS server, such as MaraDNS.  
+running an authoritative DNS server, such as MaraDNS. 
 
 == What is a domain zone? ==
 
-A name like www.example.com is part of the  domain zone example.com. 
-The name www.yahoo.com, as another example, is part of the  domain zone 
-yahoo.com. www.maradns.org is part of the  domain zone maradns.org.  
+A name like www.example.com is part of the domain zoneexample.com. The 
+name www.yahoo.com, as another example, is part of the domain 
+zoneyahoo.com. www.maradns.org is part of the domain zonemaradns.org. 
 
 == Setting up a domain with MaraDNS ==
 
-Compile and install MaraDNS on the system which will act as an 
+Compile and installMaraDNS on the system which will act as an 
 authoritative DNS server. 
 
-After doing this, the mararc file needs to be changed before MaraDNS 
+After doing this, the mararcfile needs to be changed before MaraDNS 
 will function as an authoritative DNS server. 
 
-A mararc file which can be used to  serve the  domain zones that one 
-wishes to have control over needs to only be four lines long:
+A mararc file which can be used to servethe domain zonesthat one wishes 
+to have control over needs to only be four lines long:
 
 ipv4_bind_addresses = "10.3.28.79" 
 chroot_dir = "/etc/maradns" 
@@ -101,7 +101,7 @@ we have the following services:
   the IP 10.10.10.12. In other words, people can view web pages on 
   this machine.
 
-* We have a mail server, or  mail transport agent for example.com with 
+* We have a mail server, or mail transport agentfor example.com with 
   the IP 10.10.10.15. In other words, the machine with the IP 
   10.10.10.15 is set up to handle mail addressed to 
   name@example.com, where "name" is any string preceding the '@' 
@@ -144,7 +144,7 @@ the following changes:
   mail server for the domain.
 
 Note that the chroot_dir mararc variable tells MaraDNS which directory 
-contains domain zone files.  
+contains domain zone files. 
 
 == The format of a Domain Zone file ==
 
@@ -197,7 +197,7 @@ this format:
 
 The reason to use different names for different functions is to 
 minimize the number of problems one will encounter, should one need to 
-change their IPs at a later time.  
+change their IPs at a later time. 
 
 == A single name can have multiple records ==
 
@@ -214,7 +214,7 @@ www.example.com.	10.10.10.12 ~
 In this example, a query to www.example.com will return a list of 
 three IPs. MaraDNS rotates the records so that the first IP given to a 
 client changes each time a query for www.example.com is made. This can 
-be used as a primitive kind of load balancing.  
+be used as a primitive kind of load balancing. 
 
 == The % character shortcut ==
 
@@ -245,7 +245,7 @@ www.% 10.10.10.12 ~
 mail1.%  10.10.10.15 ~
 
 This zone file would function identically to the first example 
-zone file above.  
+zone file above. 
 
 == Getting connected to the root name servers ==
 
@@ -278,7 +278,7 @@ There are a number of competing registrars which server domain names.
 One which I have extremely happy with is Net Wizards; domains can be 
 registered at http://domains.netwiz.net/. In order to register a 
 domain, you will need to know the zone servers for your domain. You can 
-either set these up yourself (see below for an example), or use the 
+either set these up yourself (see belowfor an example), or use the 
 askmara tutorial to find out the name servers for your domain. 
 
 To use the askmara tool, make an askmara query like this: 
@@ -335,7 +335,7 @@ Nameserver 4 IP:   ____________________________________
 
 If you only have one NS server, you may need to get a second one to 
 register a domain. The procedure for doing this is described in the 
-following section.  
+following section. 
 
 == Getting two IPs ==
 
@@ -354,7 +354,7 @@ has.
 If you have but a single IP, it is necessary to find someone who will 
 provide secondary DNS service for your domain, and set up MaraDNS to be 
 a zoneserver. Information on how to do this is provided in the DNS 
-master document.  
+masterdocument. 
 
 == Names internal to a network ==
 
@@ -410,7 +410,7 @@ mascota.%       10.1.2.3 ~
 paloma.%        10.5.6.7 ~ 
 vela.%          10.9.8.4 ~
 
-See above for an explanation of what the % symbol does. 
+See abovefor an explanation of what the % symbol does. 
 
 The above three lines, which is a complete csv2 zone file, is a 
 shorthand for the following:

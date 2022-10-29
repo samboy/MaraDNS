@@ -7,9 +7,9 @@ everything from teaching DNS basics for someone who has never
 administered a DNS server before to usage guides on exotic things such 
 as using private CNAME records that point to public DNS entries. 
 
-For people who have never used DNS before, the DNS introduction guide 
-is a good place to start. For people who have some experience with DNS 
-servers, the quick start guide is a good place to start. 
+For people who have never used DNS before, the DNS introduction guideis 
+a good place to start. For people who have some experience with DNS 
+servers, the quick start guideis a good place to start. 
 
 == Tutorials and usage guides ==
 

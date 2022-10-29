@@ -111,6 +111,6 @@ The ninth field (fifth numeric field) is the "minimum" for the domain;
 this does not affect how MaraDNS processes a zone file and is not used 
 by slave DNS servers (it determines the default/minimum TTL with other 
 DNS servers).  The zoneserver program can also be used to serve 
-other DNS records over TCP; see the file dnstcp for details. 
+other DNS records over TCP; see the file dnstcpfor details. 
  
 

@@ -84,5 +84,5 @@ tcp_convert_server = "10.1.2.3"
 long_packet_ipv4 = "10.1.2.3"
 
 The zoneserver program can also be used to serve DNS zones; see the 
-file dnsmaster for details.  
+file dnsmasterfor details.  
 

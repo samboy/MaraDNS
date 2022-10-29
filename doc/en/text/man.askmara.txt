@@ -106,7 +106,7 @@ incorrectly (it only outputs the first chunk).
 === SEE ALSO ===
 
 maradns(8) 
- http://www.maradns.org 
+ http://www.maradns.org
 
 === LEGAL DISCLAIMER ===
 

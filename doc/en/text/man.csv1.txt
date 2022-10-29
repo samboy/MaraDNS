@@ -200,5 +200,5 @@ POSSIBILITY OF SUCH DAMAGE.
 
 === AUTHOR ===
 
-Sam Trenholme http://www.samiam.org/  
+Sam Trenholme http://www.samiam.org/ 
 

@@ -4,7 +4,7 @@
 
 This document is a step-by-step guide to setting up Deadwood as a 
 recursive DNS server. It assumes that MaraDNS and Deadwood are already 
-compiled and installed.  
+compiled and installed. 
 
 == Table of contents ==
 
@@ -67,7 +67,7 @@ IP when determining who can contact Deadwood.
 Once this is done, other machines can contact the Deadwood server to 
 perform DNS queries. For example, Deadwood is now a DNS server which 
 Windows 98 can use in "Control Panel -> Network -> TCP/IP -> DNS 
-configuration", or a UNIX system can point to from /etc/resolv.conf.  
+configuration", or a UNIX system can point to from /etc/resolv.conf. 
 
 == Using Deadwood on a slow network ==
 
@@ -141,7 +141,7 @@ chroot_dir = "/etc/maradns"
 recursive_acl = "127.0.0.1"
 
 The ICANN servers listed above are the ones that Deadwood use 
-when no root servers are specified.  
+when no root servers are specified. 
 
 == Private names with custom root servers ==
 

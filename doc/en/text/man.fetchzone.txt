@@ -46,7 +46,7 @@ them.
 
 The man pages maradns(8) and csv2(5) 
 
-http://www.maradns.org 
+http://www.maradns.org
 
 === LEGAL DISCLAIMER ===
 
