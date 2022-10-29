@@ -1,6 +1,6 @@
 MaraDNS tutorial    
 
-===MaraDNS tutorials and usage guides===
+=== MaraDNS tutorials and usage guides ===
 
 MaraDNS includes a number of tutorials and usage guides which cover 
 everything from teaching DNS basics for someone who has never 
@@ -11,7 +11,7 @@ For people who have never used DNS before, the DNS introduction guide
 is a good place to start. For people who have some experience with DNS 
 servers, the quick start guide is a good place to start. 
 
-==Tutorials and usage guides==
+== Tutorials and usage guides ==
 
 * An introduction to DNS
 
@@ -46,7 +46,7 @@ servers, the quick start guide is a good place to start.
 
 * How to convert BIND zone files in to MaraDNS-compatible zone files.
 
-==Man pages==
+== Man pages ==
 
 * The askmara (DNS query client) man page
 

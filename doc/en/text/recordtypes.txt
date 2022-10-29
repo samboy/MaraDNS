@@ -1,6 +1,6 @@
 DNS record types    
 
-===DNS record types===
+=== DNS record types ===
 
 This is a list of some DNS record types which MaraDNS supports.  
 

@@ -1,6 +1,6 @@
 Converting to MaraDNS    
 
-===Converting from another DNS server to MaraDNS===
+=== Converting from another DNS server to MaraDNS ===
 
 The procedure for converting from another authoritative DNS server to 
 MaraDNS is as follows: 

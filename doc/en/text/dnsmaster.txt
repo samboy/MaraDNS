@@ -7,7 +7,7 @@ the "master" and "slave" terminology, and since the relevant DNS RFCs
 MaraDNS is based on use the words "master" and "slave", this document 
 uses that wording. 
 
-===Having MaraDNS be a master DNS server===
+=== Having MaraDNS be a master DNS server ===
 
 A master (sometimes called primary) DNS server is a DNS server that 
 other DNS servers can automatically transfer zone files from. There are 
@@ -60,7 +60,7 @@ csv2 = {}
 csv2["example.com."] = "db.example.com" 
 zone_transfer_acl = "192.168.72.34, 10.34.56.98, 172.17.23.37"
 
-==How SOA records affect slave zone servers==
+== How SOA records affect slave zone servers ==
 
 The SOA record tells the slave zone servers how often to check to see 
 if a zone file needs to be reloaded. Here is what a SOA record looks 

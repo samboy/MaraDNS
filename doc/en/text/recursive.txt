@@ -1,12 +1,12 @@
 Recursive DNS serving    
 
-===Using Deadwood as a recursive DNS server===
+=== Using Deadwood as a recursive DNS server ===
 
 This document is a step-by-step guide to setting up Deadwood as a 
 recursive DNS server. It assumes that MaraDNS and Deadwood are already 
 compiled and installed.  
 
-==Table of contents==
+== Table of contents ==
 
 * Basic configuration
 
@@ -24,7 +24,7 @@ compiled and installed.
 
 * Customizing the resolution of some names
 
-==Basic configuration==
+== Basic configuration ==
 
 Once Deadwood is installed, the dwood3rc file needs to be set up before 
 Deadwood will function as a recursive DNS server. This file only needs 
@@ -69,7 +69,7 @@ perform DNS queries. For example, Deadwood is now a DNS server which
 Windows 98 can use in "Control Panel -> Network -> TCP/IP -> DNS 
 configuration", or a UNIX system can point to from /etc/resolv.conf.  
 
-==Using Deadwood on a slow network==
+== Using Deadwood on a slow network ==
 
 Deadwood, on a slow network, may time out. Deadwood normally only waits 
 two seconds for a reply from a remote DNS server. This is not enough 
@@ -84,7 +84,7 @@ chroot_dir = "/etc/maradns"
 recursive_acl = "127.0.0.1" 
 timeout_seconds = 6
 
-==Using other recursive DNS servers==
+== Using other recursive DNS servers ==
 
 It is possible to have Deadwood contact other recursive name servers, 
 instead of contacting the actual root servers to process recursive 
@@ -101,7 +101,7 @@ recursive_acl = "127.0.0.1"
 upstream_servers = {} 
 upstream_servers["."] = "10.66.77.88, 10.99.11.22"
 
-==Using different root servers==
+== Using different root servers ==
 
 Deadwood, by default, uses the ICANN name servers as the root name 
 servers. The reason for this default is practical: In my experience, 
@@ -143,7 +143,7 @@ recursive_acl = "127.0.0.1"
 The ICANN servers listed above are the ones that Deadwood use 
 when no root servers are specified.  
 
-==Private names with custom root servers==
+== Private names with custom root servers ==
 
 Deadwood can have custom root name servers that only resolve names in a 
 subtree of the DNS space. In other words, we can tell Deadwood to have 

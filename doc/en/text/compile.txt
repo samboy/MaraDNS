@@ -1,8 +1,8 @@
 Compiling MaraDNS and Deadwood    
 
-===Compiling MaraDNS and Deadwood===
+=== Compiling MaraDNS and Deadwood ===
 
-==Requirements==
+== Requirements ==
 
 MaraDNS is supported on two platforms: CentOS Linux 5, and Windows XP 
 (via MinGW32). 
@@ -13,7 +13,7 @@ platform, you will have to port it yourself or pay me to port it for
 you. The Windows XP port does not support all of the features the 
 CentOS Linux version has. 
 
-==Downloading, compiling, and installing MaraDNS==
+== Downloading, compiling, and installing MaraDNS ==
 
 * Obtain MaraDNS from www.maradns.org
 

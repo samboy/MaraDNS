@@ -1,32 +1,32 @@
-===NAME===
+=== NAME ===
 
 zoneserver - handle zone transfers and other TCP functions for MaraDNS 
 
-===DESCRIPTION===
+=== DESCRIPTION ===
 
 zoneserver listens on port 53/tcp and handles DNS zone transfers and 
 any DNS query done over TCP instead of UDP. zoneserver uses a 
 configuration file, /etc/mararc by default, to determine its 
 parameters. 
 
-===USAGE===
+=== USAGE ===
 
 zoneserver -f pointer_to_mararc_file 
 
-===OPTIONS===
+=== OPTIONS ===
 
 -f Specifies the location of the configuration file. MaraDNS uses 
 the same configuration file for both the main dns server and the 
 zoneserver.  
 
-===CONFIGURATION FILE FORMAT===
+=== CONFIGURATION FILE FORMAT ===
 
 The file format for the mararc file can be found in the mararc(5) 
 manual page. In particular, the zoneserver uses the zone_transfer_acl, 
 tcp_convert_acl, tcp_convert_server, and bind_address mararc 
 parameters. 
 
-===EXAMPLE MARARC FILE===
+=== EXAMPLE MARARC FILE ===
 
 In this example mararc file, which is used both by maradns and 
 zoneserver, we allow 10.1.2.3, 10.1.14.7, and 192.168.116.{any} to 
@@ -42,13 +42,13 @@ csv2["example.com."] = "db.example.com" # example.com zone file
 # The next line is a list of who can transfer zones from us 
 zone_transfer_acl = "10.1.2.3, 10.1.14.7, 192,168.116.0/24"
 
-===SEE ALSO===
+=== SEE ALSO ===
 
 The man pages maradns(8) and mararc(5) 
 
 http://www.maradns.org 
 
-===BUGS===
+=== BUGS ===
 
 zoneserver assumes that the authoritative NS records are immediately 
 after the SOA record, and that there is at least one non-NS between 
@@ -66,7 +66,7 @@ zone.
 If an unauthorized client attempts to connect to the zoneserver, 
 zoneserver immediately disconnects the unauthorized client. 
 
-===LEGAL DISCLAIMER===
+=== LEGAL DISCLAIMER ===
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -80,7 +80,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
 
-===AUTHOR===
+=== AUTHOR ===
 
 MaraDNS is written by Sam Trenholme. Jaakko Niemi used 5 minutes to put 
 the original version this manpage together. Sam has subsequently 

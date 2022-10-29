@@ -1,6 +1,6 @@
 Troubleshooting MaraDNS    
 
-===MaraDNS troubleshooting guide===
+=== MaraDNS troubleshooting guide ===
 
 This troubleshooting guide is an example of how problems with MaraDNS 
 may be resolved without needing to wait for support on the MaraDNS 
@@ -119,7 +119,7 @@ hopefully CentOS 4 has a more complete interface.
 You will have to do a similar configuration change to any firewalls 
 between your server and the internet. 
 
-==Timeout==
+== Timeout ==
 
 It is also possible to get a timeout after sending an askmara query. A 
 timeout looks like this:
@@ -169,7 +169,7 @@ The messages will give you a hint as to what is preventing MaraDNS
 from starting up. If there are no MaraDNS messages in your log, there 
 is something wrong with your MaraDNS installation. 
 
-==Conclusion==
+== Conclusion ==
 
 Basically, the best strategy for troubleshooting problems with MaraDNS 
 is to have the mararc file be a simple three line mararc file. If 

@@ -1,6 +1,6 @@
 The bind2csv2.py utility    
 
-===Using BIND zone files in MaraDNS===
+=== Using BIND zone files in MaraDNS ===
 
 MaraDNS has some BIND zone file support. This means it is possible to 
 use BIND zone files in MaraDNS. This makes it easier for people to use 
@@ -36,7 +36,7 @@ a place where MaraDNS can find the zone files.
 Should there already be a "zone1.csv2" file when bind2csv2.py is run, 
 the "zone1.csv2" file will be replaced.
 
-==BUGS==
+== BUGS ==
 
 bind2csv2.py is not a perfect zone file converter. In particular, 
 bind2csv2.py does not act like BIND when NS records have different 

@@ -1,15 +1,15 @@
-===NAME===
+=== NAME ===
 
 csv1 - Format of the csv1 zone file that MaraDNS uses 
 
-===SPECIAL NOTE===
+=== SPECIAL NOTE ===
 
 The csv1 zone file format is supported primarily for MaraDNS users who 
 already have zone files in the csv1 format. MaraDNS now supports a csv2 
 zone file format. Note that the csv1 zone file format will continue to 
 function as long as I am MaraDNS' maintainer. 
 
-===SPECIAL CHARACTERS===
+=== SPECIAL CHARACTERS ===
 
 |  This delimits fields 
 
@@ -26,7 +26,7 @@ not resolve". It must be at the beginning of a domain name.
 values such as '\045' for %, or to escape the '%' character so it has 
 no special meaning, or to escape the backslash character.  
 
-===NOTES ON PROCESSING===
+=== NOTES ON PROCESSING ===
 
 All domain-name labels are converted to their lower-case equivalents 
 before processing is done. This is because domain-name literals in the 
@@ -41,14 +41,14 @@ another zone. The resolution algorithm will not break if non-CNAME
 records share records with a CNAME record, but this is not a good idea 
 to do.
 
-===RR FORMAT===
+=== RR FORMAT ===
 
 A domain name is a one-letter designation of its type, followed by the 
 domain name separated by dots, ending with either a % or a trailing 
 dot. If the domain name does not end with a % or trailing dot, an error 
 is returned. 
 
-===SUPPORTED RR TYPES===
+=== SUPPORTED RR TYPES ===
 
 MaraDNS only supports the following types of resource records (RRs) in 
 csv1 files. More resource records types are supported in csv2 zone 
@@ -64,7 +64,7 @@ files; see csv2(5) for details.
  	T	TXT	16
  	U	any	determined in third field of line
 
-===FORMAT OF SUPPORTED RR TYPES===
+=== FORMAT OF SUPPORTED RR TYPES ===
 
 Here are the formats, shown by letter name:
 
@@ -163,7 +163,7 @@ data". Since this particular data type is not formalized in a RFC at
 this time, the most appropriate method of storing this data is by using 
 the catch-all "unsupported" syntax. 
 
-===EXAMPLE CSV1 ZONE FILE===
+=== EXAMPLE CSV1 ZONE FILE ===
 
 # Example CSV1 zone file 
  
@@ -184,7 +184,7 @@ Amx.%|86400|10.1.2.4
 # An 'IN MX' record 
 @%|86400|10|mx.%
 
-===LEGAL DISCLAIMER===
+=== LEGAL DISCLAIMER ===
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -198,7 +198,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
 
-===AUTHOR===
+=== AUTHOR ===
 
 Sam Trenholme http://www.samiam.org/  
 

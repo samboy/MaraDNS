@@ -1,8 +1,8 @@
 Authoritative DNS serving    
 
-===Using MaraDNS as an authoritative DNS server===
+=== Using MaraDNS as an authoritative DNS server ===
 
-==Table of contents==
+== Table of contents ==
 
 * Requirements
 
@@ -24,7 +24,7 @@ Authoritative DNS serving
 
 * Names internal to a network
 
-==Requirements==
+== Requirements ==
 
 In order to set up an authoritative DNS server, one needs one or more 
 static IP addresses. With most registries, two or more static IP 
@@ -33,13 +33,13 @@ addresses are needed.
 In addition, the machine(s) with the static IP addresses need to be 
 running an authoritative DNS server, such as MaraDNS.  
 
-==What is a domain zone?==
+== What is a domain zone? ==
 
 A name like www.example.com is part of the  domain zone example.com. 
 The name www.yahoo.com, as another example, is part of the  domain zone 
 yahoo.com. www.maradns.org is part of the  domain zone maradns.org.  
 
-==Setting up a domain with MaraDNS==
+== Setting up a domain with MaraDNS ==
 
 Compile and install MaraDNS on the system which will act as an 
 authoritative DNS server. 
@@ -92,7 +92,7 @@ It is also possible to bind MaraDNS to multiple IP addresses, e.g:
 
 ipv4_bind_addresses = "10.3.28.79, 10.9.87.23"
 
-==Setting up a domain zone file==
+== Setting up a domain zone file ==
 
 Let us suppose that we are setting up a domain for example.com, where 
 we have the following services: 
@@ -146,7 +146,7 @@ the following changes:
 Note that the chroot_dir mararc variable tells MaraDNS which directory 
 contains domain zone files.  
 
-==The format of a Domain Zone file==
+== The format of a Domain Zone file ==
 
 Here are some example lines in a domain zone file, which is an example 
 of someone using the same IP multiple times. For example, if one is 
@@ -199,7 +199,7 @@ The reason to use different names for different functions is to
 minimize the number of problems one will encounter, should one need to 
 change their IPs at a later time.  
 
-==A single name can have multiple records==
+== A single name can have multiple records ==
 
 A single name can have multiple records. This is useful when one wishes 
 to have, for example, multiple machines processing requests for 
@@ -216,7 +216,7 @@ three IPs. MaraDNS rotates the records so that the first IP given to a
 client changes each time a query for www.example.com is made. This can 
 be used as a primitive kind of load balancing.  
 
-==The % character shortcut==
+== The % character shortcut ==
 
 If one is setting up multiple domain zones, all of which have more or 
 less the same data, it is convenient to have a template domain file 
@@ -247,7 +247,7 @@ mail1.%  10.10.10.15 ~
 This zone file would function identically to the first example 
 zone file above.  
 
-==Getting connected to the root name servers==
+== Getting connected to the root name servers ==
 
 An authoritative DNS server will not effectively serve a domain unless 
 the root name servers are aware that a given DNS server serves a given 
@@ -335,7 +335,7 @@ If you only have one NS server, you may need to get a second one to
 register a domain. The procedure for doing this is described in the 
 following section.  
 
-==Getting two IPs==
+== Getting two IPs ==
 
 As stated near the beginning of this document, many registries require 
 that one has two IPs to register a domain. If one has a computer with 
@@ -352,7 +352,7 @@ provide secondary DNS service for your domain, and set up MaraDNS to be
 a zoneserver. Information on how to do this is provided in the DNS 
 master document.  
 
-==Names internal to a network==
+== Names internal to a network ==
 
 Sometimes one will have a number of computers in an office, or other 
 small network, with a number of different names. It is desirable to use 

@@ -1,14 +1,14 @@
-===NAME===
+=== NAME ===
 
 csv2 - Description of the csv2 zone file that MaraDNS uses 
 
-===DESCRIPTION===
+=== DESCRIPTION ===
 
 The csv2 zone file format is MaraDNS' standard zone file format. This 
 zone file format uses any kind of whitespace (space, tab, and carriage 
 return), or the '|' character, to delimit fields. 
 
-==Tilde delimitation==
+== Tilde delimitation ==
 
 In newer MaraDNS releases, the tilde ('~') character is used to delimit 
 records in csv2 zone files; in order to maintain maximum compatibility 
@@ -24,7 +24,7 @@ supported the csv2_tilde_handling variable (as long as it had a value
 of 0); this allowed the same configuration and zone files to be used in 
 older and newer MaraDNS releases. 
 
-==Resource record format==
+== Resource record format ==
 
 This zone file format has records in the following form: 
 name [+ttl] [rtype] rdata ~ 
@@ -54,7 +54,7 @@ a comment.
 The following record types are supported; a description of the record 
 data format accommodates the record type: 
 
-==A==
+== A ==
 
 An A record stores an ipv4 address. This is the default record type 
 should the record type not be specified. The record type has one field 
@@ -64,7 +64,7 @@ a.example.net.              10.11.12.13 ~
 b.example.net.        A     10.11.12.14 ~ 
 c.example.net. +64000 A     10.11.12.15 ~
 
-==PTR==
+== PTR ==
 
 A PTR record stores the name for a given ipv4 or ipv6 address, and is 
 used for reverse DNS lookups. This record type has one field in it: The 
@@ -74,7 +74,7 @@ name for the record in question. Examples:
 14.12.11.10.in-addr.arpa.        PTR    b.example.net. ~ 
 15.12.11.10.in-addr.arpa. +64000 PTR    c.example.net. ~
 
-==MX==
+== MX ==
 
 A MX record stores a mail exchange record, and is used for mail 
 delivery. This record type has two fields in it: The priority (or 
@@ -86,7 +86,7 @@ has the IP "10.11.12.16":
 example.net.      MX   10 mail.example.net. ~ 
 mail.example.net.      10.11.12.16 ~
 
-==AAAA==
+== AAAA ==
 
 An AAAA record stores the ipv6 address for a given name. The IP is in 
 standard ipv6 "colon delimited" format: eight 16-bit hexadecimal 
@@ -96,7 +96,7 @@ IP. Example:
 
 a.example.net.   AAAA    2001:db8:dec:ade::f ~
 
-==SRV==
+== SRV ==
 
 An SRV record stores a "service" definition. This record has four 
 fields: Priority, weight, port, and target. For more information, 
@@ -104,7 +104,7 @@ please refer to RFC 2782. Example:
 
 _http._tcp.% SRV 0 0 80 a.% ~
 
-==NAPTR==
+== NAPTR ==
 
 A NAPTR record is described in RFC 2915. Example:
 
@@ -114,7 +114,7 @@ Note the semicolons. Because of a bug in MaraDNS 1.4.03 and
 earlier releases, NAPTR records will not parse unless a ~ is not used 
 to separate records; a patch to fix this bug is available here. 
 
-==NS==
+== NS ==
 
 An NS record specifies the name servers for a given zone. If the name 
 servers are not delegation name servers (in other words, if the name 
@@ -128,7 +128,7 @@ record has one field: The name of the name server machine. Example:
 example.net.    NS    ns1.example.net. ~ 
 example.net.    NS    ns2.example.net. ~
 
-==SOA==
+== SOA ==
 
 An SOA record stores the start of authority for a given zone file. This 
 record is optional in a CSV2 zone file; should the record not be in the 
@@ -161,7 +161,7 @@ x.org. SOA x.org. email@x.org. /serial 7200 3600 604800 1800 ~
 The '/serial' string is case-sensitive; only '/serial' in all 
 lower case will parse. 
 
-==TXT==
+== TXT ==
 
 A TXT record stores arbitrary text and/or binary data for a given host 
 name. This record has one field: The text data for the record. 
@@ -180,7 +180,7 @@ ASCII control literal; these characters can be added to a TXT record
 via the use of escape sequences; read the csv2_txt man page for 
 details. 
 
-==SPF==
+== SPF ==
 
 A SPF record is, with the exception of the numeric rtype, identical to 
 a TXT record. SPF records are designed to make it more difficult to 
@@ -200,7 +200,7 @@ performing a web search for 'sender policy framework'.
 Note that SPF records never gained traction, and their role is handled 
 by TXT records. 
 
-==RAW==
+== RAW ==
 
 The RAW record is a special meta-record that allows any otherwise 
 unsupported record type to be stored in a csv2 zone file. The syntax 
@@ -226,7 +226,7 @@ The format for a data field in a RAW record is almost identical to the
 format for a TXT data field. Both formats are described in full in the 
 csv2_txt(5) manual page. 
 
-==FQDN4==
+== FQDN4 ==
 
 The FQDN4 (short for "Fully Qualified Domain Name for IPv4") record is 
 a special form of the "A" record (see above) that instructs MaraDNS to 
@@ -253,7 +253,7 @@ FQDN4 records are not permitted in a csv2_default_zonefile. If you do
 not know what a csv2_default_zonefile is, you do not have to worry 
 about this limitation. 
 
-==FQDN6==
+== FQDN6 ==
 
 The FQDN6 (short for "Fully Qualified Domain Name for IPv6") record is 
 the ipv6 form for the FQDN4 record. Like the FQDN4 record, this record 
@@ -278,7 +278,7 @@ is, you do not have to worry about this limitation.
 
 FQDN6 records were implemented by Jean-Jacques Sarton. 
 
-==CNAME==
+== CNAME ==
 
 A CNAME record is a pointer to another host name. The CNAME record, in 
 MaraDNS, affects any record type not already specified for a given host 
@@ -289,12 +289,12 @@ with some other DNS servers.
 CNAME records are not permitted in a csv2_default_zonefile. If you do 
 not know what a csv2_default_zonefile is, this fact is of no relevance. 
 
-===Historical and uncommon resource records===
+=== Historical and uncommon resource records ===
 
 The following resource records are mainly of historical interest, or 
 are not commonly used. 
 
-==HINFO==
+== HINFO ==
 
 An HINFO record is a description of the CPU (processor) and OS that a 
 given host is using. The format for this record is identical to a TXT 
@@ -311,7 +311,7 @@ This resource record is not actively used--the IANA has a list of
 CPUs and OSes that this record is supposed to have. However, this list 
 has not been updated since 2002. 
 
-==WKS==
+== WKS ==
 
 WKS records are historical records which have been superseded by SRV 
 records. The format of the record is an IP, followed by a protocol 
@@ -327,7 +327,7 @@ MaraDNS only allows up to 10 different port numbers in a WKS
 record, and requires that the listed port numbers are not be higher 
 than 1023. 
 
-==MD and MF==
+== MD and MF ==
 
 MD and MF records are RR types that existed before MX records, and were 
 made obsolete by MX records. RFC1035 says that a DNS server can either 
@@ -344,7 +344,7 @@ Is equivalent to:
 example.net. MX 0 a.example.net. ~ 
 example.net. MX 10 b.example.net. ~
 
-==MB, MG, MINFO, and MR==
+== MB, MG, MINFO, and MR ==
 
 In the late 1980s, an alternative to MX records was proposed. This 
 alternative utilized MB, MG, MINFO, and MR records. This alternative 
@@ -359,7 +359,7 @@ example.net. MR mr@example.net. ~
 
 More information about these records can be found in RFC1035. 
 
-==AFSDB, RP, X25, ISDN, and RT==
+== AFSDB, RP, X25, ISDN, and RT ==
 
 AFSDB, RP, X25, ISDN, and RT are resource records which were proposed 
 in RFC1183. None of these resource records are widely used. 
@@ -380,7 +380,7 @@ example.net. ISDN 150862028003217 ~
 example.net. ISDN 150862028003217;004 ~ 
 example.net. RT 10 relay.example.net. ~
 
-==NSAP and NSAP-PTR==
+== NSAP and NSAP-PTR ==
 
 NSAP and NSAP-PTR records were proposed in RFC1706. A NSAP record is a 
 hexadecimal number preceded by the string "0x" and with optional dots 
@@ -395,14 +395,14 @@ If used, here is how the records would look in a csv2 zone file:
 example.net. NSAP 0x47.0005.80.005a00.0000.0001.e133.ffffff000162.00 ~ 
 example.net. NSAP-PTR nsap.example.net. ~
 
-==PX==
+== PX ==
 
 The PX RR is an obscure RR described in RFC2163. A PX record looks like 
 this in a CSV2 zone file:
 
 example.net. PX 15 px1.example.net. px2.example.net. ~
 
-==GPOS==
+== GPOS ==
 
 An GPOS record is a description of the location of a given server. The 
 format for this record is identical to a TXT record, except that the 
@@ -421,7 +421,7 @@ This resource record is not actively used; for the relatively few
 people who encode their position in DNS, the LOC record is far more 
 common. 
 
-==LOC==
+== LOC ==
 
 The LOC resource record is an uncommonly used resource record that 
 describes the position of a given server. LOC records are described in 
@@ -437,7 +437,7 @@ Example:
 
 example.net. LOC 19 31 2.123 N 98 3 4 W 2000m 2m 4m 567m ~
 
-==CAA==
+== CAA ==
 
 MaraDNS does not have direct support for CAA records. However, the RAW 
 record type can generate CAA records. For example, to have 
@@ -446,7 +446,7 @@ letsencrypt.org":
 
 example.com. RAW 257 \x00\x05'issueletsencrypt.org' ~
 
-===STAR RECORDS===
+=== STAR RECORDS ===
 
 MaraDNS has support for star records in zone files:
 
@@ -462,7 +462,7 @@ Note also that stars must be at the beginining of a name; to have
 stars at the end of a name, use the csv2_default_zonefile feature as 
 described in the mararc man page. 
 
-===PERCENT SYMBOL===
+=== PERCENT SYMBOL ===
 
 Placing the percent symbol at the end of a record indicates that the 
 percent should be replaced with the domain name for the zone. 
@@ -475,7 +475,7 @@ www.%	A	10.10.10.10 ~
 
 This will cause "www.example.net" to have the ip 10.10.10.10. 
 
-===SLASH COMMANDS===
+=== SLASH COMMANDS ===
 
 In addition to being able to have resource records and comments, csv2 
 zone files can also have special slash commands. These slash commands, 
@@ -487,7 +487,7 @@ question must be in all-lower-case.
 
 These commands are as follows: 
 
-==Default TTL==
+== Default TTL ==
 
 The default TTL is the TTL for a resource record without a TTL 
 specified. This can be changed with the '/ttl' slash command. This 
@@ -513,7 +513,7 @@ d.ttl.example.com.       10.0.0.4 ~
 /ttl 7200 ~ 
 e.ttl.example.com.       10.0.0.5 ~
 
-==Origin==
+== Origin ==
 
 It is possible to change the host name suffix that is used to 
 substitute the percent in a csv2 zone file. This suffix is called, for 
@@ -550,7 +550,7 @@ origin:
 /origin mail.% ~ 
 % 10.3.2.2 ~ # mail.example.com now has IP 10.3.2.2
 
-==Opush and Opop==
+== Opush and Opop ==
 
 The '/opush' and '/opop' slash commands use a stack to remember and 
 later recall values for the origin (see origin above). The '/opush' 
@@ -575,7 +575,7 @@ b.% 10.4.0.2 ~ # b.mail.example.com has IP 10.4.0.2
 
 The opush/opop stack can have up to seven elements on it. 
 
-==Read==
+== Read ==
 
 The '/read' slash commands allows one to have the contents of another 
 file in a zone. The '/read' command takes a single argument: A filename 
@@ -641,7 +641,7 @@ neworigin':
 /read filename ~ 
 /opop ~
 
-===EXAMPLE ZONE FILE===
+=== EXAMPLE ZONE FILE ===
 
 # This is an example csv2 zone file 
  
@@ -724,7 +724,7 @@ example.net.    txt 'This is some text' ~
 # which are identical to TXT records.  See RFC4408 for more details. 
 example.net.    spf 'v=spf1 +mx a:colo.example.com/28 -all' ~
 
-===LEGAL DISCLAIMER===
+=== LEGAL DISCLAIMER ===
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -738,7 +738,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
 
-===AUTHOR===
+=== AUTHOR ===
 
 Sam Trenholme http://www.samiam.org/  
 

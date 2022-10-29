@@ -1,18 +1,18 @@
-===NAME===
+=== NAME ===
 
 duende - run a child process as a daemon 
 
-===DESCRIPTION===
+=== DESCRIPTION ===
 
 duende makes a given child process a daemon. The standard output and 
 standard error of the child process is logged via syslog() with a 
 priority of LOG_INFO. 
 
-===USAGE===
+=== USAGE ===
 
 duende child_process [ all subsequent arguments passed on to child ] 
 
-===DETAILS===
+=== DETAILS ===
 
 When duende is invoked, it spawns two processes. In addition to 
 spawning the daemonized child process, duende also spawns a process 
@@ -34,7 +34,7 @@ Duende's intended child processes (maradns and zoneserver) need to bind
 to privileged ports, and because duende uses a setuid() call to change 
 the user ID of the logging process to the user with ID 707. 
 
-===LOGGING===
+=== LOGGING ===
 
 duende uses the syslog() facility to log the standard output of the 
 program that it invokes. The name of the program (in other words, the 
@@ -68,7 +68,7 @@ Also, the directory /etc/maradns/logger, while used by duende, is not
 used to store any log messages. That is unless, for some reason, one 
 configures syslog to store messages there. 
 
-===EXAMPLES===
+=== EXAMPLES ===
 
 Using duende to start maradns, where the mararc file is /etc/mararc.2
 
@@ -79,18 +79,18 @@ Using duende to start zoneserver, where the mararc file is
 
 	duende zoneserver -f /etc/mararc.4
 
-===BUGS===
+=== BUGS ===
 
 Duende assumes that all of its children are well-behaved, eating their 
 vegetables, going to bed when told, and terminating when receiving a 
 TERM signal. 
 
-===SEE ALSO===
+=== SEE ALSO ===
 
 maradns(8), syslog(3) 
  http://www.maradns.org 
 
-===LEGAL DISCLAIMER===
+=== LEGAL DISCLAIMER ===
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -104,7 +104,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
 
-===AUTHOR===
+=== AUTHOR ===
 
 Duende and this man page are written by Sam Trenholme. D Richard Felker 
 III provided some invaluable assistance with the piping code which 

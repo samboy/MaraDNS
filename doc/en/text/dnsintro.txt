@@ -1,13 +1,13 @@
 MaraDNS tutorial    
 
-===Introduction to DNS===
+=== Introduction to DNS ===
 
 This document is meant to be an introduction to DNS for someone who has 
 never administrated a DNS server or registered a domain before. Being a 
 part of the MaraDNS package, this tutorial assumes that one is using 
 the MaraDNS package. 
 
-==What is DNS?==
+== What is DNS? ==
 
 DNS is the method that the internet uses to convert 
 difficult-to-remember numbers, such as '10.17.243.32', in to 
@@ -15,7 +15,7 @@ easy-to-remember names, such as 'www.yahoo.com'. The reason for this
 conversion is because the underlying protocol for the internet, TCP/IP, 
 uses difficult-to-remember numbers to connect to other computers. 
 
-==What is a DNS server==
+== What is a DNS server ==
 
 A   DNS server is a program that performs the DNS conversion from names 
 in to number. There are three kinds of DNS servers out there: 

@@ -1,6 +1,6 @@
 DNS over TCP     
 
-===DNS over TCP===
+=== DNS over TCP ===
 
 MaraDNS has full support for DNS over TCP. However, this setup is not 
 automatically done; a little configuration needs to be set up and the 
@@ -49,7 +49,7 @@ standalone UDP DNS server; zoneserver is a TCP proxy that converts TCP
 requests in to UDP requests. Both daemons must be running to process 
 both UDP and TCP DNS queries.
 
-==Long packets==
+== Long packets ==
 
 maradns, the UDP DNS server, in compliance with RFC1035 section 2.3.4, 
 will not output a packet longer than 512 bytes long. This is sufficient 

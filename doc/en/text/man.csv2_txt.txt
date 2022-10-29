@@ -1,9 +1,9 @@
-===NAME===
+=== NAME ===
 
 csv2_txt - Description of txt and raw resource records in the csv2 zone 
 file 
 
-===DESCRIPTION===
+=== DESCRIPTION ===
 
 Due to the complexity of TXT and RAW records, this man page is 
 dedicated to describing the csv2 format of this RR. 
@@ -13,7 +13,7 @@ binary data. Additionally, it is possible to arbitrarily divide up TXT
 records in to chunks (chunks, which RFC1035 call "character-string"s, 
 are described below). 
 
-==ASCII AND UTF-8 DATA==
+== ASCII AND UTF-8 DATA ==
 
 If a given TXT field or RAW record contains only ASCII data, creating a 
 record is easy: Place the full data between single quotes, like this:
@@ -37,7 +37,7 @@ character, the '|' character, the '~' (tilde) character, and the '#'
 character. See BACKSLASH ESCAPE SEQUENCES below for information on 
 adding these characters to TXT or RAW fields. 
 
-==UNQUOTED DATA==
+== UNQUOTED DATA ==
 
 Note that the record does not have to be quoted. As long as the record 
 only contains ASCII alphanumeric data, and/or the characters '-', '_', 
@@ -57,7 +57,7 @@ This is a mix of_unquoted and quoted text!
 When mixing quoted and unquoted data, it is important to have all 
 whitespace inside quotes. 
 
-==BACKSLASH ESCAPE SEQUENCES==
+== BACKSLASH ESCAPE SEQUENCES ==
 
 In order to accommodate storing non-UTF-8 high bit characters, the 
 single quote character, non-printable ASCII control codes, the '|', 
@@ -140,7 +140,7 @@ Produces this record:
 
 Press # for customer service
 
-==MULTI-LINE AND COMMENTED RECORDS==
+== MULTI-LINE AND COMMENTED RECORDS ==
 
 By utilizing backslashes followed by comments, it is possible to have 
 multi-line and commented TXT and RAW records. The following resource 
@@ -186,7 +186,7 @@ k2.example.com. TXT 'This is some data '\
 # followed by the rest of the data 
     'and this is the rest of the data' ~
 
-==MULTIPLE TXT CHUNKS==
+== MULTIPLE TXT CHUNKS ==
 
 TXT RRs may be divided up in to multiple "chunks" (RFC1035 calls these 
 "character-string"s). A single chunk can be anywhere from zero to 255 
@@ -229,7 +229,7 @@ unless you wish to have these zero-length chunks.
 Chunk support only exists for TXT records. An unquoted ; character will 
 cause a syntax error in a RAW record. 
 
-==RAW RECORDS==
+== RAW RECORDS ==
 
 With the exception of no support for chunk delimiters, and the addition 
 of a numeric record type before the record data, the format for RAW 
@@ -252,7 +252,7 @@ w.example.com. RAW 40 \x10\ # Meaning: 16
                       \x02\ # Sub-coding: 2 
                       'Kitchen sink+ data' ~ # Data: 'Kitchen sink+ data'
 
-==DKIM RECORDS==
+== DKIM RECORDS ==
 
 DKIM is a format used to store e-mail authentication data via DNS. 
 
@@ -286,7 +286,7 @@ x._domainkey.% +600 TXT 'v=DKIM1; k=rsa; '\
 '2d+jR/zOkRpV2Ak/4KpeP9dpsRJEOsPEaWGG1pQXgPw'\  
 'IDAQAB'
 
-===LEGAL DISCLAIMER===
+=== LEGAL DISCLAIMER ===
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -300,7 +300,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
 
-===AUTHOR===
+=== AUTHOR ===
 
 Sam Trenholme http://www.samiam.org/  
 

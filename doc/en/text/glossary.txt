@@ -1,6 +1,6 @@
 DNS glossary    
 
-===DNS glossary===
+=== DNS glossary ===
 
 Authoritative DNS server
 

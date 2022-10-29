@@ -1,8 +1,8 @@
-===NAME===
+=== NAME ===
 
 mararc - Format of the mararc zone file that MaraDNS uses 
 
-===MARARC FILE FORMAT===
+=== MARARC FILE FORMAT ===
 
 Mararc files use a syntax that is a subset of Python 2.2.3 syntax. In 
 particular, Python 2.2.3 (and possibly other versions of Python) can 
@@ -11,7 +11,7 @@ read a properly formatted mararc file without error.
 Unlike Python, however, a mararc file can only use certain variable 
 names, and the variables can only be declared as described below.
 
-===COMMENTS===
+=== COMMENTS ===
 
 Comments (lines ignored by the MaraDNS parser) start with the '#' 
 character, like this:
@@ -21,7 +21,7 @@ character, like this:
 The MaraDNS parser also ignores lines which contain only white 
 space. 
 
-===OPERATORS===
+=== OPERATORS ===
 
 The MaraRC file supports two operators: = and += 
 
@@ -44,12 +44,12 @@ ipv4_alias["icann"] = "198.41.0.4"
 ipv4_alias["icann"] += ",192.228.79.201" 
 ipv4_alias["icann"] += ",192.33.4.12,128.8.10.90"
 
-===MARARC VARIABLES===
+=== MARARC VARIABLES ===
 
 Follows is a listing of variables that can be declared in the mararc 
 file. 
 
-===DICTIONARY VARIABLE FORMAT===
+=== DICTIONARY VARIABLE FORMAT ===
 
 A dictionary variable is an array that can have multiple elements. 
 Unlike a traditional array, these arrays are indexed by strings instead 
@@ -71,12 +71,12 @@ csv2 = {}
 Here, csv2 is the name of the "dictionary" variable that we are 
 initializing. 
 
-===DICTIONARY VARIABLES===
+=== DICTIONARY VARIABLES ===
 
 Here is a listing of all "dictionary"-style variables that MaraDNS 
 uses: 
 
-==csv2==
+== csv2 ==
 
 The csv2 dictionary variable stores all of the zone names and file 
 names for the zone files that MaraDNS uses. Note that csv2 files are 
@@ -90,7 +90,7 @@ See csv2(5) for a description of this file's format.
 The dictionary index (zone name) can not have a * in it. If it does, 
 MaraDNS will terminate with an "Illegal zone name" error. 
 
-==csv1==
+== csv1 ==
 
 csv1: Used to indicate the filename to use for a given zone stored in 
 the legacy csv1 zone file format. This is primarily for compatibility 
@@ -109,7 +109,7 @@ filename is relative to the chroot_dir.
 
 See the csv1(5) man page for more information on this file format. 
 
-==ipv4_alias==
+== ipv4_alias ==
 
 ipv4_alias: Used to give nicknames or aliases for ip/netmask pairs for 
 ipv4 (standard 32-bit) IP addresses.
@@ -133,7 +133,7 @@ The netmask can be in one of two formats: A single number between 1 and
 
 The netmask is used to specify a range of IPs.
 
-==ipv4_alias examples==
+== ipv4_alias examples ==
 
 10.1.1.1/24 indicates that any ip from 10.1.1.0 to 10.1.1.255 will 
 match. 
@@ -170,7 +170,7 @@ ipv4_alias susan.
 Multiple levels of nesting are allowed. Self-referring nests will 
 result in an error.
 
-===NORMAL VARIABLE FORMAT===
+=== NORMAL VARIABLE FORMAT ===
 
 Normal variables. These are variables that can only take a single 
 value. 
@@ -182,11 +182,11 @@ name = "value"
 Where name is the name of the normal variable, and value is the 
 value of the variable in question. 
 
-===NORMAL VARIABLES===
+=== NORMAL VARIABLES ===
 
 Here is a listing of normal variables that MaraDNS uses: 
 
-==ipv4_bind_addresses==
+== ipv4_bind_addresses ==
 
 ipv4_bind_addresses: The IP addresses to give the MaraDNS server. 
 
@@ -195,7 +195,7 @@ notation, and specifies what IP addresses the MaraDNS server will
 listen on. Multiple bind addresses are separated with a comma, like 
 this: "10.1.2.3, 10.1.2.4, 127.0.0.1"
 
-==admin_acl==
+== admin_acl ==
 
 This is a list of ip/netmask pairs that are allowed to get certain 
 administrative information about MaraDNS, including: 
@@ -211,7 +211,7 @@ debug_msg_level is sufficiently high. See the information on
 debug_msg_level below for details on this and on the TXT queries sent 
 to get the above information. 
 
-==bind_address==
+== bind_address ==
 
 bind_address: The IP address to give the MaraDNS server. 
 
@@ -221,7 +221,7 @@ that ipv4_bind_addresses has the same functionality. This name is
 included so that old MaraDNS configuration files will continue to work 
 with new MaraDNS releases.
 
-==bind_star_handling==
+== bind_star_handling ==
 
 In the case where there is both a star record for a given name and 
 recordtype, a non-star record with the same name but a different 
@@ -265,7 +265,7 @@ following case exactly as per section 4.3.3 of RFC1034:
 MaraDNS will exit with a fatal error if bind_star_handling has any 
 value besides 0, 1, or 2. 
 
-==chroot_dir==
+== chroot_dir ==
 
 chroot_dir: The directory MaraDNS chroots to 
 
@@ -276,7 +276,7 @@ Note that csv1 zone files are read after the chroot operation. Hence,
 the chroot jail needs to have any and all zone files that MaraDNS will 
 load. 
 
-==csv2_default_zonefile==
+== csv2_default_zonefile ==
 
 This is a special zone file that allows there to be stars at the end of 
 hostnames. This file is similar to a normal csv2 zone file, but has the 
@@ -298,7 +298,7 @@ following features and limitations:
 * Both recursion and default zonefiles may not be enabled at the same 
   time
 
-==csv2_synthip_list==
+== csv2_synthip_list ==
 
 Sometimes the IP list of nameservers will be different than the 
 nameservers one is bound to. This allows the synthetic nameserver list 
@@ -310,7 +310,7 @@ particular, a list with both routable and non-routable addresses will
 discard the non-routable IP addresses, and a list with rfc1918 and 
 localhost addresses will discard the localhost addresses. 
 
-==csv2_tilde_handling==
+== csv2_tilde_handling ==
 
 How the csv2 zone file parser handles tildes (the ~ character) in csv2 
 zone files. This is a numeric record, with a possible value between 0 
@@ -335,7 +335,7 @@ The default value for csv2_tilde_handling is 2; this allows
 compatibility with older zone files without tildes while allowing zone 
 files to be updated to use the tilde to separate resource records. 
 
-==debug_msg_level==
+== debug_msg_level ==
 
 This is a number indicating what level of information about a running 
 MaraDNS process should be made public. When set to 0, no information 
@@ -361,7 +361,7 @@ When set to three or higher, a Ttimestamp.maradns. query will return,
 in seconds since the UNIX epoch, the timestamp for the system MaraDNS 
 is running on.
 
-==default_rrany_set==
+== default_rrany_set ==
 
 This variable used to determine what kind of resource records were 
 returned when an ANY query was sent. In MaraDNS, the data structures 
@@ -370,14 +370,14 @@ query is sent; this variable does nothing, and is only here so that old
 MaraDNS mararc files will continue to work. The only accepted values 
 for this variable were 3 and 15. 
 
-==dns_port==
+== dns_port ==
 
 This is the port that MaraDNS listens on. This is usually 53 (the 
 default value), but certain unusual MaraDNS setups (such as when 
 resolving dangling CNAME records on but a single IP) may need to have a 
 different value for this. 
 
-==dos_protection_level==
+== dos_protection_level ==
 
 If this is set to a non-zero value, certain features of MaraDNS will be 
 disabled in order to speed up MaraDNS' response time. This is designed 
@@ -409,19 +409,19 @@ disable more features:
 The default level of dos_protection_level is 0 when there are one or 
 more zonefiles; 78 when there are no zone files. 
 
-==ipv6_bind_address==
+== ipv6_bind_address ==
 
 If MaraDNS is compiled with as an authoritative server, then this 
 variable will tell MaraDNS which ipv6 address for the UDP server to; 
 for this variable to be set, MaraDNS must be bound to at least one ipv4 
 address. 
 
-==hide_disclaimer==
+== hide_disclaimer ==
 
 If this is set to "YES", MaraDNS will not display the legal disclaimer 
 when starting up. 
 
-==long_packet_ipv4==
+== long_packet_ipv4 ==
 
 This is a list of IPs which we will send UDP packets longer than the 
 512 bytes RFC1035 permits if necessary. This is designed to allow 
@@ -431,7 +431,7 @@ packets with more data than can fit in a 512-byte DNS packet.
 This variable only functions if MaraDNS is compiled as an authoritative 
 only server. 
 
-==maradns_uid==
+== maradns_uid ==
 
 maradns_uid: The numeric UID that MaraDNS will run as 
 
@@ -443,7 +443,7 @@ problem with MaraDNS. This is the UID maradns becomes.
 
 The default UID is 707. 
 
-==maradns_gid==
+== maradns_gid ==
 
 maradns_gid: The numeric GID that MaraDNS will run as. 
 
@@ -451,7 +451,7 @@ This accepts a single numerical value: The GID to run MaraDNS as.
 
 The default GID is 707. 
 
-==max_ar_chain==
+== max_ar_chain ==
 
 max_ar_chain: The maximum number of records to display if a record in 
 the additional section (e.g., the IP of a NS server or the ip of a MX 
@@ -466,7 +466,7 @@ records are disabled.
 
 The default value for this variable is 1. 
 
-==max_chain==
+== max_chain ==
 
 max_chain: The maximum number of records to display in a chain of 
 records. 
@@ -485,7 +485,7 @@ max_chain
 
 The default value for this variable is 8. 
 
-==max_tcp_procs==
+== max_tcp_procs ==
 
 max_tcp_procs: The (optional) maximum number of processes the zone 
 server is allowed to run. 
@@ -494,7 +494,7 @@ Sometimes, it is desirable to have a different number of maximum
 allowed tcp processes than maximum allowed threads. If this variable is 
 not set, the maximum number of allowed tcp processes is "maxprocs". 
 
-==max_total==
+== max_total ==
 
 max_total: The maximum number of records to show total for a given DNS 
 request. 
@@ -504,7 +504,7 @@ available in a DNS reply.
 
 The default value for this variable is 20. 
 
-==max_mem==
+== max_mem ==
 
 max_mem is the maximum amount of memory we allow MaraDNS to allocate, 
 in bytes.
@@ -514,7 +514,7 @@ general use, and in addition, to allocate 3072 bytes for each element
 we can have in the cache or DNS record that we are authoritatively 
 serving. 
 
-==min_visible_ttl==
+== min_visible_ttl ==
 
 min_visible_ttl: The minimum value that we will will show as the TTL 
 (time to live) value for a resource record to other DNS servers and 
@@ -528,7 +528,7 @@ As an aside, RFC1123 section 6.1.2.1 implies that zero-length TTL
 records should be passed on with a TTL of zero. This, unfortunately, 
 breaks some stub resolvers (such as Mozilla's stub resolver). 
 
-==remote_admin==
+== remote_admin ==
 
 remote_admin: Whether we allow verbose_level to be changed after 
 MaraDNS is started. 
@@ -543,7 +543,7 @@ This is useful when wishing to temporarily increase the verbose_level
 to find out why a given host name is not resolving, then decreasing 
 verbose_level so as to minimize the size of MaraDNS' log. 
 
-==synth_soa_origin==
+== synth_soa_origin ==
 
 When a CSV2 zone file doesn't have a SOA record in it, MaraDNS 
 generates a SOA record on the fly. This variable determines the host 
@@ -559,7 +559,7 @@ synth_soa_origin = "ns1.example.com"
 If this is not set, a synthetic SOA record will use the name of 
 the zone for the SOA origin (MNAME) field.
 
-==synth_soa_serial==
+== synth_soa_serial ==
 
 This determines whether we strictly follow RFC1912 section 2.2 with SOA 
 serial numbers. If this is set to 1 (the default value), we do not 
@@ -584,7 +584,7 @@ updated zone files not being seen by slave DNS servers.
 Note that synth_soa_serial can only have a value of 1 on the native 
 Windows port. 
 
-==tcp_convert_acl==
+== tcp_convert_acl ==
 
 This only applies to the zoneserver (general DNS-over-TCP) program. 
 
@@ -601,7 +601,7 @@ TCP client is on the recursive_acl list. Since MaraDNS 2.0 does not
 have recursion, the maradns daemon ignores the RD bit (Deadwood will 
 not process any queries without the RD bit set). 
 
-==tcp_convert_server==
+== tcp_convert_server ==
 
 This only applies to the zoneserver (general DNS-over-TCP) program. 
 
@@ -609,7 +609,7 @@ This is the UDP server which we send a query to when converting DNS TCP
 queries in to DNS UDP servers. Note that, while this value allows 
 multiple IPs, all values except the first one are presently ignored. 
 
-==timestamp_type==
+== timestamp_type ==
 
 timestamp_type: The type of timestamp to display. The main purpose of 
 this option is to suppress the output of timestamps. Since duende uses 
@@ -643,7 +643,7 @@ maradns is invoked with the duende tool).
 
 The default value for this variable is 5. 
 
-==verbose_level==
+== verbose_level ==
 
 verbose_level: The number of messages we log to stdout 
 
@@ -662,7 +662,7 @@ errors
 
 The default value for this variable is 1. 
 
-==zone_transfer_acl==
+== zone_transfer_acl ==
 
 zone_transfer_acl: List of ips allowed to perform zone transfers with 
 the zone server 
@@ -670,7 +670,7 @@ the zone server
 The format of this string is identical to the format of an ipv4_alias 
 entry. 
 
-===EXAMPLE MARARC FILE===
+=== EXAMPLE MARARC FILE ===
 
 # Example mararc file (unabridged version) 
  
@@ -736,7 +736,7 @@ verbose_level = 1
 # by the "zoneserver" program. 
 #zone_transfer_acl = "10.1.1.1/24, 10.100.100.100/255.255.255.224"
 
-===BUGS===
+=== BUGS ===
 
 If one should declare the same the same index twice with a dictionary 
 variable, MaraDNS will exit with a fatal error. This is because earlier 
@@ -744,7 +744,7 @@ versions of MaraDNS acted in a different manner than Python 2.3.3. With
 Python 2.3.3, the last declaration is used, while MaraDNS used to use 
 the first declaration. 
 
-===LEGAL DISCLAIMER===
+=== LEGAL DISCLAIMER ===
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 

@@ -1,6 +1,6 @@
 MaraDNS coding style    
 
-===MaraDNS' coding style===
+=== MaraDNS' coding style ===
 
 MaraDNS is a divergent body of code that has been developed, in some 
 form or other, for nearly a decade. While some changes have been made 
@@ -19,7 +19,7 @@ not name any such fork "MaraDNS".
 
 So, without further ado: 
 
-==All indexed writes must be protected against overflows==
+== All indexed writes must be protected against overflows ==
 
 In other words, all code that writes to arrays must be checked, before 
 a write is made, to verify that the write in question is within the 
@@ -45,7 +45,7 @@ it must be revised to look like this:
 		limit--; 
 	}
 
-==All arrays must be at least one byte bigger than they should be==
+== All arrays must be at least one byte bigger than they should be ==
 
 All arrays must be at least one byte bigger than they should be, and 
 should ideally be about three bytes bigger than they should be. In 
@@ -61,7 +61,7 @@ is why OpenBSD had a remote code execution exploit with its FTP daemon.
 In MaraDNS' code, there was once a potential buffer overflow that was 
 only stopped because I always have these cushions at the end of arrays. 
 
-==No old MaraDNS configuration file should be broken==
+== No old MaraDNS configuration file should be broken ==
 
 Unless there is a compelling reason to do so, no changes that break or 
 change how an old mararc file or zone file is parsed should be done. 
@@ -117,7 +117,7 @@ will be unable to be both a recursive and authoritative DNS server.
 This is why I will continue to support MaraDNS 1.4 for the foreseeable 
 future even though MaraDNS 2.0 has been released. 
 
-==Brace and tab style==
+== Brace and tab style ==
 
 MaraDNS' tabbing and brace style has changed over the years. The 
 current style is to not have tabs in the code at all; a script converts 
@@ -138,7 +138,7 @@ int main() {
 	} 
 }
 
-==Licensing and copyright issues==
+== Licensing and copyright issues ==
 
 Contributions made to MaraDNS can not be accepted unless you are 
 willing to license your contributions under the conditions of MaraDNS' 
@@ -161,7 +161,7 @@ met:
 
   This software is provided 'as is' with no guarantees of 
 correctness or fitness for purpose. 
-==Contributed code must not break anything in MaraDNS==
+== Contributed code must not break anything in MaraDNS ==
 
 Any contributed code, before it is accepted, must not break anything in 
 MaraDNS. This means the following: 
@@ -175,7 +175,7 @@ MaraDNS. This means the following:
   MaraDNS. Next, enter the sqa/regressions directory. Next, become 
   root. Finally sh ./do.tests
 
-==Finally, thank you for your interest in MaraDNS==
+== Finally, thank you for your interest in MaraDNS ==
 
 Finally, I would like to thank you for your interest in MaraDNS, and 
 really appreciate the time you take to make patches for it. I hope 

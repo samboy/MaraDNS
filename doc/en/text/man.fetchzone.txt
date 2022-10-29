@@ -1,17 +1,17 @@
-===NAME===
+=== NAME ===
 
 fetchzone - get dns zone from server 
 
-===DESCRIPTION===
+=== DESCRIPTION ===
 
 fetchzone transfers a user-specified dns zone from a zone server and 
 displays it in csv2 format on the standard output. 
 
-===USAGE===
+=== USAGE ===
 
 fetchzone zone_name zone_server_IP [query_class] 
 
-===OPTIONS===
+=== OPTIONS ===
 
 zone_name 
 
@@ -26,7 +26,7 @@ query_class
 Optional argument which can change the query class from 1 (the default) 
 to 255. This may be needed for some versions of Bind. 
 
-===EXAMPLES===
+=== EXAMPLES ===
 
 To obtain the zone example.com from the server 192.168.9.8:
 
@@ -37,18 +37,18 @@ class of 255:
 
 fetchzone example.com 10.9.8.78 255
 
-===BUGS===
+=== BUGS ===
 
 Fetchzone will not correctly output host names with utf-8 characters in 
 them. 
 
-===SEE ALSO===
+=== SEE ALSO ===
 
 The man pages maradns(8) and csv2(5) 
 
 http://www.maradns.org 
 
-===LEGAL DISCLAIMER===
+=== LEGAL DISCLAIMER ===
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -62,7 +62,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
 
-===AUTHOR===
+=== AUTHOR ===
 
 Sam Trenholme  
 

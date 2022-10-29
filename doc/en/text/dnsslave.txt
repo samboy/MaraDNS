@@ -7,7 +7,7 @@ the "master" and "slave" terminology, and since the relevant DNS RFCs
 MaraDNS is based on use the words "master" and "slave", this document 
 uses that wording. 
 
-===Having MaraDNS be a slave DNS server===
+=== Having MaraDNS be a slave DNS server ===
 
 MaraDNS does not have direct support for being a slave DNS server. 
 However, MaraDNS can transfer zone files from other servers by using 
@@ -23,7 +23,7 @@ from the server with the IP 10.5.6.7, placing the output in the file
 
 fetchzone example.com 10.5.6.7 > db.example.com
 
-==Automating this with a shell script==
+== Automating this with a shell script ==
 
 If one wishes to use fetchzone to grab a number of zones, this can be 
 automated with a shell script:
@@ -105,7 +105,7 @@ zone files.
 More complicated scripting, such as checking the serial number before 
 loading a given zone, is left as an exercise for the reader. 
 
-==Bailiwick==
+== Bailiwick ==
 
 For security reasons, the fetchzone client only allows records that end 
 in the zone name to be in a given zone. In other words, let us suppose 
