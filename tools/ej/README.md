@@ -174,10 +174,10 @@ NOFMT: This is a special tag used to indicate to not attempt to make
 
 # HTML entities
 
-HTML entity support is limited and buggy.  In theory, `&lt;`, `&gt;`,
-and `&amp;` should be kept as is in PRE blocks and otherwise converted
+HTML entity support is here, with limitations.  In theory, `&lt;`, `&gt;`,
+and `&amp;` will be kept as is in PRE blocks and otherwise converted
 in to the appropriate character.  In practice, HTML entities should be
-used very sparingly; they need to always be surrounded by white space
+used very sparingly and should always be surrounded by white space
 to work correctly.
 
 # Status
@@ -186,3 +186,48 @@ The EJ tools are *not* a general purpose text formatting language.
 They are a convenient way for me to generate HTML pages, man pages,
 and text documents from one source of truth.  In particular, there
 are a lot of corner cases the EJ tools do not handle well.
+
+# Why not Docbook?
+
+The reason why this is used instead of something like docbook is 
+because it’s a simple language which can be easily changed should the
+MaraDNS documentation need to add another formatting feature for its
+documents.  For example, the MaraDNS documents have a single 3-column
+table in them, so the TABLE document is here to support that one
+single table.
+
+Another reason to use these tools instead of, say, docbook is because
+MaraDNS’s documentation does not need to adapt to a moving target to
+render correctly.  To quote [one anti-Docbook rant](https://undeadly.org/cgi?action=article&sid=20190419101505),
+“DocBook 4.5 documents almost certainly misformat or even abort
+formatting with fatal parsing errors with a DocBook 5.1 formatter”.  
+Since MaraDNS is an open source project being developed part time,
+it is a waste of limited open source resources to revise all of the
+documents every time the docbook format is revised.  When I wrote the
+original version of the EJ tools, in 2002, Docbook was working on
+version 4.2 of their specification.  As I type this, Docbook is at 
+version 5.1, which is *not* compatible with the Docbook 4.2 which 
+existed when I wrote the initial version of the EJ documents.
+
+Here in the 2020s, the EJ documents render the same way they rendered
+back in 2002.  By keeping the document rendering pipeline completely
+in house, using *only* tools included with MaraDNS to render them,
+the documents can last a long time without needing maintenance when 
+the underlying file format used changes.
+
+This is also why the EJ tools have been, for the 2020s, rewritten in Lua
+5.1 (a version of which is now included with MaraDNS) instead of using
+Perl.  This way, there’s one less moving target for MaraDNS to need
+to keep up with.  To Perl’s credit, since the Perl6 project somewhat
+sputtered, the Perl scripts I was using to process EJ documents in 2002
+run in 2022 without issue.  It’s Python which broke compatibility
+and required scripts to be rewritten, and while Perl is not Python,
+the entire experience of having to revise MaraDNS’s one Python script
+in 2019 because of the deprecation of Python2 has left a bad taste in
+my mouth. 
+
+MaraDNS is, with the exception of one Python script, a setup which
+only needs a POSIX system, a POSIX-compatible `make` (I am glad I 
+ignored the users who asked me to use Autoconf, since that is a 
+very unstable moving target), and a C compiler (both GCC and Clang work)
+with 8/16/32/64 bit sized int support to run.
