@@ -101,7 +101,7 @@ content_type=mc('content%-type')
 text_html=mc('text/html')
 charset_utf8=mc('charset=utf%-8')
 bodyflags=mc('bodyflags')
-include=mc('include')
+include=mc('h?include')
 
 l = io.read()
 state = "INIT"
@@ -155,9 +155,11 @@ while l do
 
     -- Process the <include "filename"> tag.  Note that includes
     -- can not be nested.
-    if l:find(mc('<include%s+"')) and not inInclude then
-      includeFileName=l:gsub(mc('.*<include%s+"([^"]+)".*'),"%1")
-      l=l:gsub(mc('<include%s+"([^"]+)"%s*>'),"")
+    -- <hinclude "filename"> is also supported as per the old Perl script 
+    -- but not used
+    if l:find(mc('<h?include%s+"')) and not inInclude then
+      includeFileName=l:gsub(mc('.*<h?include%s+"([^"]+)".*'),"%1")
+      l=l:gsub(mc('<h?include%s+"([^"]+)"%s*>'),"")
       fh = io.open(includeFileName,"rb")
       if not fh then
         print("Error opening file " .. includeFileName)
