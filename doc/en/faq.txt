@@ -1,6 +1,4 @@
-MaraDNS FAQ bgcolor="#FFFFCC" 
-text="#660000" link=#888888 vlink=#888888     
-Back to main page
+==== MaraDNS FAQ ====  Back to main page
 
 === FREQUENTLY ASKED QUESTIONS ===
 

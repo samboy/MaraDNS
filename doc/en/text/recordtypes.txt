@@ -1,4 +1,4 @@
-DNS record types    
+==== DNS record types ====
 
 === DNS record types ===
 

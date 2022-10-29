@@ -1,4 +1,5 @@
-Resolving dangling CNAME records     
+==== Resolving dangling CNAME records ====
+
 This document is for people who are getting a "dangling CNAME" warning, 
 or who wish to have CNAME records that point to records served by other 
 DNS servers. 

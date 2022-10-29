@@ -1,4 +1,4 @@
-Updating MaraDNS     
+==== Updating MaraDNS ====
 
 === Table of contents ===
 

@@ -1,4 +1,4 @@
-Running MaraDNS as a Windows NT/2000/XP service
+==== Running MaraDNS as a Windows NT/2000/XP service ====
 
 === Running MaraDNS as a Windows NT/2000/XP service ===
 

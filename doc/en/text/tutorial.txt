@@ -1,4 +1,4 @@
-MaraDNS tutorial    
+==== MaraDNS tutorial ====
 
 === MaraDNS tutorials and usage guides ===
 

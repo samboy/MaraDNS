@@ -1,4 +1,4 @@
-DNS over TCP     
+==== DNS over TCP ====
 
 === DNS over TCP ===
 

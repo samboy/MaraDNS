@@ -1,4 +1,4 @@
-MaraDNS coding style    
+==== MaraDNS coding style ====
 
 === MaraDNS' coding style ===
 

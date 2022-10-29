@@ -1,4 +1,4 @@
-DNS glossary    
+==== DNS glossary ====
 
 === DNS glossary ===
 

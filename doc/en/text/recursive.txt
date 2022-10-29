@@ -1,4 +1,4 @@
-Recursive DNS serving    
+==== Recursive DNS serving ====
 
 === Using Deadwood as a recursive DNS server ===
 

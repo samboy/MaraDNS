@@ -1,6 +1,7 @@
-MaraDNS Quick Start guide    This 
-guide is for experienced UNIX/Linux/BSD users who just want to quickly 
-try out MaraDNS 
+==== MaraDNS Quick Start guide ====
+
+This guide is for experienced UNIX/Linux/BSD users who just want to 
+quickly try out MaraDNS 
 
 MaraDNS acts as an authoritative DNS server. Recursion is handled by 
 the included "Deadwood" program. 

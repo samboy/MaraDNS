@@ -1,4 +1,4 @@
-Authoritative DNS serving    
+==== Authoritative DNS serving ====
 
 === Using MaraDNS as an authoritative DNS server ===
 
