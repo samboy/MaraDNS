@@ -1,13 +1,15 @@
 all: maradns.8 mararc.5 askmara.1 getzone.1 zoneserver.8 csv1.5 duende.8 \
-	csv2.5 csv2_txt.5 fetchzone.1 mqhash.1 bind2csv2.1
+	csv2.5 csv2_txt.5 fetchzone.1 mqhash.1 bind2csv2.1 Deadwood.1
 
 ps: maradns.ps mararc.ps askmara.ps getzone.ps zoneserver.ps csv1.ps
 
 clean:
 	rm -f maradns.8 mararc.5 askmara.1 getzone.1 zoneserver.8 csv1.5 \
 	maradns.ps mararc.ps askmara.ps getzone.ps zoneserver.ps csv1.ps \
-	csv2.5 csv2_txt.5 bind2csv2.1
+	csv2.5 csv2_txt.5 bind2csv2.1 Deadwood.1
 
+Deadwood.1: ../source/Deadwood.ej
+	../../../tools/ej/ej2man ../source/Deadwood.ej > Deadwood.1
 duende.8: ../source/duende.ej 
 	../../../tools/ej/ej2man ../source/duende.ej > duende.8
 
