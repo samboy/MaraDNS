@@ -183,6 +183,7 @@ l = io.read()
 inPre = false
 while l do
 
+  l = l:gsub(mc('<hinclude[^>]*>[ \t]*'),"") -- HINCLUDE used only by ej2html
   -- handle <include "filename"> (doesn’t nest)
   if l:find(mc('<include%s+"')) and not inInclude then
     includeFileName=l:gsub(mc('.*<include%s+"([^"]+)".*'),"%1")
