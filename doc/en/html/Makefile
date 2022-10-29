@@ -1,7 +1,7 @@
 all: tutorial.html \
      authoritative.html compile.html convert.html recursive.html \
      glossary.html recordtypes.html dangling.html default_zonefile.html \
-     dnstcp.html man.duende.html dnsmaster.html man.csv2_html.html \
+     dnstcp.html man.duende.html dnsmaster.html man.csv2_txt.html \
      man.csv2.html dnsslave.html update.html man.askmara.html \
      man.fetchzone.html man.zoneserver.html man.maradns.html \
      man.mararc.html quick_start.html dnsintro.html \
@@ -34,8 +34,8 @@ man.csv1.html: ../source/csv1.ej
 man.csv2.html: ../source/csv2.ej
 	../../../tools/ej/ej2html ../source/csv2.ej > man.csv2.html
 
-man.csv2_html.html: ../source/csv2.ej
-	../../../tools/ej/ej2html ../source/csv2_html.ej > man.csv2_html.html
+man.csv2_txt.html: ../source/csv2.ej
+	../../../tools/ej/ej2html ../source/csv2_txt.ej > man.csv2_txt.html
 
 man.duende.html: ../source/duende.ej
 	../../../tools/ej/ej2html ../source/duende.ej > man.duende.html
