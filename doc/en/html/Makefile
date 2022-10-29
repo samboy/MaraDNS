@@ -5,7 +5,7 @@ all: tutorial.html \
      man.csv2.html dnsslave.html update.html man.askmara.html \
      man.fetchzone.html man.zoneserver.html man.maradns.html \
      man.mararc.html quick_start.html dnsintro.html \
-     win_service.html troubleshoot.html bind2csv2.html coding_style.html \
+     win_service.html troubleshoot.html coding_style.html \
      man.csv1.html
 
 clean:
@@ -97,9 +97,6 @@ quick_start.html: ../source/quick_start.ej
 
 win_service.html: ../source/win_service.ej
 	../../../tools/ej/ej2html ../source/win_service.ej > win_service.html
-
-bind2csv2.html: ../source/bind2csv2.ej
-	../../../tools/ej/ej2html ../source/bind2csv2.ej > bind2csv2.html
 
 troubleshoot.html: ../source/troubleshoot.ej
 	../../../tools/ej/ej2html ../source/troubleshoot.ej > troubleshoot.html

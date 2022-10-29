@@ -5,7 +5,7 @@ all: tutorial.txt \
      man.csv2.txt dnsslave.txt update.txt man.askmara.txt \
      man.fetchzone.txt man.zoneserver.txt man.maradns.txt \
      man.mararc.txt quick_start.txt dnsintro.txt \
-     win_service.txt troubleshoot.txt bind2csv2.txt coding_style.txt \
+     win_service.txt troubleshoot.txt coding_style.txt \
      man.csv1.txt
 
 clean:
@@ -97,9 +97,6 @@ quick_start.txt: ../source/quick_start.ej
 
 win_service.txt: ../source/win_service.ej
 	../../../tools/ej/ej2txt ../source/win_service.ej > win_service.txt
-
-bind2csv2.txt: ../source/bind2csv2.ej
-	../../../tools/ej/ej2txt ../source/bind2csv2.ej > bind2csv2.txt
 
 troubleshoot.txt: ../source/troubleshoot.ej
 	../../../tools/ej/ej2txt ../source/troubleshoot.ej > troubleshoot.txt
