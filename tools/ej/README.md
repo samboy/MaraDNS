@@ -77,13 +77,12 @@ is responsible for this example document.
 
 # Using EJ
 
-EJ is an XML-like format (without a DTD, alas) which has the following 
-tags.
+EJ is a HTML-like format which has the following tags.
 
 Comments:
 
 Comments begin with `<!--` and end with `-->`; these comments are removed
-before an ej document is translated.  
+before an ej document is converted.  
 
 Tags to put in the header of the document:
 
@@ -172,3 +171,17 @@ NOFMT: This is a special tag used to indicate to not attempt to make
        width).  This tag must be placed in the head section of the
        document.
 
+# HTML entities
+
+HTML entity support is limited and buggy.  In theory, `&lt;`, `&gt;`,
+and `&amp;` should be kept as is in PRE blocks and otherwise converted
+in to the appropriate character.  In practice, HTML entities should be
+used very sparingly; they need to always be surrounded by white space
+to work correctly.
+
+# Status
+
+The EJ tools are *not* a general purpose text formatting language.
+They are a convenient way for me to generate HTML pages, man pages,
+and text documents from one source of truth.  In particular, there
+are a lot of corner cases the EJ tools do not handle well.
