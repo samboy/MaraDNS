@@ -1,7 +1,5 @@
 ==== MaraDNS FAQ ====
 
-Back to main page
-
 === FREQUENTLY ASKED QUESTIONS ===
 
 == INDEX ==
