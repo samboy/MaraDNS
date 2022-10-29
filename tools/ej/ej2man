@@ -346,7 +346,7 @@ out=out:gsub(mc("<i>([^<]*)</i>%s*"),'\n.I "%1"\n')
 -- The P tag
 out=out:gsub(mc("<p>%s*"),'\n.PP\n')
 
-out=out:gsub("<[DdUu]l>","") -- DL and UL tags removed
+out=out:gsub("<[DdUu][Ll]>","") -- DL and UL tags removed
 out=out:gsub(mc("<li>\n?"),'\n.TP 2\n*\n') -- The LI tag
 out=out:gsub(mc("<dt>([^<]*)<dd>\n?"),'\n' .. DTROFF .. '\n%1\n') -- DT tag
 out=out:gsub("</[Dd][TtDd]>","") -- Remove closing DT and DD tags
