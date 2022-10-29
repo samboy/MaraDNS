@@ -223,10 +223,16 @@ lastEnd = 1
 while start do
   local top = ""
   if lastEnd > 1 then top = out:sub(1,lastEnd-1) end
+  -- Extract the part of the document we will alter
   local toAlter = out:sub(lastEnd,start + 4)
   local initial = toAlter:len()
+
+  -- Get rid of multiple spaces; nroff (unlike EJ) honors them
   toAlter = toAlter:gsub("%s+"," ")
   toAlter = toAlter:gsub("\n(%s*)\n","\n")
+
+  -- Now that we have collapsed whitespace in a non-PRE block
+  -- stitch that altered block with the rest of the document again
   local offset = toAlter:len() - initial
   local preend = out:find(mc("</pre>"),start + 1)
   local mid = out:sub(start + 5,preend - 1)
@@ -234,11 +240,13 @@ while start do
   mid = mid:gsub(">","\193") -- Allow HTML in PRE, 193 never in valid UTF-8
   local tail = out:sub(preend)
   out = top .. toAlter .. mid .. tail
+  -- Now, see if there’s another PRE block
   lastEnd = preend + offset
   start = out:find(mc("<pre>"),preend + offset)
 end
 local top = out:sub(1,lastEnd)
 local tail = out:sub(lastEnd + 1)
+-- We need to alter the document after the final PRE block
 tail = tail:gsub("%s+"," ")
 tail = tail:gsub("\n(%s*)\n","\n")
 out = top .. tail
@@ -350,7 +358,6 @@ out=out:gsub("(\n%.RE[^\n]+\n)\n+","%1")
 out=out:gsub("(\n%.in)","\n%1")
 -- Get rid of empty lines after a .TP or .PP flag; this never looks nice
 out=out:gsub("(\n%,[TP]P[^\n]+\n)\n+","%1")
--- Get rid of multiple spaces; nroff (unlike EJ) honors them
 -- Tables, used by csv1.ej
 out=out:gsub(mc("<table>"),'\n.ta +8 +8 +8\n')
 out=out:gsub(mc("<td>"),'\t')
