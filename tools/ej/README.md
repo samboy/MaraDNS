@@ -122,13 +122,14 @@ UL: Start a bulleted list; terminated by /UL
 LI: Bulleted list item.  Please minimize tag use in bulleted lists,
     using only B and I tags.
 
-OL: Rendered as a bulleted list with ej2txt.  Should not be used
-    with ej2man.
+OL: Rendered as a bulleted list with ej2txt and ej2man.  Rendered as
+    numbered lists with ej2html.
 
 PRE: Unformatted text follows; this tag is terminated by /PRE
      Note that HTML tags are shown as is in PRE blocks; unlike HTML,
      tags have no meta-significance in a PRE block but are instead 
      shown as the raw tag.  Likewise, < and > can be in PRE blocks.
+     PRE tags should be put on a line by themselves.
 
 INCLUDE "filename": Embed the listed filename as the next section of the doc
 

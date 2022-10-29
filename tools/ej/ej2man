@@ -346,11 +346,11 @@ out=out:gsub(mc("<i>([^<]*)</i>%s*"),'\n.I "%1"\n')
 -- The P tag
 out=out:gsub(mc("<p>%s*"),'\n.PP\n')
 
-out=out:gsub("<[DdUu][Ll]>","") -- DL and UL tags removed
+out=out:gsub("<[DdOoUu][Ll]>","") -- DL, OL, and UL tags removed
 out=out:gsub(mc("<li>\n?"),'\n.TP 2\n*\n') -- The LI tag
 out=out:gsub(mc("<dt>([^<]*)<dd>\n?"),'\n' .. DTROFF .. '\n%1\n') -- DT tag
 out=out:gsub("</[Dd][TtDd]>","") -- Remove closing DT and DD tags
-out=out:gsub("</[DdUu][Ll]>",'\n.PP\n') -- /UL and /DL not ignored
+out=out:gsub("</[DdOoUu][Ll]>",'\n.PP\n') -- /UL, /OL, and /DL not ignored
 out=out:gsub("\n+(\n%.[TP]P)","%1") -- Zap empty lines before .TP or .PP roff
 out=out:gsub("(\n%.RE)","\n%1") -- Make RE tags look nice
 -- Get rid of empty lines after a .RE flag; this does not look nice
