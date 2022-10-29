@@ -1,5 +1,16 @@
 MaraDNS changelog
 
+   maradns-3.5.0025:
+   This is a stable release of MaraDNS:
+
+      * The ej2man, ej2txt, and ej2html tools have been rewritten in
+        Lua 5.1
+      * The old ej tools are now at https://github.com/samboy/MaraDNS-attic/
+      * bind2csv2.py now at https://github.com/samboy/MaraDNS-attic/
+      * All documents now render with the Lua EJ tools
+
+     (2022-??-??)
+
    maradns-3.5.0024: 
    This is a stable release of MaraDNS:
 
