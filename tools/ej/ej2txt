@@ -262,7 +262,7 @@ while matchPlace and matchPlace > 1 do
   matchPlace, matchEnd = out:find(mc("<li>[^<]*"),matchPlace + 1)
 end
 
-out = out:gsub(mc("</?ul>%s*"),"\n\n") -- Have space at top and bottom of lists
+out = out:gsub("</?[UuOo][Ll]>%s*","\n\n") -- Space at top and bottom of lists
 out = out:gsub(mc("<p%s*>%s*"),"\n\n") -- Paragraph is new line
 out = out:gsub(mc("<h1%s*>%s*"),"\n\n=== ") -- Level 1 headings start
 out = out:gsub(mc("<h2%s*>%s*"),"\n\n== ") -- Level 2 headings start
@@ -277,7 +277,7 @@ out=out:gsub('<[TtBb][Rr]>\n?','\n')
 -- HiBit, also used by csv1.ej
 out=out:gsub(mc('<hibit[^>]*>([^<]*)</hibit>'),"%1") -- HIBIT (2022)
 -- Blockquote, used by faq.embed.  Just ignore it
-out=out:gsub(mc("</?blockquote>%s*"),"\n")
+out=out:gsub(mc("</?blockquote>%s*"),"\n\n")
 
 -- fmt: Add line breaks to fit on an 80-column terminal
 -- Do not fmt pre sections, fmt everything else

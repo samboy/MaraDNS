@@ -42,7 +42,9 @@ to have full support for DNS over TCP.
 
 To make star record handling strictly RFC compliant, add the following 
 line to the mararc configuration file: 
+
 bind_star_handling = 1 
+
 To give MaraDNS full DNS-over-TCP support, follow the directions in the 
 dnstcp document.  
 

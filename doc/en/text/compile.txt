@@ -20,6 +20,7 @@ CentOS Linux version has.
 * Extract the MaraDNS tarball:
 
 bzip2 -cd maradns-*.tar.bz2 | tar xvf - 
+
 * Enter the directory that the above extraction generated.
 
 * Compile MaraDNS. Type in ./configure followed by make in the 
@@ -28,6 +29,7 @@ bzip2 -cd maradns-*.tar.bz2 | tar xvf -
 * Install the MaraDNS package. As root:
 
 make install 
+
 This will install both the binaries and the man pages for 'maradns', 
 'Deadwood' (MaraDNS 2.0's recursive DNS server), 'askmara', 'duende', 
 'fetchzone', and 'zoneserver'. In addition, this will (if the files are 

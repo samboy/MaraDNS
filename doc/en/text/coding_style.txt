@@ -143,13 +143,14 @@ int main() {
 Contributions made to MaraDNS can not be accepted unless you are 
 willing to license your contributions under the conditions of MaraDNS' 
 license, which is a BSD license as follows: 
+
 Copyright (c) 2002-2010 Sam Trenholme and others 
 
 TERMS 
 
 Redistribution and use in source and binary forms, with or without 
 modification, are permitted provided that the following conditions are 
-met:  
+met: 
 
 * Redistributions of source code must retain the above copyright 
   notice, this list of conditions and the following disclaimer.
@@ -159,8 +160,9 @@ met:
   the documentation and/or other materials provided with the 
   distribution.
 
-  This software is provided 'as is' with no guarantees of 
-correctness or fitness for purpose. 
+This software is provided 'as is' with no guarantees of correctness or 
+fitness for purpose. 
+
 == Contributed code must not break anything in MaraDNS ==
 
 Any contributed code, before it is accepted, must not break anything in 

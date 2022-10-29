@@ -27,7 +27,9 @@ older and newer MaraDNS releases.
 == Resource record format ==
 
 This zone file format has records in the following form: 
+
 name [+ttl] [rtype] rdata ~ 
+
 The name is the name of the record we will add, such as 
 "www.example.net.". This must be placed at the beginning of a line. The 
 rtype is the record type for the record, such as "A" (ipv4 IP address), 

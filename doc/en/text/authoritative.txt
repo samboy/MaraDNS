@@ -282,7 +282,9 @@ either set these up yourself (see below for an example), or use the
 askmara tutorial to find out the name servers for your domain. 
 
 To use the askmara tool, make an askmara query like this: 
+
 askmara Nexample.com. 127.0.0.1
+
 Replace example.com with the name of the domain to be registered, and 
 127.0.0.1 with the IP of the DNS server. The output of the query will 
 look something like this:
@@ -343,7 +345,9 @@ two or more routable IPs assigned to it, it is simple enough to have
 MaraDNS bind to these IPs. Change the variable ipv4_bind_addresses to 
 include all of the IPs one wishes MaraDNS to have, like the following 
 example: 
+
 ipv4_bind_addresses = "10.1.2.3, 10.5.6.7" 
+
 Naturally, replace "10.1.2.3" and "10.5.6.7" with the IPs your machine 
 has. 
 
@@ -385,6 +389,7 @@ On UNIX, BSD, and Linux machines in an office, this is done by adding a
 line like this to the file /etc/resolv.conf:
 
 search example.com
+
 In Windows XP, go to Control Panel -> Network Connections -> Local Area 
 Connection (or whatever connection the computer uses to get on the LAN) 
 -> Properties -> Internet Protocol (TCP/IP) (this is under "The 
@@ -395,7 +400,9 @@ Add and type in "example.com" (or whatever) as the Domain suffix.
 Once this is done, create a zone for example.com. Since we're just 
 giving three computers IPs, the zone file for example.com is added to 
 the mararc file with this line: 
+
 csv2["example.com."] = "db.example.com"
+
 We then place, in the directory pointed to by chroot_dir in the mararc 
 file, the file db.example.com, which looks like this:
 

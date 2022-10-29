@@ -49,7 +49,7 @@ CNAME records, MaraDNS can be configured thusly:
   authoritative half.
 
 This will cause dangling CNAME records to be fully resolved; here is 
-what the two MaraDNS servers do to resolve such a record:  
+what the two MaraDNS servers do to resolve such a record: 
 
 * A stub resolver asks 192.168.1.1 the IP address for, say 
   "google.example.com"
@@ -68,7 +68,7 @@ what the two MaraDNS servers do to resolve such a record:
   resolver that google.example.com is a CNAME for www.google.com, 
   and then give out the IP for www.google.com.
 
-  Here is an example dwood3rc file for 192.168.1.1:
+Here is an example dwood3rc file for 192.168.1.1:
 
 ipv4_bind_addresses = "192.168.1.1" 
 chroot_dir = "/etc/maradns" 

@@ -220,6 +220,7 @@ denial-of-service attack?
 60. Does MaraDNS support newer top level domains? 
 
 61. Can MaraDNS handle IDN domain names? 
+
 == ANSWERS ==
 
 == 1. I'm using an older version of MaraDNS ==
@@ -236,6 +237,7 @@ MaraDNS distribution.
 == 3. What license is MaraDNS released under? ==
 
 MaraDNS is released with the following two-clause BSD-type license: 
+
 Copyright (c) 2002-2016 Sam Trenholme and others 
 
 TERMS 
@@ -253,6 +255,7 @@ documentation and/or other materials provided with the distribution.
 
 This software is provided 'as is' with no guarantees of correctness or 
 fitness for purpose. 
+
 == 4. How do I report bugs in MaraDNS? ==
 
 Post your bug report as a Github issue.   
@@ -278,10 +281,14 @@ Reverse DNS (sometimes called "reverse mapping") is set up by using PTR
 (pointer) records. For example, the PTR record which performs the 
 reverse DNS lookup for the ip 10.2.3.4 looks like this in a CSV2 zone 
 file: 
+
 4.3.2.10.in-addr.arpa. PTR www.example.com.  
+
 It is also possible to use a special "FQDN4" which automatically sets 
 up the reverse mapping of a given record: 
+
 www.example.com. FQDN4 10.2.3.4  
+
 If you wish to have a PTR (reverse DNS lookup; getting a DNS name from 
 a numeric IP) record work on the internet at large, it is not a simple 
 matter of just adding a record like this to a MaraDNS zonefile. One 
@@ -489,7 +496,9 @@ amount of time, once the domain names are loaded in to memory.
 upstream_servers is only supported by Deadwood, and is no longer 
 supported in MaraDNS 2.0. The upstream_servers dwood3rc variable is set 
 thusly: 
+
 upstream_servers["."] = "10.3.28.79, 10.2.19.83" 
+
 Note the ["."]. 
 
 Note that the upstream_servers variable needs to be initialized before 
@@ -1024,7 +1033,9 @@ anything, nor have any other space-wasting features.
 I have changed MaraDNS' tagline from "MaraDNS: A security-aware DNS 
 server" to "MaraDNS: A small open-source DNS server" because MaraDNS 
 does not support DNSSEC. I have blogged about this: 
+
 http://samiam.org/blog/20120326.html 
+
 == How do you stop MaraDNS from taking part in a distributed 
 denial-of-service attack? ==
 

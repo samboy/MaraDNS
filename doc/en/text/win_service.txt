@@ -80,7 +80,7 @@ in bold face; substitute c:\maradns with the directory actually
 containing the above files. 
 
 At this point, here is what is needed to make MaraDNS a Windows 
-service:  
+service: 
 
 * Log in to Windows as a user with administrative privileges.
 
@@ -94,6 +94,7 @@ service:
 * In the command prompt window, type in the following command:
 
 instsrv MaraDNS c:\maradns\srvany.exe 
+
 * Open up the Windows registry editor. This can be done by selecting 
   "run" from the Windows start menu and running the command 
   "regedit". Note: Incorrect usage of the Windows registry editor 
@@ -182,11 +183,12 @@ maintenance", followed by "Administrator tools".
 
 .
 
- At this point, the MaraDNS service should be running. To verify 
-this, enter the c:\maradns directory from the cmd prompt (the commands 
-are "c:" followed by "cd c:\maradns"). Next, type in the following 
-command: 
+At this point, the MaraDNS service should be running. To verify this, 
+enter the c:\maradns directory from the cmd prompt (the commands are 
+"c:" followed by "cd c:\maradns"). Next, type in the following command: 
+
 askmara 1:www.example.com. 
+
 The output should look something like this:
 
 # Querying the server with the IP 127.0.0.1 

@@ -38,14 +38,20 @@ list the IPs of the slave DNS servers that will transfer zones from the
 master server. For example, if the slave DNS servers have the IPs 
 192.168.72.34, 10.34.56.98, and 172.17.23.37, the line will look like 
 this: 
+
 zone_transfer_acl = "192.168.72.34, 10.34.56.98, 172.17.23.37" 
+
 If you do not know the IPs of the slave DNS servers, you can allow any 
 computer on the internet to connect to your zone server thusly: 
+
 zone_transfer_acl = "0.0.0.0/0"
+
 Note that this will make potentially private information public. 
 
 Something like this can also be done: 
+
 zone_transfer_acl = "192.168.42.0/24, 10.0.0.0/8, 172.19.0.0/16" 
+
 This will allow any IP starting with "192.168.42" to connect to the 
 zone server, any IP starting with "10" to connect to the zone server, 
 and any IP starting with "172.19" to connect to the zone server. 
@@ -65,8 +71,10 @@ zone_transfer_acl = "192.168.72.34, 10.34.56.98, 172.17.23.37"
 The SOA record tells the slave zone servers how often to check to see 
 if a zone file needs to be reloaded. Here is what a SOA record looks 
 like: 
+
 example.com. SOA example.com. hostmaster@example.com. 1 7200 3600 
 604800 1800 
+
 The first field is the name of the zone this SOA record is for. 
 
 The second field tells the csv2 parser that this is a SOA record. 
