@@ -2,7 +2,7 @@ EJ (short for “Easy Journal”) is the document system that MaraDNS
 uses; this is in response to my translators asking for a single unified
 document format which can be converted in to the following three formats:
 
-* HTML documents
+* HTML documents (albeit with minimal styling)
 * Man pages
 * Plain text documents
 
@@ -67,6 +67,9 @@ UL: Start a bulleted list; terminated by /UL
 
 LI: Bulleted list item.  Please minimize tag use in bulleted lists,
     using only B and I tags.
+
+OL: Rendered as a bulleted list with ej2txt.  Should not be used
+    with ej2man.
 
 PRE: Unformatted text follows; this tag is terminated by /PRE
      Note that HTML tags are shown as is in PRE blocks; unlike HTML,
