@@ -1,6 +1,7 @@
-==== Files in the MaraDNS source directory ====  This document 
-describes each file or directory at the MaraDNS source top-level 
-directory.  
+==== Files in the MaraDNS source directory ====
+
+This document describes each file or directory at the MaraDNS source 
+top-level directory.  
 
 00README.FIRST Legal disclaimer and license 
 

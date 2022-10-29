@@ -1,4 +1,6 @@
-==== MaraDNS FAQ ====  Back to main page
+==== MaraDNS FAQ ====
+
+Back to main page
 
 === FREQUENTLY ASKED QUESTIONS ===
 
