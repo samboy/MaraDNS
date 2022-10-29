@@ -333,14 +333,14 @@ out=out:gsub(mc("</blockquote>"),'\n.RE\n.PP\n') -- BLOCKQUOTE close
 while out:find(mc("<b>([^<]*)[\'\"]([^<]*)</b>")) do
   out = out:gsub(mc("<b>([^<]*)[\'\"]([^<]*)</b>"),"<b>%1%2</b>")
 end
-out=out:gsub(mc("<b>([^<]*)</b>(%S+)"),'\n.BR "%1" "%2"\n')
+out=out:gsub(mc("<b>([^<]*)</b>([^%s\'\"]+)"),'\n.BR "%1" "%2"\n')
 out=out:gsub(mc("<b>([^<]*)</b>%s*"),'\n.B "%1"\n')
 
 -- The I tag
 while out:find(mc("<i>([^<]*)[\'\"]([^<]*)</i>")) do
   out = out:gsub(mc("<i>([^<]*)[\'\"]([^<]*)</i>"),"<i>%1%2</i>")
 end
-out=out:gsub(mc("<i>([^<]*)</i>(%S+)"),'\n.IR "%1" "%2"\n')
+out=out:gsub(mc("<i>([^<]*)</i>([^%s\"\']+)"),'\n.IR "%1" "%2"\n')
 out=out:gsub(mc("<i>([^<]*)</i>%s*"),'\n.I "%1"\n')
 
 -- The P tag
