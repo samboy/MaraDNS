@@ -1184,21 +1184,20 @@ I will include the source code of below:
 </ul>
 
 <pre>
-/*Placed in the public domain by Sam Trenholme*/
-#include &amp;lt;arpa/inet.h&amp;gt;
-#include &amp;lt;string.h&amp;gt;
-#include &amp;lt;stdint.h&amp;gt;
+#include &lt;arpa/inet.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdint.h&gt;
 #define Z struct sockaddr
 #define Y sizeof(d)
 int main(int a,char **b){uint32_t i;char q[512]
-,p[17]="\xc0\f\0\x01\0\x01\0\0\0\0\0\x04";if(a&amp;gt;
-1){struct sockaddr_in d;socklen_t f=511;bzero(&amp;amp;
+,p[17]="\xc0\f\0\x01\0\x01\0\0\0\0\0\x04";if(a&gt;
+1){struct sockaddr_in d;socklen_t f=511;bzero(&amp;
 d,Y);a=socket(AF_INET,SOCK_DGRAM,0);*((uint32_t
 *)(p+12))=inet_addr(b[1]);d.sin_family=AF_INET;
-d.sin_port=htons(53);bind(a,(Z*)&amp;amp;d,Y);for(;;){i
-=recvfrom(a,q,255,0,(Z*)&amp;amp;d,&amp;amp;f);if(i&amp;gt;9&amp;amp;&amp;amp;q[2]&amp;gt;=0)
+d.sin_port=htons(53);bind(a,(Z*)&amp;d,Y);for(;;){i
+=recvfrom(a,q,255,0,(Z*)&amp;d,&amp;f);if(i&gt;9&amp;&amp;q[2]&gt;=0)
 {q[2]|=128;q[11]?q[3]|=4:1;q[7]++;memcpy(q+i,p,
-16);sendto(a,q,i+16,0,(Z*)&amp;amp;d,Y);}}}return 0;}
+16);sendto(a,q,i+16,0,(Z*)&amp;d,Y);}}}return 0;}
 </pre>
 
 NanoDNS takes one argument: The IP we return. This program binds to all 
