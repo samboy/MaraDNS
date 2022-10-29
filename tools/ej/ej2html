@@ -11,15 +11,16 @@ elif command -v lua-5.1 >/dev/null 2>&1 ; then
   LUNACY=lua-5.1
 elif command -v lunacy >/dev/null 2>&1 ; then
   LUNACY=lunacy
-elif command -v lua >/dev/null 2>&1 ; then
-  # This may or may not work, depending on how much
-  # Lua deviates from Lua 5.1
-  LUNACY=lua
 fi
 if [ -z "$LUNACY" ] ; then
   echo Please install Lunacy or Lua 5.1
   echo Either the version included with MaraDNS -or- the version at
   echo https://github.com/samboy/lunacy
+  echo To compile and install the version of Lunacy with MaraDNS:
+  echo
+  echo     cd MaraDNS/coLunacyDNS/lunacy
+  echo     make
+  echo     sudo cp lunacy /usr/local/bin/
   exit 1
 fi
 
