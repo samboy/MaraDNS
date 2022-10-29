@@ -20,6 +20,61 @@ MaraDNS includes a full fork of Lua5.1 called `lunacy`, to compile it,
 enter the `coLunacyDNS/lunacy` directory, use `make` to compile `lunacy`,
 then, as root `cp lunacy /usr/local/bin`.
 
+# An example EJ document
+
+To get an overview of how EJ works, here’s an example EJ document:
+
+```
+<HEAD>
+<TH>EXAMPLE 1 "October 2022" EXAMPLE "Example reference"</TH>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<!-- This is a multi-line comment.
+     This is a second line in the comment. -->
+</HEAD>
+<BODY>
+
+<H1>NAME</H1>
+Example - An example EJ document
+
+<H1>DESCRIPTION</H1>
+
+This is an example document showing the general format of EJ documents.
+
+<P>
+
+This is a second paragraph.
+
+<p>
+
+Here are some angled brackets: &lt; &gt;
+
+<PRE>
+-- Here is a preformatted block of text
+-- Tags like <THIS> are passed as-is.  As is &lt;
+for a=1,10 do
+    print(a)
+end
+</PRE>
+
+<UL>
+<LI>This is a bullet item
+
+<LI>As is this
+</UL>
+
+<B>This is some bold text</B>
+<p>
+<I>This is some italic text</I>
+<p>
+
+<h1>LICENSE</h1>
+This example document is public domain.
+
+<h1>AUTHOR</h1>
+Sam Trenholme (<A href=https://www.samiam.org/>https://www.samiam.org</a>)
+is responsible for this example document.
+```
+
 # Using EJ
 
 EJ is an XML-like format (without a DTD, alas) which has the following 
