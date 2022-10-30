@@ -21,57 +21,6 @@ and
 [SourceHut](https://git.sr.ht/~samiam/MaraDNS)
 (Please use GitHub for bug reports).  
 
-# 2022 Updates
-
-MaraDNS was updated in 2022 to have its automated tests run in an Ubuntu
-22.04 Docker container instead of an Ubuntu 20.04 Docker container.
-The tests have also been updated to be more portable, running in both
-Alpine Linux (Busybox-based Linux distro) and Ubuntu 22.04.
-
-I also fixed a minor security issue, which also affected other DNS servers,
-where a clever attacker with access to the recurisve DNS server could had
-kept records in the cache longer than desired.
-
-`min_ttl` now correctly sets a minimum TTL for direct answers to queries.
-I have backported the `min_ttl` parameter to the older legacy 3.4 version
-of MaraDNS.
-
-While using Deadwood as a fully recursive server is not guaranteed to
-be fully supported, I have fixed a long standing bug with how Deadwood
-handled certain CNAME chains, and have added tests to make sure this
-bug stays fixed.
-
-# 2021 Updates
-
-Deadwood has a new parameter: `source_ip4`.  This optional parameter
-is used to specify the source IP when sending queries upstream.  The
-majority of users should be able to leave this untouched; this is for
-cases when Deadwood is multi-homed and we need to specify which IP
-to use when querying root or upstream DNS servers.
-
-One line change to zoneserver.c to make it work better with systemd.
-
-Synthetic IP generator example added to `coLunacyDNS`
-
-# 2020 Updates
-
-I have updated things so that the Git version of MaraDNS is the 
-authoritative “One source of truth” for MaraDNS’s source code.
-The Git code is, every time a new MaraDNS release is made,
-converted in to tarballs (with full Git history) which can be
-downloaded at [Sourceforge](https://sourceforge.net/projects/maradns/)
-and [MaraDNS’s web page](https://maradns.samiam.org/download.html).
-
-I have added block list support to Deadwood, to allow a large list
-of host names to be blocked.
-
-I have created a new service: `coLunacyDNS`, a simple Lua-based DNS server
-which can return IPv4 (`A`) and IPv6 (`AAAA`) DNS records.  It has the
-ability to query other DNS servers, and customize the answer given to
-the client based on the contents of a Lua script.  All programs have IPv6
-support in Linux as well as *NIX clones, and the Windows 32-bit binary of
-`coLunacyDNS` has IPv6 support.
-
 # ABOUT
 
 MaraDNS is a small and lightweight cross-platform open-source DNS
@@ -82,69 +31,76 @@ a BSD license.
 I wrote MaraDNS while I was a college student and a travelling English
 teacher during the first 2000s decade. 
 
-Since being furloughed during the COVID-19 pandemic, I have been actively
-adding new features to MaraDNS, most notably the new `coLunacyDNS`
-service which uses Lua to customize DNS replies.
+Since the COVID-19 pandemic, I have been actively adding new features
+to MaraDNS, most notably the new `coLunacyDNS` service which uses Lua
+to customize DNS replies.
 
 Versions of some MaraDNS programs compiled as Windows binaries
 (without needing Cygwin or another POSIX emulation library) are
-in the folder maradns-win32/
+in the folder `maradns-win32/`
 
-## Table of contents
+# Building MaraDNS
 
-* Supported OSes
-* Important note for Windows users
-* What is DNS
-* MaraDNS' History
-* Overview
-* Internals
-* Other DNS servers
-* MaraDNS' future
+To build MaraDNS, one needs a POSIX system with:
+
+* A POSIX compatible shell
+* A POSIX compatible implementation of `make`
+* Other standard POSIX utilities (`awk`, etc.)
+* A C99 C compiler which can support, via `stdint`, 8-bit, 16-bit, 32-bit,
+  and 64-bit sized integers.
+* A POSIX C library with both POSIX and Berkeley socket support.
+
+All of these are very standard tools which are included with the vast
+majority of Linux distributions; packages usually have names like:
+
+* `clang` (which uses `llvm`) for the C compiler
+* `libc-dev` for the development C standard library, which will have sockets
+* `make` for make; if one does not wish to use GNU make (the Linux standard),
+  other make implementations exist, e.g. https://github.com/samboy/maramake
+* POSIX compatible implementations of `sh`, `awk`, and other utilities are
+  also almost always included as part of a Linux base install.
 
 ## Supported OSes
 
-   There are no “supported OSes” for MaraDNS.  I currently use Ubuntu 22.04
-   to develop MaraDNS, and a Windows XP virtual machine to make the
-   Windows binary.  The tests are run in both Ubuntu 22.04 and Alpine
-   Linux.
-
-   Distribution-specific issues should be forwarded to the bug processing
-   system for your distribution.
+There are no “supported OSes” for MaraDNS.  I currently use Ubuntu 22.04
+to develop MaraDNS, both Ubuntu 22.04 and Alpine Linux 3.14 to test that
+MaraDNS builds and passes all automated regressions, and a Windows XP 
+virtual machine to make the Windows binaries. 
 
 ## Important note for Windows users
 
-   Users of Microsoft Windows are better off downloading a prebuilt Windows
-   binary: http://maradns.samiam.org/download.html (or, look in the
-   folder `maradns-win32` here) 
-   Be sure to download the file with the .zip extension.
+Users of Microsoft Windows are better off downloading a prebuilt Windows
+binary: http://maradns.samiam.org/download.html (or, look in the
+folder `maradns-win32` here) 
+Be sure to download the file with the .zip extension.
 
-   Only Deadwood and coLunacyDNS binaries are provided.  
+Only Deadwood and coLunacyDNS binaries are provided.  
 
-   Deadwood has passed Y2038 tests in Windows 10.
+Deadwood has passed Y2038 tests in Windows 10.
 
 ## What is DNS
 
-   The internet uses numbers, not names, to find computers. DNS is the
-   internet’s directory service: It takes a name, like “www.maradns.org”,
-   and converts that name in to an “IP” number that your computer can use
-   to connect to www.maradns.org.
+The internet uses numbers, not names, to find computers. DNS is the
+internet’s directory service: It takes a name, like “www.maradns.org”,
+and converts that name in to an “IP” number that your computer can use
+to connect to www.maradns.org.
 
-   DNS is one of these things many take for granted that is essential to
-   using today’s internet. Without DNS, the internet breaks. It is
-   critical that a DNS server keeps the internet working in a secure and
-   stable manner.
+DNS is one of these things many take for granted that is essential to
+using today’s internet. Without DNS, the internet breaks. It is
+critical that a DNS server keeps the internet working in a secure and
+stable manner.
 
 ## MaraDNS' History
 
-   MaraDNS was started in 2001 in response to concerns that there were
-   only two freely available DNS servers (BIND and DjbDNS) at the time.
-   MaraDNS 1.0 was released in mid-2002, MaraDNS 1.2 was released in late
-   2005, and MaraDNS 2.0 was released in the fall of 2010.
+MaraDNS was started in 2001 in response to concerns that there were
+only two freely available DNS servers (BIND and DjbDNS) at the time.
+MaraDNS 1.0 was released in mid-2002, MaraDNS 1.2 was released in late
+2005, and MaraDNS 2.0 was released in the fall of 2010.
 
-   MaraDNS 1.0 used a recursive DNS server that was implemented rather
-   quickly and had difficult-to-maintain code. This code was completely
-   rewritten for the MaraDNS 2.0 release, which now uses a separate
-   recursive DNS server.
+MaraDNS 1.0 used a recursive DNS server that was implemented rather
+quickly and had difficult-to-maintain code. This code was completely
+rewritten for the MaraDNS 2.0 release, which now uses a separate
+recursive DNS server.
 
    MaraDNS was fully maintained and actively developed without needing
    contributions from 2001 until 2010, and in 2020 during the COVID-19
@@ -246,7 +202,7 @@ in the folder maradns-win32/
    as an embedded Lua developer.  Since I was able to find work again,
    MaraDNS is on the back burner again.
 
-# Y2038 statement
+## Y2038 statement
 
 MaraDNS is fully Y2038 compliant on systems with a 64-bit time_t.
 
@@ -264,3 +220,66 @@ timestamps on *NIX systems with a 32-bit time_t until later than
 2106; this code assumes that 32-bit systems will have the time
 stamp “wrap around” after 2038 but still have the 32-bit time be 
 updated.
+
+# Updates
+
+## 2022 Updates
+
+MaraDNS was updated in 2022 to have its automated tests run in an Ubuntu
+22.04 Docker container instead of an Ubuntu 20.04 Docker container.
+The tests have also been updated to be more portable, running in both
+Alpine Linux (Busybox-based Linux distro) and Ubuntu 22.04.
+
+I also fixed a minor security issue, which also affected other DNS servers,
+where a clever attacker with access to the recurisve DNS server could had
+kept records in the cache longer than desired.
+
+`min_ttl` now correctly sets a minimum TTL for direct answers to queries.
+I have backported the `min_ttl` parameter to the older legacy 3.4 version
+of MaraDNS.
+
+While using Deadwood as a fully recursive server is not guaranteed to
+be fully supported, I have fixed a long standing bug with how Deadwood
+handled certain CNAME chains, and have added tests to make sure this
+bug stays fixed.
+
+MaraDNS no longer uses non-POSIX scripting languages not included 
+with MaraDNS:
+
+* MaraDNS’s documentation system, EJ, has been updated to use Lua 5.1
+  (included with MaraDNS with the name `lunacy` in `coLunacyDNS/lunacy`)
+  instead of Perl scripts.
+* The old `bind2csv2.py` tool has been removed, so that MaraDNS no
+  longer needs Python to run any of its components.
+
+## 2021 Updates
+
+Deadwood has a new parameter: `source_ip4`.  This optional parameter
+is used to specify the source IP when sending queries upstream.  The
+majority of users should be able to leave this untouched; this is for
+cases when Deadwood is multi-homed and we need to specify which IP
+to use when querying root or upstream DNS servers.
+
+One line change to zoneserver.c to make it work better with systemd.
+
+Synthetic IP generator example added to `coLunacyDNS`
+
+## 2020 Updates
+
+I have updated things so that the Git version of MaraDNS is the 
+authoritative “One source of truth” for MaraDNS’s source code.
+The Git code is, every time a new MaraDNS release is made,
+converted in to tarballs (with full Git history) which can be
+downloaded at [Sourceforge](https://sourceforge.net/projects/maradns/)
+and [MaraDNS’s web page](https://maradns.samiam.org/download.html).
+
+I have added block list support to Deadwood, to allow a large list
+of host names to be blocked.
+
+I have created a new service: `coLunacyDNS`, a simple Lua-based DNS server
+which can return IPv4 (`A`) and IPv6 (`AAAA`) DNS records.  It has the
+ability to query other DNS servers, and customize the answer given to
+the client based on the contents of a Lua script.  All programs have IPv6
+support in Linux as well as *NIX clones, and the Windows 32-bit binary of
+`coLunacyDNS` has IPv6 support.
+
