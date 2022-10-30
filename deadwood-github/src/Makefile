@@ -4,8 +4,11 @@
 # The compiler that makes programs designed to run on the machine 
 # compiling.  When cross-compiling, we still need to compile and
 # run programs on the build machine, so change the next line when
-# cross-compiling.
+# cross-compiling.  Note: This currently is not used
 HOSTCC=$(CC)
+
+# Compiling flags
+CFLAGS=-O2
 
 OBJS=DwStr.o \
 	DwMararc.o \
