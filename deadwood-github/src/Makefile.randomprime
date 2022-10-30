@@ -1,6 +1,6 @@
-# Makefile for Deadwood-2 (Ubuntu 20.04; may work with other other Linux and
-# *NIX systems)
-
+# This Makefile is used to update DwRandPrime.h once every release
+# or so to make Deadwood’s hash compressor slightly more secure
+# This Makefile doesn’t use CFLAGS; set FLAGS instead
 # The compiler that makes programs designed to run on the machine 
 # compiling.  When cross-compiling, we still need to compile and
 # run programs on the build machine, so change the next line when

@@ -1,5 +1,6 @@
 # Makefile for DwCompress test executable; this is only for
 # testing purposes.
+# This Makefile doesn’t use CFLAGS; set FLAGS instead
 
 HOSTCC=$(CC)
 
