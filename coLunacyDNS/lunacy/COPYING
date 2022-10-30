@@ -2,7 +2,7 @@ There are three copyrights in this directory:
 
 * The Lua copyright, present in this file
 * The luafilesystem (lfs) copyright, present in this file
-* The bitlib (bit32 port) copyright, in README.bitlib
+* The bitlib (bit32 port) copyright, also present in this file
 
 In all cases, the files are available under a permissive Lua license.
 
@@ -70,3 +70,13 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
 ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+-----------------------------------------------------------------------
+
+Lunacy also includes a version of bitlib with this license:
+
+bitlib is a C library for Lua 5.1 that provides bitwise operations. It
+is copyright Reuben Thomas 2000-2009, and is released under the MIT
+license, like Lua (see http://www.lua.org/copyright.html; it's
+basically the same as the BSD license). There is no warranty.
+
