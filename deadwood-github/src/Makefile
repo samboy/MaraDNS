@@ -4,7 +4,8 @@
 # The compiler that makes programs designed to run on the machine 
 # compiling.  When cross-compiling, we still need to compile and
 # run programs on the build machine, so change the next line when
-# cross-compiling.  Note: This currently is not used
+# cross-compiling.  Note: This currently is not used except in
+# Makefile.randomprime
 HOSTCC=$(CC)
 
 # Compiling flags
