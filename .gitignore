@@ -25,3 +25,9 @@ tools/benchmark
 tcp/getzone
 tcp/zoneserver
 tcp/fetchzone
+VERSION
+coLunacyDNS/HalfSipHash1-3
+coLunacyDNS/coLunacyDNS
+libs/mtest
+libs/tests
+rng/make_32bit_tables
