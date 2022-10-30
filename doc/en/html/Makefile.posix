@@ -1,0 +1,200 @@
+.POSIX:
+
+all: tutorial.html \
+     authoritative.html compile.html convert.html recursive.html \
+     glossary.html recordtypes.html dangling.html default_zonefile.html \
+     dnstcp.html man.duende.html dnsmaster.html man.csv2_txt.html \
+     man.csv2.html dnsslave.html update.html man.askmara.html \
+     man.fetchzone.html man.zoneserver.html man.maradns.html \
+     man.mararc.html quick_start.html dnsintro.html \
+     win_service.html troubleshoot.html coding_style.html \
+     man.csv1.html
+
+clean:
+	rm -f *.html *.ej *.embed
+
+linkclean:
+	rm -f *.ej *.embed
+
+# Strict POSIX compliance requires the source and build target to
+# be in the same directory.  To allow this, we make a bunch of 
+# symlinks; “make linkclean” will clean up the links.
+maradns.ej:
+	ln -s ../source/maradns.ej maradns.ej
+
+faq.embed:
+	ln -s ../source/faq.embed faq.embed
+
+mararc.ej:
+	ln -s ../source/mararc.ej mararc.ej
+
+fetchzone.ej:
+	ln -s ../source/fetchzone.ej fetchzone.ej
+
+zoneserver.ej:
+	ln -s ../source/zoneserver.ej zoneserver.ej
+
+askmara.ej:
+	ln -s ../source/askmara.ej askmara.ej
+
+csv1.ej:
+	ln -s ../source/csv1.ej csv1.ej
+
+csv2.ej:
+	ln -s ../source/csv2.ej csv2.ej
+
+csv2_txt.ej:
+	ln -s ../source/csv2_txt.ej csv2_txt.ej
+
+duende.ej:
+	ln -s ../source/duende.ej duende.ej
+
+tutorial.ej:
+	ln -s ../source/tutorial.ej tutorial.ej
+
+authoritative.ej:
+	ln -s ../source/authoritative.ej authoritative.ej
+
+compile.ej:
+	ln -s ../source/compile.ej compile.ej
+
+convert.ej:
+	ln -s ../source/convert.ej convert.ej
+
+recursive.ej:
+	ln -s ../source/recursive.ej recursive.ej
+
+glossary.ej:
+	ln -s ../source/glossary.ej glossary.ej
+
+recordtypes.ej:
+	ln -s ../source/recordtypes.ej recordtypes.ej
+
+dangling.ej:
+	ln -s ../source/dangling.ej dangling.ej
+
+default_zonefile.ej:
+	ln -s ../source/default_zonefile.ej default_zonefile.ej
+
+dnstcp.ej:
+	ln -s ../source/dnstcp.ej dnstcp.ej
+
+dnsmaster.ej:
+	ln -s ../source/dnsmaster.ej dnsmaster.ej
+
+dnsslave.ej:
+	ln -s ../source/dnsslave.ej dnsslave.ej
+
+update.ej:
+	ln -s ../source/update.ej update.ej
+
+dnsintro.ej:
+	ln -s ../source/dnsintro.ej dnsintro.ej
+
+quick_start.ej:
+	ln -s ../source/quick_start.ej quick_start.ej
+
+win_service.ej:
+	ln -s ../source/win_service.ej win_service.ej
+
+troubleshoot.ej:
+	ln -s ../source/troubleshoot.ej troubleshoot.ej
+
+coding_style.ej:
+	ln -s ../source/coding_style.ej coding_style.ej
+
+
+man.maradns.html: maradns.ej faq.embed
+	../../../tools/ej/ej2html ../source/maradns.ej > man.maradns.html
+
+man.mararc.html: mararc.ej
+	../../../tools/ej/ej2html ../source/mararc.ej > man.mararc.html
+
+man.fetchzone.html: fetchzone.ej
+	../../../tools/ej/ej2html ../source/fetchzone.ej > \
+	    man.fetchzone.html
+
+man.zoneserver.html: zoneserver.ej
+	../../../tools/ej/ej2html ../source/zoneserver.ej > \
+	    man.zoneserver.html
+
+man.askmara.html: askmara.ej
+	../../../tools/ej/ej2html ../source/askmara.ej > man.askmara.html
+
+man.csv1.html: csv1.ej
+	../../../tools/ej/ej2html ../source/csv1.ej > man.csv1.html
+
+man.csv2.html: csv2.ej
+	../../../tools/ej/ej2html ../source/csv2.ej > man.csv2.html
+
+man.csv2_txt.html: csv2_txt.ej
+	../../../tools/ej/ej2html ../source/csv2_txt.ej > man.csv2_txt.html
+
+man.duende.html: duende.ej
+	../../../tools/ej/ej2html ../source/duende.ej > man.duende.html
+
+tutorial.html: tutorial.ej
+	../../../tools/ej/ej2html ../source/tutorial.ej > tutorial.html
+
+authoritative.html: authoritative.ej
+	../../../tools/ej/ej2html ../source/authoritative.ej > \
+	    authoritative.html
+
+compile.html: compile.ej
+	../../../tools/ej/ej2html ../source/compile.ej > compile.html
+
+convert.html: convert.ej
+	../../../tools/ej/ej2html ../source/convert.ej > convert.html
+
+recursive.html: recursive.ej
+	../../../tools/ej/ej2html ../source/recursive.ej > \
+	  recursive.html
+
+glossary.html: glossary.ej
+	../../../tools/ej/ej2html ../source/glossary.ej > \
+	  glossary.html
+
+recordtypes.html: recordtypes.ej
+	../../../tools/ej/ej2html ../source/recordtypes.ej > \
+	  recordtypes.html
+
+dangling.html: dangling.ej
+	../../../tools/ej/ej2html ../source/dangling.ej > \
+	  dangling.html
+
+default_zonefile.html: default_zonefile.ej
+	../../../tools/ej/ej2html ../source/default_zonefile.ej > \
+	  default_zonefile.html
+
+dnstcp.html: dnstcp.ej
+	../../../tools/ej/ej2html ../source/dnstcp.ej > \
+	  dnstcp.html
+
+dnsmaster.html: dnsmaster.ej
+	../../../tools/ej/ej2html ../source/dnsmaster.ej > \
+	  dnsmaster.html
+
+dnsslave.html: dnsslave.ej
+	../../../tools/ej/ej2html ../source/dnsslave.ej > \
+	  dnsslave.html
+
+update.html: update.ej
+	../../../tools/ej/ej2html ../source/update.ej > update.html
+
+dnsintro.html: dnsintro.ej
+	../../../tools/ej/ej2html ../source/dnsintro.ej > dnsintro.html
+
+quick_start.html: quick_start.ej
+	../../../tools/ej/ej2html ../source/quick_start.ej > \
+	    quick_start.html
+
+win_service.html: win_service.ej
+	../../../tools/ej/ej2html ../source/win_service.ej > win_service.html
+
+troubleshoot.html: troubleshoot.ej
+	../../../tools/ej/ej2html ../source/troubleshoot.ej > troubleshoot.html
+
+coding_style.html: coding_style.ej
+	../../../tools/ej/ej2html ../source/coding_style.ej > \
+	    coding_style.html
+
