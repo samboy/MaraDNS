@@ -23,10 +23,6 @@ clean:
 version.h:
 	echo '#define VERSION "github"' > version.h
 
-# See ../doc/MulConstant.txt for explanation of this
-DwRandPrime.h:
-	echo '#define MUL_CONSTANT 1748294267' > DwRandPrime.h
-
 DwStr.o:	DwStr.c DwStr.h
 	$(CC) $(FLAGS) -DNOIP6 -DMINGW -Wall -c -o DwStr.o DwStr.c
 
