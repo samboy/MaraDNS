@@ -76,12 +76,21 @@ cd ../..
 #echo Patches...
 #patch -p1 < update/$NEXT/maradns-3.4.05-changelog.patch
 
-# I am no longer providing Python scripts after the Python2 -> Python3
-# debacle.  I don’t want this script to break when Python4 comes out,
-# so best to avoid any Python in MaraDNS’s tree.
-# (Should Perl ever try to pull the same stunt, I have already replaced
-#  the perl doc generation tools in MaraDNS 3.5 with Lua 5.1 scripts, which
-#  I will backport if Perl7 or later ever breaks Perl5 scripts)
+# Scripting languages are a moving part which can potentially break
+# when the underlying language is changed.  The old bind2csv2.py
+# script broke in 2019 when Python2 was deprecated, even though
+# I had not touched the script for over a decade. I fixed it for Python3,
+# but the experience has made me wary to use keep old Python scripts
+# around in a code base as mature as MaraDNS.
+# For the record, the current claim is that there are no plans
+# whatsoever to have a Python4 which breaks Python3 (see
+# https://builtin.com/software-engineering-perspectives/python-4 )
+# As an aside, the script to convert the EJ documents in to 
+# HTML/man pages/text documents have been rewritten in the MaraDNS 3.5
+# branch to no longer use Perl, even though there are no plans to come
+# out with a Perl7 which breaks Perl5 scripts; Perl6 was renamed "Raku"
+# since it did break Perl5 scripts.  See this for Perl7 discussion:
+# https://blogs.perl.org/users/psc/2022/05/what-happened-to-perl-7.html 
 rm tools/bind2csv2.py 
 rm doc/en/man/bind2csv2.1
 rm doc/en/source/bind2csv2.ej
