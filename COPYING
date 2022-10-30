@@ -14,3 +14,17 @@ are met:
 
 This software is provided 'as is' with no guarantees of correctness or
 fitness for purpose.
+
+--  
+
+Please note that the files in coLunacyDNS/lunacy are available under
+a slightly different license, the MIT (Lua) license.
+
+See coLunacyDNS/lunacy/COPYING for details.
+
+With all files here:
+
+* Binaries can be distributed without source
+* Any programs that link to these files and/or derived object files
+  can be released under any license.
+
