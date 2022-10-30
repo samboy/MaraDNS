@@ -15,7 +15,7 @@ MaraDNS changelog
 
      (2022-??-??)
 
-   maradns-3.5.0024: 
+   maradns-3.5.0024:
    This is a stable release of MaraDNS:
 
       * Minor security fix for Deadwood to ensure that no more than 83
