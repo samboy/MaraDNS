@@ -1150,8 +1150,7 @@ MaraDNS needs to use the zoneserver program to serve DNS records over
 TCP. See zoneserver(8) for usage information. 
 
 MaraDNS does not use the zone file ("master file") format specified in 
-chapter 5 of RFC1035; however bind2csv2.py can convert the majority of 
-such zone files. 
+chapter 5 of RFC1035. 
 
 MaraDNS default behavior with star records is not RFC-compliant. In 
 more detail, if a wildcard MX record exists in the form 

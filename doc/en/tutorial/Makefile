@@ -4,7 +4,7 @@ all: tutorial.html man.csv2.html man.mararc.html man.maradns.html \
      dnstcp.html man.duende.html dnsmaster.html man.csv2_txt.html \
      dnsslave.html quick_start.html update.html man.askmara.html \
      man.fetchzone.html man.zoneserver.html dnsintro.html \
-     win_service.html troubleshoot.html bind2csv2.html coding_style.html
+     win_service.html troubleshoot.html coding_style.html
 
 clean:
 	rm -f *.html 
@@ -92,9 +92,6 @@ dnsintro.html: ../source/dnsintro.ej
 
 win_service.html: ../source/win_service.ej
 	../../../tools/ej/ej2html ../source/win_service.ej > win_service.html
-
-bind2csv2.html: ../source/bind2csv2.ej
-	../../../tools/ej/ej2html ../source/bind2csv2.ej > bind2csv2.html
 
 troubleshoot.html: ../source/troubleshoot.ej
 	../../../tools/ej/ej2html ../source/troubleshoot.ej > troubleshoot.html
