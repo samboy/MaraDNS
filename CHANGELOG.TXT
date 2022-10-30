@@ -8,6 +8,10 @@ MaraDNS changelog
       * The old ej tools are now at https://github.com/samboy/MaraDNS-attic/
       * bind2csv2.py now at https://github.com/samboy/MaraDNS-attic/
       * All documents now render with the Lua EJ tools
+      * coLunacyDNS Makefile is now strictly POSIX compliant
+      * Strictly POSIX compliant Makefile.posix files added to directories
+        with auto generated documentation.
+      * Tweak Deadwood Makefile to not regenerate DwRandPrime.h
 
      (2022-??-??)
 
