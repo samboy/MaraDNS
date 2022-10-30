@@ -51,7 +51,7 @@ To build MaraDNS, one needs a POSIX system with:
 * A POSIX C library with both POSIX and Berkeley socket support.
 
 All of these are very standard tools which are included with the vast
-majority of Linux distributions; packages usually have names like:
+majority of Linux and BSD distributions; packages usually have names like:
 
 * `clang` (which uses `llvm`) for the C compiler
 * `libc-dev` for the development C standard library, which will have sockets
@@ -78,7 +78,7 @@ Only Deadwood and coLunacyDNS binaries are provided.
 
 Deadwood has passed Y2038 tests in Windows 10.
 
-## What is DNS
+# What is DNS
 
 The internet uses numbers, not names, to find computers. DNS is the
 internet’s directory service: It takes a name, like “www.maradns.org”,
@@ -90,121 +90,126 @@ using today’s internet. Without DNS, the internet breaks. It is
 critical that a DNS server keeps the internet working in a secure and
 stable manner.
 
-## MaraDNS' History
+# MaraDNS' History
 
 MaraDNS was started in 2001 in response to concerns that there were
 only two freely available DNS servers (BIND and DjbDNS) at the time.
 MaraDNS 1.0 was released in mid-2002, MaraDNS 1.2 was released in late
-2005, and MaraDNS 2.0 was released in the fall of 2010.
+2005, MaraDNS 2.0 was released in the fall of 2010, and MaraDNS had
+a version number jump up to 3.3 in 2019 in order to have the same version 
+number as Deadwood.
 
 MaraDNS 1.0 used a recursive DNS server that was implemented rather
 quickly and had difficult-to-maintain code. This code was completely
 rewritten for the MaraDNS 2.0 release, which now uses a separate
 recursive DNS server.
 
-   MaraDNS was fully maintained and actively developed without needing
-   contributions from 2001 until 2010, and in 2020 during the COVID-19
-   crisis.
+# Overview
 
-## Overview
+MaraDNS 3.5 consists of three primary components: A UDP-only authoritative
+DNS server for hosting domains, a UDP recursive DNS server called
+`Deadwood` for finding domains on the internet, and a Lua-powered DNS
+server called `coLunacyDNS`. MaraDNS’ recursive DNS server `Deadwood`
+shares no code with MaraDNS’ authoritative DNS server.
 
-   MaraDNS 3.5 consists of two primary components: A UDP-only
-   authoritative DNS server for hosting domains, and a UDP and TCP-capable
-   recursive DNS server for finding domains on the internet. MaraDNS’
-   recursive DNS server is called Deadwood, and it shares no code with
-   MaraDNS’ authoritative DNS server.
+`coLunacyDNS` is a Lua-based name server which uses a combination of C
+(for the heavy lifting of binding to DNS sockets, processing DNS requests,
+and handling pending replies from upstream DNS servers) and Lua (for
+deciding how to respond to a given query) to have both performance
+and flexibility.
 
-   Newly added during the COVID-19 crisis is “coLunacyDNS”, a Lua-based
-   name server which uses a combination of C (for the heavy lifting of
-   binding to DNS sockets, processing DNS requests, and handling pending
-   replies from upstream DNS servers) and Lua (for deciding how to respond
-   to a given query) to have both performance and flexibility.
+In more detail: MaraDNS has one daemon, the authoritative daemon
+(called `maradns`), that provides information to recursive DNS servers
+on the internet, and another daemon, the recursive daemon (called
+`Deadwood`), that gets DNS information from the internet for web
+browsers and other internet clients.
 
-   In more detail: MaraDNS has one daemon, the authoritative daemon
-   (called “maradns”), that provides information to recursive DNS servers
-   on the internet, and another daemon, the recursive daemon (called
-   “Deadwood”), that gets DNS information from the internet for web
-   browsers and other internet clients.
+A simplified way to look at it: `MaraDNS` puts your web page on the
+Internet; `Deadwood` looks for web pages on the Internet.
 
-   A simplified way to look at it: MaraDNS puts your web page on the
-   Internet; Deadwood looks for web pages on the Internet.
+Since MaraDNS’ authoritative daemon does not support TCP, MaraDNS
+includes a separate DNS-over-TCP server called `zoneserver` that
+supports both standard DNS-over-TCP and DNS zone transfers.
 
-   Since MaraDNS’ authoritative daemon does not support TCP, MaraDNS
-   includes a separate DNS-over-TCP server called “zoneserver” that
-   supports both standard DNS-over-TCP and DNS zone transfers.
+Neither MaraDNS nor the UNIX version of Deadwood have support for
+daemonization; this is handled by a separate program included with
+MaraDNS called `Duende`. Deadwood's Windows port, on the other hand,
+includes support for running as a Windows service.
 
-   Neither MaraDNS nor the UNIX version of Deadwood have support for
-   daemonization; this is handled by a separate program included with
-   MaraDNS called Duende. Deadwood's Windows port, on the other hand,
-   includes support for running as a Windows service.
+MaraDNS also includes a simple DNS querying tool called `askmara` and
+a number of other miscellaneous tools: Lua 5.1 scripts for processing
+MaraDNS' documentation (since MaraDNS comes with a fork of Lua 5.1, these
+scripts do not have an external dependency), some Unicode conversion
+utilities, scripts for building and installing MaraDNS, automated SQA
+tests, etc.
 
-   MaraDNS also includes a simple DNS querying tool called “askmara” and a
-   number of other miscellaneous tools: Scripts for processing MaraDNS'
-   documentation, a simple webpage password generator, some Unicode
-   conversion utilities, scripts for building and installing MaraDNS,
-   automated SQA tests, etc.
+`MaraDNS` is a native UNIX program which can run in Windows via cygwin.
+Both `Deadwood`, MaraDNS' recursive resolver, and `coLunacyDNS`, a DNS
+server configured with a Lua 5.1 script, are cross-platform applications
+with full Windows ports.
 
-   MaraDNS is a native UNIX program with a partial Windows port. Deadwood,
-   MaraDNS' recursive resolver, is a fully cross-platform application with
-   a full Windows port.
+MaraDNS 2.0 has full (albeit not fully tested) IPv6 support.
 
-   MaraDNS 2.0 has full (albeit not fully tested) IPv6 support.
+# Internals
 
-## Internals
+MaraDNS 3.5’s authoritative server uses code going all the way back 
+to 2001. The core DNS-over-UDP server has a number of components,
+including two different zone file parsers, a mararc parser, a secure
+random number generator, and so on.
 
-   MaraDNS 3.5’s authoritative server uses code going all the way back 
-   to 2001. The core DNS-over-UDP server has a number of components,
-   including two different zone file parsers, a mararc parser, a secure
-   random number generator, and so on.
+MaraDNS is written entirely in C. No objective C nor C++ classes are
+used in MaraDNS’ code.
 
-   MaraDNS is written entirely in C. No objective C nor C++ classes are
-   used in MaraDNS’ code.
+MaraDNS 2.0’s “Deadwood” recursive server was started in 2007 and has
+far cleaner code. Its random number generator, for example, uses a
+smaller, simpler, and more secure cryptographic algorithm; its
+configuration file parser uses a finite state machine interpreter; its
+handling of multiple simultaneous pending connections is done using
+select() and a state machine instead of with threads.
 
-   MaraDNS 2.0’s “Deadwood” recursive server was started in 2007 and has
-   far cleaner code. Its random number generator, for example, uses a
-   smaller, simpler, and more secure cryptographic algorithm; its
-   configuration file parser uses a finite state machine interpreter; its
-   handling of multiple simultaneous pending connections is done using
-   select() and a state machine instead of with threads.
+# Other DNS servers
 
-   Deadwood’s source code can be browsed online, and there are a
-   number of documents describing its internals available.
+The landscape of open-source DNS servers has changed greatly since 2001
+when MaraDNS was started. There are now a number of different DNS
+servers still actively developed and maintained: BIND, Power DNS,
+NSD/Unbound, as well as MaraDNS. DjbDNS is no longer being updated and
+the unofficial forks have limited support; notably it took nearly five
+months for someone to come up with a patch for CVE-2012-1191.
 
-## Other DNS servers
+MaraDNS’ strength is that it’s a remarkably small, lightweight, easy to
+configure, and mostly cross-platform DNS server. Deadwood is a tiny DNS
+server with full recursion support, perfect for embedded systems.
 
-   The landscape of open-source DNS servers has changed greatly since 2001
-   when MaraDNS was started. There are now a number of different DNS
-   servers still actively developed and maintained: BIND, Power DNS,
-   NSD/Unbound, as well as MaraDNS. DjbDNS is no longer being updated and
-   the unofficial forks have limited support; notably it took nearly five
-   months for someone to come up with a patch for CVE-2012-1191.
+MaraDNS’ weakness is that it does not have some features other DNS
+servers have. For example, while Deadwood has the strongest spoof
+protection available without cryptography, it does not have support for
+DNSSEC.
 
-   MaraDNS’ strength is that it’s a remarkably small, lightweight, easy to
-   configure, and mostly cross-platform DNS server. Deadwood is a tiny DNS
-   server with full recursion support, perfect for embedded systems.
+As another example, MaraDNS does not have full zone transfer support;
+while MaraDNS can both serve zones and receive external zone files from
+other DNS servers, MaraDNS needs to be restarted to update its database
+of DNS records.
 
-   MaraDNS’ weakness is that it does not have some features other DNS
-   servers have. For example, while Deadwood has the strongest spoof
-   protection available without cryptography, it does not have support for
-   DNSSEC.
+# MaraDNS’ future
 
-   As another example, MaraDNS does not have full zone transfer support;
-   while MaraDNS can both serve zones and receive external zone files from
-   other DNS servers, MaraDNS needs to be restarted to update its database
-   of DNS records.
+MaraDNS is a mature application.  Being open source code, the amount
+of time I have to devote to MaraDNS is highly variable.  Right now,
+I am concentrating my efforts to revamp MaraDNS so that it can 
+continue to compile and run for as long as possible, minimizing the
+number of external dependencies so that outside changes are unlikely
+to break MaraDNS.
 
-## MaraDNS’ future
-
-   During the COVID-19 crisis, I had some free time, so I decided to add
-   skills to my resume by writing `coLunacyDNS`, a Lua-based DNS server
-   (which shares some code with Deadwood, but is configured with Lua).
-   The skills I acquired doing this got me the current job I have
-   as an embedded Lua developer.  Since I was able to find work again,
-   MaraDNS is on the back burner again.
+For MaraDNS to break, either the C language would have to change to
+break programs that compile with few to no warnings here in the 2020s,
+or the POSIX standard would have to change to the point that POSIX
+compliant scripts which run here in the 2020s no longer run.  Both
+of these are very unlikely to happen.
 
 ## Y2038 statement
 
-MaraDNS is fully Y2038 compliant on systems with a 64-bit time_t.
+MaraDNS is fully Y2038 compliant on systems with a 64-bit time_t.  Here
+in the 2020s, even 32-bit Linux distributions, such as Alpine Linux,
+have a 64-bit time_t.
 
 Deadwood, in addition, for its Windows 32-bit binary, uses Windows
 filetime to generate internal timestamps; filetime stamps will not run
