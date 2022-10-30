@@ -1,5 +1,8 @@
 .POSIX:
 
+# This is a strictly POSIX compliant Makefile.  Use this in case the
+# normal Makefile doesn’t work.
+
 all: faq.txt faq.html QuickStart credits.txt files.txt 
 
 clean:

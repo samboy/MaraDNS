@@ -1,5 +1,8 @@
 .POSIX:
 
+# This is a strictly POSIX compliant Makefile.  Use this in case the
+# normal Makefile doesn’t work.
+
 all: tutorial.txt \
      authoritative.txt compile.txt convert.txt recursive.txt \
      glossary.txt recordtypes.txt dangling.txt default_zonefile.txt \
