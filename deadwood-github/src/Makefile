@@ -64,13 +64,6 @@ DwSocket.o:	DwSocket.c DwStr.h DwSocket.h
 DwSys.o:	DwSys.c DwStr.h version.h
 	$(CC) $(FLAGS) $(CFLAGS) -Wall -c -o DwSys.o DwSys.c
 
-RandomPrime:	RandomPrime.c
-	$(HOSTCC) -O3 -o RandomPrime RandomPrime.c
-
-# See ../doc/MulConstant.txt to explain this
-DwRandPrime.h: RandomPrime
-	if [ -e /dev/urandom ] ; then ./RandomPrime > DwRandPrime.h ; fi
-
 DwHash.o:	DwHash.c DwStr.h DwRandPrime.h DwHash.h
 	$(CC) $(FLAGS) $(CFLAGS) -Wall -c -o DwHash.o DwHash.c
 
