@@ -58,7 +58,7 @@ $(LUAC_T): $(LUAC_O) $(LUA_A)
 	$(CC) -o $@ $(MYLDFLAGS) $(LUAC_O) $(LUA_A) $(LIBS)
 
 clean:
-	$(RM) $(ALL_T) $(ALL_O) *.gcda *.gcno
+	$(RM) $(ALL_T) $(ALL_O) *.gcda *.gcno ../liblua.a
 
 depend:
 	@$(CC) $(CFLAGS) -MM l*.c print.c
