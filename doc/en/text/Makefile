@@ -11,6 +11,9 @@ all: tutorial.txt \
 clean:
 	rm -f *.txt 
 
+linkclean:
+	rm -f *.ej *.embed
+
 man.maradns.txt: ../source/maradns.ej ../source/faq.embed
 	../../../tools/ej/ej2txt ../source/maradns.ej > man.maradns.txt
 
@@ -34,7 +37,7 @@ man.csv1.txt: ../source/csv1.ej
 man.csv2.txt: ../source/csv2.ej
 	../../../tools/ej/ej2txt ../source/csv2.ej > man.csv2.txt
 
-man.csv2_txt.txt: ../source/csv2.ej
+man.csv2_txt.txt: ../source/csv2_txt.ej
 	../../../tools/ej/ej2txt ../source/csv2_txt.ej > man.csv2_txt.txt
 
 man.duende.txt: ../source/duende.ej
