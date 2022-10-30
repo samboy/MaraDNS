@@ -3,28 +3,28 @@ CC = gcc
 # To use other flags, invoke as "make CFLAGS=-g" or some such
 CFLAGS = -O3
 
-all: coLunacyDNS HalfSipHash1-3 
+all: coLunacyDNS HalfSipHash13 
 
 clean: 
 	rm -f *.o *.exe coLunacyDNS sipHash HalfSipHash1-3 \
-    *.gcda *.gcno *.gcov ; \
+    *.gcda *.gcno *.gcov liblua.a ; \
     cd lunacy ; make clean
 
-lunacy/liblua.a:
+liblua.a:
 	cd lunacy ; make CC="${CC}" CFLAGS="${CFLAGS}" ; \
-    cd ..
+    cp liblua.a .. ; cd ..
 
 coLunacyDNS.o: coLunacyDNS.c
 	${CC} ${CFLAGS} -c -Wall -o coLunacyDNS.o coLunacyDNS.c 	
 
-coLunacyDNS: coLunacyDNS.o lunacy/liblua.a
+coLunacyDNS: coLunacyDNS.o liblua.a
 	rm -f lunacy/lua.o lunacy/luac.o ; \
     ${CC} ${CFLAGS} -Wall -o coLunacyDNS coLunacyDNS.o \
     lunacy/*.o -lm
 
-HalfSipHash1-3.o: HalfSipHash1-3.c 
+HalfSipHash13.o: HalfSipHash1-3.c 
 	${CC} ${CFLAGS} -c -Wall -o  HalfSipHash1-3.o HalfSipHash1-3.c
 
-HalfSipHash1-3: HalfSipHash1-3.o lunacy/liblua.a
+HalfSipHash13: HalfSipHash13.o liblua.a
 	${CC} ${CFLAGS} -Wall -o HalfSipHash1-3 HalfSipHash1-3.o \
     lunacy/liblua.a -lm
