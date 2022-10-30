@@ -1,0 +1,93 @@
+--- maradns-3.4.06/doc/en/man/Makefile	2007-09-21 05:07:48.000000000 -0700
++++ maradns-3.4.07/doc/en/man/Makefile	2022-10-29 18:08:35.081470646 -0700
+@@ -1,5 +1,5 @@
+ all: maradns.8 mararc.5 askmara.1 getzone.1 zoneserver.8 csv1.5 duende.8 \
+-	csv2.5 csv2_txt.5 fetchzone.1 mqhash.1 bind2csv2.1
++	csv2.5 csv2_txt.5 fetchzone.1 mqhash.1 
+ 
+ ps: maradns.ps mararc.ps askmara.ps getzone.ps zoneserver.ps csv1.ps
+ 
+@@ -41,9 +41,6 @@
+ mqhash.1: ../source/mqhash.ej
+ 	../../../tools/ej/ej2man ../source/mqhash.ej > mqhash.1
+ 
+-bind2csv2.1: ../source/bind2csv2-man.ej
+-	../../../tools/ej/ej2man ../source/bind2csv2-man.ej > bind2csv2.1
+-
+ maradns.ps: maradns.8
+ 	groff -mman -rS12 -Tps maradns.8 > maradns.ps
+ 
+--- maradns-3.4.06/doc/en/text/Makefile	2010-01-08 08:07:40.000000000 -0800
++++ maradns-3.4.07/doc/en/text/Makefile	2022-10-29 18:09:46.089069700 -0700
+@@ -5,7 +5,7 @@
+      man.csv2.txt dnsslave.txt update.txt man.askmara.txt \
+      man.fetchzone.txt man.zoneserver.txt man.maradns.txt \
+      man.mararc.txt quick_start.txt dnsintro.txt \
+-     win_service.txt troubleshoot.txt bind2csv2.txt coding_style.txt
++     win_service.txt troubleshoot.txt coding_style.txt
+ 
+ clean:
+ 	rm -f *.txt 
+@@ -94,9 +94,6 @@
+ win_service.txt: ../source/win_service.ej
+ 	../../../tools/ej/ej2txt ../source/win_service.ej > win_service.txt
+ 
+-bind2csv2.txt: ../source/bind2csv2.ej
+-	../../../tools/ej/ej2txt ../source/bind2csv2.ej > bind2csv2.txt
+-
+ troubleshoot.txt: ../source/troubleshoot.ej
+ 	../../../tools/ej/ej2txt ../source/troubleshoot.ej > troubleshoot.txt
+ 
+--- maradns-3.4.06/doc/en/tutorial/Makefile	2007-10-19 06:54:14.000000000 -0700
++++ maradns-3.4.07/doc/en/tutorial/Makefile	2022-10-29 18:16:17.826839406 -0700
+@@ -4,7 +4,7 @@
+      dnstcp.html man.duende.html dnsmaster.html man.csv2_txt.html \
+      dnsslave.html quick_start.html update.html man.askmara.html \
+      man.fetchzone.html man.zoneserver.html dnsintro.html \
+-     win_service.html troubleshoot.html bind2csv2.html coding_style.html
++     win_service.html troubleshoot.html coding_style.html
+ 
+ clean:
+ 	rm -f *.html 
+@@ -93,9 +93,6 @@
+ win_service.html: ../source/win_service.ej
+ 	../../../tools/ej/ej2html ../source/win_service.ej > win_service.html
+ 
+-bind2csv2.html: ../source/bind2csv2.ej
+-	../../../tools/ej/ej2html ../source/bind2csv2.ej > bind2csv2.html
+-
+ troubleshoot.html: ../source/troubleshoot.ej
+ 	../../../tools/ej/ej2html ../source/troubleshoot.ej > troubleshoot.html
+ 
+--- maradns-3.4.06/doc/en/source/maradns.ej	2015-08-18 21:44:49.000000000 -0700
++++ maradns-3.4.07/doc/en/source/maradns.ej	2022-10-29 18:19:37.089697117 -0700
+@@ -118,8 +118,7 @@
+ over TCP.  See <b>zoneserver(8)</b> for usage information.
+ <p>
+ MaraDNS does not use the zone file ("master file") format specified in 
+-chapter 5 of RFC1035; however bind2csv2.py can convert the majority
+-of such zone files.
++chapter 5 of RFC1035.
+ <p>
+ MaraDNS default behavior with star records is not RFC-compliant.
+ In more detail, 
+--- maradns-3.4.06/doc/en/source/tutorial.ej	2009-12-21 07:28:41.000000000 -0800
++++ maradns-3.4.07/doc/en/source/tutorial.ej	2022-10-29 18:19:57.849577911 -0700
+@@ -4,7 +4,7 @@
+ 
+ </HEAD><BODY>
+ 
+-<!-- Copyright 2005-2007 Sam Trenholme
++<!-- Copyright 2005-2022 Sam Trenholme
+ 
+     TERMS
+ 
+@@ -58,8 +58,6 @@
+     MaraDNS.  Also describes how to delegate sub-zones</A>
+ <LI><A href=dangling.html>How to resolve "dangling" CNAME records</A>
+ <LI><A href=troubleshoot.html>MaraDNS troubleshooting guide</A>
+-<li><A href=bind2csv2.html>How to convert BIND zone files in to 
+-    MaraDNS-compatible zone files.</A>
+ </UL>
+ 
+ <h2>Man pages</h2>
