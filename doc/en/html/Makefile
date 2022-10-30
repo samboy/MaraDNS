@@ -11,6 +11,9 @@ all: tutorial.html \
 clean:
 	rm -f *.html 
 
+linkclean:
+	rm -f *.ej *.embed
+
 man.maradns.html: ../source/maradns.ej ../source/faq.embed
 	../../../tools/ej/ej2html ../source/maradns.ej > man.maradns.html
 
@@ -34,7 +37,7 @@ man.csv1.html: ../source/csv1.ej
 man.csv2.html: ../source/csv2.ej
 	../../../tools/ej/ej2html ../source/csv2.ej > man.csv2.html
 
-man.csv2_txt.html: ../source/csv2.ej
+man.csv2_txt.html: ../source/csv2_txt.ej
 	../../../tools/ej/ej2html ../source/csv2_txt.ej > man.csv2_txt.html
 
 man.duende.html: ../source/duende.ej
