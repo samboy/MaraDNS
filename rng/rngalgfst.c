@@ -47,8 +47,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "rng-alg-fst.h"
-#include "rng-32bit-tables.h"
+#include "rngalgfst.h"
+#include "rng32bittables.h"
 
 static const u32 rcon[] = {
         0x01000000, 0x02000000, 0x04000000, 0x08000000,

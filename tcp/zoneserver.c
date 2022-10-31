@@ -54,7 +54,7 @@
 #include <arpa/inet.h>
 #include <signal.h>
 /* BEGIN RNG USING CODE */
-#include "../rng/rng-api-fst.h"
+#include "../rng/rngapifst.h"
 /* END RNG USING CODE */
 /* Function prototypes */
 #include "../dns/functions_dns.h"

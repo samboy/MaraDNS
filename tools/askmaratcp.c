@@ -42,7 +42,7 @@
 #include "askmara_labels_en.h"
 /* BEGIN RNG USING CODE */
 /* Yes, we use the RNG to make the psudo-random number */
-#include "../rng/rng-api-fst.h"
+#include "../rng/rngapifst.h"
 /* END RNG USING CODE */
 
 #include "../libs/MaraHash.h"

@@ -7,7 +7,7 @@ OBJECTS=$(JOBJS) $(MHOBJS) $(DOBJECTS) $(SOBJECTS)
 ROBJECTS=../rng/rngalgfst.o ../rng/rngapifst.o
 POBJECTS=../parse/ParseCsv1.o ../parse/ParseMaraRc.o 
 Q=$(ROBJECTS) $(POBJECTS)
-EXECS=askmara askmara-tcp strip.control benchmark duende
+EXECS=askmara askmaratcp strip.control benchmark duende
 
 #FLAGS = -g $(DEBUG)
 #FLAGS = -g $(DEBUG)
@@ -20,8 +20,11 @@ clean:
 askmara: askmara.c askmara_labels_en.h $(OBJECTS) $(Q) $(OUTOBJ)
 	$(CC) $(FLAGS) -DAUTHONLY -DIPV6 -o askmara askmara.c $(OBJECTS) $(Q) $(OUTOBJ)
 
-askmara-tcp: askmara-tcp.c askmara_labels_en.h $(OBJECTS) $(ROBJECTS) $(POBJECTS)
-	$(CC) $(FLAGS) -o askmara-tcp askmara-tcp.c $(OBJECTS) $(ROBJECTS) $(POBJECTS)
+askmaratcp: askmaratcp.c askmara_labels_en.h $(OBJECTS) $(ROBJECTS) $(POBJECTS)
+	$(CC) $(FLAGS) -o askmaratcp askmara-tcp.c \
+    $(OBJECTS) $(ROBJECTS) $(POBJECTS) ; \
+    $(CC) $(FLAGS) -o askmara-tcp askmara-tcp.c \
+    $(OBJECTS) $(ROBJECTS) $(POBJECTS)
 
 benchmark: benchmark.c askmara_labels_en.h $(OBJECTS) $(POBJECTS)
 	$(CC) $(FLAGS) -o benchmark benchmark.c $(OBJECTS) $(POBJECTS)

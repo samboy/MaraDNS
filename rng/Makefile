@@ -3,7 +3,10 @@
 
 ROBJECTS=rngalgfst.o rngapifst.o
 OBJECTS=$(ROBJECTS)
-TABLES=rng-32bit-tables.h
+TABLES=rng32bittables.h
+
+# If cross-compiling, change the next line
+HOSTCC=$(CC)
 
 #FLAGS = -g -Wall
 #FLAGS = -g
@@ -18,15 +21,16 @@ clean:
 superclean:
 	rm -f $(ROBJECTS) core make_32bit_tables $(TABLES)
 
-rngalgfst.o: rng-alg-fst.c rng-alg-fst.h $(TABLES)
-	$(CC) -c $(FLAGS) -o rngalgfst.o rng-alg-fst.c
+rngalgfst.o: rngalgfst.c rngalgfst.h $(TABLES)
+	$(CC) -c $(FLAGS) -o rngalgfst.o rngalgfst.c
 
-rngapifst.o: rng-alg-fst.o rng-api-fst.h 
-	$(CC) -c $(FLAGS) -o rngapifst.o rng-api-fst.c
+rngapifst.o: rngalgfst.o rngapifst.h 
+	$(CC) -c $(FLAGS) -o rngapifst.o rngapifst.c
 
 make_32bit_tables: make_32bit_tables.c
-	$(CC) -o make_32bit_tables make_32bit_tables.c
+	$(HOSTCC) -o make_32bit_tables make_32bit_tables.c
 
-rng-32bit-tables.h: make_32bit_tables
-	./make_32bit_tables > rng-32bit-tables.h
+rng32bittables.h: make_32bit_tables
+	./make_32bit_tables > rng-32bit-tables.h ; \
+    ./make_32bit_tables > rng32bittables.h
 

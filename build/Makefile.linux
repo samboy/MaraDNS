@@ -58,7 +58,7 @@ clean:
 	cd ../qual ; make clean ; \
 	cd ../server ; make clean ; \
 	cp Makefile.authonly Makefile ; \
-	cd ../test ; make clean ; \
+	cd ../sqa ; make clean ; \
 	cd ../tools ; make clean ; \
 	cd misc ; make clean ; \
 	cd ../../utf8 ; make clean ; \
