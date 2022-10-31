@@ -21,9 +21,9 @@ askmara: askmara.c askmara_labels_en.h $(OBJECTS) $(Q) $(OUTOBJ)
 	$(CC) $(FLAGS) -DAUTHONLY -DIPV6 -o askmara askmara.c $(OBJECTS) $(Q) $(OUTOBJ)
 
 askmaratcp: askmaratcp.c askmara_labels_en.h $(OBJECTS) $(ROBJECTS) $(POBJECTS)
-	$(CC) $(FLAGS) -o askmaratcp askmara-tcp.c \
+	$(CC) $(FLAGS) -o askmaratcp askmaratcp.c \
     $(OBJECTS) $(ROBJECTS) $(POBJECTS) ; \
-    $(CC) $(FLAGS) -o askmara-tcp askmara-tcp.c \
+    $(CC) $(FLAGS) -o askmara-tcp askmaratcp.c \
     $(OBJECTS) $(ROBJECTS) $(POBJECTS)
 
 benchmark: benchmark.c askmara_labels_en.h $(OBJECTS) $(POBJECTS)

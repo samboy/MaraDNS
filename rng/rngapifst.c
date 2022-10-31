@@ -61,8 +61,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "rng-alg-fst.h"
-#include "rng-api-fst.h"
+#include "rngalgfst.h"
+#include "rngapifst.h"
 
 int makeKey(keyInstance *key, MARA_BYTE direction, int keyLen, char *keyMaterial) {
         int i;
