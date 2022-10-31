@@ -1,5 +1,3 @@
-# To use another CC, invoke as "make CC=clang" or some such
-CC = gcc
 # To use other flags, invoke as "make CFLAGS=-g" or some such
 CFLAGS = -O3
 
@@ -22,9 +20,10 @@ coLunacyDNS: coLunacyDNS.o liblua.a
     ${CC} ${CFLAGS} -Wall -o coLunacyDNS coLunacyDNS.o \
     lunacy/*.o -lm
 
-HalfSipHash13.o: HalfSipHash1-3.c 
-	${CC} ${CFLAGS} -c -Wall -o  HalfSipHash1-3.o HalfSipHash1-3.c
+HalfSipHash13.o: HalfSipHash13.c 
+	${CC} ${CFLAGS} -c -Wall -o  HalfSipHash13.o HalfSipHash13.c
 
 HalfSipHash13: HalfSipHash13.o liblua.a
-	${CC} ${CFLAGS} -Wall -o HalfSipHash1-3 HalfSipHash1-3.o \
-    lunacy/liblua.a -lm
+	${CC} ${CFLAGS} -Wall -o HalfSipHash1-3 HalfSipHash13.o \
+    lunacy/liblua.a -lm ; \
+    ${CC} ${CFLAGS} -Wall -o HalfSipHash13 HalfSipHash13.o lunacy/liblua.a -lm
