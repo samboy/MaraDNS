@@ -57,7 +57,7 @@ clean:
 	cd ../libs ; make clean ; cd ../parse ; make clean ; \
 	cd ../qual ; make clean ; \
 	cd ../server ; make clean ; \
-	cp Makefile.recursive Makefile ; \
+	cp Makefile.authonly Makefile ; \
 	cd ../test ; make clean ; \
 	cd ../tools ; make clean ; \
 	cd misc ; make clean ; \
