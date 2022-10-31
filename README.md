@@ -28,8 +28,8 @@ server. The server is remarkably easy to configure for someone
 comfortable editing text configuration files. MaraDNS is released under
 a BSD license.
 
-I wrote MaraDNS while I was a college student and a travelling English
-teacher during the first 2000s decade. 
+I initially wrote MaraDNS while I was a college student and a travelling
+English teacher during the first 2000s decade.
 
 Since the COVID-19 pandemic, I have been actively adding new features
 to MaraDNS, most notably the new `coLunacyDNS` service which uses Lua
@@ -45,7 +45,7 @@ To build MaraDNS, one needs a POSIX system with:
 
 * A POSIX compatible shell
 * A POSIX compatible implementation of `make`, which has the non-POSIX
-  extension of allowing a make target to have a `/` in them.
+  extension of allowing a make target to have a `/` in it.
 * Other standard POSIX utilities (`awk`, etc.)
 * A current C compiler which can support, via `stdint`, 8-bit, 16-bit, 
   32-bit, and 64-bit sized integers.
