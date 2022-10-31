@@ -45,11 +45,16 @@ To build MaraDNS, one needs a POSIX system with:
 
 * A POSIX compatible shell
 * A POSIX compatible implementation of `make`, which has the non-POSIX
-  extension of allowing a make target to have a `/` in it.
+  extension of allowing a make target to have a `/` in them.
 * Other standard POSIX utilities (`awk`, etc.)
 * A current C compiler which can support, via `stdint`, 8-bit, 16-bit, 
   32-bit, and 64-bit sized integers.
 * A POSIX C library with both POSIX and Berkeley socket support.
+
+While a POSIX program like MaraDNS will not compile with a strictly
+ISO compliant C compiler (the POSIX system calls will fail to compile),
+all of the C programs here compile with `gcc`, `clang`, and `tcc`, and
+should compile with any POSIX compliant C compiler.
 
 All of these are very standard tools which are included with the vast
 majority of Linux and BSD distributions; packages usually have names like:
