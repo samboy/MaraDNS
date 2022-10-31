@@ -60,6 +60,7 @@ clean:
 	cp Makefile.authonly Makefile ; \
 	cd ../sqa ; make clean ; \
 	cd ../tools ; make clean ; \
+	cp Makefile.authonly Makefile ; \
 	cd misc ; make clean ; \
 	cd ../../utf8 ; make clean ; \
 	cd ../tcp ; make clean ; \
