@@ -44,10 +44,11 @@ in the folder `maradns-win32/`
 To build MaraDNS, one needs a POSIX system with:
 
 * A POSIX compatible shell
-* A POSIX compatible implementation of `make`
+* A POSIX compatible implementation of `make`, which has the non-POSIX
+  extension of allowing a make target to have a `/` in it.
 * Other standard POSIX utilities (`awk`, etc.)
-* A C99 C compiler which can support, via `stdint`, 8-bit, 16-bit, 32-bit,
-  and 64-bit sized integers.
+* A current C compiler which can support, via `stdint`, 8-bit, 16-bit, 
+  32-bit, and 64-bit sized integers.
 * A POSIX C library with both POSIX and Berkeley socket support.
 
 All of these are very standard tools which are included with the vast
