@@ -24,5 +24,5 @@ HalfSipHash13.o: HalfSipHash13.c
 	${CC} ${CFLAGS} -c -Wall -o  HalfSipHash13.o HalfSipHash13.c
 
 HalfSipHash13: HalfSipHash13.o lunacy/liblua.a
-	${CC} ${CFLAGS} -Wall -o HalfSipHash1-3 HalfSipHash13.o \
+	${CC} ${CFLAGS} -Wall -o HalfSipHash13 HalfSipHash13.o \
     lunacy/liblua.a -lm
