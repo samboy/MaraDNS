@@ -92,7 +92,7 @@ int escape_stdout(js_string *js) {
 /* Generate a psudo-random query-id based on the hostname we give it.
    This helps us test the server against a large number of query IDs */
 
-u_int16_t gen_id(char *hostname) {
+uint16_t gen_id(char *hostname) {
     /* BEGIN RNG USING CODE */
     /* May as well bring out the bug guns (e.g. our secure RNG) */
     MARA_BYTE r_inBlock[17],r_outBlock[17],r_binKey[17];
