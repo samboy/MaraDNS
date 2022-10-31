@@ -5,7 +5,7 @@ all: coLunacyDNS HalfSipHash13
 
 clean: 
 	rm -f *.o *.exe coLunacyDNS sipHash HalfSipHash1-3 \
-    *.gcda *.gcno *.gcov liblua.a ; \
+    HalfSipHash13 *.gcda *.gcno *.gcov liblua.a ; \
     cd lunacy ; make clean
 
 liblua.a:
