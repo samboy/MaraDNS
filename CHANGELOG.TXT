@@ -1,6 +1,6 @@
 MaraDNS changelog
 
-   maradns-3.5.0025:
+   maradns-3.5.0025: 
    This is a stable release of MaraDNS:
 
       * The ej2man, ej2txt, and ej2html tools have been rewritten in
