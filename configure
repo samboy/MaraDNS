@@ -98,7 +98,7 @@ if echo $UNAME | grep -i linux > /dev/null ; then
 	cat $BUILDDIR/Makefile.linux >> Makefile
 	DEADWOOD="$( echo deadwood-*/src )"
 	cp ${DEADWOOD}/Makefile.ubuntu2204 ${DEADWOOD}/Makefile
-	echo It looks like you are using Linux\; just type in \'make\'
+	echo It looks like you are using Linux\; type in \'make\'
 	EXITCODE=0
 elif echo $UNAME | grep -i mingw32 > /dev/null ; then
 	cat $BUILDDIR/Makefile.mingw32 >> Makefile
@@ -194,6 +194,11 @@ else
 	cp tools/Makefile.ipv6 tools/Makefile
 fi
 
+echo
+echo Be sure to do this before running \'make\':
+echo
+echo '    'CC=cc \# Change this to gcc/clang/tcc if desired
+echo '    'export CC
 echo
 exit $EXITCODE
 
