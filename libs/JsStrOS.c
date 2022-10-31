@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2019 Sam Trenholme
+/* Copyright (c) 2002-2022 Sam Trenholme
  *
  * TERMS
  *
@@ -32,6 +32,12 @@
 /* Headers for the string routines */
 #include "JsStr.h"
 
+/* When gcc is invoked as 'c99', SSIZE_MAX is not defined.
+ * The POSIX standard for limits.h says the minimum acceptable value
+ * for SSIZE_MAX is 32767 */
+#ifndef SSIZE_MAX
+#define SSIZE_MAX 32767
+#endif /* SSIZE_MAX */
 /* Structures that keep track of allocated memory */
 #ifdef DEBUG
 #define HASH_SIZE 100000
