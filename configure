@@ -194,11 +194,13 @@ else
 	cp tools/Makefile.ipv6 tools/Makefile
 fi
 
-echo
-echo Be sure to do this before running \'make\':
-echo
-echo '    'CC=cc \# Change this to gcc/clang/tcc if desired
-echo '    'export CC
-echo
+if [ -z "$CC" ] ; then
+	echo
+	echo Be sure to do this before running \'make\':
+	echo
+	echo '    'CC=cc \# Change this to gcc/clang/tcc if desired
+	echo '    'export CC
+fi
+	echo
 exit $EXITCODE
 
