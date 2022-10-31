@@ -1,4 +1,4 @@
-ROBJECTS=../../rng/rng-alg-fst.o ../../rng/rng-api-fst.o
+ROBJECTS=../../rng/rngalgfst.o ../../rng/rngapifst.o
 EXECS=marahash mqhash rg32hash
 
 FLAGS = -g

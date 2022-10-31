@@ -3,7 +3,7 @@ MHOBJS=../libs/MaraHash.o
 DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o \
          ../dns/Decompress.o ../server/timestamp.o
 POBJECTS=../parse/ParseMaraRc.o ../parse/ParseCsv1.o ../parse/ParseIpAcl.o
-ROBJECTS=../rng/rng-alg-fst.o ../rng/rng-api-fst.o
+ROBJECTS=../rng/rngalgfst.o ../rng/rngapifst.o
 OBJECTS=$(JOBJS) $(MHOBJS) $(DOBJECTS) $(POBJECTS)
 EXECS=rtest csv1test compress.test show.charnum ipacltest rngtest cst \
       timestamp compress_new.test test_zoneserver test_getzone duende-test 

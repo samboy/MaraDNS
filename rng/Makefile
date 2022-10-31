@@ -1,7 +1,7 @@
 # Written because some makes (such as NetBSD's make) do not like the Makefile
 # the original Rijndael code came with.
 
-ROBJECTS=rng-alg-fst.o rng-api-fst.o
+ROBJECTS=rngalgfst.o rngapifst.o
 OBJECTS=$(ROBJECTS)
 TABLES=rng-32bit-tables.h
 
@@ -18,11 +18,11 @@ clean:
 superclean:
 	rm -f $(ROBJECTS) core make_32bit_tables $(TABLES)
 
-rng-alg-fst.o: rng-alg-fst.c rng-alg-fst.h $(TABLES)
-	$(CC) -c $(FLAGS) -o rng-alg-fst.o rng-alg-fst.c
+rngalgfst.o: rng-alg-fst.c rng-alg-fst.h $(TABLES)
+	$(CC) -c $(FLAGS) -o rngalgfst.o rng-alg-fst.c
 
-rng-api-fst.o: rng-alg-fst.o rng-api-fst.h 
-	$(CC) -c $(FLAGS) -o rng-api-fst.o rng-api-fst.c
+rngapifst.o: rng-alg-fst.o rng-api-fst.h 
+	$(CC) -c $(FLAGS) -o rngapifst.o rng-api-fst.c
 
 make_32bit_tables: make_32bit_tables.c
 	$(CC) -o make_32bit_tables make_32bit_tables.c

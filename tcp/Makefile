@@ -11,13 +11,13 @@ POBJECTS=../parse/ParseMaraRc.o ../parse/ParseCsv1.o $(POBJ4) $(POBJ5)
 OBJECTS=../parse/ParseCsv1.o ../parse/ParseMaraRc.o ../parse/ParseIpAcl.o
 SOBJECTS=../server/timestamp.o ../server/MaraBigHash.o ../server/read_kvars.o \
 	 ../server/MaraAnyChain.o
-RNGOBJS=../rng/rng-api-fst.o ../rng/rng-alg-fst.o
+RNGOBJS=../rng/rngapifst.o ../rng/rngalgfst.o
 TCPOBJS=libtcp.o
 OBJECTS=$(JOBJS) $(MHOBJS) $(MJOBJS) $(DOBJECTS) $(POBJECTS) $(SOBJECTS) \
 	$(TCPOBJS)
 EXECS=getzone zoneserver fetchzone
 
-FLAGS = -DAUTHONLY
+FLAGS = -DAUTHONLY -DIPV6
 
 all: $(EXECS)
 

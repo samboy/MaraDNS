@@ -9,7 +9,7 @@ POBJECTS=parse/ParseMaraRc.o parse/ParseCsv1.o ../parse/ParseIpAcl.o
 # DNS query processing library objects
 DOBJECTS=dns/Queries.o dns/Compress.o dns/bobbit.o
 # Secure random number generator objects
-ROBJECTS=rng/rng-api-fst.o rng/rng-alg-fst.o
+ROBJECTS=rng/rngapifst.o rng/rngalgfst.o
 OBJECTS=$(JOBJS) $(MHOBJS) $(SOBJECTS) $(DOBJECTS) $(POBJECTS) $(DOBJECTS) $(ROBJECTS)
 EXECS=server/maradns
 

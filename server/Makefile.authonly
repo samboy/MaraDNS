@@ -9,7 +9,7 @@ POBJ2=../parse/Csv2_read.o ../parse/Csv2_main.o ../parse/Csv2_parse.o $(POBJ3)
 POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2) $(POBJ6)
 POBJECTS=../parse/ParseMaraRc.o ../parse/ParseCsv1.o $(POBJ4) $(POBJ5)
 DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o ../dns/Decompress.o
-ROBJECTS=../rng/rng-api-fst.o ../rng/rng-alg-fst.o
+ROBJECTS=../rng/rngapifst.o ../rng/rngalgfst.o
 OBJECTS=$(JOBJS) $(MHOBJS) $(MJOBJS) $(SOBJECTS) $(DOBJECTS) $(POBJECTS) $(ROBJECTS)
 EXECS=maradns
 
