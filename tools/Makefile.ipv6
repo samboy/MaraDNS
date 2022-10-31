@@ -15,7 +15,7 @@ EXECS=askmara askmaratcp strip.control benchmark duende
 all: $(EXECS)
 
 clean:
-	rm -f core $(EXECS) *.exe
+	rm -f core $(EXECS) askmara-tcp *.exe
 
 askmara: askmara.c askmara_labels_en.h $(OBJECTS) $(Q) $(OUTOBJ)
 	$(CC) $(FLAGS) -DAUTHONLY -DIPV6 -o askmara askmara.c $(OBJECTS) $(Q) $(OUTOBJ)
