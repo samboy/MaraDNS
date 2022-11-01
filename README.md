@@ -79,6 +79,13 @@ majority of Linux and BSD distributions; packages usually have names like:
 * POSIX compatible implementations of `sh`, `awk`, and other utilities are
   also almost always included as part of a Linux base install.
 
+MaraDNS successfully compiles with `gcc`, `clang`, and `tcc`; it 
+successfully builds with GNU make, bmake, pdpmake (as long as non-POSIX
+extensions are enabled and `CC` has the value `cc`), and maramake.
+The version of `make` used to compile MaraDNS needs to have the command
+name `make`.  MaraDNS compiles and runs with both Busybox version of
+the core POSIX utilities and GNU coreutils.
+
 ## Supported OSes
 
 There are no “supported OSes” for MaraDNS.  I currently use Ubuntu 22.04
