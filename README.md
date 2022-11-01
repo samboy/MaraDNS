@@ -66,7 +66,7 @@ says that the default value should be `c99`, a compiler which will not
 compile MaraDNS.  A POSIX program like MaraDNS will not compile with a
 strictly ISO compliant C compiler (the POSIX system calls will fail to
 compile).  However, all of the C programs here compile with `gcc`,
-`clang`, and `tcc`, and should compile with any POSIX compliant C
+`clang`, and `tcc`, and should compile with any reasonable POSIX C
 compiler.
 
 All of these are very standard tools which are included with the vast
@@ -83,7 +83,7 @@ MaraDNS successfully compiles with `gcc`, `clang`, and `tcc`; it
 successfully builds with GNU make, bmake, pdpmake (as long as non-POSIX
 extensions are enabled and `CC` has the value `cc`), and maramake.
 The version of `make` used to compile MaraDNS needs to have the command
-name `make`.  MaraDNS compiles and runs with both Busybox version of
+name `make`.  MaraDNS compiles and runs with both Busybox versions of
 the core POSIX utilities and GNU coreutils.
 
 ## Supported OSes
