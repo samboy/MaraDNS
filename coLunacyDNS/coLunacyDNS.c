@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2021 Sam Trenholme 
+/* Copyright (c) 2007-2022 Sam Trenholme 
  *
  * TERMS
  *
@@ -2155,7 +2155,7 @@ int main(int argc, char **argv) {
 	SipHashSetKey(rand32(),rand32());
 
         if(argc != 2 || *argv[1] == '-') {
-                printf("coLunacyDNS version 1.0.011 starting\n\n");
+                printf("coLunacyDNS version 1.0.012 starting\n\n");
         }
         set_time(); // Run this frequently to update timestamp
         // Get bindIp and returnIp from Lua script
@@ -2463,7 +2463,7 @@ int main(int argc, char **argv) {
                         svc_install_service();
                 }
         } else {
-                printf("coLunacyDNS version 1.0.011\n\n");
+                printf("coLunacyDNS version 1.0.012\n\n");
                 printf(
                     "coLunacyDNS is a DNS server that is a Windows service\n\n"
                     "To install this service:\n\n\tcoLunacyDNS --install\n\n"
