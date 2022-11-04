@@ -1,5 +1,13 @@
 MaraDNS changelog
 
+   maradns-3.5.0026:
+   This is a stable release of MaraDNS:
+
+      * coLunacyDNS updated to 1.0.012 (minor speed up with the SipHash
+        code)
+
+     (202?-??-??)
+
    maradns-3.5.0025:
    This is a stable release of MaraDNS:
 
