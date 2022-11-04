@@ -80,7 +80,7 @@ uint64_t sipKey1 = 0xded6cbc72f7eeb4fULL;
 uint64_t sipKey2 = 0x81875fe84b1705d7ULL;
 #else
 uint32_t sipKey1 = 0xded6cbc7;
-uint64_t sipKey2 = 0x2f7eeb4f;
+uint32_t sipKey2 = 0x2f7eeb4f;
 #endif
 
 #ifdef FullSipHash
