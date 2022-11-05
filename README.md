@@ -5,7 +5,7 @@ MaraDNS is a free open-source computer program written by Sam Trenholme.
 MaraDNS implements the Domain Name System (DNS), an essential internet
 service. MaraDNS is open source software: This means that anyone is
 free to download, use, and modify the program free of charge, as per
-its license.
+its license. 
 
 People like MaraDNS because it’s small, lightweight, easy to set up,
 and remarkably secure. It’s also cross platform — the program runs
