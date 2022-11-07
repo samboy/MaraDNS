@@ -1,8 +1,10 @@
-Summary: All files here are under a BSD or MIT license.
+Summary: With the exception of two public domain tarballs in Docker-stuff,
+all files here are under a BSD or MIT license.
 
 --
 
-Copyright for everything *not* in the coLunacyDNS/lunacy/ folder:
+Copyright for everything *not* in the coLunacyDNS/lunacy/,
+Docker-stuff/, or tools/ej/ folders:
 
 Copyright (c) 2002-2022 Sam Trenholme and others
 
@@ -107,4 +109,52 @@ bitlib is a C library for Lua 5.1 that provides bitwise operations. It
 is copyright Reuben Thomas 2000-2009, and is released under the MIT
 license, like Lua (see http://www.lua.org/copyright.html; it's
 basically the same as the BSD license). There is no warranty.
+
+-----------------------------------------------------------------------
+
+The files rg32hash.tar.gz and all files in tools/ej are available under
+the following terms.
+
+-----------------------------------------------------------------------
+
+This program has been donated to the public domain in 2007 or 2022 by 
+Sam Trenholme
+
+If, for some reason, a public domain declation is not acceptable, it
+may be licensed under the following terms:
+
+Copyright 2022 Sam Trenholme
+Permission to use, copy, modify, and/or distribute this software for
+any purpose with or without fee is hereby granted.
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+-----------------------------------------------------------------------
+
+The file maramake-2022-11-01.tar.gz is available under the following 
+terms.
+
+-----------------------------------------------------------------------
+
+This is free and unencumbered software released into the public domain.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+-----------------------------------------------------------------------
 
