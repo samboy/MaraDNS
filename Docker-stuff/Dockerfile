@@ -6,13 +6,17 @@ FROM ubuntu:22.04
 COPY killall /usr/bin/
 COPY rg32hash.tar.gz /tmp/
 COPY run.tests.sh /
+COPY maramake-2022-11-01.tar.gz /tmp/
 
 RUN apt-get -y update && apt-get -y install unattended-upgrades && \
         unattended-upgrades -d && apt-get -y install gcc && \
         apt-get -y install git && apt-get -y install lua5.1 && \
 	apt-get -y install busybox && \
-	apt-get -y install make && cd /tmp && git clone \
-	https://github.com/samboy/MaraDNS && cd MaraDNS && \
+	apt-get -y install make && \
+        cd /tmp && \
+        tar xvzf maramake-2022-11-01.tar.gz && cd maramake-2022-11-01 && \
+        cc -O3 -o make *.c && cp make /usr/bin/ && cd .. && \
+        git clone https://github.com/samboy/MaraDNS && cd MaraDNS && \
 	./configure && make && make install && export FLAGS=-O3 && \
 	cd deadwood-* && cd src/ && ./make.version.h && \
 	make -f Makefile.sl6 && cp Deadwood /usr/local/sbin/ && \
