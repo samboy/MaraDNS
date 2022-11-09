@@ -5,7 +5,6 @@ COPY run.tests.sh /
 RUN apk add --no-cache gcc && apk add --no-cache libc-dev && \
     apk add --no-cache lua5.1 && apk add --no-cache git && \
     apk add --no-cache lua5.1-bit32 && apk add --no-cache patch && \
-    apk add --no-cache make && \
     apk add --no-cache valgrind && \
     apk add --no-cache clang && cd /tmp && \
     tar xvzf maramake-2022-11-01.tar.gz && cd maramake-2022-11-01 && \

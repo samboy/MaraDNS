@@ -12,7 +12,6 @@ RUN apt-get -y update && apt-get -y install unattended-upgrades && \
         unattended-upgrades -d && apt-get -y install gcc && \
         apt-get -y install git && apt-get -y install lua5.1 && \
 	apt-get -y install busybox && \
-	apt-get -y install make && \
         cd /tmp && \
         tar xvzf maramake-2022-11-01.tar.gz && cd maramake-2022-11-01 && \
         cc -O3 -o make *.c && cp make /usr/bin/ && cd .. && \
