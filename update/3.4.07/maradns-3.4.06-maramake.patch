@@ -78,40 +78,6 @@ index bee6506..ba77d66 100644
  /* END RNG USING CODE */
  
  #include "../libs/MaraHash.h"
---- maradns-3.4.06/rng/Makefile	2006-01-02 08:59:33.000000000 -0800
-+++ maradns-3.4.07/rng/Makefile	2022-11-10 18:55:50.106144747 -0800
-@@ -1,7 +1,7 @@
- # Written because some makes (such as NetBSD's make) do not like the Makefile
- # the original Rijndael code came with.
- 
--ROBJECTS=rng-alg-fst.o rng-api-fst.o
-+ROBJECTS=rngalgfst.o rngapifst.o
- OBJECTS=$(ROBJECTS)
- TABLES=rng-32bit-tables.h
- 
-@@ -18,15 +18,16 @@
- superclean:
- 	rm -f $(ROBJECTS) core make_32bit_tables $(TABLES)
- 
--rng-alg-fst.o: rng-alg-fst.c rng-alg-fst.h $(TABLES)
--	$(CC) -c $(FLAGS) -o rng-alg-fst.o rng-alg-fst.c
-+rngalgfst.o: rngalgfst.c rngalgfst.h $(TABLES)
-+	$(CC) -c $(FLAGS) -o rngalgfst.o rngalgfst.c
- 
--rng-api-fst.o: rng-alg-fst.o rng-api-fst.h 
--	$(CC) -c $(FLAGS) -o rng-api-fst.o rng-api-fst.c
-+rngapifst.o: rngalgfst.o rngapifst.h 
-+	$(CC) -c $(FLAGS) -o rngapifst.o rngapifst.c
- 
- make_32bit_tables: make_32bit_tables.c
- 	$(CC) -o make_32bit_tables make_32bit_tables.c
- 
--rng-32bit-tables.h: make_32bit_tables
--	./make_32bit_tables > rng-32bit-tables.h
-+rng32bittables.h: make_32bit_tables
-+	./make_32bit_tables > rng-32bit-tables.h ;\
-+	./make_32bit_tables > rng32bittables.h
- 
 --- maradns-3.4.06/tools/misc/Makefile	2009-02-13 00:18:31.000000000 -0800
 +++ maradns-3.4.07/tools/misc/Makefile	2022-11-10 19:01:50.583869235 -0800
 @@ -1,4 +1,4 @@
@@ -285,3 +251,40 @@ index bee6506..ba77d66 100644
  
  benchmark: benchmark.c askmara_labels_en.h $(OBJECTS) $(POBJECTS)
  	$(CC) $(FLAGS) -o benchmark benchmark.c $(OBJECTS) $(POBJECTS)
+--- maradns-3.4.06/rng/Makefile	2006-01-02 08:59:33.000000000 -0800
++++ maradns-3.4.07/rng/Makefile	2022-11-10 19:48:08.471674846 -0800
+@@ -1,9 +1,9 @@
+ # Written because some makes (such as NetBSD's make) do not like the Makefile
+ # the original Rijndael code came with.
+ 
+-ROBJECTS=rng-alg-fst.o rng-api-fst.o
++ROBJECTS=rngalgfst.o rngapifst.o
+ OBJECTS=$(ROBJECTS)
+-TABLES=rng-32bit-tables.h
++TABLES=rng32bittables.h
+ 
+ #FLAGS = -g -Wall
+ #FLAGS = -g
+@@ -18,15 +18,16 @@
+ superclean:
+ 	rm -f $(ROBJECTS) core make_32bit_tables $(TABLES)
+ 
+-rng-alg-fst.o: rng-alg-fst.c rng-alg-fst.h $(TABLES)
+-	$(CC) -c $(FLAGS) -o rng-alg-fst.o rng-alg-fst.c
++rngalgfst.o: rngalgfst.c rngalgfst.h $(TABLES)
++	$(CC) -c $(FLAGS) -o rngalgfst.o rngalgfst.c
+ 
+-rng-api-fst.o: rng-alg-fst.o rng-api-fst.h 
+-	$(CC) -c $(FLAGS) -o rng-api-fst.o rng-api-fst.c
++rngapifst.o: rngalgfst.o rngapifst.h 
++	$(CC) -c $(FLAGS) -o rngapifst.o rngapifst.c
+ 
+ make_32bit_tables: make_32bit_tables.c
+ 	$(CC) -o make_32bit_tables make_32bit_tables.c
+ 
+-rng-32bit-tables.h: make_32bit_tables
+-	./make_32bit_tables > rng-32bit-tables.h
++rng32bittables.h: make_32bit_tables
++	./make_32bit_tables > rng-32bit-tables.h ;\
++	./make_32bit_tables > rng32bittables.h
+ 
