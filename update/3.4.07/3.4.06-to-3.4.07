@@ -117,6 +117,7 @@ mv rng-api-fst.h rngapifst.h
 cp rng-32bit-tables.h rng32bittables.h
 cd $TOP
 patch -p1 < update/$NEXT/maradns-3.4.06-maramake.patch
+patch -p1 < update/$NEXT/maradns-3.4.06-changelog.patch
 
 # Anything below this line normally is not changed between MaraDNS versions
 
