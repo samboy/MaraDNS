@@ -288,3 +288,25 @@ index bee6506..ba77d66 100644
 +	./make_32bit_tables > rng-32bit-tables.h ;\
 +	./make_32bit_tables > rng32bittables.h
  
+--- maradns-3.4.06/tcp/Makefile.authonly	2006-07-17 20:50:44.000000000 -0700
++++ maradns-3.4.07/tcp/Makefile.authonly	2022-11-10 20:39:30.190472649 -0800
+@@ -11,7 +11,7 @@
+ OBJECTS=../parse/ParseCsv1.o ../parse/ParseMaraRc.o ../parse/ParseIpAcl.o
+ SOBJECTS=../server/timestamp.o ../server/MaraBigHash.o ../server/read_kvars.o \
+ 	 ../server/MaraAnyChain.o
+-RNGOBJS=../rng/rng-api-fst.o ../rng/rng-alg-fst.o
++RNGOBJS=../rng/rngapifst.o ../rng/rngalgfst.o
+ TCPOBJS=libtcp.o
+ OBJECTS=$(JOBJS) $(MHOBJS) $(MJOBJS) $(DOBJECTS) $(POBJECTS) $(SOBJECTS) \
+ 	$(TCPOBJS)
+--- maradns-3.4.06/tcp/Makefile.ipv6	2010-08-28 15:46:26.000000000 -0700
++++ maradns-3.4.07/tcp/Makefile.ipv6	2022-11-10 20:39:41.762404955 -0800
+@@ -11,7 +11,7 @@
+ OBJECTS=../parse/ParseCsv1.o ../parse/ParseMaraRc.o ../parse/ParseIpAcl.o
+ SOBJECTS=../server/timestamp.o ../server/MaraBigHash.o ../server/read_kvars.o \
+ 	 ../server/MaraAnyChain.o
+-RNGOBJS=../rng/rng-api-fst.o ../rng/rng-alg-fst.o
++RNGOBJS=../rng/rngapifst.o ../rng/rngalgfst.o
+ TCPOBJS=libtcp.o
+ OBJECTS=$(JOBJS) $(MHOBJS) $(MJOBJS) $(DOBJECTS) $(POBJECTS) $(SOBJECTS) \
+ 	$(TCPOBJS)
