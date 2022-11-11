@@ -3,6 +3,9 @@
    shell script which simply does a "mkdir /etc/maradns/dev; cd /dev;
    cp tcp udp zero /etc/maradns/dev" does not work).
 */
+/* Y2038 statement: I assume anyone using Solaris in 2038 either has
+   a 64-bit time_t or that stat() without timestamps will run without
+   problem post-Y2038 */
 
 /* Some locations */
 #define DEV_DIRECTORY "/dev"
