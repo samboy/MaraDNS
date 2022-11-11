@@ -1,6 +1,6 @@
 #!/usr/bin/perl 
 
-# This is not a part of MaraDNS, per sé, but is the Perl script I whipped
+# This is not a part of MaraDNS, per se, but is the Perl script I whipped
 # together to insure only subscribers can post to the list
 
 # Like everything else, this program is public domain
