@@ -1,0 +1,23 @@
+--- deadwood-3.4.06/doc/Makefile	2012-02-28 23:59:53.000000000 -0800
++++ deadwood-3.4.07/doc/Makefile	2022-11-10 17:10:13.390661170 -0800
+@@ -1,5 +1,5 @@
+ all: Duende.1 Duende.txt Deadwood.1 Deadwood.txt FAQ.txt FAQ.html \
+-	Deadwood.html Recursive-algorithm.txt
++	Deadwood.html Recursive_algorithm.txt
+ 
+ clean:
+ 	rm -f Duende.1 Duende.txt Deadwood.1 Deadwood.txt FAQ.txt
+@@ -31,8 +31,9 @@
+ FAQ.html: FAQ.ej
+ 	../tools/ej/ej2html FAQ.ej > FAQ.html
+ 
+-Recursive-algorithm.txt: Recursive-algorithm.ej
+-	../tools/ej/ej2txt Recursive-algorithm.ej > Recursive-algorithm.txt ;\
+-	echo >> Recursive-algorithm.txt ;\
+-	unix2dos Recursive-algorithm.txt
++Recursive_algorithm.txt: Recursive_algorithm.ej
++	../tools/ej/ej2txt Recursive_algorithm.ej > Recursive_algorithm.txt ;\
++	echo >> Recursive_algorithm.txt ;\
++	unix2dos Recursive_algorithm.txt ; \
++	cp Recursive_algorithm.txt Recursive-algorithm.txt
+ 
