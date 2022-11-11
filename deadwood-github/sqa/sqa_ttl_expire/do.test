@@ -1,6 +1,9 @@
 #!/bin/bash -e
 
 # Bash-isms used: Job control (quick-and-dirty daemonization)
+# (Works with Busybox ash)
+
+# This test requires a time_t larger than 32 bits in size
 
 # Make sure that we correctly expire records even if they are frequently
 # accessed.  

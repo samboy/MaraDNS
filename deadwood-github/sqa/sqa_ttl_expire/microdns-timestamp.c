@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2011 Sam Trenholme
+/* Copyright (c) 2009-2022 Sam Trenholme
  *
  * TERMS
  *
@@ -121,6 +121,10 @@ int main(int argc, char **argv) {
         uint32_t ip = 0; /* 0.0.0.0; default bind IP */
         int leni = sizeof(struct sockaddr);
 
+        if(sizeof(time_t) <= 4) {
+		return 1;
+	}
+
         ip = get_ip(argc, argv);
         sock = get_port(ip,argv,&dns_udp);
 
@@ -166,6 +170,6 @@ int main(int argc, char **argv) {
                 sendto(sock,in,len_inet + 16,0, (struct sockaddr *)&dns_udp,
                         leni);
         }
-
+	return 0;
 }
 
