@@ -59,10 +59,8 @@ tools/misc/make.maradns.spec $NEXT 2> /dev/null > foo
 grep -v EOF foo > build/maradns-$NEXT.spec
 rm foo
 
-# Deadwood 3.4.07 might be the first "null" Deadwood 3.4 release
-# It’s usually Deadwood that is getting patched and updated
-#rm -fr deadwood-3.4.06
-#tar xjf ../deadwood-3.4.06.tar.bz2
+rm -fr deadwood-3.4.06
+tar xjf ../deadwood-3.4.07.tar.bz2
 
 # Regenerate Deadwood's random prime number
 echo Making new random prime
