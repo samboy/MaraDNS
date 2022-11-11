@@ -35,6 +35,5 @@ Recursive_algorithm.txt: Recursive_algorithm.ej
 	../../tools/ej/ej2txt Recursive_algorithm.ej > \
 	Recursive_algorithm.txt ;\
 	echo >> Recursive_algorithm.txt ;\
-	unix2dos Recursive_algorithm.txt ; \
-	cp Recursive_algorithm.txt Recursive-algorithm.txt
+	unix2dos Recursive_algorithm.txt 
 
