@@ -1,4 +1,4 @@
-/* Copyright (c) 2004-2011 Sam Trenholme
+/* Copyright (c) 2004-2022 Sam Trenholme
  *
  * TERMS
  *
@@ -198,8 +198,8 @@ int csv2_set_soa_serial(csv2_add_state *state, js_string *filename) {
                 return JS_ERROR;
         }
         t = buf.st_mtime;
-        /* Y2038 workaround */
-        if(t < 290805600) {
+        /* Y2038 workaround; window is 2020-2155 or so */
+        if(t < 1595787855) {
             t += 2147483648U;
             }
         if(show_synth_soa_serial() != 2) {
