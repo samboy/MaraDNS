@@ -1,0 +1,287 @@
+--- a/rng/rngalgfst.c
++++ b/rng/rngalgfst.c
+@@ -47,8 +47,8 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ 
+-#include "rng-alg-fst.h"
+-#include "rng-32bit-tables.h"
++#include "rngalgfst.h"
++#include "rng32bittables.h"
+ 
+ static const u32 rcon[] = {
+         0x01000000, 0x02000000, 0x04000000, 0x08000000,
+--- a/rng/rngapifst.c
++++ b/rng/rngapifst.c
+@@ -61,8 +61,8 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
+-#include "rng-alg-fst.h"
+-#include "rng-api-fst.h"
++#include "rngalgfst.h"
++#include "rngapifst.h"
+ 
+ int makeKey(keyInstance *key, MARA_BYTE direction, int keyLen, char *keyMaterial) {
+         int i;
+index 6a03ba2..049138b 100644
+--- a/rng/rngapifst.h
++++ b/rng/rngapifst.h
+@@ -59,7 +59,7 @@
+ #define __RIJNDAEL_API_FST_H
+ 
+ #include <stdio.h>
+-#include "rng-alg-fst.h"
++#include "rngalgfst.h"
+ 
+ /*  Generic Defines  */
+ #define     DIR_ENCRYPT           0 /*  Are we encrpyting?  */
+diff --git a/tcp/zoneserver.c b/tcp/zoneserver.c
+index 7726286..81c51ea 100644
+--- a/tcp/zoneserver.c
++++ b/tcp/zoneserver.c
+@@ -54,7 +54,7 @@
+ #include <arpa/inet.h>
+ #include <signal.h>
+ /* BEGIN RNG USING CODE */
+-#include "../rng/rng-api-fst.h"
++#include "../rng/rngapifst.h"
+ /* END RNG USING CODE */
+ /* Function prototypes */
+ #include "../dns/functions_dns.h"
+diff --git a/tools/askmara.c b/tools/askmara.c
+index 6284730..80ca58d 100644
+--- a/tools/askmara.c
++++ b/tools/askmara.c
+@@ -42,7 +42,7 @@
+ #include "askmara_labels_en.h"
+ /* BEGIN RNG USING CODE */
+ /* Yes, we use the RNG to make the psudo-random number */
+-#include "../rng/rng-api-fst.h"
++#include "../rng/rngapifst.h"
+ /* END RNG USING CODE */
+ 
+ #include "../libs/MaraHash.h"
+diff --git a/tools/askmara-tcp.c b/tools/askmaratcp.c
+similarity index 99%
+rename from tools/askmara-tcp.c
+rename to tools/askmaratcp.c
+index bee6506..ba77d66 100644
+--- a/tools/askmara-tcp.c
++++ b/tools/askmaratcp.c
+@@ -42,7 +42,7 @@
+ #include "askmara_labels_en.h"
+ /* BEGIN RNG USING CODE */
+ /* Yes, we use the RNG to make the psudo-random number */
+-#include "../rng/rng-api-fst.h"
++#include "../rng/rngapifst.h"
+ /* END RNG USING CODE */
+ 
+ #include "../libs/MaraHash.h"
+--- maradns-3.4.06/rng/Makefile	2006-01-02 08:59:33.000000000 -0800
++++ maradns-3.4.07/rng/Makefile	2022-11-10 18:55:50.106144747 -0800
+@@ -1,7 +1,7 @@
+ # Written because some makes (such as NetBSD's make) do not like the Makefile
+ # the original Rijndael code came with.
+ 
+-ROBJECTS=rng-alg-fst.o rng-api-fst.o
++ROBJECTS=rngalgfst.o rngapifst.o
+ OBJECTS=$(ROBJECTS)
+ TABLES=rng-32bit-tables.h
+ 
+@@ -18,15 +18,16 @@
+ superclean:
+ 	rm -f $(ROBJECTS) core make_32bit_tables $(TABLES)
+ 
+-rng-alg-fst.o: rng-alg-fst.c rng-alg-fst.h $(TABLES)
+-	$(CC) -c $(FLAGS) -o rng-alg-fst.o rng-alg-fst.c
++rngalgfst.o: rngalgfst.c rngalgfst.h $(TABLES)
++	$(CC) -c $(FLAGS) -o rngalgfst.o rngalgfst.c
+ 
+-rng-api-fst.o: rng-alg-fst.o rng-api-fst.h 
+-	$(CC) -c $(FLAGS) -o rng-api-fst.o rng-api-fst.c
++rngapifst.o: rngalgfst.o rngapifst.h 
++	$(CC) -c $(FLAGS) -o rngapifst.o rngapifst.c
+ 
+ make_32bit_tables: make_32bit_tables.c
+ 	$(CC) -o make_32bit_tables make_32bit_tables.c
+ 
+-rng-32bit-tables.h: make_32bit_tables
+-	./make_32bit_tables > rng-32bit-tables.h
++rng32bittables.h: make_32bit_tables
++	./make_32bit_tables > rng-32bit-tables.h ;\
++	./make_32bit_tables > rng32bittables.h
+ 
+--- maradns-3.4.06/tools/misc/Makefile	2009-02-13 00:18:31.000000000 -0800
++++ maradns-3.4.07/tools/misc/Makefile	2022-11-10 19:01:50.583869235 -0800
+@@ -1,4 +1,4 @@
+-ROBJECTS=../../rng/rng-alg-fst.o ../../rng/rng-api-fst.o
++ROBJECTS=../../rng/rngalgfst.o ../../rng/rngapifst.o
+ EXECS=marahash mqhash rg32hash
+ 
+ FLAGS = -g
+--- maradns-3.4.06/tools/Makefile	2010-09-09 13:21:09.000000000 -0700
++++ maradns-3.4.07/tools/Makefile	2022-11-10 19:10:26.280680776 -0800
+@@ -4,10 +4,10 @@
+ SOBJECTS=../server/timestamp.o
+ OUTOBJ=../parse/Csv2_esc_txt.o
+ OBJECTS=$(JOBJS) $(MHOBJS) $(DOBJECTS) $(SOBJECTS)
+-ROBJECTS=../rng/rng-alg-fst.o ../rng/rng-api-fst.o
++ROBJECTS=../rng/rngalgfst.o ../rng/rngapifst.o
+ POBJECTS=../parse/ParseCsv1.o ../parse/ParseMaraRc.o 
+ Q=$(ROBJECTS) $(POBJECTS)
+-EXECS=askmara askmara-tcp strip.control benchmark duende
++EXECS=askmara askmaratcp strip.control benchmark duende
+ 
+ #FLAGS = -g $(DEBUG)
+ #FLAGS = -g $(DEBUG)
+@@ -20,8 +20,9 @@
+ askmara: askmara.c askmara_labels_en.h $(OBJECTS) $(Q) $(OUTOBJ)
+ 	$(CC) $(FLAGS) -DAUTHONLY -o askmara askmara.c $(OBJECTS) $(Q) $(OUTOBJ)
+ 
+-askmara-tcp: askmara-tcp.c askmara_labels_en.h $(OBJECTS) $(ROBJECTS) $(POBJECTS)
+-	$(CC) $(FLAGS) -o askmara-tcp askmara-tcp.c $(OBJECTS) $(ROBJECTS) $(POBJECTS)
++askmaratcp: askmaratcp.c askmara_labels_en.h $(OBJECTS) $(ROBJECTS) $(POBJECTS)
++	$(CC) $(FLAGS) -o askmaratcp askmaratcp.c $(OBJECTS) $(ROBJECTS) $(POBJECTS) ;\
++	$(CC) $(FLAGS) -o askmara-tcp askmaratcp.c $(OBJECTS) $(ROBJECTS) $(POBJECTS) ;\
+ 
+ benchmark: benchmark.c askmara_labels_en.h $(OBJECTS) $(POBJECTS)
+ 	$(CC) $(FLAGS) -o benchmark benchmark.c $(OBJECTS) $(POBJECTS)
+--- maradns-3.4.06/sqa/Makefile	2007-02-14 07:25:28.000000000 -0800
++++ maradns-3.4.07/sqa/Makefile	2022-11-10 19:11:40.012254202 -0800
+@@ -2,7 +2,7 @@
+ MHOBJS=../libs/MaraHash.o 
+ DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o ../dns/Decompress.o 
+ POBJECTS=../parse/ParseMaraRc.o ../parse/ParseCsv1.o ../parse/ParseIpAcl.o
+-ROBJECTS=../rng/rng-api-fst.o ../rng/rng-alg-fst.o
++ROBJECTS=../rng/rngapifst.o ../rng/rngalgfst.o
+ SOBJECTS=../server/timestamp.o
+ OBJECTS=$(JOBJS) $(MHOBJS) $(DOBJECTS) $(ROBJECTS) $(POBJECTS) $(SOBJECTS)
+ EXECS=asktest qr.test aaaatest dead_host_simulate sendudp sendnoise
+--- maradns-3.4.06/server/Makefile	2010-09-09 13:21:09.000000000 -0700
++++ maradns-3.4.07/server/Makefile	2022-11-10 19:12:58.715793919 -0800
+@@ -9,7 +9,7 @@
+ POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2) $(POBJ6)
+ POBJECTS=../parse/ParseMaraRc.o ../parse/ParseCsv1.o $(POBJ4) $(POBJ5)
+ DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o ../dns/Decompress.o
+-ROBJECTS=../rng/rng-api-fst.o ../rng/rng-alg-fst.o
++ROBJECTS=../rng/rngapifst.o ../rng/rngalgfst.o
+ OBJECTS=$(JOBJS) $(MHOBJS) $(MJOBJS) $(SOBJECTS) $(DOBJECTS) $(POBJECTS) $(ROBJECTS)
+ EXECS=maradns
+ 
+--- maradns-3.4.06/server/Makefile.authonly	2010-08-28 15:43:01.000000000 -0700
++++ maradns-3.4.07/server/Makefile.authonly	2022-11-10 19:14:26.875273152 -0800
+@@ -9,7 +9,7 @@
+ POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2) $(POBJ6)
+ POBJECTS=../parse/ParseMaraRc.o ../parse/ParseCsv1.o $(POBJ4) $(POBJ5)
+ DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o ../dns/Decompress.o
+-ROBJECTS=../rng/rng-api-fst.o ../rng/rng-alg-fst.o
++ROBJECTS=../rng/rngapifst.o ../rng/rngalgfst.o
+ OBJECTS=$(JOBJS) $(MHOBJS) $(MJOBJS) $(SOBJECTS) $(DOBJECTS) $(POBJECTS) $(ROBJECTS)
+ EXECS=maradns
+ 
+--- maradns-3.4.06/server/Makefile.ipv6	2010-08-28 15:43:17.000000000 -0700
++++ maradns-3.4.07/server/Makefile.ipv6	2022-11-10 19:14:41.331187295 -0800
+@@ -9,7 +9,7 @@
+ POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2) $(POBJ6)
+ POBJECTS=../parse/ParseMaraRc.o ../parse/ParseCsv1.o $(POBJ4) $(POBJ5)
+ DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o ../dns/Decompress.o
+-ROBJECTS=../rng/rng-api-fst.o ../rng/rng-alg-fst.o
++ROBJECTS=../rng/rngapifst.o ../rng/rngalgfst.o
+ OBJECTS=$(JOBJS) $(MHOBJS) $(MJOBJS) $(SOBJECTS) $(DOBJECTS) $(POBJECTS) $(ROBJECTS)
+ EXECS=maradns
+ 
+--- maradns-3.4.06/server/Makefile.mingw32	2010-08-28 18:22:53.000000000 -0700
++++ maradns-3.4.07/server/Makefile.mingw32	2022-11-10 19:14:53.743113482 -0800
+@@ -10,7 +10,7 @@
+ POBJ4=../parse/ParseIpAcl.o ../parse/Parse_ipv6.o $(POBJ2) $(POBJ6)
+ POBJECTS=../parse/ParseMaraRc.o ../parse/ParseCsv1.o $(POBJ4) $(POBJ5)
+ DOBJECTS=../dns/Queries.o ../dns/Compress.o ../dns/bobbit.o ../dns/Decompress.o
+-ROBJECTS=../rng/rng-api-fst.o ../rng/rng-alg-fst.o
++ROBJECTS=../rng/rngapifst.o ../rng/rngalgfst.o
+ XOBJECTS=$(JOBJS) $(MHOBJS) $(MJOBJS) $(DOBJECTS) $(POBJECTS) $(ROBJECTS)
+ OBJECTS=$(SOBJECTS) $(XOBJECTS)
+ EXECS=maradns
+--- maradns-3.4.06/tools/Makefile.authonly	2007-10-19 06:54:15.000000000 -0700
++++ maradns-3.4.07/tools/Makefile.authonly	2022-11-10 19:24:59.675435367 -0800
+@@ -4,10 +4,10 @@
+ SOBJECTS=../server/timestamp.o
+ OUTOBJ=../parse/Csv2_esc_txt.o
+ OBJECTS=$(JOBJS) $(MHOBJS) $(DOBJECTS) $(SOBJECTS)
+-ROBJECTS=../rng/rng-alg-fst.o ../rng/rng-api-fst.o
++ROBJECTS=../rng/rngalgfst.o ../rng/rngapifst.o
+ POBJECTS=../parse/ParseCsv1.o ../parse/ParseMaraRc.o 
+ Q=$(ROBJECTS) $(POBJECTS)
+-EXECS=askmara askmara-tcp strip.control benchmark duende
++EXECS=askmara askmaratcp strip.control benchmark duende
+ 
+ #FLAGS = -g $(DEBUG)
+ #FLAGS = -g $(DEBUG)
+@@ -20,8 +20,11 @@
+ askmara: askmara.c askmara_labels_en.h $(OBJECTS) $(Q) $(OUTOBJ)
+ 	$(CC) $(FLAGS) -DAUTHONLY -o askmara askmara.c $(OBJECTS) $(Q) $(OUTOBJ)
+ 
+-askmara-tcp: askmara-tcp.c askmara_labels_en.h $(OBJECTS) $(ROBJECTS) $(POBJECTS)
+-	$(CC) $(FLAGS) -o askmara-tcp askmara-tcp.c $(OBJECTS) $(ROBJECTS) $(POBJECTS)
++askmaratcp: askmaratcp.c askmara_labels_en.h $(OBJECTS) $(ROBJECTS) $(POBJECTS)
++	$(CC) $(FLAGS) -o askmaratcp askmaratcp.c \
++    $(OBJECTS) $(ROBJECTS) $(POBJECTS) ; \
++    $(CC) $(FLAGS) -o askmara-tcp askmaratcp.c \
++    $(OBJECTS) $(ROBJECTS) $(POBJECTS)
+ 
+ benchmark: benchmark.c askmara_labels_en.h $(OBJECTS) $(POBJECTS)
+ 	$(CC) $(FLAGS) -o benchmark benchmark.c $(OBJECTS) $(POBJECTS)
+--- maradns-3.4.06/tools/Makefile.ipv6	2010-08-28 15:46:59.000000000 -0700
++++ maradns-3.4.07/tools/Makefile.ipv6	2022-11-10 19:25:10.635367941 -0800
+@@ -4,10 +4,10 @@
+ SOBJECTS=../server/timestamp.o
+ OUTOBJ=../parse/Csv2_esc_txt.o
+ OBJECTS=$(JOBJS) $(MHOBJS) $(DOBJECTS) $(SOBJECTS)
+-ROBJECTS=../rng/rng-alg-fst.o ../rng/rng-api-fst.o
++ROBJECTS=../rng/rngalgfst.o ../rng/rngapifst.o
+ POBJECTS=../parse/ParseCsv1.o ../parse/ParseMaraRc.o 
+ Q=$(ROBJECTS) $(POBJECTS)
+-EXECS=askmara askmara-tcp strip.control benchmark duende
++EXECS=askmara askmaratcp strip.control benchmark duende
+ 
+ #FLAGS = -g $(DEBUG)
+ #FLAGS = -g $(DEBUG)
+@@ -20,8 +20,11 @@
+ askmara: askmara.c askmara_labels_en.h $(OBJECTS) $(Q) $(OUTOBJ)
+ 	$(CC) $(FLAGS) -DAUTHONLY -DIPV6 -o askmara askmara.c $(OBJECTS) $(Q) $(OUTOBJ)
+ 
+-askmara-tcp: askmara-tcp.c askmara_labels_en.h $(OBJECTS) $(ROBJECTS) $(POBJECTS)
+-	$(CC) $(FLAGS) -o askmara-tcp askmara-tcp.c $(OBJECTS) $(ROBJECTS) $(POBJECTS)
++askmaratcp: askmaratcp.c askmara_labels_en.h $(OBJECTS) $(ROBJECTS) $(POBJECTS)
++	$(CC) $(FLAGS) -o askmaratcp askmaratcp.c \
++    $(OBJECTS) $(ROBJECTS) $(POBJECTS) ; \
++    $(CC) $(FLAGS) -o askmara-tcp askmaratcp.c \
++    $(OBJECTS) $(ROBJECTS) $(POBJECTS)
+ 
+ benchmark: benchmark.c askmara_labels_en.h $(OBJECTS) $(POBJECTS)
+ 	$(CC) $(FLAGS) -o benchmark benchmark.c $(OBJECTS) $(POBJECTS)
+--- maradns-3.4.06/tools/Makefile.mingw32	2005-12-05 13:34:49.000000000 -0800
++++ maradns-3.4.07/tools/Makefile.mingw32	2022-11-10 19:25:23.355289662 -0800
+@@ -4,7 +4,7 @@
+ SOBJECTS=../server/timestamp.o
+ OUTOBJ=../parse/Csv2_esc_txt.o
+ OBJECTS=$(JOBJS) $(MHOBJS) $(DOBJECTS) $(SOBJECTS)
+-ROBJECTS=../rng/rng-alg-fst.o ../rng/rng-api-fst.o
++ROBJECTS=../rng/rngalgfst.o ../rng/rngapifst.o
+ POBJECTS=../parse/ParseCsv1.o ../parse/ParseMaraRc.o 
+ Q=$(ROBJECTS) $(POBJECTS)
+ EXECS=askmara 
+@@ -20,8 +20,11 @@
+ askmara: askmara.c askmara_labels_en.h $(OBJECTS) $(Q) $(OUTOBJ)
+ 	$(CC) $(FLAGS) -o askmara askmara.c $(OBJECTS) $(Q) $(OUTOBJ) -lwsock32
+ 
+-askmara-tcp: askmara-tcp.c askmara_labels_en.h $(OBJECTS) $(ROBJECTS) $(POBJECTS)
+-	$(CC) $(FLAGS) -o askmara-tcp askmara-tcp.c $(OBJECTS) $(ROBJECTS) $(POBJECTS)
++askmaratcp: askmaratcp.c askmara_labels_en.h $(OBJECTS) $(ROBJECTS) $(POBJECTS)
++	$(CC) $(FLAGS) -o askmaratcp askmaratcp.c \
++    $(OBJECTS) $(ROBJECTS) $(POBJECTS) ; \
++    $(CC) $(FLAGS) -o askmara-tcp askmaratcp.c \
++    $(OBJECTS) $(ROBJECTS) $(POBJECTS)
+ 
+ benchmark: benchmark.c askmara_labels_en.h $(OBJECTS) $(POBJECTS)
+ 	$(CC) $(FLAGS) -o benchmark benchmark.c $(OBJECTS) $(POBJECTS)

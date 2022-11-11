@@ -33,6 +33,7 @@ fi
 rm -fr maradns-$NEXT*
 mv maradns-$CURRENT maradns-$NEXT
 cd maradns-$NEXT
+TOP=$( /bin/pwd )
 
 # The patches
 
@@ -107,6 +108,17 @@ rm doc/en/source/bind2csv2-man.ej
 rm doc/en/tutorial/bind2csv2.html
 rm doc/en/text/bind2csv2.txt
 patch -p1 < update/$NEXT/maradns-3.4.06-zap-bind2csv2.patch
+
+# Now, let’s make stuff compatible with maramake.
+cd $TOP
+cd rng/
+mv rng-alg-fst.c rngalgfst.c
+mv rng-alg-fst.h rngalgfst.h
+mv rng-api-fst.c rngapifst.c
+mv rng-api-fst.h rngapifst.h
+cp rng-32bit-tables.h rng32bittables.h
+cd $TOP
+patch -p1 < update/$NEXT/maradns-3.4.06-maramake.patch
 
 # Anything below this line normally is not changed between MaraDNS versions
 
