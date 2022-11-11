@@ -1,7 +1,0 @@
-com. NS ns.com.
-ns.com. 127.0.10.2
-arpa. NS ns.arpa.
-ns.arpa. 127.0.10.4
-maradns. NS ns.maradns.
-ns.maradns. 127.0.10.5
-

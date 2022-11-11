@@ -1,3 +1,0 @@
-#!/bin/sh
-
-../../server/maradns -f mararc-sqa
