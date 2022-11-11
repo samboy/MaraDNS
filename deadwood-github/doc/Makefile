@@ -1,5 +1,5 @@
 all: Duende.1 Duende.txt Deadwood.1 Deadwood.txt FAQ.txt FAQ.html \
-	Deadwood.html Recursive-algorithm.txt
+	Deadwood.html Recursive_algorithm.txt
 
 clean:
 	rm -f Duende.1 Duende.txt Deadwood.1 Deadwood.txt FAQ.txt
@@ -31,8 +31,10 @@ FAQ.txt: FAQ.ej
 FAQ.html: FAQ.ej
 	../../tools/ej/ej2html FAQ.ej > FAQ.html
 
-Recursive-algorithm.txt: Recursive-algorithm.ej
-	../../tools/ej/ej2txt Recursive-algorithm.ej > Recursive-algorithm.txt\
-	; echo >> Recursive-algorithm.txt ;\
-	unix2dos Recursive-algorithm.txt
+Recursive_algorithm.txt: Recursive_algorithm.ej
+	../../tools/ej/ej2txt Recursive_algorithm.ej > \
+	Recursive_algorithm.txt ;\
+	echo >> Recursive_algorithm.txt ;\
+	unix2dos Recursive_algorithm.txt ; \
+	cp Recursive_algorithm.txt Recursive-algorithm.txt
 
