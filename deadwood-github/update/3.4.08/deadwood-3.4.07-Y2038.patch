@@ -1,0 +1,53 @@
+commit fbd2494afc47ae07316b74dcaa08bbea5f42b349
+Author: Sam Trenholme <maradns@samiam.org>
+Date:   Fri Nov 11 13:13:57 2022 -0800
+
+    Y2038: Make sure not to run stat() unless time_t is 64-bit
+    
+    We won’t run it in MINGW and we won’t run it if time_t is only 32
+    bits in size.  This way, this won’t become a problem in early 2038.
+
+diff --git a/deadwood-github/src/DwSys.c b/deadwood-github/src/DwSys.c
+index 40dfccc..541ab47 100644
+--- a/deadwood-github/src/DwSys.c
++++ b/deadwood-github/src/DwSys.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2020 Sam Trenholme
++/* Copyright (c) 2007-2022 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -557,13 +557,18 @@ void init_cache() {
+         if(filename != 0 && do_read_cache == 1) {
+                 dw_filename_sanitize(filename);
+                 fname_convert = (char *)dw_to_cstr(filename);
+-                if(stat(fname_convert,&cache_st) == 0 &&
++#ifndef MINGW
++                if(sizeof(time_t) > 4 &&
++                   stat(fname_convert,&cache_st) == 0 &&
+                    cache_st.st_mtime < mararc_st.st_mtime) {
+                         dw_log_string(
+                               "Cache older than rc file; not reading cache",0);
+                 } else {
++#endif /* MINGW */
+                         cache = dwh_read_hash(fname_convert);
++#ifndef MINGW
+                 }
++#endif /* MINGW */
+                 free(fname_convert);
+         }
+ 
+@@ -585,10 +590,12 @@ void process_mararc(char *name) {
+         }*/
+         /* If the dwood3rc is newer than the cache file, do not read the
+          * cache */
+-        if(stat(name,&mararc_st) != 0) {
++#ifndef MINGW
++        if(sizeof(time_t) > 4 && stat(name,&mararc_st) != 0) {
+                 dw_log_string("Can not stat rc file; not reading cache",0);
+                 do_read_cache = 0;
+         }
++#endif /* MINGW */
+ }
+ 
+ /* Given a C-string string containing random noise, the length of that
