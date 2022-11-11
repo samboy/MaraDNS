@@ -1,4 +1,4 @@
-/* Copyright (c) 2002, 2005 Sam Trenholme
+/* Copyright (c) 2002-2022 Sam Trenholme
  *
  * TERMS
  *
@@ -57,6 +57,9 @@ int set_timestamp(int type) {
 
 int show_timestamp() {
     fflush(stdout);
+    if(sizeof(time_t) <= 4) { /* Make sure not to have Y2038 issues */
+        return JS_SUCCESS;
+        }
     if(timestamp_type == 0) { /* Timestamp: <unix timestamp> */
         printf("%s%d ",L_TIMESTAMP,(int)time(0));
         }
