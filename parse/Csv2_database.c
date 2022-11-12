@@ -216,11 +216,9 @@ int csv2_set_soa_serial(csv2_add_state *state, js_string *filename) {
             struct tm bd;
 #ifndef MINGW32
             if(gmtime_r(&t,&bd) == NULL) {
-               return 1979032815;
+               state->soa_serial = 1;
+               return JS_ERROR;
                }
-#else
-            return 2005032801;
-#endif
             q = bd.tm_year + 1900;
             q *= 100;
             q += bd.tm_mon + 1;
@@ -228,8 +226,14 @@ int csv2_set_soa_serial(csv2_add_state *state, js_string *filename) {
             q += bd.tm_mday;
             q *= 100;
             q += bd.tm_hour;
+#else /* MINGW32 */
+            state->soa_serial = 1;
+            q = 1;
+#endif /* MINGW32 */
         }
+#ifndef MINGW32
         state->soa_serial = q; /* Type conversion */
+#endif /* MINGW32 */
         return JS_SUCCESS;
 }
 
