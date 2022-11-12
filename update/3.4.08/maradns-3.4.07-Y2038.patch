@@ -1,0 +1,119 @@
+diff -ur maradns-3.4.07/parse/Csv2_database.c maradns-3.4.08/parse/Csv2_database.c
+--- maradns-3.4.07/parse/Csv2_database.c	2022-11-10 21:05:36.000000000 -0800
++++ maradns-3.4.08/parse/Csv2_database.c	2022-11-12 09:53:13.487514614 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004-2011 Sam Trenholme
++/* Copyright (c) 2004-2022 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -190,7 +190,7 @@
+         char name[256];
+         struct stat buf;
+         time_t t;
+-        qual_timestamp q;
++        qual_timestamp q, big_t;
+         if(js_js2str(filename,name,200) == JS_ERROR) {
+                 return JS_ERROR;
+         }
+@@ -198,25 +198,27 @@
+                 return JS_ERROR;
+         }
+         t = buf.st_mtime;
+-        /* Y2038 workaround */
+-        if(t < 290805600) {
+-            t += 2147483648U;
++	big_t = t;
++        /* Y2038 workaround; window is 2020-2155 or so */
++        if(big_t < 1595787855) {
++            big_t += 4294967296ULL;
+             }
+-        if(show_synth_soa_serial() != 2) {
+-            q = t; /* Type conversion */
++        if(show_synth_soa_serial() != 2 || sizeof(time_t) <= 4) {
++            q = big_t; /* Both are 64-bit */
+             q -= 290805600;
+-            q /= 6; /* Since the SOA serial is a 32-bit value, this
+-                       division pushes Y2038-type problems far in to the
+-                       future */
+-        } else {
++            q /= 6; /* Since the SOA serial is an unsigned 32-bit value, this
++                       division pushes Y2038-type problems in to the year
++		       2841 */
++            q = q & 0xffffffffUll;
++        } else { 
++	    /* Have SOA come from direct YYYYMMDDHH; note that this
++	     * works until 4294 as per RFC1912. */
+             struct tm bd;
+ #ifndef MINGW32
+             if(gmtime_r(&t,&bd) == NULL) {
+-               return 1979032815;
++               state->soa_serial = 1;
++               return JS_ERROR;
+                }
+-#else
+-            return 2005032801;
+-#endif
+             q = bd.tm_year + 1900;
+             q *= 100;
+             q += bd.tm_mon + 1;
+@@ -224,8 +226,14 @@
+             q += bd.tm_mday;
+             q *= 100;
+             q += bd.tm_hour;
++#else /* MINGW32 */
++            state->soa_serial = 1;
++            q = 1;
++#endif /* MINGW32 */
+         }
++#ifndef MINGW32
+         state->soa_serial = q; /* Type conversion */
++#endif /* MINGW32 */
+         return JS_SUCCESS;
+ }
+ 
+diff -ur maradns-3.4.07/parse/Csv2_database.h maradns-3.4.08/parse/Csv2_database.h
+--- maradns-3.4.07/parse/Csv2_database.h	2022-11-10 21:05:36.000000000 -0800
++++ maradns-3.4.08/parse/Csv2_database.h	2022-11-12 09:55:22.522431416 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004-2006 Sam Trenholme
++/* Copyright (c) 2004-2022 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -16,6 +16,7 @@
+  * fitness for purpose.
+  */
+ 
++#include <stdint.h>
+ #ifndef CSV2_DATABASE_DEFINED
+ #define CSV2_DATABASE_DEFINED
+ 
+@@ -48,7 +49,7 @@
+         int ostack_height;
+         int rrnum;
+         int add_method;
+-        int32 soa_serial; /* Serial number synthetic SOA will have */
++        uint32_t soa_serial; /* Serial number synthetic SOA will have */
+         int32 default_ttl; /* Default TTL for RRs */
+         int in_ns;
+         int zone_nses_added;
+diff -ur maradns-3.4.07/server/timestamp.c maradns-3.4.08/server/timestamp.c
+--- maradns-3.4.07/server/timestamp.c	2022-11-10 21:05:34.000000000 -0800
++++ maradns-3.4.08/server/timestamp.c	2022-11-12 09:53:23.255430062 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2002, 2005 Sam Trenholme
++/* Copyright (c) 2002-2022 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -57,6 +57,9 @@
+ 
+ int show_timestamp() {
+     fflush(stdout);
++    if(sizeof(time_t) <= 4) { /* Make sure not to have Y2038 issues */
++        return JS_SUCCESS;
++        }
+     if(timestamp_type == 0) { /* Timestamp: <unix timestamp> */
+         printf("%s%d ",L_TIMESTAMP,(int)time(0));
+         }
