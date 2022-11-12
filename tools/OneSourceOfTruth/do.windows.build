@@ -23,5 +23,6 @@ read foo
 cp deadwood-3.5.${VERSION}/src/Deadwood.exe maradns-win32/
 mv deadwood-3.5.${VERSION} deadwood-github
 mv .notgit .git
-git commit -a -m "MaraDNS release 3.5.${VERSION}"
+git add maradns-win32/Deadwood.exe
+git commit -m "MaraDNS release 3.5.${VERSION}"
 git push origin master
