@@ -1,4 +1,4 @@
-/* Copyright (c) 2004-2006 Sam Trenholme
+/* Copyright (c) 2004-2022 Sam Trenholme
  *
  * TERMS
  *
@@ -16,6 +16,7 @@
  * fitness for purpose.
  */
 
+#include <stdint.h>
 #ifndef CSV2_DATABASE_DEFINED
 #define CSV2_DATABASE_DEFINED
 
@@ -48,7 +49,7 @@ typedef struct csv2_add_state {
         int ostack_height;
         int rrnum;
         int add_method;
-        int32 soa_serial; /* Serial number synthetic SOA will have */
+        uint32_t soa_serial; /* Serial number synthetic SOA will have */
         int32 default_ttl; /* Default TTL for RRs */
         int in_ns;
         int zone_nses_added;
