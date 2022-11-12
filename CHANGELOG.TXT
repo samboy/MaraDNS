@@ -1,5 +1,17 @@
 MaraDNS changelog
 
+   maradns-3.5.0027:
+   This is a stable release of MaraDNS:
+
+      * HOTFIX: 3.5.0026 introduced bug where zone files without a SOA
+        record last edited before mid-2020 would have an incorrect
+        serial in the synthetic SOA record.  Fixed.
+      * Y2038 fix for serials in zone files without a SOA edited after 
+        the Y2038 cutoff on systems with a 32-bit time_t
+      * Only update Deadwood.exe in Git when doing the win32 build
+
+     (2022-11-12)
+
    maradns-3.5.0026: 
    This is a stable release of MaraDNS:
 
