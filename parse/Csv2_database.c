@@ -199,8 +199,8 @@ int csv2_set_soa_serial(csv2_add_state *state, js_string *filename) {
         }
         t = buf.st_mtime;
 	big_t = t;
-        /* Y2038 workaround; window is 2020-2155 or so */
-        if(big_t < 1595787855) {
+        /* Y2038 workaround; window is 2001-2135 or so */
+        if(sizeof(time_t) <= 4 && big_t < 965067855) {
             big_t += 4294967296ULL;
             }
         if(show_synth_soa_serial() != 2 || sizeof(time_t) <= 4) {

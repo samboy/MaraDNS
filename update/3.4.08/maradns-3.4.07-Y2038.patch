@@ -1,6 +1,6 @@
 diff -ur maradns-3.4.07/parse/Csv2_database.c maradns-3.4.08/parse/Csv2_database.c
 --- maradns-3.4.07/parse/Csv2_database.c	2022-11-10 21:05:36.000000000 -0800
-+++ maradns-3.4.08/parse/Csv2_database.c	2022-11-12 09:53:13.487514614 -0800
++++ maradns-3.4.08/parse/Csv2_database.c	2022-11-12 10:06:37.797511429 -0800
 @@ -1,4 +1,4 @@
 -/* Copyright (c) 2004-2011 Sam Trenholme
 +/* Copyright (c) 2004-2022 Sam Trenholme
@@ -24,8 +24,8 @@ diff -ur maradns-3.4.07/parse/Csv2_database.c maradns-3.4.08/parse/Csv2_database
 -        if(t < 290805600) {
 -            t += 2147483648U;
 +	big_t = t;
-+        /* Y2038 workaround; window is 2020-2155 or so */
-+        if(big_t < 1595787855) {
++        /* Y2038 workaround; window is 2001-2135 or so */
++        if(sizeof(time_t) <= 4 && big_t < 965067855) {
 +            big_t += 4294967296ULL;
              }
 -        if(show_synth_soa_serial() != 2) {
