@@ -5,8 +5,51 @@ MaraDNS changelog
 
       * coLunacyDNS updated to 1.0.012 (minor speed up with the SipHash
         code)
+      * A number of old unused tests and scripts moved over to
+        https://github.com/samboy/MaraDNS-attic  This is old stuff
+        which hasn’t beed used for about 15 years.
+      * Fixing minor potential Y2038 issues in MaraDNS and Deadwood code
+        base.  
+      * Since localtime() won’t work come 2038 if time_t is 32-bit,
+        I have updated code to not show localtime() derived timestamps
+        if time_t is 32 bits.  I would rather not show any timestamp than
+        show one with a wrong date come 2038, and people with a 64-bit
+        time_t (pretty much any system from the last five years) will
+        see no change.  This only affects MaraDNS’s logging, and only
+        in the rare case of timestamp_type being set in a mararc
+        file.
+      * Deadwood has a feature where it won’t load the cache if the 
+        dwood3rc file has been changed more recently than the cache
+        file.  This feature has been disabled on systems with a 32-bit 
+        time_t; the workaround is for the user to be sure to delete their
+        cache after they alter their dwood3rc file (or to upgrade to a 
+        system with a 64-bit time_t).  This is only in effect if 
+        cache_file is set and used.
+      * Synthetic serial numbers now have their highest possible value be
+        in the year 2841 or 4294; serials are now, as per RFC1035, unsigned
+        32-bit numbers.  If you’re in the 2800s and reading this, thank 
+        you for using my code so many years later, and be sure to have  
+        SOA records in your zone files and set the serial by hand.
 
-     (202?-??-??)
+     (2022-11-??)
+
+   maradns-3.4.07:
+   This is a legacy release of MaraDNS:
+
+      * Deadwood updated to 3.4.07
+        - doc/Deadwood.txt was blank file.  Fixed.
+        - Deadwood’s document building process now uses the 3.5 Lua
+          instead of the older 3.4 Perl scripts.
+        - Have doc/Makefile be compatible with maramake
+      * Since MaraDNS 3.5 now uses maramake as the official make platform,
+        update the 3.4 branch to work with the 3.5 toolchain, so I do not
+        have to maintain two toolchains.
+      * MaraDNS 3.4 still uses the Perl scripts and Lynx/Links to build
+        documents; only Deadwood’s document processing has been updated
+        (but this will probably change in a future 3.4 release, again so
+        I only have to maintain one toolchain)
+
+     (2022-11-10)
 
    maradns-3.5.0025:
    This is a stable release of MaraDNS:
