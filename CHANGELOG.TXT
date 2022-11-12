@@ -28,10 +28,14 @@ MaraDNS changelog
       * Synthetic serial numbers now have their highest possible value be
         in the year 2841 or 4294; serials are now, as per RFC1035, unsigned
         32-bit numbers.  If you’re in the 2800s and reading this, thank 
-        you for using my code so many years later, and be sure to have  
-        SOA records in your zone files and set the serial by hand.
+        you for using my code so many years later, and synthetic SOA
+	serials will wrap around, so be sure your secondaries only
+	require the serial to change and that it doesn’t have to 
+	increment.  Another option for 29th century MaraDNS users
+	is to have SOA records in your zone files and set the serial 
+	by hand.
 
-     (2022-11-??)
+     (2022-11-11)
 
    maradns-3.4.07:
    This is a legacy release of MaraDNS:

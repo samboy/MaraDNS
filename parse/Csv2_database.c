@@ -209,6 +209,7 @@ int csv2_set_soa_serial(csv2_add_state *state, js_string *filename) {
             q /= 6; /* Since the SOA serial is an unsigned 32-bit value, this
                        division pushes Y2038-type problems in to the year
 		       2841 */
+            q = q & 0xffffffffUll;
         } else { 
 	    /* Have SOA come from direct YYYYMMDDHH; note that this
 	     * works until 4294 as per RFC1912. */
