@@ -190,7 +190,7 @@ int csv2_set_soa_serial(csv2_add_state *state, js_string *filename) {
         char name[256];
         struct stat buf;
         time_t t;
-        qual_timestamp q;
+        qual_timestamp q, big_t;
         if(js_js2str(filename,name,200) == JS_ERROR) {
                 return JS_ERROR;
         }
@@ -198,17 +198,20 @@ int csv2_set_soa_serial(csv2_add_state *state, js_string *filename) {
                 return JS_ERROR;
         }
         t = buf.st_mtime;
+	big_t = t;
         /* Y2038 workaround; window is 2020-2155 or so */
-        if(t < 1595787855) {
-            t += 2147483648U;
+        if(big_t < 1595787855) {
+            big_t += 2147483648U;
             }
-        if(show_synth_soa_serial() != 2) {
-            q = t; /* Type conversion */
+        if(show_synth_soa_serial() != 2 || sizeof(time_t) <= 4) {
+            q = big_t; /* Both are 64-bit */
             q -= 290805600;
-            q /= 6; /* Since the SOA serial is a 32-bit value, this
-                       division pushes Y2038-type problems far in to the
-                       future */
-        } else {
+            q /= 6; /* Since the SOA serial is an unsigned 32-bit value, this
+                       division pushes Y2038-type problems in to the year
+		       2841 */
+        } else { 
+	    /* Have SOA come from direct YYYYMMDDHH; note that this
+	     * works until 4294 as per RFC1912. */
             struct tm bd;
 #ifndef MINGW32
             if(gmtime_r(&t,&bd) == NULL) {
