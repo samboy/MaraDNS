@@ -639,6 +639,14 @@ updated zone files not being seen by slave DNS servers.
 Note that synth_soa_serial can only have a value of 1 on the native
 Windows port.
 
+<p> 
+On systems where time_t is 32-bit, MaraDNS will always act as if
+<tt>synth_soa_serial</tt> has a value of 1.  This is to avoid having 
+MaraDNS use invalid time and date values starting in late January of 
+2038; systems with a 32-bit time_t can very well have their underlying 
+system libraries with regards to dates and times no longer correctly 
+function come 2038.
+
 <h2>tcp_convert_acl</h2>
 This only applies to the zoneserver (general DNS-over-TCP) program.
 <p>
@@ -700,6 +708,13 @@ This can have the following values:
 <dt>7
 <dd>ISO local timestamp is shown
 </dl>
+
+<p> On systems where time_t is 32-bit, MaraDNS will always act as if
+    <tt>timestamp_type</tt> has a value of 5, never showing a timestamp.
+    This is to avoid having MaraDNS show an invalid timestamp starting
+    in late January of 2038; systems with a 32-bit time_t can very well
+    have their underlying system libraries with regards to dates and times
+    no longer correctly function come 2038.
 
 <p> The default value for this variable is 5.
 
