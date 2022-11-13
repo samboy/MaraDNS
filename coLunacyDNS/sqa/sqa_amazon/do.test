@@ -1,5 +1,14 @@
 #!/bin/sh
+# This test tests for concurrency limits in coLunacyDNS; this is run
+# in the GCOV mode where maxprocs is 12 (and not the usual 512)
 # Possibly non-POSIX: Job control 
+###
+# killall isn’t Posix, and it needs to be this shell script in CentOS/Rocky:
+# LIST=$( ps auxw | awk '{print $2 " " $11}' | grep "$1" | awk '{print $1}' )
+# for a in $LIST ; do
+#   kill $a
+# done
+###
 
 
 do_test() {
@@ -71,36 +80,51 @@ do_test
 
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
 	echo Amazon test failed trying again \#2
+	killall coLunacyDNS
+	sleep 2 
 	do_test
 fi
 
+
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
 	echo Amazon test failed trying again \#3
+	killall coLunacyDNS
+	sleep 2 
 	do_test
 fi
 
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
 	echo Amazon test failed trying again \#4
+	killall coLunacyDNS
+	sleep 2 
 	do_test
 fi
 
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
 	echo Amazon test failed trying again \#5
+	killall coLunacyDNS
+	sleep 2 
 	do_test
 fi
 
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
 	echo Amazon test failed trying again \#6
+	killall coLunacyDNS
+	sleep 2 
 	do_test
 fi
 
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
 	echo Amazon test failed trying again \#7
+	killall coLunacyDNS
+	sleep 2 
 	do_test
 fi
 
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
         echo Amazon Test failed
+	killall coLunacyDNS
+	sleep 2 
         exit 255
 fi
 
