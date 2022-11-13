@@ -4,7 +4,7 @@
 .\" Process this file with the following (replace filename.1)
 .\" preconv < filename.1 | nroff -man -Tutf8
 .\"
-.\" Last updated 2022-10-29
+.\" Last updated 2022-11-12
 .\"
 .TH MARARC 5 "January 2002" MARADNS "MaraDNS reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -748,6 +748,13 @@ updated zone files not being seen by slave DNS servers.
 Note that synth_soa_serial can only have a value of 1 on the native 
 Windows port. 
 .PP
+On systems where time_t is 32-bit, MaraDNS will always act as if 
+synth_soa_serial has a value of 1. This is to avoid having MaraDNS use 
+invalid time and date values starting in late January of 2038; systems 
+with a 32-bit time_t can very well have their underlying system 
+libraries with regards to dates and times no longer correctly function 
+come 2038. 
+.PP
 
 .in -3
 \fBtcp_convert_acl\fR
@@ -822,6 +829,13 @@ ISO GMT timestamp is shown
 ISO local timestamp is shown 
 .PP
 
+.PP
+On systems where time_t is 32-bit, MaraDNS will always act as if 
+timestamp_type has a value of 5, never showing a timestamp. This is to 
+avoid having MaraDNS show an invalid timestamp starting in late January 
+of 2038; systems with a 32-bit time_t can very well have their 
+underlying system libraries with regards to dates and times no longer 
+correctly function come 2038. 
 .PP
 The default value for this variable is 5. 
 .PP
