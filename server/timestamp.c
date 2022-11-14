@@ -30,7 +30,7 @@
  * this parameter is disabled on systems with a 32-bit `time_t` since the
  * underlying libraries MaraDNS uses will probably fail at the Y2038 cutoff.
  * Likewise, MaraDNS has support for generating a human-readable SOA
- * serial number with this `synth_soa_serial` parameter, but this feature
+ * serial number with the `synth_soa_serial` parameter, but this feature
  * is disabled if `time_t` is 32-bit.  In both cases, the feature in
  * question is, by default, disabled in MaraDNS, so only users who have
  * explicitly enabled these features will see any change in behavior.
