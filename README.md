@@ -250,7 +250,7 @@ showing a human readable timestamp with the `timestamp_type` parameter;
 this parameter is disabled on systems with a 32-bit `time_t` since the
 underlying libraries MaraDNS uses will probably fail at the Y2038 cutoff.
 Likewise, MaraDNS has support for generating a human-readable SOA
-serial number with this `synth_soa_serial` parameter, but this feature
+serial number with the `synth_soa_serial` parameter, but this feature
 is disabled if `time_t` is 32-bit.  In both cases, the feature in
 question is, by default, disabled in MaraDNS, so only users who have
 explicitly enabled these features will see any change in behavior.
@@ -270,6 +270,18 @@ timestamps on *NIX systems with a 32-bit time_t until later than
 2106; this code assumes that 32-bit systems will have the time
 stamp “wrap around” after 2038 but still have the 32-bit time be 
 updated.
+
+## Cyber Resilience Act statement
+
+MaraDNS is a project developed as a strictly volunteer, non-commercial
+basis.  It has been developed outside the course of a commercial
+activity, developed entirely in the Americas (i.e. *outside of Europe*)
+and therefore is not subject to the restrictions or conditions of the 
+proposed EU Cyber Resilience Act.  Someone selling a product that 
+uses any component of MaraDNS may be subject to this act and may
+need to handle any and all necessary compliance.
+
+MaraDNS, as always, is provided free of charge but with **no warranty**.
 
 # Updates
 
