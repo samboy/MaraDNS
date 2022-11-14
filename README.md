@@ -239,12 +239,21 @@ have a 64-bit time_t.
 
 Deadwood, in addition, for its Windows 32-bit binary, uses Windows
 filetime to generate internal timestamps; filetime stamps will not run
-over until the year 30827 or so.  Deadwood, when compiled under Windows,
-uses a 32-bit `stat()` in one piece of code, but Y2038 testing does not
-indicate any issues with this code.
+over until the year 30827 or so.  
 
 coLunacyDNS, likewise, uses Windows filetime for timestamps with its
 Win32 binary.
+
+On *NIX systems with a 32-bit `time_t`, some features with depend on 
+OS-level time and date libraries are disabled.  MaraDNS has support for
+showing a human readable timestamp with the `timestamp_type` parameter;
+this parameter is disabled on systems with a 32-bit `time_t` since the
+underlying libraries MaraDNS uses will probably fail at the Y2038 cutoff.
+Likewise, MaraDNS has support for generating a human-readable SOA
+serial number with this `synth_soa_serial` parameter, but this feature
+is disabled if `time_t` is 32-bit.  In both cases, the feature in
+question is, by default, disabled in MaraDNS, so only users who have
+explicitly enabled these features will see any change in behavior.
 
 Both Deadwood and coLunacyDNS make some effort to generate accurate
 timestamps on *NIX systems with a 32-bit time_t until later than
