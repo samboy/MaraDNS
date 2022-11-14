@@ -273,7 +273,7 @@ updated.
 
 ## Cyber Resilience Act statement
 
-MaraDNS is a project developed as a strictly volunteer, non-commercial
+MaraDNS is a project developed on a strictly volunteer, non-commercial
 basis.  It has been developed outside the course of a commercial
 activity, developed entirely in the Americas (i.e. *outside of Europe*)
 and therefore is not subject to the restrictions or conditions of the 
