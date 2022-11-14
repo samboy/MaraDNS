@@ -16,6 +16,26 @@
  * fitness for purpose.
  */
 
+/* Since this is code which uses time and date libraries, let me put a 
+ * Y2038 statement here:
+ *
+ * MaraDNS is fully Y2038 compliant on systems with a 64-bit time_t.  Here
+ * in the 2020s, even 32-bit Linux distributions, such as Alpine Linux,
+ * have a 64-bit time_t.  Mainstream Linux distributions (Ubuntu, Rocky 
+ * Linux) have not had 32-bit support for many years.
+ * 
+ * On *NIX systems with a 32-bit `time_t`, some features with depend on
+ * OS-level time and date libraries are disabled.  MaraDNS has support for
+ * showing a human readable timestamp with the `timestamp_type` parameter;
+ * this parameter is disabled on systems with a 32-bit `time_t` since the
+ * underlying libraries MaraDNS uses will probably fail at the Y2038 cutoff.
+ * Likewise, MaraDNS has support for generating a human-readable SOA
+ * serial number with this `synth_soa_serial` parameter, but this feature
+ * is disabled if `time_t` is 32-bit.  In both cases, the feature in
+ * question is, by default, disabled in MaraDNS, so only users who have
+ * explicitly enabled these features will see any change in behavior.
+ */
+
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
