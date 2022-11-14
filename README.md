@@ -44,8 +44,8 @@ in the folder `maradns-win32/`
 To build MaraDNS, one needs a POSIX system with:
 
 * A POSIX compatible shell
-* A POSIX compatible implementation of `make`, which has the non-POSIX
-  extension of allowing a make target to have a `/` in it.
+* A POSIX compatible implementation of `make`, which has the POSIX202X
+  feature of allowing a make target to have a `/` in it.
 * Other standard POSIX utilities (`awk`, etc.)
 * A current C compiler which can support, via `stdint`, 8-bit, 16-bit, 
   32-bit, and 64-bit sized integers.
@@ -81,10 +81,10 @@ majority of Linux and BSD distributions; packages usually have names like:
 
 MaraDNS successfully compiles with `gcc`, `clang`, and `tcc`; it 
 successfully builds with GNU make, bmake, pdpmake (as long as non-POSIX
-extensions are enabled and `CC` has the value `cc`), and maramake.
-The version of `make` used to compile MaraDNS needs to have the command
-name `make`.  MaraDNS compiles and runs with both Busybox versions of
-the core POSIX utilities and GNU coreutils.
+and/or POSIX202X extensions are enabled and `CC` has the value `cc`), and 
+maramake.  The version of `make` used to compile MaraDNS needs to have 
+the command name `make`.  MaraDNS compiles and runs with both Busybox 
+versions of the core POSIX utilities and GNU coreutils.
 
 ## Supported OSes
 
