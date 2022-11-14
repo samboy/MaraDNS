@@ -24,7 +24,7 @@
  * have a 64-bit time_t.  Mainstream Linux distributions (Ubuntu, Rocky 
  * Linux) have not had 32-bit support for many years.
  * 
- * On *NIX systems with a 32-bit `time_t`, some features with depend on
+ * On *NIX systems with a 32-bit `time_t`, some features which depend on
  * OS-level time and date libraries are disabled.  MaraDNS has support for
  * showing a human readable timestamp with the `timestamp_type` parameter;
  * this parameter is disabled on systems with a 32-bit `time_t` since the
