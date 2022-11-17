@@ -101,6 +101,13 @@ for a description of this file's format.
 The dictionary index (zone name) can not have a * in it.  If it does, 
 MaraDNS will terminate with an "Illegal zone name" error.
 
+<p>
+
+Please note that, in order to reload a zone file, it is necessary to
+restart MaraDNS and reload all zone files.  MaraDNS uses a hash data
+format which loads records very quickly from memory, but requires a 
+restart to update.
+
 <h2>csv1</h2>
 
 csv1: Used to indicate the filename to use for a given zone stored in 
