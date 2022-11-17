@@ -225,6 +225,12 @@ int csv2_set_soa_serial(csv2_add_state *state, js_string *filename) {
         if(js_js2str(filename,name,200) == JS_ERROR) {
                 return JS_ERROR;
         }
+	// CODE HERE: In Windows, we don't want to use stat() which
+	// has serious Y2038 problems.  Instead, we need to use
+	// the proprietary CreateFile() (which is *also* used to open,
+	// *not* create files) and GetFileTime() calls to get a Windows
+	// Y2038-compliant filetime(), we we then convert in to POSIX
+	// time so it works with the MaraDNS code which assumes POSIX.
         if(stat(name,&buf) == -1) {
                 return JS_ERROR;
         }
