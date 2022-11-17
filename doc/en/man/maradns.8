@@ -4,7 +4,7 @@
 .\" Process this file with the following (replace filename.1)
 .\" preconv < filename.1 | nroff -man -Tutf8
 .\"
-.\" Last updated 2022-11-12
+.\" Last updated 2022-11-17
 .\"
 .TH MARADNS 8 "January 2002" MARADNS "MaraDNS reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -99,6 +99,11 @@ manual page. The configuration format of the mararc file can be
 obtained from the 
 .B "mararc(5)"
 manual page. 
+.PP
+Please note that, in order to reload a zone file, it is necessary to 
+restart MaraDNS and reload all zone files. MaraDNS uses a hash data 
+format which loads records very quickly from memory, but requires a 
+restart to update. 
 .PP
 In order to have MaraDNS run as a daemon, the duende program is used to 
 daemonize MaraDNS. See the 

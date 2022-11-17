@@ -58,6 +58,11 @@ The format of a csv2 zone file can be obtained from the csv2(5) manual
 page. The configuration format of the mararc file can be obtained from 
 the mararc(5) manual page. 
 
+Please note that, in order to reload a zone file, it is necessary to 
+restart MaraDNS and reload all zone files. MaraDNS uses a hash data 
+format which loads records very quickly from memory, but requires a 
+restart to update. 
+
 In order to have MaraDNS run as a daemon, the duende program is used to 
 daemonize MaraDNS. See the duende(8) manual page for details. 
 
