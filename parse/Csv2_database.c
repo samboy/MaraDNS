@@ -231,6 +231,22 @@ int csv2_set_soa_serial(csv2_add_state *state, js_string *filename) {
 	// *not* create files) and GetFileTime() calls to get a Windows
 	// Y2038-compliant filetime(), we we then convert in to POSIX
 	// time so it works with the MaraDNS code which assumes POSIX.
+#ifdef MINGW32
+	HANDLE WindowsFileHandle; 
+        FILETIME made, read, wrote;
+        WindowsFileHandle = CreateFile(name, 0, 1, NULL, 3, 128, NULL);
+	if(WindowsFileHandle == INVALID_HANDLE_VALUE) {
+		return JS_ERROR;
+	}
+	if(!GetFileTime(WindowsFileHandle, &made, &read, &wrote)) {
+		return JS_ERROR;
+	}
+	big_t = wrote.dwHighDateTime & 0xffffffff;
+	big_t <<= 32;
+	big_t |= (wrote.dwLowDateTime & 0xffffffff);
+	big_t /= 10000000;
+	big_t -= 11644473600LL;
+#else /* MINGW32 */
         if(stat(name,&buf) == -1) {
                 return JS_ERROR;
         }
@@ -241,17 +257,18 @@ int csv2_set_soa_serial(csv2_add_state *state, js_string *filename) {
             big_t += 4294967296ULL;
             }
         if(show_synth_soa_serial() != 2 || sizeof(time_t) <= 4) {
+#endif /* MINGW32 */
             q = big_t; /* Both are 64-bit */
             q -= 290805600;
             q /= 6; /* Since the SOA serial is an unsigned 32-bit value, this
                        division pushes Y2038-type problems in to the year
 		       2841 */
             q = q & 0xffffffffUll;
+#ifndef MINGW32
         } else { 
 	    /* Have SOA come from direct YYYYMMDDHH; note that this
 	     * works until 4294 as per RFC1912. */
             struct tm bd;
-#ifndef MINGW32
             if(gmtime_r(&t,&bd) == NULL) {
                state->soa_serial = 1;
                return JS_ERROR;
@@ -263,14 +280,9 @@ int csv2_set_soa_serial(csv2_add_state *state, js_string *filename) {
             q += bd.tm_mday;
             q *= 100;
             q += bd.tm_hour;
-#else /* MINGW32 */
-            state->soa_serial = 1;
-            q = 1;
-#endif /* MINGW32 */
         }
-#ifndef MINGW32
-        state->soa_serial = q; /* Type conversion */
 #endif /* MINGW32 */
+        state->soa_serial = q; /* Type conversion */
         return JS_SUCCESS;
 }
 
