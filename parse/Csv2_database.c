@@ -60,6 +60,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
+#ifdef MINGW32
+#include <io.h>
+#include <wininet.h>
+#endif /* MINGW32 */
 
 #define WITH_FQDN6
 
