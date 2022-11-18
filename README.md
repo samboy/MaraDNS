@@ -264,8 +264,8 @@ developed) to be after the Y2038 cutoff.  If there are systems out there
 where a `stat` call for a file’s modification time fail after the Y2038
 cutoff, one can avoid Y2038 issues by having a SOA record with a serial
 number in zone files.  The Windows port of MaraDNS, as of 3.5.0028,
-uses Y2038 Windows calls instead of POSIX calls to get zone file
-timestamps.
+uses Windows Y2038 compliant system calls instead of POSIX calls to get
+zone file timestamps.
 
 Both Deadwood and coLunacyDNS make some effort to generate accurate
 timestamps on *NIX systems with a 32-bit time_t until later than
