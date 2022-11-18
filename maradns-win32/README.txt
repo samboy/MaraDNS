@@ -1,9 +1,8 @@
-For people looking for a Windows 32-bit version of the non-recursive
-MaraDNS binary, please download MaraDNS version 3.5.0004, which is
-the final (barring a security issue) version of MaraDNS for Windows
-with the authoritative server.  For people who wish to run an 
-authoritative MaraDNS server on Windows, I am working on making a
-Docker container which can run MaraDNS.
+While maradns.exe is included here, no support for this .exe program
+is currently provided.  This version of maradns.exe is Y2038 compliant,
+unlike older version of maradns.exe.  For people who wish to run MaraDNS
+as a non-recursive authoritative-only service in Windows, please read
+Cygwin.txt.
 
 Deadwood is a program that allows one to have a recursive DNS cache on their
 Windows system.  
