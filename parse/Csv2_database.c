@@ -44,6 +44,9 @@
  * where a `stat` call for a file’s modification time fail after the Y2038
  * cutoff, one can avoid Y2038 issues by having a SOA record with a serial
  * number in zone files.
+ *
+ * On Windows32 systems, MaraDNS uses Windows-specific Y2038 compliant
+ * system calls to determine when a zone file was last modified.
  */
 
 
@@ -229,12 +232,12 @@ int csv2_set_soa_serial(csv2_add_state *state, js_string *filename) {
         if(js_js2str(filename,name,200) == JS_ERROR) {
                 return JS_ERROR;
         }
-	// CODE HERE: In Windows, we don't want to use stat() which
-	// has serious Y2038 problems.  Instead, we need to use
-	// the proprietary CreateFile() (which is *also* used to open,
-	// *not* create files) and GetFileTime() calls to get a Windows
-	// Y2038-compliant filetime(), we we then convert in to POSIX
-	// time so it works with the MaraDNS code which assumes POSIX.
+	/* In Windows32, we don't want to use stat() which
+	 * has serious Y2038 problems.  Instead, we use
+	 * the proprietary CreateFile() (which is *also* used to open,
+	 * *not* create files) and GetFileTime() calls to get a Windows
+	 * Y2038-compliant filetime(), we we then convert in to POSIX
+	 * time so it works with the MaraDNS code which assumes POSIX. */
 #ifdef MINGW32
 	HANDLE WindowsFileHandle; 
         FILETIME made, read, wrote;
@@ -245,6 +248,7 @@ int csv2_set_soa_serial(csv2_add_state *state, js_string *filename) {
 	if(!GetFileTime(WindowsFileHandle, &made, &read, &wrote)) {
 		return JS_ERROR;
 	}
+        /* Convert Windows time in to POSIX time */
 	big_t = wrote.dwHighDateTime & 0xffffffff;
 	big_t <<= 32;
 	big_t |= (wrote.dwLowDateTime & 0xffffffff);
