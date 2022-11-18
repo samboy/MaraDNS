@@ -1,5 +1,13 @@
 MaraDNS changelog
 
+   maradns-3.5.0028:
+   This is a stable release of MaraDNS:
+
+      * Y2038 issues with MaraDNS for win32 have been addressed.
+      * maradns.exe restored; things should run after Y2038
+
+     (2022-11-??)
+
    maradns-3.5.0027:
    This is a stable release of MaraDNS:
 
