@@ -75,6 +75,7 @@ cd ../..
 # Release-specific fixes and changes go here
 
 patch -p1 < update/$NEXT/maradns-3.4.07-Y2038.patch
+patch -p1 < update/$NEXT/maradns-3.4.07-changelog.patch
 
 # Anything below this line normally is not changed between MaraDNS versions
 
