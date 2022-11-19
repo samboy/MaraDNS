@@ -55,6 +55,7 @@ cd ..
 # BEGIN Release-specific fixes and changes go here
 
 patch -p1 < update/$NEXT/deadwood-3.4.07-Y2038.patch
+patch -p1 < update/$NEXT/deadwood-3.4.07-changelog.patch
 
 # END Release-specific fixes/changes
 

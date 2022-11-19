@@ -1,0 +1,19 @@
+--- deadwood-3.4.07/doc/CHANGELOG	2022-10-24 16:36:58.000000000 -0700
++++ deadwood-3.4.08/doc/CHANGELOG	2022-11-19 10:29:16.124954103 -0800
+@@ -1,3 +1,16 @@
++3.4.08 (2022-11-19; legacy release)
++
++- Make sure DwSys.c is 100% Y2038 compliant.  While testing has not
++  found any serious issues with this code, we should never be trusting
++  a 32-bit timestamp that stat() returns to us.
++
++3.4.07 (2022-11-10; legacy release)
++
++- doc/Deadwood.txt was blank file. Fixed.
++- Deadwood’s document building process now uses the 3.5 Lua instead
++  of the older 3.4 Perl scripts.
++- Have doc/Makefile be compatible with maramake-2022-11-01
++
+ 3.4.06 (2022-10-24; legacy release)
+ 
+ - Very minor security fix: Under some circumstances, Deadwood would make
