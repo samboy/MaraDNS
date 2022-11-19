@@ -1,5 +1,13 @@
 MaraDNS changelog
 
+   maradns-3.4.08:
+   This is a legacy release of MaraDNS:
+
+      * Y2038 fixes backported to the 3.4 version of MaraDNS and Deadwood
+      * Windows32 binaries of the 3.4 version of MaraDNS/Deadwood updated
+
+     (2022-11-19)
+
    maradns-3.5.0028:
    This is a stable release of MaraDNS:
 
