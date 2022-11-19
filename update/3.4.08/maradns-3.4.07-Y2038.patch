@@ -1,77 +1,3 @@
-diff -ur maradns-3.4.07/parse/Csv2_database.c maradns-3.4.08/parse/Csv2_database.c
---- maradns-3.4.07/parse/Csv2_database.c	2022-11-10 21:05:36.000000000 -0800
-+++ maradns-3.4.08/parse/Csv2_database.c	2022-11-12 10:06:37.797511429 -0800
-@@ -1,4 +1,4 @@
--/* Copyright (c) 2004-2011 Sam Trenholme
-+/* Copyright (c) 2004-2022 Sam Trenholme
-  *
-  * TERMS
-  *
-@@ -190,7 +190,7 @@
-         char name[256];
-         struct stat buf;
-         time_t t;
--        qual_timestamp q;
-+        qual_timestamp q, big_t;
-         if(js_js2str(filename,name,200) == JS_ERROR) {
-                 return JS_ERROR;
-         }
-@@ -198,25 +198,27 @@
-                 return JS_ERROR;
-         }
-         t = buf.st_mtime;
--        /* Y2038 workaround */
--        if(t < 290805600) {
--            t += 2147483648U;
-+	big_t = t;
-+        /* Y2038 workaround; window is 2001-2135 or so */
-+        if(sizeof(time_t) <= 4 && big_t < 965067855) {
-+            big_t += 4294967296ULL;
-             }
--        if(show_synth_soa_serial() != 2) {
--            q = t; /* Type conversion */
-+        if(show_synth_soa_serial() != 2 || sizeof(time_t) <= 4) {
-+            q = big_t; /* Both are 64-bit */
-             q -= 290805600;
--            q /= 6; /* Since the SOA serial is a 32-bit value, this
--                       division pushes Y2038-type problems far in to the
--                       future */
--        } else {
-+            q /= 6; /* Since the SOA serial is an unsigned 32-bit value, this
-+                       division pushes Y2038-type problems in to the year
-+		       2841 */
-+            q = q & 0xffffffffUll;
-+        } else { 
-+	    /* Have SOA come from direct YYYYMMDDHH; note that this
-+	     * works until 4294 as per RFC1912. */
-             struct tm bd;
- #ifndef MINGW32
-             if(gmtime_r(&t,&bd) == NULL) {
--               return 1979032815;
-+               state->soa_serial = 1;
-+               return JS_ERROR;
-                }
--#else
--            return 2005032801;
--#endif
-             q = bd.tm_year + 1900;
-             q *= 100;
-             q += bd.tm_mon + 1;
-@@ -224,8 +226,14 @@
-             q += bd.tm_mday;
-             q *= 100;
-             q += bd.tm_hour;
-+#else /* MINGW32 */
-+            state->soa_serial = 1;
-+            q = 1;
-+#endif /* MINGW32 */
-         }
-+#ifndef MINGW32
-         state->soa_serial = q; /* Type conversion */
-+#endif /* MINGW32 */
-         return JS_SUCCESS;
- }
- 
 diff -ur maradns-3.4.07/parse/Csv2_database.h maradns-3.4.08/parse/Csv2_database.h
 --- maradns-3.4.07/parse/Csv2_database.h	2022-11-10 21:05:36.000000000 -0800
 +++ maradns-3.4.08/parse/Csv2_database.h	2022-11-12 09:55:22.522431416 -0800
@@ -148,3 +74,146 @@ diff -ur maradns-3.4.07/server/timestamp.c maradns-3.4.08/server/timestamp.c
  <p> The default value for this variable is 5.
  
  <h2>verbose_level</h2>
+--- maradns-3.4.07/parse/Csv2_database.c	2022-11-10 21:05:36.000000000 -0800
++++ maradns-3.4.08/parse/Csv2_database.c	2022-11-19 10:05:19.345585284 -0800
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2004-2011 Sam Trenholme
++/* Copyright (c) 2004-2022 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -16,6 +16,40 @@
+  * fitness for purpose.
+  */
+ 
++/* Since this is code which uses time and date libraries, let me put a
++ * Y2038 statement here:
++ *
++ * MaraDNS is fully Y2038 compliant on systems with a 64-bit time_t.  Here
++ * in the 2020s, even 32-bit Linux distributions, such as Alpine Linux,
++ * have a 64-bit time_t.  Mainstream Linux distributions (Ubuntu, Rocky
++ * Linux) have not had 32-bit support for many years.
++ *
++ * On *NIX systems with a 32-bit `time_t`, some features which depend on
++ * OS-level time and date libraries are disabled.  MaraDNS has support for
++ * showing a human readable timestamp with the `timestamp_type` parameter;
++ * this parameter is disabled on systems with a 32-bit `time_t` since the
++ * underlying libraries MaraDNS uses will probably fail at the Y2038 cutoff.
++ * Likewise, MaraDNS has support for generating a human-readable SOA
++ * serial number with the `synth_soa_serial` parameter, but this feature
++ * is disabled if `time_t` is 32-bit.  In both cases, the feature in
++ * question is, by default, disabled in MaraDNS, so only users who have
++ * explicitly enabled these features will see any change in behavior.
++ *
++ * MaraDNS has the ability to generate a synthetic SOA serial number if
++ * a zone file does not have a SOA record.  The SOA serial is based on the
++ * timestamp for the zone file.  If `time_t` is 32-bit, MaraDNS assumes that
++ * the `stat` call will return a negative timestamp after the Y2038 cutoff,
++ * and will adjust timestamps from before 2001 (the year MaraDNS was first
++ * developed) to be after the Y2038 cutoff.  If there are systems out there
++ * where a `stat` call for a file’s modification time fail after the Y2038
++ * cutoff, one can avoid Y2038 issues by having a SOA record with a serial
++ * number in zone files.
++ *
++ * On Windows32 systems, MaraDNS uses Windows-specific Y2038 compliant
++ * system calls to determine when a zone file was last modified.
++ */
++
++
+ #include "../libs/JsStr.h"
+ #include "../libs/MaraHash.h"
+ #include "../MaraDns.h"
+@@ -29,6 +63,10 @@
+ #include <sys/stat.h>
+ #include <unistd.h>
+ #include <time.h>
++#ifdef MINGW32
++#include <io.h>
++#include <wininet.h>
++#endif /* MINGW32 */
+ 
+ #define WITH_FQDN6
+ 
+@@ -190,33 +228,59 @@
+         char name[256];
+         struct stat buf;
+         time_t t;
+-        qual_timestamp q;
++        qual_timestamp q, big_t;
+         if(js_js2str(filename,name,200) == JS_ERROR) {
+                 return JS_ERROR;
+         }
++	/* In Windows32, we don't want to use stat() which
++	 * has serious Y2038 problems.  Instead, we use
++	 * the proprietary CreateFile() (which is *also* used to open,
++	 * *not* create files) and GetFileTime() calls to get a Windows
++	 * Y2038-compliant filetime(), we we then convert in to POSIX
++	 * time so it works with the MaraDNS code which assumes POSIX. */
++#ifdef MINGW32
++	HANDLE WindowsFileHandle; 
++        FILETIME made, read, wrote;
++        WindowsFileHandle = CreateFile(name, 0, 1, NULL, 3, 128, NULL);
++	if(WindowsFileHandle == INVALID_HANDLE_VALUE) {
++		return JS_ERROR;
++	}
++	if(!GetFileTime(WindowsFileHandle, &made, &read, &wrote)) {
++		return JS_ERROR;
++	}
++        /* Convert Windows time in to POSIX time */
++	big_t = wrote.dwHighDateTime & 0xffffffff;
++	big_t <<= 32;
++	big_t |= (wrote.dwLowDateTime & 0xffffffff);
++	big_t /= 10000000;
++	big_t -= 11644473600LL;
++#else /* MINGW32 */
+         if(stat(name,&buf) == -1) {
+                 return JS_ERROR;
+         }
+         t = buf.st_mtime;
+-        /* Y2038 workaround */
+-        if(t < 290805600) {
+-            t += 2147483648U;
++	big_t = t;
++        /* Y2038 workaround; window is 2001-2135 or so */
++        if(sizeof(time_t) <= 4 && big_t < 965067855) {
++            big_t += 4294967296ULL;
+             }
+-        if(show_synth_soa_serial() != 2) {
+-            q = t; /* Type conversion */
++        if(show_synth_soa_serial() != 2 || sizeof(time_t) <= 4) {
++#endif /* MINGW32 */
++            q = big_t; /* Both are 64-bit */
+             q -= 290805600;
+-            q /= 6; /* Since the SOA serial is a 32-bit value, this
+-                       division pushes Y2038-type problems far in to the
+-                       future */
+-        } else {
+-            struct tm bd;
++            q /= 6; /* Since the SOA serial is an unsigned 32-bit value, this
++                       division pushes Y2038-type problems in to the year
++		       2841 */
++            q = q & 0xffffffffUll;
+ #ifndef MINGW32
++        } else { 
++	    /* Have SOA come from direct YYYYMMDDHH; note that this
++	     * works until 4294 as per RFC1912. */
++            struct tm bd;
+             if(gmtime_r(&t,&bd) == NULL) {
+-               return 1979032815;
++               state->soa_serial = 1;
++               return JS_ERROR;
+                }
+-#else
+-            return 2005032801;
+-#endif
+             q = bd.tm_year + 1900;
+             q *= 100;
+             q += bd.tm_mon + 1;
+@@ -225,6 +289,7 @@
+             q *= 100;
+             q += bd.tm_hour;
+         }
++#endif /* MINGW32 */
+         state->soa_serial = q; /* Type conversion */
+         return JS_SUCCESS;
+ }
