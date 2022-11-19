@@ -61,8 +61,8 @@ rm foo
 
 # Deadwood has some Y2038 fixes too, not as extensive as in
 # MaraDNS
-#rm -fr deadwood-3.4.06
-#tar xjf ../deadwood-3.4.07.tar.bz2
+rm -fr deadwood-3.4.07
+tar xzf ../deadwood-3.4.08.tar.gz
 
 # Regenerate Deadwood's random prime number
 echo Making new random prime
