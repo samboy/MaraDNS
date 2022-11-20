@@ -48,7 +48,8 @@ all:
 	make $(M) $(Q) COMPILED=\"$(COMPILED)\" $(V) ; \
 	cd ../tools ; make $(M) ; \
 	cd ../deadwood-*/src/ ; make FLAGS="-O2"; \
-	cd ../../tcp ; make $(M) $(V) ; cat ../00README.FIRST
+	cd ../../coLunacyDNS ; make ; \
+	cd ../tcp ; make $(M) $(V) ; cat ../00README.FIRST
 
 debug: 
 	cd libs ; make $(D) DEBUG="-DDEBUG -DTHREADS" ; \
@@ -72,6 +73,7 @@ clean:
 	cd ../tcp ; make clean ; \
 	cd ../rng ; make clean ; \
 	cd ../sqa ; make clean ; \
+	cd ../coLunacyDNS ; make clean ; \
 	cd ../deadwood-*/src ; make clean ; \
 	# ; cd .. ; find . -type d | grep .deps | xargs rm -fr ; find . -name '*.o' | xargs rm
 
