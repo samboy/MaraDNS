@@ -20,6 +20,7 @@ git.commit
 server/maradns
 tools/askmara
 tools/askmara-tcp
+tools/askmaratcp
 tools/strip.control
 tools/benchmark
 tcp/getzone
