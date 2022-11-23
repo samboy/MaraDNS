@@ -28,4 +28,4 @@ versions are developed and released without using Git.
 
 For people with a security bug to report, post it here:
 
->https://github.com/samboy/MaraDNS/discussions/101
+>https://github.com/samboy/MaraDNS/security/advisories
