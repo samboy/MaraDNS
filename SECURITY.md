@@ -20,7 +20,9 @@ This is a list of all versions with no known security issues
 | 3.4.07   | Legacy             |
 | 3.4.08   | Legacy             |
 
-All previous versions (1.0 to 3.3) are unsupported.
+All previous versions (1.0 to 3.3) are unsupported.  A Git checkout
+is not at one of the above tags is not supported.  Note that the 3.4
+versions are developed and released without using Git.
 
 ## Reporting a Vulnerability
 
