@@ -773,9 +773,19 @@ void get_local_udp_packet(SOCKET sock) {
 
         /* Reject PTR or AAAA queries if not wanted */
         if((qtype == 28 /* AAAA */ && key_n[DWM_N_reject_aaaa] == 1) ||
-           (qtype == 12 /* PTR */ && key_n[DWM_N_reject_ptr] == 1)) {
+           (qtype == 12 /* PTR */ && key_n[DWM_N_reject_ptr] == 1) ||
+	   qtype == 255 || qtype == 13) {
                 unsigned char *answer;
-                answer = make_synth_not_there_answer(packet,&len,0);
+
+		if(qtype == 255 || qtype == 13) { /* ANY or HINFO */
+                	answer = make_synth_rfc8482_answer(packet,&len,0);
+		} else {
+                	answer = make_synth_not_there_answer(packet,&len,0);
+		}
+
+		if(answer == 0) {
+                	goto catch_get_local_udp_packet;
+		}
 
                 /* Flag this as an answer */
                 answer[2] |= 0x80;
@@ -982,30 +992,20 @@ catch_verify_dns_packet:
         return ret;
 }
 
-/* Make the actual answer for a synthetic "not there" reply */
-unsigned char *make_synth_not_there_answer(unsigned char *a, int *count,
-                int type) {
-        /* This is the answer for a "not there" reply */
-        unsigned char not_there[41] =
-        "\xc0\x0c" /* Name */
-        "\0\x06" /* Type */
-        "\0\x01" /* Class */
-        "\0\0\0\0" /* TTL (don't cache) */
-        "\0\x1c" /* RDLENGTH */
-        "\x01\x7a\xc0\x0c" /* Origin */
-        "\x01\x79\xc0\x0c" /* Email */
-        "\0\0\0\x01\0\0\0\x01\0\0\0\x01\0\0\0\x01\0\0\0\x01" /* 5 numbers */;
+/* Make the actual answer for a synthetic reply */
+unsigned char *make_synth_answer(unsigned char *a, int *count,
+                int type, unsigned char *synth, int slen) {
         unsigned char *answer = 0;
         int counter = 0;
 
-        answer = dw_malloc(*count + 43);
+        answer = dw_malloc(*count + slen + 3);
         if(answer == 0) {
                 return 0;
         }
 
         if(type == 1) { /* Special case: Return just synth "not there" */
-                for(counter = 0; counter < 40; counter++) {
-                        answer[counter] = not_there[counter];
+                for(counter = 0; counter < slen; counter++) {
+                        answer[counter] = synth[counter];
                 }
                 return answer;
         }
@@ -1036,14 +1036,35 @@ unsigned char *make_synth_not_there_answer(unsigned char *a, int *count,
         }
 
         /* Add the SOA reply to the answer */
-        for(counter = 0; counter < 40; counter++) {
-                answer[*count + counter] = not_there[counter];
+        for(counter = 0; counter < slen; counter++) {
+                answer[*count + counter] = synth[counter];
         }
 
         /* Return the answer */
         return answer;
 }
 
+unsigned char *make_synth_not_there_answer(unsigned char *a, int *count,
+                int type) {
+        /* This is the answer for a "not there" reply */
+        unsigned char not_there[41] =
+        "\xc0\x0c" /* Name */
+        "\0\x06" /* Type */
+        "\0\x01" /* Class */
+        "\0\0\0\0" /* TTL (don't cache) */
+        "\0\x1c" /* RDLENGTH */
+        "\x01\x7a\xc0\x0c" /* Origin */
+        "\x01\x79\xc0\x0c" /* Email */
+        "\0\0\0\x01\0\0\0\x01\0\0\0\x01\0\0\0\x01\0\0\0\x01" /* 5 numbers */;
+	return make_synth_answer(a, count, type, not_there, 40);
+}
+
+unsigned char *make_synth_rfc8482_answer(unsigned char *a, int *count, 
+		int type) {
+	unsigned char AnyAnswer[22] = 
+            "\xc0\x0c\x00\x0d\x00\x01\x00\x01\x51\x80\x00\x09\x07RFC8482\x00";
+	return make_synth_answer(a, count, type, AnyAnswer, 21);
+}
 /* Make a synthetic "not there" reply */
 void make_synth_not_there(int b, SOCKET sock, unsigned char *a, int count) {
         unsigned char *answer = 0;

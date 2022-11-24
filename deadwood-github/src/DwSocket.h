@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2019 Sam Trenholme
+/* Copyright (c) 2007-2022 Sam Trenholme
  *
  * TERMS
  *
@@ -358,6 +358,9 @@ int inet_pton(int z, char *c, uint8_t *ip);
 
 /* Make the actual answer for a synthetic "not there" reply */
 unsigned char *make_synth_not_there_answer(unsigned char *a, int *count,
+                int type);
+/* Make a synthetic RFC8482 answer */
+unsigned char *make_synth_rfc8482_answer(unsigned char *a, int *count,
                 int type);
 
 #endif /* __DW_SOCKET_DEFINED__ */
