@@ -29,3 +29,9 @@ versions are developed and released without using Git.
 For people with a security bug to report, post it here:
 
 >https://github.com/samboy/MaraDNS/security/advisories
+
+**Do not abuse this**  Using this feature to report anything *except*
+a security issue will result in your account being blocked and, if
+appropriate, reported and/or having the inappropriate report being
+made public.
+
