@@ -1,5 +1,13 @@
 MaraDNS changelog
 
+   maradns-3.5.0029:
+   This is a stable release of MaraDNS:
+
+      * Deadwood now implements RFC8482 (all ANY and HINFO queries now
+        return a RFC8482 reply)
+
+     (202?-??-??)
+
    maradns-3.4.08:
    This is a legacy release of MaraDNS:
 
