@@ -517,6 +517,11 @@ If this is set to 1, Deadwood will try to send an
 expired record to the user before giving up.  If it is 0, we 
 don't.  Default value: 1
 
+<h2>rfc8482</h1>
+If this is set to 1, Deadwood will not allow ANY or HINFO queries,
+sending a RFC8482 response if one is given to Deadwood.  If this is 0,
+ANY and HINFO queries are allowed.  Default value: 1
+
 <h2>root_servers</h2>
 This is a list of root servers; its syntax is identical to 
 upstream_servers (see below).  This is the type of DNS service

@@ -161,3 +161,6 @@ ip6["kabah.foo."] = "2001-0DB8-4D61-7261 444E-5300-__00-2345"
 # How many messages to log.  Higher means more messages.
 verbose_level = 3
 
+# If this is 0, we allow ANY queries
+rfc8482 = 1
+
