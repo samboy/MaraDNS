@@ -4,7 +4,7 @@
 .\" Process this file with the following (replace filename.1)
 .\" preconv < filename.1 | nroff -man -Tutf8
 .\"
-.\" Last updated 2022-10-27
+.\" Last updated 2022-11-24
 .\"
 .TH DEADWOOD 1 "August 2009" DEADWOOD "Deadwood reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -621,6 +621,9 @@ processed normally unless this is set.
 .PP
 If this is set to 1, Deadwood will try to send an expired record to the 
 user before giving up. If it is 0, we don\(aqt. Default value: 1 
+<h2>rfc8482</h1> If this is set to 1, Deadwood will not allow ANY or 
+HINFO queries, sending a RFC8482 response if one is given to Deadwood. 
+If this is 0, ANY and HINFO queries are allowed. Default value: 1 
 .PP
 
 .in -3
