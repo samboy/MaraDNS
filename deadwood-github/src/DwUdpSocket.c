@@ -58,6 +58,7 @@ extern int num_ports;
 extern int num_retries;
 extern int_fast32_t max_ttl;
 extern int_fast32_t min_ttl;
+extern int rfc8482;
 
 /* Other mararc parameters */
 extern dwd_dict *blocklist_dict;
@@ -774,7 +775,7 @@ void get_local_udp_packet(SOCKET sock) {
         /* Reject PTR or AAAA queries if not wanted */
         if((qtype == 28 /* AAAA */ && key_n[DWM_N_reject_aaaa] == 1) ||
            (qtype == 12 /* PTR */ && key_n[DWM_N_reject_ptr] == 1) ||
-	   qtype == 255 || qtype == 13) {
+	   ((qtype == 255 || qtype == 13) && rfc8482 == 1)) {
                 unsigned char *answer;
 
 		if(qtype == 255 || qtype == 13) { /* ANY or HINFO */

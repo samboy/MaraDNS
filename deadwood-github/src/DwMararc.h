@@ -74,13 +74,14 @@
 #define DWM_N_max_ttl 29
 #define DWM_N_min_ttl 30
 #define DWM_N_maxttl_reduce_labels 31
+#define DWM_N_rfc8482 32
 
 /* Number of string parameters in the mararc file */
 #define KEY_S_COUNT 9
 /* Number of dictionary parameters in the mararc file */
 #define KEY_D_COUNT 4
 /* Number of numeric parameters in the mararc file */
-#define KEY_N_COUNT 32
+#define KEY_N_COUNT 33
 
 #ifndef MINGW
 /* Location of files we read when we run execfile("foo") */
@@ -164,6 +165,7 @@ char *key_n_names[KEY_N_COUNT + 1] = {
         "min_ttl", /* Minimum allowed TTL */
         "maxttl_reduce_labels", /* Number of labels before reducing TTL of
                                  * NS referrals */
+	"rfc8482", /* Whether to send RFC8482 reply to ANY/HINFO queries */
         0 };
 
 #endif /* MARARC_C */
