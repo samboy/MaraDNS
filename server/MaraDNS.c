@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2020 Sam Trenholme
+/* Copyright (c) 2002-2022 Sam Trenholme
  *
  * TERMS
  *
@@ -154,6 +154,8 @@ js_string *notthere_ip = 0; /* The Class + TTL (0) + Rdlength (4)
                              * such (Sponsored by XeroBank). */
 
 int recursion_enabled = 0; /* Whether we have recursion */
+
+int rfc8482 = 1; /* Whether we send an RFC8482 reply to ANY queries */
 
 /* A list of who is and who is not allowed to make recursive DNS queries */
 ipv4pair recurse_acl[512];
@@ -890,6 +892,71 @@ int udpany(int id,int sock,struct sockaddr_in *client, js_string *query,
         js_destroy(most); js_destroy(ar);
         return JS_ERROR;
         }
+
+    /* RFC8482 support CODE HERE */
+    if(1) {
+        header.id = id;
+        header.ancount = 1;
+        header.nscount = 0;
+        header.arcount = 0;
+        header.qr = 1;
+        header.opcode = 0;
+        header.tc = 0;
+        header.rd = rd_val; /* RDBUG udpany */
+        header.ra = 0;
+        header.aa = authoritative; /* Currently always 1 */
+        header.z = 0;
+        header.rcode = 0; /* No error */
+        header.qdcount = 1;
+        if(make_hdr(&header,ar) == JS_ERROR) {
+               js_destroy(most); js_destroy(ar); js_destroy(ns);
+               return JS_ERROR;
+           }
+        /* Append the question to the answer */
+        if(origq == 0) {
+            if(js_append(query,ar) == JS_ERROR) {
+                  js_destroy(most); js_destroy(ar); js_destroy(ns);
+                  return JS_ERROR;
+                }
+        } else {
+            if(js_append(origq,ar) == JS_ERROR) {
+                  js_destroy(most); js_destroy(ar); js_destroy(ns);
+                  return JS_ERROR;
+                }
+        }
+        /* Append the class (in) to the answer */
+        if(js_adduint16(ar,1) == JS_ERROR) {
+               js_destroy(most); js_destroy(ar); js_destroy(ns);
+               return JS_ERROR;
+            }
+        /* Append the RFC8482 reply to the answer */
+        if(js_adduint16(ar,0xc00c) == JS_ERROR || /* Hostname (compressed) */
+           js_adduint16(ar,13) == JS_ERROR || /* TYPE (HINFO) */
+           js_adduint16(ar,1) == JS_ERROR || /* CLASS */
+           js_adduint16(ar,0) == JS_ERROR || /* TTL pt. 1 */
+           js_adduint16(ar,0) == JS_ERROR || /* TTL pt. 2 */
+           js_adduint16(ar,9) == JS_ERROR || /* Rdlength */
+	   js_adduint16(ar,0x0752) == JS_ERROR || /* len 7, 'R' */
+           js_adduint16(ar,0x4643) == JS_ERROR || /* 'FC' */
+           js_adduint16(ar,0x3834) == JS_ERROR || /* '84' */
+           js_adduint16(ar,0x3832) == JS_ERROR || /* '82' */
+           js_addbyte(ar, 0) == JS_ERROR) {
+               js_destroy(most); js_destroy(ar); js_destroy(ns);
+               return JS_ERROR;
+           }
+        /* Success! Put out the good data */
+        if(ect == 0) {
+            sendto(sock,ar->string,ar->unit_count,0,
+                (struct sockaddr *)client,len_inet);
+        } else {
+            mara_send(ect,sock,ar);
+        }
+
+        js_destroy(ar);
+        js_destroy(ns);
+        js_destroy(most);
+        return JS_SUCCESS;
+    }
 
     /* Initialize the total number of RRs displayed to the DNS client */
     total_count = 0;
