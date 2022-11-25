@@ -29,6 +29,7 @@ MaraDNS changelog
 
       * Y2038 issues with MaraDNS for win32 have been addressed.
       * maradns.exe restored; things tested and look to run after Y2038
+      * Clarify that MaraDNS needs restart to reload zones in man pages
 
      (2022-11-17)
 
