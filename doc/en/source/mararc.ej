@@ -603,6 +603,11 @@ This is useful when wishing to temporarily increase the
 resolving, then decreasing <tt>verbose_level</tt> so as to minimize
 the size of MaraDNS' log.
 
+<h2>rfc8482</h2>
+If this is set to 1, MaraDNS will not allow ANY queries, sending a
+RFC8482 response if one is given to MaraDNS.  If this is 0, ANY queries
+are allowed.  Default value: 1
+
 <h2>synth_soa_origin</h2>
 When a CSV2 zone file doesn't have a SOA record in it, MaraDNS generates
 a SOA record on the fly.  This variable determines the host name for
