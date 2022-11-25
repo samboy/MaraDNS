@@ -894,7 +894,7 @@ int udpany(int id,int sock,struct sockaddr_in *client, js_string *query,
         }
 
     /* RFC8482 support CODE HERE */
-    if(1) {
+    if(rfc8482 != 0) {
         header.id = id;
         header.ancount = 1;
         header.nscount = 0;
@@ -4012,6 +4012,8 @@ int main(int argc, char **argv) {
     min_visible_ttl = read_numeric_kvar("min_visible_ttl",30);
     if(min_visible_ttl < 5)
         min_visible_ttl = 5;
+
+    rfc8482 = read_numeric_kvar("rfc8482",1);
 
 #ifndef AUTHONLY
     handle_noreply = read_numeric_kvar("handle_noreply",1);
