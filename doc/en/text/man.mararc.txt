@@ -548,6 +548,12 @@ This is useful when wishing to temporarily increase the verbose_level
 to find out why a given host name is not resolving, then decreasing 
 verbose_level so as to minimize the size of MaraDNS' log. 
 
+== rfc8482 ==
+
+If this is set to 1, MaraDNS will not allow ANY queries, sending a 
+RFC8482 response if one is given to MaraDNS. If this is 0, ANY queries 
+are allowed. Default value: 1 
+
 == synth_soa_origin ==
 
 When a CSV2 zone file doesn't have a SOA record in it, MaraDNS 

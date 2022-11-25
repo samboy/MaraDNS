@@ -4,7 +4,7 @@
 .\" Process this file with the following (replace filename.1)
 .\" preconv < filename.1 | nroff -man -Tutf8
 .\"
-.\" Last updated 2022-11-17
+.\" Last updated 2022-11-25
 .\"
 .TH MARARC 5 "January 2002" MARADNS "MaraDNS reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -704,6 +704,14 @@ value in the first digit of the query.
 This is useful when wishing to temporarily increase the verbose_level 
 to find out why a given host name is not resolving, then decreasing 
 verbose_level so as to minimize the size of MaraDNS\(aq log. 
+.PP
+
+.in -3
+\fBrfc8482\fR
+.PP
+If this is set to 1, MaraDNS will not allow ANY queries, sending a 
+RFC8482 response if one is given to MaraDNS. If this is 0, ANY queries 
+are allowed. Default value: 1 
 .PP
 
 .in -3
