@@ -4,7 +4,7 @@
 .\" Process this file with the following (replace filename.1)
 .\" preconv < filename.1 | nroff -man -Tutf8
 .\"
-.\" Last updated 2022-11-24
+.\" Last updated 2022-11-25
 .\"
 .TH DEADWOOD 1 "August 2009" DEADWOOD "Deadwood reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -629,6 +629,10 @@ user before giving up. If it is 0, we don\(aqt. Default value: 1
 If this is set to 1, Deadwood will not allow ANY or HINFO queries, 
 sending a RFC8482 response if one is given to Deadwood. If this is 0, 
 ANY and HINFO queries are allowed. Default value: 1 
+.PP
+If ANY queries are enabled, since Deadwood does not support EDNS nor 
+DNS-over-TCP for upstream queries, Deadwood may not get meaningful 
+replies from upstream servers. 
 .PP
 
 .in -3

@@ -488,6 +488,10 @@ If this is set to 1, Deadwood will not allow ANY or HINFO queries,
 sending a RFC8482 response if one is given to Deadwood. If this is 0, 
 ANY and HINFO queries are allowed. Default value: 1 
 
+If ANY queries are enabled, since Deadwood does not support EDNS nor 
+DNS-over-TCP for upstream queries, Deadwood may not get meaningful 
+replies from upstream servers. 
+
 == root_servers ==
 
 This is a list of root servers; its syntax is identical to 
