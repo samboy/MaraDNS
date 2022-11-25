@@ -3,10 +3,18 @@ MaraDNS changelog
    maradns-3.5.0029:
    This is a stable release of MaraDNS:
 
-      * Deadwood now implements RFC8482 (all ANY and HINFO queries now
-        return a RFC8482 reply)
+      * Deadwood now implements RFC8482: All ANY and HINFO queries now
+        return a RFC8482 reply by default.  The older behavior can be 
+        restored by editing Deadwood’s configuration file.
+      * Documentation updates: Updated security bug reporting policy,
+        Document maradns.exe for Windows is unsupported, document
+        new rfc8482 behavior, note changes made for MaraDNS 3.4.08, 
+        etc.
+      * Windows builds of Deadwood now use dates for version numbers.
+        This way, I don’t need to update the .exe binary if a release
+        without Deadwood source changes is made.
 
-     (202?-??-??)
+     (2022-11-25)
 
    maradns-3.4.08:
    This is a legacy release of MaraDNS:
