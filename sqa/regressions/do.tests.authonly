@@ -42,7 +42,7 @@ TESTS=$TESTS"mararc_n_debug_msg_level "
 #TESTS=$TESTS"mararc_n_default_rrany_set " # No ANY because of RFC8482
 # The following uses recursion
 #TESTS=$TESTS"mararc_n_dns_port "
-#TESTS=$TESTS"mararc_n_dos_protection_level " # Uses ANY
+TESTS=$TESTS"mararc_n_dos_protection_level " 
 # Another tests that uses recursion
 #TESTS=$TESTS"mararc_n_handle_noreply "
 TESTS=$TESTS"mararc_n_hide_disclaimer "

@@ -9,8 +9,7 @@ www.example.com. +86400 a 10.1.2.3
 
 # Querying the server with the IP 127.0.0.1
 # Question: Zwww.example.com.
-www.example.com. +86400 a 10.1.2.3
-www.example.com. +86400 raw 99 \x0a'SPF record' 
+www.example.com. +3600 raw 13 \x07'RFC8482'\x00 
 # NS replies:
 # AR replies:
 
@@ -50,8 +49,7 @@ www.example.com. +86400 a 10.1.2.3
 
 # Querying the server with the IP 127.0.0.1
 # Question: Zwww.example.com.
-www.example.com. +86400 a 10.1.2.3
-www.example.com. +86400 raw 99 \x0a'SPF record' 
+www.example.com. +3600 raw 13 \x07'RFC8482'\x00 
 # NS replies:
 # AR replies:
 
@@ -88,8 +86,7 @@ www.example.com. +86400 a 10.1.2.3
 
 # Querying the server with the IP 127.0.0.1
 # Question: Zwww.example.com.
-www.example.com. +86400 a 10.1.2.3
-www.example.com. +86400 raw 99 \x0a'SPF record' 
+www.example.com. +3600 raw 13 \x07'RFC8482'\x00 
 # NS replies:
 # AR replies:
 
