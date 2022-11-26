@@ -88,14 +88,27 @@
      total_count = 0;
  
 --- maradns-3.4.08/sqa/regressions/do.tests.authonly	2022-10-17 21:45:54.000000000 -0700
-+++ maradns-3.4.09/sqa/regressions/do.tests.authonly	2022-11-25 21:43:24.200789898 -0800
-@@ -39,7 +39,8 @@
++++ maradns-3.4.09/sqa/regressions/do.tests.authonly	2022-11-25 22:10:52.713794128 -0800
+@@ -39,10 +39,10 @@
  TESTS=$TESTS"mararc_n_csv2_synthip_list "
  TESTS=$TESTS"mararc_n_csv2_tilde_handling "
  TESTS=$TESTS"mararc_n_debug_msg_level "
 -TESTS=$TESTS"mararc_n_default_rrany_set "
-+# RFC8482 means this no longer works
-+#TESTS=$TESTS"mararc_n_default_rrany_set "
++#TESTS=$TESTS"mararc_n_default_rrany_set " # No ANY because of RFC8482
  # The following uses recursion
  #TESTS=$TESTS"mararc_n_dns_port "
- TESTS=$TESTS"mararc_n_dos_protection_level "
+-TESTS=$TESTS"mararc_n_dos_protection_level "
++#TESTS=$TESTS"mararc_n_dos_protection_level " # Uses ANY
+ # Another tests that uses recursion
+ #TESTS=$TESTS"mararc_n_handle_noreply "
+ TESTS=$TESTS"mararc_n_hide_disclaimer "
+@@ -83,7 +83,8 @@
+ 
+ # Valgrind is required to run some of these tests.  
+ 
+-TESTS=$TESTS"any_case askmara.bug def_zone_nx delegation_glue "
++# any_case disabled: Uses ANY (obsolete because of RFC8482)
++TESTS=$TESTS"askmara.bug def_zone_nx delegation_glue "
+ # loc test disabled: Uses dig
+ TESTS=$TESTS"long.chunk noat_parse_bug percent_parse_bug "
+ #TESTS=$TESTS"star_handling_1 star_handling_2 star_handling_leak "
