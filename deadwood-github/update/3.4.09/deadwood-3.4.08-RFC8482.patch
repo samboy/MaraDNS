@@ -108,7 +108,7 @@
 +unsigned char *make_synth_rfc8482_answer(unsigned char *a, int *count, 
 +		int type) {
 +	unsigned char AnyAnswer[22] = 
-+            "\xc0\x0c\x00\x0d\x00\x01\x00\x01\x51\x80\x00\x09\x07RFC8482\x00";
++            "\xc0\x0c\x00\x0d\x00\x01\x00\x00\x00\x00\x00\x09\x07RFC8482\x00";
 +	return make_synth_answer(a, count, type, AnyAnswer, 21);
 +}
  /* Make a synthetic "not there" reply */
