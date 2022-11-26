@@ -1,5 +1,23 @@
 MaraDNS changelog
 
+   maradns-3.5.0030:
+   This is a stable release of MaraDNS:
+
+      * MaraDNS no longer accepts ANY queries as per RFC8482.  The older
+        behavior can be restored by editing MaraDNS’ configuration file.
+      * maradns.exe updated to 2022-11-26 to have RFC8482 compliant
+        behavior.
+      * MaraDNS automated tests updated to pass with RFC8482 behavior
+
+     (2022-11-26)
+
+   maradns-3.4.09:
+   This is a legacy release of MaraDNS:
+
+      * MaraDNS and Deadwood no longer allow ANY queries as per RFC8482
+
+     (2022-11-25)
+
    maradns-3.5.0029:
    This is a stable release of MaraDNS:
 
