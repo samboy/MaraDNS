@@ -87,3 +87,15 @@
      /* Initialize the total number of RRs displayed to the DNS client */
      total_count = 0;
  
+--- maradns-3.4.08/sqa/regressions/do.tests.authonly	2022-10-17 21:45:54.000000000 -0700
++++ maradns-3.4.09/sqa/regressions/do.tests.authonly	2022-11-25 21:43:24.200789898 -0800
+@@ -39,7 +39,8 @@
+ TESTS=$TESTS"mararc_n_csv2_synthip_list "
+ TESTS=$TESTS"mararc_n_csv2_tilde_handling "
+ TESTS=$TESTS"mararc_n_debug_msg_level "
+-TESTS=$TESTS"mararc_n_default_rrany_set "
++# RFC8482 means this no longer works
++#TESTS=$TESTS"mararc_n_default_rrany_set "
+ # The following uses recursion
+ #TESTS=$TESTS"mararc_n_dns_port "
+ TESTS=$TESTS"mararc_n_dos_protection_level "
