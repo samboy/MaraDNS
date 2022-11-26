@@ -934,7 +934,7 @@ int udpany(int id,int sock,struct sockaddr_in *client, js_string *query,
            js_adduint16(ar,13) == JS_ERROR || /* TYPE (HINFO) */
            js_adduint16(ar,1) == JS_ERROR || /* CLASS */
            js_adduint16(ar,0) == JS_ERROR || /* TTL pt. 1 */
-           js_adduint16(ar,0) == JS_ERROR || /* TTL pt. 2 */
+           js_adduint16(ar,3600) == JS_ERROR || /* TTL pt. 2 */
            js_adduint16(ar,9) == JS_ERROR || /* Rdlength */
 	   js_adduint16(ar,0x0752) == JS_ERROR || /* len 7, 'R' */
            js_adduint16(ar,0x4643) == JS_ERROR || /* 'FC' */
