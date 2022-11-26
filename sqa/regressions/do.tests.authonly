@@ -39,7 +39,7 @@ TESTS=$TESTS"mararc_n_csv2_default_zonefile "
 TESTS=$TESTS"mararc_n_csv2_synthip_list "
 TESTS=$TESTS"mararc_n_csv2_tilde_handling "
 TESTS=$TESTS"mararc_n_debug_msg_level "
-TESTS=$TESTS"mararc_n_default_rrany_set "
+#TESTS=$TESTS"mararc_n_default_rrany_set " # No ANY because of RFC8482
 # The following uses recursion
 #TESTS=$TESTS"mararc_n_dns_port "
 TESTS=$TESTS"mararc_n_dos_protection_level "
