@@ -47,14 +47,19 @@ When installed with <tt>make install</tt>, MaraDNS will look for systemd
 files, and install MaraDNS and Deadwood startup files.
 
 <H1>USAGE</H1>
-<b>duende</b> child_process [ all subsequent arguments passed on to child ]
+<b>duende</b> (--pid=/path/to/file) child_process 
+	[ all subsequent arguments passed on to child ]
 
 <H1>DETAILS</H1>
 
 When <b>duende</b> is invoked, it spawns two processes.  In addition to
 spawning the daemonized child process, <b>duende</b> also spawns a process
 which reads and logs the standard output of the daemonized process.  The
-parent process stays alive so as to monitor the daemonized process.
+parent process stays alive so as to monitor the daemonized process.  If
+the optional <tt>--pid</tt> argument is supplied, <b>duende</b> will write
+its PID to the file specified by the argument. It is an error to supply
+the <tt>--pid</tt> argument without an equal sign and file name.
+
 <p>
 <b>duende</b> requires a blank directory named <tt>/etc/maradns/logger</tt> 
 to run.
