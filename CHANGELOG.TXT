@@ -1,5 +1,13 @@
 MaraDNS changelog
 
+   maradns-3.5.0031:
+   This is a stable release of MaraDNS:
+
+      * "make install" now installs working files to start MaraDNS at
+        system start up in Ubuntu22.04 (systemd) and Alpine 3.14 (OpenRC).
+
+     (202?-??-??)
+   
    maradns-3.5.0030:
    This is a stable release of MaraDNS:
 
