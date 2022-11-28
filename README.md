@@ -88,10 +88,35 @@ versions of the core POSIX utilities and GNU coreutils.
 
 ## Supported OSes
 
-There are no “supported OSes” for MaraDNS.  I currently use Ubuntu 22.04
-to develop MaraDNS, both Ubuntu 22.04 and Alpine Linux 3.14 to test that
-MaraDNS builds and passes all automated regressions, and a Windows XP 
-virtual machine to make the Windows binaries. 
+MaraDNS is built and runs on Ubuntu 22.04 as of late 2022.  
+
+I currently use Ubuntu 22.04 to develop MaraDNS, both Ubuntu 22.04 and
+Alpine Linux 3.14 to test that MaraDNS builds and passes all automated
+regressions, and a Windows XP virtual machine to make the Windows
+binaries.
+
+### Please use systemd
+
+While MaraDNS does have scripts for starting up MaraDNS on `sysvinit`
+systems, these scripts are no longer fully supported, since most major
+Linux distributions have moved on to `systemd`, which is a lot better than
+the older `sysvinit` process for starting up the MaraDNS related services.
+
+As a practical matter, this means that `make install` is only guaranteed
+to get MaraDNS to start up at system boot time on Ubuntu 22.04.
+
+That said, there *is* some scaffolding for getting MaraDNS to run without
+`systemd`.  There is a helper, `duende`, to make MaraDNS a daemon on
+systems with classic *NIX style init.  While, with `systemd`, it’s no
+longer needed to use this Duende helper, I will keep Duende around for
+`sysvinit` and some level of `OpenRC` compatibility.  There are also
+shell scripts for starting MaraDNS on `sysvinit` systems which may or
+may not work with other init systems.
+
+`systemd` handles the daemonization of the MaraDNS services the way
+`duende` does (did?) on `sysvinit` and similar systems.  The `systemd` way
+is much simpler at the development level, since systemd now handles a lot
+of complexity the old init systems forced networking services to handle.
 
 ## Important note for Windows users
 
