@@ -212,7 +212,19 @@ if [ -d /etc/systemd/system ] ; then
 	exit 0
 fi
 
-echo Systemd not found, using /etc/rc.d/init.d instead
+RCTOP=/etc/rc.d
+echo Systemd not found, trying ${RPM_BUILD_ROOT}${RCTOP}/init.d instead
+if [ ! -d ${RPM_BUILD_ROOT}${RCTOP}/init.d ] ; then
+	echo ${RPM_BUILD_ROOT}${RCTOP}/init.d not found...
+	RCTOP=/etc
+	echo Trying ${RPM_BUILD_ROOT}${RCTOP}/init.d instead
+fi
+if [! -d ${RPM_BUILD_ROOT}${RCTOP}/init.d ] ; then
+	echo ${RPM_BUILD_ROOT}${RCTOP}/init.d not found
+	echo FATAL
+	echo Please install this to run at system start up by hand
+	exit 1
+fi
 
 # And copy over the init files if this system looks to be a sysVish init
 # system
