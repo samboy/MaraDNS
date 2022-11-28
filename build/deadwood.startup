@@ -53,7 +53,7 @@ fi
 
 # Non-Posix OpenRC needs these two lines
 command="$DUENDE"
-command-args="$DEADWOOD"
+command_args="$DEADWOOD"
 
 # The following is the directory we place MaraDNS log entries in
 LOGDIR="/var/log"

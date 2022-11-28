@@ -49,7 +49,7 @@ fi
 
 # Non-Posix OpenRC needs these two lines
 command="$DUENDE"
-command-args="$ZONESERVER"
+command_args="$ZONESERVER"
 
 # The following is the directory we place MaraDNS log entries in
 LOGDIR="/var/log"
