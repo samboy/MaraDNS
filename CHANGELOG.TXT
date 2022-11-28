@@ -5,6 +5,8 @@ MaraDNS changelog
 
       * "make install" now installs working files to start MaraDNS at
         system start up in Ubuntu22.04 (systemd) and Alpine 3.14 (OpenRC).
+      * Since MaraDNS has Duende, no need for Deadwood to have Duende 
+        too.
 
      (202?-??-??)
    
