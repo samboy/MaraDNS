@@ -72,7 +72,8 @@ and install MaraDNS and Deadwood startup files.
 .PP
 
 .B "duende"
-child_process [ all subsequent arguments passed on to child ] 
+(--pid=/path/to/file) child_process [ all subsequent arguments passed 
+on to child ] 
 .SH "DETAILS"
 .PP
 When 
@@ -82,7 +83,10 @@ daemonized child process,
 .B "duende"
 also spawns a process which reads and logs the standard output of the 
 daemonized process. The parent process stays alive so as to monitor the 
-daemonized process. 
+daemonized process. If the optional --pid argument is supplied, 
+.B "duende"
+will write its PID to the file specified by the argument. It is an 
+error to supply the --pid argument without an equal sign and file name. 
 .PP
 .B "duende"
 requires a blank directory named /etc/maradns/logger to run. 

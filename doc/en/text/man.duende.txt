@@ -41,14 +41,18 @@ files, and install MaraDNS and Deadwood startup files.
 
 === USAGE ===
 
-duende child_process [ all subsequent arguments passed on to child ] 
+duende (--pid=/path/to/file) child_process [ all subsequent arguments 
+passed on to child ] 
 
 === DETAILS ===
 
 When duende is invoked, it spawns two processes. In addition to 
 spawning the daemonized child process, duende also spawns a process 
 which reads and logs the standard output of the daemonized process. The 
-parent process stays alive so as to monitor the daemonized process. 
+parent process stays alive so as to monitor the daemonized process. If 
+the optional --pid argument is supplied, duende will write its PID to 
+the file specified by the argument. It is an error to supply the --pid 
+argument without an equal sign and file name. 
 
 duende requires a blank directory named /etc/maradns/logger to run. 
 
