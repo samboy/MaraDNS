@@ -193,6 +193,27 @@ fi
 # Finally, set up the startup files, as needed
 # Go back to the top-level MaraDNS directory
 cd $TOPLEVEL
+
+if [ -d /etc/systemd/system ] ; then
+	echo Adding MaraDNS systemd startup scripts
+	cp $TOPLEVEL/build/systemd/
+	for a in *service ; do
+		cat $a | awk '
+		{sub(/\/usr\/local\/bin/,"'$SBIN'")
+		 print $0}
+			' > /etc/systemd/system/$a
+	done
+	systemctl enable maradns
+	systemctl enable deadwood
+	echo Service startup files installed in /etc/systemd/system
+	echo To start the services:
+	echo systemctl start maradns \# Starts MaraDNS
+	echo systemctl start deadwood \# Starts Deadwood
+	exit 0
+fi
+
+echo Systemd not found, using /etc/rc.d/init.d instead
+
 # And copy over the init files if this system looks to be a sysVish init
 # system
 if [ -d $RPM_BUILD_ROOT/etc/rc.d/init.d ] ; then
@@ -223,5 +244,6 @@ if [ -d $RPM_BUILD_ROOT/etc/rc.d/init.d ] ; then
 		ln -s ../init.d/maradns.zoneserver K60maradns.zoneserver
 		ln -s ../init.d/maradns.deadwood S60maradns.deadwood
 	fi
+	exit 0
 fi
 
