@@ -97,10 +97,11 @@ binaries.
 
 ### Please use systemd
 
-While MaraDNS does have scripts for starting up MaraDNS on `sysvinit`
-systems, these scripts are no longer fully supported, since most major
-Linux distributions have moved on to `systemd`, which is a lot better than
-the older `sysvinit` process for starting up the MaraDNS related services.
+While MaraDNS does have scripts for starting up MaraDNS at system boot
+time on `sysvinit` systems, these scripts are no longer fully supported,
+since most major Linux distributions have moved on to `systemd`, which
+is a lot better than the older `sysvinit` process for starting up the
+MaraDNS related services.
 
 While `make install` is only guaranteed to get MaraDNS to start up at
 system boot time on Ubuntu 22.04, it *should* do the right thing in Rocky
