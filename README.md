@@ -102,16 +102,18 @@ systems, these scripts are no longer fully supported, since most major
 Linux distributions have moved on to `systemd`, which is a lot better than
 the older `sysvinit` process for starting up the MaraDNS related services.
 
-As a practical matter, this means that `make install` is only guaranteed
-to get MaraDNS to start up at system boot time on Ubuntu 22.04.
+While `make install` is only guaranteed to get MaraDNS to start up at
+system boot time on Ubuntu 22.04, it *should* do the right thing in Rocky
+Linux, Debian, RedHat, CentOS, Fedora, and other Linux distributions
+which use `systemd`.
 
-That said, there *is* some scaffolding for getting MaraDNS to run without
-`systemd`.  There is a helper, `duende`, to make MaraDNS a daemon on
-systems with classic *NIX style init.  While, with `systemd`, it’s no
-longer needed to use this Duende helper, I will keep Duende around for
-`sysvinit` and some level of `OpenRC` compatibility.  There are also
-shell scripts for starting MaraDNS on `sysvinit` systems which may or
-may not work with other init systems.
+There *is* some scaffolding for getting MaraDNS to run without `systemd`.
+There is a helper, `duende`, to make MaraDNS a daemon on systems with
+classic *NIX style init.  While, with `systemd`, it’s no longer needed
+to use this Duende helper, I will keep Duende around for `sysvinit` and
+some level of `OpenRC` compatibility.  There are also shell scripts for
+starting MaraDNS on `sysvinit` systems which may or may not work with
+other init systems.
 
 `systemd` handles the daemonization of the MaraDNS services the way
 `duende` does (did?) on `sysvinit` and similar systems.  The `systemd` way
