@@ -4,7 +4,7 @@
 .\" Process this file with the following (replace filename.1)
 .\" preconv < filename.1 | nroff -man -Tutf8
 .\"
-.\" Last updated 2022-11-12
+.\" Last updated 2022-11-28
 .\"
 .TH DUENDE 8 "duende" "January 2003" "duende"
 .\" We don't want hyphenation (it's too ugly)
@@ -28,9 +28,46 @@ duende - run a child process as a daemon
 .PP
 
 .B "duende"
-makes a given child process a daemon. The standard output and standard 
-error of the child process is logged via syslog() with a priority of 
+is a tool for users of init systems which require programs to provide 
+their own daemonization. 
+.B "duende"
+is not needed with systemd and other init systems which can provide 
+daemonization for network service. 
+.BR "duende" "makes"
+a given child process a daemon. The standard output and standard error 
+of the child process is logged via syslog() with a priority of 
 LOG_INFO. 
+.SH "SYSTEMD"
+.PP
+
+.B "duende"
+should not be used if one uses <rr>systemd as the init process. 
+Instead, files like this should be added to /etc/systemd/system
+
+.nf
+# Place this file here: 
+# /etc/systemd/system/maradns.service 
+# Then 
+# systemctl enable maradns 
+# systemctl start maradns 
+[Unit] 
+ After=network-online.target 
+ ConditionPathExists=/usr/local/bin/maradns 
+ Description=MaraDNS 
+ Wants=network-online.target 
+ 
+[Service] 
+ ExecStart=/usr/local/bin/maradns 
+ StandardOutput=journal 
+ TimeoutSec=0 
+ Type=exec 
+ 
+[Install] 
+ WantedBy=multi-user.target 
+.fi
+
+When installed with make install, MaraDNS will look for systemd files, 
+and install MaraDNS and Deadwood startup files. 
 .SH "USAGE"
 .PP
 

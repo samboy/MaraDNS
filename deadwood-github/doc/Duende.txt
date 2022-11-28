@@ -1,19 +1,50 @@
-===NAME===
+=== NAME ===
 
 duende - run a child process as a daemon 
 
-===DESCRIPTION===
+=== DESCRIPTION ===
 
-duende makes a given child process a daemon. The standard output and 
+duende is a tool for users of init systems which require programs to 
+provide their own daemonization. duende is not needed with systemd and 
+other init systems which can provide daemonization for network service. 
+duendemakes a given child process a daemon. The standard output and 
 standard error of the child process is logged via syslog() with a 
-priority of LOG_INFO (LOG_ALERT on FreeBSD systems). 
+priority of LOG_INFO. 
 
-===USAGE===
+=== SYSTEMD ===
+
+duende should not be used if one uses systemd as the init process. 
+Instead, files like this should be added to /etc/systemd/system
+
+# Place this file here: 
+# /etc/systemd/system/maradns.service 
+# Then 
+# systemctl enable maradns 
+# systemctl start maradns 
+[Unit] 
+ After=network-online.target 
+ ConditionPathExists=/usr/local/bin/maradns 
+ Description=MaraDNS 
+ Wants=network-online.target 
+ 
+[Service] 
+ ExecStart=/usr/local/bin/maradns 
+ StandardOutput=journal 
+ TimeoutSec=0 
+ Type=exec 
+ 
+[Install] 
+ WantedBy=multi-user.target
+
+When installed with make install, MaraDNS will look for systemd 
+files, and install MaraDNS and Deadwood startup files. 
+
+=== USAGE ===
 
 duende (--pid=/path/to/file) child_process [ all subsequent arguments 
 passed on to child ] 
 
-===DETAILS===
+=== DETAILS ===
 
 When duende is invoked, it spawns two processes. In addition to 
 spawning the daemonized child process, duende also spawns a process 
@@ -38,7 +69,7 @@ Duende's intended child processes (maradns, DwMain, and DwTcp) need to
 bind to privileged ports, and because duende uses a setuid() call to 
 change the user ID of the logging process to the user with ID 707. 
 
-===LOGGING===
+=== LOGGING ===
 
 duende uses the syslog() facility to log the standard output of the 
 program that it invokes. The name of the program (in other words, the 
@@ -68,7 +99,7 @@ Also, the directory /etc/maradns/logger, while used by duende, is not
 used to store any log messages. That is unless, for some reason, one 
 configures syslog to store messages there. 
 
-===EXAMPLES===
+=== EXAMPLES ===
 
 Using duende to start DwMain, where the configuration file is 
 /etc/dwood3rc.2
@@ -80,13 +111,13 @@ Using duende to start zoneserver, where the mararc file is
 
 	duende zoneserver -f /etc/mararc.4
 
-===BUGS===
+=== BUGS ===
 
 Duende assumes that all of its children are well-behaved, eating their 
 vegetables, going to bed when told, and terminating when receiving a 
 TERM signal. 
 
-===LEGAL DISCLAIMER===
+=== LEGAL DISCLAIMER ===
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -100,7 +131,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
 
-===AUTHOR===
+=== AUTHOR ===
 
 Duende and this man page are written by Sam Trenholme. D Richard Felker 
 III provided some invaluable assistance with the piping code which 
