@@ -212,6 +212,27 @@ if [ -d /etc/systemd/system ] ; then
 	exit 0
 fi
 
+if [ "$1" != "--unsupported" ] ; then
+	echo Only systemd is supported for having MaraDNS run at system start
+	echo up.  
+	echo
+	echo There are scripts which may \(or may not\) work with sysvinit
+	echo and/or OpenRC.  These scripts are unsupported but might get
+	echo you started.  To attempt to get MaraDNS to start up at system
+	echo boot time on a non-systemd system, run the following.
+	echo
+	echo $0 --unsupported
+	echo
+	echo THIS IS NOT SUPPORTED.  If any issues are found, please
+	echo fix them and then submit a pull \(merge\) request.
+	echo
+	echo Again, MaraDNS/Deadwood have been installed, but will not
+	echo start up at system boot.
+	exit 0
+fi
+
+echo THE FOLLOWING MIGHT WORK BUT IS NOT SUPPORTED
+
 RCTOP=/etc/rc.d
 echo Systemd not found, trying ${RPM_BUILD_ROOT}${RCTOP}/init.d instead
 if [ ! -d ${RPM_BUILD_ROOT}${RCTOP}/init.d ] ; then
@@ -228,6 +249,11 @@ fi
 
 # And copy over the init files if this system looks to be a sysVish init
 # system
+# Please note that while there are hacks for this to work with OpenRC,
+# and they work with the version of OpenRC included with Alpine 3.14,
+# OpenRC actually isn’t supported, since it uses yet another non-standard
+# format for launching services.
+
 if [ -d ${RPM_BUILD_ROOT}${RCTOP}/init.d ] ; then
 	echo Adding MaraDNS startup scripts
 	if [ ! -f ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns ] ; then
@@ -287,3 +313,6 @@ if [ -d ${RPM_BUILD_ROOT}${RCTOP}/init.d ] ; then
 	exit 0
 fi
 
+echo
+echo RUNNING MARADNS ON THIS INIT SYSTEM AT SYSTEM BOOT IS NOT SUPPORTED
+exit 0
