@@ -247,6 +247,10 @@ if [ -d ${RPM_BUILD_ROOT}${RCTOP}/init.d ] ; then
 		ln -s ../init.d/maradns S60maradns
 		ln -s ../init.d/maradns.zoneserver K60maradns.zoneserver
 		ln -s ../init.d/maradns.deadwood S60maradns.deadwood
+	else 
+		echo Unable to find ${RPM_BUILD_ROOT}${RCTOP}/rc3.d/
+		echo trying rc-update
+		rc-update add maradns 3
 	fi
 	if cd ${RPM_BUILD_ROOT}${RCTOP}/rc5.d/ ; then
 		echo starting up MaraDNS at runlevel 5
@@ -256,6 +260,10 @@ if [ -d ${RPM_BUILD_ROOT}${RCTOP}/init.d ] ; then
 		ln -s ../init.d/maradns S60maradns
 		ln -s ../init.d/maradns.zoneserver K60maradns.zoneserver
 		ln -s ../init.d/maradns.deadwood S60maradns.deadwood
+	else
+		echo Unable to find ${RPM_BUILD_ROOT}${RCTOP}/rc5.d/
+		echo trying rc-update
+		rc-update add maradns 5
 	fi
 	echo Files copied to ${RCTOP}
 	exit 0
