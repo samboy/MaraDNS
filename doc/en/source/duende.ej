@@ -8,10 +8,43 @@
 duende - run a child process as a daemon
 <H1>DESCRIPTION</H1>
 
-<b>duende</b> makes a given child process a daemon.  The standard output
-and standard error
-of the child process is logged via syslog() with a priority of
-LOG_INFO.
+<b>duende</b> is a tool for users of init systems which require
+programs to provide their own daemonization.  <b>duende</b> is not 
+needed with systemd and other init systems which can provide daemonization
+for network service.  <b>duende</b>makes a given child process a daemon.
+The standard output and standard error of the child process is logged
+via syslog() with a priority of LOG_INFO.
+
+<H1>SYSTEMD</H1>
+
+<b>duende</b> should not be used if one uses <rr>systemd</tt> as the
+init process.  Instead, files like this should be added to
+<tt>/etc/systemd/system</tt>
+
+<pre>
+# Place this file here:
+# /etc/systemd/system/maradns.service
+# Then
+# systemctl enable maradns
+# systemctl start maradns
+[Unit]
+ After=network-online.target
+ ConditionPathExists=/usr/local/bin/maradns
+ Description=MaraDNS
+ Wants=network-online.target
+
+[Service]
+ ExecStart=/usr/local/bin/maradns
+ StandardOutput=journal
+ TimeoutSec=0
+ Type=exec
+
+[Install]
+ WantedBy=multi-user.target
+</pre>
+
+When installed with <tt>make install</tt>, MaraDNS will look for systemd
+files, and install MaraDNS and Deadwood startup files.
 
 <H1>USAGE</H1>
 <b>duende</b> child_process [ all subsequent arguments passed on to child ]
