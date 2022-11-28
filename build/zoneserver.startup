@@ -64,12 +64,12 @@ MARARCS="/etc/mararc"
 
 # Show usage information if this script is invoked with no arguments
 if [ $# -lt 1 ] ; then
-    echo Usage: $0 \(start\|stop\|restart\)
-    exit 1
+    echo WARNING Usage: $0 \(start\|stop\|restart\)
+    #exit 1
 fi
 
 # If invoked as stop or restart, kill *all* MaraDNS processes
-if [ $1 = "stop" -o $1 = "restart" ] ; then
+if [ "$1" = "stop" -o "$1" = "restart" ] ; then
     echo Sending all MaraDNS processes the TERM signal
     ps -ef | awk '{print $2":"$8}' | grep zoneserver | grep -v $$ | \
       cut -f1 -d: | xargs kill > /dev/null 2>&1
@@ -82,7 +82,7 @@ if [ $1 = "stop" -o $1 = "restart" ] ; then
 fi
 
 # If invoked as start or restart, start the MaraDNS processes
-if [ $1 = "start" -o $1 = "restart" ] ; then
+if [ "$1" = "start" -o "$1" = "restart" ] ; then
     echo Starting all zoneserver processes
     for a in $MARARCS ; do
         echo Starting zoneserver process which uses Mararc file $a

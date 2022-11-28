@@ -59,13 +59,15 @@ command_args="$DEADWOOD"
 LOGDIR="/var/log"
 
 # Show usage information if this script is invoked with no arguments
+# Non-fatal because of OpenRC, which runs these scripts w/o args to
+# get dependencies
 if [ $# -lt 1 ] ; then
-    echo Usage: $0 \(start\|stop\|restart\)
-    exit 1
+    echo WARNING Usage: $0 \(start\|stop\|restart\)
+    #exit 1
 fi
 
 # If invoked as stop or restart, kill *all* MaraDNS processes
-if [ $1 = "stop" -o $1 = "restart" ] ; then
+if [ "$1" = "stop" -o "$1" = "restart" ] ; then
     echo Sending all Deadwood processes the TERM signal
     ps -e | awk '{print $1":"$NF}' | grep Deadwood | grep -v $$ | \
       cut -f1 -d: | xargs kill > /dev/null 2>&1
@@ -75,13 +77,13 @@ if [ $1 = "stop" -o $1 = "restart" ] ; then
     ps -e | awk '{print $1":"$NF}' | grep Deadwood | grep -v $$ | \
       cut -f1 -d: | xargs kill -9 > /dev/null 2>&1
     echo MaraDNS should have been stopped
-    if [ $1 = "stop" ] ; then
+    if [ "$1" = "stop" ] ; then
     	exit 0
     fi
 fi
 
 # If invoked as start or restart, start the Deadwood processes
-if [ $1 = "start" -o $1 = "restart" ] ; then
+if [ "$1" = "start" -o "$1" = "restart" ] ; then
     echo Starting Deadwood process
     $DUENDE $DEADWOOD 
     exit 0
