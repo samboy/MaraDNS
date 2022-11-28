@@ -21,6 +21,8 @@ Instead, files like this should be added to /etc/systemd/system
 # Then 
 # systemctl enable maradns 
 # systemctl start maradns 
+# To view log 
+# journalctl -u maradns 
 [Unit] 
  After=network-online.target 
  ConditionPathExists=/usr/local/bin/maradns 
