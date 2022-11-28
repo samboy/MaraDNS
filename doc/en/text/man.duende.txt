@@ -6,10 +6,10 @@ duende - run a child process as a daemon
 
 duende is a tool for users of init systems which require programs to 
 provide their own daemonization. duende is not needed with systemd and 
-other init systems which can provide daemonization for network service. 
-duende makes a given child process a daemon. The standard output and 
-standard error of the child process is logged via syslog() with a 
-priority of LOG_INFO. 
+other init systems which can provide daemonization for network 
+services. duende makes a given child process a daemon. The standard 
+output and standard error of the child process is logged via syslog() 
+with a priority of LOG_INFO. 
 
 === SYSTEMD ===
 
