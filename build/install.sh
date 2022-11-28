@@ -228,17 +228,18 @@ fi
 
 # And copy over the init files if this system looks to be a sysVish init
 # system
-if [ -d $RPM_BUILD_ROOT/etc/rc.d/init.d ] ; then
+if [ -d ${RPM_BUILD_ROOT}${RCTOP}/init.d ] ; then
 	echo Adding MaraDNS startup scripts
-	if [ ! -f $RPM_BUILD_ROOT/etc/rc.d/init.d/maradns ] ; then
-	      cp $BUILDDIR/mara.startup $RPM_BUILD_ROOT/etc/rc.d/init.d/maradns
+	if [ ! -f ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns ] ; then
+	      cp $BUILDDIR/mara.startup \
+	          ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns
 	      cp $BUILDDIR/zoneserver.startup \
-	          $RPM_BUILD_ROOT/etc/rc.d/init.d/maradns.zoneserver
+	          ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns.zoneserver
 	      cp $BUILDDIR/deadwood.startup \
-	          $RPM_BUILD_ROOT/etc/rc.d/init.d/maradns.deadwood
-	      chmod 755 $RPM_BUILD_ROOT/etc/rc.d/init.d/maradns.deadwood
+	          ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns.deadwood
+	      chmod 755 ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns.deadwood
 	fi
-	if cd $RPM_BUILD_ROOT/etc/rc.d/rc3.d/ ; then
+	if cd ${RPM_BUILD_ROOT}${RCTOP}/rc3.d/ ; then
 		echo Starting up MaraDNS at runlevel 3
 		rm S60maradns 2> /dev/null
 		rm K60maradns.zoneserver 2> /dev/null
@@ -247,7 +248,7 @@ if [ -d $RPM_BUILD_ROOT/etc/rc.d/init.d ] ; then
 		ln -s ../init.d/maradns.zoneserver K60maradns.zoneserver
 		ln -s ../init.d/maradns.deadwood S60maradns.deadwood
 	fi
-	if cd $RPM_BUILD_ROOT/etc/rc.d/rc5.d/ ; then
+	if cd ${RPM_BUILD_ROOT}${RCTOP}/rc5.d/ ; then
 		echo starting up MaraDNS at runlevel 5
 		rm S60maradns 2> /dev/null
 		rm K60maradns.zoneserver 2> /dev/null
@@ -256,6 +257,7 @@ if [ -d $RPM_BUILD_ROOT/etc/rc.d/init.d ] ; then
 		ln -s ../init.d/maradns.zoneserver K60maradns.zoneserver
 		ln -s ../init.d/maradns.deadwood S60maradns.deadwood
 	fi
+	echo Files copied to ${RCTOP}
 	exit 0
 fi
 
