@@ -219,7 +219,7 @@ if [ ! -d ${RPM_BUILD_ROOT}${RCTOP}/init.d ] ; then
 	RCTOP=/etc
 	echo Trying ${RPM_BUILD_ROOT}${RCTOP}/init.d instead
 fi
-if [! -d ${RPM_BUILD_ROOT}${RCTOP}/init.d ] ; then
+if [ ! -d ${RPM_BUILD_ROOT}${RCTOP}/init.d ] ; then
 	echo ${RPM_BUILD_ROOT}${RCTOP}/init.d not found
 	echo FATAL
 	echo Please install this to run at system start up by hand
