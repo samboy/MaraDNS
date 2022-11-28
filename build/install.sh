@@ -231,13 +231,27 @@ fi
 if [ -d ${RPM_BUILD_ROOT}${RCTOP}/init.d ] ; then
 	echo Adding MaraDNS startup scripts
 	if [ ! -f ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns ] ; then
-	      cp $BUILDDIR/mara.startup \
+	      # Non-Posix OpenRC stuff
+	      if [ -e /sbin/openrc-run ] ; then
+		echo '#!/sbin/openrc-run' > \
 	          ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns
-	      cp $BUILDDIR/zoneserver.startup \
-	          ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns.zoneserver
-	      cp $BUILDDIR/deadwood.startup \
+		echo '#!/sbin/openrc-run' > \
 	          ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns.deadwood
+		echo '#!/sbin/openrc-run' > \
+	          ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns.zoneserver
+	      fi # End OpenRC stuff
+	      touch ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns
+	      touch ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns.deadwood
+	      touch ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns.zoneserver
+	      chmod 755 ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns
 	      chmod 755 ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns.deadwood
+	      chmod 755 ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns.zoneserver
+	      cat $BUILDDIR/mara.startup >> \
+	          ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns
+	      cat $BUILDDIR/zoneserver.startup >> \
+	          ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns.zoneserver
+	      cat $BUILDDIR/deadwood.startup >> \
+	          ${RPM_BUILD_ROOT}${RCTOP}/init.d/maradns.deadwood
 	fi
 	if cd ${RPM_BUILD_ROOT}${RCTOP}/rc3.d/ ; then
 		echo Starting up MaraDNS at runlevel 3
