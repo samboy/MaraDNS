@@ -9,7 +9,7 @@ provide their own daemonization. duende is not needed with systemd and
 other init systems which can provide daemonization for network service. 
 duendemakes a given child process a daemon. The standard output and 
 standard error of the child process is logged via syslog() with a 
-priority of LOG_INFO. 
+priority of LOG_INFO (LOG_ALERT on FreeBSD systems). 
 
 === SYSTEMD ===
 

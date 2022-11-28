@@ -35,8 +35,8 @@ is not needed with systemd and other init systems which can provide
 daemonization for network service. 
 .BR "duende" "makes"
 a given child process a daemon. The standard output and standard error 
-of the child process is logged via syslog() with a priority of 
-LOG_INFO. 
+of the child process is logged via syslog() with a priority of LOG_INFO 
+(LOG_ALERT on FreeBSD systems). 
 .SH "SYSTEMD"
 .PP
 
