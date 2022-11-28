@@ -4,11 +4,17 @@ MaraDNS changelog
    This is a stable release of MaraDNS:
 
       * "make install" now installs working files to start MaraDNS at
-        system start up in Ubuntu22.04 (systemd) and Alpine 3.14 (OpenRC).
+        system start up in Ubuntu22.04 (systemd).
+      * While there are no plans to remove the support, the script called
+        by "make install" no longer attempts to install system startup 
+        files on systems without systemd unless called with a 
+        special "--unsupported" argument.
+      * Duende man page updated to note systemd does everything Duende
+        does on non-systemd systems.
       * Since MaraDNS has Duende, no need for Deadwood to have Duende 
         too.
 
-     (202?-??-??)
+     (2022-11-28)
    
    maradns-3.5.0030:
    This is a stable release of MaraDNS:
