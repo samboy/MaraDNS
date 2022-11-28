@@ -196,7 +196,7 @@ cd $TOPLEVEL
 
 if [ -d /etc/systemd/system ] ; then
 	echo Adding MaraDNS systemd startup scripts
-	cp $TOPLEVEL/build/systemd/
+	cd $TOPLEVEL/build/systemd/
 	for a in *service ; do
 		cat $a | awk '
 		{sub(/\/usr\/local\/bin/,"'$SBIN'")
