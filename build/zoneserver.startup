@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 # chkconfig: 2345 56 46
 # description: Give MaraDNS DNS-over-TCP
 
-# Copyright 2005-2006,2014 Sam Trenholme
+# Copyright 2005-2006,2014,2022 Sam Trenholme
 
 # TERMS
 

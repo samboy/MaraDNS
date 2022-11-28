@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 # MaraDNS	This shell script takes care of starting and stopping MaraDNS
 # chkconfig: 2345 55 45
 # description: MaraDNS is secure Domain Name Server (DNS)
 # probe: true
 
-# Copyright 2005-2006 Sam Trenholme
+# Copyright 2005-2022 Sam Trenholme
 
 # TERMS
 
