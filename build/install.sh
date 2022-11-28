@@ -265,7 +265,7 @@ if [ -d ${RPM_BUILD_ROOT}${RCTOP}/init.d ] ; then
 		echo trying rc-update
 		rc-update add maradns 5
 		if [ "$?" == "1" ] ; then
-			echo rc-update filaed at runlevel 5, trying default
+			echo rc-update failed at runlevel 5, trying default
 			rc-update add maradns
 		fi
 	fi
