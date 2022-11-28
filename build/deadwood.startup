@@ -62,7 +62,8 @@ LOGDIR="/var/log"
 # Non-fatal because of OpenRC, which runs these scripts w/o args to
 # get dependencies
 if [ $# -lt 1 ] ; then
-    echo WARNING Usage: $0 \(start\|stop\|restart\)
+    echo Usage: $0 \(start\|stop\|restart\)
+    echo You may safely ignore this message if seen at system boot
     #exit 1
 fi
 
