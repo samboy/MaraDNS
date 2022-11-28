@@ -264,6 +264,10 @@ if [ -d ${RPM_BUILD_ROOT}${RCTOP}/init.d ] ; then
 		echo Unable to find ${RPM_BUILD_ROOT}${RCTOP}/rc5.d/
 		echo trying rc-update
 		rc-update add maradns 5
+		if [ "$?" == "1" ] then
+			echo rc-update filaed at runlevel 5, trying default
+			rc-update add maradns
+		fi
 	fi
 	echo Files copied to ${RCTOP}
 	exit 0
