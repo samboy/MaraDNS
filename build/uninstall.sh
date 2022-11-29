@@ -29,10 +29,19 @@ rm maradns.8 zoneserver.8
 rm -fr $DOCS
 # Remove system start up files
 if [ -d /etc/systemd/system ] ; then
+	systemctl stop maradns
+	systemctl disable maradns
+	systemctl stop deadwood
+	systemctl disable deadwood
+	systemctl stop colunacydns
+	systemctl disable colunacydns
 	rm /etc/systemd/system/colunacydns.service  
 	rm /etc/systemd/system/deadwood.service  
 	rm /etc/systemd/system/maradns.service
 fi
+
+# The following will normally not run, this is for the older pre-systemd
+# files
 if [ -d /etc/rc.d/init.d ] ; then
 	echo Removing MaraDNS startup scripts
 	rm /etc/rc.d/rc3.d/S60maradns
@@ -46,7 +55,7 @@ if [ -d /etc/rc.d/init.d ] ; then
 	rm /etc/rc.d/init.d/maradns.deadwood
 fi
 # /etc/rc.d/ hasn't been used for a long time
-if [ -d /etc/init.d ] ; then
+if [ -e /etc/init.d/maradns ] ; then
 	echo Removing MaraDNS startup scripts
 	rm /etc/rc3.d/S60maradns
 	rm /etc/rc5.d/S60maradns
