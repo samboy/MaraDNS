@@ -28,7 +28,7 @@ cd $MAN8
 rm maradns.8 zoneserver.8
 rm -fr $DOCS
 # Remove system start up files
-if [ -a /etc/systemd/system ] ; then
+if [ -d /etc/systemd/system ] ; then
 	rm /etc/systemd/system/colunacydns.service  
 	rm /etc/systemd/system/deadwood.service  
 	rm /etc/systemd/system/maradns.service
