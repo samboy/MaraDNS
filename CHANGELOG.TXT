@@ -1,5 +1,14 @@
 MaraDNS changelog
 
+   maradns-3.5.0032:
+   This is a stable release of MaraDNS:
+
+      * "make install" now installs coLunacyDNS and lunacy
+      * "make uninstall" now properly removes files, and disables
+        the maradns/colunacydns/deadwood systemd services
+
+     (2022-11-29)
+   
    maradns-3.5.0031:
    This is a stable release of MaraDNS:
 
