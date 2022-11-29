@@ -11,17 +11,28 @@ if [ -z "$BUILDDIR" ] ; then
 fi
 . $BUILDDIR/install.locations
 
+if [ -z "$SBIN" ] ; then
+	echo Problem removing files.
+	exit 1
+fi
+
 echo Removing MaraDNS by erasing programs in $BIN and $SBIN,
 echo man pages in $MAN1 and $MAN8, and the directory tree $DOCS
 cd $SBIN
-rm maradns zoneserver Deadwood
+rm maradns zoneserver Deadwood coLunacyDNS
 cd $BIN
-rm askmara getzone
+rm askmara getzone lunacy
 cd $MAN1
 rm askmara.1 getzone.1 Deadwood.1
 cd $MAN8
 rm maradns.8 zoneserver.8
 rm -fr $DOCS
+# Remove system start up files
+if [ -a /etc/systemd/system ] ; then
+	rm /etc/systemd/system/colunacydns.service  
+	rm /etc/systemd/system/deadwood.service  
+	rm /etc/systemd/system/maradns.service
+fi
 if [ -d /etc/rc.d/init.d ] ; then
 	echo Removing MaraDNS startup scripts
 	rm /etc/rc.d/rc3.d/S60maradns
@@ -33,6 +44,19 @@ if [ -d /etc/rc.d/init.d ] ; then
 	rm /etc/rc.d/rc3.d/S60maradns.deadwood
 	rm /etc/rc.d/rc5.d/S60maradns.deadwood
 	rm /etc/rc.d/init.d/maradns.deadwood
+fi
+# /etc/rc.d/ hasn't been used for a long time
+if [ -d /etc/init.d ] ; then
+	echo Removing MaraDNS startup scripts
+	rm /etc/rc3.d/S60maradns
+	rm /etc/rc5.d/S60maradns
+	rm /etc/init.d/maradns
+	rm /etc/rc3.d/K60maradns.zoneserver
+	rm /etc/rc5.d/K60maradns.zoneserver
+	rm /etc/init.d/maradns.zoneserver
+	rm /etc/rc3.d/S60maradns.deadwood
+	rm /etc/rc5.d/S60maradns.deadwood
+	rm /etc/init.d/maradns.deadwood
 fi
 
 echo Note that cahced copies of man pages may still be lurking around

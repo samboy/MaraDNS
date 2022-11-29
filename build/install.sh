@@ -90,6 +90,24 @@ else
 	exit 1
 fi
 
+# Install coLunacyDNS and lunacy
+cd $TOPLEVEL/coLunacyDNS
+# coLunacyDNS: The Lua-based DNS server
+if [ -x coLunacyDNS ] ; then
+	if [ -f $SBIN/coLunacyDNS ] ; then
+		rm $SBIN/coLunacyDNS
+	fi
+	cp coLunacyDNS $SBIN
+	echo coLunacyDNS installed
+fi
+# Lunacy: A fork of Lua 5.1.  Used to build docs and run tests with
+# MaraDNS, so we don’t need to use a non-standard scripting language
+cd lunacy
+if [ -x lunacy ] ; then
+	cp lunacy $BIN
+	echo lunacy installed
+fi
+
 # Install the Deadwood binary
 cd $TOPLEVEL/deadwood-*/src/
 echo Installing Deadwood
