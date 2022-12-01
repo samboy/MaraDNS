@@ -119,7 +119,8 @@ blStr *readFile(FILE *inp, int *elements) {
     uint8_t line[1020];
     uint8_t *nstr = NULL;
     int len;
-    if(fgets((char *)line,1010,inp) == NULL) {
+    line[0] = 32; // One space before the string for DNS conversion
+    if(fgets((char *)(line + 1),1010,inp) == NULL) {
       return top;
     }
     len = strlen(line); 
