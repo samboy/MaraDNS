@@ -150,16 +150,54 @@ blStr *readFile(FILE *inp, int *elements) {
   return top;
 }
 
+// Set the SipHash key (global variables)
+void setSipKey() {
+  char noise[10];
+  int a = 0;
+#ifndef MINGW
+  FILE *rfile = NULL;
+  rfile = fopen("/dev/urandom","rb");
+  if(rfile == NULL) {
+    puts("You do not have /dev/urandom");
+    puts("I refuse to run under these conditions");
+    exit(1);
+  }
+  for(a=0;a<8;a++) {
+    int b;
+    b = getc(rfile);
+    noise[a] = b;
+  }
+#else // MINGW
+  HCRYPTPROV CryptContext;
+  int q;
+  q = CryptAcquireContext(&CryptContext, NULL, NULL, PROV_RSA_FULL,
+      CRYPT_VERIFYCONTEXT);
+  if(q == 1) {
+    q = CryptGenRandom(CryptContext, 8, noise);
+  }
+  if(q == 0) {
+    puts("I can not generate strong random numbers");
+    puts("I refuse to run under these conditions");
+    exit(1);
+  }
+#endif // MINGW
+  noise[8] = 0;
+  for(a = 0; a < 4; a++) {
+    sipKey1 <<= 8;
+    sipKey1 ^= noise[a];
+  }
+  for(a = 4; a < 8; a++) {
+    sipKey2 <<= 8;
+    sipKey2 ^= noise[a];
+  }
+}
+
 int main(int argc, char **argv) {
   uint32_t hashValue;
   int size;
   blStr *buf;
   buf = readFile(stdin, &size);
-  while(buf != NULL) {
-    hashValue = HalfSip13(buf->str,buf->len);
-    printf("%s %08x\n",(char *)buf->str,hashValue);
-    buf = buf->next;
-  }
+  setSipKey();
   printf("%d\n",size);
   return 0;
 }
