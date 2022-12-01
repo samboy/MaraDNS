@@ -143,7 +143,7 @@ blStr *readFile(FILE *inp, int *elements) {
        bottom = new;
     }
     if(elements != NULL) {
-      *elements++;
+      *elements = *elements + 1;
     }
   }
   return top;
@@ -159,5 +159,6 @@ int main(int argc, char **argv) {
     printf("%s %08x\n",(char *)buf->str,hashValue);
     buf = buf->next;
   }
+  printf("%d\n",size);
   return 0;
 }
