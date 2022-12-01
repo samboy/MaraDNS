@@ -38,6 +38,7 @@ uint32_t sipKey2 = 0xfffefdfc;
 blStr **hashBuckets = NULL;
 int32_t hashSize = -1;
 int32_t maxChainLen = 0;
+uint32_t stringsTotalSize = 0;
 
 // Half Sip Hash 1 - 3 (One round while processing string; three
 // rounds at end)
@@ -242,6 +243,7 @@ int fillHash(blStr *buf) {
     hashKey %= hashSize;
     if(hashBuckets[hashKey] == NULL) {
       hashBuckets[hashKey] = buf;
+      stringsTotalSize += buf->len + 2; // Two-byte length header
     } else {
       int32_t chainLen = 1;
       blStr *point;
@@ -261,6 +263,7 @@ int fillHash(blStr *buf) {
         buf = buf->listNext;
         continue;
       }
+      stringsTotalSize += buf->len + 2; // Two-byte length header
       if(point != NULL) {
         point->hashNext = buf;
       }
@@ -295,6 +298,7 @@ int main(int argc, char **argv) {
 #ifdef DEBUG
   showHash();
 #endif // DEBUG
-  printf("size: %d longest chain: %d\n",hashSize,maxChainLen);
+  printf("size: %d longest chain: %d strings: %d\n",hashSize,maxChainLen,
+         stringsTotalSize);
   return 0;
 }
