@@ -23,8 +23,19 @@
 #include <string.h> // For strlen()
 #include <stdlib.h>
 
+// Linked list string item
+typedef struct blStr {
+  int16_t len;
+  uint8_t *str;
+  struct blStr *next;
+} blStr;
+
+// HalfSip 1-3 key
 uint32_t sipKey1 = 0x01020304;
 uint32_t sipKey2 = 0xfffefdfc;
+
+blStr **hashBuckets = NULL;
+int32_t hashSize = -1;
 
 // Half Sip Hash 1 - 3 (One round while processing string; three
 // rounds at end)
@@ -91,12 +102,6 @@ uint32_t HalfSip13(uint8_t *str, int32_t l) {
   }
   return v1 ^ v3;
 }
-
-typedef struct blStr {
-  int16_t len;
-  uint8_t *str;
-  struct blStr *next;
-} blStr;
 
 blStr *newBl(int len, uint8_t *str) {
   blStr *new;
@@ -192,12 +197,28 @@ void setSipKey() {
   }
 }
 
+// Initialize the hash with a given size
+int initHash(int32_t size) {
+  int32_t counter;
+  hashSize = size;
+  hashBuckets = malloc(hashSize * sizeof(blStr *));
+  if(hashBuckets == NULL) {
+    return 1;
+  }
+  for(counter = 0; counter < hashSize; counter++) {
+    hashBuckets[counter] = NULL;
+  }
+  return 0;
+}
+
 int main(int argc, char **argv) {
   uint32_t hashValue;
-  int size;
+  int32_t size;
   blStr *buf;
   buf = readFile(stdin, &size);
   setSipKey();
-  printf("%d\n",size);
+  if(initHash(size + (size >> 2)) != 0) {
+    return 1;
+  }
   return 0;
 }
