@@ -1,18 +1,40 @@
-/* Make a block list hash by reading a file in standard input */
+/* Copyright (c) 2022 Sam Trenholme
+ *
+ * TERMS
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * This software is provided 'as is' with no guarantees of correctness or
+ * fitness for purpose.
+ */
+
+/* Make a block list hash by reading a file from standard input */
 
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h> // For strlen()
+#include <stdlib.h>
 
 uint32_t sipKey1 = 0x01020304;
 uint32_t sipKey2 = 0xfffefdfc;
 
 // Half Sip Hash 1 - 3 (One round while processing string; three
 // rounds at end)
-uint32_t HalfSip13(const char *str, size_t l) {
+uint32_t HalfSip13(uint8_t *str, int32_t l) {
   uint32_t v0, v1, v2, v3, m;
   int shift = 0, round = 0;
   size_t offset = 0;
+  if(str == NULL || l < 0) {
+    return 0;
+  }
 
   // We calculate the hash via SipHash, for security reasons
   v0 = sipKey1;
@@ -70,19 +92,72 @@ uint32_t HalfSip13(const char *str, size_t l) {
   return v1 ^ v3;
 }
 
+typedef struct blStr {
+  int16_t len;
+  uint8_t *str;
+  struct blStr *next;
+} blStr;
+
+blStr *newBl(int len, uint8_t *str) {
+  blStr *new;
+  new = malloc(sizeof(blStr));
+  if(new == 0) { 
+    return 0;
+  }
+  new->len = len;
+  new->str = str;
+  new->next = NULL;
+  return new;
+}
+
+blStr *readFile(FILE *inp, int *elements) {
+  if(elements != NULL) {
+    *elements = 0;
+  }
+  blStr *top = NULL, *bottom = NULL, *new = NULL;
+  while(!feof(inp)) {
+    uint8_t line[1020];
+    uint8_t *nstr = NULL;
+    int len;
+    if(fgets((char *)line,1010,inp) == NULL) {
+      return top;
+    }
+    len = strlen(line); 
+    nstr = malloc(len + 2);
+    if(nstr == NULL) {
+      return top;
+    }
+    strncpy(nstr,line,len + 1);
+    if(top == NULL) {
+       top = newBl(len, nstr);
+       bottom = top;
+       if(top == NULL) {
+         return top;
+       }
+     } else {
+       new = newBl(len, nstr);
+       if(new == NULL) {
+         return top;
+       }
+       bottom->next = new;
+       bottom = new;
+    }
+    if(elements != NULL) {
+      *elements++;
+    }
+  }
+  return top;
+}
+
 int main(int argc, char **argv) {
   uint32_t hashValue;
-  hashValue = 0xdeadbeef;
-  if(argc <= 1 || !argv[1]) {
-    printf("Usage: HalfSip13 ${Input to hash}");
-    return 1;
+  int size;
+  blStr *buf;
+  buf = readFile(stdin, &size);
+  while(buf != NULL) {
+    hashValue = HalfSip13(buf->str,buf->len);
+    printf("%s %08x\n",(char *)buf->str,hashValue);
+    buf = buf->next;
   }
-  if(argv[1]) {
-    hashValue = HalfSip13(argv[1],strlen(argv[1]));
-  } else {
-    printf("Usage: HalfSip13 ${Input to hash}");
-    return 1;
-  }
-  printf("HalfSip value for string: %08x\n",hashValue);
   return 0;
 }
