@@ -27,7 +27,8 @@
 typedef struct blStr {
   int16_t len;
   uint8_t *str;
-  struct blStr *next;
+  struct blStr *listNext;
+  struct blStr *hashNext;
 } blStr;
 
 // HalfSip 1-3 key
@@ -36,6 +37,7 @@ uint32_t sipKey2 = 0xfffefdfc;
 
 blStr **hashBuckets = NULL;
 int32_t hashSize = -1;
+int32_t maxChainLen = 0;
 
 // Half Sip Hash 1 - 3 (One round while processing string; three
 // rounds at end)
@@ -111,15 +113,16 @@ blStr *newBl(int len, uint8_t *str) {
   }
   new->len = len;
   new->str = str;
-  new->next = NULL;
+  new->listNext = NULL;
+  new->hashNext = NULL;
   return new;
 }
 
 blStr *readFile(FILE *inp, int *elements) {
+  blStr *top = NULL, *bottom = NULL, *new = NULL;
   if(elements != NULL) {
     *elements = 0;
   }
-  blStr *top = NULL, *bottom = NULL, *new = NULL;
   while(!feof(inp)) {
     uint8_t line[1020];
     uint8_t *nstr = NULL;
@@ -145,7 +148,7 @@ blStr *readFile(FILE *inp, int *elements) {
        if(new == NULL) {
          return top;
        }
-       bottom->next = new;
+       bottom->listNext = new;
        bottom = new;
     }
     if(elements != NULL) {
@@ -203,13 +206,81 @@ int initHash(int32_t size) {
   hashSize = size;
   hashBuckets = malloc(hashSize * sizeof(blStr *));
   if(hashBuckets == NULL) {
-    return 1;
+    return 1; // Error
   }
   for(counter = 0; counter < hashSize; counter++) {
     hashBuckets[counter] = NULL;
   }
-  return 0;
+  return 0; // Success
 }
+
+// Compare the strings in two blStr elements
+// 1 if same, 0 if different, -1 if error
+int isSameString(blStr *a, blStr *b) {
+  int counter;
+  if(a == NULL || b == NULL) {
+    return -1; // Error
+  }
+  if(a->len != b->len) {
+    return 0; // Different
+  }
+  for(counter = 0; counter < a->len; counter++) {
+    if(a->str[counter] != b->str[counter]) {
+      return 0; // Different
+    }
+  }
+  return 1; // Same
+}
+
+// Fill the hash with the contents of a buffer.
+// Note that, to avoid copying, the buffer will have its hashNext elements
+// altered 
+int fillHash(blStr *buf) {
+  uint32_t hashKey = 0;
+  while(buf != NULL) {
+    hashKey = HalfSip13(buf->str,buf->len);
+    hashKey %= hashSize;
+    if(hashBuckets[hashKey] == NULL) {
+      hashBuckets[hashKey] = buf;
+    } else {
+      int32_t chainLen = 1;
+      blStr *point;
+      point = hashBuckets[hashKey];
+      if(isSameString(buf,point) == 1) {
+        buf = buf->listNext;
+        continue;
+      }
+      while(point != NULL && point->hashNext != NULL) {
+        if(isSameString(buf,point) == 1) {
+          break; 
+        }
+        point = point->hashNext;
+        chainLen++;
+      }
+      if(isSameString(buf,point) == 1) {
+        buf = buf->listNext;
+        continue;
+      }
+      if(point != NULL) {
+        point->hashNext = buf;
+      }
+      if(chainLen > maxChainLen) {
+        maxChainLen = chainLen;
+      }
+    }
+    buf = buf->listNext;
+  }
+  return 0; // Success
+}
+
+#ifdef DEBUG
+void showHash() {
+  int counter;
+  for(counter = 0; counter < hashSize; counter++) {
+    printf("hashKey: %d hashBucket: %p\n",counter,hashBuckets[counter]);
+  } 
+}
+#endif // DEBUG
 
 int main(int argc, char **argv) {
   uint32_t hashValue;
@@ -220,5 +291,10 @@ int main(int argc, char **argv) {
   if(initHash(size + (size >> 2)) != 0) {
     return 1;
   }
+  fillHash(buf);
+#ifdef DEBUG
+  showHash();
+#endif // DEBUG
+  printf("size: %d longest chain: %d\n",hashSize,maxChainLen);
   return 0;
 }
