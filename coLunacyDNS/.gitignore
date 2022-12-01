@@ -1,3 +1,5 @@
 *.gcda
 *.gcno
 *.gcov
+HalfSipHash13
+liblua.a
