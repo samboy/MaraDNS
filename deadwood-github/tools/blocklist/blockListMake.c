@@ -322,7 +322,7 @@ int writeString(uint8_t *block, uint8_t *str, int16_t len, uint32_t offset,
     return 1; // Error
   }
   for(counter = 0; counter < len; counter++) {
-    block[offset + counter] = str[offset + counter];
+    block[offset + counter] = str[counter];
   }
   return 0;
 }
@@ -428,6 +428,7 @@ void showBlock(uint8_t *block, uint32_t max) {
   uint32_t counter;
   for(counter = 0; counter < max; counter+= 16) {
     int a;
+    printf("%08x | ",counter);
     for(a = 0; a < 16; a++) {
       if(counter + a < max) {
         printf("%02x ",block[counter + a]);
