@@ -22,6 +22,10 @@
 #include <stdint.h>
 #include <string.h> // For strlen()
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 // Linked list string item
 typedef struct blStr {
@@ -416,6 +420,15 @@ uint8_t *makeBlock(uint32_t *blockMax) {
   return block;
 }
 
+int writeBlockFile(uint8_t *block, uint32_t max, char *fileName) {
+  int handle;
+  handle = open(fileName, O_CREAT|O_WRONLY, 0644);
+  if(handle == -1) { return 1; /* Error */ }
+  if(write(handle, block, max) == -1) { return 1; /* Error */ }
+  if(close(handle) == -1) { return 1; /* Error */ }
+  return 0;
+}
+  
 #ifdef DEBUG
 void showHash() {
   int counter;
@@ -463,10 +476,18 @@ int main(int argc, char **argv) {
   }
   fillHash(buf);
   bigBlock = makeBlock(&blockMax);
+  if(bigBlock == NULL) {
+    return 1;
+  }
 #ifdef DEBUG
   showHash();
   showBlock(bigBlock, blockMax);
 #endif // DEBUG
+  if(writeBlockFile(bigBlock, blockMax, "bigBlock.bin") != 0) {
+    printf("Error writing block to disk\n");
+    return 1;
+  }
+  printf("bigBlock.bin written to disk\n");
   printf("size: %d longest chain: %d strings: %d\n",hashSize,maxChainLen,
          stringsTotalSize);
   return 0;
