@@ -4,7 +4,7 @@
 .\" Process this file with the following (replace filename.1)
 .\" preconv < filename.1 | nroff -man -Tutf8
 .\"
-.\" Last updated 2022-11-12
+.\" Last updated 2022-12-01
 .\"
 .TH CSV2 5 "January 2007" MARADNS "MaraDNS reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -400,6 +400,9 @@ are not commonly used.
 .in -3
 \fBHINFO\fR
 .PP
+
+.I "In light of RFC8482, using this record type is strongly discouraged."
+.PP
 An HINFO record is a description of the CPU (processor) and OS that a 
 given host is using. The format for this record is identical to a TXT 
 record, except that the field must have precisely two chunks. 
@@ -416,6 +419,9 @@ example.com. HINFO \(aqIntel Pentium III\(aq;\(aqCentOS Linux 3.7\(aq ~
 This resource record is not actively used--the IANA has a list of CPUs 
 and OSes that this record is supposed to have. However, this list has 
 not been updated since 2002. 
+.PP
+Since MaraDNS has support for RFC8482, ANY queries sent to MaraDNS will 
+return an HINFO record with a CPU of "RFC8482" and a blank OS name. 
 .PP
 
 .in -3

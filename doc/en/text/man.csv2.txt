@@ -297,6 +297,8 @@ are not commonly used.
 
 == HINFO ==
 
+In light of RFC8482, using this record type is strongly discouraged. 
+
 An HINFO record is a description of the CPU (processor) and OS that a 
 given host is using. The format for this record is identical to a TXT 
 record, except that the field must have precisely two chunks. 
@@ -311,6 +313,9 @@ example.com. HINFO 'Intel Pentium III';'CentOS Linux 3.7' ~
 This resource record is not actively used--the IANA has a list of 
 CPUs and OSes that this record is supposed to have. However, this list 
 has not been updated since 2002. 
+
+Since MaraDNS has support for RFC8482, ANY queries sent to MaraDNS will 
+return an HINFO record with a CPU of "RFC8482" and a blank OS name. 
 
 == WKS ==
 

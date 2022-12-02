@@ -4,7 +4,7 @@
 .\" Process this file with the following (replace filename.1)
 .\" preconv < filename.1 | nroff -man -Tutf8
 .\"
-.\" Last updated 2022-11-25
+.\" Last updated 2022-12-01
 .\"
 .TH DEADWOOD 1 "August 2009" DEADWOOD "Deadwood reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -1015,6 +1015,10 @@ use"; Deadwood reserves these record types for internal use. This is
 only 16 record types out of the 65536 possible DNS record types (only 
 71 have actually been assigned by IANA, so this is a non-issue in the 
 real world). 
+.PP
+In addition, Deadwood will, by default, respond to both ANY and HINFO 
+requests with a RFC8482 compliant packet instead of trying to resolve 
+the record. 
 .PP
 It is not clear whether the DNS RFCs allow ASCII control characters in 
 DNS names. Even if they were, Deadwood does not allow ASCII control 
