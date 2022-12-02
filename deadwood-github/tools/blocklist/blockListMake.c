@@ -483,7 +483,7 @@ int main(int argc, char **argv) {
   showHash();
   showBlock(bigBlock, blockMax);
 #endif // DEBUG
-  if(writeBlockFile(bigBlock, blockMax, "bigBlock.bin") != 0) {
+  if(writeBlockFile(bigBlock, maxOffset + 1, "bigBlock.bin") != 0) {
     printf("Error writing block to disk\n");
     return 1;
   }
