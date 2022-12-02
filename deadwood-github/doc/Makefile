@@ -1,4 +1,4 @@
-all: Duende.1 Duende.txt Deadwood.1 Deadwood.txt FAQ.txt FAQ.html \
+all: Deadwood.1 Deadwood.txt FAQ.txt FAQ.html \
 	Deadwood.html Recursive_algorithm.txt
 
 clean:
