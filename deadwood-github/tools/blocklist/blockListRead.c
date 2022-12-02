@@ -20,11 +20,12 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdint.h>
+#include <stdio.h>
 
 int main(int argc, char **argv) {
-  stuct stat get;
+  struct stat get;
   if(stat("bigBlock.bin",&get) == -1) {
     return 1; // Error
   }
-  printf("%d\n",get.st_size);
+  printf("%ld\n",get.st_size);
 }
