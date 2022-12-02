@@ -111,6 +111,61 @@ uint32_t HalfSip13(uint8_t *str, int32_t l) {
   return v1 ^ v3;
 }
 
+/* Convert a string in to a DNS name.  For example, 
+ * " www.example.com\n" becomes "\3www\7example\3com\0".
+ * The string is altered by this process.  The first character
+ * in the string will be overwritten with the length of the first 
+ * DNS label; the input should be a string in the form <space>
+ * followed by the DNS name in question, followed by a \n or space
+ * This changes the string in place.
+ */
+int16_t dnsConvertString(int32_t len, uint8_t *str) {
+  int dnsPoint = 0;
+  int dnsLength = 0;
+  int counter;
+  if(len > 1040) { 
+    return 0; // Error
+  }
+  for(counter = 1; counter < len; counter++) {
+    if(dnsPoint >= len || counter >= len) {
+      return 0; // Error
+    }
+    if(str[counter] == '.' || str[counter] == '\n' || 
+       str[counter] == ' ') {
+      dnsLength = counter - dnsPoint - 1;
+      if(dnsLength >= 0 && dnsLength < 64) {
+        str[dnsPoint] = dnsLength;
+      } else {
+        return 0; // Error
+      }
+      if(dnsLength == 0) {
+        return dnsPoint; // A 0-length for a DNS label is end of string
+      }
+      dnsPoint = counter;
+    }
+  } 
+  dnsLength = counter - dnsPoint - 1;
+  if(dnsLength >= 0 && dnsLength < 64) {
+    str[dnsPoint] = dnsLength;
+  }
+  return len; 
+}
+
+// Convert all strings in to DNS names (see dnsConvertString above for
+// details
+void dnsConvertChain(blStr *a) {
+  while(a != NULL) {
+    int32_t newLen = a->len;
+    if(a->str != NULL) {
+      newLen = dnsConvertString(newLen, a->str);
+      if(newLen > 0) {
+        a->len = newLen;
+      }
+    }
+    a = a->listNext;
+  }
+}
+  
 blStr *newBl(int len, uint8_t *str) {
   blStr *new;
   new = malloc(sizeof(blStr));
@@ -470,6 +525,7 @@ int main(int argc, char **argv) {
   int32_t size;
   blStr *buf;
   buf = readFile(stdin, &size);
+  dnsConvertChain(buf); // Convert strings in to DNS over-the-wire strings
   setSipKey();
   if(initHash(size + (size >> 2)) != 0) {
     return 1;
