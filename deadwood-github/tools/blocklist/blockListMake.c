@@ -39,6 +39,7 @@ blStr **hashBuckets = NULL;
 int32_t hashSize = -1;
 int32_t maxChainLen = 0;
 uint32_t stringsTotalSize = 0;
+uint32_t maxOffset = 0;
 
 // Half Sip Hash 1 - 3 (One round while processing string; three
 // rounds at end)
@@ -276,6 +277,145 @@ int fillHash(blStr *buf) {
   return 0; // Success
 }
 
+// Written number is big endian
+int write32BitNumber(uint8_t *block, uint32_t number, uint32_t offset,
+                     uint32_t max) {
+  if(offset + 3 >= max) { 
+    return 1; // Error
+  }
+  block[offset] =     number >> 24;
+  block[offset + 1] = (number >> 16) & 0xff;
+  block[offset + 2] = (number >> 8) & 0xff;
+  block[offset + 3] = number & 0xff;
+  return 0; // Success
+}
+
+// Again, big endian
+int write16BitNumber(uint8_t *block, uint16_t number, uint32_t offset,
+                     uint32_t max) {
+  if(offset + 1 >= max) { 
+    return 1; // Error
+  }
+  block[offset] =     number >> 8;
+  block[offset + 1] = number & 0xff;
+  return 0; // Success
+}
+
+// We keep track of the highest offset used to know how big the final
+// string is; this means a global variable gets altered
+int writeHashBucketChainTerminator(uint8_t *block, uint32_t offset, 
+                                   uint32_t max) { 
+  if(offset >= max) {
+    return 1; // Error
+  }
+  block[offset] = 0xff;
+  if(offset > maxOffset) {
+    maxOffset = offset;
+  }
+  return 0; // Success
+}
+
+int writeString(uint8_t *block, uint8_t *str, int16_t len, uint32_t offset,
+                uint32_t max) {
+  int counter;
+  if(offset + len >= max) {
+    return 1; // Error
+  }
+  for(counter = 0; counter < len; counter++) {
+    block[offset + counter] = str[offset + counter];
+  }
+  return 0;
+}
+
+// Based on global variables, write the header of a block
+int writeBlockHeader(uint8_t *block, uint32_t max) {
+  if(max < 16) {
+    return 1; // Error
+  }
+  block[0] = 0; block[1] = 'D'; block[2] = 'w'; block[3] = 'B';
+  if(write32BitNumber(block,sipKey1,4,max) != 0) {return 1;}
+  if(write32BitNumber(block,sipKey2,8,max) != 0) {return 1;}
+  if(write32BitNumber(block,hashSize,12,max) != 0) {return 1;}
+  return 0;
+}
+
+// Write a chain of strings for a single hash bucket
+// Output: 0 on error
+// Updated offset on success
+// Global hash used in this function
+uint32_t writeStringChain(int32_t bucket, uint8_t *block, uint32_t thisOffset,
+                     uint32_t max) {
+  blStr *point;
+  if(thisOffset >= max) { return 0; /* Error */ }
+  if(hashBuckets == NULL) { return 0; /* Error */ }
+  if(bucket < 0 || bucket >= hashSize) { return 0; /* Error */ }
+  point = hashBuckets[bucket];
+  if(point == NULL) { return 0; /* Error */ }
+  while(point != NULL) {
+    if(point->len < 0 || point->len > 1040) { return 0; /* Error */ }
+    if(write16BitNumber(block,point->len,thisOffset,max) != 0) {return 0;} 
+    thisOffset += 2;
+    if(writeString(block, point->str, point->len, thisOffset, max) != 0) {
+      return 0;
+    }
+    thisOffset += point->len;
+    point = point->hashNext;
+  }
+  if(writeHashBucketChainTerminator(block, thisOffset, max) != 0) {return 0;}
+  return thisOffset;
+}
+
+// Write one bucket.  MaxOffset used and altered to know where to put a 
+// string in the string list
+int writeOneBucket(int32_t bucket, uint8_t *block, uint32_t max) {
+  uint32_t thisOffset;
+  thisOffset = maxOffset + 1;
+  if(hashBuckets == NULL) { return 1; }
+  if(bucket < 0 || bucket >= hashSize) { return 1; }
+  if(hashBuckets[bucket] == NULL) { 
+    if(write32BitNumber(block,0,16 + (4 * bucket),max) != 0) {
+      return 1;
+    }
+  } else {
+    if(write32BitNumber(block,thisOffset,16 + (4 * bucket),max) != 0) {
+      return 1;
+    }
+    if(writeStringChain(bucket, block, thisOffset, max) == 0) { return 1; }
+    thisOffset = maxOffset + 1;
+  }
+  return 0;
+}
+  
+// Based on global variables, write the rest of the block
+int writeAllBuckets(uint8_t *block, uint32_t max) {
+  int bucket;
+  maxOffset = (16 + (hashSize * 4)) - 1;
+  for(bucket = 0; bucket < hashSize; bucket++) {
+    if(writeOneBucket(bucket, block, max) != 0) {return 1;}
+  }
+  return 0;
+}
+
+// Hash state is global variables
+uint8_t *makeBlock(uint32_t *blockMax) {
+  uint8_t *block = NULL;
+  if(blockMax == NULL) {
+    return NULL;
+  }
+  // 16: header
+  // 4 * hashSize: List of buckets
+  // stringsTotalSize: All strings in hash + two bytes per string for lengths
+  // hashSize: The terminating 0xff to end a hash bucket chain
+  *blockMax = 16 + (4 * hashSize) + stringsTotalSize + hashSize;
+  block = malloc(*blockMax);
+  if(block == NULL) {
+    return NULL;
+  }
+  if(writeBlockHeader(block, *blockMax) != 0) { free(block); return NULL; }
+  if(writeAllBuckets(block, *blockMax) != 0) { free(block); return NULL; }
+  return block;
+}
+
 #ifdef DEBUG
 void showHash() {
   int counter;
@@ -283,10 +423,36 @@ void showHash() {
     printf("hashKey: %d hashBucket: %p\n",counter,hashBuckets[counter]);
   } 
 }
+
+void showBlock(uint8_t *block, uint32_t max) {
+  uint32_t counter;
+  for(counter = 0; counter < max; counter+= 16) {
+    int a;
+    for(a = 0; a < 16; a++) {
+      if(counter + a < max) {
+        printf("%02x ",block[counter + a]);
+      }
+    } 
+    printf(" | ");
+    for(a = 0; a < 16; a++) {
+      if(counter + a < max) {
+        uint8_t b = block[a + counter];
+        if(b < 32 || b > 126) {
+          printf("¿");
+        } else {
+          printf("%c", b);
+        }
+      }
+    }
+    printf("\n");
+  } 
+}
+
 #endif // DEBUG
 
 int main(int argc, char **argv) {
-  uint32_t hashValue;
+  uint32_t blockMax;
+  uint8_t *bigBlock;
   int32_t size;
   blStr *buf;
   buf = readFile(stdin, &size);
@@ -295,8 +461,10 @@ int main(int argc, char **argv) {
     return 1;
   }
   fillHash(buf);
+  bigBlock = makeBlock(&blockMax);
 #ifdef DEBUG
   showHash();
+  showBlock(bigBlock, blockMax);
 #endif // DEBUG
   printf("size: %d longest chain: %d strings: %d\n",hashSize,maxChainLen,
          stringsTotalSize);
