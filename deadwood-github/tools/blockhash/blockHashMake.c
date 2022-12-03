@@ -26,6 +26,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 // Linked list string item
 typedef struct blStr {
@@ -524,9 +525,29 @@ int main(int argc, char **argv) {
   uint8_t *bigBlock;
   int32_t size;
   blStr *buf;
+  char *filename;
+  // Usage: blackHashMake {filename} {sipHash key} (both args optional)
+  if(argc < 2) {
+    filename = "bigBlock.bin";
+  } else {
+    filename = argv[1];
+  }
+  if(*filename == '-') {
+    printf("blockHashMake version 1.0.01\n");
+    printf("Usage: blockHashMake {filename} {sipHash key} # args optional\n");
+    printf("sipHash key is a hex number from 0 to ffff\n");
+    printf("Standard input is a list of DNS names to put in the block\n");
+    printf("hash, one DNS name per line\n");
+    return 0;
+  }
+  if(argc < 3) {
+    setSipKey();
+  } else {
+    sipKey1 = strtol(argv[2],NULL,16); // Hex number
+    sipKey2 = sipKey1 + 0x0fae0000;
+  }
   buf = readFile(stdin, &size);
   dnsConvertChain(buf); // Convert strings in to DNS over-the-wire strings
-  setSipKey();
   if(initHash(size + (size >> 2)) != 0) {
     return 1;
   }
@@ -539,11 +560,11 @@ int main(int argc, char **argv) {
   showHash();
   showBlock(bigBlock, blockMax);
 #endif // DEBUG
-  if(writeBlockFile(bigBlock, maxOffset + 1, "bigBlock.bin") != 0) {
+  if(writeBlockFile(bigBlock, maxOffset + 1, filename) != 0) {
     printf("Error writing block to disk\n");
     return 1;
   }
-  printf("bigBlock.bin written to disk\n");
+  printf("%s written to disk\n",filename);
   printf("size: %d longest chain: %d strings: %d\n",hashSize,maxChainLen,
          stringsTotalSize);
   return 0;
