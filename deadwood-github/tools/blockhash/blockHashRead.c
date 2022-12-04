@@ -23,6 +23,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct {
   uint8_t *block;
@@ -113,6 +114,66 @@ uint32_t HalfSip13(uint8_t *str, int32_t l,
   return v1 ^ v3;
 }
 
+/* Convert a string in to a DNS name.  For example,
+ * " www.example.com\n" becomes "\3www\7example\3com\0".
+ * The string is altered by this process.  The first character
+ * in the string will be overwritten with the length of the first
+ * DNS label; the input should be a string in the form <space>
+ * followed by the DNS name in question, followed by a \n or space
+ * This changes the string in place.
+ */
+int16_t dnsConvertString(int32_t len, uint8_t *str) {
+  int dnsPoint = 0;
+  int dnsLength = 0;
+  int counter;
+  if(len > 1040) {
+    return 0; // Error
+  }
+  for(counter = 1; counter < len; counter++) {
+    if(dnsPoint >= len || counter >= len) {
+      return 0; // Error
+    }
+    if(str[counter] == '.' || str[counter] == '\n' ||
+       str[counter] == ' ') {
+      dnsLength = counter - dnsPoint - 1;
+      if(dnsLength >= 0 && dnsLength < 64) {
+        str[dnsPoint] = dnsLength;
+      } else {
+        return 0; // Error
+      }
+      if(dnsLength == 0) {
+        return dnsPoint; // A 0-length for a DNS label is end of string
+      }
+      dnsPoint = counter;
+    }
+  }
+  dnsLength = counter - dnsPoint - 1;
+  if(dnsLength >= 0 && dnsLength < 64) {
+    str[dnsPoint] = dnsLength;
+  }
+  return len;
+}
+
+/* Given an ASCII string, convert it in to a DNS string.  The DNS string
+ * is described in the dnsConvertString above.  This makes a *copy* of
+ * the string in question.  olen is altered to have the length of the
+ * output string */
+uint8_t *ASCII2DNS(char *str, int32_t *olen) {
+  uint8_t *out = NULL; 
+  int32_t l;
+  if(str == NULL || olen == NULL) { return NULL; }
+  l = strlen(str);
+  out = malloc(l + 3);
+  if(out == NULL) { return NULL; }
+  out[0] = ' ';
+  out[l + 1] = ' ';
+  if(strncpy(out + 1, str, l) == NULL) { free(out); return NULL; }
+  printf("%s %d\n",out,l + 1); // DEBUG
+  *olen = dnsConvertString(l + 2, out);
+  if(*olen == 0) { free(out); return NULL; }
+  return out;
+}
+  
 // See if a black has a given binary string (string str, length len)
 // 1: Yes, it does
 // 0: No, it does not
@@ -197,20 +258,35 @@ blockHash *makeBlockHash(char *filename) {
 }
 
 int main(int argc, char **argv) {
-  globalBlockHash = makeBlockHash("bigBlock.bin");
+  char *filename, *seek;
+  uint8_t *dnsName;
+  int32_t dnsLen;
+  if(argc > 1) { 
+    filename = argv[1];
+  } else {
+    filename = "bigBlock.bin";
+  }
+  if(*filename == '-') {
+    printf("blockHashRead v1.0.01\n");
+    printf("Usage: blockHashRead {filename} {name to look for}\n");
+    return 0;
+  }
+  if(argc > 2) {
+    seek = argv[2];
+  } else {
+    seek = "www.fejs.ml";
+  } 
+  dnsName = ASCII2DNS(seek,&dnsLen);
+  if(dnsName == NULL) { printf("Problem with DNS name\n"); return 1; }
+  globalBlockHash = makeBlockHash(filename);
   if(globalBlockHash == NULL) {
-    printf("Error reading bigBlock.bin");
+    printf("Error reading %s\n",filename);
     return 1;
   }
   printf("%p %d %08x %08x %d\n",globalBlockHash->block, globalBlockHash->max,
       globalBlockHash->sipKey1, globalBlockHash->sipKey2, 
       globalBlockHash->hashSize);
-  char *testString = "\3www\4fejs\2ml\0";
-  int testLength = 13;
-  printf("www.fejs.ml test result should be 1: %d\n",
-      blockHasString(globalBlockHash,(uint8_t *)testString, testLength));
-  char *testString2 = "\3www\4fexs\2ml\0";
-  printf("www.fexs.ml test result should be 0: %d\n",
-      blockHasString(globalBlockHash,(uint8_t *)testString2, testLength));
+  printf("%s seek result: %d\n",seek,
+         blockHasString(globalBlockHash,dnsName,dnsLen));
   return 0;
 }
