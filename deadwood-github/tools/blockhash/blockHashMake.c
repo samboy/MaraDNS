@@ -526,6 +526,7 @@ int main(int argc, char **argv) {
   int32_t size;
   blStr *buf;
   char *filename;
+  int32_t hashBucketCount = 12345;
   // Usage: blackHashMake {filename} {sipHash key} (both args optional)
   if(argc < 2) {
     filename = "bigBlock.bin";
@@ -533,9 +534,12 @@ int main(int argc, char **argv) {
     filename = argv[1];
   }
   if(*filename == '-') {
-    printf("blockHashMake version 1.0.01\n");
-    printf("Usage: blockHashMake {filename} {sipHash key} # args optional\n");
+    printf("blockHashMake version 1.0.02\n");
+    printf("Usage: blockHashMake {filename} {sipHash key} {hash buckets}\n");
+    printf("filename is file to write hash block file to\n");
     printf("sipHash key is a hex number from 0 to ffff\n");
+    printf("hash buckets is number of hash buckets to have\n");
+    printf("All arguments are optional\n\n");
     printf("Standard input is a list of DNS names to put in the block\n");
     printf("hash, one DNS name per line\n");
     return 0;
@@ -548,7 +552,15 @@ int main(int argc, char **argv) {
   }
   buf = readFile(stdin, &size);
   dnsConvertChain(buf); // Convert strings in to DNS over-the-wire strings
-  if(initHash(size + (size >> 2)) != 0) {
+  if(argc < 4) {
+    hashBucketCount = size + (size >> 2);
+  } else {
+    hashBucketCount = atoi(argv[3]);
+    if(hashBucketCount < 1024) {
+      hashBucketCount = 1024;
+    }
+  }  
+  if(initHash(hashBucketCount) != 0) {
     return 1;
   }
   fillHash(buf);
