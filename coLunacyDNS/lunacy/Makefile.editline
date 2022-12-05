@@ -12,7 +12,7 @@ CFLAGS= -O3 -Wall $(MYCFLAGS)
 AR= ar rcu
 RANLIB= ranlib
 RM= rm -f
-LIBS= -lm -lutil $(MYLIBS)
+LIBS= -lm -lutil $(MYLIBS) -L/usr/local/lib/
 
 MYCFLAGS=
 MYLDFLAGS=
