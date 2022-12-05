@@ -26,3 +26,11 @@ cat naughty.hosts.txt | grep 0.0.0.0 | awk '{print $2}
 This generates a file named `bigBlock.bin` which is a compact representation
 of a hosts file with names black listed.
 
+## Getting that naughty hosts.txt file
+
+One possible source of a hosts file which can block naughty domains is
+here:
+
+https://github.com/StevenBlack/hosts
+
+
