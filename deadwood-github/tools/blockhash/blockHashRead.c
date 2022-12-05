@@ -219,12 +219,12 @@ int blockHasString(blockHash *b, uint8_t *str, int32_t len) {
       stringLen--;
       strOffset++;
       offset++;
-   }
-   if(stringLen == 0) {
-     return 1; // Strings match, found
-   }
- }
- return -1; // We should never get here, error   
+    }
+    if(stringLen == 0) {
+      return 1; // Strings match, found
+    }
+  }
+  return -1; // We should never get here, error   
 }
 
 // Read a file and make a blockHash structure
@@ -256,6 +256,68 @@ blockHash *makeBlockHash(char *filename) {
   return out;
 }
 
+// Print out all of the strings in a given block list until the length
+// is the 0xff terminator
+int dumpStrings(uint8_t *block, uint32_t offset, uint32_t max) {
+  int32_t len;
+  while(offset <= max) {
+    int32_t stringLen;
+    uint32_t strEnd;
+    int thisLabelLen; // DNS length label
+    stringLen = block[offset];
+    if(stringLen == 0xff) { // End of hash chain
+      return 0; // End of hash bucket chain reached
+    }
+    offset++;
+    stringLen <<= 8;
+    if(offset >= max - 1) { return -1; } // - 1 to avoid 2nd bounds check
+    stringLen |= block[offset];
+    if(stringLen < 0 || stringLen > 0xff00) { return -1; }
+    offset++; 
+    strEnd = offset + stringLen;
+    if(strEnd > max) { return -1; }
+    thisLabelLen = -1;
+    while(stringLen > 0) {
+      if(thisLabelLen <= 0) {
+        if(block[offset] == 0) { 
+          offset = strEnd;
+          break;
+        }
+        if(thisLabelLen == 0) {
+          printf(".");
+        }
+        thisLabelLen = block[offset];
+      } else {
+        printf("%c",block[offset]);
+        thisLabelLen--;
+      }
+      stringLen--;
+      offset++;
+    }
+    printf("\n");
+  } 
+  return 0;
+}
+
+// Print out all of the DNS names in a blockHash
+int dumpContents(char *filename) {
+  int32_t counter;
+  globalBlockHash = makeBlockHash(filename);
+  if(globalBlockHash == NULL) {
+    printf("Error reading %s\n",filename);
+    return 1; // Error
+  }
+  for(counter = 0; counter < globalBlockHash->hashSize; counter++) {
+    uint32_t offset;
+    offset = read32bitNumber(globalBlockHash->block, 16 + (4 * counter),
+                             globalBlockHash->max);
+    if(offset > 0) {
+      dumpStrings(globalBlockHash->block, offset, globalBlockHash->max);
+    }
+  } 
+  return 0; // Success
+}
+  
 int main(int argc, char **argv) {
   char *filename, *seek;
   uint8_t *dnsName;
@@ -265,9 +327,21 @@ int main(int argc, char **argv) {
   } else {
     filename = "bigBlock.bin";
   }
+  if(filename[0] == '-' && filename[1] == '-' && filename[2] == 'd') { //--dump
+    if(argc > 2) {
+      filename = argv[2];
+    } else { 
+      filename = "bigBlock.bin";
+    }
+    return dumpContents(filename);
+  }  
   if(*filename == '-') {
-    printf("blockHashRead v1.0.01\n");
+    printf("blockHashRead v1.0.02\n");
     printf("Usage: blockHashRead {filename} {name to look for}\n");
+    printf("Where {name to look for} is a name like 'www.fejs.ml'.\n");
+    printf("")
+    printf("Also: blockHackRead --dump {filename}\n");
+    printf("Using --dump will list all of the names in a block hash file\n");
     return 0;
   }
   if(argc > 2) {
