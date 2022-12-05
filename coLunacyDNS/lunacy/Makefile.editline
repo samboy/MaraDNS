@@ -19,7 +19,7 @@ MYLDFLAGS=
 MYLIBS=
 
 # If one renames this file, put the new name here
-MAKEFILE=Makefile.readline
+MAKEFILE=Makefile.editline
 
 # == END OF USER SETTINGS. NO NEED TO CHANGE ANYTHING BELOW THIS LINE =========
 
@@ -93,16 +93,16 @@ bsd:
 	$(MAKE) -f $(MAKEFILE) all MYCFLAGS="-DLUA_USE_POSIX -DLUA_USE_DLOPEN" MYLIBS="-Wl,-E"
 
 freebsd:
-	$(MAKE) -f $(MAKEFILE) all MYCFLAGS="-DLUA_USE_LINUX" MYLIBS="-Wl,-E -lreadline"
+	$(MAKE) -f $(MAKEFILE) all MYCFLAGS="-DLUA_USE_LINUX" MYLIBS="-Wl,-E -leditline"
 
 generic:
 	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=
 
 linux:
-	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_LINUX MYLIBS="-Wl,-E -ldl -lreadline -lhistory -lncurses"
+	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_LINUX MYLIBS="-Wl,-E -ldl -leditline -lhistory -lncurses"
 
 macosx:
-	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_LINUX MYLIBS="-lreadline"
+	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_LINUX MYLIBS="-leditline"
 # use this on Mac OS X 10.3-
 #	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_MACOSX
 

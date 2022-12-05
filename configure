@@ -194,16 +194,16 @@ else
 	cp tools/Makefile.ipv6 tools/Makefile
 fi
 
-# If readline is around at a system level, the standalone lunacy
-# can use it.  Since readline has a GPL license, and since some shops
-# (Apple w/ GPLv3 and others) have a no-GPL policy, the default
-# makefile for coLunacyDNS does *not* use readline
-# A binary version of Lunacy compiled with readline, if distributed, is
-# GPL.  Since MaraDNS is *not* GPL, no binary version of Lunacy linked to
-# readline is provided with MaraDNS.
-# This only affects the Lunacy binary.
-if [ -e /usr/include/readline/ ] ; then
-	cp coLunacyDNS/Makefile.readline coLunacyDNS/Makefile
+# While Lunacy *could* use readline, we use the API compatible
+# editline instead.  Editline is available at 
+# https://github.com/troglobit/editline (use a release at 
+# https://github.com/troglobit/editline/releases/ if autoconf
+# issues pop up) and is available under a BSD-like license
+# (One has to add credit to documentation, but otherwise it's BSD)
+# Mirror:
+# maradns.samiam.org/lunacy/editline-1.17.1.tar.gz
+if [ -e /usr/local/include/editline.h ] ; then
+	cp coLunacyDNS/Makefile.editline coLunacyDNS/Makefile
 else
 	cp coLunacyDNS/Makefile.default coLunacyDNS/Makefile
 fi

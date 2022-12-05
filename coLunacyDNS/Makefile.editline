@@ -9,7 +9,7 @@ clean:
     cd lunacy ; make clean
 
 liblua.a:
-	cd lunacy ; make -f Makefile.readline CC="${CC}" CFLAGS="${CFLAGS}" ; \
+	cd lunacy ; make -f Makefile.editline CC="${CC}" CFLAGS="${CFLAGS}" ; \
     cp liblua.a .. ; cd ..
 
 coLunacyDNS.o: coLunacyDNS.c

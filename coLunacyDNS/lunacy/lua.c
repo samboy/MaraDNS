@@ -192,6 +192,8 @@ static int pushline (lua_State *L, int firstline) {
     b[l-1] = '\0';  /* remove it */
   if (firstline && b[0] == '=')  /* first line starts with `=' ? */
     lua_pushfstring(L, "return %s", b+1);  /* change it to `return' */
+  else if(firstline && ((b[0] >= '0' && b[0] <= '9') || b[0] == '('))
+    lua_pushfstring(L, "return %s", b); /* Make it a handy calculator */
   else
     lua_pushstring(L, b);
   lua_freeline(L, b);
