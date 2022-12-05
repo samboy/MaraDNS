@@ -142,7 +142,7 @@ int16_t dnsConvertString(int32_t len, uint8_t *str) {
         return 0; // Error
       }
       if(dnsLength == 0) {
-        return dnsPoint; // A 0-length for a DNS label is end of string
+        return dnsPoint + 1; // A 0-length for a DNS label is end of string
       }
       dnsPoint = counter;
     }
@@ -168,7 +168,6 @@ uint8_t *ASCII2DNS(char *str, int32_t *olen) {
   out[0] = ' ';
   out[l + 1] = ' ';
   if(strncpy(out + 1, str, l) == NULL) { free(out); return NULL; }
-  printf("%s %d\n",out,l + 1); // DEBUG
   *olen = dnsConvertString(l + 2, out);
   if(*olen == 0) { free(out); return NULL; }
   return out;

@@ -140,7 +140,7 @@ int16_t dnsConvertString(int32_t len, uint8_t *str) {
         return 0; // Error
       }
       if(dnsLength == 0) {
-        return dnsPoint; // A 0-length for a DNS label is end of string
+        return dnsPoint + 1; // A 0-length for a DNS label is end of string
       }
       dnsPoint = counter;
     }
