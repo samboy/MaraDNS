@@ -127,9 +127,9 @@ elif echo $UNAME | grep -i cygwin > /dev/null ; then
 	echo It looks like you are using Cygwin\; this will compile fine
 	echo by typing in \'make\'.
 	echo
-	echo Note that Deadwood may not compile\; use the pre-built
-	echo Windows service in the maradns-win32/ directory.  This
-	echo service is built using mingw.
+	echo Note that Deadwood and coLunacyDNS may not compile\; use the 
+        echo pre-builtWindows services in the maradns-win32/ directory.  These
+	echo services are built using mingw.
 	echo
 	echo To start MaraDNS \(authoritative\) as a service:
 	echo 
