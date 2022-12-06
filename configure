@@ -128,8 +128,8 @@ elif echo $UNAME | grep -i cygwin > /dev/null ; then
 	echo by typing in \'make\'.
 	echo
 	echo Note that Deadwood and coLunacyDNS may not compile\; use the 
-        echo pre-builtWindows services in the maradns-win32/ directory.  These
-	echo services are built using mingw.
+        echo pre-built Windows services in the maradns-win32/ directory.  
+	echo These services are built using mingw.
 	echo
 	echo To start MaraDNS \(authoritative\) as a service:
 	echo 
