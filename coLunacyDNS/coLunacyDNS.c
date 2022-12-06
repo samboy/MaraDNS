@@ -542,7 +542,7 @@ unsigned char not_there[41] =
 
 /* We also have one for ANY queries, as per RFC8482. This one has a TTL */
 char AnyAnswer[22] =
-"\xc0\x0c\x00\x0d\x00\x01\x00\x01\x51\x80\x00\x09\x07RFC8482\x00";
+"\xc0\x0c\x00\x0d\x00\x01\x00\x00\x00\x00\x00\x09\x07RFC8482\x00";
 
 /* Set the IPv4 IP we send in response to DNS queries */
 ip_addr_T set_return_ip4(char *returnIp) {
@@ -2155,7 +2155,7 @@ int main(int argc, char **argv) {
 	SipHashSetKey(rand32(),rand32());
 
         if(argc != 2 || *argv[1] == '-') {
-                printf("coLunacyDNS version 1.0.013 starting\n\n");
+                printf("coLunacyDNS version 1.0.014 starting\n\n");
         }
         set_time(); // Run this frequently to update timestamp
         // Get bindIp and returnIp from Lua script
@@ -2463,7 +2463,7 @@ int main(int argc, char **argv) {
                         svc_install_service();
                 }
         } else {
-                printf("coLunacyDNS version 1.0.013\n\n");
+                printf("coLunacyDNS version 1.0.014\n\n");
                 printf(
                     "coLunacyDNS is a DNS server that is a Windows service\n\n"
                     "To install this service:\n\n\tcoLunacyDNS --install\n\n"
