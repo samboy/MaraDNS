@@ -28,9 +28,9 @@ sleep 1
 rm test.lua
 
 if ! cmp output.success output.test > /dev/null 2>&1 ; then
-        echo OneAnswer Test failed
+        echo sqa_any Test failed
         exit 255
 fi
 
-echo OneAnswer test Success
+echo sqa_any test Success
 rm output.test
