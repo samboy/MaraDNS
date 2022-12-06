@@ -12,15 +12,15 @@
 
 <hr>
 <h1>
-Lunacy (Lua) 5.1 Reference Manual (Release 2020-12-06)
+Lunacy (Lua) 5.1 Reference Manual (Release 2022-12-06)
 </h1>
 
 by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
 and Sam Trenholme
 <p>
 <small>
-Copyright &copy; 2006&ndash;2012 Lua.org, PUC-Rio.
-Copyright &copy; 2020 Sam Trenholme.
+Copyright &copy; 2006-2012 Lua.org, PUC-Rio.
+Copyright &copy; 2020-2022 Sam Trenholme.
 Freely available under the terms of the
 <a href="http://www.lua.org/license.html">Lua license</a>.
 </small>
@@ -102,6 +102,9 @@ Freely available under the terms of the
 </UL>
 <LI><A HREF="#5.5">5.5 &ndash; Table Manipulation</A>
 <LI><A HREF="#5.6">5.6 &ndash; Mathematical Functions</A>
+<UL>
+<LI><A HREF="#5.6.1">5.6.1 &ndash; Random number generation</A>
+</UL>
 <LI><A HREF="#5.7">5.7 &ndash; Input and Output Facilities</A>
 <LI><A HREF="#5.8">5.8 &ndash; Operating System Facilities</A>
 <LI><A HREF="#5.9">5.9 &ndash; The Debug Library</A>
@@ -214,6 +217,18 @@ Freely available under the terms of the
 <A HREF="#pdf-io.write">io.write</A><BR>
 <P>
 
+<A HREF="#pdf-lfs.attributes">lfs.attributes</A><BR>
+<A HREF="#pdf-lfs.chdir">lfs.chdir</A><BR>
+<A HREF="#pdf-lfs.currentdir">lfs.currentdir</A><BR>
+<A HREF="#pdf-lfs.dir">lfs.dir</A><BR>
+<A HREF="#pdf-lfs.mkdir">lfs.mkdir</A><BR>
+<A HREF="#pdf-lfs.rmdir">lfs.rmdir</A><BR>
+<A HREF="#pdf-lfs.symlinkattributes">lfs.symlinkattributes</A><BR>
+<P>
+
+<A HREF="#pdf-lunacy.today">lunacy.today</A><BR>
+<P>
+
 <A HREF="#pdf-math.abs">math.abs</A><BR>
 <A HREF="#pdf-math.acos">math.acos</A><BR>
 <A HREF="#pdf-math.asin">math.asin</A><BR>
@@ -237,6 +252,7 @@ Freely available under the terms of the
 <A HREF="#pdf-math.pi">math.pi</A><BR>
 <A HREF="#pdf-math.pow">math.pow</A><BR>
 <A HREF="#pdf-math.rad">math.rad</A><BR>
+<A HREF="#pdf-math.rand16">math.rand16</A><BR>
 <A HREF="#pdf-math.random">math.random</A><BR>
 <A HREF="#pdf-math.randomseed">math.randomseed</A><BR>
 <A HREF="#pdf-math.sin">math.sin</A><BR>
@@ -266,6 +282,18 @@ Freely available under the terms of the
 <A HREF="#pdf-package.path">package.path</A><BR>
 <A HREF="#pdf-package.preload">package.preload</A><BR>
 <A HREF="#pdf-package.seeall">package.seeall</A><BR>
+<P>
+
+
+<A HREF="#pdf-math.rand16">rg32.rand16</A><BR>
+<A HREF="#pdf-rg32.rand32">rg32.rand32</A><BR>
+<A HREF="#pdf-math.random">rg32.random</A><BR>
+<A HREF="#pdf-rg32.runmill">rg32.runmill</A><BR>
+<A HREF="#pdf-math.randomseed">rg32.randomseed</A><BR>
+<P>
+
+<A HREF="#pdf-spawner.popen2">spawner.popen2</A></BR>
+<A HREF="#pdf-spawner.popen">spawner.popen</A></BR>
 <P>
 
 <A HREF="#pdf-string.byte">string.byte</A><BR>
@@ -457,14 +485,12 @@ Freely available under the terms of the
 <!-- ====================================================================== -->
 <p>
 
-<!-- $Id: manual.of,v 1.49.1.2 2012/01/13 20:23:26 roberto Exp $ -->
-
 <h1>0 - <a name="0">Lunacy notes</a></h1>
 
 <p>
 
 Lunacy is a fork of Lua 5.1.5 designed to be compiled as a tiny 
-(109,568 byte) Windows 32-bit binary which is (as of 2020) Windows XP 
+(116,224 byte) Windows 32-bit binary which is (as of 2022) Windows XP 
 and Windows 10 compatible.  
 <p>
 
@@ -475,7 +501,9 @@ To make sure we don't have issues come January 19, 2038,
 (If you want to play with dates, use a 64-bit compile of Lua so we 
  don&rsquo;t have headaches come 2038).  <code>os.time()</code>
 has a simplified API: Only os.time() with no arguments works
-correctly.
+correctly.  In addition, there is now a call,
+<code>lunacy.today()</code>, which returns seven members:
+Year, month, day, day of week, hour, minute, and second.
 
 <p>
 
@@ -495,9 +523,7 @@ character.
 <p>
 
 Lunacy also includes a built in version of the commonly used 
-luafilesystem suite.  Not everything works (I had issues with the
-Windows code in luafilesystem for sym links), but it allows
-basic directory traversal:
+luafilesystem suite:
 
 <pre>
 for a in lfs.dir(".") do
@@ -517,23 +543,8 @@ Windows or have Y2038 issues.
 
 <p>
 
-In addition, some of the bit32 lib has been added.  Note that the bit32
-lib is currently unstable; its API and results may change in 
-future versions of Lunacy, and it may not be 100% compatible with
-the bit32 lib in Lua 5.2+.  Its goal is Lua 5.2+ bit32
-compatibility.
-
-<p>
-
-Right now:
-
-<p>
-
-<code>= bit32.arshift(-1,1) -- returns 4294967295</code><p>
-<code>= bit32.bnot(0) -- returns 4294967295</code><p>
-<code>= bit32.lshift(1,31) -- returns 2147483648</code><p>
-<code>= bit32.lshift(1,32) -- returns 0</code><p>
-<code>= bit32.rrotate(1,2) -- returns 1073741824</code><p>
+In addition, some of the bit32 lib has been added, in a manner which
+appears Lua 5.2/5.3 compatible.
 
 <p>
 
@@ -567,6 +578,39 @@ this code before running any Lua code:
 Where "x" and "y" are suitably random 32-bit numbers (uint32_t).  Do
 not call SipHashSetKey() once any Lua code is running; otherwise
 things will break very badly in Lua.
+
+<p>
+
+Lunacy also has a port of Steve Donovan’s spawner library so that 
+Lunacy has popen2 support to spawn sub-processes with both input
+and output piped to the Lunacy script.
+
+<p>
+
+Example popen2 usage:
+
+<pre>
+w, r = spawner.popen2("wc")
+w:write("Hello, world!\n")
+w:flush()
+w:close()
+print(r:read())
+</pre>
+
+<p>
+
+When in interactive mode, if the first character is a number or the '('
+character, Lunacy will
+return the results of the arithmetic expression.  This way, if one types
+<code>1 + 1</code> while in terminal mode, Lunacy will print “2” on the
+terminal.
+
+<p>
+
+For things like math.sin(3.141592653 / 4), '=' is still needed, e.g.
+<code>= math.sin(3.141592653 / 4)</code>, but the first character being
+[0-9] (a number) or '(' covers the lion’s share of
+desktop calculator usage cases.
 
 <p><A HREF="#contents">Contents</A>
 
@@ -8024,50 +8068,6 @@ Returns the angle <code>x</code> (given in degrees) in radians.
 
 
 <p>
-<hr><h3><a name="pdf-math.random"><code>math.random ([m [, n]])</code></a></h3>
-
-
-<p>
-This uses the RadioGatun[32] algorithm to generate high quality
-pseudo-random numbers.
-
-<p>
-When called without arguments,
-returns a uniform pseudo-random real number
-in the range <em>[0,1)</em>.  
-When called with an integer number <code>m</code>,
-<code>math.random</code> returns
-a uniform pseudo-random integer in the range <em>[1, m]</em>.
-When called with two integer numbers <code>m</code> and <code>n</code>,
-<code>math.random</code> returns a uniform pseudo-random
-integer in the range <em>[m, n]</em>.
-
-<p>
-It is also possible to use <code>math.rand16</code> to generate
-pseudo-random numbers between 0 and 65535.
-
-
-<p>
-<hr><h3><a name="pdf-math.randomseed"><code>math.randomseed (x)</code></a></h3>
-
-Sets <code>x</code> as the "seed"
-for the pseudo-random generator:
-equal seeds produce equal sequences of numbers.  
-
-<p>
-
-Note that the value x is a <i>string</i>, not a number.
-The string is a text, not binary, string: The seed can
-not have ASCII NULLs in it; any other character (including
-UTF-8 hi-bit characters) is allowed.
-
-<p>
-
-If a number is given to <code>randomseed</code>, Lua
-converts the number in to a string before seeding
-the random state.
-
-<p>
 <hr><h3><a name="pdf-math.sin"><code>math.sin (x)</code></a></h3>
 
 
@@ -8115,10 +8115,109 @@ Returns the tangent of <code>x</code> (assumed to be in radians).
 <p>
 Returns the hyperbolic tangent of <code>x</code>.
 
+<h3>5.6.1 - <a name="5.6.1">Random number generation</a></h3>
 
+Lunacy uses the RadioGatun[32] algorithm to generate high quality
+pseudo-random numbers.  
 
+Example code:
 
+<pre>
+math.randomseed(os.time())
+print("The 20-sided dice roll is ",math.random(1,20))
+</pre>
 
+<p>
+<hr><h3><a name="pdf-math.random"><code>math.random ([m [, n]])</code></a></h3>
+
+<p>
+When called without arguments,
+returns a uniform pseudo-random real number
+in the range <em>[0,1)</em>.  
+When called with an integer number <code>m</code>,
+<code>math.random</code> returns
+a uniform pseudo-random integer in the range <em>[1, m]</em>.
+When called with two integer numbers <code>m</code> and <code>n</code>,
+<code>math.random</code> returns a uniform pseudo-random
+integer in the range <em>[m, n]</em>.
+
+<p>
+<code>math.random</code> may also be invoked as <code>rg32.random</code>.
+The rg32 names are aliases to allow stock Lua to load <code>rg32</code>
+as a third party library and generate the same random numbers as Lunacy.
+Indeed, the <code>rg32</code> functions use the same random state
+as the <code>math.random()</code> functions.
+
+<p>
+<hr><h3><a name="pdf-math.rand16"><code>math.rand16 ()</code></a></h3>
+
+<p>
+<code>math.rand16()</code> can be used to generate
+pseudo-random numbers between 0 and 65535.  This function is here
+so that the random number library can, if needed, make the same numbers
+as the official RadioGatún[32] test vectors.
+
+<p>
+<code>math.rand16()</code> may be called as <code>rg32.rand16()</code>.
+
+<p>
+<hr><h3><a name="pdf-rg32.rand32"><code>rg32.rand32 ()</code></a></h3>
+
+<p>
+<code>rg32.rand32()</code> can be used to generate 32-bit
+unsigned pseudo-random integers.  Like <code>math.rand16()</code>,
+this function is here so that the random number library can, if needed,
+make the same numbers as the official RadioGatún[32] test vectors.
+
+<p>
+<hr><h3><a name="pdf-rg32.runmill"><code>rg32.runmill (work)</code></a></h3>
+
+<p>
+This particular routine does <i>not</i> have a “math” alias because
+this should only be used if someone understands the risks and benefits
+of using this routine for security purposes.  For example, if one is
+hashing passwords, there are a number of standard password hashing 
+routines such as Argon2 which should be considered.
+
+<p>
+The function <code>rg32.runmill()</code> is used for “proof of work”
+protocols, such as password hashing.  <code>rg32.runmill()</code>
+takes a single numeric argument: The number of work “units” we
+perform.  Each work unit is the amount of work needed to generate 64
+bits of pseudo-random numbers (64 bits is the same as four calls to
+<code>rg32.rand16()</code> or two calls to <code>rg32.random()</code>).
+For example, to call <code>rg32.runmill(100)</code> has the random number
+generator perform the work needed to make 6400 pseudo-random bits (400
+<code>rg32.rand16()</code> calls or 200 <code>rg32.random()</code> calls).
+
+<p>
+<hr><h3><a name="pdf-math.randomseed"><code>math.randomseed (x)</code></a></h3>
+
+<p>
+Sets <code>x</code> as the "seed"
+for the pseudo-random generator:
+equal seeds produce equal sequences of numbers.  
+
+<p>
+If <code>math.random</code> is called without <code>math.randomseed</code>
+being called first, the default seed “1234” (without the quotes) will be
+used.
+
+<p>
+
+Note that the value x is a <i>string</i>, not a number.
+The string is a text, not binary, string: The seed can
+not have ASCII NULLs in it; any other character (including
+UTF-8 hi-bit characters) is allowed.
+
+<p>
+
+If a number is given to <code>randomseed</code>, Lua
+converts the number in to a string before seeding
+the random state.
+
+<p>
+<code>math.randomseed()</code> has the alias <code>rg32.randomseed()</code>.
 
 
 <p><A HREF="#contents">Contents</A>
@@ -8632,11 +8731,8 @@ this function only returns the name of the current locale
 for the given category.
 
 
-
-
 <p>
 <hr><h3><a name="pdf-os.time"><code>os.time()</code></a></h3>
-
 
 <p>
 os.time returns a standard UNIX timestamp: The number
@@ -8646,12 +8742,40 @@ both in Windows systems (even 32-bit Windows systems) via Windows’s
 <p>
 
 os.time is designed to generate a correct timestamp on 32-bit UNIX 
-compatible systems until after 2100.
+compatible systems until around 2100.
 <p>
 
 While the Lua version of this call can accept a table as an argument,
 the Lunacy version of this call accepts no arguments, and always returns a
 simple integer timestamp based on the current system time.
+
+<p>
+<h3><h3><a name="pdf-lunacy.today"><code>lunacy.today ()</code></a></h3>
+
+<p>
+lunacy.today returns the current local time as seven numeric items:
+
+<ol>
+<li>Year (four digit format)
+<li>Month (1-12)
+<li>Day
+<li>Day of week (0-6; 0 is Sunday, 6 saturday)
+<li>Hour (24 hour military time)
+<li>Minute
+<li>Second
+</ol>
+
+Example usage:
+
+<p>
+<code>year, month, day, wday, hour, minute, second = lunacy.today()</code>
+
+<p>
+lunacy.today is Y2038 compliant if compiled on a 64-bit POSIX system
+or as a Windows 32-bit binary.  lunacy.today will return nil on
+POSIX systems with a 32-bit time_t; one might be able to resolve this
+and run the code after Y2038 by going to https://github.com/evalEmpire/y2038
+and patching the source code as needed.
 
 <p>
 <hr><h3><a name="pdf-os.tmpname"><code>os.tmpname ()</code></a></h3>
@@ -8976,13 +9100,6 @@ https://github.com/LuaDist/bitlib/
 
 <p>
 
-Note that the bit32
-lib is currently unstable; its API and results may change in
-future versions of Lunacy, and may not be 100% compatible with
-the bit32 lib in Lua 5.2+.  Its goal is to be Lua 5.2+ compatible.
-
-<p>
-
 Some examples:
 
 <p>
@@ -9073,6 +9190,7 @@ the right is <code>0x07ffffff</code>.
 <p>
 Returns the number <code>x</code> rotated <code>disp</code> bits to the right.
 This is a 32-bit rotate.
+
 
 <p><A HREF="#contents">Contents</A>
 
@@ -9209,6 +9327,25 @@ then
 </pre><p>
 is a more portable solution.) 
 
+<p>
+
+Lunacy stand alone can also be used as a desktop calculator.  Simply
+type in “lunacy” without any arguments, and type in numeric expressions
+at the Lunacy terminal prompt.
+
+<p>
+
+When in interactive mode, if the first character is a number or the '('
+character, Lunacy will
+return the results of the arithmetic expression.  This way, if one types
+<code>1 + 1</code> while in terminal mode, Lunacy will print “2” on the
+terminal.
+
+<p>
+
+For calculations which do not start with a number, 
+like math.sin(math.pi / 4), “=” needs to be the first
+character, e.g. <code>= math.sin(math.pi / 4)</code>
 
 <p><A HREF="#contents">Contents</A>
 
@@ -9432,10 +9569,10 @@ Here is the complete syntax of Lua in extended BNF.
 <HR>
 <SMALL CLASS="footer">
 Last update:
-Sun Dec 6 2020
+Tue Dec 6 2022
 </SMALL>
 <!--
-Last change: revised for Lunacy 2020-12-06
+Last change: Date updated for 2022-12-06
 -->
 
 </body></html>

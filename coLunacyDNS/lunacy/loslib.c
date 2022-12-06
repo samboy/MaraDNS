@@ -225,7 +225,8 @@ static int lunacy_today(lua_State *L) {
   lua_pushnumber(L, (lua_Number)today->tm_sec);
   return 7;
 #else // MINGW true
-  /* This works just fine after Y2038 */
+  /* This works just fine after Y2038, since Windows has had Y2038
+   * compliant time calls since the 1990s */
   SYSTEMTIME today;
   if (!lua_isnoneornil(L, 1))  /* called with args? */ {
     lua_pushnil(L);
@@ -261,6 +262,8 @@ static const luaL_Reg lunacylib[] = {
 };
 
 /* }====================================================== */
+
+
 
 LUALIB_API int luaopen_os (lua_State *L) {
   luaL_register(L, "lunacy", lunacylib);

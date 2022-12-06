@@ -190,7 +190,8 @@ static int pushline (lua_State *L, int firstline) {
   l = strlen(b);
   if (l > 0 && b[l-1] == '\n')  /* line ends with newline? */
     b[l-1] = '\0';  /* remove it */
-  if (firstline && b[0] == '=')  /* first line starts with `=' ? */
+  /* Does first line start with “=” or a number?  If so, print results. */
+  if (firstline && b[0] == '=')
     lua_pushfstring(L, "return %s", b+1);  /* change it to `return' */
   else if(firstline && ((b[0] >= '0' && b[0] <= '9') || b[0] == '('))
     lua_pushfstring(L, "return %s", b); /* Make it a handy calculator */

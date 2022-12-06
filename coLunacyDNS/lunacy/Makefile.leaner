@@ -1,12 +1,16 @@
 # makefile for building Lua
 # This Makefile makes a version 
-# 1) Does not have lfs
-# 2) Does not have spawner
+# 1) Uses editline from https://github.com/troglobit/editline/releases/
+# (Non-GPL readline like lib)
+# 2) Does not have lfs
+# 3) Does not have spawner
+# see ../INSTALL for installation instructions
+# see ../Makefile and luaconf.h for further customization
 
 # == CHANGE THE SETTINGS BELOW TO SUIT YOUR ENVIRONMENT =======================
 
 # Your platform. See PLATS for possible values.
-PLAT= ansi
+PLAT= linux
 
 CC= gcc
 CFLAGS= -O3 -Wall $(MYCFLAGS) -DNO_LFS -DNO_SPAWNER
@@ -20,7 +24,7 @@ MYLDFLAGS=
 MYLIBS=
 
 # If one renames this file, put the new name here
-MAKEFILE=Makefile.default
+MAKEFILE=Makefile.leaner
 
 # == END OF USER SETTINGS. NO NEED TO CHANGE ANYTHING BELOW THIS LINE =========
 

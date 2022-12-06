@@ -36,7 +36,12 @@
 #if defined(LUA_USE_LINUX)
 #define LUA_USE_POSIX
 #define LUA_USE_DLOPEN          /* needs an extra library: -ldl */
-#define LUA_USE_READLINE        /* disabled because of GPL */
+#define LUA_USE_READLINE        /* needs some extra libraries */
+#endif
+
+#if defined(LUA_USE_NONGPL) /* Like USE_LINUX, but avoid GPL readline */
+#define LUA_USE_POSIX
+#define LUA_USE_DLOPEN          /* needs an extra library: -ldl */
 #define LUA_USE_EDITLINE        /* needs some extra libraries */
 #endif
 
@@ -270,43 +275,37 @@
 @@ lua_freeline defines how to free a line read by lua_readline.
 ** CHANGE them if you want to improve this functionality (e.g., by using
 ** GNU readline and history facilities).
+* editline is a non-GPL api-compatible readline like library.
+* editline is at https://github.com/troglobit/editline/releases/
 */
-/* Disabled because readline is GPL.  Using editline instead */
-/*
 #if defined(LUA_USE_READLINE)
 #include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #define lua_readline(L,b,p)     ((void)L, ((b)=readline(p)) != NULL)
 #define lua_saveline(L,idx) \
-        if (lua_strlen(L,idx) > 0)  \
-          add_history(lua_tostring(L, idx)); // Add non-empty line to history
+        if (lua_strlen(L,idx) > 0)  /* non-empty line? */ \
+          add_history(lua_tostring(L, idx));  /* add it to history */
 #define lua_freeline(L,b)       ((void)L, free(b))
 #else
+#define lua_freeline(L,b)       ((void)L, free(b))
 #define lua_readline(L,b,p)     \
-        ((void)L, fputs(p, stdout), fflush(stdout),  \
-        fgets(b, LUA_MAXINPUT, stdin) != NULL)  // show prompt, get line 
+        ((void)L, fputs(p, stdout), fflush(stdout),  /* show prompt */ \
+        fgets(b, LUA_MAXINPUT, stdin) != NULL)  /* get line */
 #define lua_saveline(L,idx)     { (void)L; (void)idx; }
 #define lua_freeline(L,b)       { (void)L; (void)b; }
 #endif
-*/
+
 #if defined(LUA_USE_EDITLINE)
 #include <stdio.h>
 #include <editline.h>
 #define lua_readline(L,b,p)     ((void)L, ((b)=readline(p)) != NULL)
 #define lua_saveline(L,idx) \
-        if (lua_strlen(L,idx) > 0)  \
-          add_history(lua_tostring(L, idx)); // Add non-empty line to history
-#define lua_freeline(L,b)       ((void)L, free(b))
-#else
-#define lua_readline(L,b,p)     \
-        ((void)L, fputs(p, stdout), fflush(stdout),  \
-        fgets(b, LUA_MAXINPUT, stdin) != NULL)  // show prompt, get line 
-#define lua_saveline(L,idx)     { (void)L; (void)idx; }
-#define lua_freeline(L,b)       { (void)L; (void)b; }
+        if (lua_strlen(L,idx) > 0)  /* non-empty line? */ \
+          add_history(lua_tostring(L, idx));  /* add it to history */
 #endif
 
-#endif // lconfig_h
+#endif
 
 /* }================================================================== */
 

@@ -112,7 +112,7 @@ uint32_t SipHash(const char *str, size_t l) {
     }
     while(shift >= 32 || offset == l) { // "while" to avoid goto
       if(offset == l && shift != 32) {
-        m |= (uint32_t)(l & 0xff) << 24;
+        m |= (uint64_t)(l & 0xff) << 24;
         offset++;
       }
       shift = 0;
