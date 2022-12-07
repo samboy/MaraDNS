@@ -548,7 +548,11 @@ int main(int argc, char **argv) {
     setSipKey();
   } else {
     sipKey1 = strtol(argv[2],NULL,16); // Hex number
-    sipKey2 = sipKey1 + 0x0fae0000;
+    if(sipKey1 == 0) { 
+      sipKey2 = 0;
+    } else {
+      sipKey2 = sipKey1 + 0x0fae0000;
+    }
   }
   buf = readFile(stdin, &size);
   dnsConvertChain(buf); // Convert strings in to DNS over-the-wire strings

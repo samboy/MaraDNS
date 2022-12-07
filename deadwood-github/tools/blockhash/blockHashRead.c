@@ -339,7 +339,7 @@ int main(int argc, char **argv) {
     printf("blockHashRead v1.0.02\n");
     printf("Usage: blockHashRead {filename} {name to look for}\n");
     printf("Where {name to look for} is a name like 'www.fejs.ml'.\n");
-    printf("")
+    printf("\n");
     printf("Also: blockHackRead --dump {filename}\n");
     printf("Using --dump will list all of the names in a block hash file\n");
     return 0;

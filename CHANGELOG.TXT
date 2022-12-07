@@ -1,5 +1,23 @@
 MaraDNS changelog
 
+   maradns-3.5.0033:
+   This is a stable release of MaraDNS:
+
+      * coLunacyDNS now uses the 2022-12-06 version of Lunacy; this means
+        the Lunacy Git version and the version in MaraDNS are the same
+        code (albeit without lfs or spawner in the MaraDNS version)
+      * Lunacy (Lua 5.1 fork) now uses editline (and *not* readline)
+        for history
+      * coLunacyDNS update to 1.0.014: RFC8482 packets now have a 0 TTL,
+        and the underlying Lunacy (Lua 5.1) code is now based on the 
+        2022-12-06 version of Lunacy
+      * Begin work on “block hash” support.  The plan is to use these
+        “block hash” files to allow Deadwood to have a large list of 
+        hosts to block (a large blocklist or “naughty list”) while using
+        a minimum amount of memory without sacrificing performance.
+
+     (2022-12-06)
+
    maradns-3.5.0032:
    This is a stable release of MaraDNS:
 
