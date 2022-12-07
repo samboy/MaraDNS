@@ -17,6 +17,8 @@
  */
 
 #include <stdint.h>
+#include <stddef.h>
+#include <stdio.h>
 
 uint32_t HalfSip13(uint8_t *str, int32_t l,
                    uint32_t sipKey1, uint32_t sipKey2) {
@@ -81,3 +83,18 @@ uint32_t HalfSip13(uint8_t *str, int32_t l,
         }
         return v1 ^ v3;
 }
+
+#ifdef RUNTESTS
+#include <stdlib.h>
+int main() {
+	uint8_t test1[66];
+	int counter;
+	printf("Test #1: Reference vectors\n");
+	printf("See https://github.com/samboy/HalfSipTest for ref code\n");
+	for(counter = 0; counter < 64; counter++) {
+		test1[counter] = counter;
+		printf("%08x\n",
+                       HalfSip13(test1,counter,0x03020100, 0x07060504));
+	}
+}
+#endif // RUNTESTS
