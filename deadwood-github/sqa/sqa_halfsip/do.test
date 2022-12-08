@@ -1,0 +1,22 @@
+#!/bin/sh
+
+HERE=$( /bin/pwd )
+if [ -z "$CC" ] ; then
+	CC=cc
+fi
+if [ -z "$CFLAGS" ] ; then
+	CFLAGS=-O3
+fi
+
+cd ../../src/
+$CC $CFLAGS -o halfSipTest -DRUNTESTS DwHalfSipHash.c
+
+# Copy the rg32 binary here
+mv halfSipTest $HERE
+
+# OK, come back here to run the test
+cd $HERE
+./halfSipTest
+
+# Clean up here
+rm halfSipTest

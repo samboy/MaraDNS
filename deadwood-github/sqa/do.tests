@@ -127,6 +127,7 @@ TESTS=$TESTS"sqa_valgrind "
 TESTS=$TESTS"sqa_valgrind "
 TESTS=$TESTS"sqa_valgrind "
 TESTS=$TESTS"sqa_valgrind "
+TESTS=$TESTS"sqa_halfsip "
 
 # Allow it to be possible to specify tests on the command line
 # e.g. ./do.tests sqa_rg32
