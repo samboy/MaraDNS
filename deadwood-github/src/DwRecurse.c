@@ -1678,9 +1678,23 @@ dw_str *dwx_dissect_packet(dw_str *in, dw_str *query, dw_str *bailiwick) {
                 return 0;
         }
 
-        if(in->len == 7 && qtype == RR_AAAA) { /* Blank packet */
+        /* Back in 2010-2011, there was an issue where some servers
+         * would respond to AAAA requests with a blank "server fail"
+         * packet.  Since RedHat/CentOS at the time would try to
+         * resolve an AAAA record when looking up a hostname before
+         * giving up and resolving the A record, these server fail packets
+         * would really slow down resolution.  As a workaround, I responded
+         * to server fail with "OK, no host here, give up"; when that caused
+         * an issue, I narrowed it down to being "OK, no host here" in the
+         * case of sending an AAAA query because of another server giving
+         * out a server fail.  I just checked, and the really bad practice
+         * of responding with server fail to AAAA requests seems to have
+         * gone away here in 2022 as I type this. */
+        /* Disabled, as per the note above
+        if(in->len == 7 && qtype == RR_AAAA) { // Blank packet 
                 return dwx_synth_notthere(query);
         }
+        */
 
         view = dwx_create_dns_details(in,query);
 
