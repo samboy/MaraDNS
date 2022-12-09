@@ -34,6 +34,7 @@
 #define DWM_S_ip_blacklist 6
 #define DWM_S_ip_blocklist 7
 #define DWM_S_source_ip4 8
+#define DWM_S_blocked_hosts_hash_file 9
 
 /* mararc dictionary parameters */
 #define DWM_D_upstream_servers 0
@@ -77,7 +78,7 @@
 #define DWM_N_rfc8482 32
 
 /* Number of string parameters in the mararc file */
-#define KEY_S_COUNT 9
+#define KEY_S_COUNT 10
 /* Number of dictionary parameters in the mararc file */
 #define KEY_D_COUNT 4
 /* Number of numeric parameters in the mararc file */
@@ -107,6 +108,8 @@ char *key_s_names[KEY_S_COUNT + 1] = {
                           * "not there" answer */
 	"source_ip4", /* If specified, the source IP we use when sending
                        * upstream queries. */
+	"blocked_hosts_hash_file", /* If specified, block any host names
+                                    * in this file */
         0 };
 
 char *key_d_names[KEY_D_COUNT + 1] = {
