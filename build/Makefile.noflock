@@ -40,7 +40,11 @@ debug:
 	cd libs ; make $(D) DEBUG="-DDEBUG -DTHREADS" ; cd ../dns ; make $(D) ; cd ../rng ; make $(D) ; cd ../parse ; make $(D) ; cd ../qual ; make $(D) ; cd ../server ; make $(D) $(V) COMPILED=\"$(COMPILED_DEBUG)\" ; cd ../tools ; make $(D) ; cd ../tcp ; make $(D) $(V) ; cat ../00README.FIRST
 
 clean:
-	cd deadwood-*/src ; make clean ; cd ../.. ; \
+	cd deadwood-*/src ; make clean ; \
+	cp Makefile.sl6 Makefile ; \
+	cd ../.. ; \
+	cd coLunacyDNS ; \
+	make clean ; cp Makefile.default Makefile ; cd .. ; \
 	rm -f $(OBJECTS) core $(EXECS) ; cp build/Makefile.w Makefile ; cd dns ; make clean ; cd ../libs ; make clean ; cd ../parse ; make clean ; cd ../server ; make clean ; cd ../test ; make clean ; cd ../tools ; make clean ; cd misc ; make clean ; cd ../../utf8 ; make clean ; cd ../tcp ; make clean ; cd ../rng ; make clean ; cd ../sqa ; make clean ; cd ../qual ; make clean # ; cd .. ; find . -type d | grep .deps | xargs rm -fr ; find . -name '*.o' | xargs rm
 
 strip:
