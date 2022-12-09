@@ -32,3 +32,8 @@ coLunacyDNS/coLunacyDNS
 libs/mtest
 libs/tests
 rng/make_32bit_tables
+maradns-win32/secret.txt
+maradns-win32/Secret.txt
+maradns-win32/secret.TXT
+maradns-win32/Secret.TXT
+maradns-win32/SECRET.TXT
