@@ -76,13 +76,14 @@
 #define DWM_N_min_ttl 30
 #define DWM_N_maxttl_reduce_labels 31
 #define DWM_N_rfc8482 32
+#define DWM_N_allow_block_hash_zero_key 33
 
 /* Number of string parameters in the mararc file */
 #define KEY_S_COUNT 10
 /* Number of dictionary parameters in the mararc file */
 #define KEY_D_COUNT 4
 /* Number of numeric parameters in the mararc file */
-#define KEY_N_COUNT 33
+#define KEY_N_COUNT 34
 
 #ifndef MINGW
 /* Location of files we read when we run execfile("foo") */
@@ -169,6 +170,9 @@ char *key_n_names[KEY_N_COUNT + 1] = {
         "maxttl_reduce_labels", /* Number of labels before reducing TTL of
                                  * NS referrals */
 	"rfc8482", /* Whether to send RFC8482 reply to ANY/HINFO queries */
+	"allow_block_hash_zero_key", /* If this is 1, then we allow a block
+                                      * hash file to have a HalfSipHash key
+                                      * of \0\0\0\0\0\0\0\0 */
         0 };
 
 #endif /* MARARC_C */
