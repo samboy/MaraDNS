@@ -294,7 +294,11 @@ int dumpStrings(uint8_t *block, uint32_t offset, uint32_t max) {
       stringLen--;
       offset++;
     }
+#ifndef MINGW
     printf("\n");
+#else
+    printf("\r\n");
+#endif // MINGW
   } 
   return 0;
 }
