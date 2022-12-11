@@ -27,6 +27,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
+#ifdef MINGW
+#include <winsock.h>
+#include <wincrypt.h>
+#endif // MINGW
 
 // Linked list string item
 typedef struct blStr {
