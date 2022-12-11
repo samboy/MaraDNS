@@ -541,7 +541,7 @@ int main(int argc, char **argv) {
     filename = argv[1];
   }
   if(*filename == '-') {
-    printf("blockHashMake version 1.0.02\n");
+    printf("blockHashMake version 1.0.03\n");
     printf("Usage: blockHashMake {filename} {sipHash key} {hash buckets}\n");
     printf("filename is file to write hash block file to\n");
     printf("sipHash key is a hex number from 0 to ffff\n");

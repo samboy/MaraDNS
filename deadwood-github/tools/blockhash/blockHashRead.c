@@ -340,7 +340,7 @@ int main(int argc, char **argv) {
     return dumpContents(filename);
   }  
   if(*filename == '-') {
-    printf("blockHashRead v1.0.02\n");
+    printf("blockHashRead v1.0.03\n");
     printf("Usage: blockHashRead {filename} {name to look for}\n");
     printf("Where {name to look for} is a name like 'www.fejs.ml'.\n");
     printf("\n");
