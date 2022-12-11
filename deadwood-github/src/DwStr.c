@@ -1093,6 +1093,33 @@ int dw_filename_sanitize(dw_str *obj) {
         return 1;
 }
 
+/* Filename sanitizer #2: Everything dw_filename_sanitize allows, but also
+ * allow a '.', as long as a '/' never comes after a '.' */
+int dw_filename_sani_two(dw_str *obj) {
+        int index = 0;
+        int look = 0;
+        int seen_dot = 0;
+
+        if(dw_assert_sanity(obj) == -1) {
+                return -1;
+        }
+
+        for(index = 0; index < obj->len; index++) {
+                look = *(obj->str + index);
+                if(look == '.') {
+                        seen_dot = 1;
+                } else if(look == '/' && seen_dot == 0) {
+                        seen_dot = 0; 
+                } else if((look < 'a' || look > 'z') &&
+                   look != '-' && look != '_') {
+                        *(obj->str + index) = '_';
+                }
+        }
+
+        return 1;
+}
+
+
 /* See if a given ASCII name ends in a '.'; if it doesn't return -1, if
  * there is an unexpected error, return 0, and if it does end with '.', return
  * 1 */

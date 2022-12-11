@@ -588,10 +588,13 @@ void init_cache() {
  * given host name is listed */
 void load_blocked_hosts_hash_file() {
 	dw_str *filename = 0;
+	char *fname_convert = 0;
 	filename = key_s[DWM_S_blocked_hosts_hash_file];	
 	if(filename == 0) { // Not set
 		return; 
 	}
+	dw_filename_sani_two(filename);
+	fname_convert = (char *)dw_to_cstr(filename);
 	// CODE HERE: Try to load blocked hosts hash file
 }
 
