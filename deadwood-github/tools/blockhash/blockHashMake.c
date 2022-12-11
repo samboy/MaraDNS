@@ -131,8 +131,11 @@ int16_t dnsConvertString(int32_t len, uint8_t *str) {
     if(dnsPoint >= len || counter >= len) {
       return 0; // Error
     }
+    if(str[counter] <= 'Z' && str[counter] >= 'A') {
+      str[counter] += 32; // Make upper case lower case
+    }
     if(str[counter] == '.' || str[counter] == '\n' || 
-       str[counter] == ' ') {
+       str[counter] == ' ' || str[counter] == '\r') {
       dnsLength = counter - dnsPoint - 1;
       if(dnsLength >= 0 && dnsLength < 64) {
         str[dnsPoint] = dnsLength;
