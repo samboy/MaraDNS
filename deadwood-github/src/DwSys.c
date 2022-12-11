@@ -595,7 +595,20 @@ void load_blocked_hosts_hash_file() {
 	}
 	dw_filename_sani_two(filename);
 	fname_convert = (char *)dw_to_cstr(filename);
-	// CODE HERE: Try to load blocked hosts hash file
+        if(fname_convert == NULL) {
+                dw_fatal("Problem converting blocked_hosts_hash_file");
+        }
+        blocked_hosts_hash = DBH_makeBlockHash(fname_convert);
+        if(blocked_hosts_hash == NULL) {
+                dw_fatal("Problem reading blocked_hosts_hash_file");
+        }
+        /* Do not load file with 0 key unless allow_block_hash_zero_key=1 */
+        if(blocked_hosts_hash->sipKey1 == 0 && 
+           blocked_hosts_hash->sipKey2 == 0 &&
+           key_n[DWM_N_allow_block_hash_zero_key] != 1) {
+		dw_fatal("Zero key block hash not allowed by default");
+        }
+	free(fname_convert);
 }
 
 /* Read mararc parameters and set global variables based on those
