@@ -266,6 +266,10 @@ int32_t dw_get_a_dnsttl(dw_str *in, int offset, int32_t max, int depth);
  * a '_' */
 int dw_filename_sanitize(dw_str *obj);
 
+/* Filename sanitizer #2: Everything dw_filename_sanitize allows, but also
+ * allow a '.', as long as a '/' never comes after a '.' */
+int dw_filename_sani_two(dw_str *obj);
+
 /* Given a packet in the form put in the DNS cache (with things like type,
  * ancount, nscount, and arcount at the end of the string), tell the user how
  * many answers are in the packet. */
