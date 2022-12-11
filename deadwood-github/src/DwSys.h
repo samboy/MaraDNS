@@ -106,6 +106,12 @@ void process_mararc();
 /* Initialize the cache */
 void init_cache();
 
+/* If present, load a hash file of blocked hosts.  This file is in a
+ * special binary format allowing a lot of host names (to be blocked)
+ * to be stored using little memory while being fast to check if a
+ * given host name is listed */
+void load_blocked_hosts_hash_file();
+
 #ifndef MINGW
 /* Assign handlers for TERM, HUP, and USR1 signals, so we can write
  * the cache to a file */

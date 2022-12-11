@@ -404,6 +404,7 @@ void dwm_init_mararc() {
         key_n[DWM_N_min_ttl] = 60;
         key_n[DWM_N_maxttl_reduce_labels] = 3;
 	key_n[DWM_N_rfc8482] = 1;
+	key_n[DWM_N_allow_block_hash_zero_key] = 0;
 }
 
 /* Look for a Mararc parameter; -1 if not found/error; 0-n if found

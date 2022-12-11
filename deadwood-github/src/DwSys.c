@@ -33,6 +33,7 @@
 
 #include "DwSocket.h"
 #include "version.h"
+#include "DwBlockHash.h"
 
 /* Timestamp */
 int64_t the_time = 0;
@@ -51,6 +52,10 @@ extern int32_t key_n[];
 
 /* The cache that is used for storing DNS queries */
 dw_hash *cache = 0;
+
+/* A block hash file used for blocking hosts in a manner which is fast
+ * while using a minimum amount of memory */
+blockHash *blocked_hosts_hash = 0;
 
 /* The user and group ID Deadwood runs as */
 extern int32_t maradns_uid;
@@ -575,6 +580,19 @@ void init_cache() {
         if(cache == 0) { /* Just in case read from file failed */
                 cache = dwh_hash_init(0); /* Size comes from dwood2rc */
         }
+}
+
+/* If present, load a hash file of blocked hosts.  This file is in a
+ * special binary format allowing a lot of host names (to be blocked)
+ * to be stored using little memory while being fast to check if a 
+ * given host name is listed */
+void load_blocked_hosts_hash_file() {
+	dw_str *filename = 0;
+	filename = key_s[DWM_S_blocked_hosts_hash_file];	
+	if(filename == 0) { // Not set
+		return; 
+	}
+	// CODE HERE: Try to load blocked hosts hash file
 }
 
 /* Read mararc parameters and set global variables based on those
