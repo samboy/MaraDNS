@@ -26,6 +26,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef MINGW
+#include <io.h>
+#endif // MINGW
+
 
 // The numbers are big endian
 uint32_t DBH_Read32bitNumber(uint8_t *block, uint32_t offset, uint32_t max) {
@@ -112,6 +116,9 @@ blockHash *DBH_makeBlockHash(char *filename) {
         if(out->block == NULL) { free(out); return NULL; }
         fileDesc = open(filename, 0);
         if(fileDesc == -1) { free(out->block); free(out); return NULL; }
+#ifdef MINGW
+        setmode(fileDesc, O_BINARY);
+#endif // MINGW
         if(read(fileDesc, out->block, out->max) != out->max) {
                 free(out->block); free(out); return NULL;
         }
