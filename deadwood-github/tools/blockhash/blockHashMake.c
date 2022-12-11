@@ -550,12 +550,13 @@ int main(int argc, char **argv) {
   if(argc < 3) {
     setSipKey();
   } else {
+    // SipHash keys specified on the command line range from 
+    // 0x0000000000000000 to 0x000000000000ffff
     sipKey1 = strtol(argv[2],NULL,16); // Hex number
-    if(sipKey1 == 0) { 
-      sipKey2 = 0;
-    } else {
-      sipKey2 = sipKey1 + 0x0fae0000;
+    if(sipKey1 > 0xffff || sipKey1 < 0) {
+      sipKey1 = 0;
     }
+    sipKey2 = 0;
   }
   buf = readFile(stdin, &size);
   dnsConvertChain(buf); // Convert strings in to DNS over-the-wire strings
