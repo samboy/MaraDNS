@@ -30,6 +30,7 @@
 #ifdef MINGW
 #include <winsock.h>
 #include <wincrypt.h>
+#include <io.h>
 #endif // MINGW
 
 // Linked list string item
@@ -486,6 +487,9 @@ uint8_t *makeBlock(uint32_t *blockMax) {
 int writeBlockFile(uint8_t *block, uint32_t max, char *fileName) {
   int handle;
   handle = open(fileName, O_CREAT|O_WRONLY, 0644);
+#ifdef MINGW
+  setmode(handle, O_BINARY);
+#endif // MINGW
   if(handle == -1) { return 1; /* Error */ }
   if(write(handle, block, max) == -1) { return 1; /* Error */ }
   if(close(handle) == -1) { return 1; /* Error */ }
@@ -541,7 +545,7 @@ int main(int argc, char **argv) {
     filename = argv[1];
   }
   if(*filename == '-') {
-    printf("blockHashMake version 1.0.03\n");
+    printf("blockHashMake version 1.0.04\n");
     printf("Usage: blockHashMake {filename} {sipHash key} {hash buckets}\n");
     printf("filename is file to write hash block file to\n");
     printf("sipHash key is a hex number from 0 to ffff\n");
