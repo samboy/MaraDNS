@@ -246,10 +246,10 @@ blockHash *makeBlockHash(char *filename) {
   out->block = malloc(out->max + 3);
   if(out->block == NULL) { free(out); return NULL; }
   fileDesc = open(filename, 0);
+  if(fileDesc == -1) { free(out->block); free(out); return NULL; }
 #ifdef MINGW
   setmode(fileDesc, O_BINARY);
 #endif // MINGW
-  if(fileDesc == -1) { free(out->block); free(out); return NULL; }
   if(read(fileDesc, out->block, out->max) != out->max) {
     free(out->block);
     free(out);
@@ -347,7 +347,7 @@ int main(int argc, char **argv) {
     return dumpContents(filename);
   }  
   if(*filename == '-') {
-    printf("blockHashRead v1.0.04\n");
+    printf("blockHashRead v1.0.05\n");
     printf("Usage: blockHashRead {filename} {name to look for}\n");
     printf("Where {name to look for} is a name like 'www.fejs.ml'.\n");
     printf("\n");
