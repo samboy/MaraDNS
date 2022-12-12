@@ -772,7 +772,7 @@ void get_local_udp_packet(SOCKET sock) {
         query = dw_get_dname_type(packet,12,len);
         qtype = dw_fetch_u16(query,-1);
 
-        /* Reject PTR or AAAA queries if not wanted */
+        /* Reject PTR or AAAA queries if not wanted; implement RFC8482 (ANY) */
         if((qtype == 28 /* AAAA */ && key_n[DWM_N_reject_aaaa] == 1) ||
            (qtype == 12 /* PTR */ && key_n[DWM_N_reject_ptr] == 1) ||
 	   ((qtype == 255 || qtype == 13) && rfc8482 == 1)) {
