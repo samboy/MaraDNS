@@ -780,6 +780,7 @@ void get_local_udp_packet(SOCKET sock) {
         if(query != 0 && query->len > 2 && blocked_hosts_hash != 0 && 
          DBH_BlockHasString(blocked_hosts_hash,query->str,query->len-2) == 1) {
                 in_blocked_hosts_hash = 1;
+                dw_log_dwstr("DNS query in block hash: ",query,110); 
         }
 
         /* Reject PTR or AAAA queries if not wanted; implement RFC8482 (ANY) */
