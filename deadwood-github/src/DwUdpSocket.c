@@ -21,6 +21,7 @@
 #include "DwCompress.h"
 #include "DwDnsStr.h"
 #include "DwRecurse.h"
+#include "DwBlockHash.h"
 
 /* Mararc parameters that are set in DwMararc.c */
 extern dw_str *key_s[];
@@ -31,6 +32,7 @@ extern int32_t key_n[];
 extern int64_t the_time;
 extern dwr_rg *rng_seed;
 extern dw_hash *cache;
+extern blockHash *blocked_hosts_hash;
 
 /* List of addresses we will bind to */
 extern ip_addr_T bind_address[];
@@ -725,6 +727,7 @@ void get_local_udp_packet(SOCKET sock) {
         int32_t local_id = -1;
         dw_str *query = 0, *orig_query = 0;
         int_fast32_t qtype = 0;
+        int in_blocked_hosts_hash = 0;
 #ifdef VALGRIND_NOERRORS
         memset(packet,0,522);
 #endif /* VALGRIND_NOERRORS */
@@ -771,11 +774,19 @@ void get_local_udp_packet(SOCKET sock) {
          * function */
         query = dw_get_dname_type(packet,12,len);
         qtype = dw_fetch_u16(query,-1);
+        orig_query = dw_copy(query);
+        dwc_lower_case(query);
+
+        if(query != 0 && query->len > 2 && blocked_hosts_hash != 0 && 
+         DBH_BlockHasString(blocked_hosts_hash,query->str,query->len-2) == 1) {
+                in_blocked_hosts_hash = 1;
+        }
 
         /* Reject PTR or AAAA queries if not wanted; implement RFC8482 (ANY) */
         if((qtype == 28 /* AAAA */ && key_n[DWM_N_reject_aaaa] == 1) ||
            (qtype == 12 /* PTR */ && key_n[DWM_N_reject_ptr] == 1) ||
-	   ((qtype == 255 || qtype == 13) && rfc8482 == 1)) {
+	   ((qtype == 255 || qtype == 13) && rfc8482 == 1) ||
+           in_blocked_hosts_hash == 1) {
                 unsigned char *answer;
 
 		if(qtype == 255 || qtype == 13) { /* ANY or HINFO */
@@ -804,8 +815,6 @@ void get_local_udp_packet(SOCKET sock) {
                 goto catch_get_local_udp_packet;
         }
 
-        orig_query = dw_copy(query);
-        dwc_lower_case(query);
         dw_log_dwstr("Got DNS query for ",query,100); /* Log it */
         if(query == 0) {
                 goto catch_get_local_udp_packet;

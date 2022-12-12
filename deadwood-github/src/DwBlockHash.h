@@ -30,7 +30,7 @@ typedef struct {
 // 1: Yes, it does
 // 0: No, it does not
 // -1: An error happened when trying to find the string
-int DWB_BlockHasString(blockHash *b, uint8_t *str, int32_t len);
+int DBH_BlockHasString(blockHash *b, uint8_t *str, int32_t len);
 
 // Read a file and make a blockHash structure
 blockHash *DBH_makeBlockHash(char *filename);
