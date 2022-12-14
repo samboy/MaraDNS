@@ -51,7 +51,7 @@ uint32_t DBH_Read32bitNumber(uint8_t *block, uint32_t offset, uint32_t max) {
 int DBH_BlockHasString(blockHash *b, uint8_t *str, int32_t len) {
         uint32_t sipHashBucket;
         uint32_t offset;
-        if(b == NULL || str == NULL) {
+        if(b == NULL || str == NULL || len < 0 || len > 0xff00) {
                 return -1; // Error
         }
         sipHashBucket = HalfSip13(str, len, b->sipKey1, b->sipKey2) %

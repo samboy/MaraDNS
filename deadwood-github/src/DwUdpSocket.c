@@ -777,10 +777,45 @@ void get_local_udp_packet(SOCKET sock) {
         orig_query = dw_copy(query);
         dwc_lower_case(query);
 
-        if(query != 0 && query->len > 2 && blocked_hosts_hash != 0 && 
-         DBH_BlockHasString(blocked_hosts_hash,query->str,query->len-2) == 1) {
-                in_blocked_hosts_hash = 1;
-                dw_log_dwstr("DNS query in block hash: ",query,110); 
+        if(query != 0 && query->len > 2 && blocked_hosts_hash != 0) {
+		if(DBH_BlockHasString(blocked_hosts_hash,query->str,
+		   query->len-2) == 1) {
+                	in_blocked_hosts_hash = 1;
+                	dw_log_dwstr("DNS query in block hash: ",query,110); 
+		} else {
+			int label1 = 0, label2 = 0, label3 = 0;
+			int point = 0;
+			while(point < query->len - 2) {
+				int len = *(query->str + point);
+				if(len < 1 || len > 63) { break; }
+				label3 = label2;
+				label2 = label1;
+				label1 = point;
+				point = point + len + 1;
+			}
+			if(label1 > 0 && label1 < query->len-2 && 
+			   DBH_BlockHasString(blocked_hosts_hash,
+					query->str+label1,
+					query->len-label1-2) == 1) {
+				in_blocked_hosts_hash = 1;
+                		dw_log_dwstr(
+			    "DNS query in block hash (wildcard1): ",query,110); 
+			} else if(label2 > 0 && label2 < query->len-2 &&
+			   DBH_BlockHasString(blocked_hosts_hash,
+					query->str+label2,
+					query->len-label2-2) == 1) {
+				in_blocked_hosts_hash = 1;
+                		dw_log_dwstr(
+			    "DNS query in block hash (wildcard2): ",query,110); 
+			} else if(label3 > 0 && label3 < query->len-2 &&
+                           DBH_BlockHasString(blocked_hosts_hash,
+                                        query->str+label3,
+                                        query->len-label3-2) == 1) {
+                                in_blocked_hosts_hash = 1;
+                		dw_log_dwstr(
+			    "DNS query in block hash (wildcard3): ",query,110); 
+			}
+		}
         }
 
         /* Reject PTR or AAAA queries if not wanted; implement RFC8482 (ANY) */
