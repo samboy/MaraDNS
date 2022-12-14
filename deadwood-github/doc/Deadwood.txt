@@ -166,6 +166,9 @@ The blockHashMake program generates the block hash file. The contents
 of a block hash file can be looked at and read using the blockHashRead 
 program. 
 
+One usable block hash file is available at the repo at 
+https://github.com/samboy/BlockHash 
+
 == cache_file ==
 
 This is the filename of the file used for reading and writing the cache 
