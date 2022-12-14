@@ -189,6 +189,11 @@ The <tt>blockHashMake</tt> program generates the block hash file.  The
 contents of a block hash file can be looked at and read using the
 <tt>blockHashRead</tt> program.
 
+<p>
+
+One usable block hash file is available at the repo at
+https://github.com/samboy/BlockHash
+
 <h2>cache_file</h2>  
 This is the filename of the file used for reading and
 writing the cache to disk; this string can have lowercase letters,
