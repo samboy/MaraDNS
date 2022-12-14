@@ -4,7 +4,7 @@
 .\" Process this file with the following (replace filename.1)
 .\" preconv < filename.1 | nroff -man -Tutf8
 .\"
-.\" Last updated 2022-12-01
+.\" Last updated 2022-12-14
 .\"
 .TH DEADWOOD 1 "August 2009" DEADWOOD "Deadwood reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -140,10 +140,19 @@ the following are numeric parameters:
 bind_address (string) 
 .TP 2
 *
+blocked_hosts_hash_file (string) 
+.TP 2
+*
 cache_file (string) 
 .TP 2
 *
 chroot_dir (string) 
+.TP 2
+*
+ip4 (dictionary) 
+.TP 2
+*
+ip6 (dictionary) 
 .TP 2
 *
 ip_blacklist (string) 
@@ -164,16 +173,10 @@ recursive_acl (string)
 root_servers (dictionary) 
 .TP 2
 *
-upstream_servers (dictionary) 
-.TP 2
-*
-ip4 (dictionary) 
-.TP 2
-*
-ip6 (dictionary) 
-.TP 2
-*
 source_ip4 (string) 
+.TP 2
+*
+upstream_servers (dictionary) 
 .PP
 
 .SH "SUPPORTED PARAMETERS"
@@ -182,9 +185,53 @@ The Deadwood configuration file supports the following parameters:
 .PP
 
 .in -3
+\fBallow_block_hash_zero_key\fR
+.PP
+If this numeric parameter has a value of 1, we allow a blocked hosts 
+hash file to have a key which is 0. Otherwise, if a blocked hosts file 
+has a 0 key, Deadwood will terminate when loading the blocked hosts 
+file with the error message "Zero key block hash not allowed by 
+default". 
+.PP
+There is a security risk if we allow a blocked hosts file to have a 0 
+key: An attacker with access to a recursive instance of Deadwood could 
+have Deadwood use more resources than necessary if they know the block 
+hash file being used. Since the block hash file is read only, hash 
+flooding attacks are 
+.I "not"
+possible, but an attacker could form queries which use more resources 
+to resolve as not being present in the block hash. 
+.PP
+Deadwood should 
+.I "never"
+be an open recursor and this attack is limited in scope. But be aware 
+of the risks before setting this parameter to 1. 
+.PP
+
+.in -3
 \fBbind_address\fR
 .PP
 This is the IP (or possibly IPv6) address we bind to. 
+<h2>blocked_hosts_hash_file<h2> A blocked hosts hash file allows 
+Deadwood to block a large number of host names while using relatively 
+little memory: While using a list of over 200,000 hosts to block in a 
+dwood3rc file uses over 200 megabytes of memory, the same list in a 
+block hash file uses only 7 megabytes of memory. 
+.PP
+The block hash file is in a special binary format so that a large 
+number of host names can be blocked quickly using little memory. 
+.PP
+This parameter, if set, is the filename for a block hash file. The file 
+will be located in the directory set by chroot_dir (usually, 
+/etc/deadwood). The file name can have lower case letters, the 
+\(aq-\(aq character (dash), the \(aq_\(aq character (underscore), the 
+\(aq.\(aq character (dot or period), and the \(aq/\(aq character 
+(slash). If the file name has the \(aq.\(aq character (dot/period) in 
+it, it can not have a \(aq/\(aq (slash) after the \(aq.\(aq (dot). 
+.PP
+The blockHashMake program generates the block hash file. The contents 
+of a block hash file can be looked at and read using the blockHashRead 
+program. 
 .PP
 
 .in -3
