@@ -169,6 +169,7 @@ else
 	cd $TOPLEVEL/doc/en/man
 fi
 cp askmara.1 getzone.1 fetchzone.1 $MAN1
+cp blockHashRead.1 blockHashMake.1 $MAN1
 cp maradns.8 zoneserver.8 duende.8 $MAN8
 cp csv1.5 csv2.5 csv2_txt.5 mararc.5 $MAN5
 
