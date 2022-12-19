@@ -4,7 +4,7 @@
 .\" Process this file with the following (replace filename.1)
 .\" preconv < filename.1 | nroff -man -Tutf8
 .\"
-.\" Last updated 2022-12-14
+.\" Last updated 2022-12-18
 .\"
 .TH DEADWOOD 1 "August 2009" DEADWOOD "Deadwood reference"
 .\" We don't want hyphenation (it's too ugly)
@@ -231,7 +231,23 @@ it, it can not have a \(aq/\(aq (slash) after the \(aq.\(aq (dot).
 .PP
 The blockHashMake program generates the block hash file. The contents 
 of a block hash file can be looked at and read using the blockHashRead 
-program. 
+program. See the man pages 
+.B "blockHashMake (1)"
+and 
+.B "blockHashRead (1)"
+for more details. 
+.PP
+Block hash files have wildcard support. For example, if "example.com" 
+is in the block hash file, then deadwood will block "example.com", 
+"anyname.example.com", "anything.else.example.com", 
+"12345.example.com", and so on. 
+.PP
+Note that wildcards only work for domain names which are one, two, or 
+three labels long in the database. If "really.bad.example.com" is in 
+the database, "buzz.really.bad.example.com" will 
+.I "not"
+match, since "really.bad.example.com" has four (i.e. more than three) 
+labels. 
 .PP
 One usable block hash file is available at the repo at 
 https://github.com/samboy/BlockHash 

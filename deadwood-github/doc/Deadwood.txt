@@ -164,7 +164,18 @@ after the '.' (dot).
 
 The blockHashMake program generates the block hash file. The contents 
 of a block hash file can be looked at and read using the blockHashRead 
-program. 
+program. See the man pages blockHashMake (1) and blockHashRead (1) for 
+more details. 
+
+Block hash files have wildcard support. For example, if "example.com" 
+is in the block hash file, then deadwood will block "example.com", 
+"anyname.example.com", "anything.else.example.com", 
+"12345.example.com", and so on. 
+
+Note that wildcards only work for domain names which are one, two, or 
+three labels long in the database. If "really.bad.example.com" is in 
+the database, "buzz.really.bad.example.com" will not match, since 
+"really.bad.example.com" has four (i.e. more than three) labels. 
 
 One usable block hash file is available at the repo at 
 https://github.com/samboy/BlockHash 
