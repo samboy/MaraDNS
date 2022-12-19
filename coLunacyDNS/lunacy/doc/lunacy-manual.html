@@ -217,15 +217,6 @@ Freely available under the terms of the
 <A HREF="#pdf-io.write">io.write</A><BR>
 <P>
 
-<A HREF="#pdf-lfs.attributes">lfs.attributes</A><BR>
-<A HREF="#pdf-lfs.chdir">lfs.chdir</A><BR>
-<A HREF="#pdf-lfs.currentdir">lfs.currentdir</A><BR>
-<A HREF="#pdf-lfs.dir">lfs.dir</A><BR>
-<A HREF="#pdf-lfs.mkdir">lfs.mkdir</A><BR>
-<A HREF="#pdf-lfs.rmdir">lfs.rmdir</A><BR>
-<A HREF="#pdf-lfs.symlinkattributes">lfs.symlinkattributes</A><BR>
-<P>
-
 <A HREF="#pdf-lunacy.today">lunacy.today</A><BR>
 <P>
 
@@ -290,10 +281,6 @@ Freely available under the terms of the
 <A HREF="#pdf-math.random">rg32.random</A><BR>
 <A HREF="#pdf-rg32.runmill">rg32.runmill</A><BR>
 <A HREF="#pdf-math.randomseed">rg32.randomseed</A><BR>
-<P>
-
-<A HREF="#pdf-spawner.popen2">spawner.popen2</A></BR>
-<A HREF="#pdf-spawner.popen">spawner.popen</A></BR>
 <P>
 
 <A HREF="#pdf-string.byte">string.byte</A><BR>
@@ -522,28 +509,7 @@ character.
 
 <p>
 
-Lunacy also includes a built in version of the commonly used 
-luafilesystem suite:
-
-<pre>
-for a in lfs.dir(".") do
-  local b = lfs.attributes(a)
-  print(a,b.mode)
-end
-</pre>
-
-Note that only the calls
-<code>lfs.attributes</code>, <code>lfs.chdir</code>, 
-<code>lfs.currentdir</code>, <code>lfs.dir</code>, 
-<code>lfs.mkdir</code>, <code>lfs.rmdir</code>, and
-<code>lfs.symlinkattributes</code> are included.  The only
-file attributes are <code>size</code>, <code>mode</code>, and
-<code>nlink</code>; other attributes return nonsense values in
-Windows or have Y2038 issues.
-
-<p>
-
-In addition, some of the bit32 lib has been added, in a manner which
+Some of the bit32 lib has been added, in a manner which
 appears Lua 5.2/5.3 compatible.
 
 <p>
@@ -578,24 +544,6 @@ this code before running any Lua code:
 Where "x" and "y" are suitably random 32-bit numbers (uint32_t).  Do
 not call SipHashSetKey() once any Lua code is running; otherwise
 things will break very badly in Lua.
-
-<p>
-
-Lunacy also has a port of Steve Donovan’s spawner library so that 
-Lunacy has popen2 support to spawn sub-processes with both input
-and output piped to the Lunacy script.
-
-<p>
-
-Example popen2 usage:
-
-<pre>
-w, r = spawner.popen2("wc")
-w:write("Hello, world!\n")
-w:flush()
-w:close()
-print(r:read())
-</pre>
 
 <p>
 
