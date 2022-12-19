@@ -53,14 +53,16 @@ immune to even a very determined attacker.
 
 ## OPTIONS
 
-`-n`It is wise to periodically change ones password on sites that one 
+`-n` It is wise to periodically change ones password on sites that one 
 uses frequently. This allows one to continue to have passwords after 
 the four initial passwords have already been used; this can have a 
 value between 2 and 9. 
-`-s`The normal mode for mqhash: To create a secure password based on 
+
+`-s` The normal mode for mqhash: To create a secure password based on 
 both the contents of `~/.mhash_prefix` and the final argument to 
 mqhash. 
-`-u`This will generate a cryptographic hash out of the final argument 
+
+`-u` This will generate a cryptographic hash out of the final argument 
 sent to mqhash. This is useful when one does not need a secure 
 password, but just wants to hash a short string.  
 
