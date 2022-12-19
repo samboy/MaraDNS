@@ -1,10 +1,31 @@
+# MaraDNS reference manual
+
+This is a reference manual with all of MaraDNS'
+manual pages
+
+The following manuals are here:
+* Deadwood.md
+* askmara.md
+* blockHashMake.md
+* blockHashRead.md
+* coLunacyDNS.md
+* csv1.md
+* csv2.md
+* csv2_txt.md
+* duende.md
+* fetchzone.md
+* getzone.md
+* maradns.md
+* mararc.md
+* zoneserver.md
+
 # Deadwood
 
-## NAME
+# NAME
 
 Deadwood - A fully recursive caching DNS resolver 
 
-## DESCRIPTION
+# DESCRIPTION
 
 Deadwood is a fully recursive DNS cache. This is a DNS server with the 
 following features: 
@@ -39,7 +60,7 @@ following features:
 * The ability to quickly load and use a large blocklist of names to 
   not resolve.
 
-## COMMAND LINE ARGUMENTS
+# COMMAND LINE ARGUMENTS
 
 Deadwood has a single optional command line argument: The location of 
 the configuration file that Deadwood uses, specified with the "-f" 
@@ -52,7 +73,7 @@ to use /etc/dwood3rc as the configuration file; invoking Deadwood as
 the current working directory (the directory one is in when starting 
 Deadwood) as the configuration file. 
 
-## CONFIGURATION FILE FORMAT
+# CONFIGURATION FILE FORMAT
 
 The Deadwood configuration file is modeled after Python 2's syntax. 
 However, since Python 2 is no longer supported by the Python Software 
@@ -63,7 +84,7 @@ syntax.
 In particular, leading whitespace is allowed in Deadwood configuration 
 files. 
 
-## PARAMETER TYPES
+# PARAMETER TYPES
 
 Deadwood has three different parameter types: 
 
@@ -124,11 +145,11 @@ All dwood3rc parameters *except* the following are numeric parameters:
 
 * upstream_servers (dictionary)
 
-## SUPPORTED PARAMETERS
+# SUPPORTED PARAMETERS
 
 The Deadwood configuration file supports the following parameters: 
 
-### allow_block_hash_zero_key
+## allow_block_hash_zero_key
 
 If this numeric parameter has a value of 1, we allow a blocked hosts 
 hash file to have a key which is 0. Otherwise, if a blocked hosts file 
@@ -147,11 +168,11 @@ hash.
 Deadwood should *never* be an open recursor and this attack is limited 
 in scope. But be aware of the risks before setting this parameter to 1. 
 
-### bind_address
+## bind_address
 
 This is the IP (or possibly IPv6) address we bind to. 
 
-### blocked_hosts_hash_file
+## blocked_hosts_hash_file
 
 A blocked hosts hash file allows Deadwood to block a large number of 
 host names while using relatively little memory: While using a list of 
@@ -188,7 +209,7 @@ the database, "buzz.really.bad.example.com" will *not* match, since
 One usable block hash file is available at the repo at 
 https://github.com/samboy/BlockHash 
 
-### cache_file
+## cache_file
 
 This is the filename of the file used for reading and writing the cache 
 to disk; this string can have lowercase letters, the '-' symbol, the 
@@ -197,23 +218,23 @@ subdirectory). All other symbols become a '_' symbol.
 
 This file is read and written as the user Deadwood runs as. 
 
-### chroot_dir
+## chroot_dir
 
 This is the directory the program will run from. 
 
-### deliver_all
+## deliver_all
 
 This affects behavior in Deadwood 2.3, but has no effect in Deadwood 3. 
 This variable is only here so Deadwood 2 rc files can run in Deadwood 
 3. 
 
-### dns_port
+## dns_port
 
 This is the port Deadwood binds to and listens on for incoming 
 connections. The default value for this is the standard DNS port: port 
 53 
 
-### filter_rfc1918
+## filter_rfc1918
 
 When this has a value of 1, a number of different IP ranges are not 
 allowed to be in DNS A replies: 
@@ -248,7 +269,7 @@ filter undesired IPv4 answers (such as the dnswall program).
 
 The default value for this is 1 
 
-### handle_noreply
+## handle_noreply
 
 When this is set to 0, Deadwood sends no reply back to the client (when 
 the client is a TCP client, Deadwood closes the TCP connection) when a 
@@ -260,14 +281,14 @@ reply.
 
 The default value for this is 1 
 
-### handle_overload
+## handle_overload
 
 When this has a value of 0, Deadwood sends no reply when a UDP query is 
 sent and the server is overloaded (has too many pending connections); 
 when it has a value of 1, Deadwood sends a SERVER FAIL packet back to 
 the sender of the UDP query. The default value for this is 1. 
 
-### hash_magic_number
+## hash_magic_number
 
 This used to be used for Deadwood's internal hash generator to keep the 
 hash generator somewhat random and immune to certain types of attacks. 
@@ -276,7 +297,7 @@ the contents of /dev/urandom (secret.txt on Windows machines) and the
 current timestamp. This parameter is only here so older configuration 
 files do not break in Deadwood 3.0. 
 
-### ip4
+## ip4
 
 This is a dictionary variable which allows us to have given names 
 resolve to bogus IPv4 addresses. Here, we have the name "maradns.foo" 
@@ -306,7 +327,7 @@ ip4["evil.example.com."] = "X"
 Here, both the IPv4 *and* the IPv6 query for "evil.example.com" 
 will not resolve in Deadwood. 
 
-### ip6
+## ip6
 
 Like ip4, ip6 uses a similar syntax to have bogus IPv6 addresses. We 
 don't use standard notation for IPv6 addresses. Instead, we we use 
@@ -320,7 +341,7 @@ ip6["maradns.foo."] = "20010db84d617261444e530000001234"
 ip6["kabah.foo."] = "2001-0DB8-4D61-7261 444E-5300-__00-2345" 
 ```
 
-### ip_blocklist
+## ip_blocklist
 
 This is a list of IPs that we do not allow to be in the answer to a DNS 
 request. The reason for this is to counteract the practice some ISPs 
@@ -333,19 +354,19 @@ Note that this parameter used to be called ip_blacklist; while the
 ip_blacklist name still works as before, ip_blocklist is the current 
 name. 
 
-### maradns_uid
+## maradns_uid
 
 The user-id Deadwood runs as. This can be any number between 10 and 
 16777216; the default value is 707 (a system UID which should be 
 unused). This value is not used on Windows systems. 
 
-### maradns_gid
+## maradns_gid
 
 The group-id Deadwood runs as. This can be any number between 10 and 
 16777216; the default value is 707. This value is not used on Windows 
 systems. 
 
-### max_ar_chain
+## max_ar_chain
 
 Whether resource record rotation is enabled. If this has a value of 1, 
 resource record rotation is enabled, otherwise resource record rotation 
@@ -360,7 +381,7 @@ compatibility with MaraDNS mararc files.
 
 The default value is 1: Resource record rotation enabled. 
 
-### max_inflights
+## max_inflights
 
 The maximum number of simultaneous clients we process at the same time 
 for the same query. 
@@ -379,7 +400,7 @@ own connection.
 
 The default value is 8. 
 
-### max_ttl
+## max_ttl
 
 The maximum amount of time we will keep an entry in the cache, in 
 seconds (also called "Maximum TTL"). 
@@ -392,7 +413,7 @@ The reason why this parameter is here is to protect Deadwood from
 attacks which exploit there being stale data in the cache, such as the 
 "Ghost Domain Names" attack. 
 
-### maximum_cache_elements
+## maximum_cache_elements
 
 The maximum number of elements our cache is allowed to have. This is a 
 number between 32 and 16,777,216; the default value for this is 1024. 
@@ -413,28 +434,28 @@ Please note that, as of Deadwood 3.5.0004, is is no longer needed to
 increase maximum_cache_elements to store upstream_server and 
 root_server entries. 
 
-### maxprocs
+## maxprocs
 
 This is the maximum number of pending remote UDP connections Deadwood 
 can have. The default value for this is 1024. 
 
-### max_tcp_procs
+## max_tcp_procs
 
 This is the number of allowed open TCP connections. Default value: 8 
 
-### min_ttl
+## min_ttl
 
 The minimum amount of time we will keep an entry in the cache, in 
 seconds (also called "Minimum TTL"). 
 
-### num_retries
+## num_retries
 
 The number of times we retry to send a query upstream before giving up. 
 If this is 0, we only try once; if this is 1, we try twice, and so on, 
 up to 32 retries. Note that each retry takes timeout_seconds seconds 
 before we retry again. Default value: 5 
 
-### ns_glueless_type
+## ns_glueless_type
 
 The RR type we send to resolve glueless records. This should always be 
 1 (A; i.e. IPv4 DNS servers). This should *never* be ANY, see RFC8482. 
@@ -464,7 +485,7 @@ That day may yet come, but preparing Deadwood to still be a viable DNS
 server when that day comes will require more than changing the RR type 
 sent when it gets a glueless NS referral. 
 
-### random_seed_file
+## random_seed_file
 
 This is a file that contains random numbers, and is used as a seed for 
 the cryptographically strong random number generator. Deadwood will try 
@@ -476,7 +497,7 @@ before parsing the mararc file, and is hard-coded to get entropy from
 /dev/urandom (secret.txt on Windows systems). Most other entropy used 
 by Deadwood comes from the file pointed to by random_seed_file. 
 
-### recurse_min_bind_port
+## recurse_min_bind_port
 
 The lowest numbered port Deadwood is allowed to bind to; this is a 
 random port number used for the source port of outgoing queries, and is 
@@ -484,20 +505,20 @@ not 53 (see dns_port above). This is a number between 1025 and 32767,
 and has a default value of 15000. This is used to make DNS spoofing 
 attacks more difficult. 
 
-### recurse_number_ports
+## recurse_number_ports
 
 The number of ports Deadwood binds to for the source port for outgoing 
 connections; this is a power of 2 between 256 and 32768. This is used 
 to make DNS spoofing attacks more difficult. The default value is 4096. 
 
-### recursive_acl
+## recursive_acl
 
 This is a list of who is allowed to use Deadwood to perform DNS 
 recursion, in "ip/mask" format. Mask must be a number between 0 and 32 
 (for IPv6, between 0 and 128). For example, "127.0.0.1/8" allows local 
 connections. 
 
-### reject_aaaa
+## reject_aaaa
 
 If this has a value of 1, a bogus SOA "not there" reply is sent 
 whenever an AAAA query is sent to Deadwood. In other words, every time 
@@ -512,7 +533,7 @@ things down trying to find an IPv6 address.
 This has a default value of 0. In other words, AAAA queries are 
 processed normally unless this is set. 
 
-### reject_mx
+## reject_mx
 
 When this has the default value of 1, MX queries are silently dropped 
 with their IP logged. A MX query is a query that is only done by a 
@@ -534,7 +555,7 @@ corresponding to MX records, and Deadwood's testing is more geared for
 web surfing (almost 100% A record lookup) and not for mail delivery 
 (extensive MX record lookup). 
 
-### reject_ptr
+## reject_ptr
 
 If this has a value of 1, a bogus SOA "not there" reply is sent 
 whenever a PTR query is sent to Deadwood. In other words, every time a 
@@ -549,12 +570,12 @@ to perform a reverse DNS lookups on IPs.
 This has a default value of 0. In other words, PTR queries are 
 processed normally unless this is set. 
 
-### resurrections
+## resurrections
 
 If this is set to 1, Deadwood will try to send an expired record to the 
 user before giving up. If it is 0, we don't. Default value: 1 
 
-### rfc8482
+## rfc8482
 
 If this is set to 1, Deadwood will not allow ANY or HINFO queries, 
 sending a RFC8482 response if one is given to Deadwood. If this is 0, 
@@ -564,7 +585,7 @@ If ANY queries are enabled, since Deadwood does not support EDNS nor
 DNS-over-TCP for upstream queries, Deadwood may not get meaningful 
 replies from upstream servers. 
 
-### root_servers
+## root_servers
 
 This is a list of root servers; its syntax is identical to 
 upstream_servers (see below). This is the type of DNS service ICANN, 
@@ -580,7 +601,7 @@ plans to remove this parameter, Deadwood is no longer being updated to
 resolve DNS resolution issues when using root_servers to resolve names 
 on the internet. Please use upstream_servers instead. 
 
-### source_ip4
+## source_ip4
 
 With certain complicated networks, it may be desirable to set the 
 source IP of queries sent to upstream or root DNS servers. If so, set 
@@ -591,23 +612,23 @@ Use this parameter with caution; Deadwood can very well become
 non-functional if one uses a source IPv4 address which Deadwood is not 
 bound to. 
 
-### tcp_listen
+## tcp_listen
 
 In order to enable DNS-over-TCP, this variable must be set and have a 
 value of 1. Default value: 0 
 
-### timeout_seconds
+## timeout_seconds
 
 This is how long Deadwood will wait before giving up and discarding a 
 pending UDP DNS reply. The default value for this is 1, as in 1 second, 
 unless Deadwood was compiled with FALLBACK_TIME enabled. 
 
-### timeout_seconds_tcp
+## timeout_seconds_tcp
 
 How long to wait on an idle TCP connection before dropping it. The 
 default value for this is 4, as in 4 seconds. 
 
-### ttl_age
+## ttl_age
 
 Whether TTL aging is enabled; whether entries in the cache have their 
 TTLs set to be the amount of time the entries have left in the cache. 
@@ -615,13 +636,13 @@ TTLs set to be the amount of time the entries have left in the cache.
 If this has a value of 1, TTL entries are aged. Otherwise, they are 
 not. The default value for this is 1. 
 
-### upstream_port
+## upstream_port
 
 This is the port Deadwood uses to connect or send packets to the 
 upstream servers. The default value for this is 53; the standard DNS 
 port. 
 
-### upstream_servers
+## upstream_servers
 
 This is a list of DNS servers that the load balancer will try to 
 contact. This is a *dictionary variable* (array indexed by a string 
@@ -681,12 +702,12 @@ upstream_servers to use the https://quad9.net servers, as follows:
 Please note that, as of Deadwood 3.5.0004, is is no longer needed to 
 increase maximum_cache_elements to store upstream_server entries. 
 
-### verbose_level
+## verbose_level
 
 This determines how many messages are logged on standard output; larger 
 values log more messages. The default value for this is 3. 
 
-## ip/mask format of IPs
+# ip/mask format of IPs
 
 Deadwood uses a standard ip/netmask formats to specify IPs. An ip is in 
 dotted-decimal format, e.g. "10.1.2.3" (or in IPv6 format when IPv6 
@@ -708,7 +729,7 @@ will match.
 The netmask is optional, and, if not present, indicates that only a 
 single IP will match. 
 
-## DNS over TCP
+# DNS over TCP
 
 DNS-over-TCP needs to be explicitly enabled by setting tcp_listen to 1. 
 
@@ -729,7 +750,7 @@ useful information or to work with very uncommon non-RFC-compliant
 TCP-only DNS resolvers. In the real world, DNS-over-TCP is almost never 
 used. 
 
-## Parsing other files
+# Parsing other files
 
 It is possible to have Deadwood, while parsing the dwood3rc file, read 
 other files and parse them as if they were dwood3rc files. 
@@ -755,7 +776,7 @@ use something like
 parse error in the offending file, where "filename" is the file to to 
 parsed via execfile. 
 
-## IPV6 support
+# IPV6 support
 
 This server can also be optionally compiled to have IPv6 support. In 
 order to enable IPv6 support, add '-DIPV6' to the compile-time flags. 
@@ -767,7 +788,7 @@ support:
 	make 
 ```
 
-## SECURITY
+# SECURITY
 
 Deadwood is a program written with security in mind. 
 
@@ -814,12 +835,12 @@ mkSecretTxt.exe program); Deadwood, at runtime, uses /dev/urandom
 (secret.txt in Windows) as a hardcoded path to get entropy (along with 
 the timestamp) for the hash algorithm. 
 
-## COMMENTS
+# COMMENTS
 
 Deadwood's configuration file format supports two kinds of comments:
 
 ```
-## This is a comment 
+# This is a comment 
 ```
 
 Here, a comment starts with the # character and continues until 
@@ -851,46 +872,46 @@ configuration file to have multi-line comments in a form which are
 compatible with both Lua and Python, as can be seen in the above 
 example. 
 
-## DAEMONIZATION
+# DAEMONIZATION
 
 Deadwood does not have any built-in daemonization facilities; this is 
 handled by the external program Duende or any other daemonizer. 
 
-## Example configuration file
+# Example configuration file
 
 Here is an example dwood3rc configuration file:
 
 ```
-## This is an example deadwood rc file  
-## Note that comments are started by the hash symbol 
+# This is an example deadwood rc file  
+# Note that comments are started by the hash symbol 
  
 bind_address="127.0.0.1" # IP we bind to 
  
-## The following line is disabled by being commented out 
+# The following line is disabled by being commented out 
 #bind_address="::1" # We have optional IPv6 support 
  
-## Directory we run program from (not used in Win32) 
+# Directory we run program from (not used in Win32) 
 chroot_dir = "/etc/deadwood"  
  
-## The following upstream DNS servers are Google's  
-## (as of December 2009) public DNS servers.  For  
-## more information, see the page at 
-## http://code.google.com/speed/public-dns/ 
-## 
-## If neither root_servers nor upstream_servers are set, 
-## Deadwood will use the default ICANN root servers. 
+# The following upstream DNS servers are Google's  
+# (as of December 2009) public DNS servers.  For  
+# more information, see the page at 
+# http://code.google.com/speed/public-dns/ 
+# 
+# If neither root_servers nor upstream_servers are set, 
+# Deadwood will use the default ICANN root servers. 
 #upstream_servers = {} 
 #upstream_servers["."]="8.8.8.8, 8.8.4.4"  
  
-## Who is allowed to use the cache.  This line 
-## allows anyone with "127.0" as the first two 
-## digits of their IP to use Deadwood 
+# Who is allowed to use the cache.  This line 
+# allows anyone with "127.0" as the first two 
+# digits of their IP to use Deadwood 
 recursive_acl = "127.0.0.1/16"  
  
-## Maximum number of pending requests 
+# Maximum number of pending requests 
 maxprocs = 2048 
  
-## Send SERVER FAIL when overloaded 
+# Send SERVER FAIL when overloaded 
 handle_overload = 1  
  
 maradns_uid = 99 # UID Deadwood runs as 
@@ -898,28 +919,28 @@ maradns_gid = 99 # GID Deadwood runs as
  
 maximum_cache_elements = 60000 
  
-## If you want to read and write the cache from disk,  
-## make sure chroot_dir above is readable and writable  
-## by the maradns_uid/gid above, and uncomment the  
-## following line.  
+# If you want to read and write the cache from disk,  
+# make sure chroot_dir above is readable and writable  
+# by the maradns_uid/gid above, and uncomment the  
+# following line.  
 #cache_file = "dw_cache" 
  
-## If your upstream DNS server converts "not there" DNS replies 
-## in to IPs, this parameter allows Deadwood to convert any reply 
-## with a given IP back in to a "not there" IP.  If any of the IPs 
-## listed below are in a DNS answer, Deadwood converts the answer 
-## in to a "not there" 
+# If your upstream DNS server converts "not there" DNS replies 
+# in to IPs, this parameter allows Deadwood to convert any reply 
+# with a given IP back in to a "not there" IP.  If any of the IPs 
+# listed below are in a DNS answer, Deadwood converts the answer 
+# in to a "not there" 
 #ip_blocklist = "10.222.33.44, 10.222.3.55" 
  
-## By default, for security reasons, Deadwood does not allow IPs in  
-## the 192.168.x.x, 172.[16-31].x.x, 10.x.x.x, 127.x.x.x,  
-## 169.254.x.x, 224.x.x.x, or 0.0.x.x range.  If using Deadwood  
-## to resolve names on an internal network, uncomment the  
-## following line: 
+# By default, for security reasons, Deadwood does not allow IPs in  
+# the 192.168.x.x, 172.[16-31].x.x, 10.x.x.x, 127.x.x.x,  
+# 169.254.x.x, 224.x.x.x, or 0.0.x.x range.  If using Deadwood  
+# to resolve names on an internal network, uncomment the  
+# following line: 
 #filter_rfc1918 = 0 
 ```
 
-## BUGS
+# BUGS
 
 Deadwood does not follow RFC2181's advice to ignore DNS responses with 
 the TC (truncated) bit set, but instead extracts the first RR. If this 
@@ -947,7 +968,7 @@ section 3.6.2 and RFC1912 section 2.4; it makes an answer ambiguous.
 Deadwood handles this ambiguity differently than some other DNS 
 servers. 
 
-## LEGAL DISCLAIMER
+# LEGAL DISCLAIMER
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -961,7 +982,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
 
-## AUTHORS
+# AUTHORS
 
 Sam Trenholme (http://www.samiam.org) is responsible for this program 
 and man page. He appreciates all of Jean-Jacques Sarton's help giving 
@@ -969,21 +990,21 @@ this program IPv6 support.
 
 # askmara
 
-## NAME
+# NAME
 
 askmara - do simple dns queries 
 
-## DESCRIPTION
+# DESCRIPTION
 
 **askmara** queries the user-specified dns server for records, and 
 outputs the reply in a csv2-compatible format (csv2 is the format of 
 zone files that **maradns** uses). 
 
-## USAGE
+# USAGE
 
 **askmara** [-n] [ -v | -t timeout] query [ server ] 
 
-## OPTIONS
+# OPTIONS
 
 `-t` If this is present, the following argument is the askmara timeout, 
 in seconds. Note that **askmara** can not both have a user-defined 
@@ -1032,7 +1053,7 @@ Askmara supports a handful one-letter mnemonics, as follows:
 `server` IP address of the dns server to be queried. If no server is 
 given, askmara will query 127.0.0.1.  
 
-## EXAMPLES
+# EXAMPLES
 
 Asking the server with the ip 127.0.0.1 for the IP address of 
 example.com:
@@ -1075,7 +1096,7 @@ Note that the output will be a raw DNS packet in the SRV example,
 but askmara shows an IPv6 address (albeit without :: to collapse 0 
 quads) in the AAAA example. 
 
-## BUGS
+# BUGS
 
 When askmara is asked for an SOA record, the output of **askmara** 
 closely resembles the format of a csv2 file, but can not be parsed as a 
@@ -1084,12 +1105,12 @@ csv2 file without modification.
 askmara outputs multi-chunk ("character-string") TXT records 
 incorrectly (it only outputs the first chunk). 
 
-## SEE ALSO
+# SEE ALSO
 
 **maradns(8)** 
  http://www.maradns.org
 
-## LEGAL DISCLAIMER
+# LEGAL DISCLAIMER
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -1103,18 +1124,18 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
 
-## AUTHOR
+# AUTHOR
 
 MaraDNS is written by Sam Trenholme. Jaakko Niemi used 5 minutes to 
 roll this manpage together, which Sam has subsequently revised.  
 
 # blockHashMake
 
-## NAME
+# NAME
 
 blockHashMake - Make a block hash file for Deadwood 
 
-## DESCRIPTION
+# DESCRIPTION
 
 blockHashMake is a stand alone command line tool which converts a list 
 of host names in to a *block hash file* which Deadwood can read to 
@@ -1127,7 +1148,7 @@ blocked host names.
 blockHashMake reads the list of host names from the standard input and 
 generates a binary file. 
 
-## COMMAND LINE ARGUMENTS
+# COMMAND LINE ARGUMENTS
 
 blockHashMake can be invoked without command line arguments. If invoked 
 without arguments, blockHashMake reads the list of host names to block 
@@ -1176,7 +1197,7 @@ block hash to be a little faster. The default value, which is 125% of
 the number of host names given to blockHashMake, is a reasonable 
 compromise between speed and size. 
 
-## HOST LIST FORMAT
+# HOST LIST FORMAT
 
 After being invoked, blockHashMake reads a list of host names from the 
 standard input. The format is a single host name per line of input, 
@@ -1199,13 +1220,13 @@ to convert international domain names with non-ASCII characters in to
 their punycode representation before adding them to a block hash with 
 blockHashMake. 
 
-## LIMITATIONS
+# LIMITATIONS
 
 The block hash format that blockHashMake uses is a 32-bit format, and 
 the resulting block hash file should be under 2,147,483,648 bytes in 
 size. This is a limitation of around 30 million host names. 
 
-## LEGAL DISCLAIMERS
+# LEGAL DISCLAIMERS
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -1227,18 +1248,18 @@ proposed EU Cyber Resilience Act. Someone selling a product that uses
 any component of this may be subject to this act and may need to handle 
 any and all necessary compliance. 
 
-## AUTHORS
+# AUTHORS
 
 Sam Trenholme (https://www.samiam.org) is responsible for this program 
 and man page.  
 
 # blockHashRead
 
-## NAME
+# NAME
 
 blockHashRead - Read a block hash file 
 
-## DESCRIPTION
+# DESCRIPTION
 
 blockHashRead is a stand alone command line tool which converts a 
 *block hash file* in to a list of hostnames. This way, a binary block 
@@ -1249,7 +1270,7 @@ and then converted back in to a binary block hash file with the
 A block hash file uses a special binary format for storing a list of 
 blocked host names. 
 
-## USAGE
+# USAGE
 
 blockHashRead is invoked as follows:
 
@@ -1269,7 +1290,7 @@ command line argument (e.g. "blockHashRead --version") which will
 output the version number of blockHashRead and provide basic usage 
 information. 
 
-## HOST LIST FORMAT
+# HOST LIST FORMAT
 
 After being invoked, blockHashRead writes a list of host names to the 
 standard output. The format is a single host name per line of input, 
@@ -1288,13 +1309,13 @@ to convert international domain names with non-ASCII characters in to
 their non-punycode representation if seeing correct international 
 domain names is desired. 
 
-## LIMITATIONS
+# LIMITATIONS
 
 The block hash format that blockHashRead looks at is a 32-bit format, 
 and the resulting block hash file should be under 2,147,483,648 bytes 
 in size. This is a limitation of around 30 million host names. 
 
-## LEGAL DISCLAIMERS
+# LEGAL DISCLAIMERS
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -1316,7 +1337,7 @@ proposed EU Cyber Resilience Act. Someone selling a product that uses
 any component of this may be subject to this act and may need to handle 
 any and all necessary compliance. 
 
-## AUTHORS
+# AUTHORS
 
 Sam Trenholme (https://www.samiam.org) is responsible for this program 
 and man page.  
@@ -1325,11 +1346,11 @@ and man page.
 
 ==== coLunacyDNS ====
 
-## NAME
+# NAME
 
 coLunacyDNS - A DNS server configured by Lua 
 
-## DESCRIPTION
+# DESCRIPTION
 
 coLunacyDNS is a simply IPv4 and IPv6 forwarding DNS server (with 
 support only for IPv4 and IPv6 IP records) controlled by a Lua script. 
@@ -1341,7 +1362,7 @@ of 2021.
 
 All example configuration files here are public domain. 
 
-## Getting started
+# Getting started
 
 On a CentOS 8 Linux system, this gets us started:
 
@@ -1371,7 +1392,7 @@ Cygwin does not have the same sandboxing Linux has. The Windows binary
 does not have sandboxing, but other measures are taken to minimize 
 security risks. 
 
-## Configration file examples
+# Configration file examples
 
 In this example, we listen on 127.0.0.1, and, for any IPv4 query, we 
 return the IP of that query as reported by 9.9.9.9.
@@ -1631,7 +1652,7 @@ function processQuery(Q) -- Called for every DNS query received
 end 
 ```
 
-## Security considerations
+# Security considerations
 
 Since the Lua file is executed as root, some effort is made to restrict 
 what it can do: 
@@ -1650,7 +1671,7 @@ what it can do:
 
 * All DNS ANY and HINFO queries are given a RFC8482 response.
 
-## Limitations
+# Limitations
 
 coLunacyDNS only processes requests for DNS A queries and DNS AAAA 
 queries -- queries for IPv4 and IPv6 IP addresses. Information about 
@@ -1664,7 +1685,7 @@ IPv6 DNS records, and while coLunacyDNS can bind to IPv4 and IPv6 IPs,
 it can not send queries to upstream DNS servers via IPv6, and 
 coLunacyDNS must always have an IPv4 address to bind to. 
 
-## The API available to the Lua script
+# The API available to the Lua script
 
 coLunacyDNS, when running Lua code, has access to the Lua 5.1 versions 
 of the math and string libraries. The math library has the functions 
@@ -1734,7 +1755,7 @@ coLunacyDNS also includes a few functions in its own coDNS space:
   text file in the same directory that coLunacyDNS is being run 
   from. Details are below, after the coDNS.solve section.
 
-## coDNS.solve
+# coDNS.solve
 
 This function is given a table with three members: 
 
@@ -1795,7 +1816,7 @@ Since this function allows other Lua threads to run while it awaits a
 DNS reply, global variables may change in value while the DNS record is 
 being fetched. 
 
-## Reading files
+# Reading files
 
 We have an API which can be used to read files. For example:
 
@@ -1849,7 +1870,7 @@ another file, ending processQuery(), or calling coDNS.solve(). It is
 mainly here to give programmers trained to close open files a function 
 which does so. 
 
-## processQuery
+# processQuery
 
 Every time coLunacyDNS gets a query, it runs the lua function 
 processQuery, which takes as its input a table with the following 
@@ -1920,7 +1941,7 @@ following parameters:
   and 7777777 (cache for just over 90 days). This field is 
   optional; if not set, the TTL returned will be 0 (do not cache).
 
-## Global settings
+# Global settings
 
 coLunacyDNS Lua scripts have three special global variables which are 
 read to adjust settings in coLunacyDNS: 
@@ -1943,7 +1964,7 @@ read to adjust settings in coLunacyDNS:
   if logLevel has a value more than 0, `coDNS.log` messages are 
   immediately flushed (unbuffered).
 
-## Test coverage
+# Test coverage
 
 coLunacyDNS is feature complete and stable. 
 
@@ -1956,18 +1977,18 @@ the testing code via `#ifdef`. Read sqa/README.md for details.
 
 # csv1
 
-## NAME
+# NAME
 
 csv1 - Format of the csv1 zone file that MaraDNS uses 
 
-## SPECIAL NOTE
+# SPECIAL NOTE
 
 The csv1 zone file format is supported primarily for MaraDNS users who 
 already have zone files in the csv1 format. MaraDNS now supports a csv2 
 zone file format. Note that the csv1 zone file format will continue to 
 function as long as I am MaraDNS' maintainer. 
 
-## SPECIAL CHARACTERS
+# SPECIAL CHARACTERS
 
 `|` This delimits fields 
 
@@ -1984,7 +2005,7 @@ resolve". It must be at the beginning of a domain name.
 such as '\045' for %, or to escape the '%' character so it has no 
 special meaning, or to escape the backslash character.  
 
-## NOTES ON PROCESSING
+# NOTES ON PROCESSING
 
 All domain-name labels are converted to their lower-case equivalents 
 before processing is done. This is because domain-name literals in the 
@@ -1999,14 +2020,14 @@ another zone. The resolution algorithm will not break if non-CNAME
 records share records with a CNAME record, but this is not a good idea 
 to do.
 
-## RR FORMAT
+# RR FORMAT
 
 A domain name is a one-letter designation of its type, followed by the 
 domain name separated by dots, ending with either a % or a trailing 
 dot. If the domain name does not end with a % or trailing dot, an error 
 is returned. 
 
-## SUPPORTED RR TYPES
+# SUPPORTED RR TYPES
 
 MaraDNS only supports the following types of resource records (RRs) in 
 csv1 files. More resource records types are supported in csv2 zone 
@@ -2025,7 +2046,7 @@ files; see **csv2(5)** for details.
  
 ```
 
-## FORMAT OF SUPPORTED RR TYPES
+# FORMAT OF SUPPORTED RR TYPES
 
 Here are the formats, shown by letter name:
 
@@ -2140,32 +2161,32 @@ data". Since this particular data type is not formalized in a RFC at
 this time, the most appropriate method of storing this data is by using 
 the catch-all "unsupported" syntax. 
 
-## EXAMPLE CSV1 ZONE FILE
+# EXAMPLE CSV1 ZONE FILE
 
 ```
  
-## Example CSV1 zone file 
+# Example CSV1 zone file 
  
-## This is what is known as a SOA record.  All zone files need to have one 
-## of these 
+# This is what is known as a SOA record.  All zone files need to have one 
+# of these 
 S%|86400|%|hostmaster@%|19771108|7200|3600|604800|1800 
-## These are known as authoritative NS records.  All zone files need one or 
-## more of these 
+# These are known as authoritative NS records.  All zone files need one or 
+# more of these 
 N%|86400|ns1.% 
 N%|86400|ns2.% 
  
-## Some IP addresses 
+# Some IP addresses 
 Ans1.%|86400|10.0.0.1 
 Ans2.%|86400|192.168.0.1 
 A%|86400|10.1.2.3 
 Amx.%|86400|10.1.2.4 
  
-## An 'IN MX' record 
+# An 'IN MX' record 
 @%|86400|10|mx.% 
  
 ```
 
-## LEGAL DISCLAIMER
+# LEGAL DISCLAIMER
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -2179,23 +2200,23 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
 
-## AUTHOR
+# AUTHOR
 
 Sam Trenholme http://www.samiam.org/ 
 
 # csv2
 
-## NAME
+# NAME
 
 csv2 - Description of the csv2 zone file that MaraDNS uses 
 
-## DESCRIPTION
+# DESCRIPTION
 
 The csv2 zone file format is MaraDNS' standard zone file format. This 
 zone file format uses any kind of whitespace (space, tab, and carriage 
 return), or the '|' character, to delimit fields. 
 
-### Tilde delimitation
+## Tilde delimitation
 
 In newer MaraDNS releases, the tilde ('~') character is used to delimit 
 records in csv2 zone files; in order to maintain maximum compatibility 
@@ -2211,7 +2232,7 @@ supported the csv2_tilde_handling variable (as long as it had a value
 of 0); this allowed the same configuration and zone files to be used in 
 older and newer MaraDNS releases. 
 
-### Resource record format
+## Resource record format
 
 This zone file format has records in the following form: 
 
@@ -2243,7 +2264,7 @@ a comment.
 The following record types are supported; a description of the record 
 data format accommodates the record type: 
 
-### A
+## A
 
 An A record stores an ipv4 address. This is the default record type 
 should the record type not be specified. The record type has one field 
@@ -2255,7 +2276,7 @@ b.example.net.        A     10.11.12.14 ~
 c.example.net. +64000 A     10.11.12.15 ~ 
 ```
 
-### PTR
+## PTR
 
 A PTR record stores the name for a given ipv4 or ipv6 address, and is 
 used for reverse DNS lookups. This record type has one field in it: The 
@@ -2267,7 +2288,7 @@ name for the record in question. Examples:
 15.12.11.10.in-addr.arpa. +64000 PTR    c.example.net. ~ 
 ```
 
-### MX
+## MX
 
 A MX record stores a mail exchange record, and is used for mail 
 delivery. This record type has two fields in it: The priority (or 
@@ -2281,7 +2302,7 @@ example.net.      MX   10 mail.example.net. ~
 mail.example.net.      10.11.12.16 ~ 
 ```
 
-### AAAA
+## AAAA
 
 An AAAA record stores the ipv6 address for a given name. The IP is in 
 standard ipv6 "colon delimited" format: eight 16-bit hexadecimal 
@@ -2293,7 +2314,7 @@ IP. Example:
 a.example.net.   AAAA    2001:db8:dec:ade::f ~ 
 ```
 
-### SRV
+## SRV
 
 An SRV record stores a "service" definition. This record has four 
 fields: Priority, weight, port, and target. For more information, 
@@ -2303,7 +2324,7 @@ please refer to RFC 2782. Example:
 _http._tcp.% SRV 0 0 80 a.% ~ 
 ```
 
-### NAPTR
+## NAPTR
 
 A NAPTR record is described in RFC 2915. Example:
 
@@ -2315,7 +2336,7 @@ Note the semicolons. Because of a bug in MaraDNS 1.4.03 and
 earlier releases, NAPTR records will not parse unless a ~ is *not* used 
 to separate records; a patch to fix this bug is available here. 
 
-### NS
+## NS
 
 An NS record specifies the name servers for a given zone. If the name 
 servers are not delegation name servers (in other words, if the name 
@@ -2331,7 +2352,7 @@ example.net.    NS    ns1.example.net. ~
 example.net.    NS    ns2.example.net. ~ 
 ```
 
-### SOA
+## SOA
 
 An SOA record stores the start of authority for a given zone file. This 
 record is optional in a CSV2 zone file; should the record not be in the 
@@ -2370,7 +2391,7 @@ x.org. SOA x.org. email@x.org. /serial 7200 3600 604800 1800 ~
 The '/serial' string is case-sensitive; only '/serial' in all 
 lower case will parse. 
 
-### TXT
+## TXT
 
 A TXT record stores arbitrary text and/or binary data for a given host 
 name. This record has one field: The text data for the record. 
@@ -2390,7 +2411,7 @@ literal '|' (pipe) character, a '#' literal, a '~' literal, nor any
 ASCII control literal; these characters can be added to a TXT record 
 via the use of escape sequences; read the csv2_txt man pagefor details. 
 
-### SPF
+## SPF
 
 A SPF record is, with the exception of the numeric rtype, identical to 
 a TXT record. SPF records are designed to make it more difficult to 
@@ -2414,7 +2435,7 @@ performing a web search for 'sender policy framework'.
 Note that SPF records never gained traction, and their role is handled 
 by TXT records. 
 
-### RAW
+## RAW
 
 The RAW record is a special meta-record that allows any otherwise 
 unsupported record type to be stored in a csv2 zone file. The syntax 
@@ -2444,7 +2465,7 @@ The format for a data field in a RAW record is almost identical to the
 format for a TXT data field. Both formats are described in full in the 
 **csv2_txt(5)** manual page. 
 
-### FQDN4
+## FQDN4
 
 The FQDN4 (short for "Fully Qualified Domain Name for IPv4") record is 
 a special form of the "A" record (see above) that instructs MaraDNS to 
@@ -2475,7 +2496,7 @@ FQDN4 records are not permitted in a csv2_default_zonefile. If you do
 not know what a csv2_default_zonefile is, you do not have to worry 
 about this limitation. 
 
-### FQDN6
+## FQDN6
 
 The FQDN6 (short for "Fully Qualified Domain Name for IPv6") record is 
 the ipv6 form for the FQDN4 record. Like the FQDN4 record, this record 
@@ -2504,7 +2525,7 @@ is, you do not have to worry about this limitation.
 
 FQDN6 records were implemented by Jean-Jacques Sarton. 
 
-### CNAME
+## CNAME
 
 A CNAME record is a pointer to another host name. The CNAME record, in 
 MaraDNS, affects any record type not already specified for a given host 
@@ -2515,12 +2536,12 @@ with some other DNS servers.
 CNAME records are not permitted in a csv2_default_zonefile. If you do 
 not know what a csv2_default_zonefile is, this fact is of no relevance. 
 
-## Historical and uncommon resource records
+# Historical and uncommon resource records
 
 The following resource records are mainly of historical interest, or 
 are not commonly used. 
 
-### HINFO
+## HINFO
 
 *In light of RFC8482, using this record type is strongly discouraged.* 
 
@@ -2544,7 +2565,7 @@ has not been updated since 2002.
 Since MaraDNS has support for RFC8482, ANY queries sent to MaraDNS will 
 return an HINFO record with a CPU of "RFC8482" and a blank OS name. 
 
-### WKS
+## WKS
 
 WKS records are historical records which have been superseded by SRV 
 records. The format of the record is an IP, followed by a protocol 
@@ -2562,7 +2583,7 @@ MaraDNS only allows up to 10 different port numbers in a WKS
 record, and requires that the listed port numbers are not be higher 
 than 1023. 
 
-### MD and MF
+## MD and MF
 
 MD and MF records are RR types that existed before MX records, and were 
 made obsolete by MX records. RFC1035 says that a DNS server can either 
@@ -2583,7 +2604,7 @@ example.net. MX 0 a.example.net. ~
 example.net. MX 10 b.example.net. ~ 
 ```
 
-### MB, MG, MINFO, and MR
+## MB, MG, MINFO, and MR
 
 In the late 1980s, an alternative to MX records was proposed. This 
 alternative utilized MB, MG, MINFO, and MR records. This alternative 
@@ -2600,7 +2621,7 @@ example.net. MR mr@example.net. ~
 
 More information about these records can be found in RFC1035. 
 
-### AFSDB, RP, X25, ISDN, and RT
+## AFSDB, RP, X25, ISDN, and RT
 
 AFSDB, RP, X25, ISDN, and RT are resource records which were proposed 
 in RFC1183. None of these resource records are widely used. 
@@ -2623,7 +2644,7 @@ example.net. ISDN 150862028003217;004 ~
 example.net. RT 10 relay.example.net. ~ 
 ```
 
-### NSAP and NSAP-PTR
+## NSAP and NSAP-PTR
 
 NSAP and NSAP-PTR records were proposed in RFC1706. A NSAP record is a 
 hexadecimal number preceded by the string "0x" and with optional dots 
@@ -2640,7 +2661,7 @@ example.net. NSAP 0x47.0005.80.005a00.0000.0001.e133.ffffff000162.00 ~
 example.net. NSAP-PTR nsap.example.net. ~ 
 ```
 
-### PX
+## PX
 
 The PX RR is an obscure RR described in RFC2163. A PX record looks like 
 this in a CSV2 zone file:
@@ -2649,7 +2670,7 @@ this in a CSV2 zone file:
 example.net. PX 15 px1.example.net. px2.example.net. ~ 
 ```
 
-### GPOS
+## GPOS
 
 An GPOS record is a description of the location of a given server. The 
 format for this record is identical to a TXT record, except that the 
@@ -2670,7 +2691,7 @@ This resource record is not actively used; for the relatively few
 people who encode their position in DNS, the LOC record is far more 
 common. 
 
-### LOC
+## LOC
 
 The LOC resource record is an uncommonly used resource record that 
 describes the position of a given server. LOC records are described in 
@@ -2688,7 +2709,7 @@ Example:
 example.net. LOC 19 31 2.123 N 98 3 4 W 2000m 2m 4m 567m ~ 
 ```
 
-### CAA
+## CAA
 
 MaraDNS does not have direct support for CAA records. However, the RAW 
 record type can generate CAA records. For example, to have 
@@ -2699,7 +2720,7 @@ letsencrypt.org":
 example.com. RAW 257 \x00\x05'issueletsencrypt.org' ~ 
 ```
 
-## STAR RECORDS
+# STAR RECORDS
 
 MaraDNS has support for star records in zone files:
 
@@ -2719,7 +2740,7 @@ Note also that stars must be at the beginining of a name; to have
 stars at the end of a name, use the csv2_default_zonefile feature as 
 described in the mararc man page. 
 
-## PERCENT SYMBOL
+# PERCENT SYMBOL
 
 Placing the percent symbol at the end of a record indicates that the 
 percent should be replaced with the domain name for the zone. 
@@ -2734,7 +2755,7 @@ www.%	A	10.10.10.10 ~
 
 This will cause "www.example.net" to have the ip 10.10.10.10. 
 
-## SLASH COMMANDS
+# SLASH COMMANDS
 
 In addition to being able to have resource records and comments, csv2 
 zone files can also have special slash commands. These slash commands, 
@@ -2746,7 +2767,7 @@ question must be in all-lower-case.
 
 These commands are as follows: 
 
-### Default TTL
+## Default TTL
 
 The default TTL is the TTL for a resource record without a TTL 
 specified. This can be changed with the '/ttl' slash command. This 
@@ -2774,7 +2795,7 @@ d.ttl.example.com.       10.0.0.4 ~
 e.ttl.example.com.       10.0.0.5 ~ 
 ```
 
-### Origin
+## Origin
 
 It is possible to change the host name suffix that is used to 
 substitute the percent in a csv2 zone file. This suffix is called, for 
@@ -2818,7 +2839,7 @@ origin:
 % 10.3.2.2 ~ # mail.example.com now has IP 10.3.2.2 
 ```
 
-### Opush and Opop
+## Opush and Opop
 
 The '/opush' and '/opop' slash commands use a stack to remember and 
 later recall values for the origin (see origin above). The '/opush' 
@@ -2845,7 +2866,7 @@ b.% 10.4.0.2 ~ # b.mail.example.com has IP 10.4.0.2
 
 The opush/opop stack can have up to seven elements on it. 
 
-### Read
+## Read
 
 The '/read' slash commands allows one to have the contents of another 
 file in a zone. The '/read' command takes a single argument: A filename 
@@ -3032,12 +3053,12 @@ Sam Trenholme http://www.samiam.org/
 
 # csv2_txt
 
-## NAME
+# NAME
 
 csv2_txt - Description of txt and raw resource records in the csv2 zone 
 file 
 
-## DESCRIPTION
+# DESCRIPTION
 
 Due to the complexity of TXT and RAW records, this man page is 
 dedicated to describing the csv2 format of this RR. 
@@ -3047,7 +3068,7 @@ binary data. Additionally, it is possible to arbitrarily divide up TXT
 records in to chunks (chunks, which RFC1035 call "character-string"s, 
 are described below). 
 
-### ASCII AND UTF-8 DATA
+## ASCII AND UTF-8 DATA
 
 If a given TXT field or RAW record contains only ASCII data, creating a 
 record is easy: Place the full data between single quotes, like this:
@@ -3075,7 +3096,7 @@ character, the '|' character, the '~' (tilde) character, and the '#'
 character. See BACKSLASH ESCAPE SEQUENCES below for information on 
 adding these characters to TXT or RAW fields. 
 
-### UNQUOTED DATA
+## UNQUOTED DATA
 
 Note that the record does not have to be quoted. As long as the record 
 only contains ASCII alphanumeric data, and/or the characters '-', '_', 
@@ -3101,7 +3122,7 @@ This is a mix of_unquoted and quoted text!
 When mixing quoted and unquoted data, it is important to have all 
 whitespace *inside* quotes. 
 
-### BACKSLASH ESCAPE SEQUENCES
+## BACKSLASH ESCAPE SEQUENCES
 
 In order to accommodate storing non-UTF-8 high bit characters, the 
 single quote character, non-printable ASCII control codes, the '|', 
@@ -3205,7 +3226,7 @@ Produces this record:
 Press # for customer service 
 ```
 
-### MULTI-LINE AND COMMENTED RECORDS
+## MULTI-LINE AND COMMENTED RECORDS
 
 By utilizing backslashes followed by comments, it is possible to have 
 multi-line and commented TXT and RAW records. The following resource 
@@ -3252,14 +3273,14 @@ optionally, even blank lines) in the middle of TXT and RAW record data:
 
 ```
 k2.example.com. TXT 'This is some data '\ 
-## Here we have some comments followed by a blank line 
+# Here we have some comments followed by a blank line 
  
-## Now we have some more comments,  
-## followed by the rest of the data 
+# Now we have some more comments,  
+# followed by the rest of the data 
     'and this is the rest of the data' ~ 
 ```
 
-### MULTIPLE TXT CHUNKS
+## MULTIPLE TXT CHUNKS
 
 TXT RRs may be divided up in to multiple "chunks" (RFC1035 calls these 
 "character-string"s). A single chunk can be anywhere from zero to 255 
@@ -3312,7 +3333,7 @@ unless you wish to have these zero-length chunks.
 Chunk support only exists for TXT records. An unquoted ; character will 
 cause a syntax error in a RAW record. 
 
-### RAW RECORDS
+## RAW RECORDS
 
 With the exception of no support for chunk delimiters, and the addition 
 of a numeric record type before the record data, the format for RAW 
@@ -3345,7 +3366,7 @@ w.example.com. RAW 40 \x10\ # Meaning: 16
                       'Kitchen sink+ data' ~ # Data: 'Kitchen sink+ data' 
 ```
 
-### DKIM RECORDS
+## DKIM RECORDS
 
 DKIM is a format used to store e-mail authentication data via DNS. 
 
@@ -3381,7 +3402,7 @@ x._domainkey.% +600 TXT 'v=DKIM1; k=rsa; '\
 'IDAQAB'  
 ```
 
-## LEGAL DISCLAIMER
+# LEGAL DISCLAIMER
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -3395,17 +3416,17 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
 
-## AUTHOR
+# AUTHOR
 
 Sam Trenholme http://www.samiam.org/ 
 
 # duende
 
-## NAME
+# NAME
 
 duende - run a child process as a daemon 
 
-## DESCRIPTION
+# DESCRIPTION
 
 **duende** is a tool for users of init systems which require programs 
 to provide their own daemonization. **duende** is not needed with 
@@ -3414,20 +3435,20 @@ network services. **duende** makes a given child process a daemon. The
 standard output and standard error of the child process is logged via 
 syslog() with a priority of LOG_INFO. 
 
-## SYSTEMD
+# SYSTEMD
 
 **duende** should not be used if one uses systemd` as the init 
 process. Instead, files like this should be added to 
 `/etc/systemd/system`
 
 ```
-## Place this file here: 
-## /etc/systemd/system/maradns.service 
-## Then 
-## systemctl enable maradns 
-## systemctl start maradns 
-## To view log 
-## journalctl -u maradns 
+# Place this file here: 
+# /etc/systemd/system/maradns.service 
+# Then 
+# systemctl enable maradns 
+# systemctl start maradns 
+# To view log 
+# journalctl -u maradns 
 [Unit] 
  After=network-online.target 
  ConditionPathExists=/usr/local/bin/maradns 
@@ -3447,12 +3468,12 @@ process. Instead, files like this should be added to
 When installed with `make install`, MaraDNS will look for systemd 
 files, and install MaraDNS and Deadwood startup files. 
 
-## USAGE
+# USAGE
 
 **duende** (--pid=/path/to/file) child_process [ all subsequent 
 arguments passed on to child ] 
 
-## DETAILS
+# DETAILS
 
 When **duende** is invoked, it spawns two processes. In addition to 
 spawning the daemonized child process, **duende** also spawns a process 
@@ -3478,7 +3499,7 @@ Duende's intended child processes (maradns and zoneserver) need to bind
 to privileged ports, and because duende uses a setuid() call to change 
 the user ID of the logging process to the user with ID 707. 
 
-## LOGGING
+# LOGGING
 
 **duende** uses the syslog() facility to log the standard output of the 
 program that it invokes. The name of the program (in other words, the 
@@ -3516,7 +3537,7 @@ Also, the directory /etc/maradns/logger, while used by duende, is not
 used to store any log messages. That is unless, for some reason, one 
 configures syslog to store messages there. 
 
-## EXAMPLES
+# EXAMPLES
 
 Using duende to start maradns, where the mararc file is /etc/mararc.2
 
@@ -3531,18 +3552,18 @@ Using duende to start zoneserver, where the mararc file is
 	duende zoneserver -f /etc/mararc.4 
 ```
 
-## BUGS
+# BUGS
 
 **Duende** assumes that all of its children are well-behaved, eating 
 their vegetables, going to bed when told, and terminating when 
 receiving a TERM signal. 
 
-## SEE ALSO
+# SEE ALSO
 
 **maradns(8)**, **syslog(3)** 
  http://www.maradns.org
 
-## LEGAL DISCLAIMER
+# LEGAL DISCLAIMER
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -3556,7 +3577,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
 
-## AUTHOR
+# AUTHOR
 
 Duende and this man page are written by Sam Trenholme. D Richard Felker 
 III provided some invaluable assistance with the piping code which 
@@ -3564,20 +3585,20 @@ III provided some invaluable assistance with the piping code which
 
 # fetchzone
 
-## NAME
+# NAME
 
 fetchzone - get dns zone from server 
 
-## DESCRIPTION
+# DESCRIPTION
 
 **fetchzone** transfers a user-specified dns zone from a zone server 
 and displays it in csv2 format on the standard output. 
 
-## USAGE
+# USAGE
 
 **fetchzone** zone_name zone_server_IP [query_class] 
 
-## OPTIONS
+# OPTIONS
 
 **zone_name** 
 
@@ -3592,7 +3613,7 @@ IP address of dns server
 Optional argument which can change the query class from 1 (the default) 
 to 255. This may be needed for some versions of Bind. 
 
-## EXAMPLES
+# EXAMPLES
 
 To obtain the zone example.com from the server 192.168.9.8:
 
@@ -3607,18 +3628,18 @@ class of 255:
 fetchzone example.com 10.9.8.78 255 
 ```
 
-## BUGS
+# BUGS
 
 Fetchzone will not correctly output host names with utf-8 characters in 
 them. 
 
-## SEE ALSO
+# SEE ALSO
 
 The man pages **maradns(8)** and **csv2(5)** 
 
 http://www.maradns.org
 
-## LEGAL DISCLAIMER
+# LEGAL DISCLAIMER
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -3632,17 +3653,17 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
 
-## AUTHOR
+# AUTHOR
 
 Sam Trenholme  
 
 # getzone
 
-## NAME
+# NAME
 
 getzone - get dns zone from server 
 
-## DESCRIPTION
+# DESCRIPTION
 
 **getzone** transfers a user-specified dns zone from a zone server and 
 displays it in csv1 format on the standard output. This program is here 
@@ -3650,11 +3671,11 @@ for compatibility with older setups that use getzone to get zone files;
 newer setups may wish to consider using the fetchzone tool to obtain 
 csv2-compatible zone files. 
 
-## USAGE
+# USAGE
 
 **getzone** zone_name zone_server_IP [query_class] 
 
-## OPTIONS
+# OPTIONS
 
 **zone_name** 
 
@@ -3669,7 +3690,7 @@ IP address of dns server
 Optional argument which can change the query class from 1 (the default) 
 to 255. This may be needed for some versions of Bind. 
 
-## EXAMPLES
+# EXAMPLES
 
 To obtain the zone example.com from the server 192.168.9.8:
 
@@ -3684,13 +3705,13 @@ class of 255:
 getzone example.com 10.9.8.78 255 
 ```
 
-## SEE ALSO
+# SEE ALSO
 
 The man pages **maradns(8)** and **csv1(5)** 
 
 http://www.maradns.org
 
-## LEGAL DISCLAIMER
+# LEGAL DISCLAIMER
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -3704,7 +3725,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
 
-## AUTHOR
+# AUTHOR
 
 MaraDNS is written by Sam Trenholme. Jaakko Niemi used 5 minutes to put 
 this manpage together. Sam has subsequently made revisions to this 
@@ -3719,15 +3740,15 @@ Rápido ruedan los carros
 En el ferrocarril 
 ```
 
-## NAME
+# NAME
 
 maradns - DNS server 
 
-## SYNOPSIS
+# SYNOPSIS
 
 **maradns [ -v | -f mararc_file_location ]** 
 
-## TABLE OF CONTENTS
+# TABLE OF CONTENTS
 
 This man page has the following sections:
 
@@ -3745,7 +3766,7 @@ Legal Disclaimer
 Authors 
 ```
 
-## DESCRIPTION
+# DESCRIPTION
 
 **maradns** is a DNS server written with security, simplicity, and 
 performance in mind. 
@@ -3762,7 +3783,7 @@ It is also possible to have MaraDNS display the version number and
 exit. This is specified by invoking maradns in the form **maradns -v** 
 or **maradns --version** 
 
-## USAGE
+# USAGE
 
 MaraDNS consists of two programs: maradns, an authoritative-only 
 nameserver, and Deadwood, a recursive name server. Deadwood has its own 
@@ -3784,7 +3805,7 @@ restart to update.
 In order to have MaraDNS run as a daemon, the duende program is used to 
 daemonize MaraDNS. See the **duende(8)** manual page for details. 
 
-## FIREWALL CONFIGURATION
+# FIREWALL CONFIGURATION
 
 When using the maradns authoritative nameserver, allow UDP connections 
 from all hosts on the internet to UDP port 53 for the IP that the 
@@ -3809,9 +3830,9 @@ entropy). This makes spoofing replies to a Deadwood recursive server
 more difficult, since the attacker has only a one in 250 million chance 
 that a given spoofed reply will be considered valid.
 
-## FREQUENTLY ASKED QUESTIONS
+# FREQUENTLY ASKED QUESTIONS
 
-### INDEX
+## INDEX
 
 1. I'm using an older version of MaraDNS
 
@@ -3943,20 +3964,20 @@ denial-of-service attack?
 
 61. Can MaraDNS handle IDN domain names?
 
-### ANSWERS
+## ANSWERS
 
-### 1. I'm using an older version of MaraDNS
+## 1. I'm using an older version of MaraDNS
 
 Upgrade to MaraDNS 2.0. Here is an upgrade guide. 
 
 MaraDNS 1 is no longer supported; support ended on June 21, 2015. 
 
-### 2. How do I try out MaraDNS?
+## 2. How do I try out MaraDNS?
 
 Read the quick start guide, which is the file named 0QuickStart in the 
 MaraDNS distribution.
 
-### 3. What license is MaraDNS released under?
+## 3. What license is MaraDNS released under?
 
 MaraDNS is released with the following two-clause BSD-type license: 
 
@@ -3978,16 +3999,16 @@ documentation and/or other materials provided with the distribution.
 This software is provided 'as is' with no guarantees of correctness or 
 fitness for purpose. 
 
-### 4. How do I report bugs in MaraDNS?
+## 4. How do I report bugs in MaraDNS?
 
 Post your bug report as a Github issue. 
 
-### 5. Some of the postings to the mailing list do not talk about MaraDNS!
+## 5. Some of the postings to the mailing list do not talk about MaraDNS!
 
 As of September 2013, the mailing list has become moderated and only 
 postings on the mailing list are relevant MaraDNS announcements. 
 
-### 6. How do I get off the mailing list?
+## 6. How do I get off the mailing list?
 
 Send an email to list-unsubscribe@maradns.org, or an email to 
 list-request@maradns.org with "unsubscribe" as the subject line. 
@@ -3996,7 +4017,7 @@ The mailing list will send you an email confirming the unsubscribe
 request; this email needs to be replied to in order to get off the 
 list. 
 
-### 7. How do I set up reverse DNS on MaraDNS?
+## 7. How do I set up reverse DNS on MaraDNS?
 
 Reverse DNS (sometimes called "reverse mapping") is set up by using PTR 
 (pointer) records. For example, the PTR record which performs the 
@@ -4028,7 +4049,7 @@ run a DNS server without the knowledge or intervention of an ISP, being
 able to control reverse DNS lookups for those IPs requires ISP 
 intervention. 
 
-### 8. I am on a slow network, and Deadwood can not process recursive queries
+## 8. I am on a slow network, and Deadwood can not process recursive queries
 
 Deadwood, by default, only waits two seconds for a reply from a remote 
 DNS server. This default can be increased by adding a line like this in 
@@ -4041,7 +4062,7 @@ timeout_seconds = 5
 Note that making this too high will slow MaraDNS down when DNS servers 
 are down, which is, alas, all too common on today's internet. 
 
-### 9. When I try to run MaraDNS, I get a cryptic error message.
+## 9. When I try to run MaraDNS, I get a cryptic error message.
 
 There is usually some context of where there is a syntax error in a 
 data file before the cryptic error message. For example, when there is 
@@ -4053,7 +4074,7 @@ what is wrong, let us know in a Github issueso that we can fix the bug.
 MaraDNS is designed to be easy to use; cryptic error messages go 
 against this spirit. 
 
-### 10. After I start MaraDNS, I can not see the process when I run 
+## 10. After I start MaraDNS, I can not see the process when I run 
 netstat -na 
 
 Udp services do not have a prominent "LISTEN" when netstat is run. 
@@ -4065,13 +4086,13 @@ While on the topic of netstat, if you run `netstat -nap` as root on
 Linux and some other *nix operating systems, you can see the names of 
 the processes which are providing internet services. 
 
-### 11. What string library does MaraDNS use?
+## 11. What string library does MaraDNS use?
 
 MaraDNS uses its own string library, which is called the "js_string" 
 library. Man pages for most of the functions in the js_string library 
 are in the folder `doc/man` of the MaraDNS distribution
 
-### 12. Why does MaraDNS use a multi-threaded model?
+## 12. Why does MaraDNS use a multi-threaded model?
 
 MaraDNS 2.0 no longer uses threads. 
 
@@ -4079,12 +4100,12 @@ It took me three years to rewrite MaraDNS' recursive resolver as a
 separate non-threaded daemon. This has been done, and now all recursion 
 is done with Deadwood which does not need threads. 
 
-### 13. I feel that XXX feature should be added to MaraDNS
+## 13. I feel that XXX feature should be added to MaraDNS
 
 There are no plans to add new features to MaraDNS or Deadwood at this 
 time. 
 
-### 14. I feel that MaraDNS should use another documentation format
+## 14. I feel that MaraDNS should use another documentation format
 
 The reason that MaraDNS uses its own documentation format is to satisfy 
 both the needs of translators to have a unified document format and my 
@@ -4104,11 +4125,11 @@ characters.
 Having a given program have its own documentation format is not without 
 precedent; Perl uses its own "pod" documentation format. 
 
-### 15. Is there any process I need to follow to add a patch to MaraDNS?
+## 15. Is there any process I need to follow to add a patch to MaraDNS?
 
 I no longer accept third party patches
 
-### 16. Can MaraDNS act as a primary nameserver?
+## 16. Can MaraDNS act as a primary nameserver?
 
 Yes. 
 
@@ -4119,14 +4140,14 @@ queries, and Deadwood which processes recursive DNS queries.
 
 See the DNS masterdocument in the MaraDNS tutorial for details. 
 
-### 17. Can MaraDNS act as a secondary nameserver?
+## 17. Can MaraDNS act as a secondary nameserver?
 
 Yes. 
 
 Please read the DNS slavedocument, which is part of the MaraDNS 
 tutorial. 
 
-### 18. What is the difference between an authoritative and a recursive 
+## 18. What is the difference between an authoritative and a recursive 
 DNS server?
 
 A recursive DNS server is a DNS server that is able to contact other 
@@ -4138,7 +4159,7 @@ An authoritative DNS server is a DNS server that a recursive server
 contacts in order to find out the answer to a given DNS query. The 
 maradns daemon processes authoritative DNS queries. 
 
-### 19. The fetchzone client isn't allowing me to add certain hostnames 
+## 19. The fetchzone client isn't allowing me to add certain hostnames 
 to my zone
 
 For security reasons, MaraDNS' fetchzone client does not add records 
@@ -4158,19 +4179,19 @@ There are two workarounds for this issue:
 * Use rcp, rsync, or another method to copy over the zone files in 
   question.
 
-### 20. Is MaraDNS portable?
+## 20. Is MaraDNS portable?
 
 MaraDNS is developed in CentOS 6 and Windows 7. MaraDNS may or may not 
 compile and run on other systems. 
 
-### 21. Can I use MaraDNS in Windows?
+## 21. Can I use MaraDNS in Windows?
 
 Yes. There is both a partial mingw32 (native win32 binary) port and a 
 full Cygwin port of MaraDNS; both of these ports are part of the native 
 build of MaraDNS. Deadwood has full Windows support, including the 
 ability to run as a service. 
 
-### 22. MaraDNS freezes up after being used for a while
+## 22. MaraDNS freezes up after being used for a while
 
 If using your ISP's name servers or some other name servers which are 
 not, in fact, root name servers, please make sure that you are using 
@@ -4180,21 +4201,21 @@ dictionary variable.
 If you still see MaraDNS freeze up after making this correction, please 
 send a bug report as a Github issue. 
 
-### 23. What kind of Python integration does MaraDNS have
+## 23. What kind of Python integration does MaraDNS have
 
 The mararc file uses the same syntax that Python uses; in fact, Python 
 can parse a properly formatted mararc file. 
 
 There is no other integration with Python. 
 
-### 24. Doesn't "kvar" mean "four" in Esperanto?
+## 24. Doesn't "kvar" mean "four" in Esperanto?
 
 Indeed, it does. However the use of "kvar" in the MaraDNS source code 
 only coincidentally is an Esperanto word. "kvar" is short for "Kiwi 
 variable"; a lot of the parsing code comes from the code used in the 
 Kiwi spam filter project. 
 
-### 25. How scalable is MaraDNS?
+## 25. How scalable is MaraDNS?
 
 MaraDNS is optimized for serving a small number of domains as quickly 
 as possible. That said, MaraDNS is remarkably efficnent for serving a 
@@ -4215,7 +4236,7 @@ Processing incoming DNS requests        1
 As can be seen, MaraDNS will process 1 or 100000 domains in the same 
 amount of time, once the domain names are loaded in to memory. 
 
-### 26. I am having problems setting `upstream_servers`
+## 26. I am having problems setting `upstream_servers`
 
 `upstream_servers` is only supported by Deadwood, and is no longer 
 supported in MaraDNS 2.0. The `upstream_servers` dwood3rc variable is 
@@ -4238,7 +4259,7 @@ upstream_servers = {}
 upstream_servers["."] = "10.1.2.3, 10.2.4.6" 
 ```
 
-### 27. Why doesn't the MaraDNS.org web page validate?
+## 27. Why doesn't the MaraDNS.org web page validate?
 
 HTML pages on the MaraDNS.org web site should validate as HTML 4.0 
 Transitional. However, the CSS will not validate. 
@@ -4266,7 +4287,7 @@ this property, the web page will not scale down correctly without using
 tables. Additionally, tables allow a reasonably attractive header in 
 browsers without CSS support. 
 
-### 28. How do MX records work?
+## 28. How do MX records work?
 
 How MX records work: 
 
@@ -4288,7 +4309,7 @@ How MX records work:
 
 As an aside, do not have MX records point to CNAMEs. 
 
-### 29. Does MaraDNS have support for SPF?
+## 29. Does MaraDNS have support for SPF?
 
 SPF, or sender policy framework, is method of using DNS that makes it 
 more difficult to forge email. MaraDNS has full support for SPF, both 
@@ -4310,7 +4331,7 @@ Use '\x7e' to put a tilde ("~" character) in a SPF record:
 
 `example.com. SPF 'v=spf1 +mx a:colo.example.com/28 '\x7e'all'` 
 
-### 30. I'm having problems resolving CNAMES I have set up.
+## 30. I'm having problems resolving CNAMES I have set up.
 
 This is probably because you have set up what MaraDNS calls a dangling 
 CNAME record. 
@@ -4354,12 +4375,12 @@ file:
 Information about how to get MaraDNS to resolve dangling CNAME records 
 is in the tutorial file dangling.html
 
-### 31. I have a NS delegation, and MaraDNS is doing strange things.
+## 31. I have a NS delegation, and MaraDNS is doing strange things.
 
 This is only an issue in MaraDNS 1.4. MaraDNS 2.0 does not allow the 
 same IP to both authoritatively and recursively resolve records. 
 
-### 32. I am transferring a zone from another server, but the NS records 
+## 32. I am transferring a zone from another server, but the NS records 
 are these strange "synth-ip" records. 
 
 MaraDNS expects, in csv2 zone files, for all delegation NS records to 
@@ -4408,7 +4429,7 @@ Replace "whatever.zone.foo" with the name of the zone you are
 fetchin 10.1.2.3 with the IP address of the DNS master, and 
 zonefile.csv2 with the name of the zone file MaraDNS loads. 
 
-### 33. Where is the root.hints file?
+## 33. Where is the root.hints file?
 
 MaraDNS (actually, Deadwood), unlike BIND, does not need a complicated 
 root.hints file in order to have custom root servers. In order to 
@@ -4427,7 +4448,7 @@ Note that there is no "+=" in the first line, and the last line
 does not have a comma at the end. Read the recursive tutorial document 
 for more information. 
 
-### 34. Are there any plans to use autoconf to build MaraDNS?
+## 34. Are there any plans to use autoconf to build MaraDNS?
 
 No. 
 
@@ -4450,7 +4471,7 @@ reasons:
 
 This leads us to the next question: 
 
-### 35. How do I change the compiler or compile-time flags with MaraDNS' 
+## 35. How do I change the compiler or compile-time flags with MaraDNS' 
 build process?
 
 To change the compiler used by MaraDNS: 
@@ -4496,7 +4517,7 @@ Changing compile-time flags is a similar process:
   example, is needed in the Linux compile or MaraDNS will have 
   problems with freezing up.
 
-### 36. Will you make a package for the particular Linux distribution I 
+## 36. Will you make a package for the particular Linux distribution I 
 am using?
 
 No. 
@@ -4504,7 +4525,7 @@ No.
 There is, however, a CentOS 5-compatible RPM spec file in the build 
 directory. 
 
-### 37. I am using the native Windows port of MaraDNS, and some features 
+## 37. I am using the native Windows port of MaraDNS, and some features 
 are not working.
 
 Since Windows 32 does not have some features that *NIX OSes have, the 
@@ -4528,7 +4549,7 @@ Cygwin. Note that the Cygwin port of MaraDNS does not have ipv6
 support, and that while `chroot_dir` works in Cygwin, it does not have 
 the security that the *NIX chroot() call has. 
 
-### 38. MaraDNS isn't starting up
+## 38. MaraDNS isn't starting up
 
 This is usually caused by a syntax error in one's mararc file, or by 
 another MaraDNS process already running. To see what is happening, look 
@@ -4537,7 +4558,7 @@ MaraDNS reports. If you do not know how to look at a system log, you
 can also invoke MaraDNS from the command line as root; any errors will 
 be visible when starting MaraDNS. 
 
-### 39. You make a lot of releases of MaraDNS; at our ISP/IT department, 
+## 39. You make a lot of releases of MaraDNS; at our ISP/IT department, 
 updating software is non-trivial.
 
 Regularly updating software is required to keep something as 
@@ -4550,17 +4571,17 @@ year.
 The last security bug which required a MaraDNS update was made before 
 September 28, 2015. 
 
-### 40. I have star records in my zones, and am having problems with 
+## 40. I have star records in my zones, and am having problems with 
 NXDOMAINs/IPV6 resolution
 
 This was a bug in MaraDNS 1.2 which has long since been fixed. 
 
-### 41. I have a zone with only SOA/NS records, and the zone is not working.
+## 41. I have a zone with only SOA/NS records, and the zone is not working.
 
 MaraDNS 1.2 had a bug where it did not correctly process zones without 
 any "normal" records. Upgrade to MaraDNS 2.0. 
 
-### 42. I am having problems registering my domain with AFNIC (the 
+## 42. I am having problems registering my domain with AFNIC (the 
 registrar for .fr domains)
 
 Because of an issue with AFNIC (who, annoyingly enough, check the RA 
@@ -4589,14 +4610,14 @@ reverse DNS mappings(question 7). In addition, AFNIC requires
 DNS-over-TCP to work; information on configuring MaraDNS to have this 
 can be found in the DNS-over-TCP tutorial. 
 
-### 43. I can't see the full answers for subdomains I have delegated
+## 43. I can't see the full answers for subdomains I have delegated
 
 To have the subdomains be visible to MaraDNS 1.4 recursive nameservers, 
 add the following to your mararc file: 
 
 `recurse_delegation = 1` 
 
-### 44. MaraDNS 1 has a problem resolving a domain
+## 44. MaraDNS 1 has a problem resolving a domain
 
 This issue should be fixed in MaraDNS 2.0. 
 
@@ -4616,18 +4637,18 @@ I in the process of rewriting the recursive code, my rule is that I
 will only resolve security issues with MaraDNS 1.0's recursive 
 resolver.
 
-### 45. MaraDNS 1.2 had issues with NXDOMAINS and case sensitivity.
+## 45. MaraDNS 1.2 had issues with NXDOMAINS and case sensitivity.
 
 There was a known bug in MaraDNS 1.2.12 where, should a client ask for 
 a non-existent record in all caps, MaraDNS 1.2.12 will return a 
 NXDOMAIN instead of a "not there" reply. Upgrade to 2.0. 
 
-### 46. Can MaraDNS offer protection from phishing and malicious sites?
+## 46. Can MaraDNS offer protection from phishing and malicious sites?
 
 Deadwood can block up to about 20,000 domains. More details are in the 
 Deadwood FAQ. 
 
-### 47. Does maradns support star (wildcard) records?
+## 47. Does maradns support star (wildcard) records?
 
 Yes. 
 
@@ -4641,7 +4662,7 @@ To have stars at the end of records, `csv2_default_zonefile` has to be
 set. The mararc parameter `bind_star_handling` affects how star records 
 are handled. More information is in the mararc man page. 
 
-### 48. I'm having problems using MaraDNS with some *NIX command line 
+## 48. I'm having problems using MaraDNS with some *NIX command line 
 applications like telnet.
 
 Some *NIX command line networking applications, such as telnet and ssh, 
@@ -4660,7 +4681,7 @@ lookups can also be disabled:
 
 `reject_ptr = 1` 
 
-### 49. My virus scanner reports that MaraDNS or Deadwood has a virus
+## 49. My virus scanner reports that MaraDNS or Deadwood has a virus
 
 This can be caused either by a poorly written anti-virus program 
 reporting a false positive, or because a virus on your system has 
@@ -4676,7 +4697,7 @@ virus, please let us know with a Github issue. Otherwise, please use a
 better virus scanner and make sure there are no viruses on your 
 computer. 
 
-### 50. I can not subscribe to the MaraDNS mailing list
+## 50. I can not subscribe to the MaraDNS mailing list
 
 *Please note that the mailing list is no longer used to handle MaraDNS 
 support requests. Please file a Github issue at 
@@ -4712,7 +4733,7 @@ address, please get a gmail email account, which can successfully
 subscribe to the MaraDNS mailing list. Note that subscription 
 confirmation emails may be in Gmail's "promotions" tab. 
 
-### 51. How does MaraDNS respond to EDNS (RFC2671) packets?
+## 51. How does MaraDNS respond to EDNS (RFC2671) packets?
 
 MaraDNS 2 (both the authoritative maradns server and the recursive 
 Deadwood server) responds to EDNS packets by ignoring the OPT record 
@@ -4726,7 +4747,7 @@ requests by returning NOTIMPL in the header, giving the OPT query in
 the AN section of the response, and giving the default IP in the AR 
 section of the DNS reply packet. 
 
-### 52. How to I get MaraDNS to always give the same IP to all DNS queries?
+## 52. How to I get MaraDNS to always give the same IP to all DNS queries?
 
 There are three ways to have MaraDNS always give the same IP in reply 
 to any DNS query given to it: 
@@ -4769,7 +4790,7 @@ compile the above C program, call it `NanoDNS`, and invoke it with
 `NanoDNS 10.11.12.13` Note that NanoDNS does not daemonize, nor log 
 anything, nor have any other space-wasting features.
 
-### Why did you change MaraDNS' tagline?
+## Why did you change MaraDNS' tagline?
 
 I have changed MaraDNS' tagline from "MaraDNS: A security-aware DNS 
 server" to "MaraDNS: A small open-source DNS server" because MaraDNS 
@@ -4777,7 +4798,7 @@ does not support DNSSEC. I have blogged about this:
 
 http://samiam.org/blog/20120326.html
 
-### How do you stop MaraDNS from taking part in a distributed 
+## How do you stop MaraDNS from taking part in a distributed 
 denial-of-service attack?
 
 While I do not have time to implement rate limiting, CentOS 6 does 
@@ -4806,7 +4827,7 @@ These incantations work in CentOS 6 but may or may not work in other
 versions of Linux. I do not support non-CentOS6 Linux installs of 
 MaraDNS. 
 
-### What about DNS-over-TCP?
+## What about DNS-over-TCP?
 
 For people who want DNS-over-TCP, instructions are in the DNS-over-TCP 
 tutorial. Note that Windows users will have to use Cygwin to have 
@@ -4819,7 +4840,7 @@ no DNS-over-TCP an error is not RFC-compliant.
 Not having DNS-over-TCP is more secure, because it gives attackers a 
 smaller surface to attack. 
 
-### How do I use MaraDNS with systemd?
+## How do I use MaraDNS with systemd?
 
 While I like systemd, it is not part of CentOS 6 nor, obviously, 
 Windows 7. That in mind, I have no plans to support systemd until 2017, 
@@ -4832,7 +4853,7 @@ As an aside, I do not like the fact that Debian will probably not make
 systemd the default init; I do not think this kind of fragmentation is 
 good for Linux. 
 
-### Why doesn't MaraDNS use IP_FREEBIND?
+## Why doesn't MaraDNS use IP_FREEBIND?
 
 IP_FREEBIND is a non-POSIX Linux-specific extension to POSIX's 
 netinet/in.h, and, as such, has no place in MaraDNS' code. MaraDNS 
@@ -4845,11 +4866,11 @@ and run on other systems; it merely means that I can not provide
 support for Github bug reportsfor people who want to run MaraDNS in 
 Minix, one of the open-source BSD variants, or what not. 
 
-### Is there a web interface for MaraDNS?
+## Is there a web interface for MaraDNS?
 
 The Kloxo-MRcontrol panel has MaraDNS support. 
 
-### What does the message “don’t forget the trailing dot” mean?
+## What does the message “don’t forget the trailing dot” mean?
 
 It means to not forget the tailing dot. 
 
@@ -4861,7 +4882,7 @@ To fix this, put a trailing dot at the end of the hostname, so it looks
 like “foo.example.com.” (observe that dot at the end) instead of 
 “foo.example.com” 
 
-### Does MaraDNS support newer top level domains?
+## Does MaraDNS support newer top level domains?
 
 MaraDNS does not impose any limitations on the top level domain used in 
 zone files and other places, as is fully compatible with newer top 
@@ -4872,14 +4893,14 @@ translated in to Punycode first. For example, if using the domain name
 “ñ.com.”, it needs to be in the form “xn--ida.com.” in MaraDNS’ mararc 
 and zone files. 
 
-### Can MaraDNS handle IDN domain names?
+## Can MaraDNS handle IDN domain names?
 
 Yes, but the internationalized domain name (IDN) needs to be translated 
 in to Punycode first. For example, if using the domain name “ñ.com.”, 
 it needs to be in the form “xn--ida.com.” in MaraDNS’ mararc and zone 
 files.
 
-## BUGS
+# BUGS
 
 In the unusual case of having a csv2 zone file with Macintosh-style 
 newlines (as opposed to DOS or UNIX newlines), while the file will 
@@ -4911,7 +4932,7 @@ records.
 MaraDNS, like every other known DNS implementation, only supports a 
 QDCOUNT of 0 or 1. 
 
-## UNIMPLEMENTED FEATURES
+# UNIMPLEMENTED FEATURES
 
 *These are features which I do not plan to implement in MaraDNS.* 
 
@@ -4936,7 +4957,7 @@ have regular expression hostname substitution.
 MaraDNS does not have support for MRTG or any other SNMP-based logging 
 mechanism. 
 
-## LEGAL DISCLAIMER
+# LEGAL DISCLAIMER
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -4950,7 +4971,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
 
-## AUTHORS
+# AUTHORS
 
 Sam Trenholme (http://www.samiam.org) is responsible for this man page. 
 
@@ -5020,11 +5041,11 @@ had.
 
 # mararc
 
-## NAME
+# NAME
 
 mararc - Format of the mararc zone file that MaraDNS uses 
 
-## MARARC FILE FORMAT
+# MARARC FILE FORMAT
 
 Mararc files use a syntax that is a subset of Python 2.2.3 syntax. In 
 particular, Python 2.2.3 (and possibly other versions of Python) can 
@@ -5033,19 +5054,19 @@ read a properly formatted mararc file without error.
 Unlike Python, however, a mararc file can only use certain variable 
 names, and the variables can only be declared as described below.
 
-## COMMENTS
+# COMMENTS
 
 Comments (lines ignored by the MaraDNS parser) start with the '#' 
 character, like this:
 
 ```
-## This is a comment 
+# This is a comment 
 ```
 
 The MaraDNS parser also ignores lines which contain only white 
 space. 
 
-## OPERATORS
+# OPERATORS
 
 The MaraRC file supports two operators: = and += 
 
@@ -5072,12 +5093,12 @@ ipv4_alias["icann"] += ",192.228.79.201"
 ipv4_alias["icann"] += ",192.33.4.12,128.8.10.90" 
 ```
 
-## MARARC VARIABLES
+# MARARC VARIABLES
 
 Follows is a listing of variables that can be declared in the mararc 
 file. 
 
-## DICTIONARY VARIABLE FORMAT
+# DICTIONARY VARIABLE FORMAT
 
 A **dictionary variable** is an array that can have multiple elements. 
 Unlike a traditional array, these arrays are indexed by strings instead 
@@ -5104,12 +5125,12 @@ csv2 = {}
 Here, csv2 is the name of the "dictionary" variable that we are 
 initializing. 
 
-## DICTIONARY VARIABLES
+# DICTIONARY VARIABLES
 
 Here is a listing of all "dictionary"-style variables that MaraDNS 
 uses: 
 
-### csv2
+## csv2
 
 The csv2 dictionary variable stores all of the zone names and file 
 names for the zone files that MaraDNS uses. Note that csv2 files are 
@@ -5130,7 +5151,7 @@ restart MaraDNS and reload all zone files. MaraDNS uses a hash data
 format which loads records very quickly from memory, but requires a 
 restart to update. 
 
-### csv1
+## csv1
 
 csv1: Used to indicate the filename to use for a given zone stored in 
 the legacy csv1 zone file format. This is primarily for compatibility 
@@ -5151,7 +5172,7 @@ filename is relative to the chroot_dir.
 
 See the **csv1(5)** man page for more information on this file format. 
 
-### ipv4_alias
+## ipv4_alias
 
 ipv4_alias: Used to give nicknames or aliases for ip/netmask pairs for 
 ipv4 (standard 32-bit) IP addresses.
@@ -5177,7 +5198,7 @@ The netmask can be in one of two formats: A single number between 1 and
 
 The netmask is used to specify a range of IPs.
 
-### ipv4_alias examples
+## ipv4_alias examples
 
 **10.1.1.1/24** indicates that any ip from 10.1.1.0 to 10.1.1.255 will 
 match. 
@@ -5216,7 +5237,7 @@ ipv4_alias susan.
 Multiple levels of nesting are allowed. Self-referring nests will 
 result in an error.
 
-## NORMAL VARIABLE FORMAT
+# NORMAL VARIABLE FORMAT
 
 Normal variables. These are variables that can only take a single 
 value. 
@@ -5230,11 +5251,11 @@ name = "value"
 Where **name** is the name of the normal variable, and **value** 
 is the value of the variable in question. 
 
-## NORMAL VARIABLES
+# NORMAL VARIABLES
 
 Here is a listing of normal variables that MaraDNS uses: 
 
-### ipv4_bind_addresses
+## ipv4_bind_addresses
 
 ipv4_bind_addresses: The IP addresses to give the MaraDNS server. 
 
@@ -5243,7 +5264,7 @@ notation, and specifies what IP addresses the MaraDNS server will
 listen on. Multiple bind addresses are separated with a comma, like 
 this: "10.1.2.3, 10.1.2.4, 127.0.0.1"
 
-### admin_acl
+## admin_acl
 
 This is a list of ip/netmask pairs that are allowed to get certain 
 administrative information about MaraDNS, including: 
@@ -5259,7 +5280,7 @@ debug_msg_level is sufficiently high. See the information on
 debug_msg_level below for details on this and on the TXT queries sent 
 to get the above information. 
 
-### bind_address
+## bind_address
 
 bind_address: The IP address to give the MaraDNS server. 
 
@@ -5269,7 +5290,7 @@ that ipv4_bind_addresses has the same functionality. This name is
 included so that old MaraDNS configuration files will continue to work 
 with new MaraDNS releases.
 
-### bind_star_handling
+## bind_star_handling
 
 In the case where there is both a star record for a given name and 
 recordtype, a non-star record with the same name but a different 
@@ -5313,7 +5334,7 @@ following case exactly as per section 4.3.3 of RFC1034:
 MaraDNS will exit with a fatal error if `bind_star_handling` has any 
 value besides 0, 1, or 2. 
 
-### chroot_dir
+## chroot_dir
 
 chroot_dir: The directory MaraDNS chroots to 
 
@@ -5324,7 +5345,7 @@ Note that csv1 zone files are read after the chroot operation. Hence,
 the chroot jail needs to have any and all zone files that MaraDNS will 
 load. 
 
-### csv2_default_zonefile
+## csv2_default_zonefile
 
 This is a special zone file that allows there to be stars at the *end* 
 of hostnames. This file is similar to a normal csv2 zone file, but has 
@@ -5346,7 +5367,7 @@ the following features and limitations:
 * Both recursion and default zonefiles may not be enabled at the same 
   time
 
-### csv2_synthip_list
+## csv2_synthip_list
 
 Sometimes the IP list of nameservers will be different than the 
 nameservers one is bound to. This allows the synthetic nameserver list 
@@ -5358,7 +5379,7 @@ particular, a list with both routable and non-routable addresses will
 discard the non-routable IP addresses, and a list with rfc1918 and 
 localhost addresses will discard the localhost addresses. 
 
-### csv2_tilde_handling
+## csv2_tilde_handling
 
 How the csv2 zone file parser handles tildes (the ~ character) in csv2 
 zone files. This is a numeric record, with a possible value between 0 
@@ -5383,7 +5404,7 @@ The default value for csv2_tilde_handling is 2; this allows
 compatibility with older zone files without tildes while allowing zone 
 files to be updated to use the tilde to separate resource records. 
 
-### debug_msg_level
+## debug_msg_level
 
 This is a number indicating what level of information about a running 
 MaraDNS process should be made public. When set to 0, no information 
@@ -5409,7 +5430,7 @@ When set to three or higher, a Ttimestamp.maradns. query will return,
 in seconds since the UNIX epoch, the timestamp for the system MaraDNS 
 is running on.
 
-### default_rrany_set
+## default_rrany_set
 
 This variable used to determine what kind of resource records were 
 returned when an ANY query was sent. In MaraDNS, the data structures 
@@ -5418,14 +5439,14 @@ query is sent; this variable does nothing, and is only here so that old
 MaraDNS mararc files will continue to work. The only accepted values 
 for this variable were 3 and 15. 
 
-### dns_port
+## dns_port
 
 This is the port that MaraDNS listens on. This is usually 53 (the 
 default value), but certain unusual MaraDNS setups (such as when 
 resolving dangling CNAME records on but a single IP) may need to have a 
 different value for this. 
 
-### dos_protection_level
+## dos_protection_level
 
 If this is set to a non-zero value, certain features of MaraDNS will be 
 disabled in order to speed up MaraDNS' response time. This is designed 
@@ -5457,19 +5478,19 @@ disable more features:
 The default level of dos_protection_level is 0 when there are one or 
 more zonefiles; 78 when there are no zone files. 
 
-### ipv6_bind_address
+## ipv6_bind_address
 
 If MaraDNS is compiled with as an authoritative server, then this 
 variable will tell MaraDNS which ipv6 address for the UDP server to; 
 for this variable to be set, MaraDNS must be bound to at least one ipv4 
 address. 
 
-### hide_disclaimer
+## hide_disclaimer
 
 If this is set to "YES", MaraDNS will not display the legal disclaimer 
 when starting up. 
 
-### long_packet_ipv4
+## long_packet_ipv4
 
 This is a list of IPs which we will send UDP packets longer than the 
 512 bytes RFC1035 permits if necessary. This is designed to allow 
@@ -5479,7 +5500,7 @@ packets with more data than can fit in a 512-byte DNS packet.
 This variable only functions if MaraDNS is compiled as an authoritative 
 only server. 
 
-### maradns_uid
+## maradns_uid
 
 maradns_uid: The numeric UID that MaraDNS will run as 
 
@@ -5491,7 +5512,7 @@ problem with MaraDNS. This is the UID maradns becomes.
 
 The default UID is 707. 
 
-### maradns_gid
+## maradns_gid
 
 maradns_gid: The numeric GID that MaraDNS will run as. 
 
@@ -5499,7 +5520,7 @@ This accepts a single numerical value: The GID to run MaraDNS as.
 
 The default GID is 707. 
 
-### max_ar_chain
+## max_ar_chain
 
 max_ar_chain: The maximum number of records to display if a record in 
 the additional section (e.g., the IP of a NS server or the ip of a MX 
@@ -5514,7 +5535,7 @@ records are disabled.
 
 The default value for this variable is 1. 
 
-### max_chain
+## max_chain
 
 max_chain: The maximum number of records to display in a chain of 
 records. 
@@ -5533,7 +5554,7 @@ max_chain
 
 The default value for this variable is 8. 
 
-### max_tcp_procs
+## max_tcp_procs
 
 max_tcp_procs: The (optional) maximum number of processes the zone 
 server is allowed to run. 
@@ -5542,7 +5563,7 @@ Sometimes, it is desirable to have a different number of maximum
 allowed tcp processes than maximum allowed threads. If this variable is 
 not set, the maximum number of allowed tcp processes is "maxprocs". 
 
-### max_total
+## max_total
 
 max_total: The maximum number of records to show total for a given DNS 
 request. 
@@ -5552,7 +5573,7 @@ available in a DNS reply.
 
 The default value for this variable is 20. 
 
-### max_mem
+## max_mem
 
 max_mem is the maximum amount of memory we allow MaraDNS to allocate, 
 in bytes.
@@ -5562,7 +5583,7 @@ general use, and in addition, to allocate 3072 bytes for each element
 we can have in the cache or DNS record that we are authoritatively 
 serving. 
 
-### min_visible_ttl
+## min_visible_ttl
 
 min_visible_ttl: The minimum value that we will will show as the TTL 
 (time to live) value for a resource record to other DNS servers and 
@@ -5576,7 +5597,7 @@ As an aside, RFC1123 section 6.1.2.1 implies that zero-length TTL
 records should be passed on with a TTL of zero. This, unfortunately, 
 breaks some stub resolvers (such as Mozilla's stub resolver). 
 
-### remote_admin
+## remote_admin
 
 remote_admin: Whether we allow `verbose_level` to be changed after 
 MaraDNS is started. 
@@ -5591,13 +5612,13 @@ This is useful when wishing to temporarily increase the `verbose_level`
 to find out why a given host name is not resolving, then decreasing 
 `verbose_level` so as to minimize the size of MaraDNS' log. 
 
-### rfc8482
+## rfc8482
 
 If this is set to 1, MaraDNS will not allow ANY queries, sending a 
 RFC8482 response if one is given to MaraDNS. If this is 0, ANY queries 
 are allowed. Default value: 1 
 
-### synth_soa_origin
+## synth_soa_origin
 
 When a CSV2 zone file doesn't have a SOA record in it, MaraDNS 
 generates a SOA record on the fly. This variable determines the host 
@@ -5615,7 +5636,7 @@ synth_soa_origin = "ns1.example.com"
 If this is not set, a synthetic SOA record will use the name of 
 the zone for the SOA origin (MNAME) field.
 
-### synth_soa_serial
+## synth_soa_serial
 
 This determines whether we strictly follow RFC1912 section 2.2 with SOA 
 serial numbers. If this is set to 1 (the default value), we do not 
@@ -5647,7 +5668,7 @@ systems with a 32-bit time_t can very well have their underlying system
 libraries with regards to dates and times no longer correctly function 
 come 2038. 
 
-### tcp_convert_acl
+## tcp_convert_acl
 
 This only applies to the zoneserver (general DNS-over-TCP) program. 
 
@@ -5664,7 +5685,7 @@ TCP client is on the **recursive_acl** list. Since MaraDNS 2.0 does not
 have recursion, the maradns daemon ignores the RD bit (Deadwood will 
 not process any queries without the RD bit set). 
 
-### tcp_convert_server
+## tcp_convert_server
 
 This only applies to the zoneserver (general DNS-over-TCP) program. 
 
@@ -5672,7 +5693,7 @@ This is the UDP server which we send a query to when converting DNS TCP
 queries in to DNS UDP servers. Note that, while this value allows 
 multiple IPs, all values except the first one are presently ignored. 
 
-### timestamp_type
+## timestamp_type
 
 timestamp_type: The type of timestamp to display. The main purpose of 
 this option is to suppress the output of timestamps. Since duende uses 
@@ -5713,7 +5734,7 @@ correctly function come 2038.
 
 The default value for this variable is 5. 
 
-### verbose_level
+## verbose_level
 
 verbose_level: The number of messages we log to stdout 
 
@@ -5732,7 +5753,7 @@ errors
 
 The default value for this variable is 1. 
 
-### zone_transfer_acl
+## zone_transfer_acl
 
 zone_transfer_acl: List of ips allowed to perform zone transfers with 
 the zone server 
@@ -5740,77 +5761,77 @@ the zone server
 The format of this string is identical to the format of an ipv4_alias 
 entry. 
 
-## EXAMPLE MARARC FILE
+# EXAMPLE MARARC FILE
 
 ```
  
-## Example mararc file (unabridged version) 
+# Example mararc file (unabridged version) 
  
-## The various zones we support 
+# The various zones we support 
  
-## We must initialize the csv2 hash, or MaraDNS will be unable to 
-## load any csv2 zone files 
+# We must initialize the csv2 hash, or MaraDNS will be unable to 
+# load any csv2 zone files 
 csv2 = {} 
  
-## This is just to show the format of the file 
+# This is just to show the format of the file 
 #csv2["example.com."] = "db.example.com" 
  
-## The address this DNS server runs on.  If you want to bind  
-## to multiple addresses, separate them with a comma like this: 
-## "10.1.2.3,10.1.2.4,127.0.0.1" 
+# The address this DNS server runs on.  If you want to bind  
+# to multiple addresses, separate them with a comma like this: 
+# "10.1.2.3,10.1.2.4,127.0.0.1" 
 ipv4_bind_addresses = "127.0.0.1" 
-## The directory with all of the zone files 
+# The directory with all of the zone files 
 chroot_dir = "/etc/maradns" 
-## The numeric UID MaraDNS will run as 
+# The numeric UID MaraDNS will run as 
 maradns_uid = 99 
-## The (optional) numeric GID MaraDNS will run as 
-## maradns_gid = 99 
+# The (optional) numeric GID MaraDNS will run as 
+# maradns_gid = 99 
  
-## Normally, MaraDNS has some MaraDNS-specific features, such as DDIP 
-## synthesizing, a special DNS query ("erre-con-erre-cigarro.maradns.org."  
-## with a TXT query returns the version of MaraDNS that a server is  
-## running), unique handling of multiple QDCOUNTs, etc.  Some people  
-## might not like these features, so I have added a switch that lets  
-## a sys admin disable all these features.  Just give "no_fingerprint"  
-## a value of one here, and MaraDNS should be more or less  
-## indistinguishable from a tinydns server. 
+# Normally, MaraDNS has some MaraDNS-specific features, such as DDIP 
+# synthesizing, a special DNS query ("erre-con-erre-cigarro.maradns.org."  
+# with a TXT query returns the version of MaraDNS that a server is  
+# running), unique handling of multiple QDCOUNTs, etc.  Some people  
+# might not like these features, so I have added a switch that lets  
+# a sys admin disable all these features.  Just give "no_fingerprint"  
+# a value of one here, and MaraDNS should be more or less  
+# indistinguishable from a tinydns server. 
 no_fingerprint = 0 
  
-## These constants limit the number of records we will display, in order 
-## to help keep packets 512 bytes or smaller.  This, combined with round_robin 
-## record rotation, help to use DNS as a crude load-balancer. 
+# These constants limit the number of records we will display, in order 
+# to help keep packets 512 bytes or smaller.  This, combined with round_robin 
+# record rotation, help to use DNS as a crude load-balancer. 
  
-## The maximum number of records to display in a chain of records (list 
-## of records) for a given host name 
+# The maximum number of records to display in a chain of records (list 
+# of records) for a given host name 
 max_chain = 8 
-## The maximum number of records to display in a list of records in the 
-## additional section of a query.  If this is any value besides one, 
-## round robin rotation is disabled (due to limitations in the current 
-## data structure MaraDNS uses) 
+# The maximum number of records to display in a list of records in the 
+# additional section of a query.  If this is any value besides one, 
+# round robin rotation is disabled (due to limitations in the current 
+# data structure MaraDNS uses) 
 max_ar_chain = 1 
-## The maximum number of records to show total for a given question 
+# The maximum number of records to show total for a given question 
 max_total = 20 
  
-## The number of messages we log to stdout 
-## 0: No messages except for fatal parsing errors and the legal disclaimer 
-## 1: Only startup messages logged (default) 
-## 2: Error queries logged 
-## 3: All queries logged (but not very verbosely right now) 
+# The number of messages we log to stdout 
+# 0: No messages except for fatal parsing errors and the legal disclaimer 
+# 1: Only startup messages logged (default) 
+# 2: Error queries logged 
+# 3: All queries logged (but not very verbosely right now) 
 verbose_level = 1 
  
-## Here is a ACL which restricts who is allowed to perform zone transfer from  
-## the zoneserver program 
+# Here is a ACL which restricts who is allowed to perform zone transfer from  
+# the zoneserver program 
  
-## Simplest form: 10.1.1.1/24 (IP: 10.1.1.1, 24 left bits in IP need to match) 
-## and 10.100.100.100/255.255.255.224 (IP: 10.100.100.100, netmask 
-## 255.255.255.224) are allowed to connect to the zone server  
-## NOTE: The "maradns" program does not serve zones.  Zones are served 
-## by the "zoneserver" program. 
+# Simplest form: 10.1.1.1/24 (IP: 10.1.1.1, 24 left bits in IP need to match) 
+# and 10.100.100.100/255.255.255.224 (IP: 10.100.100.100, netmask 
+# 255.255.255.224) are allowed to connect to the zone server  
+# NOTE: The "maradns" program does not serve zones.  Zones are served 
+# by the "zoneserver" program. 
 #zone_transfer_acl = "10.1.1.1/24, 10.100.100.100/255.255.255.224" 
  
 ```
 
-## BUGS
+# BUGS
 
 If one should declare the same the same index twice with a dictionary 
 variable, MaraDNS will exit with a fatal error. This is because earlier 
@@ -5818,7 +5839,7 @@ versions of MaraDNS acted in a different manner than Python 2.3.3. With
 Python 2.3.3, the last declaration is used, while MaraDNS used to use 
 the first declaration. 
 
-## LEGAL DISCLAIMER
+# LEGAL DISCLAIMER
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -5834,35 +5855,35 @@ POSSIBILITY OF SUCH DAMAGE.
 
 # zoneserver
 
-## NAME
+# NAME
 
 zoneserver - handle zone transfers and other TCP functions for MaraDNS 
 
-## DESCRIPTION
+# DESCRIPTION
 
 **zoneserver** listens on port 53/tcp and handles DNS zone transfers 
 and any DNS query done over TCP instead of UDP. **zoneserver** uses a 
 configuration file, **/etc/mararc** by default, to determine its 
 parameters. 
 
-## USAGE
+# USAGE
 
 **zoneserver -f** pointer_to_mararc_file 
 
-## OPTIONS
+# OPTIONS
 
 `-f` Specifies the location of the configuration file. MaraDNS uses the 
 same configuration file for both the main dns server and the 
 zoneserver.  
 
-## CONFIGURATION FILE FORMAT
+# CONFIGURATION FILE FORMAT
 
 The file format for the mararc file can be found in the **mararc(5)** 
 manual page. In particular, the zoneserver uses the zone_transfer_acl, 
 tcp_convert_acl, tcp_convert_server, and bind_address mararc 
 parameters. 
 
-## EXAMPLE MARARC FILE
+# EXAMPLE MARARC FILE
 
 In this example mararc file, which is used both by maradns and 
 zoneserver, we allow 10.1.2.3, 10.1.14.7, and 192.168.116.{any} to 
@@ -5876,17 +5897,17 @@ tcp_convert_acl = "0.0.0.0/0" # Anyone may do DNS-over-TCP
 chroot_dir = "/etc/maradns" # Where zone files are 
 csv2 = {} # Initialize list of zone files 
 csv2["example.com."] = "db.example.com" # example.com zone file 
-## The next line is a list of who can transfer zones from us 
+# The next line is a list of who can transfer zones from us 
 zone_transfer_acl = "10.1.2.3, 10.1.14.7, 192,168.116.0/24" 
 ```
 
-## SEE ALSO
+# SEE ALSO
 
 The man pages **maradns(8)** and **mararc(5)** 
 
 http://www.maradns.org
 
-## BUGS
+# BUGS
 
 **zoneserver** assumes that the authoritative NS records are 
 immediately after the SOA record, and that there is at least one non-NS 
@@ -5904,7 +5925,7 @@ requested zone.
 If an unauthorized client attempts to connect to the zoneserver, 
 **zoneserver** immediately disconnects the unauthorized client. 
 
-## LEGAL DISCLAIMER
+# LEGAL DISCLAIMER
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS OR 
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
@@ -5918,7 +5939,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
 
-## AUTHOR
+# AUTHOR
 
 MaraDNS is written by Sam Trenholme. Jaakko Niemi used 5 minutes to put 
 the original version this manpage together. Sam has subsequently 
