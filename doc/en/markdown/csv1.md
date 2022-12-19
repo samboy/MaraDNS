@@ -11,20 +11,15 @@ function as long as I am MaraDNS' maintainer.
 
 # SPECIAL CHARACTERS
 
-|  This delimits fields 
-
-#  This signifies a comment. Lines starting with this are ignored, 
-otherwise it has no significance 
-
-%  This, in domain names, signifies that the rest of the domain 
-name should be the name of this zone 
-
-*  This is translated to mean "any host name that otherwise does 
-not resolve". It must be at the beginning of a domain name. 
-
-\  This is used as an escape character, either to escape octal 
-values such as '\045' for %, or to escape the '%' character so it has 
-no special meaning, or to escape the backslash character.  
+ `| `This delimits fields `# `This signifies a comment. Lines 
+starting with this are ignored, otherwise it has no significance `% 
+`This, in domain names, signifies that the rest of the domain name 
+should be the name of this zone `* `This is translated to mean "any 
+host name that otherwise does not resolve". It must be at the beginning 
+of a domain name. `\ `This is used as an escape character, either to 
+escape octal values such as '\045' for %, or to escape the '%' 
+character so it has no special meaning, or to escape the backslash 
+character.  
 
 # NOTES ON PROCESSING
 

@@ -276,7 +276,10 @@ out = out:gsub(mc("<h1%s*>%s*"),"\n\n# ") -- Level 1 headings start
 out = out:gsub(mc("<h2%s*>%s*"),"\n\n## ") -- Level 2 headings start
 out = out:gsub(mc("</?h1%s*>%s*"),"\n\n") -- Level 1 headings end
 out = out:gsub(mc("</?h2%s*>%s*"),"\n\n") -- Level 2 headings end
-out = out:gsub(mc("</?dt%s*>%s*"),"\n\n") -- DT tags
+out = out:gsub(mc("<dt%s*>%s*"),"`") -- DT tags
+out = out:gsub(mc("<dd%s*>%s*"),"`") -- DD tags
+out = out:gsub(mc("</dt%s*>%s*"),"\n\n") -- DT tags
+out = out:gsub(mc("</dd%s*>%s*"),"\n\n") -- DT tags
 -- Tables, used by csv1.ej
 out=out:gsub(mc("<table>%s*"),"\n```\n")
 out=out:gsub(mc("</table>"),"\n```\n")

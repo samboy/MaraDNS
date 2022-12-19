@@ -14,21 +14,16 @@ zone files that **maradns** uses).
 
 # OPTIONS
 
--t  If this is present, the following argument is the askmara 
+ `-t `If this is present, the following argument is the askmara 
 timeout, in seconds. Note that **askmara** can not both have a 
-user-defined timeout and verbose output. 
-
--v  If this is set, **askmara** will verbosely output the complete 
-reply that the server sent. Note that this verbose output is not 
-csv2-compatible. 
-
--n  If this is set, **askmara**, when sending out a query, will not 
-request DNS recursion; in other words, askmara will request that the 
-remote DNS server not contact other DNS servers to answer the query in 
-question. 
-
-query  dns record to be queried. The query has two sections: The 
-type of record we desire, and the hostname we want this record for. 
+user-defined timeout and verbose output. `-v `If this is set, 
+**askmara** will verbosely output the complete reply that the server 
+sent. Note that this verbose output is not csv2-compatible. `-n `If 
+this is set, **askmara**, when sending out a query, will not request 
+DNS recursion; in other words, askmara will request that the remote DNS 
+server not contact other DNS servers to answer the query in question. 
+`query `dns record to be queried. The query has two sections: The type 
+of record we desire, and the hostname we want this record for. 
 
 The type of query can have two forms: A one-letter mnemonic, or a 
 numeric rtype followed by a colon. This is immediately concatenated by 
@@ -56,10 +51,9 @@ Askmara supports a handful one-letter mnemonics, as follows:
 
 **T** signifies that we want a TXT RR 
 
-**Z** signifies that we want to ask for all RRs. 
-
-server IP address of the dns server to be queried. If no server is 
-given, askmara will query 127.0.0.1.  
+**Z** signifies that we want to ask for all RRs. `server `IP address of 
+the dns server to be queried. If no server is given, askmara will query 
+127.0.0.1.  
 
 # EXAMPLES
 
