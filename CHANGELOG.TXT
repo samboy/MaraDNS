@@ -9,8 +9,9 @@ MaraDNS changelog
         200,000 domains while using only 10 megabytes of memory or so
       * Block hash information added to Deadwood man page
       * Update Lunacy documentation to be consistent with the MaraDNS
-        version of Lunacy (which, unlike the <a href=/lunacy>standalone 
-        version</a>, does not have <tt>spawner</tt> or <tt>lfs</tt>)
+        version of Lunacy (which, unlike the standalone 
+        version at https://github.com/samboy/lunacy, does not have 
+        spawner or lfs)
 
      (2022-12-19)
       
