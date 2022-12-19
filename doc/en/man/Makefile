@@ -1,11 +1,15 @@
 all: maradns.8 mararc.5 askmara.1 getzone.1 zoneserver.8 csv1.5 duende.8 \
 	csv2.5 csv2_txt.5 fetchzone.1 mqhash.1 Deadwood.1 coLunacyDNS.1 \
-	blockHashMake.1
+	blockHashMake.1 blockHashRead.1
 
 clean:
 	rm -f maradns.8 mararc.5 askmara.1 getzone.1 zoneserver.8 csv1.5 \
 	maradns.ps mararc.ps askmara.ps getzone.ps zoneserver.ps csv1.ps \
-	csv2.5 csv2_txt.5 Deadwood.1 coLunacyDNS.1 blockHashMake.1
+	csv2.5 csv2_txt.5 Deadwood.1 coLunacyDNS.1 blockHashMake.1 \
+	blockHashRead.1
+
+blockHashRead.1: ../source/blockHashRead.ej
+	../../../tools/ej/ej2man ../source/blockHashRead.ej > blockHashRead.1
 
 blockHashMake.1: ../source/blockHashMake.ej
 	../../../tools/ej/ej2man ../source/blockHashMake.ej > blockHashMake.1
