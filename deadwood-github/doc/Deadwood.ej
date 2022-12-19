@@ -187,8 +187,8 @@ name has the '.' character (dot/period) in it, it can not have a '/'
 
 The <tt>blockHashMake</tt> program generates the block hash file.  The
 contents of a block hash file can be looked at and read using the
-<tt>blockHashRead</tt> program.  See <b>blockHashMake (1)</b> and
-<b>blockHashRead (1)</b> for more details.
+<tt>blockHashRead</tt> program.  See the man pages <b>blockHashMake (1)</b> 
+and <b>blockHashRead (1)</b> for more details.
 
 <p>
 
