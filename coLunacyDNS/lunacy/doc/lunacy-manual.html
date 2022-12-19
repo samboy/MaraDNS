@@ -12,7 +12,7 @@
 
 <hr>
 <h1>
-Lunacy (Lua) 5.1 Reference Manual (Release 2022-12-06)
+Lunacy (Lua) 5.1 Reference Manual (Release 20221206p2)
 </h1>
 
 by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
@@ -477,9 +477,20 @@ Freely available under the terms of the
 <p>
 
 Lunacy is a fork of Lua 5.1.5 designed to be compiled as a tiny 
-(116,224 byte) Windows 32-bit binary which is (as of 2022) Windows XP 
+Windows 32-bit binary which is (as of 2022) Windows XP 
 and Windows 10 compatible.  
 <p>
+
+This version of Lunacy has been reduced in size to be as small as 
+possible while serving MaraDNS’ need for a scripting language:
+
+<ul>
+<li>coLunacyDNS uses Lunacy as the configuration language and
+    as a scripting language to make custom DNS replies.
+<li>Some of the tests include Lunacy/Lua5.1 scripts.
+<li>The tools for building MaraDNS’ documentation in various
+    formats are written as Lunacy/Lua5.1 scripts.
+</ul>
 
 To make sure we don't have issues come January 19, 2038, 
 <code>os.clock()</code>,
@@ -9517,10 +9528,10 @@ Here is the complete syntax of Lua in extended BNF.
 <HR>
 <SMALL CLASS="footer">
 Last update:
-Tue Dec 6 2022
+Mon Dec 19 2022
 </SMALL>
 <!--
-Last change: Date updated for 2022-12-06
+Last change: Clarify lack of spawner/lfs
 -->
 
 </body></html>
