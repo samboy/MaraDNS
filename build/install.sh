@@ -119,6 +119,16 @@ if [ -x Deadwood ] ; then
 	echo Deadwood installed
 fi
 
+# Install the block hash tools
+cd $TOPLEVEL/deadwood-*/tools/blockhash
+if [ -x blockHashMake ] ; then
+	cp blockHashMake $BIN
+	echo blockHashMake installed
+	cp blockHashRead $BIN
+	echo blockHashRead installed
+fi
+
+
 # Install the getzone and fetchzone binaries
 cd $TOPLEVEL/tcp
 echo Installing getzone and fetchzone
