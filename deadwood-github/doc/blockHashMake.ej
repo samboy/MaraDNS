@@ -1,6 +1,10 @@
 <HEAD>
 <TH>BLOCKHASHMAKE 1 "Dec 2022" BLOCKHASHMAKE "blockHashMake reference"</TH>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<!-- Please note: This document is in two locations.  It is in
+     deadwood-${VERSION}/doc and it is in doc/en/source
+     Because the deadwood directory changes, we can not use a
+     symlink to link them, so try to keep both versions in sync -->
 </HEAD>
 <BODY>
 
