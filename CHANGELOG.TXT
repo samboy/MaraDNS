@@ -6,10 +6,13 @@ MaraDNS changelog
       * “block hash” tools completed: blockHashRead and blockHashMake
       * Block hash tools now install with MaraDNS and have man pages
       * Deadwood now has block hash support: The ability to block over
-        200,000 domains while using only 10 megabytes of memory or so.
+        200,000 domains while using only 10 megabytes of memory or so
       * Block hash information added to Deadwood man page
+      * Update Lunacy documentation to be consistent with the MaraDNS
+        version of Lunacy (which, unlike the <a href=/lunacy>standalone 
+        version</a>, does not have <tt>spawner</tt> or <tt>lfs</tt>)
 
-     (2022-12-XX)
+     (2022-12-19)
       
    maradns-3.5.0033:
    This is a stable release of MaraDNS:
