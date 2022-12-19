@@ -21,9 +21,10 @@ echo man pages in $MAN1 and $MAN8, and the directory tree $DOCS
 cd $SBIN
 rm maradns zoneserver Deadwood coLunacyDNS
 cd $BIN
-rm askmara getzone lunacy
+rm askmara getzone lunacy blockHashRead blockHashMake
 cd $MAN1
-rm askmara.1 getzone.1 Deadwood.1
+rm askmara.1 getzone.1 Deadwood.1 blockHashRead.1 blockHashMake.1
+rm fetchzone.1
 cd $MAN8
 rm maradns.8 zoneserver.8
 rm -fr $DOCS
