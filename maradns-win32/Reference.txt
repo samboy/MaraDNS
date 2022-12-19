@@ -2,6 +2,10 @@ Please read the file README.txt first; this file is the reference
 manual for Deadwood and does not describe how to install the Deadwood
 service.
 
+Note also that this reference is for the *NIX (Linux, etc.) version of
+Deadwood, and some paths are different in Windows, e.g. /etc/deadwood
+is not used in the Windows port of Deadwood.
+
 -------------------------------------------------------------------------
 
 === NAME ===
