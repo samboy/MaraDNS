@@ -10,12 +10,12 @@ echo manual pages >> reference.md
 echo >> reference.md
 echo The following manuals are here: >> reference.md
 for a in $( ls *md | grep -v mqhash | grep -v reference ) ; do
-	echo '* '$a >> reference.md
+	echo '* '${a%%.md} man page >> reference.md
 done
 echo >> reference.md
 
 for a in $( ls *md | grep -v mqhash | grep -v reference ) ; do
-	echo \# ${a%%.md} >> reference.md
+	echo \# ${a%%.md} man page >> reference.md
 	echo >> reference.md
 	cat $a | awk '{
         if(/\<[Pp][Rr][Ee]\>/){inpre=1}

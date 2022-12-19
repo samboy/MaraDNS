@@ -4,22 +4,22 @@ This is a reference manual with all of MaraDNS'
 manual pages
 
 The following manuals are here:
-* Deadwood.md
-* askmara.md
-* blockHashMake.md
-* blockHashRead.md
-* coLunacyDNS.md
-* csv1.md
-* csv2.md
-* csv2_txt.md
-* duende.md
-* fetchzone.md
-* getzone.md
-* maradns.md
-* mararc.md
-* zoneserver.md
+* Deadwood man page
+* askmara man page
+* blockHashMake man page
+* blockHashRead man page
+* coLunacyDNS man page
+* csv1 man page
+* csv2 man page
+* csv2_txt man page
+* duende man page
+* fetchzone man page
+* getzone man page
+* maradns man page
+* mararc man page
+* zoneserver man page
 
-# Deadwood
+# Deadwood man page
 
 # NAME
 
@@ -988,7 +988,7 @@ Sam Trenholme (http://www.samiam.org) is responsible for this program
 and man page. He appreciates all of Jean-Jacques Sarton's help giving 
 this program IPv6 support.  
 
-# askmara
+# askmara man page
 
 # NAME
 
@@ -1129,7 +1129,7 @@ POSSIBILITY OF SUCH DAMAGE.
 MaraDNS is written by Sam Trenholme. Jaakko Niemi used 5 minutes to 
 roll this manpage together, which Sam has subsequently revised.  
 
-# blockHashMake
+# blockHashMake man page
 
 # NAME
 
@@ -1253,7 +1253,7 @@ any and all necessary compliance.
 Sam Trenholme (https://www.samiam.org) is responsible for this program 
 and man page.  
 
-# blockHashRead
+# blockHashRead man page
 
 # NAME
 
@@ -1342,7 +1342,7 @@ any and all necessary compliance.
 Sam Trenholme (https://www.samiam.org) is responsible for this program 
 and man page.  
 
-# coLunacyDNS
+# coLunacyDNS man page
 
 ==== coLunacyDNS ====
 
@@ -1975,7 +1975,7 @@ Note: Some blocks of code, sanity tests to make sure we’re not in a
 corner case which can not be readily replicated, have been removed from 
 the testing code via `#ifdef`. Read sqa/README.md for details.  
 
-# csv1
+# csv1 man page
 
 # NAME
 
@@ -2204,7 +2204,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 Sam Trenholme http://www.samiam.org/ 
 
-# csv2
+# csv2 man page
 
 # NAME
 
@@ -3051,7 +3051,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 Sam Trenholme http://www.samiam.org/ 
 
-# csv2_txt
+# csv2_txt man page
 
 # NAME
 
@@ -3420,7 +3420,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 Sam Trenholme http://www.samiam.org/ 
 
-# duende
+# duende man page
 
 # NAME
 
@@ -3583,7 +3583,7 @@ Duende and this man page are written by Sam Trenholme. D Richard Felker
 III provided some invaluable assistance with the piping code which 
 **duende** uses.  
 
-# fetchzone
+# fetchzone man page
 
 # NAME
 
@@ -3657,7 +3657,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 Sam Trenholme  
 
-# getzone
+# getzone man page
 
 # NAME
 
@@ -3731,7 +3731,7 @@ MaraDNS is written by Sam Trenholme. Jaakko Niemi used 5 minutes to put
 this manpage together. Sam has subsequently made revisions to this 
 manpage.  
 
-# maradns
+# maradns man page
 
 ```
 Erre con erre cigarro 
@@ -5039,7 +5039,7 @@ obtained test vectors. With the help of their hard work, I was able to
 discover a subtle security problem that previous releases of MaraDNS 
 had.  
 
-# mararc
+# mararc man page
 
 # NAME
 
@@ -5853,7 +5853,7 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE.  
 
-# zoneserver
+# zoneserver man page
 
 # NAME
 
