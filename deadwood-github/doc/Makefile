@@ -1,8 +1,20 @@
 all: Deadwood.1 Deadwood.txt FAQ.txt FAQ.html \
-	Deadwood.html Recursive_algorithm.txt
+	Deadwood.html Recursive_algorithm.txt blockHashMake.1 \
+	blockHashMake.txt blockHashMake.html
 
 clean:
-	rm -f Duende.1 Duende.txt Deadwood.1 Deadwood.txt FAQ.txt
+	rm -f Duende.1 Duende.txt Deadwood.1 Deadwood.txt FAQ.txt \
+	blockHashMake.1 blockHashMake.txt blockHashMake.html
+
+blockHashMake.1: blockHashMake.ej
+	../../tools/ej/ej2man blockHashMake.ej > blockHashMake.1
+
+blockHashMake.txt: blockHashMake.ej
+	../../tools/ej/ej2txt blockHashMake.ej > blockHashMake.txt ;\
+	unix2dos blockHashMake.txt
+
+blockHashMake.html: blockHashMake.ej
+	../../tools/ej/ej2html blockHashMake.ej > blockHashMake.html
 
 Duende.1: Duende.ej
 	../../tools/ej/ej2man Duende.ej > Duende.1
