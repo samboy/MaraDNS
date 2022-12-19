@@ -6,6 +6,12 @@ all: maradns.md mararc.md askmara.md getzone.md zoneserver.md csv1.md \
 clean:
 	rm -f *md
 
+reference.md: maradns.md mararc.md askmara.md getzone.md zoneserver.md \
+	duende.md csv1.md \
+	csv2.md csv2_txt.md fetchzone.md mqhash.md Deadwood.md coLunacyDNS.md \
+	blockHashMake.md blockHashRead.md
+	./make.reference.sh
+
 blockHashRead.md: ../source/blockHashRead.ej
 	../../../tools/ej/ej2md ../source/blockHashRead.ej > blockHashRead.md
 
