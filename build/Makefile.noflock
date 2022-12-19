@@ -34,7 +34,7 @@ FLAGS = -g
 
 all: 
 	cd deadwood-*/src ; make FLAGS=-O2 ; \
-	cd ../tools/blockhash ; make FLAGS=-O2 ; cd .. ; \
+	cd ../tools/blockhash ; make CFLAGS=-O2 ; cd .. ; \
 	cd ../.. ; \
 	cd libs ; make $(M) ; cd ../dns ; make $(M) ; cd ../rng ; make $(M) ; cd ../parse ; make $(M) ; cd ../qual ; make $(M) ; cd ../server ; make $(M) $(V) COMPILED=\"$(COMPILED)\" ; cd ../tools ; make $(M) ; cd ../tcp ; make $(M) $(V) ; cat ../00README.FIRST
 
