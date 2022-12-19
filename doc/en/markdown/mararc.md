@@ -662,13 +662,16 @@ This option also allows people who do not use the duende tool to view
 human-readable timestamps. This option only allows timestamps in GMT, 
 due to issues with showing local times in a chroot() environment. 
 
-This can have the following values:  `0 `The string "Timestamp" 
-followed by a UNIX timestamp `1 `Just the bare UNIX timestamp `2 `A GMT 
-timestamp in the Spanish language `3 `A (hopefully) local timestamp in 
-the Spanish language `4 `A timestamp using asctime(gmtime()); usually 
-in the English language `5 `No timestamp whatsoever is shown (this is 
-the best option when maradns is invoked with the `duende` tool). `6 
-`ISO GMT timestamp is shown `7 `ISO local timestamp is shown  
+This can have the following values:  
+`0`The string "Timestamp" followed by a UNIX timestamp 
+`1`Just the bare UNIX timestamp 
+`2`A GMT timestamp in the Spanish language 
+`3`A (hopefully) local timestamp in the Spanish language 
+`4`A timestamp using asctime(gmtime()); usually in the English language 
+`5`No timestamp whatsoever is shown (this is the best option when 
+maradns is invoked with the `duende` tool). 
+`6`ISO GMT timestamp is shown 
+`7`ISO local timestamp is shown  
 
 On systems where time_t is 32-bit, MaraDNS will always act as if 
 `timestamp_type` has a value of 5, never showing a timestamp. This is 
@@ -683,10 +686,12 @@ The default value for this variable is 5.
 
 verbose_level: The number of messages we log to stdout 
 
-This can have five values:  `0 `No messages except for the legal 
-disclaimer and fatal parsing errors `1 `Only startup messages logged 
-(Default level) `2 `Error queries logged `3 `All queries logged `4 `All 
-actions adding and removing records from the cache logged  
+This can have five values:  
+`0`No messages except for the legal disclaimer and fatal parsing errors 
+`1`Only startup messages logged (Default level) 
+`2`Error queries logged 
+`3`All queries logged 
+`4`All actions adding and removing records from the cache logged  
 
 The default value for this variable is 1. 
 

@@ -77,26 +77,27 @@ backslashes only have significance *outside* of quoted text; if they
 are placed inside single quotes, they are not interpreted and result in 
 a literal backslash being added to the resource record data. 
 
-The following characters can be backslashed:  `' `When backslashed, 
-the adds a literal quote to the resource record. `whitespace `When any 
-whitespace is backslashed (space, newline, cr, and tab), this indicates 
-that the record has not ended, and that more data for this resource 
-will follow. This also allows comments to be placed in TXT and RAW 
-resource records. What happens is that the backslash indicates that any 
-whitespace characters (space, tab, carriage return, and line feed) are 
-to be ignored until the next non-whitespace character that is not a # 
-(hash). If a # is seen, this indicates that we ignore any and all 
-characters until the next carriage return or line feed, and continue to 
-ignore everything until the next non-whitespace character. See the 
-section on multi-line and commented records for examples. `0123 `When a 
-number between 0 and 3 is backslashed, this indicates the beginning of 
-a three-digit octal number. `x `When an x is backslashed, this 
-indicates the beginning of a two-digit hexadecimal number.  Note 
-that, with the exception of the single quote, the backslash character 
-is *not* used to remove the meta-significance of a given character. In 
-particular, unlike other environments, it is not possible to backslash 
-spaces. Spaces can be represented either as ' ' in quotes, \x20, or as 
-\040. 
+The following characters can be backslashed:  
+`'`When backslashed, the adds a literal quote to the resource record. 
+`whitespace`When any whitespace is backslashed (space, newline, cr, and 
+tab), this indicates that the record has not ended, and that more data 
+for this resource will follow. This also allows comments to be placed 
+in TXT and RAW resource records. What happens is that the backslash 
+indicates that any whitespace characters (space, tab, carriage return, 
+and line feed) are to be ignored until the next non-whitespace 
+character that is not a # (hash). If a # is seen, this indicates that 
+we ignore any and all characters until the next carriage return or line 
+feed, and continue to ignore everything until the next non-whitespace 
+character. See the section on multi-line and commented records for 
+examples. 
+`0123`When a number between 0 and 3 is backslashed, this indicates the 
+beginning of a three-digit octal number. 
+`x`When an x is backslashed, this indicates the beginning of a 
+two-digit hexadecimal number.  Note that, with the exception of 
+the single quote, the backslash character is *not* used to remove the 
+meta-significance of a given character. In particular, unlike other 
+environments, it is not possible to backslash spaces. Spaces can be 
+represented either as ' ' in quotes, \x20, or as \040. 
 
 Here are some examples of backslashed data. In this example, we see 
 backslash sequences being used to store non-UTF-8 hi-bit data:

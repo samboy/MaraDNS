@@ -15,8 +15,8 @@ parameters.
 
 # OPTIONS
 
- `-f `Specifies the location of the configuration file. MaraDNS 
-uses the same configuration file for both the main dns server and the 
+`-f`Specifies the location of the configuration file. MaraDNS uses the 
+same configuration file for both the main dns server and the 
 zoneserver.  
 
 # CONFIGURATION FILE FORMAT
