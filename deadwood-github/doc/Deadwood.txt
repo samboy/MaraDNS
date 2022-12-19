@@ -143,9 +143,9 @@ scope. But be aware of the risks before setting this parameter to 1.
 
 This is the IP (or possibly IPv6) address we bind to. 
 
-== blocked_hosts_hash_file
+== blocked_hosts_hash_file ==
 
-== A blocked hosts hash file allows Deadwood to block a large number of 
+A blocked hosts hash file allows Deadwood to block a large number of 
 host names while using relatively little memory: While using a list of 
 over 200,000 hosts to block in a dwood3rc file uses over 200 megabytes 
 of memory, the same list in a block hash file uses only 7 megabytes of 

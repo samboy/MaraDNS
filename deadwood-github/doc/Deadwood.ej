@@ -160,7 +160,7 @@ in scope.  But be aware of the risks before setting this parameter to 1.
 <h2>bind_address</h2> 
 This is the IP (or possibly IPv6) address we bind to.
 
-<h2>blocked_hosts_hash_file<h2>
+<H2>blocked_hosts_hash_file</H2>
 
 A blocked hosts hash file allows Deadwood to block a large number
 of host names while using relatively little memory: While using a 
