@@ -1344,8 +1344,6 @@ and man page.
 
 # coLunacyDNS man page
 
-==== coLunacyDNS ====
-
 # NAME
 
 coLunacyDNS - A DNS server configured by Lua 

@@ -249,8 +249,6 @@ out = out:gsub(mc("<nofmt>"),"")
 out = out:gsub(mc("<th%s*>[^<]*</th%s*>"),"") -- EJ for man pages unused here
 out = out:gsub(mc("<dtwidth%s*>[^<]*</dtwidth%s*>"),"") -- DTWIDTH part of man
 out = out:gsub(mc("</?meta[^>]*>"),"") -- Scrub META tag
-out = out:gsub(mc("<head>.-<title>(.-)</title>.-</head>%s*"),
-               "==== %1 ====\n\n") -- Handle titles; otherwise scrub HEAD
 out = out:gsub(mc("<head>.-</head>%s*"),"") -- Scrub HEAD w/o title
 out = out:gsub(mc("<body>%s*"),"") -- Scrub BODY tag
 out = out:gsub(mc("<a[^>]->%s*"),"") -- Scrub A tag

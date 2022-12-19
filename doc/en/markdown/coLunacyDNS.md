@@ -1,5 +1,3 @@
-==== coLunacyDNS ====
-
 # NAME
 
 coLunacyDNS - A DNS server configured by Lua 
