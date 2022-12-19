@@ -40,7 +40,8 @@ all:
 	make $(M) $(V) COMPILED=\"$(COMPILED)\" ; \
 	cd ../tools ; make $(M) ; \
 	cd ../deadwood-*/src/ ; make FLAGS=-O2 ; \
-	cd ../../coLunacyDNS/ ; make ; \
+	cd ../tools/blockhash ; make CFLAGS=-O2 ; \
+	cd ../../../coLunacyDNS/ ; make ; \
 	cd ../tcp ; make $(M) $(V) ; cat ../00README.FIRST
 
 debug: 
@@ -70,6 +71,7 @@ clean:
 	cd ../coLunacyDNS ; make clean ; \
 	cp Makefile.default Makefile ; \
 	cd ../deadwood-*/src ; make clean ; \
+	cd ../tools/blockhash ; make clean ; \
 	# ; cd .. ; find . -type d | grep .deps | xargs rm -fr ; find . -name '*.o' | xargs rm
 
 strip:
