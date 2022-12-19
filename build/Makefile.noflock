@@ -33,7 +33,9 @@ D="VERSION=$(VERSION)" DEBUG="-DDEBUG -DNO_FLOCK"
 FLAGS = -g 
 
 all: 
-	cd deadwood-*/src ; make FLAGS=-O2 ; cd ../.. ; \
+	cd deadwood-*/src ; make FLAGS=-O2 ; \
+	cd ../tools/blockhash ; make FLAGS=-O2 ; cd .. ; \
+	cd ../.. ; \
 	cd libs ; make $(M) ; cd ../dns ; make $(M) ; cd ../rng ; make $(M) ; cd ../parse ; make $(M) ; cd ../qual ; make $(M) ; cd ../server ; make $(M) $(V) COMPILED=\"$(COMPILED)\" ; cd ../tools ; make $(M) ; cd ../tcp ; make $(M) $(V) ; cat ../00README.FIRST
 
 debug: 
@@ -42,6 +44,7 @@ debug:
 clean:
 	cd deadwood-*/src ; make clean ; \
 	cp Makefile.sl6 Makefile ; \
+	cd ../tools/blockhash ; make clean ; cd .. ; \
 	cd ../.. ; \
 	cd coLunacyDNS ; \
 	make clean ; cp Makefile.default Makefile ; cd .. ; \
