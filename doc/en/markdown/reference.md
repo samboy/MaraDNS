@@ -2578,8 +2578,8 @@ example.net. WKS 10.1.2.3 6 22,80,119 ~
 ```
 
 MaraDNS only allows up to 10 different port numbers in a WKS 
-record, and requires that the listed port numbers are not be higher 
-than 1023. 
+record, and requires that the listed port numbers not be higher than 
+1023. 
 
 ## MD and MF
 
