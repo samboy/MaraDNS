@@ -51,6 +51,9 @@ To build MaraDNS, one needs a POSIX system with:
   32-bit, and 64-bit sized integers.
 * A POSIX C library with both POSIX and Berkeley socket support.
 
+(To build some of the documentation, the non-standard but widely
+ available `unix2dos` text conversion utility is used.)
+
 Then, do this:
 
 ```
