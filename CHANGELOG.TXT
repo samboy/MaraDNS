@@ -12,6 +12,11 @@ MaraDNS changelog
         version of Lunacy (which, unlike the standalone 
         version at https://github.com/samboy/lunacy, does not have 
         spawner or lfs)
+      * Because some servers in early 2011 responded to AAAA queries
+        with “server fail”, Deadwood treated these server fails as
+        “no AAAA there”.  This made IPv6 more fragile; here in 2022
+        those poorly designed DNS servers look to be no more, so we can
+        correctly treat “server fail” for AAAA queries as “try again”.
 
      (2022-12-19)
       
