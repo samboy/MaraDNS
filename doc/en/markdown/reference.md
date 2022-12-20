@@ -1876,7 +1876,7 @@ members:
 
 * coQuery: This is the DNS name requested, in the form of a string 
   like caulixtla.com. or samiam.org. (observe the dot at the end of 
-  the mmQuery string). If the string has anything besides an ASCII 
+  the coQuery string). If the string has anything besides an ASCII 
   letter, an ASCII number, the - character (dash), or the _ 
   character (underline), the character will be a two-digit 
   hexadecimal number in brackets. If we get the raw UTF-8 query 
