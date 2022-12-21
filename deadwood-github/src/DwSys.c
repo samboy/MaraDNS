@@ -589,6 +589,7 @@ void init_cache() {
 void load_blocked_hosts_hash_file() {
 	dw_str *filename = 0;
 	char *fname_convert = 0;
+        int read_errornum = 0;
 	filename = key_s[DWM_S_blocked_hosts_hash_file];	
 	if(filename == 0) { // Not set
 		return; 
@@ -598,8 +599,9 @@ void load_blocked_hosts_hash_file() {
         if(fname_convert == NULL) {
                 dw_fatal("Problem converting blocked_hosts_hash_file");
         }
-        blocked_hosts_hash = DBH_makeBlockHash(fname_convert);
+        blocked_hosts_hash = DBH_makeBlockHash(fname_convert, &read_errornum);
         if(blocked_hosts_hash == NULL) {
+		dw_alog_number("Error number is ",read_errornum," for read");
                 dw_fatal("Problem reading blocked_hosts_hash_file");
         }
         /* Do not load file with 0 key unless allow_block_hash_zero_key=1 */

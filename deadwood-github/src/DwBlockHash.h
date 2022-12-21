@@ -33,5 +33,5 @@ typedef struct {
 int DBH_BlockHasString(blockHash *b, uint8_t *str, int32_t len);
 
 // Read a file and make a blockHash structure
-blockHash *DBH_makeBlockHash(char *filename);
+blockHash *DBH_makeBlockHash(char *filename, int *errorNum);
 

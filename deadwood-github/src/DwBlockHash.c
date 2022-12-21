@@ -101,36 +101,37 @@ int DBH_BlockHasString(blockHash *b, uint8_t *str, int32_t len) {
 }
 
 // Read a file and make a blockHash structure
-blockHash *DBH_makeBlockHash(char *filename) {
+blockHash *DBH_makeBlockHash(char *filename, int *errorNum) {
         blockHash *out = NULL;
         int fileDesc;
         out = malloc(sizeof(blockHash));
-        if(out == NULL) { return NULL; }
+        if(out == NULL || errorNum == NULL) { return NULL; }
         struct stat get;
         if(stat(filename,&get) == -1) {
-                free(out); return NULL;
+                free(out); *errorNum = 1; return NULL;
         }
         out->max = get.st_size;
-        if(out->max < 16) { free(out); return NULL; }
+        if(out->max < 16) { free(out); *errorNum = 2; return NULL; }
         out->block = malloc(out->max + 3);
-        if(out->block == NULL) { free(out); return NULL; }
+        if(out->block == NULL) { free(out); *errorNum = 3; return NULL; }
         fileDesc = open(filename, 0);
-        if(fileDesc == -1) { free(out->block); free(out); return NULL; }
+        if(fileDesc == -1) { free(out->block); free(out); *errorNum = 4; 
+                             return NULL; }
 #ifdef MINGW
         setmode(fileDesc, O_BINARY);
 #endif // MINGW
         if(read(fileDesc, out->block, out->max) != out->max) {
-                free(out->block); free(out); return NULL;
+                free(out->block); free(out); *errorNum = 5; return NULL;
         }
         if(out->block[0] != 0 || out->block[1] != 'D' || out->block[2] != 'w'
            || out->block[3] != 'B') {
-                free(out->block); free(out); return NULL;
+                free(out->block); free(out); *errorNum = 6; return NULL;
         }
         out->sipKey1 = DBH_Read32bitNumber(out->block,4,out->max);
         out->sipKey2 = DBH_Read32bitNumber(out->block,8,out->max);
         out->hashSize = DBH_Read32bitNumber(out->block,12,out->max);
         if(out->hashSize > out->max) {
-                free(out->block); free(out); return NULL;
+                free(out->block); free(out); *errorNum = 7; return NULL;
         }
         return out;
 }
