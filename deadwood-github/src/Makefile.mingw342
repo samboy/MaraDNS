@@ -29,7 +29,8 @@ DwHalfSipHash.o: DwHalfSipHash.c DwHalfSipHash.h
 	$(CC) $(FLAGS) $(CFLAGS) -Wall -c -o DwHalfSipHash.o DwHalfSipHash.c
 
 DwBlockHash.o: DwBlockHash.c DwBlockHash.h DwHalfSipHash.o
-	$(CC) $(FLAGS) $(CFLAGS) -Wall -c -o DwBlockHash.o DwBlockHash.c
+	$(CC) $(FLAGS) $(CFLAGS) -DMINGW -Wall -c -o \
+    DwBlockHash.o DwBlockHash.c
 
 DwStr.o:	DwStr.c DwStr.h
 	$(CC) $(FLAGS) $(CFLAGS) -DNOIP6 -DMINGW -Wall -c -o DwStr.o DwStr.c
