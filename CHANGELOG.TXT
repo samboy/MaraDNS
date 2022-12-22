@@ -1,5 +1,15 @@
 MaraDNS changelog
 
+   maradns-3.5.0035:
+   This is a stable release of MaraDNS:
+
+      * Hotfix: Block hashes now work in the Windows compile of 
+        Deadwood 
+      * Markdown version of documents added
+      * Minor doc fixes
+
+     (2022-12-21)
+
    maradns-3.5.0034:
    This is a stable release of MaraDNS:
 
