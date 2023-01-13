@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Sam Trenholme
+/* Copyright (c) 2022,2023 Sam Trenholme
  *
  * TERMS
  *
@@ -201,6 +201,12 @@ blStr *readFile(FILE *inp, int *elements) {
     if(fgets((char *)(line + 1),1010,inp) == NULL) {
       return top;
     }
+
+    // We do not parse lines which start with a hash character
+    if(line[1] == '#') {
+      continue;
+    }
+
     len = strlen(line); 
     nstr = malloc(len + 2);
     if(nstr == NULL) {
@@ -545,7 +551,7 @@ int main(int argc, char **argv) {
     filename = argv[1];
   }
   if(*filename == '-') {
-    printf("blockHashMake version 1.0.05\n");
+    printf("blockHashMake version 1.0.06\n");
     printf("Usage: blockHashMake {filename} {sipHash key} {hash buckets}\n");
     printf("filename is file to write hash block file to\n");
     printf("sipHash key is a hex number from 0 to ffff\n");
