@@ -115,7 +115,8 @@ In order to allow there to be notes in files that blockHashMake reads,
 blockHashMake has simple support for comments:  Any line which 
 begins with the <tt>#</tt> character will be ignored by the 
 blockHashMake program.  Note that the <tt>#</tt> character <i>must</i>
-be at the very beginning of a line to be ignored by BlockHashMake.
+be at the very beginning of a line for the line to be ignored by 
+BlockHashMake.
 
 <p>
 
