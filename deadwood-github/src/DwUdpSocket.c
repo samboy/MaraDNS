@@ -783,6 +783,7 @@ void get_local_udp_packet(SOCKET sock) {
                 	in_blocked_hosts_hash = 1;
                 	dw_log_dwstr("DNS query in block hash: ",query,110); 
 		} else {
+                        /* Implement wildcard support for block hash items */
 			int label1 = 0, label2 = 0, label3 = 0;
 			int point = 0;
 			while(point < query->len - 2) {
