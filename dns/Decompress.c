@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2006 Sam Trenholme
+/* Copyright (c) 2002-2023 Sam Trenholme
  *
  * TERMS
  *
@@ -884,7 +884,7 @@ int decomp_get_rddata(js_string *compressed, js_string *out,
             /* Variable length data (length determined by rdlength) */
             else if(subtype == RRSUB_VARIABLE) {
                 len = rdlength - total;
-                if(len == 0) {
+                if(len <= 0) {
                     break;
                     }
                 if(decomp_append_bytes(compressed,out,
