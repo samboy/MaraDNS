@@ -1,5 +1,12 @@
 MaraDNS changelog
 
+   maradns-3.5.0036:
+   This is a stable release of MaraDNS:
+
+      * One line fix in the old decompression code from 2002 
+
+     (2023-05-02)
+
    maradns-3.5.0035:
    This is a stable release of MaraDNS:
 
