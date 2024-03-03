@@ -44,7 +44,7 @@ extern int max_tcp_procs;
 extern int timeout_seconds;
 extern int timeout_seconds_tcp;
 extern int dns_port;
-extern int upstream_port;
+extern int_fast32_t upstream_port;
 extern int num_retries;
 
 tcp_pend_T *tcp_pend;
