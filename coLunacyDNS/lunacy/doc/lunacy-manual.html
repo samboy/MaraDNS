@@ -12,7 +12,7 @@
 
 <hr>
 <h1>
-Lunacy (Lua) 5.1 Reference Manual (Release 20221206p2)
+Lunacy (Lua) 5.1 Reference Manual (Release 2022-12-06)
 </h1>
 
 by Roberto Ierusalimschy, Luiz Henrique de Figueiredo, Waldemar Celes,
@@ -109,6 +109,8 @@ Freely available under the terms of the
 <LI><A HREF="#5.8">5.8 &ndash; Operating System Facilities</A>
 <LI><A HREF="#5.9">5.9 &ndash; The Debug Library</A>
 <LI><A HREF="#5.10">5.10 &ndash; Bitwise Operations</A>
+<LI><A HREF="#5.11">5.11 &ndash; Spawner</A>
+<LI><A HREF="#5.12">5.12 &ndash; lfs</A>
 </UL>
 <P>
 <LI><A HREF="#6">6 &ndash; Lua Stand-alone</A>
@@ -217,6 +219,15 @@ Freely available under the terms of the
 <A HREF="#pdf-io.write">io.write</A><BR>
 <P>
 
+<A HREF="#pdf-lfs.attributes">lfs.attributes</A><BR>
+<A HREF="#pdf-lfs.chdir">lfs.chdir</A><BR>
+<A HREF="#pdf-lfs.currentdir">lfs.currentdir</A><BR>
+<A HREF="#pdf-lfs.dir">lfs.dir</A><BR>
+<A HREF="#pdf-lfs.mkdir">lfs.mkdir</A><BR>
+<A HREF="#pdf-lfs.rmdir">lfs.rmdir</A><BR>
+<A HREF="#pdf-lfs.symlinkattributes">lfs.symlinkattributes</A><BR>
+<P>
+
 <A HREF="#pdf-lunacy.today">lunacy.today</A><BR>
 <P>
 
@@ -281,6 +292,10 @@ Freely available under the terms of the
 <A HREF="#pdf-math.random">rg32.random</A><BR>
 <A HREF="#pdf-rg32.runmill">rg32.runmill</A><BR>
 <A HREF="#pdf-math.randomseed">rg32.randomseed</A><BR>
+<P>
+
+<A HREF="#pdf-spawner.popen2">spawner.popen2</A></BR>
+<A HREF="#pdf-spawner.popen">spawner.popen</A></BR>
 <P>
 
 <A HREF="#pdf-string.byte">string.byte</A><BR>
@@ -477,26 +492,8 @@ Freely available under the terms of the
 <p>
 
 Lunacy is a fork of Lua 5.1.5 designed to be compiled as a tiny 
-Windows 32-bit binary which is (as of 2022) Windows XP 
+(116,224 byte) Windows 32-bit binary which is (as of 2022) Windows XP 
 and Windows 10 compatible.  
-<p>
-
-This version of Lunacy has been reduced in size to be as small as 
-possible while serving MaraDNS’ need for a scripting language:
-
-<ul>
-<li>coLunacyDNS uses Lunacy as the configuration language and
-    as a scripting language to make custom DNS replies.
-<li>Some of the tests include Lunacy/Lua5.1 scripts.
-<li>The tools for building MaraDNS’ documentation in various
-    formats are written as Lunacy/Lua5.1 scripts.
-</ul>
-
-There is also a version of Lunacy which is a more general purpose
-scripting language, since it (unlike this version of Lunacy) 
-has <tt>lfs</tt> and <tt>spawner</tt> support, available at
-<a href=https://github.com/samboy/lunacy>https://github.com/samboy/lunacy</a>.
-
 <p>
 
 To make sure we don't have issues come January 19, 2038, 
@@ -527,7 +524,28 @@ character.
 
 <p>
 
-Some of the bit32 lib has been added, in a manner which
+Lunacy also includes a built in version of the commonly used 
+luafilesystem suite:
+
+<pre>
+for a in lfs.dir(".") do
+  local b = lfs.attributes(a)
+  print(a,b.mode)
+end
+</pre>
+
+Note that only the calls
+<code>lfs.attributes</code>, <code>lfs.chdir</code>, 
+<code>lfs.currentdir</code>, <code>lfs.dir</code>, 
+<code>lfs.mkdir</code>, <code>lfs.rmdir</code>, and
+<code>lfs.symlinkattributes</code> are included.  The only
+file attributes are <code>size</code>, <code>mode</code>, and
+<code>nlink</code>; other attributes return nonsense values in
+Windows or have Y2038 issues.
+
+<p>
+
+In addition, some of the bit32 lib has been added, in a manner which
 appears Lua 5.2/5.3 compatible.
 
 <p>
@@ -562,6 +580,24 @@ this code before running any Lua code:
 Where "x" and "y" are suitably random 32-bit numbers (uint32_t).  Do
 not call SipHashSetKey() once any Lua code is running; otherwise
 things will break very badly in Lua.
+
+<p>
+
+Lunacy also has a port of Steve Donovan’s spawner library so that 
+Lunacy has popen2 support to spawn sub-processes with both input
+and output piped to the Lunacy script.
+
+<p>
+
+Example popen2 usage:
+
+<pre>
+w, r = spawner.popen2("wc")
+w:write("Hello, world!\n")
+w:flush()
+w:close()
+print(r:read())
+</pre>
 
 <p>
 
@@ -9159,6 +9195,249 @@ This is a 32-bit rotate.
 
 
 <p><A HREF="#contents">Contents</A>
+<h2>5.11 &ndash; <a name="5.11">Spawner</a></h2>
+
+<p>
+
+<i>Please note: Spawner may not be present, depending on how Lunacy
+   was compiled</i>
+
+<p>
+
+This library provides the ability to have Lunacy open up two-way pipes
+with sub processes.  In other words, it allows Lunacy to spawn a child
+process, and to be able to send data to the sub-process’s standard input
+while reading the sub-process’s standard output.
+
+<p>
+
+This is a reasonably simple sub-process generator, and its 
+<code>read()</code> call will hang if the sub-process does not have
+any output for Lunacy to read.  There are other corner cases where
+the code may cause things to hang, but the code works quite nicely
+as long as the sub-process is reasonably cooperative.
+
+<p>
+
+The code has both a native Windows and
+a POSIX-compatible library with the same API.
+
+<p>
+
+Example usage:  Here, <code>wc</code> is a standard *NIX command which
+reads data from the standard input, and outputs the number of words and
+lines in the input data after the input pipe is closed.
+
+<pre>
+w, r = spawner.popen2("wc")
+w:write("Hello, world!\n")
+w:flush()
+w:close()
+print(r:read())
+</pre>
+
+<p>
+<hr><h3><a 
+name="pdf-spawner.popen2"><code>spawner.popen2 (command)</code></a></h3>
+
+<code>spawner.popen2()</code> takes a single argument: The name of the
+sub-process command we wish to execute.  It returns two values:
+
+<ul>
+<li>A handle which we can write to (the first return value)
+<li>A handle which we can read from (the second return value).
+</ul>
+
+With the write handle, we can flush the write buffer by using the 
+<code>flush</code> method.  We can also close the sub-process’s standard
+input by using the <code>close</code> method on the write handle.
+It is possible to abruptly terminate the sub-process by using the
+<code>kill</code> method, but this sends a hard kill signal and does
+not allow the sub-process to gracefully terminate.
+
+<p>
+
+As long as the write handle is open, we can use the <code>write</code>
+method (which takes a string with the data to write to the sub-process
+as its only argument).
+
+<p>
+<hr><h3><a 
+name="pdf-spawner.popen"><code>spawner.popen (command)</code></a></h3>
+
+<code>spawner.popen()</code> takes a single argument: The name of the
+sub-process command we wish to execute.  It returns one value,
+a handle which we can read from.
+
+<p>
+Running <code>spawner.popen()</code> is equivalent to running
+<code>spawner.popen2()</code> then immediately closing the
+write handle.  It is similar to <code>io.popen(command, "r")</code>,
+where <i>command</i> is the argument given to <code>spawner.popen()</code>,
+but may be useful if <code>io.popen()</code> is having issues.
+
+<p><A HREF="#contents">Contents</A>
+<h2>5.12 &ndash; <a name="5.12">lfs</a></h2>
+
+<p>
+
+<i>Please note: Lfs may not be present, depending on how Lunacy
+   was compiled</i>
+
+<p>
+
+Lunacy includes a partial port of the luafilesystem library.  This
+allows for basic directory traversal in Lunacy scripts.
+
+<p>
+
+Example usage:
+
+<pre>
+for a in lfs.dir(".") do
+  local b = lfs.attributes(a)
+  print(a,b.mode)
+end
+</pre>
+
+Note that only the calls
+<code>lfs.attributes</code>, <code>lfs.chdir</code>,
+<code>lfs.currentdir</code>, <code>lfs.dir</code>,
+<code>lfs.mkdir</code>, <code>lfs.rmdir</code>, and
+<code>lfs.symlinkattributes</code> are included.  The only
+file attributes are <code>size</code>, <code>mode</code>, and
+<code>nlink</code>; other attributes return nonsense values in
+Windows or have Y2038 issues.
+
+<p>
+luafilesystem has a home page at
+<a href="https://keplerproject.github.io/luafilesystem/"
+>https://keplerproject.github.io/luafilesystem/</a>.
+
+<p>
+<hr><h3><a 
+name="pdf-lfs.attributes"><code>lfs.attributes (filename)</code></a></h3>
+
+<code>lfs.attributes(filename)</code> returns information about a given
+directory entry.  In particular, in Lunacy it returns a table with 
+only three entries:
+
+<ul>
+<li><code>size</code>, the size of the file in bytes
+<li><code>mode</code>, what kind of file it is (string value).  Possible
+    values are “file”, “directory”, “link”, “socket”, “named pipe”,
+    “char device”, “block device”, and “other”.
+<li><code>nlink</code>, the number of hard links to a given file.  This
+    will usually be 1; if this is not one, it indicates that there this
+    file has a <i>hard link</i>, i.e. the file has multiple pointers
+    to it on the file system.
+</ul>
+
+<p>
+
+Should the filename point to a non-existent entry, 
+<code>lfs.attributes</code> will return nil, and the subsequent return 
+values should indicate the error conditions.
+
+<p>
+<hr><h3><a 
+name="pdf-lfs.chdir"><code>lfs.chdir (dir)</code></a></h3>
+
+Change the current working directory for the Lunacy process to the
+directory pointed to by “dir”.  This is akin to running the “cd”
+command.  The exact format of “dir” is OS-dependent.
+
+<p>
+This function will return true if successful, nil (and why in subsequent
+return values) if not.
+
+<p>
+Example usage:
+
+<pre>
+status, error = lfs.chdir("..")
+if not status then
+  print(error)
+end
+</pre>
+
+<p>
+<hr><h3><a 
+name="pdf-lfs.currentdir"><code>lfs.currentdir ()</code></a></h3>
+
+This function returns a string indicating the current working directory.
+The format of the string is OS-dependent.
+
+<p>
+Example usage:
+
+<pre>
+print(lfs.currentdir())
+</pre>
+
+<p>
+<hr><h3><a 
+name="pdf-lfs.dir"><code>lfs.dir (location)</code></a></h3>
+
+<code>lfs.dir</code> is an iterator function which, when put in a for
+loop, returns a series of strings, each string being a name of a file
+or directory in the folder pointed to by <code>location</code>.
+
+<p>
+For example, to list all of the files in the current directory:
+
+<pre>
+for a in lfs.dir(".") do
+  print(a)
+end
+</pre>
+
+<p>
+<hr><h3><a
+name="pdf-lfs.mkdir"><code>lfs.mkdir (path)</code></a></h3>
+
+Make a new empty directory at the location specified in path.  Returns
+true on success, nil (with reason in subsequent return value) on error.
+
+<p>
+Example usage:
+
+<pre>
+status, error = lfs.mkdir("foo")
+if not status then
+  print(error)
+end
+</pre>
+
+<p>
+<hr><h3><a
+name="pdf-lfs.rmdir"><code>lfs.rmdir (path)</code></a></h3>
+
+Remove the directory at the location specified in path.  This
+will return an error if the directory is not empty.  Returns
+true on success, nil (with reason in subsequent return value) on error.
+
+<p>
+Example usage:
+
+<pre>
+status, error = lfs.rmdir("foo")
+if not status then
+  print(error)
+end
+</pre>
+
+<p>
+<hr><h3><a 
+name="pdf-lfs.symlinkattributes"
+><code>lfs.symlinkattributes (filename)</code></a></h3>
+
+<code>lfs.symlinkattributes(filename)</code> works the same as 
+<code>lfs.attributes(filename)</code>, except that, if the file is
+a symbolic link, we return information about the symbolic link instead
+of information about the file or folder the symbolic link points to.
+
+<p><A HREF="#contents">Contents</A>
 
 <h1>6 - <a name="6">Lua Stand-alone</a></h1>
 
@@ -9535,10 +9814,10 @@ Here is the complete syntax of Lua in extended BNF.
 <HR>
 <SMALL CLASS="footer">
 Last update:
-Mon Dec 19 2022
+Tue Dec 6 2022
 </SMALL>
 <!--
-Last change: Clarify lack of spawner/lfs
+Last change: Date updated for 2022-12-06
 -->
 
 </body></html>
