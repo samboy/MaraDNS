@@ -1,2 +1,2 @@
-#define MUL_CONSTANT 1238345897 
-/* 1238345897 has 16 bits set to 1 */
+#define MUL_CONSTANT 1701144241 
+/* 1701144241 has 16 bits set to 1 */
