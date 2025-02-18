@@ -237,7 +237,7 @@ void handle_sigpipe() {
 int got_hup_signal = 0;
 
 /* Signal handler for HUP signal */
-void handle_hup() {
+void handle_hup(int signum) {
     got_hup_signal = 1;
     return;
     }

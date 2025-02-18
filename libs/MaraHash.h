@@ -55,7 +55,7 @@ typedef struct {
 
 /* Function prototypes */
 /* mhash (assosciative array) objects */
-mhash *mhash_create();
+mhash *mhash_create(int hash_bits);
 mhash_offset mhash_js(js_string *tohash, int hash_bits);
 mhash_offset mhash_inc(mhash_offset old, int hash_bits);
 int mhash_put(mhash *hash, js_string *key, void *value, int datatype);
