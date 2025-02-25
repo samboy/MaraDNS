@@ -47,7 +47,7 @@ void harderror(char *why) {
     exit(3);
     }
 
-void timeout() {
+void timeout(int signum) {
     harderror(L_TIMEOUT); /* "Connection timed out" */
     }
 

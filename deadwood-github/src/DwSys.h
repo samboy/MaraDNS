@@ -101,7 +101,7 @@ void set_time();
 
 /* Read mararc parameters and set global variables based on those
  * parameters */
-void process_mararc();
+void process_mararc(char *name);
 
 /* Initialize the cache */
 void init_cache();

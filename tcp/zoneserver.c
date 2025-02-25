@@ -84,13 +84,13 @@ int dns_port = 53; /* The default port for the zoneserver to listen on */
 int no_cname_warnings = 1; /* So we can link to MaraBigHash.o */
 
 /* Signal handler for handling the exit of a child */
-void handle_childs() {
+void handle_childs(int signum) {
     if(waitpid(0,NULL,WNOHANG) > 0)
         num_children--;
 }
 
 /* Signal handler for termination of the root process */
-void handle_term() {
+void handle_term(int signum) {
     killpg(getpgrp(), SIGTERM);
     exit(0);
 }
