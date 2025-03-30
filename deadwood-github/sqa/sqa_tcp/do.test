@@ -23,7 +23,9 @@ EOF
 #../../src/Deadwood -f dwood2rc &
 
 sleep 3
-askmara-tcp Awww.example.com. 127.0.0.1 | awk -F\| '{print $1}'
+askmara-tcp Awww.example.com. 127.0.0.1 | awk -F\| '{
+	gsub(/^#C.*/,"# SOME CNAME");
+	gsub(/.*akamai.net./,"SOMETHING.akamai.net.");print $1}'
 killall maradns > /dev/null 2>&1
 killall zoneserver > /dev/null 2>&1
 killall Deadwood
