@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2010,2026 Sam Trenholme
+/* Copyright (c) 2009-2010 Sam Trenholme
  *
  * TERMS
  *
@@ -31,15 +31,19 @@
 
 /* This is the header placed before the 4-byte IP; we change the last four
  * bytes to set the IP we give out in replies */
-char p[40] = 
-"\xc0\x0c\x00\x05\x00\x01\x00\x00\x00\x80\x00\x11"
-"\x03\x61\x00\x62\007example\003com\000";
-//"\xc0\x0c\x00\x05\x00\x01\x00\x00\x00\x80\x00\x0b\x05abcyz\x03com\x00";
-//"\xc0\x0c\x00\x01\x00\x01\x00\x00\x00\x00\x00\x04\x7f\x7f\x7f\x7f";
+char p[17] =
+"\xc0\x0c\x00\x01\x00\x01\x00\x00\x00\x00\x00\x04\x7f\x7f\x7f\x7f";
 
-/* This will always return "CNAME ab\000yz.com." to any question
-   to listen on 127.0.0.1:
-   testserver 127.0.0.1
+/* microdns: This is a tiny DNS server that does only one thing: It
+   always sends a given IPv4 IP to any and all queries sent to the server.
+   The IP to send the user is given in the first argument; the second optional
+   argument is the IP of this tiny DNS server.  If the second argument is not
+   given, microdns binds to "0.0.0.0": All the IP addresses the server has.
+
+   For example, to have micrdns always give the IP address 10.1.2.3 on the
+   IP 127.0.0.1:
+
+        microdns 10.1.2.3 127.0.0.1
 
  */
 
@@ -50,17 +54,25 @@ uint32_t get_ip(int argc, char **argv) {
         uint32_t ip;
 
         /* Set the BIND ip and the IP we give everyone */
-        if(argc < 2 || argc > 2) {
+        if(argc < 2 || argc > 3) {
                 printf(
-                "Usage: testserver {ip of server}\n"
+                "Usage: microdns {ip to give out} [{ip of microdns server}]\n"
                 );
                 exit(1);
                 }
 
-        /* Set the IP we bind to (default is "0", which means "all IPs") */
+        /* Set the IP we give everyone */
+        ip = inet_addr(argv[1]);
+        ip = ntohl(ip);
+        p[12] = (ip & 0xff000000) >> 24;
+        p[13] = (ip & 0x00ff0000) >> 16;
+        p[14] = (ip & 0x0000ff00) >>  8;
+        p[15] = (ip & 0x000000ff);
+
+        /* Set the IP we bind to (default is "0", which means "all IPs) */
         ip = 0;
-        if(argc == 2) {
-                ip = inet_addr(argv[1]);
+        if(argc == 3) {
+                ip = inet_addr(argv[2]);
         }
         /* Return the IP we bind to */
         return ip;
@@ -124,14 +136,21 @@ int main(int argc, char **argv) {
                 if(len_inet > 12) {
                         /* Make this an answer */
                         in[2] |= 0x80;
-                        in[7]++;
+                        if(in[11] == 0) { /* EDNS not supported */
+                                /* We add an additional answer */
+                                in[7]++;
+                        } else {
+                                in[3] &= 0xf0; in[3] |= 4; /* NOTIMPL */
+                        }
                 }
-                for(a=0;a<29;a++) {
-                        in[len_inet + a] = p[a];
+                if(in[11] == 0) { /* Again, EDNS not supported */
+                        for(a=0;a<16;a++) {
+                                in[len_inet + a] = p[a];
+                        }
                 }
 
                 /* Send the reply */
-                sendto(sock,in,len_inet + 29,0, (struct sockaddr *)&dns_udp,
+                sendto(sock,in,len_inet + 16,0, (struct sockaddr *)&dns_udp,
                         leni);
         }
 
