@@ -29,13 +29,12 @@
 /* We use a special SOCKET type for easier Windows porting */
 #define SOCKET int
 
-/* This is the header placed before the 4-byte IP; we change the last four
- * bytes to set the IP we give out in replies */
+/* This is a CNAME referral where the CNAME has a NULL inside of it.
+ * I got a security report packets like this crash Deadwood.  
+ * They do not. */
 char p[40] = 
 "\xc0\x0c\x00\x05\x00\x01\x00\x00\x00\x80\x00\x11"
 "\x03\x61\x00\x62\007example\003com\000";
-//"\xc0\x0c\x00\x05\x00\x01\x00\x00\x00\x80\x00\x0b\x05abcyz\x03com\x00";
-//"\xc0\x0c\x00\x01\x00\x01\x00\x00\x00\x00\x00\x04\x7f\x7f\x7f\x7f";
 
 /* This will always return "CNAME ab\000yz.com." to any question
    to listen on 127.0.0.1:
