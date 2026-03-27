@@ -2272,6 +2272,7 @@ int dwx_handle_cname_refer(int connection_number, dw_str *action,
         offset = dw_fetch_u16(action, -2);
         offset += 2; /* Go past two-byte length */
         real_query = dw_get_dname(action->str, offset, 260, 0);
+        printf("HERE0 %p\n",real_query); // DEBUG
         dwc_lower_case(real_query);
         if(real_query == 0) {
                 goto catch_dwx_handle_cname_refer;
