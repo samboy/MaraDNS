@@ -1,0 +1,58 @@
+<HTML>
+<HEAD>
+<TITLE>maraDNSorg</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+</HEAD>
+<BODY BGCOLOR="#FFFFCC" text="#660000" link=#888888 vlink=#888888>
+<H1>Some informal benchmarks of some name servers</H1>
+
+<P>
+First of all, the old adage that "bencharks are meaningless numbers"
+has a lot of truth to it.  For most, if not all, of the real-world
+situtations out there, BIND, DjbDNS, and MaraDNS provide more than
+enough speed.
+</P>
+<P>
+Men, being men, though, like to use benchmarks to time meaningless 
+DNS queries, giving meaningless information, which then they write
+wordy documents about, so that they can pretend they have useful
+information, when, in truth, they have learned nothing.
+</P>
+<P>
+The benchmark performed here was done with the "benchmark" tool
+supplied with MaraDNS.  I sent a series of 50,000 queries over the loopback
+interface to DjbDNS 1.04, BIND 4.9.7, BIND 8.3.2, BIND 9.1.1rc6, and 
+MaraDNS 0.5.09.  Here is how long the queries took, in seconds,
+to process on a Dell poweredge computer with a single 800MHZ 
+Pentium III CPU, running Linux 2.2.19:
+</P>
+<PRE>
+maradns-0.5.09: 3.46
+bind-8.2.3: 6.34
+bind-9.1.1rc6: 6.40
+bind-4.9.7: 6.48
+djbdns-1.04: 9.95
+</PRE>
+<P>
+&lt;Thumping chest in pride&gt;As you can see, MaraDNS is nearly three times as
+fast as DjbDNS, and a hair under two times as fast as BIND.&lt;/thumping chest
+in pride&gt;
+</P>
+<P>
+These numbers, of course, do not tell the entire story.  TinyDNS uses a 
+disk-based database, which allows it to do some things MaraDNS can not
+do, such as:</P>
+<UL>
+<LI>Changing data in the database without having to restart TinyDNS</LI>
+<LI>Having a huge dataset (well, two gigbytes or less) without having to
+    load the entire dataset in to memory before processing queries</LI>
+</UL>
+<P>
+BIND has many capabilities that MaraDNS does not have, such as dynamic DNS
+and signed DNS records.  
+</P>
+
+<!-- The footer to the web page begins here -->
+
+<script src="/gb.js"></script></BODY>
+</HTML>
