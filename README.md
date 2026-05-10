@@ -28,13 +28,14 @@ for bug reports).
 
 MaraDNS has been, since late 2022, in deep freeze and is only being
 updated to fix important security holes.  The last hole found was 
-in 2023.
+in 2023.  No attack stronger than remote denial of service has
+*ever* been found with MaraDNS.
 
-MaraDNS has been updated to be Y2038 compliant; any and all external
-dependencies MaraDNS has have multiple implementations (for example, the
-scripts for converting MaraDNS’s documents have been updated to be in Lua
-instead of Perl, because multiple Lua implementations exist, including
-one shipping in MaraDNS’s source code).
+MaraDNS is future-proof: She has been updated to be Y2038 compliant; any 
+and all external dependencies MaraDNS has have multiple implementations 
+(for example, the scripts for converting MaraDNS’s documents have been 
+updated to be in Lua instead of Perl, because multiple Lua implementations 
+exist, including one shipping in MaraDNS’s source code).
 
 # ABOUT
 
