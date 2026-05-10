@@ -1,16 +1,19 @@
-<html><head><title>maramake - a tiny implementation of make</title>
+<html><head><title>HalfSipTest - Generate reference HalfSipHash test vectors</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <!--[if gt IE 9]> <!-- -->
 <link rel="stylesheet" title="Woodson (Default)"
  type="text/css" media="only screen and (min-width: 700px)" 
- href="../maradns-009.css">
+ href="../maradns-008.css">
 <link rel="stylesheet" title="Woodson (Default)"
  type="text/css" media="only screen and (max-width: 699px)" 
- href="../maradns-009-mobile.css">
+ href="../maradns-008-mobile.css">
 <link rel="stylesheet" type="text/css" media="print" 
  href="../maradns-1.2-p.css">
 <link rel="stylesheet" type="text/css" media="handheld" 
  href="../maradns-1.2-h.css">
+<link rel="alternate" type="application/rss+xml"
+ title="MaraDNS Blog RSS Feed"
+ href="http://www.samiam.org/blog/maradns.rss" />
 <meta name="viewport"
 content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"
 >
@@ -64,6 +67,9 @@ A&nbsp;tiny recursive DNS&nbsp;server
         <a href="../index.html">Main</a>
         <a href="../download.html">Download</a>
         <a href="../changelog.html">Changelog</a>
+        <a href="https://maradns.samiam.org/notes.html">Documentation</a>
+        <a href="https://maradns.samiam.org/search.html">Search</a>
+        <a href="https://maradns.samiam.org/blog">Blog</a>
         <a href="../security.html">Security</a>
 </div> <!-- maradns-l -->
 <div class=makelarge>
@@ -75,84 +81,34 @@ A&nbsp;tiny recursive DNS&nbsp;server
 <a href="http://caulixtla.com/music/"
 >listen to my music</a></i><p>
 
-<h1>maramake</h1>
+<h1>HalfSipTest</h1>
 
-<i>maramake</i> is a fork of <a href=https://frippery.org/make/>pdpmake</a>,
-a tiny public domain POSIX-compliant implementation of the standard
-*NIX tool <tt>make</tt>
-
-<p>
-
-Unlike pdpmake, maramake allows make targets to have the <tt>/</tt>
-character in them.  While the <a 
-href=https://pubs.opengroup.org/onlinepubs/9699919799/utilities/make.html
->POSIX make standard</a> does not require POSIX compliant implementations
-to support the <tt>/</tt> character in targets, it is a permitted 
-extension.  Support for the <tt>/</tt> character in targets is required 
-when a build artifact is in a different directory than the source file.
+<i>HalfSipTest</i> is a fork of the reference HalfSipHash implementation.
+This fork uses the official reference HalfSipHash code to generate
+HalfSipHash test vectors for MaraDNS’s automated tests.
 
 <p>
-
-Since the <tt>c99</tt> command can not compile MaraDNS — MaraDNS
-uses POSIX system calls not present in the ISO spec — <tt>maramake</tt>
-has been updated to use <tt>cc</tt> instead of the POSIX-specified
-<tt>c99</tt> as the default value for <tt>$CC</tt>.
-
-<p>
-
-Besides these two changes, <tt>maramake</tt> is a bare bones POSIX
-compliant implementation of <tt>make</tt>.
-
-<p>
-
-maramake also has support for <tt>maramake --version</tt> (or 
-<tt>make --version</tt> if renamed <tt>make</tt>) and a <tt>compile.sh</tt>
-script to compile maramake without needing an implementation of make
-already installed.
-
-<h2>Git repos</h2>
-
-maramake is available via git at the following locations:
-
-<ul><li><a href=https://github.com/samboy/maramake>GitHub</a>
-<li><a href=https://codeberg.org/samboy/maramake>Codeberg</a>
-</ul>
-
-This is the development branch of maramake.
-
-<h2>Downloads</h2>
-
-Stable versions of maramake are available as a local download.
-
 <ul>
-
-<li><a href=maramake-2022-11-01.tar.gz>maramake-2022-11-01.tar.gz</a>
-(<a href=maramake-2022-11-01.tar.gz.asc>sig</a>)
-<li><a href=maramake-2022-11-18.tar.gz>maramake-2022-11-18.tar.gz</a>
-(<a href=maramake-2022-11-18.tar.gz.asc>sig</a>)
-
+<li><a href=HalfSipTest-2022-12-08.tar.gz>HalfSipTest-2022-12-08.tar.gz</a>
+<li><a href=https://github.com/samboy/HalfSipTest>GitHub repo</a>
 </ul>
 
-<h2>License</h2>
+<hr>
 
-This is free and unencumbered software released into the public domain.
-
-<p>
-
-Anyone is free to copy, modify, publish, use, compile, sell, or
-distribute this software, either in source code form or as a compiled
-binary, for any purpose, commercial or non-commercial, and by any
-means.
+HalfSipHash 1-3 — HalfSipHash with one round while processing the
+input and three rounds after the input ends — is used by the 
+<tt>coLunacyDNS</tt> service in MaraDNS, as well as the BlockHash
+code which can store a large number of host names with both a low memory
+footprint and the ability to quickly check if a given name is in the 
+list.
 
 <p>
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
+Since this code is used by components of MaraDNS, it is also tested.
+For HalfSipHash1-3 to be correctly tested, it needs test vectors to
+test against.  Since HalfSipHash1-3 doesn’t have official test 
+vectors, I generated my own test vectors using a fork of the reference
+implementation of HalfSipHash.  This code is that fork.
 
 <!-- begin footer -->
 </div></div>
@@ -169,6 +125,9 @@ OTHER DEALINGS IN THE SOFTWARE.
         <a href="../index.html">Main</a>
         <a href="../download.html">Download</a>
         <a href="../changelog.html">Changelog</a>
+        <a href="https://maradns.samiam.org/notes.html">Documentation</a>
+        <a href="https://maradns.samiam.org/search.html">Search</a>
+        <a href="https://maradns.samiam.org/blog">Blog</a>
         <a href="../security.html">Security</a>
 </div> <!-- maradns-l -->
 <div class=makelarge>
