@@ -266,7 +266,7 @@ of DNS records.
 # MaraDNS’ future
 
 MaraDNS is a mature application, in deep freeze: The only updates being
-done now are important security updated. 
+done now are important security updates. 
 
 I have revamped MaraDNS so that it can continue to compile and run for
 as long as possible, minimizing the number of external dependencies so
@@ -322,17 +322,33 @@ updated.
 
 ## Cyber Resilience Act statement
 
-MaraDNS is a project developed on a strictly volunteer, non-commercial
-basis.  It has been developed outside the course of a commercial
-activity, developed entirely in the Americas (i.e. *outside of Europe*)
-and therefore is not subject to the restrictions or conditions of the 
-proposed EU Cyber Resilience Act.  Someone selling a product that 
-uses any component of MaraDNS may be subject to this act and may
-need to handle any and all necessary compliance.
+MaraDNS is open source software, and, as such, is not subject to the
+regulations of the Cyber Resilience Act.
+
+## Warranty 
 
 MaraDNS, as always, is provided free of charge but with **no warranty**.
+That said, I do take security reports seriously---the last time there was
+a confirmed important security hole in MaraDNS, back in 2023, I addressed
+the issue within 24 hours and had a fix out shortly afterwards.
 
 # Updates
+
+## 2023 and later
+
+In 2023, someone found a “packet of death” bug with MaraDNS.  This is the
+second “packet of death” bug MaraDNS has ever had (another one was found
+in 2011) and I fixed it within a couple of days.
+
+In 2026, an extensive security audit of MaraDNS was performed, and the
+security “holes” were issues like “If MaraDNS (Deadwood, actually) gets this
+weird packet, it takes longer than it should have to release resources and
+stop trying to resolve the name in question”.  When it looked like there
+was a “packet of death” bug, I wrote a test to reproduce the issue,
+realized it was not an actual packet of death, and the reporter realized
+the issue was with their testing apparatus.
+
+MaraDNS has *never* had a security hole worse than “packet of death”.
 
 ## 2022 Updates
 
