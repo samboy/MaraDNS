@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Since the twerps at Sourceforge not longer allow directory indexes,
+# this script makes them for me.
+
+for dir in `find . -type d` ; do
+	cd $dir
+	ls -l | grep -v '^total' | \
+           perl -pe 's/([\w\.\-]+)$/<A href=$1>$1<\/A><BR>/' > index.html
+	cd ~-
+done

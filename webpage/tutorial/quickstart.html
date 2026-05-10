@@ -1,0 +1,98 @@
+<HEAD>
+<TITLE>MaraDNS Quick Start guide</TITLE>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+
+</HEAD>
+<h1>This quick-start guide is for MaraDNS 1.1</h1>
+
+<BODY>
+MaraDNS acts as both a recursive and an authoritative DNS server.  In
+other words, MaraDNS can both be used to speed up the internet, and/or
+serve domains that you may have.
+<p>
+
+To try out MaraDNS as a recursive nameserver is easy:
+<ul>
+
+<li> Compile MaraDNS.  Type in './configure; make' in this directory (the 
+  top-level MaraDNS directory.)
+  Note: No need to compile if you downloaded a binary RPM or Debian package.
+
+<li> Take the file server/maradns and place it in /usr/local/sbin
+
+<li> Take the file tools/duende and place it in /usr/local/sbin
+
+<li> Create an empty directory called /etc/maradns
+
+<li> Create a mararc file.  This file only needs to be three lines long
+     on systems with a /dev/urandom file, and four lines long on older
+     operating systems without /dev/urandom
+<p>
+     Here is a sample mararc file:
+<pre>
+	ipv4_bind_addresses = "127.0.0.1"
+	chroot_dir = "/etc/maradns"
+	recursive_acl = "127.0.0.1"
+</pre>
+     This mararc file says that MaraDNS will have the ip "127.0.0.1" (this
+     is the bind_address), run from the directory /etc/maradns (the chroot_dir
+     value), and only allow the ip "127.0.0.1" to make recursive queries (the
+     recursive_acl value).
+
+<li> Place the mararc file in the location /etc/mararc on your system.
+
+<li> Run MaraDNS as a non-daemon: 
+<blockquote>
+<pre>
+	/usr/local/sbin/maradns
+</pre>
+</blockquote>
+Since MaraDNS needs to bind to a privledged port (port 53), it needs
+to start up running as root.  MaraDNS is designed with security in mind, and
+will drop root privledges before being visible to the public internet.
+
+<li> Test MaraDNS in another window or virtual terminal
+     
+<blockquote>
+<pre>
+	dig @127.0.0.1 www.yahoo.com
+</pre>
+</blockquote>
+
+<li> In order to make the duende daemonizing tool usable, create a directory
+     named /etc/maradns/logger/
+
+<blockquote>
+<pre>
+	mkdir /etc/maradns/logger
+</pre>
+</blockquote>
+
+<li> If this works, make MaraDNS run as a daemon:
+
+<blockquote>
+<pre>
+	/usr/local/sbin/duende /usr/local/sbin/maradns
+</pre>
+</blockquote>
+
+     duende is a tool that daemonizes maradns; the daemonizer is a separate
+     program.
+</ul>
+
+<li>If this all works, install MaraDNS:
+<blockquote>
+<pre>
+	make install
+</pre>
+</blockquote>
+<p>
+
+Look in doc (in particular, the tutorial), or read the relevant man 
+pages for more information on how to set up these files.
+<p>
+
+</ul>
+
+</body>
