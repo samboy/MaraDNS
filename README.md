@@ -24,6 +24,18 @@ and
 [GitHub discussions](https://github.com/samboy/MaraDNS/discussions) 
 for bug reports).  
 
+# Current status
+
+MaraDNS has been, since late 2022, in deep freeze and is only being
+updated to fix important security holes.  The last hole found was 
+in 2023.
+
+MaraDNS has been updated to be Y2038 compliant; any and all external
+dependencies MaraDNS has have multiple implementations (for example, the
+scripts for converting MaraDNS’s documents have been updated to be in Lua
+instead of Perl, because multiple Lua implementations exist, including
+one shipping in MaraDNS’s source code).
+
 # ABOUT
 
 MaraDNS is a small and lightweight cross-platform open-source DNS
