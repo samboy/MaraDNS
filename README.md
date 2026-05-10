@@ -47,8 +47,8 @@ a BSD license.
 I initially wrote MaraDNS while I was a college student and a travelling
 English teacher during the first 2000s decade.
 
-Since the COVID-19 pandemic, I have been actively adding new features
-to MaraDNS, most notably the new `coLunacyDNS` service which uses Lua
+During the COVID-19 pandemic, I was actively adding new features
+to MaraDNS, most notably the `coLunacyDNS` service which uses Lua
 to customize DNS replies.
 
 Versions of some MaraDNS programs compiled as Windows binaries
@@ -67,8 +67,8 @@ To build MaraDNS, one needs a POSIX system with:
   32-bit, and 64-bit sized integers.
 * A POSIX C library with both POSIX and Berkeley socket support.
 
-(To build some of the documentation, the non-standard but widely
- available `unix2dos` text conversion utility is used.)
+(To build some of the documentation, the non-standard but [widely
+ available](https://github.com/samboy/busybox-w32) `unix2dos` text conversion utility is used.)
 
 Then, do this:
 
