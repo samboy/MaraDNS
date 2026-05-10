@@ -265,12 +265,12 @@ of DNS records.
 
 # MaraDNS’ future
 
-MaraDNS is a mature application.  Being open source code, the amount
-of time I have to devote to MaraDNS is highly variable.  Right now,
-I am concentrating my efforts to revamp MaraDNS so that it can 
-continue to compile and run for as long as possible, minimizing the
-number of external dependencies so that outside changes are unlikely
-to break MaraDNS.
+MaraDNS is a mature application, in deep freeze: The only updates being
+done now are important security updated. 
+
+I have revamped MaraDNS so that it can continue to compile and run for
+as long as possible, minimizing the number of external dependencies so
+that outside changes are unlikely to break MaraDNS.
 
 For MaraDNS to break, either the C language would have to change to
 break programs that compile with few to no warnings here in the 2020s,
