@@ -1,0 +1,14 @@
+#topright {
+	display: none;
+}
+
+#maradns-name {
+	font-size: large;
+	font-weight: bold;
+}
+
+#paypal { display: none; }
+
+.makelarge, .makenormal, .nocss {
+	display: none;
+}

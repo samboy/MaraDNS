@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>MaraDNS - a small open-source DNS server</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--[if gt IE 9]> <!-- -->
+<link rel="stylesheet" title="Woodson (Default)"
+ type="text/css" media="only screen and (min-width: 700px)" 
+ href="maradns-009.css">
+<link rel="stylesheet" title="Woodson (Default)"
+ type="text/css" media="only screen and (max-width: 699px)" 
+ href="maradns-009-mobile.css">
+<link rel="stylesheet" type="text/css" media="print" 
+ href="maradns-1.2-p.css">
+<link rel="stylesheet" type="text/css" media="handheld" 
+ href="maradns-1.2-h.css">
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"
+>
+<!-- <![endif]-->
+</head>
+<body bgcolor="#cae6c7" text="#000000" link="#3b5e35" vlink="#3b5e35">
+<div align=center id=maradns-all>
+<div id=table1><div id=tr1a><div id=td1a>
+<div align=left>
+<div id=table2><div id=tr2a>
+<div id=td2a>
+<div class=mlogo>
+<font id=maradns-name size="+4"><i><b>MaraDNS</b></i></font>
+<br>
+<div id=maradns-t>
+A&nbsp;small open-source DNS&nbsp;server
+</div><!-- maradns-t -->
+</div><!-- mlogo -->
+</div><!-- td2a -->
+<div id=td2b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+<div id=topright>
+        <div id=table3><div id=tr3><div id=trabalengua>
+        <i>
+                Erre con erre cigarro<br>
+                Erre con erre barril<br> 
+                R&aacute;pido&nbsp;ruedan&nbsp;los&nbsp;carros<br>
+                En el ferrocarril<br></i>
+        </div></div></div>
+</div><!-- topright -->
+</div><!-- tr2a -->
+</div><!-- table2 -->
+<div id=mobile>
+<br id=gata1>
+	<a href="index.html">Main</a>
+	<a href="download.html">Download</a>
+	<a href="changelog.html">Changelog</a>
+	<a href="security.html">Security</a>
+</div> <!-- maradns-l -->
+<div class=makelarge>
+<br id=gata2>
+<div id=table4><div id=tr4><div id=content>
+<div id=maradns-r>
+<i><a href="https://www.paypal.me/caulixtla"
+>Support MaraDNS</a> or
+<a href="http://caulixtla.com/music/"
+>listen to my music</a></i><p>
+<!-- end header -->
+<H1>DNS software</H1>
+
+Here is a list of DNS software that is open source, is
+currently (as of 2016) being
+maintained, and that has authoritative and recursive
+<a href="https://en.wikipedia.org/wiki/Domain_Name_System_Security_Extensions">DNSSEC</a>
+support: 
+
+<ul>
+
+<li><a href="http://www.isc.org/software/bind">BIND</a> is
+the swiss army knife of DNS servers.  It has a lot of
+features and can do pretty much everything.  It's also
+a big binary and sometimes difficult to configure.  <a
+href="http://web.nvd.nist.gov/view/vuln/search-results?query=BIND&amp;search_type=all&amp;cves=on">CVE</a> BIND supports DNSSec. <p>
+
+<li> <a href="http://unbound.net/">Unbound</a> and <a
+href="http://www.nlnetlabs.nl/projects/nsd/">NSD</a> make up a suite of
+DNS servers; they are both from NLnet Labs.  <p>
+<A href=http://linuxmafia.com/~rick/lan.html>Basically</A>,
+one (NSD) puts your web page on
+the Internet; the other (Unbound) looks for web pages on the Internet.  <a
+href="http://web.nvd.nist.gov/view/vuln/search-results?query=NSD&amp;search_type=all&amp;cves=on">NSD
+CVE</a> (None of those entries look to point to NSD; it
+appears to have no CVE entries) <a
+href="http://web.nvd.nist.gov/view/vuln/search-results?query=Unbound&amp;search_type=all&amp;cves=on">Unbound
+CVE</a> Both support DNSSec. 
+<p>
+
+<li><a href="https://www.knot-dns.cz/">Knot DNS</a> and 
+<a href="https://www.knot-resolver.cz/">Knot Resolver</a> are two 
+DNS servers which came out in the 2010s (an authoritative and recursive
+component); the recursive resolver is from 2016.  Both support modern
+DNS features, such as DNSSec.  Like NSD and Unbound, Knot DNS serves
+DNS records and Knot Resolver looks for DNS records on the Internet.
+
+<p>
+
+So far, there do not appear to be any CVE reports for either server, but
+both packages are fairly new.  <A 
+href="https://lwn.net/Articles/606968/">There’s a good writeup at LWN
+by the implementer about Knot DNS</A>.
+<p>
+
+<li> <a href="http://powerdns.com/">PowerDNS</a> (which
+like Unbound/NSD, is two separate programs) has a lot of
+flexibility with connecting to databases or what not to
+resolve a DNS name.  Used by Wikimedia, among others.  <a
+href="http://web.nvd.nist.gov/view/vuln/search-results?query=PowerDNS&amp;search_type=all&amp;cves=on">CVE</a>.  
+
+<p>
+
+</ul>
+
+Here are some other DNS servers:
+
+<ul>
+<li> <a href="http://cr.yp.to/djbdns.html">DjbDNS</a>.  Great
+tiny two-program DNS suite that sadly hasn't been updated by DJB since 2001. <a
+href="http://web.nvd.nist.gov/view/vuln/search-results?query=DjbDNS&amp;search_type=all&amp;cves=on">Yes,
+it does have security problems</a> (That's a CVE link).  Note that 
+there are at least two security issues with DjbDNS which <i>do not</i>
+have CVE numbers.
+<p>
+For anyone who wants to use DjbDNS, use 
+<a href=ndjbdns/>N-DjbDNS</a>, which
+is patched against all known security holes.  I am now maintaining this
+branch of DjbDNS; the only updates I do are root server IP updates,
+security updates, and updates to ensure it compiles in (as of 2021)
+Ubuntu 20.04 LTS.
+<p>
+There are patches to give the authoritative half DNSSEC support;
+there is no DNSSEC support for the recursor.
+<p>
+
+<li> <a href="http://maradns.samiam.org/">MaraDNS</a>.  <!-- I think it's the
+<A href=advocacy.html>best one</A>, but my opinion
+is a little biased. --> It was once a single program,
+now two separate programs (like Unbound/BSD and PowerDNS)
+Easy-to-configure; tiny binary suitable for embedded systems.  <a
+href="http://web.nvd.nist.gov/view/vuln/search-results?query=MaraDNS&amp;search_type=all&amp;cves=on">CVE</a>
+
+<p>
+
+MaraDNS does not support DNSSEC nor EDNS.<p>
+
+</ul>
+
+<p> There are many many other DNS servers, both open source and non-open 
+source. Here is an incomplete list of the open source ones:
+<A href="http://www.thekelleys.org.uk/dnsmasq/doc.html">DnsMasq</A>,
+<A href="http://freshmeat.net/projects/pdnsd/">pdnsd</A>,
+<A href="http://posadis.sourceforge.net">Posadis</A>,
+<A href="http://mydns.bboy.net/">MyDNS</A>,
+<A href="http://www.mydns-ng.com/">MyDNS-ng</A>,
+<A href="/download/non-maradns/sdns.tar.bz2">SDNS</A> (Public domain,
+local download link),
+<A href="http://www.xbill.org/dnsjava/">DnsJAVA</A>
+
+<h2>Other lists</h2>
+<UL>
+<LI><A 
+href="http://linuxmafia.com/faq/Network_Other/dns-servers.html">Rick Moen
+has a great list of open-source DNS servers</a>.
+<LI><A href="http://cr.yp.to/djbdns/other.html">Dan J. Bernstein also
+has a list of DNS servers</A>
+</UL>
+
+<!-- begin footer -->
+</div></div>
+<div id=lefthand>
+<br id=gata3>
+<hr id=gata4>
+<div id=maradns-l>
+	<a href="index.html">Main</a>
+	<a href="download.html">Download</a>
+	<a href="changelog.html">Changelog</a>
+	<a href="notes.html">Documentation</a>
+	<a href="search.html">Search</a>
+	<a href="/blog">Blog</a>
+	<a href="security.html">Security</a>
+</div> <!-- maradns-l -->
+<div class=makelarge>
+</div><!-- makelarge -->
+</div><!-- lefthand -->
+</div>
+</div></div>
+</div></div>
+</div>
+</div></div>
+</html>

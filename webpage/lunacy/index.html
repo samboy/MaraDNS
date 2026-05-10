@@ -1,0 +1,259 @@
+<html><head><title>Lunacy - a tiny full-featured scripting language</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--[if gt IE 9]> <!-- -->
+<link rel="stylesheet" title="Woodson (Default)"
+ type="text/css" media="only screen and (min-width: 700px)" 
+ href="../maradns-009.css">
+<link rel="stylesheet" title="Woodson (Default)"
+ type="text/css" media="only screen and (max-width: 699px)" 
+ href="../maradns-009-mobile.css">
+<link rel="stylesheet" type="text/css" media="print" 
+ href="../maradns-1.2-p.css">
+<link rel="stylesheet" type="text/css" media="handheld" 
+ href="../maradns-1.2-h.css">
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"
+>
+<!-- <![endif]-->
+</head>
+<body bgcolor="#cae6c7" text="#000000" link="#3b5e35" vlink="#3b5e35">
+<div align=center id=maradns-all>
+<div id=table1><div id=tr1a><div id=td1a>
+<div align=left>
+<div id=table2><div id=tr2a>
+<div id=td2a>
+<div class=mlogo>
+<font id=maradns-name size="+4"><i><b>MaraDNS</b></i></font>
+<br>
+<div id=maradns-t>
+A&nbsp;small open-source DNS&nbsp;server
+</div><!-- maradns-t -->
+</div><!-- mlogo -->
+
+<!--
+<div class=dlogo>
+<font id=maradns-name size="+4"><i><b>Deadwood</b></i></font>
+<br>
+<div id=maradns-t>
+A&nbsp;tiny recursive DNS&nbsp;server
+</div>
+</div>
+-->
+
+</div><!-- td2a -->
+<div id=td2b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+<div id=topright>
+        <div id=table3><div id=tr3><div id=trabalengua>
+        <i>
+                Erre con erre cigarro<br>
+                Erre con erre barril<br> 
+                R&aacute;pido&nbsp;ruedan&nbsp;los&nbsp;carros<br>
+                En el ferrocarril<br></i>
+        </div></div></div>
+</div><!-- topright -->
+</div><!-- tr2a -->
+</div><!-- table2 -->
+<div id=mobile>
+<br id=gata1>
+<!--
+        <a href="../index.html">MaraDNS</a>
+        <a href="stable/">Download</a>
+        <a href="doc/CHANGELOG">Changelog</a>
+        <a href="doc/">Documentation</a>
+-->
+        <a href="../index.html">Main</a>
+        <a href="../download.html">Download</a>
+        <a href="../changelog.html">Changelog</a>
+        <a href="../security.html">Security</a>
+</div> <!-- maradns-l -->
+<div class=makelarge>
+<br id=gata2>
+<div id=table4><div id=tr4><div id=content>
+<div id=maradns-r>
+<i><a href="https://www.paypal.me/caulixtla"
+>Support MaraDNS</a> or
+<a href="http://caulixtla.com/music/"
+>listen to my music</a></i><p>
+
+<h1>Lunacy</h1>
+
+<i>Lunacy</i> is a fork of the tiny scripting language Lua; it is based
+on the 5.1 release of Lua.  
+
+<p>
+
+It is a scripting language that is able to do a good deal more than
+a “BASH + AWK” workflow while being a fraction of a size of “big”
+scripting languages such as Perl, PHP, Ruby, and Python.  A fully
+functional 32-bit Windows compile of Lunacy is only 116,224 bytes
+in size.
+
+<h2>Security</h2>
+
+Lunacy is patched against all known security problems with Lua 5.1:
+
+<ul>
+<li>CVE-2014-5461 has been patched (even though the exploit test
+actually did <i>not</i> crash Lunacy).
+<li>The hash compression code
+uses a 32-bit SipHash variant to protect Lunacy against hash collision
+attacks.
+</ul>
+
+<h2>Supported platforms</h2>
+
+Lunacy is cross platform:  It compiles both
+in Linux systems and in Windows (via MinGW) as a native Windows binary.
+All included libraries (lfs, etc.) have the same functionality in
+both Linux and Windows.  In Windows, it has the performance of a
+native application (i.e. the Windows native build of Lunacy performs
+file I/O a good deal faster than the Cygwin build of Lunacy).
+While not tested, it <i>should</i> compile in UNIX and other UNIX clones
+such as MacOS.  Heck, it should port to exotic stuff like 
+<a href=https://vmssoftware.com/docs/lua-release-notes.pdf>VMS without 
+issue</a>.
+
+<h2>Documentation</h2>
+
+The project has a full manual (in <A href=lunacy-manual.txt>text</A>, 
+<A href=lunacy-manual.html>HTML</A>, 
+<A href=lunacy-manual.pdf>PDF</A>, and multiple e-Book 
+formats).  <a href=lunacy-manual.html>Click (or tap) here to read the
+HTML manual</a>.
+
+<p>
+
+In addition, I am in the process of writing a public domain <a 
+href=SamDiscussesLunacy.pdf>book on programming in Lunacy</a>
+(PDF file; we also have <a href=SamDiscussesLunacy.odt>source</a> 
+and
+<a href=SamDiscussesLunacy-fonts.7z>the fonts used</a>) which can be 
+downloaded (tap or click on the link).  The
+book includes sample code, such as a <a href=CloakOfDarkness.txt>Lunacy
+implementation of <i>Cloak of Darkness</i>, a classic “Hello, world!”
+interactive fiction game</a>.
+
+<h2>Download</h2>
+
+In the download, in addition to all the manuals, a number of public
+domain scripts to provide the language “batteries”, a Windows binary,
+and full source code are included. 
+
+<P>
+ 
+Being open source, Lunacy currently is and always will be a free download.
+
+<p>
+
+Lunacy is available at
+<a href=https://github.com/samboy/lunacy>GitHub</a>,
+<a href=https://codeberg.org/samboy/lunacy>Codeberg</a>,
+<a href=https://bitbucket.org/maradns/lunacy/>Bitbucket</a>,
+<a href=https://gitlab.com/maradns/lunacy/>GitLab</a>, and
+<a href=https://git.sr.ht/~samiam/Lunacy>Sourcehut</a>.  It is also
+available as a local download, either as a 
+<a href=lunacy-2024-03-06.zip>.zip file</a> 
+(<a href=lunacy-2024-03-06.zip.asc>sig</a>), a
+<a href=lunacy-2024-03-06.tar.gz>.tar.gz file</a>
+(<a href=lunacy-2024-03-06.tar.gz.asc>sig</a>), or as a 
+<a href=lunacy-2024-03-06.7z>.7z file
+for Windows on x86</a> 
+(<a href=lunacy-2024-03-06.7z.asc>sig</a>).
+
+<h2>Editline</h2>
+
+Lunacy can use <a href=https://github.com/troglobit/editline>editline</a>
+to have up arrow history, making it more pleasant to use on the command
+line.  A local download of a recent source tarball is here at
+<a href=editline-1.17.1.tar.gz>editline-1.17.1.tar.gz</a>.
+
+<h2>An example script</h2>
+
+Here is the Lunacy version of <tt>awk '{print $2 " " $1}'</tt>
+
+<pre>
+-- Code is public domain
+-- Since Lunacy doesn't have split(), we make 
+-- it ourselves
+function pStrSplit(s, splitOn)
+  if not splitOn then splitOn = "," end
+  local place = true
+  local out = {}
+  local mark
+  local last = 1
+  while place do
+    place, mark = string.find(s, splitOn, last, false)
+    if place then
+      table.insert(out,string.sub(s, last, place - 1))
+      last = mark + 1
+    end
+  end
+  table.insert(out,string.sub(s, last, -1))
+  return out
+end
+
+-- This is code which reads and processes lines from 
+-- standard input
+l = io.read()
+while l do
+  -- Remove leading whitespace
+  l = string.gsub(l,"^%s+","") 
+  -- AWK-style split: f[1] is $1, etc.
+  f = pStrSplit(l,"%s+") 
+  if f[2] then -- Avoid raising error
+    print(f[2] .. " " .. f[1]) -- print $2 " " $1
+  else
+    print(" " .. f[1]) -- Act like AWK script
+  end
+  l = io.read() -- Read next line. 
+  -- Note that, in Lunacy (Lua), an empty string 
+  -- (and the number 0) evaluate to "true"; only
+  -- "false" and "nil" evaluate to "false"
+end
+-- END public domain code
+</pre>
+
+Some things to observe:
+
+<ul>
+<li>Luancy is a “batteries not included” language.  It doesn’t have
+    Perl’s <tt>split</tt> keyword nor Python’s equivalent 
+    <tt>re.split()</tt> function, so we had to write our own 
+    implementation of <tt>split()</tt>, called <tt>pStrSplit</tt> here.
+<li>Lunacy uses <tt>--</tt> instead of the *NIX standard <tt>#</tt>
+    for comments.
+<li>Instead of using <tt>{</tt> and <tt>}</tt> for nesting, Lunacy
+    uses keywords (usually ending a nested portion with the <tt>end</tt>
+    keyboard).
+</ul>
+
+<!-- begin footer -->
+</div></div>
+<div id=lefthand>
+<br id=gata3>
+<hr id=gata4>
+<div id=maradns-l>
+<!--
+        <a href="../index.html">MaraDNS</a>
+        <a href="stable/">Download</a>
+        <a href="doc/CHANGELOG">Changelog</a>
+        <a href="doc/">Documentation</a>
+-->
+        <a href="../index.html">Main</a>
+        <a href="../download.html">Download</a>
+        <a href="../changelog.html">Changelog</a>
+        <a href="../notes.html">Documentation</a>
+        <a href="../search.html">Search</a>
+        <a href="/blog">Blog</a>
+        <a href="../security.html">Security</a>
+</div> <!-- maradns-l -->
+<div class=makelarge>
+</div><!-- makelarge -->
+</div><!-- lefthand -->
+</div>
+</div></div>
+</div></div>
+</div>
+</div></div>
+<script src="/gb.js"></script></body>
+</html>

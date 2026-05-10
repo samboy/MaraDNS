@@ -1,0 +1,189 @@
+<html><head><title>maramake - a tiny implementation of make</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--[if gt IE 9]> <!-- -->
+<link rel="stylesheet" title="Woodson (Default)"
+ type="text/css" media="only screen and (min-width: 700px)" 
+ href="../maradns-009.css">
+<link rel="stylesheet" title="Woodson (Default)"
+ type="text/css" media="only screen and (max-width: 699px)" 
+ href="../maradns-009-mobile.css">
+<link rel="stylesheet" type="text/css" media="print" 
+ href="../maradns-1.2-p.css">
+<link rel="stylesheet" type="text/css" media="handheld" 
+ href="../maradns-1.2-h.css">
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"
+>
+<!-- <![endif]-->
+</head>
+<body bgcolor="#cae6c7" text="#000000" link="#3b5e35" vlink="#3b5e35">
+<div align=center id=maradns-all>
+<div id=table1><div id=tr1a><div id=td1a>
+<div align=left>
+<div id=table2><div id=tr2a>
+<div id=td2a>
+<div class=mlogo>
+<font id=maradns-name size="+4"><i><b>MaraDNS</b></i></font>
+<br>
+<div id=maradns-t>
+A&nbsp;small open-source DNS&nbsp;server
+</div><!-- maradns-t -->
+</div><!-- mlogo -->
+
+<!--
+<div class=dlogo>
+<font id=maradns-name size="+4"><i><b>Deadwood</b></i></font>
+<br>
+<div id=maradns-t>
+A&nbsp;tiny recursive DNS&nbsp;server
+</div>
+</div>
+-->
+
+</div><!-- td2a -->
+<div id=td2b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+<div id=topright>
+        <div id=table3><div id=tr3><div id=trabalengua>
+        <i>
+                Erre con erre cigarro<br>
+                Erre con erre barril<br> 
+                R&aacute;pido&nbsp;ruedan&nbsp;los&nbsp;carros<br>
+                En el ferrocarril<br></i>
+        </div></div></div>
+</div><!-- topright -->
+</div><!-- tr2a -->
+</div><!-- table2 -->
+<div id=mobile>
+<br id=gata1>
+<!--
+        <a href="../index.html">MaraDNS</a>
+        <a href="stable/">Download</a>
+        <a href="doc/CHANGELOG">Changelog</a>
+        <a href="doc/">Documentation</a>
+-->
+        <a href="../index.html">Main</a>
+        <a href="../download.html">Download</a>
+        <a href="../changelog.html">Changelog</a>
+        <a href="../notes.html">Documentation</a>
+        <a href="../search.html">Search</a>
+        <a href="/blog">Blog</a>
+        <a href="../security.html">Security</a>
+</div> <!-- maradns-l -->
+<div class=makelarge>
+<br id=gata2>
+<div id=table4><div id=tr4><div id=content>
+<div id=maradns-r>
+<i><a href="https://www.paypal.me/caulixtla"
+>Support MaraDNS</a> or
+<a href="http://caulixtla.com/music/"
+>listen to my music</a></i><p>
+
+<h1>maramake</h1>
+
+<i>maramake</i> is a fork of <a href=https://frippery.org/make/>pdpmake</a>,
+a tiny public domain POSIX-compliant implementation of the standard
+*NIX tool <tt>make</tt>
+
+<p>
+
+Unlike pdpmake, maramake allows make targets to have the <tt>/</tt>
+character in them.  While the <a 
+href=https://pubs.opengroup.org/onlinepubs/9699919799/utilities/make.html
+>POSIX make standard</a> does not require POSIX compliant implementations
+to support the <tt>/</tt> character in targets, it is a permitted 
+extension.  Support for the <tt>/</tt> character in targets is required 
+when a build artifact is in a different directory than the source file.
+
+<p>
+
+Since the <tt>c99</tt> command can not compile MaraDNS — MaraDNS
+uses POSIX system calls not present in the ISO spec — <tt>maramake</tt>
+has been updated to use <tt>cc</tt> instead of the POSIX-specified
+<tt>c99</tt> as the default value for <tt>$CC</tt>.
+
+<p>
+
+Besides these two changes, <tt>maramake</tt> is a bare bones POSIX
+compliant implementation of <tt>make</tt>.
+
+<p>
+
+maramake also has support for <tt>maramake --version</tt> (or 
+<tt>make --version</tt> if renamed <tt>make</tt>) and a <tt>compile.sh</tt>
+script to compile maramake without needing an implementation of make
+already installed.
+
+<h2>Git repos</h2>
+
+maramake is available via git at the following locations:
+
+<ul><li><a href=https://github.com/samboy/maramake>GitHub</a>
+<li><a href=https://codeberg.org/samboy/maramake>Codeberg</a>
+</ul>
+
+This is the development branch of maramake.
+
+<h2>Downloads</h2>
+
+Stable versions of maramake are available as a local download.
+
+<ul>
+
+<li><a href=maramake-2022-11-01.tar.gz>maramake-2022-11-01.tar.gz</a>
+(<a href=maramake-2022-11-01.tar.gz.asc>sig</a>)
+<li><a href=maramake-2022-11-18.tar.gz>maramake-2022-11-18.tar.gz</a>
+(<a href=maramake-2022-11-18.tar.gz.asc>sig</a>)
+
+</ul>
+
+<h2>License</h2>
+
+This is free and unencumbered software released into the public domain.
+
+<p>
+
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
+
+<p>
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+<!-- begin footer -->
+</div></div>
+<div id=lefthand>
+<br id=gata3>
+<hr id=gata4>
+<div id=maradns-l>
+<!--
+        <a href="../index.html">MaraDNS</a>
+        <a href="stable/">Download</a>
+        <a href="doc/CHANGELOG">Changelog</a>
+        <a href="doc/">Documentation</a>
+-->
+        <a href="../index.html">Main</a>
+        <a href="../download.html">Download</a>
+        <a href="../changelog.html">Changelog</a>
+        <a href="../notes.html">Documentation</a>
+        <a href="../search.html">Search</a>
+        <a href="/blog">Blog</a>
+        <a href="../security.html">Security</a>
+</div> <!-- maradns-l -->
+<div class=makelarge>
+</div><!-- makelarge -->
+</div><!-- lefthand -->
+</div>
+</div></div>
+</div></div>
+</div>
+</div></div>
+<script src="/gb.js"></script></body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>MaraDNS - a small open-source DNS server</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--[if gt IE 9]> <!-- -->
+<link rel="stylesheet" title="Woodson (Default)"
+ type="text/css" media="only screen and (min-width: 700px)" 
+ href="maradns-009.css">
+<link rel="stylesheet" title="Woodson (Default)"
+ type="text/css" media="only screen and (max-width: 699px)" 
+ href="maradns-009-mobile.css">
+<link rel="stylesheet" type="text/css" media="print" 
+ href="maradns-1.2-p.css">
+<link rel="stylesheet" type="text/css" media="handheld" 
+ href="maradns-1.2-h.css">
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"
+>
+<!-- <![endif]-->
+</head>
+<body bgcolor="#cae6c7" text="#000000" link="#3b5e35" vlink="#3b5e35">
+<div align=center id=maradns-all>
+<div id=table1><div id=tr1a><div id=td1a>
+<div align=left>
+<div id=table2><div id=tr2a>
+<div id=td2a>
+<div class=mlogo>
+<font id=maradns-name size="+4"><i><b>MaraDNS</b></i></font>
+<br>
+<div id=maradns-t>
+A&nbsp;small open-source DNS&nbsp;server
+</div><!-- maradns-t -->
+</div><!-- mlogo -->
+</div><!-- td2a -->
+<div id=td2b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+<div id=topright>
+        <div id=table3><div id=tr3><div id=trabalengua>
+        <i>
+                Erre con erre cigarro<br>
+                Erre con erre barril<br> 
+                R&aacute;pido&nbsp;ruedan&nbsp;los&nbsp;carros<br>
+                En el ferrocarril<br></i>
+        </div></div></div>
+</div><!-- topright -->
+</div><!-- tr2a -->
+</div><!-- table2 -->
+<div id=mobile>
+<br id=gata1>
+	<a href="index.html">Main</a>
+	<a href="download.html">Download</a>
+	<a href="changelog.html">Changelog</a>
+	<a href="security.html">Security</a>
+</div> <!-- maradns-l -->
+<div class=makelarge>
+<br id=gata2>
+<div id=table4><div id=tr4><div id=content>
+<div id=maradns-r>
+<i><a href="https://www.paypal.me/caulixtla"
+>Support MaraDNS</a> or
+<a href="http://caulixtla.com/music/"
+>listen to my music</a></i><p>
+<!-- end header -->
+<h1>MaraDNS: An overview</h1>
+
+MaraDNS is a small and lightweight cross-platform open-source DNS server.
+The server is remarkably easy to configure for someone comfortable editing
+text configuration files.  MaraDNS is released under a BSD license.
+
+<h2>Table of contents</h2>
+<ul>
+<li><A href=#dns>What is DNS</A>
+<li><A href=#history>MaraDNS’ history</A>
+<li><A href=#overview>Overview</A>
+<li><A href=#cost>Estimated cost</A>
+<li><A href=#internals>Internals</A>
+<li><A href=#other>Other DNS servers</A>
+<li><A href=#funding>MaraDNS' future</A>
+</ul>
+
+<A name=dns> </A>
+<h2>What is DNS</h2>
+
+The internet uses numbers, not names, to find computers.  DNS is
+the internet’s directory service: It takes a name, like “www.maradns.org”,
+and converts that name in to an “IP” number that your computer can
+use to connect to www.maradns.org.
+
+<p>
+
+DNS is one of these things many take for granted that is essential to
+using today’s internet.  Without DNS, the internet breaks.  It is critical
+that a DNS server keeps the internet working in a secure and stable
+manner.
+
+<A name=history> </A>
+<h2>MaraDNS’ history</h2>
+
+MaraDNS was started in 2001 in response to <A 
+href=http://old.lwn.net/2001/0208/>concerns</A> that there were only
+two freely available DNS servers (BIND and DjbDNS) at the time.  MaraDNS
+1.0 was released in mid-2002, MaraDNS 1.2 was released in late 2005, 
+MaraDNS 2.0 was released in the fall of 2010, and MaraDNS’s version
+number was updated to 3 in 2019.
+
+<p>
+
+MaraDNS 1.0 used a recursive DNS server that was implemented rather
+quickly and had difficult-to-maintain code.  This code was completely
+rewritten for the MaraDNS 2.0 release, which now uses a separate recursive
+DNS server.
+
+<p>
+
+MaraDNS was fully maintained and actively developed without needing
+contributions from 2001 until 2010.  Some features have been added to
+MaraDNS since then, mainly during the COVID-19 pandemic:
+Domain blocking support, a Lua-based
+DNS server, continuous integration, using Git to make releases, etc.
+
+<p>
+
+There are two maintained branches of MaraDNS: The 3.5 branch, which is
+directly derived from the MaraDNS Git tree, and the legacy 3.4 branch,
+based on a 2019 version of MaraDNS which is only updated for security
+and other important updates.
+
+<A name=overview> </A>
+<h2>Overview</h2>
+
+MaraDNS 3.5 consists of two primary components: A UDP-only authoritative
+DNS server for hosting domains, and a UDP and TCP-capable recursive
+DNS server for finding domains on the internet.  MaraDNS’ recursive
+DNS server is called Deadwood, and it shares no code with MaraDNS’
+authoritative DNS server.
+
+<p>
+
+In more detail: MaraDNS has one daemon, the authoritative daemon (called
+“maradns”), that provides information to recursive DNS servers
+on the internet, and another daemon, the recursive daemon (called
+“Deadwood”), that gets DNS information from the internet for web browsers
+and other internet clients.
+
+<p>
+
+A simplified way to look at it: MaraDNS puts your web page on the Internet; 
+Deadwood looks for web pages on the Internet.
+
+<p>
+
+Since MaraDNS’ authoritative daemon does not support TCP, MaraDNS includes
+a separate DNS-over-TCP server called “zoneserver” that supports both
+standard DNS-over-TCP and DNS zone transfers.
+
+<p>
+
+Neither MaraDNS nor the UNIX version of Deadwood
+have support for daemonization; this is handled
+by a separate program included with MaraDNS called 
+<A href=https://github.com/samboy/MaraDNS/blob/master/deadwood-github/tools/duende.c>Duende</A>.
+Deadwood’s Windows port, on the other hand, includes support for running as a
+Windows service.
+
+<p>
+
+MaraDNS also includes a simple DNS querying tool called “askmara”
+and a number of other miscellaneous tools: Scripts for processing
+MaraDNS’ documentation, a simple webpage password generator, some
+Unicode conversion utilities, scripts for building and installing
+MaraDNS, automated SQA tests, etc.
+
+<p>
+
+MaraDNS is a native UNIX program with a partial Windows port.  Deadwood,
+MaraDNS’ recursive resolver, is a fully cross-platform application
+with a full Windows port.
+
+<p>
+
+MaraDNS 3.5 has full (albeit not fully tested) IPv6 support.
+
+<A name=cost> </A>
+<h2>Estimated cost</h2>
+
+Using the <A href=http://csse.usc.edu/tools/COCOMOII.php>COCOMO II - 
+Constructive Cost Model</A> and my take-home pay at the time I started
+developing MaraDNS (which is less than what I actually cost my 
+then-employer), MaraDNS is worth about two million dollars (US currency).  
+I have freely donated all this effort to the Internet for anyone to 
+download and use.
+
+<A name=internals> </A>
+<h2>Internals</h2>
+
+MaraDNS 3.5’s authoritative server uses code going all the way back
+to 2001.  The core DNS-over-UDP server has a number of components,
+including two different zone file parsers, a mararc parser, a secure 
+random number generator, and so on.
+
+<p>
+
+MaraDNS is written entirely in C.  No objective C nor C++ classes are
+used in MaraDNS' code.  
+
+<p>
+
+MaraDNS 3.5’s “Deadwood” recursive server was
+started in 2007 and has far cleaner code.  Its <A
+href=https://github.com/samboy/MaraDNS/blob/master/deadwood-github/src/DwRadioGatun.c>random
+number generator</A>, for example, uses a smaller, simpler, and more
+secure cryptographic algorithm; its configuration file parser uses a
+finite state machine interpreter; its handling of multiple simultaneous
+pending connections is done using <tt>select()</tt> and a state machine
+instead of with threads.
+
+<p>
+
+<A href=https://github.com/samboy/MaraDNS/tree/master/deadwood-github>Deadwood’s source code</A>
+can be browsed online, and there are a number of <A 
+href=https://github.com/samboy/MaraDNS/tree/master/deadwood-github/doc/internals>documents 
+describing its internals</A> available.
+
+<A name=other> </A>
+<h2>Other DNS servers</h2>
+
+The landscape of open-source DNS servers has changed greatly since
+2001 when MaraDNS was started.  There are now a number of different
+DNS servers still actively developed and maintained:  BIND, Power DNS,
+NSD/Unbound, KnotDNS as well as MaraDNS.  DjbDNS is no longer being
+updated and the unofficial forks generally have limited support; 
+notably it took nearly five months for someone to come up with a
+<A href=http://samiam.org/blog/20120711.html>patch for
+CVE-2012-1191</A>.  The most recently maintained DjbDNS fork is
+<A href=http://pjp.dgplug.org/ndjbdns/>N-DJBDNS</A> (all known security
+holes have been fixed), but this version hasn’t been updated
+since 2017; I myself now have a
+<a href=https://maradns.samiam.org/ndjbdns/>lightly maintained branch
+of djbdns</a>.
+
+<p>
+
+MaraDNS’ strength is that it’s a remarkably small, lightweight,
+easy to configure, and mostly cross-platform DNS server.  
+Deadwood is a tiny DNS server with full recursion
+support, perfect for embedded systems.  
+
+<p>
+
+MaraDNS’ weakness is that it does not have some features other
+DNS servers have.  For example, while Deadwood has <A 
+href=https://github.com/samboy/MaraDNS/blob/master/deadwood-github/doc/Recursive-algorithm.txt>the strongest
+spoof protection available without cryptography</A>, 
+it does not have support for DNSSEC.
+
+<p>
+
+As another example, MaraDNS does not have full zone transfer support; 
+while MaraDNS can both serve zones and receive external zone files from
+other DNS servers, MaraDNS needs to be restarted to update its
+database of DNS records.
+
+<A name=funding> </A>
+<h2>MaraDNS’ future</h2>
+
+I have been adding fairly small features to MaraDNS as well as making
+any needed security updates.  I have no plans to add big features such
+as DNSSEC; we are no longer in 2001 and there are now a number of different
+open source DNS servers out there.  That said, MaraDNS still fills a
+niche and I use MaraDNS today to serve the DNS records for my domains.
+
+<!-- begin footer -->
+</div></div>
+<div id=lefthand>
+<br id=gata3>
+<hr id=gata4>
+<div id=maradns-l>
+	<a href="index.html">Main</a>
+	<a href="download.html">Download</a>
+	<a href="changelog.html">Changelog</a>
+	<a href="notes.html">Documentation</a>
+	<a href="search.html">Search</a>
+	<a href="/blog">Blog</a>
+	<a href="security.html">Security</a>
+</div> <!-- maradns-l -->
+<div class=makelarge>
+</div><!-- makelarge -->
+</div><!-- lefthand -->
+</div>
+</div></div>
+</div></div>
+</div>
+</div></div>
+</html>

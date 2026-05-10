@@ -1,0 +1,907 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>MaraDNS - a small open-source DNS server</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--[if gt IE 9]> <!-- -->
+<link rel="stylesheet" title="Woodson (Default)"
+ type="text/css" media="only screen and (min-width: 700px)" 
+ href="maradns-009.css">
+<link rel="stylesheet" title="Woodson (Default)"
+ type="text/css" media="only screen and (max-width: 699px)" 
+ href="maradns-009-mobile.css">
+<link rel="stylesheet" type="text/css" media="print" 
+ href="maradns-1.2-p.css">
+<link rel="stylesheet" type="text/css" media="handheld" 
+ href="maradns-1.2-h.css">
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"
+>
+<!-- <![endif]-->
+</head>
+<body bgcolor="#cae6c7" text="#000000" link="#3b5e35" vlink="#3b5e35">
+<div align=center id=maradns-all>
+<div id=table1><div id=tr1a><div id=td1a>
+<div align=left>
+<div id=table2><div id=tr2a>
+<div id=td2a>
+<div class=mlogo>
+<font id=maradns-name size="+4"><i><b>MaraDNS</b></i></font>
+<br>
+<div id=maradns-t>
+A&nbsp;small open-source DNS&nbsp;server
+</div><!-- maradns-t -->
+</div><!-- mlogo -->
+</div><!-- td2a -->
+<div id=td2b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+<div id=topright>
+        <div id=table3><div id=tr3><div id=trabalengua>
+        <i>
+                Erre con erre cigarro<br>
+                Erre con erre barril<br> 
+                R&aacute;pido&nbsp;ruedan&nbsp;los&nbsp;carros<br>
+                En el ferrocarril<br></i>
+        </div></div></div>
+</div><!-- topright -->
+</div><!-- tr2a -->
+</div><!-- table2 -->
+<div id=mobile>
+<br id=gata1>
+	<a href="index.html">Main</a>
+	<a href="download.html">Download</a>
+	<a href="changelog.html">Changelog</a>
+	<a href="https://maradns.samiam.org/notes.html">Documentation</a>
+	<a href="https://maradns.samiam.org/search.html">Search</a>
+	<a href="https://maradns.samiam.org/blog">Blog</a>
+	<a href="security.html">Security</a>
+</div> <!-- maradns-l -->
+<div class=makelarge>
+<br id=gata2>
+<div id=table4><div id=tr4><div id=content>
+<div id=maradns-r>
+<i><a href="https://www.paypal.me/caulixtla"
+>Support MaraDNS</a> or
+<a href="http://caulixtla.com/music/"
+>listen to my music</a></i><p>
+<!-- end header -->
+<h1>MaraDNS’ security</h1>
+
+<p>
+For people with a security bug to report: <A 
+href=https://github.com/samboy/MaraDNS/security/advisories>post it here</A>.
+Please be aware that any abuse of this feature may result in being blocked.
+
+<p>
+<hr>
+<p>
+Here are all of the supported versions of MaraDNS <b class=b>without</b> any 
+known security issues:
+
+<ul>
+
+<li><a href=download/3.5/3.5.0036/>MaraDNS and Deadwood 3.5.0036</a>
+<li><a href=download/3.4/3.4.10/>MaraDNS 3.4.10 and Deadwood 3.4.09</a>
+
+</ul>
+
+For users of older versions of MaraDNS or Deadwood:
+Please <A 
+href=http://maradns.samiam.org/download>update your package</A>; there is
+an <A 
+href=http://maradns.samiam.org/tutorial/update.html>update guide</A> available.
+<p>
+
+<i>For people who just want to quickly get current with MaraDNS’
+security history should jump to the <A href="#history">history
+section</A>.  Note that MaraDNS’ last known security
+problem was fixed on or before October 24, 2022. 
+
+<p>
+I also have <A href=DNS.security.comparison.txt>a comparison of 
+DNS servers’ security history</A>.
+</i>
+
+<p>
+Note that neither MaraDNS nor Deadwood have DNSSEC support.
+
+<hr>
+
+<p>MaraDNS should be a secure DNS server.
+
+<p>
+
+The reason why I say <em>should be</em> instead of "is" is because I
+find claims of security very pretentious.  There is no way that I can
+guarantee that a piece of code as complex as a recursive DNS server
+is completely free from security bugs.  
+
+<p>
+
+What I can guarantee, however, is that such bugs are very unlikely in
+MaraDNS, since the design has security checks and balances which 
+minimize the chance of there being a security hazard in the code.
+
+<H2>Why code is insecure</H2>
+
+The main reason why code is insecure is because the code in question has 
+undefined results when fed data which is in a different form than what the 
+author of the code expected.  The simplest case of this is the <em>buffer 
+overflow</em>, where a program is fed a string far longer than the program 
+was designed to handle.
+
+
+<p>
+
+Another example is the "cache poison" bug which ancient versions of
+another DNS implementation had.  With this bug, it was a trivial matter to
+tell the DNS server that, for example, www.yahoo.com had an ip address of
+say, 10.69.69.69, which really points to some sleazy
+site that installs spyware.  Why did this bug exist?  Because the
+original authors of this server did not expect remote servers to
+deliberately give out incorrect IP addresses.
+
+<h2>How MaraDNS avoids these problems</h2>
+
+First of all, MaraDNS uses a special string library which is resistant to
+buffer overflows.  It does this by having a maximum allowed size for a
+string--any attempt to make a string larger than the maximum allowed size
+causes the string library to return an error instead of overflowing a
+buffer.  In addition, the string library allocates an extra three bytes
+for each string object, as a cushion against possible boundary conditions
+(there was one case with another program which strived to be secure where
+a one-byte buffer overflow resulted in a remote root exploit).
+
+<p>
+
+Second of all, MaraDNS protects herself from cache poisoning without ever
+discarding glue records is by handling out-of-bailiwick records
+differently, depending on where the offending records are.  The actual
+rules are fairly complex, and detailed in a document 
+called "<A 
+href=
+"http://maradns.samiam.org/cache_poison_protection.html">cache.poison.protection
+</A>".
+
+<p>
+
+Third of all, I have extensively read Dan Bernstein's <A 
+href="http://cr.yp.to/djbdns.html">notes</A> on DNS 
+implementation before implementing MaraDNS.  Two ideas for 
+implementing DNS security discussed on Dan's pages have been implemented in 
+MaraDNS:
+
+
+<UL>
+
+<LI>
+When the recursive nameserver is performing queries, MaraDNS uses a
+securely generated pseudo-random-number-generator to generate the query ID,
+and the lower 12 bits of the query source port. This means that a given
+attempt to spoof a reply to MaraDNS has less than a 1 in 250 million
+chance of succeeding.
+
+<LI>
+MaraDNS uses a FIFO queue to delete unused records when the cache 
+starts to fill up.  The algorithm is simple:  Every time a record is 
+accessed, it is placed at the top of the list.  When memory fills up, 
+MaraDNS deletes records at the bottom of the list.  This allows MaraDNS 
+to act in a very graceful manner when the cache starts to fill up.
+
+</UL>
+
+Some known security problems are avoided: MaraDNS does not use printf() in
+a manner which would make format string vulnerabilities possible; MaraDNS
+does not use any of the potentially dangerous globing functions; and
+MaraDNS signal handlers are very short, avoiding the problems caused by
+poor signal handler construction.
+
+<p>
+
+I go though the code, and when I find anything which has the possibility 
+of allowing the data to be in an undefined state, I revise the code in 
+question.  For example, when I was looking through the code in the 0.8.35 
+release of MaraDNS; I found a case where the data could potentially 
+become undefined.  In more detail, if certain strings could not be 
+allocated or copied over--cases which can never happen--the code which 
+removes elements from the cache would attempt to free() unallocated memory 
+later on.  Even though this was a case where it was impossible to exploit 
+the code in question, I felt it was prudent to update the code to not have 
+this problem--hence the vaguely worded "security update" for the 0.8.99 
+release of MaraDNS.
+
+<p>
+
+MaraDNS uses a minimum number of external libraries.  This minimizes 
+the impact of insecure code not under MaraDNS' direct control causing
+security problems with MaraDNS.  This stops MaraDNS from having the
+kind of remote full-control exploit BIND9 had when it linked to an
+insecure version of the OpenSSL library.
+
+<p>
+
+MaraDNS also mandates that the server is run as an unprivileged user, and
+strongly encourages MaraDNS to be run in a chroot() environment.  In
+addition, the DNS cache uses a separate data structure than the local DNS
+records, making it difficult, if not impossible, for the cache at affect
+the local records.  This design means that, even if there is a security
+hole in MaraDNS, the possibility of such a security hole allowing the
+attacker having elevated privileges is next to zero.
+
+<A name=history> </A>
+<h2>The security history of MaraDNS</h2>
+
+MaraDNS has never had a security problem worse than remote denial
+of service.
+
+<p>
+
+There have been 23 security problems found; none are worse than
+denial of service (To be fair, three corrupt memory but in a way
+where the corrupted memory is not controlled by an attacker).
+One was a security problem
+caused by broken behavior in Linux's kernel that affected stable
+versions of MaraDNS.  There are also theoretical (less than minor)
+security problems caused by some research in to AES' implementation on
+modern cached processors which have been addressed.
+
+<p>
+
+Here are all of the security problems ever discovered with MaraDNS:
+
+<ol>
+<li>
+The first major security problem was discovered by Roy Arends, one of the BIND
+developers, and was caused by the fact that very early versions of 
+MaraDNS did not check to see whether a given DNS packet was a question 
+or an answer.  This was fixed well before the 1.0 release of MaraDNS.
+
+<p>
+
+ 
+Since a DNS answer looks like a DNS question, with the exception of a
+one-bit difference, this bug allowed an attacker to send a spoofed DNS
+packet which would result in MaraDNS sending an answer to herself (or to
+another MaraDNS server), which would result in another answer being sent,
+and so on.
+
+<p>
+
+The reason this security glitch passed through was because of an
+overzealous effort to honor the RFC spirit to be "liberal in what one
+accepts and conservative in what one sends". Since then, I have gone over
+the DNS spec to see if their are any other cases where a malformed packet
+could cause this kind of security problem, and have made an effort that
+any such cases in MaraDNS no longer exist.
+
+<p>
+
+CVE number: CVE-2004-0789<br>
+Impact: Remote denial of service.
+
+<p>
+
+<li>
+Another major security problem was found by myself when performing an 
+audit of the code during the beta test cycle.  It involved the 
+decompression code, and was caused because DNS compression is difficult to 
+implement, and easy to create security holes with.  I resolved this issue 
+by completely rewriting the code in question with security in mind.
+This security problem was fixed in MaraDNS 0.9.01 (the rewrite came
+later).
+
+<p>
+
+CVE number: CVE-2002-2097<br>
+
+Impact: Remote denial of service.
+
+<p>
+
+<li>
+Another major problem, which allowed a remote denial of service, was caused
+by some broken behavior in the Linux kernel.  People using BSD or other
+kernels were not affected by this security problem.  This security problem
+was fixed in MaraDNS 1.0.28 and in MaraDNS 1.1.35.
+
+<p>
+
+CVE number: None<br>
+Impact: Remote denial of service.
+
+<p>
+
+<li>
+One old minor security problem involved the seed for the pseudo-random number 
+generator.  In cases where there was an ASCII null in the key for the 
+pseudo-random number generator, MaraDNS would have less than a full 128 
+bits of entropy for the seed.  There was also a related issue, even more 
+minor, where, in certain rare circumstances, multiple instances of MaraDNS 
+could potentially generate the same pseudo-random numbers, if two copies of 
+MaraDNS used the same static random seed file, and were started at the 
+same time.  These issues were fixed before the release of MaraDNS 0.8.24.
+
+<p>
+
+CVE number: None<br>
+
+Impact: Theoretical spoofing of DNS records.
+
+<p>
+
+<li>
+Another minor problem, more recently discovered, was only present in the
+development (1.1) branch of MaraDNS.  The <tt>fetchzone</tt> tool did not
+perform enough input validation and was vulnerable to specially formed 
+packets that could send out-of-bailiwick data.  I fixed this problem
+both ways; first by giving the fetchzone tool more input validation.
+Later on, I modified the csv2 parser to not accept the kind of data which
+would have triggered the <tt>fetchzone</tt> security bug.  This issue was
+fixed in MaraDNS 1.1.38 (the csv2 improvements appeared in MaraDNS 
+1.1.47).
+
+<p>
+CVE number: None<br>
+Impact: Spoofing of DNS records.
+
+<p>
+<li>
+
+A theoretical security problem with the underlying random number generator
+that MaraDNS uses to generate secure random numbers was discovered by
+D. J. Bernstein.  Since the underlying random number generator uses a fairly
+simple key schedule (well, a simple key schedule for a cryptographic routine),
+and since the random number generator uses table lookups, modern CPUs will
+very slightly vary (on the order of billionths of a second) in the amount
+of time used to generate a secure random number, depending on the underlying
+key.  Bernstein needed to examine over 200 million packets, obtaining very
+precise timing information on each packet, to extract a key.
+
+<p>
+
+I worked around this security problem by having the random number generator
+rekey every million packets.  These changes were done in MaraDNS 1.0.27 and
+1.1.35.
+
+<p>
+
+<A href="http://marc.info/?l=maradns-list&amp;m=111494679116870">Mailing
+list posting describing this issue</A>
+
+<p>
+
+CVE number: None<br>
+Impact: Theoretical remote spoofing of DNS records.
+
+<li>
+More recently, Dag Arne Osvik, Adi Shamir (the "S" in RSA), and Eran Tromer
+discovered some sophisticated cache data leakage attacks against AES,
+the algorithm from which MaraDNS' secure random number generator is 
+derived.  I have responded to this issue by tweaking MaraDNS' secure
+random number generator to essentially not leak sensitive key data
+via cache lookups.  These changes were done for MaraDNS 1.0.35 and
+1.1.56.
+
+<p>
+
+<A 
+href="http://maradns.samiam.org/download/patches/maradns-1.0.34-rng.patch">Patch
+which describes the issue and how I work around it</A>
+
+<p>
+
+CVE number: None<br>
+Impact: Theoretical local spoofing of DNS records.
+<li>
+There was a remote denial of service problem where someone could
+disable MaraDNS' recursion by sending thousands of
+specially crafted DNS packets per second to a server running MaraDNS.  MaraDNS
+would function normally again once the DNS packets were no longer being
+sent.  This affected all versions of MaraDNS, and was fixed in
+MaraDNS 1.2.12.05, 1.0.40, and 1.3.04.
+<p>
+
+CVE number: None<br>
+Impact: Remote Denial of Service.
+<li>
+
+MaraDNS would leak approximately 20 bytes 
+whenever an invalid DNS packet was received.  This leak would have
+allowed an attacker to cause MaraDNS to allocate an arbitrary large
+amount of memory by sending a very large number of invalid DNS
+packers to the server running MaraDNS.  This affected the 1.2 and
+1.3 branches of MaraDNS, and was fixed in MaraDNS 1.2.12.05
+and the 1.3.04 release of MaraDNS.
+
+<p>
+
+CVE number: CVE-2007-3114<br>
+Impact: Remote denial of service.
+
+<li>
+MaraDNS would leak about 300 bytes whenever a specially crafted DNS packet
+(either one with a non-0 Opcode, or a non-1 Class) was sent to the server.
+This leak would have
+allowed an attacker to cause MaraDNS to allocate an arbitrary large
+amount of memory by sending a very large number of invalid DNS
+packers to the server running MaraDNS.  This affected the 1.2 and
+1.3 branches of MaraDNS, and was fixed in MaraDNS 1.2.12.06
+and the 1.3.05 releases of MaraDNS.
+<p>
+
+CVE number: CVE-2007-3115 and CVE-2007-3116<br>
+Impact: Remote denial of service.
+
+<li>
+A CNAME record in MaraDNS' authoritative database could be corrupted by
+someone sending a specially crafted DNS packet.  This affected the 1.0, 1.2,
+and 1.3 branches of MaraDNS, and was fixed in MaraDNS 1.0.41, 1.2.12.08, and
+1.3.07.04.
+<p>
+CVE number: CVE-2008-0061<br>
+
+Impact: Remote denial of service.
+
+<li>
+A bug introduced in MaraDNS 1.3.03 (January 2007): Hostnames that 
+incorrectly not end with a dot result in a string being deallocated then used.  
+
+<p>
+MaraDNS 1.2 does not have this issue.
+<p>
+
+This issue can <b>not</b> be exploited from zones loaded using DNS's zone
+transfer mechanism; fetchzone filters data obtained this way.  This issue
+can <b>only</b> be exploited in the unusual case of an attacker having control
+of the contents of a csv2 zone file to be parsed by MaraDNS.  
+<p>
+
+This issue, on Linux systems, results in a null pointer dereference that 
+terminates that MaraDNS process.
+
+
+<p>
+
+This issue was fixed in MaraDNS 1.4.03 and 1.3.07.10, released February 2, 
+2010.
+
+<p>
+
+CVE number: CVE-2010-2444<br>
+Impact: Denial of service.
+
+<li>
+An array of integers was allocated in bytes instead of sizeof(int) units. 
+The resulted in a buffer being too small, allowing it to be overwritten. 
+Since the data placed in the overwritten array can not be remotely controlled 
+(it is a list of increasing integers), there is no way to increase privileges 
+exploiting this bug. 
+
+<p>
+
+This bug was fixed in MaraDNS 1.3.07.11, MaraDNS 1.4.06, and MaraDNS 2.0.02,
+released on or before February 5, 2011.  This bug also impacts MaraDNS 1.0
+and MaraDNS 1.2; since these versions of MaraDNS have passed their end of
+life, they have not been updated.  
+
+<p>
+
+More information is at <A href=http://samiam.org/blog/20110129.html>this blog
+entry</A>.
+
+
+<p>
+
+CVE number: CVE-2011-0520<br>
+Impact: Denial of service.
+</li>
+
+<li>
+MaraDNS 1's recursive resolver did not use a randomized hash, making it
+vulnerable to certain denial of service attacks.  This bug was fixed in
+MaraDNS 1.3.07.14 and MaraDNS 1.4.10.  
+
+<p>
+More information is at <A href=http://bam2.vk.tj>this blog entry
+(bam2.vk.tj)</A>, 
+<A href=http://al62.vk.tj>this blog entry 
+(al62.vk.tj)</A>, as
+well as <A href=http://al72.vk.tj>this blog entry (al72.vk.tj)</A>.
+</A>
+
+<p>
+CVE numbers: CVE-2011-5055 and CVE-2012-0024<br>
+
+Impact: Denial of service.
+
+</li>
+<li>
+MaraDNS 2's authoritative server did not use a randomized hash, so
+could be subject to certain denial of service attacks in the rare and unusual 
+case of an attacker being able to control its zone files.  This bug
+was fixed in MaraDNS 2.0.05, released February 12, 2012.
+
+<p>
+CVE number: CVE-2011-5056<br>
+Impact: Denial of service from a trusted user
+
+</li>
+<li>
+Deadwood releases before
+Deadwood 3.2.02 allow entries to remain in the cache for a long time.
+In light of the <A
+href=https://www.isc.org/files/imce/ghostdomain_camera.pdf>Ghost domain
+exploit</A> (PDF file),
+this is a security problem.
+
+<p>
+
+Deadwood 3.2.02 is updated to only allow entries to remain in the cache
+for one day.  If max_ttl is set, one can choose to store entries in
+the cache for up to 90 days.
+
+<p>
+
+MaraDNS 1.4.11 and MaraDNS 2.0.06 include this updated version of
+Deadwood.  These releases were done on or before March 11, 2012.
+
+<p>
+
+CVE number: CVE-2012-1570<br>
+Impact: Canceled names can still be cached by Deadwood.  For example,
+if example.com points to a phishing page, and the domain is pulled by
+ICANN, Deadwood might have kept example.com in its cache long after
+the domain was removed upstream.
+</li>
+<li>
+MaraDNS 1 releases before
+1.4.12 and 1.3.07.15 allow entries to remain in the cache for 
+a long time.
+In light of the <A
+href=https://www.isc.org/files/imce/ghostdomain_camera.pdf>Ghost domain
+exploit</A> (PDF file),
+this is a security problem.
+
+<p>
+
+This bug does not affect users of MaraDNS 2, but Deadwood has a
+similar fix (see above).
+
+<p>
+
+This update was done on March 17, 2012.
+
+<p>
+
+CVE number: CVE-2012-1570<br>
+Impact: Canceled names can still be cached by MaraDNS 1.  For example,
+if example.com points to a phishing page, and the domain is pulled by
+ICANN, MaraDNS 1 might have kept example.com in its cache long after
+the domain was removed upstream.
+
+<li><a name=dw-3.2.03d> </a>
+While looking over the source code to Deadwood, I discovered that
+Deadwood 3 releases before Deadwood-3.2.03d have a security
+issue caused by a programming error I made.
+
+<p>
+Under certain exceptional circumstances, it may have been possible to
+perform a blind spoofing attack against unpatched releases of Deadwood.
+The IP performing the blind spoofing attack needs to appear to have
+permission to perform full recursion with Deadwood in order to carry
+out the attack. 
+
+<p>
+Upgrading will fix the bug.  Then again, administrators who already
+perform good practices, making sure that only authorized IPs can use
+Deadwood recursively (pretty much mandatory in light of DNS amplification
+attacks) will only be affected by this bug if either a machine with an
+authorized IP is compromised, or if it is possible for the attacker to 
+send the Deadwood server a packet with a spoofed IP.
+
+<p>
+This update was done before December 2, 2013.  MaraDNS 2.0.07d,
+Deadwood 3.2.03d, and MaraDNS 1.4.13 (as well as any future releases)
+are patched against this bug.  Deadwood 2.3.08 is not affected by this bug.
+
+<p>
+
+CVE number: None<br>
+Impact: Possible blind spoofing of records
+
+<li><a name=dw-3.2.05> </a>
+There has been a long-standing bug in Deadwood (ever since 2007) where 
+bounds checking for strings was not correctly done under some 
+circumstances.
+
+<p>
+Because of this, it has been possible to send Deadwood a “packet of 
+death” which will crash Deadwood.  Since the attack causes out-of-bounds
+memory to be read, but <i>not</i> written to, the impact of the bug
+is denial of service.
+It appears this attack can only be exploited by an IP with permission
+to perform recursive queries against Deadwood.
+
+<p>
+This bug is fixed in Deadwood 3.2.05 and Deadwood 2.3.09.  MaraDNS
+2.0.09 and 1.4.14 have been updated to include Deadwood 3.2.05.  The
+fix was made on February 12, 2014.
+
+<p>
+
+Note that this bug only affects users of the Deadwood recursive resolver.
+
+<p>
+
+CVE number: CVE-2014-2031 and CVE-2014-2032<br>
+Impact: Remote denial of service
+
+<li><a name=dw-3.2.07> </a>
+
+Deadwood (MaraDNS 2.0) <i>might</i> be vulnerable to CERT VU#264212.  That 
+in mind, I have made
+MaraDNS releases (MaraDNS 2.0.11, Deadwood 3.2.07, and MaraDNS 1.4.16)
+with some code added to harden Deadwood and MaraDNS against CERT VU#264212. 
+The fix was made before January 30, 2015.
+
+<p>
+
+CVE number: CERT VU#264212<br>
+Impact: Possible remote denial of service
+
+<li><a name=maradns-2.0.12> </a>
+
+In the zoneserver daemon, free() was being called
+against a memory location whose value was uninitialized (and therefore
+random).
+
+<p>
+
+This bug allows a denial of service attack; by making the zoneserver
+daemon free an invalid memory location, it was possible to terminate
+the zoneserver process. I do not know whether or not this bug is
+remotely exploitable.
+
+<p>
+
+I now always initialize the memory location in question.
+The MaraDNS 2.0.12 release, made on August 19, 2015, fixes this bug.
+
+<p>
+CVE number: None<br>
+Impact: Possible remote denial of service
+
+<li><a name=ParseMaraRc-2015> </a>
+
+There are two buffer overflows (actually, one buffer overflow and one
+buffer underflow) in ParseMaraRc.c.
+
+One of the buffer overruns 
+<a href="https://web.archive.org/web/20201029102502/https://github.com/samboy/MaraDNS/issues/19">can not be exploited</a>,
+the other is a
+<a href="https://web.archive.org/web/20201029102501/https://github.com/samboy/MaraDNS/issues/20">difficult to exploit buffer overflow</a>
+(actually, underflow)
+in the mararc parser.  The workaround is to not let random people
+edit the mararc file (which is usually in /etc and owned by root); 
+the fix is in MaraDNS 2.0.13, release September 25, 2015.
+
+<p>
+
+I checked, and, yes, MaraDNS 1.0.00 from 2002 had this particular bug.
+Most of the things like this come from the 2001-2002 codebase; I wrote
+too much code too quickly because there was a hurry to have an open-source
+DNS server that wasn’t BIND at the time.
+
+<p>
+
+The exploit is very limited.  It’s not possible to write to any memory
+with this bug; it only allows MaraDNS to read from a memory location
+she should not read from.
+
+<p>
+CVE number: None<br>
+Impact: It might be possible to make MaraDNS not start if one controls
+	the mararc file MaraDNS reads at start-up time.  Then again, anyone
+  	who controls that file could just more simply add a syntax error.
+
+<li><a name=rem-b-local-2015> </a>
+
+<A href="https://web.archive.org/web/20201029102501/https://github.com/samboy/MaraDNS/issues/21">There is a buffer 
+overflow</A> (actually, underflow) which allows an out
+of bounds memory location to be overwritten with the output of malloc()
+in Deadwood.
+
+<p>
+
+It is unknown whether this buffer underflow is remotely exploitable; it
+has only been seen on systems where there is no default gateway route.
+
+<p>
+
+This issue was fixed in Deadwood 3.2.09 and MaraDNS 2.0.13 on September 25,
+2015.
+
+<p>
+CVE number: None<br>
+Impact: Possibly a remote denial of service.
+
+<li><a name=clang-2018> </a>
+There was a theoretical issue with the cryptographic code in Deadwood,
+where a standards-compliant compiler might not generate correct secure
+random numbers (used for the query ID and query source port).  I can not
+find a compiler which actually generates insecure code (I tested against
+gcc 3.2.3, gcc 4.8.5, gcc 7.3.0, clang 3.4.2, and clang 5.0.1), but in
+the interest of caution, I am making a security update, and have added
+tests to make sure this bug does not manifest itself when run against
+multiple compilers and compile flags (it’s only an issue with -O2 and
+-O3 in clang using a different implementation of RadioGatún[32]).
+
+<p>
+This issue was fixed in Deadwood 3.2.12, released on August 15, 2018.
+
+<li><a name=luahash> </a>
+The new Lua-based DNS servers, <i>coLunacyDNS</i> and <i>mmLunacyDNS</i>
+had issues where the string hash compression code was insecure, which
+could result in remote denial of service attacks under some
+conditions.  This was an issue in the Lua code being used, which
+was fixed by patching <i>Lunacy</i>, the MaraDNS-specific fork of
+Lua.
+
+<p>
+These issues did not affect MaraDNS nor Deadwood.
+
+<p>
+This issue was fixed in MaraDNS 3.5.0012, released on August 12, 2020.
+
+<li><a name=colunacydnsseclect> </a>
+The LUA-based coLunacyDNS server before 1.0.010 had a bug where, if it
+was not bound to an IPv6 address, it would call <tt>FD_ISSET</tt> on a
+connection not set up for the <tt>select()</tt> list.  Since Ubuntu 20.04’s
+toolchain considers this a “buffer overflow”, I am marking this bug as
+a security issue of unknown impact.
+<p>
+
+Neither the “MaraDNS” nor “Deadwood” services are impacted by
+this problem.  The workaround is to bind coLunacyDNS to an IPv6 address;
+the fix is in <a href=https://github.com/samboy/MaraDNS/commit/964d7892edfecf1af4d33c51b2ddb50cb30dd8f9>commit
+964d7892</a> which is part of coLunacyDNS 1.0.010 (MaraDNS 3.5.0018).  
+<p>
+
+This issue was found and fixed in December of 2020.
+<p>
+
+<li><a name=CVE-2014-5461> </a>
+
+The version of coLunacyDNS included with MaraDNS between versions 
+3.5.0008 (actually 3.5.0008 had mmLunacyDNS with the same issue and
+coLunacyDNS was added in 3.5.0009) and 3.5.0020 was not patched
+against <a href=https://nvd.nist.gov/vuln/detail/CVE-2014-5461
+>CVE-2014-5461</a>.
+
+<p>
+
+Note that:
+
+<ul>
+<li> I am not able to actually exploit this issue with the version of Luancy
+  (Lua) coLunacyDNS uses
+<li> This issue only affects the relatively new coLunacyDNS server (and may
+  not affect it); it does <i>not</i> affect MaraDNS and it does
+  <i>not</i> affect Deadwood
+<li> This would only be an issue on systems where an attacker can somehow
+  affect the configuration file coLunacyDNS uses
+<li> The impact surface for this issue is, at worst, very very small
+</ul>
+
+<p>
+
+This issue was fixed in coLunacyDNS 1.0.011 included with the 
+MaraDNS 3.5.0021 release made on July 28, 2021.
+
+<p>
+
+CVE number: CVE-2014-5461<br>
+Impact: Possible local buffer overflow
+
+<li>
+<a name=CVE-2022-30256> </a>
+Xiang Li from Network and Information Security Lab, Tsinghua University 
+discovered a way where “Ghost domains” could stay in the cache longer
+than <tt>max_ttl</tt> allows.  I have integrated some measures to
+minimize the impact of these issues so that caching can not be abused
+to keep a rogue domain, already deleted upstream, cached for an 
+inordinate amount of time.
+
+<p>
+
+The attacks require an attacker who can perform queries against
+a recursive instance of Deadwood.  The only impact is that entries
+may be cached longer than desired.
+
+<p>
+
+This issue was fixed in Deadwood 3.5.0022 released on May 7, 2022, and
+in Deadwood 3.4.03 released on August 3, 2022.  To allow
+other DNS server developers ample time to fix and patch the issue,
+I kept a 90-day embargo.  I made the issue public on August 1, 2022,
+after working with other DNS implementors and getting the green light from
+them first.
+
+<p>
+CVE number: CVE-2022-30256<br>
+Impact: Records can be kept cached longer than desired
+
+<li>
+<a name=sync_recurse_depth> </a>
+Xiang Li from Network and Information Security Lab, Tsinghua University
+discovered a minor security bug where sometimes Deadwood would perform 
+more than 83 queries to solve a given request.
+
+<p>
+The attacks require an attacker who can perform queries against
+a recursive instance of Deadwood and to control replies from a server
+Deadwood queries.  This only affects setups where root_servers is set 
+in the Deadwood dwood3rc configuration file.
+
+<p>
+This issue was fixed in Deadwood 3.5.0024 released on October 24, 2022,
+and in Deadwood 3.4.06, also released on October 24, 2022.
+
+<p>
+CVE number: None<br>
+Impact: Deadwood would make more than 83 queries to solve a single
+request
+
+<li>
+<a name=rfc8482> </a>
+MaraDNS releases before MaraDNS 3.5.0030 and 3.4.09 did not fully support
+RFC8482.  This allowed ANY queries to be used to facilitate distributed
+denial of service attacks.  While the impact is low with MaraDNS, since 
+it does not have large DNS packet support, MaraDNS has been updated to
+fully support RFC8482.
+
+<p>
+This update was made on or before November 26, 2022.
+The 2022-11-25 release of <tt>Deadwood.exe</tt> and the 2022-11-26 release
+of <tt>maradns.exe</tt> are patched against this issue.
+
+<p>
+CVE number: None<br>
+Impact: It was easier to use MaraDNS to facilitate some kinds of
+denial of service attacks.
+
+<li>
+<a name=CVE-2023-31137> </a>
+The authoritative server in MaraDNS releases before MaraDNS 3.5.0026 and
+MaraDNS 3.4.10 had an issue where it is possible to remotely terminate the 
+MaraDNS process with a “packet of death”.  The Deadwood recursive
+resolver was not affected by this bug, nor was coLunacyDNS.
+
+<p>
+This bug was fixed on May 2, 2023.
+
+<p>
+CVE number: <a href=https://github.com/samboy/MaraDNS/security/advisories/GHSA-58m7-826v-9c3c>CVE-2023-31137</a><br>
+Impact: Remote denial of service
+
+</ol>
+<!-- begin footer -->
+</div></div>
+<div id=lefthand>
+<br id=gata3>
+<hr id=gata4>
+<div id=maradns-l>
+	<a href="index.html">Main</a>
+	<a href="download.html">Download</a>
+	<a href="changelog.html">Changelog</a>
+	<a href="notes.html">Documentation</a>
+	<a href="search.html">Search</a>
+	<a href="/blog">Blog</a>
+	<a href="security.html">Security</a>
+</div> <!-- maradns-l -->
+<div class=makelarge>
+</div><!-- makelarge -->
+</div><!-- lefthand -->
+</div>
+</div></div>
+</div></div>
+</div>
+</div></div>
+</html>

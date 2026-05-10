@@ -1,0 +1,279 @@
+/*
+ * The following fonts are used as a basis for the web fonts here:
+ *
+ * A modified Adobe Source Sans Pro (called Caulixtla008) is used for the 
+ * headings and bold text:
+ *
+ * https://www.google.com/fonts/specimen/Source+Sans+Pro
+ *
+ * http://sourceforge.net/projects/sourcesans.adobe/
+ *
+ * https://typekit.com/fonts/source-sans-pro
+ *
+ * A modified Bitstream Charter is used for the body text:
+ *
+ * http://practicaltypography.com/charter.html
+ *
+ * The fonts as used on this webpage can be downloaded here (True Type,
+ * EOT, WOFF, and WOFF2):
+ * 
+ * https://samiam.org/fonts/CaulixtlaFonts-2019-09-26.zip
+ * https://github.com/samboy/CaulixtlaFonts/
+ *
+ */
+
+@import url('inline-fonts.css');
+
+html {
+        overflow-y: scroll;
+	overflow: -moz-scrollbars-vertical;
+        /*min-height: 100.1%;*/
+}
+
+
+#gata1 { display: none; }
+#gata2 { display: none; }
+#gata3 { display: none; }
+#gata4 { display: none; }
+
+#mobile { 
+	display: none; 
+	background-color: #fff; /* For Dillo Win32 3.0p9 */
+	border: 5px solid #cae6c7; /* For Dillo Win32 3.0p9 */
+}
+
+#paypal { float: right; }
+#flattr { float: none; }
+
+#table1 { display: table; }
+#tr1a { display: table-row; }
+#td1a { display: table-cell; }
+#table2 { display: table; }
+#tr2a { display: table-row; }
+#td2a { 
+	display: table-cell; 
+	vertical-align: top;
+	width: 340;
+}
+#td2b { display: table-cell;}
+#topright {
+	display: table-cell;
+	vertical-align: top;
+}
+#table3 { 
+	float: right; 
+}
+#tr3	{ display: table-row; }
+#trabalengua { display: table-cell; }
+#table4 { 
+	display: table; 
+	direction: rtl;
+}
+#tr4 { display: table-row; }
+#content {
+	direction: ltr;
+	display: table-cell;
+	width: 596;
+	vertical-align: top;
+	min-width: 25em; /* Kindle bug workaround */
+}
+
+body {
+	font-family: Caulixtla, Georgia, serif;
+        /*background-color: #70b566;
+        background-image: url(fonts/aVGrad4l.png);
+        background-size: 100px 500px;
+        background-repeat: repeat-x;
+	background-attachment: scroll;*/
+	background-color: #fff;
+        color: #333;
+}
+
+#maradns-name {
+	font-family: Caulixtla, Arial, sans-serif;
+	font-size: 42pt;
+	line-height: 42pt;
+	font-weight: bold;
+}
+
+#maradns-name i { font-style: normal; }
+
+#maradns-t {
+	font-family: Caulixtla, Arial, sans-serif;
+        font-weight: bold;
+        font-size: 14pt;
+        letter-spacing: 1px;
+	background: transparent;
+	color: #222;
+}
+
+.b {
+	font-family: CaulixtlaB, Arial, sans-serif;
+}
+
+tt {
+	font-size: 11pt;
+}
+
+pre {
+	font-size: 11pt;
+}
+
+#logo {
+	font-size: 300%;
+}
+
+#topright {
+	width: 370px;
+}
+
+#trabalengua {
+	font-family: Caulixtla, Arial, sans-serif;
+        font-weight: bold;
+        font-size: 15pt;
+	background-color: inherit;
+        color: #222;
+}
+
+#trabalengua i {
+	font-style: normal;
+}
+
+#lefthand {
+	direction: ltr;
+	display: table-cell;
+	width: 168px;
+	vertical-align: top;
+}
+
+#maradns-l {
+	border-bottom: 1px solid #777;
+	border-top: 2px solid #777;
+       	margin-top: 3px;
+}
+
+
+#maradns-l a {
+	color: #333;
+	background-color: white;
+}
+
+h1 {
+        font-size: 24.5pt;
+        padding-top: 5px;
+	font-family: Caulixtla, Arial, sans-serif;
+        font-weight: bold;
+        line-height: 100%;
+}
+
+h2 {
+	font-family: Caulixtla, Arial, sans-serif;
+        font-size: 16.7pt;
+        font-weight: bold;
+        line-height: 95%;
+}
+
+h3 {
+	font-family: Caulixtla, Arial, sans-serif;
+        font-size: 15pt;
+        font-weight: bold;
+        line-height: 95%;
+}
+
+#maradns-l a {
+	border-left: 2px solid #777;
+	border-right: 2px solid #777;
+	font-family: Caulixtla, Arial, sans-serif;
+       	font-weight: bold;
+       	font-size: 14pt;
+       	letter-spacing: 1px;
+	/*color: #000000;*/
+	/*background-color: #cae6c7;*/
+	color: #333;
+	background-color: #fff;
+	display: block;
+	width: auto !important;
+	text-decoration: none;
+	border-bottom: 1px solid #777;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-left: .1em;
+	padding-right: .1em;
+}
+
+.makelarge {
+	color: #333;
+       	margin-top: 2px;
+	padding: 2px;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.iebug {
+	margin-top: 4px;
+	margin-bottom: 4px;
+	margin-left: .1em;
+	margin-right: .1em;
+}
+
+#maradns-l a:hover {
+	background-color: #ffff99;
+	text-decoration: none;
+	border-bottom: 1px solid #777;
+	color: #222;
+}
+
+#maradns-r {
+        margin-top: 3px;
+        margin-left: 4px;
+	margin-right: 4px;
+        margin-bottom: 4px;
+	padding: 7px;
+	line-height: 125%;
+	font-size: 14.5pt;
+	border: 2px solid #777;
+	/*background-color: #cae6c7;*/
+	/*color: #000000;*/
+	background-color: #fff;
+	color: #333;
+}
+
+.nocss {
+	display: none;
+}
+
+.makenormal {
+	display: none;
+}
+
+@media only screen {
+	.mlogo {
+		border: 2px solid #777;
+		padding: 3px;
+		background: #ded1be url(mara-tile.jpg);
+		color: #222;
+	}
+}
+
+.dlogo {
+	padding: 3px;
+	margin-left: -50px;
+	text-align: center;
+	color: #222;
+}
+
+a { color: #258723; text-decoration: none; }
+a:visited { color: #258723; text-decoration: none; }
+a:hover { color: #258723; text-decoration: underline; }
+
+@media (prefers-color-scheme: dark) {
+	body { background-color: #131516; color: #d8d4cf; }
+	#maradns-r { background-color: #131516; color: #d8d4cf; }
+	#maradns-l { background-color: #131516; color: #d8d4cf; }
+	#maradns-l a { background-color: #131516; color: #d8d4cf; }
+	#trabalengua { background-color: #131516; color: #d8d4cf; }
+	a { color: #78dc78; }
+	a:visited { color: #78dc78; }
+	a:hover { color: #78dc78; }
+}
+
