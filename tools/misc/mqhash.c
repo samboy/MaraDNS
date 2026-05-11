@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Sam Trenholme
+/* Copyright (c) 2002-2026 Sam Trenholme
  *
  * TERMS
  *
@@ -25,7 +25,7 @@
 #define HASH_BITS 128
 #define HASH_BYTES (HASH_BITS / 8)
 
-#include "../../rng/rng-api-fst.h"
+#include "../../rng/rngapifst.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
