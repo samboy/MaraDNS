@@ -1,5 +1,6 @@
 ROBJECTS=../../rng/rngalgfst.o ../../rng/rngapifst.o
-EXECS=marahash mqhash rg32hash
+#EXECS=marahash mqhash rg32hash
+EXECS=rg32hash
 
 FLAGS = -g
 #FLAGS = -g
@@ -7,7 +8,7 @@ FLAGS = -g
 all: $(EXECS)
 
 clean:
-	rm -f core $(EXECS)
+	rm -f core $(EXECS) *.exe
 
 marahash: $(ROBJECTS) rnghash.c
 	$(CC) $(FLAGS) -o marahash rnghash.c $(ROBJECTS) 
