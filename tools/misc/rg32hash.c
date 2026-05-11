@@ -587,14 +587,12 @@ void dirhandle(char *dir) {
          }
     f = readdir(wd);
     while(f != NULL) {
-        strncpy(path,dir,PATH_MAX - 10);
-        strncat(path,"/",1);
-        if((strlen(path) + 10 + strlen(f->d_name)) >= PATH_MAX) {
+        if((strlen(dir) + 1 + strlen(f->d_name) + 10) >= PATH_MAX) {
                 return;
         }
         if(strcmp(f->d_name,".") != 0 &&
            strcmp(f->d_name,"..") != 0) {
-            strcat(path,f->d_name);
+            snprintf(path,PATH_MAX,"%s/%s",dir,f->d_name);
             lstat(path,&s);
             /* We don't follow links to directories, in order to avoid
              * circular chains */
