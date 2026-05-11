@@ -883,28 +883,30 @@ Impact: Remote denial of service
 <a name=mqhash> </a>
 The extra utility program, <tt>mqhash</tt>, had a possible buffer
 overflow if one’s home directory was over 50 characters long; since
-the vast majority of *NIX systems have a $HOME which is well under 
+the vast majority of *NIX systems have a <tt>$HOME</tt> which is well under 
 50 characters in size (usually in the form of <tt>/home/username</tt>),
 this was not a buffer overflow which could be readily exploited.
 <p>
 In addition, this utility is not compiled by default when MaraDNS is
 compiled; one has to enter the <tt>tools/misc</tt> directory and compile
 the program.  Indeed, it has not been possible to compile the program
-at all between October 30, 2022 <i>at all</i> and May 10, 2026 because
+at all between October 30, 2022 and May 10, 2026 <i>at all</i> because
 <a href=
 "https://github.com/samboy/MaraDNS/commit/7196be5c2a7cad8fb089919c6e76fa386df3855b">commit 7196be5</a> broke this program and it was only possible to
-compile <tt>mqhash</tt> again in <a href=
+compile <tt>mqhash</tt> again with <a href=
 "https://github.com/samboy/MaraDNS/commit/08077723328f7c8417d0be46c0f6a5b04a9854da">commit 0807772</a>, a patch with I applied <i>after</i> removing the
 possible (but very unlikely) buffer overflow.
 <p>
 This bug was <a href=
-"https://github.com/samboy/MaraDNS/commit/b50856b1c278900865d9a533e9b156b5b93a1fa2">fixed</a> on May 10, 2026.
+"https://github.com/samboy/MaraDNS/commit/b50856b1c278900865d9a533e9b156b5b93a1fa2">fixed</a> 
+on May 10, 2026.  Since the latest MaraDNS release (3.5.0036) cannot
+compile this program, this bug does not merit a new release.
 <p>
 CVE number: None (too trivial of a bug to merit a CVE)<br>
 Impact: Possible local buffer overflow, but only in the very very rare case
 when one’s <tt>$HOME</tt> was over 50 characters in size, and only
-with a program which wouldn’t even compile between 2022 and 2026 (and no one
-ever filed a bug report that it wasn’t compiling, which leads me to believe
+with a program which wouldn’t even compile since 2022 (since no one
+ever filed a bug report that it wasn’t compiling, this leads me to believe
 no one uses this program).
 </ol>
 <!-- begin footer -->
