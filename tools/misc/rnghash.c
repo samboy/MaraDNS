@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2006 Sam Trenholme
+/* Copyright (c) 2002-2026 Sam Trenholme
  *
  * TERMS
  *
@@ -28,7 +28,7 @@
 /* Buffered read */
 #define BUF_MAX 4096
 
-#include "../../rng/rng-api-fst.h"
+#include "../../rng/rngapifst.h"
 #include <unistd.h>
 #include <fcntl.h>
 
