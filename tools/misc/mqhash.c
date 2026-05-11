@@ -344,6 +344,7 @@ main(int argc, char **argv) {
             char fp[100];
             int zork;
 
+            fp[49] = fp[50] = fp[51] = 0;
             if(strncpy(fp,getenv("HOME"),50) == NULL) {
                     perror("Problem copying string");
                     exit(35);
@@ -379,6 +380,7 @@ main(int argc, char **argv) {
             char fp[100];
             int zork;
 
+            fp[49] = fp[50] = fp[51] = 0;
             if(strncpy(fp,getenv("HOME"),50) == NULL) {
                     perror("Problem copying string");
                     exit(35);
