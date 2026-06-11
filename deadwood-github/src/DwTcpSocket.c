@@ -1,4 +1,4 @@
-/* Copyright (c) 2007-2020 Sam Trenholme
+/* Copyright (c) 2007-2026 Sam Trenholme
  * IPv6 code contributed by Jean-Jacques Sarton in 2007
  *
  * TERMS
@@ -329,6 +329,9 @@ void tcp_send_wanted(int b) {
         if(tosend > 0 && tcp_pend[b].state == 2) {
                 len = send(tcp_pend[b].local,tcp_pend[b].buffer +
                            tcp_pend[b].got,tosend,MSG_DONTWAIT);
+                if(len == -1) { /* Nothing sent, try later */
+                        return;
+                }
                 tcp_pend[b].got += len;
                 tcp_pend[b].die = get_time() +
                         ((int64_t)timeout_seconds_tcp << 8);
