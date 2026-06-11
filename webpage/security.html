@@ -901,12 +901,31 @@ This bug was <a href=
 "https://github.com/samboy/MaraDNS/commit/b50856b1c278900865d9a533e9b156b5b93a1fa2">fixed</a> 
 on May 10, 2026, and then the program was updated to compile again.  
 Since this program has not even been compiling,
-this bug does not merit a new release.
+this bug does not merit a new release.  However, this bugfix was made
+part of MaraDNS 3.5.0037.
 <p>
 CVE number: None (too trivial of a bug)<br>
 Impact: Possible local buffer overflow, but only in the very very rare case
 when one’s <tt>$HOME</tt> was over 50 characters in size, and only
 with a program which stopped compiling in 2022.
+<li>
+<a name="localsend"> </a>
+If DNS-over-TCP was enabled (it is disabled by default), a Deadwood 
+client authorized to perform DNS queries could cause the DNS-over-TCP
+service to not function with a denial of service attack.  The issue
+does not affect DNS-over-UDP operation.  This bug
+was fixed in MaraDNS 3.5.0037, released June 11, 2026.
+<p>
+If <tt>tcp_listen</tt> is not in your <tt>dwood3rc</tt> file, this
+bug does not affect you.  If <tt>tcp_listen</tt> <i>is</i> in your
+<tt>dwood3rc</tt> file but has the value <tt>0</tt>, this bug <i>still</i>
+does not affect you.  Only people who have set <tt>tcp_listen</tt> to have
+a value of <tt>1</tt> are affected.
+<p>
+CVE number: None<br>
+Impact: Denial of service, but only if DNS-over-TCP is enabled, and the
+only users who can exploit the bug are users authorized to make queries
+with Deadwood.
 </ol>
 <!-- begin footer -->
 </div></div>
