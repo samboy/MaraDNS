@@ -1,0 +1,42 @@
+commit b8266b408783cc9cffd39e4f5915edca675b475d
+Author: Sam Trenholme <git@samiam.org>
+Date:   Thu Jun 11 07:05:17 2026 -0700
+
+    MaraDNS security patch: DOS if DNS-over-TCP is enabled.
+    
+    If DNS-over-TCP was enabled (it is disabled by default), a Deadwood
+    client authorized to perform DNS queries could cause the DNS-over-TCP
+    service to not function with a denial of service attack.
+    
+    This bug does not affect DNS-over-UDP operation.
+    
+    This bug was fixed in MaraDNS 3.5.0037, released June 11, 2026.
+    
+    If tcp_listen is not in your dwood3rc file, this
+    bug does not affect you.  If tcp_listen is in your
+    dwood3rc file but has the value 0, this bug still
+    does not affect you.  Only people who have set tcp_listen to have
+    a value of 1 are affected.
+    
+    Only clients authorized to perform DNS queries can exploit this bug.
+
+diff --git a/deadwood-github/src/DwTcpSocket.c b/deadwood-github/src/DwTcpSocket.c
+index fbcf6b6..8e5f5b8 100644
+--- a/deadwood-github/src/DwTcpSocket.c
++++ b/deadwood-github/src/DwTcpSocket.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2020 Sam Trenholme
++/* Copyright (c) 2007-2026 Sam Trenholme
+  * IPv6 code contributed by Jean-Jacques Sarton in 2007
+  *
+  * TERMS
+@@ -329,6 +329,9 @@ void tcp_send_wanted(int b) {
+         if(tosend > 0 && tcp_pend[b].state == 2) {
+                 len = send(tcp_pend[b].local,tcp_pend[b].buffer +
+                            tcp_pend[b].got,tosend,MSG_DONTWAIT);
++                if(len == -1) { /* Nothing sent, try later */
++                        return;
++                }
+                 tcp_pend[b].got += len;
+                 tcp_pend[b].die = get_time() +
+                         ((int64_t)timeout_seconds_tcp << 8);
