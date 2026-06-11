@@ -916,6 +916,10 @@ service to not function with a denial of service attack.  The issue
 does not affect DNS-over-UDP operation.  This bug
 was fixed in MaraDNS 3.5.0037, released June 11, 2026.
 <p>
+This bug <i>only</i> affects Deadwood, and does not affect MaraDNS
+(the authoritative nameserver) nor coLunacyDNS (the Lua/Lunacy scripted
+nameserver).
+<p>
 If <tt>tcp_listen</tt> is not in your <tt>dwood3rc</tt> file, this
 bug does not affect you.  If <tt>tcp_listen</tt> <i>is</i> in your
 <tt>dwood3rc</tt> file but has the value <tt>0</tt>, this bug <i>still</i>
