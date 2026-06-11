@@ -3,6 +3,7 @@
 for a in origin sourcehut bitbucket codeberg sourceforge ; do
   echo $a
   git push $a
+  git push $a --tags 
   echo
 done
 
