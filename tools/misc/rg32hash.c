@@ -416,7 +416,7 @@ void belt_12(u_int32_t *a, u_int32_t *b) {
         a[15] ^= q2;
 }
 
-void rround(u_int32_t *a, u_int32_t *b, int offset) {
+void roundrg32(u_int32_t *a, u_int32_t *b, int offset) {
         switch(offset) {
                 case 0:
                         belt_00(a,b);
@@ -467,7 +467,7 @@ int input_map(u_int32_t *a, u_int32_t *b, char *filename, int *o)  {
         u_int32_t p[3];
         int q, c, r, w;
         int done = 0;
-        int readed = 0;
+        int readed = 0, counter;
         char v[12];
         FILE *desc;
 
@@ -503,7 +503,7 @@ int input_map(u_int32_t *a, u_int32_t *b, char *filename, int *o)  {
                                                 b[w + c * 13] ^= p[c];
                                                 a[16 + c] ^= p[c];
                                         }
-                                        rround(a,b,*o);
+                                        roundrg32(a,b,*o);
                                         *o += 1;
                                         if(*o == 13) {*o = 0;}
                                         fclose(desc);
@@ -517,7 +517,7 @@ int input_map(u_int32_t *a, u_int32_t *b, char *filename, int *o)  {
                         b[w + c * 13] ^= p[c];
                         a[16 + c] ^= p[c];
                 }
-                rround(a,b,*o);
+                roundrg32(a,b,*o);
                 *o += 1;
                 if(*o == 13) {*o = 0;}
         }
@@ -547,14 +547,14 @@ void hashfile(char *filename) {
         }
         /* End injection */
         for(c = 0; c < 16; c++) {
-                rround(a,b,o);
+                roundrg32(a,b,o);
                 o++;
                 if(o > 12){o=0;}
         }
         /* End mangling */
         for(c = 0; c < 4; c++) {
                 unsigned char d,e,f,g;
-                rround(a,b,o);
+                roundrg32(a,b,o);
                 o++;
                 if(o > 12){o=0;}
                 d = a[1] & 0xff;
@@ -588,7 +588,7 @@ void dirhandle(char *dir) {
     f = readdir(wd);
     while(f != NULL) {
         strncpy(path,dir,PATH_MAX - 10);
-        strncat(path,"/",1);
+        strncat(path,"/",2);
         if((strlen(path) + 10 + strlen(f->d_name)) >= PATH_MAX) {
                 return;
         }
@@ -613,7 +613,7 @@ void dirhandle(char *dir) {
    command line, then makes a hash out of that file. */
 
 int main(int argc, char **argv) {
-    int counter;
+    int counter, q;
     struct stat s;
     /* Check the command line argument */
     if(argc < 2) {
