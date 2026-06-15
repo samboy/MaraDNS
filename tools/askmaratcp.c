@@ -56,7 +56,7 @@ int timeout = 21;
 unsigned short dns_port = DNS_PORT;
 
 /* So -Wall doesn't gag */
-extern int decomp_init();
+extern int decomp_init(int alog_level);
 
 /* Defining finctions which are part of askmara-tcp.c */
 int verbose_output(js_string *uindata);

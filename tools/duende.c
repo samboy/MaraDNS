@@ -48,12 +48,12 @@ int got_term_signal = 0;
 
 /* If we get a HUP signal set the flag so we can restart the MaraDNS child
    process */
-void handle_hup() {
+void handle_hup(int z) {
     got_hup_signal = 1;
     return;
     }
 
-void handle_term() {
+void handle_term(int z) {
     got_term_signal = 1;
     return;
     }

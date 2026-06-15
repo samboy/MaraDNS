@@ -46,7 +46,7 @@ int harderror(char *msg) {
     exit(1);
     }
 
-void timeout() {
+void timeout(int z) {
     printf("Query failed on query number %d\n",querynum);
     exit(1);
     }
