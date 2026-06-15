@@ -2134,7 +2134,7 @@ sock6:
 }
 
 #ifndef MINGW
-void alarmHandler() {
+void alarmHandler(int z) {
 #ifdef GCOV
 	serverRunning = 0; // Clean termination of service
 #else
