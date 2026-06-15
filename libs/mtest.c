@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern int mhash_firstkey();
-extern int mhash_nextkey();
+extern int mhash_firstkey(mhash *hash, js_string *key);
+extern int mhash_nextkey(mhash *hash, js_string *key);
 
 int main() {
     js_string *s1,*s2,*get;
