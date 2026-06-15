@@ -413,8 +413,9 @@ void log_it(char *message) {
 #define rnp(a) for(c=0;c<a;c++)
 void rnf(rz*a,rz*b){rz m=19,A[45],x,o=13,c,y,r=0;rnp(12)b[c+c%3*o]^=a
 [c+1];rnp(m){r=(c+r)&31;y=c*7;x=a[y++%m];x^=a[y%m]|~a[(y+1)%m];A[c]=
-x>>r|x<<(32-r)%32;}for(y=39;y--;b[y+1]=b[y])a[y%m]=A[y%m]^A[(y+1)%m]^
-A[(y+4)%m];*a^=1;rnp(3)a[c+o]^=b[c*o]=b[c*o+o];}
+x>>r|x<<(32-r)%32;}
+for(y=39;y--;b[y+1]=b[y])a[y%m]=A[y%m]^A[(y+1)%m]^A[(y+4)%m];
+*a^=1;rnp(3)a[c+o]^=b[c*o]=b[c*o+o];}
 void rnl(rz*u,rz*w,char*v){rz s,q,c;rnp(40)w[c]=u[c%19]=0;for(;;rnf(u
 ,w)){rnp(3){for(q=0;q<4;){w[c*13]^=s=(*v?255&*v:1)<<8*q++;u[16+c]^=s;
 if(!*v++){rnp(17)rnf(u,w);return;}}}}}rz rn(rz*m,rz*b,rz*a){
