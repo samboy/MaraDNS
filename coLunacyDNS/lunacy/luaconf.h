@@ -288,7 +288,6 @@
           add_history(lua_tostring(L, idx));  /* add it to history */
 #define lua_freeline(L,b)       ((void)L, free(b))
 #else
-#define lua_freeline(L,b)       ((void)L, free(b))
 #define lua_readline(L,b,p)     \
         ((void)L, fputs(p, stdout), fflush(stdout),  /* show prompt */ \
         fgets(b, LUA_MAXINPUT, stdin) != NULL)  /* get line */
