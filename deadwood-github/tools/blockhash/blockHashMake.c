@@ -207,12 +207,12 @@ blStr *readFile(FILE *inp, int *elements) {
       continue;
     }
 
-    len = strlen(line); 
+    len = strlen((char *)line); 
     nstr = malloc(len + 2);
     if(nstr == NULL) {
       return top;
     }
-    strncpy(nstr,line,len + 1);
+    strncpy((char *)nstr,(char *)line,len + 1);
     if(top == NULL) {
        top = newBl(len, nstr);
        bottom = top;

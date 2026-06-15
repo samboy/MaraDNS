@@ -171,7 +171,7 @@ uint8_t *ASCII2DNS(char *str, int32_t *olen) {
   if(out == NULL) { return NULL; }
   out[0] = ' ';
   out[l + 1] = ' ';
-  if(strncpy(out + 1, str, l) == NULL) { free(out); return NULL; }
+  if(strncpy((char *)out + 1, str, l) == NULL) { free(out); return NULL; }
   *olen = dnsConvertString(l + 2, out);
   if(*olen == 0) { free(out); return NULL; }
   return out;
