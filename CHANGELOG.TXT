@@ -1,5 +1,12 @@
 MaraDNS changelog
 
+   maradns-3.5.0037:
+   This is a stable release of MaraDNS:
+
+      * Fix for DNS-over-TCP bug
+
+     (2026-06-11)
+
    maradns-3.5.0036:
    This is a stable release of MaraDNS:
 
