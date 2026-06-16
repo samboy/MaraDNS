@@ -26,7 +26,6 @@ EXECS=server/maradns
 M="VERSION=$(VERSION)"
 #Q="DEFINES=-DSELECT_PROBLEM"
 
-# FreeBSD needs some special flags to compile MaraDNS
 CC="gcc -Os -DMINGW32 -DNO_FLOCK -pipe"
 M=CC=$(CC) 
 V="VERSION=$(VERSION)"

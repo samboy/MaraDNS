@@ -23,7 +23,8 @@ EXECS=server/maradns
 # LDFLAGS=-L/usr/ucblib -lucb -lxnet
 # end the Solaris section
 # Non-Solaris version of "M"
-M="CC=$(CC) -O2 -Wall" DEBUG=-DNO_FLOCK 
+M="CC=$(CC) -O2 -std=c99 -D_POSIX_C_SOURCE -D_DEFAULT_SOURCE -Wall" 
+DEBUG=-DNO_FLOCK 
 V="VERSION=$(VERSION)"
 
 # Debug
@@ -33,8 +34,8 @@ D="VERSION=$(VERSION)" DEBUG="-DDEBUG -DNO_FLOCK"
 FLAGS = -g 
 
 all: 
-	cd deadwood-*/src ; make FLAGS=-O2 ; \
-	cd ../tools/blockhash ; make CFLAGS=-O2 ; cd .. ; \
+	cd deadwood-*/src ; make FLAGS="-O2 -std=c99" ; \
+	cd ../tools/blockhash ; make CFLAGS="-O2 -std=c99" ; cd .. ; \
 	cd ../.. ; \
 	cd libs ; make $(M) ; cd ../dns ; make $(M) ; cd ../rng ; make $(M) ; cd ../parse ; make $(M) ; cd ../qual ; make $(M) ; cd ../server ; make $(M) $(V) COMPILED=\"$(COMPILED)\" ; cd ../tools ; make $(M) ; cd ../tcp ; make $(M) $(V) ; cat ../00README.FIRST
 
