@@ -1,0 +1,600 @@
+In a perfect world, code which compiles without issue would keep compiling
+without issue.  In the real world, GCC in particular changes what code
+will and will not compile, so I have to make minor updates to keep
+the code compiling (ugh).
+
+If, in the future, GCC can’t compile this code (as I type this, the
+code compiles with 0 warnings when -Wall is set), use clang, which is
+better about not changing what can and cannot compile.
+
+* MaraDNS now compiles without warnings in GCC 16.1.1 and clang 20.1.8
+* Fix issue with version number for MaraDNS releases in Deadwood
+
+commit 7b8c812dca4bdd842cfabb48d7b605841ce4ad2e
+Author: Sam Trenholme <git@samiam.org>
+Date:   Mon Jun 15 15:10:07 2026 -0700
+
+    This fixes a version numbering issue I had with 3.5.0037
+    
+    There was an issue where Deadwood didn’t correctly get the version
+    number from the patch when the toplevel name was MaraDNS-3.5.0037
+    
+    This *appears* to fix it.
+
+diff --git a/deadwood-github/src/make.version.h b/deadwood-github/src/make.version.h
+index 0f9dc2b..dbcd843 100755
+--- a/deadwood-github/src/make.version.h
++++ b/deadwood-github/src/make.version.h
+@@ -9,6 +9,12 @@ if pwd | awk -F/ '{print $(NF - 1)}' | awk -F- '{print $2}
+                 {print "#define VERSION \"" $2 "\""}' > version.h
+         exit 0
+ fi
++if pwd | awk -F/ '{print $(NF - 2)}' | awk -F- '{print $2}
++                ' | grep 3.5 > /dev/null ; then
++        pwd | awk -F/ '{print $(NF - 2)}' | awk -F- '
++                {print "#define VERSION \"" $2 "\""}' > version.h
++        exit 0
++fi
+ 
+ # Otherwise, pull the version number from the git log
+ if git log -1 > git.commit ; then
+
+commit 1b727378c567d148e0f3e7eb2b19bcd689a5cf18
+Author: Sam Trenholme <git@samiam.org>
+Date:   Mon Jun 15 14:05:46 2026 -0700
+
+    Remove final clang wanring when compiling coLunacyDNS
+
+diff --git a/coLunacyDNS/lunacy/luaconf.h b/coLunacyDNS/lunacy/luaconf.h
+index ee9660f..09defec 100644
+--- a/coLunacyDNS/lunacy/luaconf.h
++++ b/coLunacyDNS/lunacy/luaconf.h
+@@ -288,7 +288,6 @@
+           add_history(lua_tostring(L, idx));  /* add it to history */
+ #define lua_freeline(L,b)       ((void)L, free(b))
+ #else
+-#define lua_freeline(L,b)       ((void)L, free(b))
+ #define lua_readline(L,b,p)     \
+         ((void)L, fputs(p, stdout), fflush(stdout),  /* show prompt */ \
+         fgets(b, LUA_MAXINPUT, stdin) != NULL)  /* get line */
+
+commit 2833d43ee9cc04c7664cebc73a280cae345c6829
+Author: Sam Trenholme <git@samiam.org>
+Date:   Mon Jun 15 13:57:47 2026 -0700
+
+    Obfuscated golf code made a warning in clang.  Fixed.
+
+diff --git a/coLunacyDNS/coLunacyDNS.c b/coLunacyDNS/coLunacyDNS.c
+index 3749d1d..e1e491d 100644
+--- a/coLunacyDNS/coLunacyDNS.c
++++ b/coLunacyDNS/coLunacyDNS.c
+@@ -413,8 +413,9 @@ void log_it(char *message) {
+ #define rnp(a) for(c=0;c<a;c++)
+ void rnf(rz*a,rz*b){rz m=19,A[45],x,o=13,c,y,r=0;rnp(12)b[c+c%3*o]^=a
+ [c+1];rnp(m){r=(c+r)&31;y=c*7;x=a[y++%m];x^=a[y%m]|~a[(y+1)%m];A[c]=
+-x>>r|x<<(32-r)%32;}for(y=39;y--;b[y+1]=b[y])a[y%m]=A[y%m]^A[(y+1)%m]^
+-A[(y+4)%m];*a^=1;rnp(3)a[c+o]^=b[c*o]=b[c*o+o];}
++x>>r|x<<(32-r)%32;}
++for(y=39;y--;b[y+1]=b[y])a[y%m]=A[y%m]^A[(y+1)%m]^A[(y+4)%m];
++*a^=1;rnp(3)a[c+o]^=b[c*o]=b[c*o+o];}
+ void rnl(rz*u,rz*w,char*v){rz s,q,c;rnp(40)w[c]=u[c%19]=0;for(;;rnf(u
+ ,w)){rnp(3){for(q=0;q<4;){w[c*13]^=s=(*v?255&*v:1)<<8*q++;u[16+c]^=s;
+ if(!*v++){rnp(17)rnf(u,w);return;}}}}}rz rn(rz*m,rz*b,rz*a){
+
+commit d9d48a49c6152158ee81a9541c5feea5fa7035f3
+Author: Sam Trenholme <git@samiam.org>
+Date:   Mon Jun 15 13:53:34 2026 -0700
+
+    Lunacy: Update with minor changes to make compile in old win32 TCC
+
+diff --git a/coLunacyDNS/lunacy/Makefile.win32tcc b/coLunacyDNS/lunacy/Makefile.win32tcc
+new file mode 100644
+index 0000000..559876d
+--- /dev/null
++++ b/coLunacyDNS/lunacy/Makefile.win32tcc
+@@ -0,0 +1,208 @@
++# makefile for building Lua
++
++# This particular makefile is for building Lunacy under the
++# condition one is in Windows 11, and the only non-standard files 
++# we have are as follows:
++# https://samboy.github.io/blog/busybox/Busybox.7z
++# (Source: https://samboy.github.io/blog/busybox/busybox-win32-source.tar.xz)
++# https://samboy.github.io/blog/busybox/tcc-compiler.7z
++# (Source: https://samboy.github.io/blog/busybox/tcc-0.9.25.tar.xz)
++# To make using that version of TCC and Busybox, use this makefile.
++# Next, make a directory /dev, then make, using Microsoft Edit (which is
++# *also* open source these days, believe it or not) a file called 
++# "/dev/urandom" with about a line of random text in it.
++#
++# If using Busybox as noted above, the following commands will make
++# an even more suitable urandom file for Lunacy:
++# 	mkdir /dev
++# 	cd /dev
++# 	dd if=/dev/urandom of=foo count=1
++# 	mv foo urandom
++# (Busybox for Windows has urandom emulation)
++
++# see ../INSTALL for installation instructions
++# see ../Makefile and luaconf.h for further customization
++
++# == CHANGE THE SETTINGS BELOW TO SUIT YOUR ENVIRONMENT =======================
++
++# Your platform. See PLATS for possible values.
++PLAT= ansi
++
++CC= tcc
++CFLAGS= -Os -Wall $(MYCFLAGS) -DNO_SPAWNER -DNOMKSTEMP
++AR= true
++RANLIB= true
++RM= rm -f
++LIBS= $(MYLIBS)
++
++MYCFLAGS=
++MYLDFLAGS=
++MYLIBS=
++
++# If one renames this file, put the new name here
++MAKEFILE=Makefile.win32tcc
++
++# == END OF USER SETTINGS. NO NEED TO CHANGE ANYTHING BELOW THIS LINE =========
++
++PLATS= aix ansi bsd freebsd generic linux macosx mingw posix solaris
++
++LUA_A=	liblua.a
++CORE_O=	lapi.o lcode.o ldebug.o ldo.o ldump.o lfunc.o lgc.o llex.o lmem.o \
++	lobject.o lopcodes.o lparser.o lstate.o lstring.o ltable.o ltm.o  \
++	lundump.o lvm.o lzio.o
++LIB_O=	lauxlib.o lbaselib.o ldblib.o liolib.o lmathlib.o loslib.o ltablib.o \
++	lstrlib.o loadlib.o linit.o lfs.o lbitlib.o 
++
++LUA_T=	lunacy
++LUA_O=	lua.o
++
++LUAC_T=	luac
++LUAC_O=	luac.o print.o
++
++ALL_O= $(CORE_O) $(LIB_O) $(LUA_O) $(LUAC_O)
++ALL_T= $(LUA_T) 
++ALL_A= $(LUA_A)
++
++default: $(PLAT)
++
++all:	$(LUA_T)
++
++o:	$(ALL_O)
++
++a:	$(ALL_A)
++
++$(LUA_A): $(CORE_O) $(LIB_O)
++	$(AR) $@ $(CORE_O) $(LIB_O)	# DLL needs all object files
++	$(RANLIB) $@
++
++$(LUA_T): $(LUA_O)  $(ALL_O)
++	$(CC) -o $@ $(MYLDFLAGS) $(LUA_O) $(LIB_O) $(CORE_O) $(LIBS)
++
++$(LUAC_T): $(LUAC_O) $(LUA_A)
++	$(CC) -o $@ $(MYLDFLAGS) $(LUAC_O) $(LUA_A) $(LIBS)
++
++clean:
++	$(RM) $(ALL_T) $(ALL_O)
++
++depend:
++	@$(CC) $(CFLAGS) -MM l*.c print.c
++
++echo:
++	@echo "PLAT = $(PLAT)"
++	@echo "CC = $(CC)"
++	@echo "CFLAGS = $(CFLAGS)"
++	@echo "AR = $(AR)"
++	@echo "RANLIB = $(RANLIB)"
++	@echo "RM = $(RM)"
++	@echo "MYCFLAGS = $(MYCFLAGS)"
++	@echo "MYLDFLAGS = $(MYLDFLAGS)"
++	@echo "MYLIBS = $(MYLIBS)"
++
++# convenience targets for popular platforms
++
++none:
++	@echo "Please choose a platform:"
++	@echo "   $(PLATS)"
++
++aix:
++	$(MAKE) -f $(MAKEFILE) all CC="xlc" CFLAGS="-O2 -DLUA_USE_POSIX -DLUA_USE_DLOPEN" MYLIBS="-ldl" MYLDFLAGS="-brtl -bexpall"
++
++ansi:
++	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_ANSI
++
++bsd:
++	$(MAKE) -f $(MAKEFILE) all MYCFLAGS="-DLUA_USE_POSIX -DLUA_USE_DLOPEN" MYLIBS="-Wl,-E"
++
++freebsd:
++	$(MAKE) -f $(MAKEFILE) all MYCFLAGS="-DLUA_USE_LINUX" MYLIBS="-Wl,-E -lreadline"
++
++generic:
++	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=
++
++linux:
++	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_LINUX MYLIBS="-Wl,-E -ldl -lreadline -lhistory -lncurses"
++
++macosx:
++	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_LINUX MYLIBS="-lreadline"
++# use this on Mac OS X 10.3-
++#	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_MACOSX
++
++mingw:
++	$(MAKE) -f $(MAKEFILE) "LUA_A=lua51.dll" "LUA_T=lua.exe" \
++	"AR=$(CC) -shared -o" "RANLIB=strip --strip-unneeded" \
++	"MYCFLAGS=-DLUA_BUILD_AS_DLL" "MYLIBS=" "MYLDFLAGS=-s" lua.exe
++	$(MAKE) "LUAC_T=luac.exe" luac.exe
++
++posix:
++	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_POSIX
++
++solaris:
++	$(MAKE) -f $(MAKEFILE) all MYCFLAGS="-DLUA_USE_POSIX -DLUA_USE_DLOPEN" MYLIBS="-ldl"
++
++# list targets that do not create files (but not all makes understand .PHONY)
++.PHONY: all $(PLATS) default o a clean depend echo none
++
++# DO NOT DELETE
++
++lapi.o: lapi.c lua.h luaconf.h lapi.h lobject.h llimits.h ldebug.h \
++  lstate.h ltm.h lzio.h lmem.h ldo.h lfunc.h lgc.h lstring.h ltable.h \
++  lundump.h lvm.h
++lauxlib.o: lauxlib.c lua.h luaconf.h lauxlib.h
++lbaselib.o: lbaselib.c lua.h luaconf.h lauxlib.h lualib.h
++lcode.o: lcode.c lua.h luaconf.h lcode.h llex.h lobject.h llimits.h \
++  lzio.h lmem.h lopcodes.h lparser.h ldebug.h lstate.h ltm.h ldo.h lgc.h \
++  ltable.h
++ldblib.o: ldblib.c lua.h luaconf.h lauxlib.h lualib.h
++ldebug.o: ldebug.c lua.h luaconf.h lapi.h lobject.h llimits.h lcode.h \
++  llex.h lzio.h lmem.h lopcodes.h lparser.h ldebug.h lstate.h ltm.h ldo.h \
++  lfunc.h lstring.h lgc.h ltable.h lvm.h
++ldo.o: ldo.c lua.h luaconf.h ldebug.h lstate.h lobject.h llimits.h ltm.h \
++  lzio.h lmem.h ldo.h lfunc.h lgc.h lopcodes.h lparser.h lstring.h \
++  ltable.h lundump.h lvm.h
++ldump.o: ldump.c lua.h luaconf.h lobject.h llimits.h lstate.h ltm.h \
++  lzio.h lmem.h lundump.h
++lfunc.o: lfunc.c lua.h luaconf.h lfunc.h lobject.h llimits.h lgc.h lmem.h \
++  lstate.h ltm.h lzio.h
++lgc.o: lgc.c lua.h luaconf.h ldebug.h lstate.h lobject.h llimits.h ltm.h \
++  lzio.h lmem.h ldo.h lfunc.h lgc.h lstring.h ltable.h
++linit.o: linit.c lua.h luaconf.h lualib.h lauxlib.h
++liolib.o: liolib.c lua.h luaconf.h lauxlib.h lualib.h
++llex.o: llex.c lua.h luaconf.h ldo.h lobject.h llimits.h lstate.h ltm.h \
++  lzio.h lmem.h llex.h lparser.h lstring.h lgc.h ltable.h
++lmathlib.o: lmathlib.c lua.h luaconf.h lauxlib.h lualib.h
++lmem.o: lmem.c lua.h luaconf.h ldebug.h lstate.h lobject.h llimits.h \
++  ltm.h lzio.h lmem.h ldo.h
++loadlib.o: loadlib.c lua.h luaconf.h lauxlib.h lualib.h
++lobject.o: lobject.c lua.h luaconf.h ldo.h lobject.h llimits.h lstate.h \
++  ltm.h lzio.h lmem.h lstring.h lgc.h lvm.h
++lopcodes.o: lopcodes.c lopcodes.h llimits.h lua.h luaconf.h
++loslib.o: loslib.c lua.h luaconf.h lauxlib.h lualib.h
++lparser.o: lparser.c lua.h luaconf.h lcode.h llex.h lobject.h llimits.h \
++  lzio.h lmem.h lopcodes.h lparser.h ldebug.h lstate.h ltm.h ldo.h \
++  lfunc.h lstring.h lgc.h ltable.h
++lstate.o: lstate.c lua.h luaconf.h ldebug.h lstate.h lobject.h llimits.h \
++  ltm.h lzio.h lmem.h ldo.h lfunc.h lgc.h llex.h lstring.h ltable.h
++lstring.o: lstring.c lua.h luaconf.h lmem.h llimits.h lobject.h lstate.h \
++  ltm.h lzio.h lstring.h lgc.h
++lstrlib.o: lstrlib.c lua.h luaconf.h lauxlib.h lualib.h
++ltable.o: ltable.c lua.h luaconf.h ldebug.h lstate.h lobject.h llimits.h \
++  ltm.h lzio.h lmem.h ldo.h lgc.h ltable.h
++ltablib.o: ltablib.c lua.h luaconf.h lauxlib.h lualib.h
++ltm.o: ltm.c lua.h luaconf.h lobject.h llimits.h lstate.h ltm.h lzio.h \
++  lmem.h lstring.h lgc.h ltable.h
++lua.o: lua.c lua.h luaconf.h lauxlib.h lualib.h
++luac.o: luac.c lua.h luaconf.h lauxlib.h ldo.h lobject.h llimits.h \
++  lstate.h ltm.h lzio.h lmem.h lfunc.h lopcodes.h lstring.h lgc.h \
++  lundump.h
++lundump.o: lundump.c lua.h luaconf.h ldebug.h lstate.h lobject.h \
++  llimits.h ltm.h lzio.h lmem.h ldo.h lfunc.h lstring.h lgc.h lundump.h
++lvm.o: lvm.c lua.h luaconf.h ldebug.h lstate.h lobject.h llimits.h ltm.h \
++  lzio.h lmem.h ldo.h lfunc.h lgc.h lopcodes.h lstring.h ltable.h lvm.h
++lzio.o: lzio.c lua.h luaconf.h llimits.h lmem.h lstate.h lobject.h ltm.h \
++  lzio.h
++print.o: print.c ldebug.h lstate.h lua.h luaconf.h lobject.h llimits.h \
++  ltm.h lzio.h lmem.h lopcodes.h lundump.h
++lfs.o: lfs.c lfs.h
++lbitlib.o: lbitlib.c lua.h luaconf.h lauxlib.h lualib.h
++
++# (end of Makefile)
+diff --git a/coLunacyDNS/lunacy/luaconf.h b/coLunacyDNS/lunacy/luaconf.h
+index 73010b5..ee9660f 100644
+--- a/coLunacyDNS/lunacy/luaconf.h
++++ b/coLunacyDNS/lunacy/luaconf.h
+@@ -36,7 +36,7 @@
+ #if defined(LUA_USE_LINUX)
+ #define LUA_USE_POSIX
+ #define LUA_USE_DLOPEN          /* needs an extra library: -ldl */
+-#define LUA_USE_EDITLINE        /* needs some extra libraries */
++#define LUA_USE_READLINE        /* needs some extra libraries */
+ #endif
+ 
+ #if defined(LUA_USE_NONGPL) /* Like USE_LINUX, but avoid GPL readline */
+@@ -278,9 +278,10 @@
+ * editline is a non-GPL api-compatible readline like library.
+ * editline is at https://github.com/troglobit/editline/releases/
+ */
+-#if defined(LUA_USE_EDITLINE)
++#if defined(LUA_USE_READLINE)
+ #include <stdio.h>
+-#include <editline.h>
++#include <readline/readline.h>
++#include <readline/history.h>
+ #define lua_readline(L,b,p)     ((void)L, ((b)=readline(p)) != NULL)
+ #define lua_saveline(L,idx) \
+         if (lua_strlen(L,idx) > 0)  /* non-empty line? */ \
+@@ -295,6 +296,15 @@
+ #define lua_freeline(L,b)       { (void)L; (void)b; }
+ #endif
+ 
++#if defined(LUA_USE_EDITLINE)
++#include <stdio.h>
++#include <editline.h>
++#define lua_readline(L,b,p)     ((void)L, ((b)=readline(p)) != NULL)
++#define lua_saveline(L,idx) \
++        if (lua_strlen(L,idx) > 0)  /* non-empty line? */ \
++          add_history(lua_tostring(L, idx));  /* add it to history */
++#endif
++
+ #endif
+ 
+ /* }================================================================== */
+@@ -652,6 +662,7 @@ union luai_Cast { double l_d; long l_l; };
+ #if defined(loslib_c) || defined(luaall_c)
+ 
+ #ifndef MINGW
++#ifndef NOMKSTEMP
+ #include <unistd.h>
+ #define LUA_TMPNAMBUFSIZE       32
+ #define lua_tmpnam(b,e) { \
+@@ -659,7 +670,10 @@ union luai_Cast { double l_d; long l_l; };
+         e = mkstemp(b); \
+         if (e != -1) close(e); \
+         e = (e == -1); }
+-
++#else // NOMKSTEMP
++#define LUA_TMPNAMBUFSIZE       L_tmpnam
++#define lua_tmpnam(b,e)         { e = (tmpnam(b) == NULL); }
++#endif // NOMKSTEMP
+ #else // MINGW
+ #define LUA_TMPNAMBUFSIZE       L_tmpnam
+ #define lua_tmpnam(b,e)         { e = (tmpnam(b) == NULL); }
+
+commit daa8010238b2387f565a772ff50e15c12a18e742
+Author: Sam Trenholme <git@samiam.org>
+Date:   Mon Jun 15 13:46:21 2026 -0700
+
+    No warnings when compiling MaraDNS+Deadwood with clang 20.1.8
+    
+    Mind you there are still warnings when compiling with GCC 16.1.1 but this
+    is progress.
+
+diff --git a/deadwood-github/tools/blockhash/blockHashMake.c b/deadwood-github/tools/blockhash/blockHashMake.c
+index ace3510..deb24d4 100644
+--- a/deadwood-github/tools/blockhash/blockHashMake.c
++++ b/deadwood-github/tools/blockhash/blockHashMake.c
+@@ -207,12 +207,12 @@ blStr *readFile(FILE *inp, int *elements) {
+       continue;
+     }
+ 
+-    len = strlen(line); 
++    len = strlen((char *)line); 
+     nstr = malloc(len + 2);
+     if(nstr == NULL) {
+       return top;
+     }
+-    strncpy(nstr,line,len + 1);
++    strncpy((char *)nstr,(char *)line,len + 1);
+     if(top == NULL) {
+        top = newBl(len, nstr);
+        bottom = top;
+diff --git a/deadwood-github/tools/blockhash/blockHashRead.c b/deadwood-github/tools/blockhash/blockHashRead.c
+index 9916d27..a18c5dd 100644
+--- a/deadwood-github/tools/blockhash/blockHashRead.c
++++ b/deadwood-github/tools/blockhash/blockHashRead.c
+@@ -171,7 +171,7 @@ uint8_t *ASCII2DNS(char *str, int32_t *olen) {
+   if(out == NULL) { return NULL; }
+   out[0] = ' ';
+   out[l + 1] = ' ';
+-  if(strncpy(out + 1, str, l) == NULL) { free(out); return NULL; }
++  if(strncpy((char *)out + 1, str, l) == NULL) { free(out); return NULL; }
+   *olen = dnsConvertString(l + 2, out);
+   if(*olen == 0) { free(out); return NULL; }
+   return out;
+
+commit 0070c36a53ad70675cc16a7b4a8e4a2503538ba1
+Author: Sam Trenholme <git@samiam.org>
+Date:   Mon Jun 15 13:38:17 2026 -0700
+
+    Three more tools now compile in GCC again
+    
+    MaraDNS’s code didn’t change.  It’s the GCC people who decided to
+    break code which compiled just fine before.  This is a big problem
+    with F/OSS software: Making everything a moving target (e.g. Freeciv
+    changed its map format)
+
+diff --git a/tools/askmaratcp.c b/tools/askmaratcp.c
+index 0ff2003..3314610 100644
+--- a/tools/askmaratcp.c
++++ b/tools/askmaratcp.c
+@@ -56,7 +56,7 @@ int timeout = 21;
+ unsigned short dns_port = DNS_PORT;
+ 
+ /* So -Wall doesn't gag */
+-extern int decomp_init();
++extern int decomp_init(int alog_level);
+ 
+ /* Defining finctions which are part of askmara-tcp.c */
+ int verbose_output(js_string *uindata);
+diff --git a/tools/benchmark.c b/tools/benchmark.c
+index 1ced79a..6e664be 100644
+--- a/tools/benchmark.c
++++ b/tools/benchmark.c
+@@ -46,7 +46,7 @@ int harderror(char *msg) {
+     exit(1);
+     }
+ 
+-void timeout() {
++void timeout(int z) {
+     printf("Query failed on query number %d\n",querynum);
+     exit(1);
+     }
+diff --git a/tools/duende.c b/tools/duende.c
+index 278a72a..452b7c4 100644
+--- a/tools/duende.c
++++ b/tools/duende.c
+@@ -48,12 +48,12 @@ int got_term_signal = 0;
+ 
+ /* If we get a HUP signal set the flag so we can restart the MaraDNS child
+    process */
+-void handle_hup() {
++void handle_hup(int z) {
+     got_hup_signal = 1;
+     return;
+     }
+ 
+-void handle_term() {
++void handle_term(int z) {
+     got_term_signal = 1;
+     return;
+     }
+
+commit 53ee9421c05f4bb36298b9893347e6c4f7afc7e3
+Author: Sam Trenholme <git@samiam.org>
+Date:   Mon Jun 15 13:31:12 2026 -0700
+
+    mtest.c: Compiles with GCC again
+    
+    GCC has a bad problem with moving goalposts: It’s basically impossible
+    to make code which doesn’t generate warnings, so I’ll make my target:
+    
+    * No warnings in clang
+    * compiles in GCC
+    * Remove GCC warnings if and only if feasible
+
+diff --git a/libs/mtest.c b/libs/mtest.c
+index 3262136..ae02a61 100644
+--- a/libs/mtest.c
++++ b/libs/mtest.c
+@@ -6,8 +6,8 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
+-extern int mhash_firstkey();
+-extern int mhash_nextkey();
++extern int mhash_firstkey(mhash *hash, js_string *key);
++extern int mhash_nextkey(mhash *hash, js_string *key);
+ 
+ int main() {
+     js_string *s1,*s2,*get;
+
+commit 4683efb8479326c52e7cde6c4ca04a1093bd3480
+Author: Sam Trenholme <git@samiam.org>
+Date:   Mon Jun 15 13:12:45 2026 -0700
+
+    coLunacyDNS.c: Compiles in GCC again
+    
+    For people using MaraDNS 3.5.0037 and want to use coLunacyDNS, use
+    `clang` (and *not* GCC) to compile coLunacyDNS.
+
+diff --git a/coLunacyDNS/coLunacyDNS.c b/coLunacyDNS/coLunacyDNS.c
+index 45bfa89..3749d1d 100644
+--- a/coLunacyDNS/coLunacyDNS.c
++++ b/coLunacyDNS/coLunacyDNS.c
+@@ -2134,7 +2134,7 @@ sock6:
+ }
+ 
+ #ifndef MINGW
+-void alarmHandler() {
++void alarmHandler(int z) {
+ #ifdef GCOV
+ 	serverRunning = 0; // Clean termination of service
+ #else
+
+commit c81f5c5966821c3a60166decb1e59f7fff4d7248
+Author: Sam Trenholme <git@samiam.org>
+Date:   Mon Jun 15 05:15:06 2026 -0700
+
+    round() used by math.h, rename roundrg32() in rg32hash.c
+    
+    It now compiles with no warnings again
+
+diff --git a/tools/misc/rg32hash.c b/tools/misc/rg32hash.c
+index c117a4c..19d3edf 100644
+--- a/tools/misc/rg32hash.c
++++ b/tools/misc/rg32hash.c
+@@ -416,7 +416,7 @@ void belt_12(u_int32_t *a, u_int32_t *b) {
+         a[15] ^= q2;
+ }
+ 
+-void rround(u_int32_t *a, u_int32_t *b, int offset) {
++void roundrg32(u_int32_t *a, u_int32_t *b, int offset) {
+         switch(offset) {
+                 case 0:
+                         belt_00(a,b);
+@@ -467,7 +467,7 @@ int input_map(u_int32_t *a, u_int32_t *b, char *filename, int *o)  {
+         u_int32_t p[3];
+         int q, c, r, w;
+         int done = 0;
+-        int readed = 0;
++        int readed = 0, counter;
+         char v[12];
+         FILE *desc;
+ 
+@@ -503,7 +503,7 @@ int input_map(u_int32_t *a, u_int32_t *b, char *filename, int *o)  {
+                                                 b[w + c * 13] ^= p[c];
+                                                 a[16 + c] ^= p[c];
+                                         }
+-                                        rround(a,b,*o);
++                                        roundrg32(a,b,*o);
+                                         *o += 1;
+                                         if(*o == 13) {*o = 0;}
+                                         fclose(desc);
+@@ -517,7 +517,7 @@ int input_map(u_int32_t *a, u_int32_t *b, char *filename, int *o)  {
+                         b[w + c * 13] ^= p[c];
+                         a[16 + c] ^= p[c];
+                 }
+-                rround(a,b,*o);
++                roundrg32(a,b,*o);
+                 *o += 1;
+                 if(*o == 13) {*o = 0;}
+         }
+@@ -547,14 +547,14 @@ void hashfile(char *filename) {
+         }
+         /* End injection */
+         for(c = 0; c < 16; c++) {
+-                rround(a,b,o);
++                roundrg32(a,b,o);
+                 o++;
+                 if(o > 12){o=0;}
+         }
+         /* End mangling */
+         for(c = 0; c < 4; c++) {
+                 unsigned char d,e,f,g;
+-                rround(a,b,o);
++                roundrg32(a,b,o);
+                 o++;
+                 if(o > 12){o=0;}
+                 d = a[1] & 0xff;
+@@ -588,7 +588,7 @@ void dirhandle(char *dir) {
+     f = readdir(wd);
+     while(f != NULL) {
+         strncpy(path,dir,PATH_MAX - 10);
+-        strncat(path,"/",1);
++        strncat(path,"/",2);
+         if((strlen(path) + 10 + strlen(f->d_name)) >= PATH_MAX) {
+                 return;
+         }
+@@ -613,7 +613,7 @@ void dirhandle(char *dir) {
+    command line, then makes a hash out of that file. */
+ 
+ int main(int argc, char **argv) {
+-    int counter;
++    int counter, q;
+     struct stat s;
+     /* Check the command line argument */
+     if(argc < 2) {
