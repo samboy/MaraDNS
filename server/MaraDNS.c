@@ -3490,7 +3490,6 @@ int udp_ipv4_bind(int *sockets, ipv4pair *addresses) {
 int udp_ipv6_bind(int *sock, int splace, js_string *ipv6_address) {
     int len_inet; /* Length */
     struct sockaddr_in6 dns_udp;
-    int counter;
     char ascii_ipv6[128];
 
     if(js_js2str(ipv6_address,ascii_ipv6,100) == JS_ERROR) {
@@ -3503,8 +3502,6 @@ int udp_ipv6_bind(int *sock, int splace, js_string *ipv6_address) {
     /* Sanity checks */
     if(sock == 0)
         return JS_ERROR;
-
-    counter = 0;
 
     if((sock[splace] = socket(AF_INET6,SOCK_DGRAM,0)) == -1) {
             return JS_ERROR;
