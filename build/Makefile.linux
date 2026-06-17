@@ -71,6 +71,7 @@ clean:
 	cd ../coLunacyDNS ; make clean ; \
 	cp Makefile.default Makefile ; \
 	cd ../deadwood-*/src ; make clean ; \
+        mv Makefile.save Makefile ; \
 	cd ../tools/blockhash ; make clean ; \
 	# ; cd .. ; find . -type d | grep .deps | xargs rm -fr ; find . -name '*.o' | xargs rm
 
