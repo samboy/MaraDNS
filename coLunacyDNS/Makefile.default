@@ -1,5 +1,5 @@
 # To use other flags, invoke as "make CFLAGS=-g" or some such
-CFLAGS =-O3 
+CFLAGS =-O3 -std=c99 -D_POSIX_C_SOURCE -D_DEFAULT_SOURCE
 
 all: coLunacyDNS HalfSipHash13 
 
