@@ -32,9 +32,9 @@ for bug reports).
 # Current status
 
 MaraDNS has been, since late 2022, in deep freeze and is only being
-updated to fix important security holes.  The last hole found was 
-in 2023.  No attack stronger than remote denial of service has
-*ever* been found with MaraDNS.
+updated to fix important security holes or compile errors in either GCC
+or clang.  The last hole found was in 2026.  No attack stronger than
+remote denial of service has *ever* been found with MaraDNS.
 
 MaraDNS is future-proof: She has been updated to be Y2038 compliant; any 
 and all external dependencies MaraDNS has have multiple implementations 
@@ -79,10 +79,21 @@ Then, do this:
 
 ```
 ./configure
-CC=cc # Change this to gcc/clang/tcc as desired
+CC=clang
 export CC
 make
 ```
+
+While MaraDNS will compile with GCC 15 and GCC 16 (2026), GCC is a moving
+target and I cannot guarantee MaraDNS will compile with future versions
+of GCC.  Use clang (LLVM) instead if there are any issues compiling
+MaraDNS with GCC.  My goal is to have no errors when compiling in
+GCC, and no warnings when compiling with clang.  MaraDNS, as of clang 21,
+compiles with no warnings when -Wall is set.  GCC 15 generates warnings,
+but GCC 16 doesn’t.  MaraDNS also compiles without issue with TCC 0.9.27.
+
+MaraDNS compiles and has been tested in Ubuntu 26 (glibc), cygwin
+(cygwin1.dll), and both Alpine Linux 14 and 24 (musl libc).
 
 Note that most implementations of `make` will set `$CC` to `cc` if it’s
 not already set, but the [POSIX spec](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/make.html)
@@ -112,12 +123,8 @@ versions of the core POSIX utilities and GNU coreutils.
 
 ## Supported OSes
 
-MaraDNS is built and runs on Ubuntu 22.04 as of late 2022.  
-
-I currently use Ubuntu 22.04 to develop MaraDNS, both Ubuntu 22.04 and
-Alpine Linux 3.14 to test that MaraDNS builds and passes all automated
-regressions, and a Windows XP virtual machine to make the Windows
-binaries.
+MaraDNS is built and runs on Ubuntu 26.04 as of mid 2026.  I also test
+it in cygwin and Alpine Linux (both Alpine 14 and Alpine 24).
 
 ### Please use systemd
 
