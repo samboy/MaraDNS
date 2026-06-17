@@ -39,8 +39,7 @@ all:
 	cd ../qual ; make $(M) ; cd ../server ; \
 	make $(M) $(V) COMPILED=\"$(COMPILED)\" ; \
 	cd ../tools ; make $(M) ; \
-	cd ../deadwood-*/src/ ; \
-	make FLAGS=-O2 -std=c99 -D_POSIX_C_SOURCE -D_DEFAULT_SOURCE ; \
+	cd ../deadwood-*/src/ ; make $(M) ; \
 	cd ../tools/blockhash ; make CFLAGS=-O2 ; \
 	cd ../../../coLunacyDNS/ ; make ; \
 	cd ../tcp ; make $(M) $(V) ; cat ../00README.FIRST
