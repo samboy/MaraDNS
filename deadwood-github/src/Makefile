@@ -44,7 +44,7 @@ DwHalfSipHash.o: DwHalfSipHash.c DwHalfSipHash.h
 
 DwBlockHash.o: DwBlockHash.c DwBlockHash.h DwHalfSipHash.o
 	$(CC) $(FLAGS) $(CFLAGS) -Wall -c -o DwBlockHash.o DwBlockHash.c
-
+	
 DwStr.o:	DwStr.c DwStr.h
 	$(CC) $(FLAGS) $(CFLAGS) -Wall -c -o DwStr.o DwStr.c
 
