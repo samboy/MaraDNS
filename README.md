@@ -97,12 +97,8 @@ MaraDNS compiles and has been tested in Ubuntu 26 (glibc), cygwin
 
 Note that most implementations of `make` will set `$CC` to `cc` if it’s
 not already set, but the [POSIX spec](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/make.html)
-says that the default value should be `c99`, a compiler which will not
-compile MaraDNS.  A POSIX program like MaraDNS will not compile with a
-strictly ISO compliant C compiler (the POSIX system calls will fail to
-compile).  However, all of the C programs here compile with `gcc`,
-`clang`, and `tcc`, and should compile with any reasonable POSIX C
-compiler.
+says that the default value should be `c99`; as of 2026 MaraDNS will
+compile with the `c99` compiler.
 
 All of these are very standard tools which are included with the vast
 majority of Linux and BSD distributions; packages usually have names like:
