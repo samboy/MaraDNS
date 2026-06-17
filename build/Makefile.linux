@@ -28,7 +28,7 @@ Q="DEFINES=-DSELECT_PROBLEM"
 
 # Debug
 
-FLAGS = -O2 -Wall -DSELECT_PROBLEM
+FLAGS = -O2 -std=c99 -D_POSIX_C_SOURCE -D_DEFAULT_SOURCE -Wall -DSELECT_PROBLEM
 M="CC=$(CC) $(FLAGS)"
 D="CC=$(CC) $(FLAGS) -DDEBUG -DTHREADS"
 #FLAGS = -g
@@ -39,7 +39,8 @@ all:
 	cd ../qual ; make $(M) ; cd ../server ; \
 	make $(M) $(V) COMPILED=\"$(COMPILED)\" ; \
 	cd ../tools ; make $(M) ; \
-	cd ../deadwood-*/src/ ; make FLAGS=-O2 ; \
+	cd ../deadwood-*/src/ ; \
+	make FLAGS=-O2 -std=c99 -D_POSIX_C_SOURCE -D_DEFAULT_SOURCE ; \
 	cd ../tools/blockhash ; make CFLAGS=-O2 ; \
 	cd ../../../coLunacyDNS/ ; make ; \
 	cd ../tcp ; make $(M) $(V) ; cat ../00README.FIRST
