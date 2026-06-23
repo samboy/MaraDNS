@@ -40,7 +40,9 @@ MaraDNS is future-proof: She has been updated to be Y2038 compliant; any
 and all external dependencies MaraDNS has have multiple implementations 
 (for example, the scripts for converting MaraDNS’s documents have been 
 updated to be in Lua instead of Perl, because multiple Lua implementations 
-exist, including one shipping in MaraDNS’s source code).
+exist, including one shipping in MaraDNS’s source code).  In addition,
+MaraDNS is compiled with the `std=c99` flag to reduce the chances that
+future changes to C compilers cause MaraDNS to be unable to compile.
 
 # ABOUT
 
