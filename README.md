@@ -42,7 +42,11 @@ and all external dependencies MaraDNS has have multiple implementations
 updated to be in Lua instead of Perl, because multiple Lua implementations 
 exist, including one shipping in MaraDNS’s source code).  In addition,
 MaraDNS is compiled with the `std=c99` flag to reduce the chances that
-future changes to C compilers cause MaraDNS to be unable to compile.
+future changes to C compilers cause MaraDNS to be unable to 
+compile—even though MaraDNS generates no warnings with `-Wall` in GCC 16
+and Clang 20 (both current here in 2026), I’ve seen C compilers, over the 
+years, decide to not compile code which previously generated no warnings 
+even with `-Wall` set (ugh).
 
 # ABOUT
 
