@@ -163,6 +163,11 @@ used to compile MaraDNS needs to have the command name `make`.
 MaraDNS compiles and runs with both Busybox versions of the core 
 POSIX utilities as well as GNU coreutils.
 
+Note that while MaraDNS will compile, on systems without `/dev/urandom`,
+MaraDNS will not start up (the Windows port uses Windows-specific calls
+to get entropy).  While `/dev/urandom` is not part of POSIX, and while
+it isn’t needed to *compile* MaraDNS, it is needed to *run* MaraDNS.
+
 ## Supported OSes
 
 MaraDNS is built and runs on Ubuntu 26.04 as of mid 2026.  I also test
