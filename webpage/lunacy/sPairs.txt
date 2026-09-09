@@ -1,3 +1,4 @@
+-- This code is public domain
 -- Like pairs() but sorted
 function sPairs(inTable, sFunc)
   if not sFunc then
