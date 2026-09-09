@@ -100,6 +100,22 @@ uses a 32-bit SipHash variant to protect Lunacy against hash collision
 attacks.
 </ul>
 
+<h3>Important security notes</h3>
+
+Do <i>not</i> allow untrusted processes to see the output of 
+<tt>pairs()</tt>.  Instead use a wrapper function, such as
+<a href="sPairs.txt">sPairs()</a> to sort table keys, e.g.:
+
+<pre>
+for k,v in sPairs(someTable) do
+  print(k,v)
+end
+</pre>
+
+Do <i>not</i> pass untrusted input to the <tt>spawner</tt> calls (e.g.
+<tt>spawner.popen2()</tt>); they do not escape shell
+characters and allow any program to be executed.
+
 <h2>Supported platforms</h2>
 
 Lunacy is cross platform:  It compiles both
