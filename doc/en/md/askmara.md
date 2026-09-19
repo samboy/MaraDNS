@@ -27,6 +27,10 @@ request DNS recursion; in other words, askmara will request that the
 remote DNS server not contact other DNS servers to answer the query in 
 question. 
 
+`-r` If this is set, **askmara** with both verbosely output the 
+complete reply and show the raw incoming DNS packet received by 
+**askmara**. 
+
 `query` dns record to be queried. The query has two sections: The type 
 of record we desire, and the hostname we want this record for. 
 
@@ -56,7 +60,9 @@ Askmara supports a handful one-letter mnemonics, as follows:
 
 **T** signifies that we want a TXT RR 
 
-**Z** signifies that we want to ask for all RRs. 
+**Z** signifies that we want to ask for all RRs 
+
+**L** signifies that we want an AAAA RR 
 
 `server` IP address of the dns server to be queried. If no server is 
 given, askmara will query 127.0.0.1.  

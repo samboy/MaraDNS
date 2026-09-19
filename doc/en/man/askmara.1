@@ -4,7 +4,7 @@
 .\" Process this file with the following (replace filename.1)
 .\" preconv < filename.1 | nroff -man -Tutf8
 .\"
-.\" Last updated 2022-11-12
+.\" Last updated 2026-09-19
 .\"
 .TH ASKMARA 1 "askmara" "January 2002" "askmara"
 .\" We don't want hyphenation (it's too ugly)
@@ -61,6 +61,14 @@ when sending out a query, will not request DNS recursion; in other
 words, askmara will request that the remote DNS server not contact 
 other DNS servers to answer the query in question. 
 .TP 4
+-r 
+If this is set, 
+.B "askmara"
+with both verbosely output the complete reply and show the raw incoming 
+DNS packet received by 
+.BR "askmara" "."
+
+.TP 4
 query 
 dns record to be queried. The query has two sections: The type of 
 record we desire, and the hostname we want this record for. 
@@ -99,7 +107,10 @@ signifies that we mant a MX RR
 signifies that we want a TXT RR 
 .PP
 .B "Z"
-signifies that we want to ask for all RRs. 
+signifies that we want to ask for all RRs 
+.PP
+.B "L"
+signifies that we want an AAAA RR 
 .TP 4
 server 
 IP address of the dns server to be queried. If no server is given, 

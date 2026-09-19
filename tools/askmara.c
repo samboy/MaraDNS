@@ -323,6 +323,9 @@ int main(int argc, char **argv) {
                 exit(44);
         }
         *temp = 'A';
+    } else if(*temp = 'L') {
+        desired_rr = 28; /* AAAA */
+        *temp = 'A';
     }
 
     if(js_qstr2js(question.qname,temp) == JS_ERROR)
