@@ -10,7 +10,7 @@ zone files that **maradns** uses).
 
 # USAGE
 
-**askmara** [-n] [ -v | -t timeout] query [ server ] 
+**askmara** [-n] [ -v | -r | -t timeout] query [ server ] 
 
 # OPTIONS
 
@@ -62,7 +62,7 @@ Askmara supports a handful one-letter mnemonics, as follows:
 
 **Z** signifies that we want to ask for all RRs 
 
-**L** signifies that we want an AAAA RR 
+**L** signifies that we want an AAAA (ipv6 address) RR 
 
 `server` IP address of the dns server to be queried. If no server is 
 given, askmara will query 127.0.0.1.  

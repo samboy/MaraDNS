@@ -17,7 +17,7 @@ outputs the reply in a csv2-compatible format (csv2 is the format of zone
 files that <b>maradns</b> uses).
 
 <H1>USAGE</H1>
-<b>askmara</b> [-n] [ -v | -t timeout] query [ server ]
+<b>askmara</b> [-n] [ -v | -r | -t timeout] query [ server ]
 
 <H1>OPTIONS</H1>
 
@@ -71,7 +71,7 @@ Askmara supports a handful one-letter mnemonics, as follows:
 <b>@</b> signifies that we mant a MX RR <p>
 <b>T</b> signifies that we want a TXT RR <p>
 <b>Z</b> signifies that we want to ask for all RRs <p>
-<b>L</b> signifies that we want an AAAA RR 
+<b>L</b> signifies that we want an AAAA (ipv6 address) RR 
 <dt>server
 <dd>IP address of the dns server to be queried. If no server is given,
 askmara will query 127.0.0.1.

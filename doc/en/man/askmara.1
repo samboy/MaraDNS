@@ -37,7 +37,7 @@ uses).
 .PP
 
 .B "askmara"
-[-n] [ -v | -t timeout] query [ server ] 
+[-n] [ -v | -r | -t timeout] query [ server ] 
 .SH "OPTIONS"
 .PP
 
@@ -110,7 +110,7 @@ signifies that we want a TXT RR
 signifies that we want to ask for all RRs 
 .PP
 .B "L"
-signifies that we want an AAAA RR 
+signifies that we want an AAAA (ipv6 address) RR 
 .TP 4
 server 
 IP address of the dns server to be queried. If no server is given, 
