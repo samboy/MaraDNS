@@ -225,8 +225,10 @@ int main(int argc, char **argv) {
             }
         else if (argv[0][0] != '-')
             break;
-        else
+        else {
+            puts("# Askmara version 1.0.0000 (IPv6 support)");
             harderror(L_USAGE);
+            }
         argc--;
         argv++;
         }
@@ -323,7 +325,7 @@ int main(int argc, char **argv) {
                 exit(44);
         }
         *temp = 'A';
-    } else if(*temp = 'L') {
+    } else if(*temp == 'L') {
         desired_rr = 28; /* AAAA */
         *temp = 'A';
     }
@@ -582,6 +584,22 @@ int out_answer(js_string *uindata,int *place) {
             read_txt(uindata,mx.exchange,*place);
             escape_stdout(mx.exchange);
             printf("%s%s",L_NEWLINE,L_NEWLINE);
+            }
+        else if(rr_hdr.type == RR_AAAA) {
+            unsigned short *p;
+            if(uindata->unit_count < *place + 16)
+                return JS_ERROR;
+            /* Display the IP of the data */
+            p = (unsigned short*)(uindata->string + *place);
+            printf("IPv6 IP: %x:%x:%x:%x:%x:%x:%x:%x\n", 
+                   htons(*(p + 0 )),
+                   htons(*(p + 1)),
+                   htons(*(p + 2)),
+                   htons(*(p + 3)),
+                   htons(*(p + 4)),
+                   htons(*(p + 5)),
+                   htons(*(p + 6)),
+                   htons(*(p + 7)));
             }
         else
             printf("%s%d%s%s",L_UNSUP,rr_hdr.type,L_NEWLINE,L_NEWLINE);
