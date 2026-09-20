@@ -226,7 +226,7 @@ int main(int argc, char **argv) {
         else if (argv[0][0] != '-')
             break;
         else {
-            puts("# Askmara version 1.0.0000 (IPv6 support)");
+            puts("# Askmara version 1.0.0001 (IPv6 support)");
             harderror(L_USAGE);
             }
         argc--;

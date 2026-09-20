@@ -5,7 +5,7 @@
 #define L_NEWLINE "\n"
 #define L_HARD_ERROR "Hard Error: "
 #define L_QUERYING "Querying the server with the IP "
-#define L_USAGE "Usage: askmara [-n] [-v | -r | -t timeout] Query [server]\n#Example: askmara Asamboy.github.io."
+#define L_USAGE "Usage: askmara [-n] [-v | -r | -t timeout] Query [server]\n# Example: askmara Asamboy.github.io. 9.9.9.9"
 #define L_JS_CREATE_INDATA "js_create with indata"
 #define L_JS_CREATE_UINDATA "js_create with uindata"
 #define L_JS_CREATE_OUTDATA "js_create with outdata"
