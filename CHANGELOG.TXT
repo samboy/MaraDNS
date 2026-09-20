@@ -5,12 +5,13 @@ MaraDNS changelog
 
      * Two AI-assisted minor security issues patched: 
        1. It was possible to perform a denial of service to disable 
-          Deadwood’s DNS-over-TCP feature (DNS-over-UDP was not affected)
+          Deadwood’s DNS-over-TCP feature. (DNS-over-UDP was not affected)
        2. RFC8482 replies made public 19 bytes of memory in the heap.  There 
           does not appear to be any vulerable private data leaked.
      * askmara now has a raw mode, showing the raw DNS packet received,
        as well as support for AAAA queries (one can now do 
        `askmara Lname.foo.` to ask for name.foo’s ipv6 address)
+     * Improved formatting of HTML documentation.
 
      (202?-??-??)
 
