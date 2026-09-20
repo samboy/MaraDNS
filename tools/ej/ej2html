@@ -144,6 +144,7 @@ print("<!-- Last updated " .. get_timestamp_string() .. " -->")
 
 laststate = "POSTBODY"
 oldstate = "POSTBODY"
+inBody = 0
 while l do
   -- Process .ej and make it HTML
   l = l:gsub(mc("<nofmt>"),"") -- Remove <NOFMT> tag
@@ -180,6 +181,7 @@ while l do
         os.exit(1)
       end
       state = "BODY" 
+      inBody = inBody + 1
       -- Add bodyflags to the BODY tag
       l=l:gsub("<("..body..")>","<%1"..bflags..">") 
     end
@@ -219,6 +221,10 @@ while l do
       l=l:gsub(">","&gt;")
     end
     print(l)
+    if inBody == 1 then
+      print("<center><table><tr><td width=640>")
+      inBody = 2
+    end
   else -- In HTML comment
     if l:find(".*%-%->") then -- End of comment
       l=l:gsub(".*%-%->","")
@@ -235,4 +241,5 @@ while l do
     l = io.read()
   end
 end
+print("</td></tr></table></center>")
 print("</HTML>")
