@@ -16,7 +16,7 @@ askmara [-n] [ -v | -r | -t timeout] query [ server ]
 
 -t  If this is present, the following argument is the askmara 
 timeout, in seconds. Note that askmara can not both have a user-defined 
-timeout and verbose output. 
+timeout and verbose (or raw) output. 
 
 -v  If this is set, askmara will verbosely output the complete 
 reply that the server sent. Note that this verbose output is not 
@@ -29,6 +29,10 @@ question.
 
 -r  If this is set, askmara with both verbosely output the complete 
 reply and show the raw incoming DNS packet received by askmara. 
+
+--version  If this is present, askmara will show its version number 
+on standard output. This can not be combined with any other command 
+line arguments. 
 
 query  dns record to be queried. The query has two sections: The 
 type of record we desire, and the hostname we want this record for. 

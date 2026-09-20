@@ -22,7 +22,7 @@ files that <b>maradns</b> uses).
 <dd>
 If this is present, the following argument is the askmara timeout, in
 seconds.  Note that <b>askmara</b> can not both have a user-defined
-timeout and verbose output.
+timeout and verbose (or raw) output.
 <dt>-v
 <dd>
 If this is set, <b>askmara</b>
@@ -38,6 +38,10 @@ question.
 <dd>
 If this is set, <b>askmara</b> with both verbosely output the complete
 reply and show the raw incoming DNS packet received by <b>askmara</b>.
+<dt>--version
+<dd>
+If this is present, askmara will show its version number on standard output.
+This can not be combined with any other command line arguments.
 <dt>query
 <dd>
 dns record to be queried.  The query has two sections:
