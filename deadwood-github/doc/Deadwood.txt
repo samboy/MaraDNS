@@ -264,9 +264,9 @@ the sender of the UDP query. The default value for this is 1.
 This used to be used for Deadwood's internal hash generator to keep the 
 hash generator somewhat random and immune to certain types of attacks. 
 In Deadwood 3.0, entropy for the hash function is created by looking at 
-the contents of /dev/urandom (secret.txt on Windows machines) and the 
-current timestamp. This parameter is only here so older configuration 
-files do not break in Deadwood 3.0. 
+the contents of /dev/urandom (CryptGenRandom on Windows machines) and 
+the current timestamp. This parameter is only here so older 
+configuration files do not break in Deadwood 3.0. 
 
 == ip4 ==
 
@@ -459,8 +459,8 @@ stream of any arbitrary length).
 
 Note that the hash compression function obtains some of its entropy 
 before parsing the mararc file, and is hard-coded to get entropy from 
-/dev/urandom (secret.txt on Windows systems). Most other entropy used 
-by Deadwood comes from the file pointed to by random_seed_file. 
+/dev/urandom (CryptGenRandom on Windows systems). Most other entropy 
+used by Deadwood comes from the file pointed to by random_seed_file. 
 
 == recurse_min_bind_port ==
 
@@ -753,18 +753,11 @@ memory leaks, Deadwood uses a strong pseudo-random number generator
 (The 32-bit version of RadioGatun) to generate both the query ID and 
 source port. For the random number generator to be secure, Deadwood 
 needs a good source of entropy; by default Deadwood will use 
-/dev/urandom to get this entropy. If you are on a system without 
-/dev/urandom support, it is important to make sure that Deadwood has a 
-good source of entropy so that the query ID and source port are hard to 
-guess (otherwise it is possible to forge DNS packets). 
-
-The Windows port of Deadwood includes a program called 
-"mkSecretTxt.exe" that creates a 64-byte (512 bit) random file called 
-"secret.txt" that can be used by Deadwood (via the "random_seed_file" 
-parameter); Deadwood also gets entropy from the timestamp when Deadwood 
-is started and Deadwood's process ID number, so it is same to use the 
-same static secret.txt file as the random_seed_file for multiple 
-invocations of Deadwood. 
+/dev/urandom (CryptGenRandom in Windows) to get this entropy. If you 
+are on a system without /dev/urandom support, it is important to make 
+sure that Deadwood has a good source of entropy so that the query ID 
+and source port are hard to guess (otherwise it is possible to forge 
+DNS packets). 
 
 Note that Deadwood is not protected from someone on the same network 
 viewing packets sent by Deadwood and sending forged packets as a reply. 
