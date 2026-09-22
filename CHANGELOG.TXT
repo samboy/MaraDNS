@@ -11,7 +11,8 @@ MaraDNS changelog
      * askmara now has a raw mode, showing the raw DNS packet received,
        as well as support for AAAA queries (one can now do 
        `askmara Lname.foo.` to ask for name.foo’s ipv6 address)
-     * Improved formatting of HTML documentation.
+     * Improved formatting of HTML documentation: They now look nice on
+       both modern desktop browsers and on mobile (i.e. phone) browsers
 
      (202?-??-??)
 
