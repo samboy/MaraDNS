@@ -226,6 +226,8 @@ while l do
     if inHead == 1 then
       print(
      '<meta name="viewport" content="width=device-width, initial-scale=1.0">')
+      print('<style>@media (max-width: 639px) {')
+      print('pre {max-width: 90vw; overflow-x: scroll;}}</style>')
     end
     if inBody == 1 then
       print("<center><table><tr><td width=640>")
