@@ -144,6 +144,7 @@ print("<!-- Last updated " .. get_timestamp_string() .. " -->")
 
 laststate = "POSTBODY"
 oldstate = "POSTBODY"
+inHead = 0
 inBody = 0
 while l do
   -- Process .ej and make it HTML
@@ -172,6 +173,7 @@ while l do
     end
 
     if l:find("<"..head..">") then state = "HEAD" end
+    if state == "HEAD" then inHead = inHead + 1 end
     if l:find("</"..head..">") then state = "POSTHEAD" end
     if l:find("<"..body..">") then 
       if not metaSeen then
@@ -221,6 +223,10 @@ while l do
       l=l:gsub(">","&gt;")
     end
     print(l)
+    if inHead == 1 then
+      print(
+     '<meta name="viewport" content="width=device-width, initial-scale=1.0">')
+    end
     if inBody == 1 then
       print("<center><table><tr><td width=640>")
       inBody = 2
