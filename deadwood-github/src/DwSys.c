@@ -780,9 +780,21 @@ void init_rng() {
 		dwr_rg *x = 0;
 		int32_t microtime = 0;
 #ifndef MINGW
+		/* Tests with cygwin, Ubuntu26, and Alpine24 on x86_64
+                 * show that this gives us at least 1 bit of entropy per
+                 * call to clock_gettime.  While one experienced embedded
+                 * developer says they haven’t seen this not give suitable
+                 * entropy across multiple CPUs and systems, other systems 
+                 * may have a coarser clock_gettime and not give us the 
+                 * desired entropy; if so, /dev/urandom if secure will still
+                 * give suitable randomness. */
 		clock_gettime(CLOCK_REALTIME,&thetime);
 		microtime = thetime.tv_nsec;
 #else /* MINGW */
+		/* Note that this only gives us about 32 bits
+                 * of entropy for all 112 calls; Windows users will 
+                 * just have to trust CryptGenRandom() gives them enough 
+                 * entropy */
 		GetSystemTimeAsFileTime(&thetime);
 		microtime = thetime.dwLowDateTime;
 #endif
