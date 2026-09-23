@@ -737,6 +737,7 @@ void init_rng() {
         int64_t tstamp = 0;
         pid_t pnum = 1;
         struct timespec thetime;
+	//int32_t last = 0; // Uncomment to see the clock reads
 
         noise = (uint8_t *)dw_malloc(768);
         if(noise == 0) {
@@ -771,11 +772,33 @@ void init_rng() {
         /* Get entropy from nanoseconds 
          * 275 + 112 * 4 = 723, under 768/760 */
 	for(a = 0; a < 112; a++ ) {
+		dw_str *z = 0;
+		dwr_rg *x = 0;
 		clock_gettime(CLOCK_REALTIME,&thetime);
 		*(noise + (a * 4) + 272) = (thetime.tv_nsec >> 24) & 0xff;
 		*(noise + (a * 4) + 273) = (thetime.tv_nsec >> 16) & 0xff;
 		*(noise + (a * 4) + 274) = (thetime.tv_nsec >> 8) & 0xff;
 		*(noise + (a * 4) + 275) = (thetime.tv_nsec) & 0xff;
+		// Uncomment the following line to see clock reads
+		//printf("%08lx %08lx\n",thetime.tv_nsec,thetime.tv_nsec-last);
+		// We create an empty RG32 instance to have there be more
+		// entropy between calls to clock_gettime().  I estimate
+		// the entropy between gettime() calls to be 1 bit or more.
+        	z = dw_create(3);
+        	if(z == 0) {
+                	dw_fatal("error creating rng dw_str");
+        	}
+        	if(dw_cstr_append((uint8_t *)"1", 1, z) == -1) {
+                	dw_fatal("error putting 1 in dw_str object");
+        	}
+        	x = dwr_init_rg(z);
+		if(x == 0) {
+                	dw_fatal("error creating empty rng");
+        	}
+		dw_destroy(z);
+		dwr_zap(x);
+		// Uncomment the following line to see clock reads
+		//last = thetime.tv_nsec;
 	}
 
         /* Initialize the RNG based on the contents of noise */
