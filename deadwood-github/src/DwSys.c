@@ -736,7 +736,11 @@ void init_rng() {
         uint8_t *noise = 0;
         int64_t tstamp = 0;
         pid_t pnum = 1;
+#ifndef MINGW
         struct timespec thetime;
+#else /* MINGW */
+	FILETIME thetime = { 0, 0 };
+#endif /* MINGW */
 	//int32_t last = 0; // Uncomment to see the clock reads
 
         noise = (uint8_t *)dw_malloc(768);
@@ -774,13 +778,20 @@ void init_rng() {
 	for(a = 0; a < 112; a++ ) {
 		dw_str *z = 0;
 		dwr_rg *x = 0;
+		int32_t microtime = 0;
+#ifndef MINGW
 		clock_gettime(CLOCK_REALTIME,&thetime);
-		*(noise + (a * 4) + 272) = (thetime.tv_nsec >> 24) & 0xff;
-		*(noise + (a * 4) + 273) = (thetime.tv_nsec >> 16) & 0xff;
-		*(noise + (a * 4) + 274) = (thetime.tv_nsec >> 8) & 0xff;
-		*(noise + (a * 4) + 275) = (thetime.tv_nsec) & 0xff;
+		microtime = thetime.tv_nsec;
+#else /* MINGW */
+		GetSystemTimeAsFileTime(&thetime);
+		microtime = thetime.dwLowDateTime;
+#endif
+		*(noise + (a * 4) + 272) = (microtime >> 24) & 0xff;
+		*(noise + (a * 4) + 273) = (microtime >> 16) & 0xff;
+		*(noise + (a * 4) + 274) = (microtime >> 8) & 0xff;
+		*(noise + (a * 4) + 275) = (microtime) & 0xff;
 		// Uncomment the following line to see clock reads
-		//printf("%08lx %08lx\n",thetime.tv_nsec,thetime.tv_nsec-last);
+		//printf("%08lx %08lx\n",microtime,micrtime-last);
 		// We create an empty RG32 instance to have there be more
 		// entropy between calls to clock_gettime().  I estimate
 		// the entropy between gettime() calls to be 1 bit or more.
@@ -798,7 +809,7 @@ void init_rng() {
 		dw_destroy(z);
 		dwr_zap(x);
 		// Uncomment the following line to see clock reads
-		//last = thetime.tv_nsec;
+		//last = microtime;
 	}
 
         /* Initialize the RNG based on the contents of noise */
