@@ -728,9 +728,7 @@ void get_local_udp_packet(SOCKET sock) {
         dw_str *query = 0, *orig_query = 0;
         int_fast32_t qtype = 0;
         int in_blocked_hosts_hash = 0;
-#ifdef VALGRIND_NOERRORS
         memset(packet,0,522);
-#endif /* VALGRIND_NOERRORS */
 
         c_len = sizeof(client);
         make_socket_nonblock(sock); /* Linux bug workaround */

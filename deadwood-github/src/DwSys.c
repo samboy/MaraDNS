@@ -689,6 +689,13 @@ void get_entropy_from_seedfile(uint8_t *noise,int len) {
         }
         CryptReleaseContext(CryptContext,0);
 #else /* MINGW */
+	/* Someday, this code should use getentropy(), but getentropy()
+         * was only made part of POSIX in 2024, and there still isn’t
+         * a _POSIX_C_SOURCE define that allows me to use genentropy() 
+         * here in 2026, so I will continue to use /dev/urandom for 
+         * kernel level entropy.  No, /dev/random is *not* POSIX, but
+         * it’s widely deployed and using it doesn’t cause compile-time
+         * problems. */
         char *filename = 0;
         int zap = 0;
         int seed = -1;
@@ -729,17 +736,20 @@ void init_rng() {
         uint8_t *noise = 0;
         int64_t tstamp = 0;
         pid_t pnum = 1;
+        struct timespec thetime;
 
-        noise = (uint8_t *)dw_malloc(512);
+        noise = (uint8_t *)dw_malloc(768);
         if(noise == 0) {
                 dw_fatal("error allocating memory for noise");
         }
-#ifdef VALGRIND_NOERRORS
-        /* Valgrind reports our intentional use of values of uncleared
-         * allocated memory as one source of entropy as an error, so we
-         * allow it to be disabled for Valgrind testing */
-        memset(noise,0,512);
-#endif /* VALGRIND_NOERRORS */
+	/* C99 specifies that reading uninitialized allocated memory 
+         * results in undefined behavior.  This was never an issue in
+         * GCC or clang (both just have the data be kinda sorta random)
+         * but here in 2026 with clock_gettime() being high resolution
+         * and cross platform (it wasn’t cross-platform in 2007: MacOS
+         * didn’t support it back then), let’s be more strictly C99
+         * compliant */
+        memset(noise,0,768);
 
         get_entropy_from_seedfile(noise,256);
 
@@ -753,13 +763,23 @@ void init_rng() {
 
         /* Get entropy from the process' ID number */
         pnum = getpid();
-        for(a = 0 ; a < sizeof(pnum) ; a++ ) {
-                *(noise + a + 272) = pnum & 0xff;
+        for(a = 0 ; a < 8 ; a++ ) {
+                *(noise + a + 264) = pnum & 0xff;
                 pnum >>= 8;
         }
 
+        /* Get entropy from nanoseconds 
+         * 275 + 112 * 4 = 723, under 768/760 */
+	for(a = 0; a < 112; a++ ) {
+		clock_gettime(CLOCK_REALTIME,&thetime);
+		*(noise + (a * 4) + 272) = (thetime.tv_nsec >> 24) & 0xff;
+		*(noise + (a * 4) + 273) = (thetime.tv_nsec >> 16) & 0xff;
+		*(noise + (a * 4) + 274) = (thetime.tv_nsec >> 8) & 0xff;
+		*(noise + (a * 4) + 275) = (thetime.tv_nsec) & 0xff;
+	}
+
         /* Initialize the RNG based on the contents of noise */
-        noise_to_rng(noise,510);
+        noise_to_rng(noise,760);
 
         if(noise != 0) {
                 free(noise);
