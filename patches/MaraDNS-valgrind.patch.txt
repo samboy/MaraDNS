@@ -1,0 +1,167 @@
+This patch makes sure Deadwood doesn’t generate any Valgrind warnings.
+While current stable compilers do not have issues compiling this code,
+let’s keep the code clean for possible future compilers.
+
+--- deadwood-github/src/DwSys.c.orig	2026-09-23 10:54:30.472190600 -0600
++++ deadwood-github/src/DwSys.c	2026-09-23 10:54:35.104197200 -0600
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2007-2022 Sam Trenholme
++/* Copyright (c) 2007-2026 Sam Trenholme
+  *
+  * TERMS
+  *
+@@ -16,6 +16,11 @@
+  * fitness for purpose.
+  */
+ 
++#define _POSIX_C_SOURCE 200112L
++#ifndef STRICT_POSIX
++#define _DEFAULT_SOURCE
++#define _BSD_SOURCE
++#endif // STRICT_POSIX
+ #include <stdio.h>
+ #include <string.h>
+ #include <unistd.h>
+@@ -684,6 +689,13 @@
+         }
+         CryptReleaseContext(CryptContext,0);
+ #else /* MINGW */
++	/* Someday, this code should use getentropy(), but getentropy()
++         * was only made part of POSIX in 2024, and there still isn’t
++         * a _POSIX_C_SOURCE define that allows me to use genentropy() 
++         * here in 2026, so I will continue to use /dev/urandom for 
++         * kernel level entropy.  No, /dev/random is *not* POSIX, but
++         * it’s widely deployed and using it doesn’t cause compile-time
++         * problems. */
+         char *filename = 0;
+         int zap = 0;
+         int seed = -1;
+@@ -724,17 +736,25 @@
+         uint8_t *noise = 0;
+         int64_t tstamp = 0;
+         pid_t pnum = 1;
++#ifndef MINGW
++        struct timespec thetime;
++#else /* MINGW */
++	FILETIME thetime = { 0, 0 };
++#endif /* MINGW */
++	//int32_t last = 0; // Uncomment to see the clock reads
+ 
+-        noise = (uint8_t *)dw_malloc(512);
++        noise = (uint8_t *)dw_malloc(768);
+         if(noise == 0) {
+                 dw_fatal("error allocating memory for noise");
+         }
+-#ifdef VALGRIND_NOERRORS
+-        /* Valgrind reports our intentional use of values of uncleared
+-         * allocated memory as one source of entropy as an error, so we
+-         * allow it to be disabled for Valgrind testing */
+-        memset(noise,0,512);
+-#endif /* VALGRIND_NOERRORS */
++	/* C99 specifies that reading uninitialized allocated memory 
++         * results in undefined behavior.  This was never an issue in
++         * GCC or clang (both just have the data be kinda sorta random)
++         * but here in 2026 with clock_gettime() being high resolution
++         * and cross platform (it wasn’t cross-platform in 2007: MacOS
++         * didn’t support it back then), let’s be more strictly C99
++         * compliant */
++        memset(noise,0,768);
+ 
+         get_entropy_from_seedfile(noise,256);
+ 
+@@ -748,13 +768,64 @@
+ 
+         /* Get entropy from the process' ID number */
+         pnum = getpid();
+-        for(a = 0 ; a < sizeof(pnum) ; a++ ) {
+-                *(noise + a + 272) = pnum & 0xff;
++        for(a = 0 ; a < 8 ; a++ ) {
++                *(noise + a + 264) = pnum & 0xff;
+                 pnum >>= 8;
+         }
+ 
++        /* Get entropy from nanoseconds 
++         * 275 + 112 * 4 = 723, under 768/760 */
++	for(a = 0; a < 112; a++ ) {
++		dw_str *z = 0;
++		dwr_rg *x = 0;
++		int32_t microtime = 0;
++#ifndef MINGW
++		/* Tests with cygwin, Ubuntu26, and Alpine24 on x86_64
++                 * show that this gives us at least 1 bit of entropy per
++                 * call to clock_gettime.  While one experienced embedded
++                 * developer says they haven’t seen this not give suitable
++                 * entropy across multiple CPUs and systems, other systems 
++                 * may have a coarser clock_gettime and not give us the 
++                 * desired entropy; if so, /dev/urandom if secure will still
++                 * give suitable randomness. */
++		clock_gettime(CLOCK_REALTIME,&thetime);
++		microtime = thetime.tv_nsec;
++#else /* MINGW */
++		/* Note that this only gives us about 32 bits
++                 * of entropy for all 112 calls; Windows users will 
++                 * just have to trust CryptGenRandom() gives them enough 
++                 * entropy */
++		GetSystemTimeAsFileTime(&thetime);
++		microtime = thetime.dwLowDateTime;
++#endif
++		*(noise + (a * 4) + 272) = (microtime >> 24) & 0xff;
++		*(noise + (a * 4) + 273) = (microtime >> 16) & 0xff;
++		*(noise + (a * 4) + 274) = (microtime >> 8) & 0xff;
++		*(noise + (a * 4) + 275) = (microtime) & 0xff;
++		// Uncomment the following line to see clock reads
++		//printf("%08lx %08lx\n",microtime,microtime-last);
++		// We create an empty RG32 instance to have there be more
++		// entropy between calls to clock_gettime().  I estimate
++		// the entropy between gettime() calls to be 1 bit or more.
++        	z = dw_create(3);
++        	if(z == 0) {
++                	dw_fatal("error creating rng dw_str");
++        	}
++        	if(dw_cstr_append((uint8_t *)"1", 1, z) == -1) {
++                	dw_fatal("error putting 1 in dw_str object");
++        	}
++        	x = dwr_init_rg(z);
++		if(x == 0) {
++                	dw_fatal("error creating empty rng");
++        	}
++		dw_destroy(z);
++		dwr_zap(x);
++		// Uncomment the following line to see clock reads
++		//last = microtime;
++	}
++
+         /* Initialize the RNG based on the contents of noise */
+-        noise_to_rng(noise,510);
++        noise_to_rng(noise,760);
+ 
+         if(noise != 0) {
+                 free(noise);
+@@ -780,6 +851,7 @@
+                 printf("There is no directory %s\n",(char *)c);
+                 dw_fatal("chdir() failed");
+         }
++#ifndef STRICT_POSIX
+ #ifndef QNX
+         if(chroot((char *)c) == -1) {
+                 dw_fatal("chroot() failed");
+@@ -788,6 +860,7 @@
+         if(setgroups(1,&g) == -1) {
+                 dw_fatal("setgroups() failed");
+         }
++#endif /* STRICT_POSIX */
+         if(setgid(maradns_gid) != 0) {
+                 dw_fatal("setgid() failed");
+         }
+--- deadwood-github/src/DwUdpSocket.c.orig	2026-09-23 10:59:19.348029900 -0600
++++ deadwood-github/src/DwUdpSocket.c	2026-09-23 10:59:23.153314000 -0600
+@@ -728,9 +728,7 @@
+         dw_str *query = 0, *orig_query = 0;
+         int_fast32_t qtype = 0;
+         int in_blocked_hosts_hash = 0;
+-#ifdef VALGRIND_NOERRORS
+         memset(packet,0,522);
+-#endif /* VALGRIND_NOERRORS */
+ 
+         c_len = sizeof(client);
+         make_socket_nonblock(sock); /* Linux bug workaround */
