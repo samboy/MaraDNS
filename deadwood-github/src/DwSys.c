@@ -791,7 +791,7 @@ void init_rng() {
 		*(noise + (a * 4) + 274) = (microtime >> 8) & 0xff;
 		*(noise + (a * 4) + 275) = (microtime) & 0xff;
 		// Uncomment the following line to see clock reads
-		//printf("%08lx %08lx\n",microtime,micrtime-last);
+		//printf("%08lx %08lx\n",microtime,microtime-last);
 		// We create an empty RG32 instance to have there be more
 		// entropy between calls to clock_gettime().  I estimate
 		// the entropy between gettime() calls to be 1 bit or more.
