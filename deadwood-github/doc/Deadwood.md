@@ -564,6 +564,13 @@ replies from upstream servers.
 
 ## root_servers
 
+*Please be aware that this parameter is deprecated. While there are no 
+plans to remove this parameter, Deadwood is no longer being updated to 
+resolve DNS resolution issues when using root_servers to resolve names 
+on the internet. In addition, Deadwood’s recursive resolver uses only 
+IPv4 and doesn’t use IPv6 (or DNS-over-TCP nor EDNS) to solve names 
+recursively. Please use upstream_servers instead.* 
+
 This is a list of root servers; its syntax is identical to 
 upstream_servers (see below). This is the type of DNS service ICANN, 
 for example, runs. These are servers used that do not give us complete 
@@ -571,12 +578,7 @@ answers to DNS questions, but merely tell us which DNS servers to
 connect to to get an answer closer to our desired answer. 
 
 As of Deadwood 3.5.0004, it is no longer needed to increase 
-maximum_cache_elements to store root_server entries. 
-
-Please be aware that this parameter is deprecated. While there are no 
-plans to remove this parameter, Deadwood is no longer being updated to 
-resolve DNS resolution issues when using root_servers to resolve names 
-on the internet. Please use upstream_servers instead. 
+maximum_cache_elements to store root_server entries.
 
 ## source_ip4
 
@@ -864,14 +866,17 @@ bind_address="127.0.0.1" # IP we bind to
 chroot_dir = "/etc/deadwood"  
  
 # The following upstream DNS servers are Google's  
-# (as of December 2009) public DNS servers.  For  
+# (as of 2026) public DNS servers.  For  
 # more information, see the page at 
-# http://code.google.com/speed/public-dns/ 
-# 
-# If neither root_servers nor upstream_servers are set, 
-# Deadwood will use the default ICANN root servers. 
+# https://developers.google.com/speed/public-dns/ 
 #upstream_servers = {} 
 #upstream_servers["."]="8.8.8.8, 8.8.4.4"  
+  
+# If neither root_servers nor upstream_servers are set, 
+# Deadwood will use the Quad Nine upstream servers, as 
+# per https://quad9.net/ 
+#upstream_servers = {} 
+#upstream_servers["."]="9.9.9.9, 149.112.112.112" 
  
 # Who is allowed to use the cache.  This line 
 # allows anyone with "127.0" as the first two 
