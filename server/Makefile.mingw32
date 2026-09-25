@@ -34,23 +34,23 @@ libs/tests:
 	cd libs ; make
 
 read_kvars.o: read_kvars.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h
-	$(CC) -c $(FLAGS) -o read_kvars.o read_kvars.c
+	$(CC) -std=c99 -c $(FLAGS) -o read_kvars.o read_kvars.c
 
 MaraBigHash.o: MaraBigHash.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h MaraBigHash_locale.h
-	$(CC) -c $(FLAGS) -o MaraBigHash.o MaraBigHash.c 
+	$(CC) -std=c99 -c $(FLAGS) -o MaraBigHash.o MaraBigHash.c 
 
 timestamp.o: timestamp.c MaraDNS_locale.h
-	$(CC) -c $(FLAGS) -o timestamp.o timestamp.c
+	$(CC) -std=c99 -c $(FLAGS) -o timestamp.o timestamp.c
 
 MaraAnyChain.o: MaraAnyChain.c
-	$(CC) -c $(FLAGS) -o MaraAnyChain.o MaraAnyChain.c
+	$(CC) -std=c99 -c $(FLAGS) -o MaraAnyChain.o MaraAnyChain.c
 
 udpsuccess.o: udpsuccess.c
-	$(CC) -c $(FLAGS) -o udpsuccess.o udpsuccess.c
+	$(CC) -std=c99 -c $(FLAGS) -o udpsuccess.o udpsuccess.c
 
 maradns: MaraDNS.c $(OBJECTS) MaraDNS_locale.h
-	$(CC) $(FLAGS) -DVERSION=\"$(VERSION)\" -DCOMPILED=\"$(COMPILED)\" -o maradns MaraDNS.c $(OBJECTS) -lwsock32
+	$(CC) -std=c99 $(FLAGS) -DVERSION=\"$(VERSION)\" -DCOMPILED=\"$(COMPILED)\" -o maradns MaraDNS.c $(OBJECTS) -lwsock32
 
 simple: simple.c $(XOBJECTS) MaraDNS_locale.h
-	$(CC) $(FLAGS) -DVERSION=\"$(VERSION)\" -DCOMPILED=\"$(COMPILED)\" -o simple $(OBJECTS) simple.c 
+	$(CC) -std=c99 $(FLAGS) -DVERSION=\"$(VERSION)\" -DCOMPILED=\"$(COMPILED)\" -o simple $(OBJECTS) simple.c 
 

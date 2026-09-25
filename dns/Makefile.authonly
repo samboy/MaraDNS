@@ -11,14 +11,14 @@ clean:
 	rm -f Queries.o Compress.o bobbit.o Decompress.o
 
 Queries.o: Queries.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h
-	$(CC) -c $(FLAGS) -o Queries.o Queries.c 
+	$(CC) -std=c99 -c $(FLAGS) -o Queries.o Queries.c 
 
 Compress.o: Compress.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h
-	$(CC) -c $(FLAGS) -o Compress.o Compress.c 
+	$(CC) -std=c99 -c $(FLAGS) -o Compress.o Compress.c 
 
 Decompress.o: Decompress.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h
-	$(CC) -c $(FLAGS) -o Decompress.o Decompress.c 
+	$(CC) -std=c99 -c $(FLAGS) -o Decompress.o Decompress.c 
 
 bobbit.o: bobbit.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h
-	$(CC) -c $(FLAGS) -o bobbit.o bobbit.c 
+	$(CC) -std=c99 -c $(FLAGS) -o bobbit.o bobbit.c 
 

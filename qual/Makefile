@@ -10,5 +10,5 @@ clean:
 	rm -f qual_timestamp.o
 
 qual_timestamp.o: qual_timestamp.c ../libs/JsStr.h ../libs/MaraHash.h ../MaraDns.h
-	$(CC) -c $(FLAGS) -o qual_timestamp.o qual_timestamp.c 
+	$(CC) -std=c99 -c $(FLAGS) -o qual_timestamp.o qual_timestamp.c 
 

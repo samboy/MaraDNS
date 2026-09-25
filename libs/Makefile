@@ -9,23 +9,23 @@ clean:
 	rm -f core $(OBJECTS) tests mtest *.exe
 
 MaraHash.o: JsStr.h MaraHash.c
-	$(CC) -c $(FLAGS) -o MaraHash.o MaraHash.c 
+	$(CC) -std=c99 -c $(FLAGS) -o MaraHash.o MaraHash.c 
 
 JsStr.o: JsStr.h JsStr.c
-	$(CC) -c $(FLAGS) -o JsStr.o JsStr.c 
+	$(CC) -std=c99 -c $(FLAGS) -o JsStr.o JsStr.c 
 
 JsStrOS.o: JsStr.h JsStrOS.c
-	$(CC) -c $(FLAGS) -o JsStrOS.o JsStrOS.c 
+	$(CC) -std=c99 -c $(FLAGS) -o JsStrOS.o JsStrOS.c 
 
 JsStrCP.o: JsStr.h JsStrCP.c
-	$(CC) -c $(FLAGS) -o JsStrCP.o JsStrCP.c 
+	$(CC) -std=c99 -c $(FLAGS) -o JsStrCP.o JsStrCP.c 
 
 mtest: mtest.c $(OBJECTS)
-	$(CC) $(FLAGS) -o mtest mtest.c $(OBJECTS)
+	$(CC) -std=c99 $(FLAGS) -o mtest mtest.c $(OBJECTS)
 
 tests: tests.c $(OBJECTS)
-	$(CC) $(FLAGS) -o tests tests.c $(OBJECTS)
+	$(CC) -std=c99 $(FLAGS) -o tests tests.c $(OBJECTS)
 
 #onetime: $(OBJECTS) kiwi.h config.h onetime.c do_scramble.o cryptdate.o
-#	$(CC) $(FLAGS) -o onetime onetime.c do_scramble.o cryptdate.o
+#	$(CC) -std=c99 $(FLAGS) -o onetime onetime.c do_scramble.o cryptdate.o
 

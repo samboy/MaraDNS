@@ -23,13 +23,13 @@ superclean:
 	rm -f $(ROBJECTS) core make_32bit_tables $(TABLES)
 
 rngalgfst.o: rngalgfst.c rngalgfst.h $(TABLES)
-	$(CC) -c $(FLAGS) -o rngalgfst.o rngalgfst.c
+	$(CC) -std=c99 -c $(FLAGS) -o rngalgfst.o rngalgfst.c
 
 rngapifst.o: rngalgfst.o rngapifst.h 
-	$(CC) -c $(FLAGS) -o rngapifst.o rngapifst.c
+	$(CC) -std=c99 -c $(FLAGS) -o rngapifst.o rngapifst.c
 
 make_32bit_tables: make_32bit_tables.c
-	$(HOSTCC) -o make_32bit_tables make_32bit_tables.c
+	$(HOSTCC) -std=c99 -o make_32bit_tables make_32bit_tables.c
 
 rng32bittables.h: make_32bit_tables
 	./make_32bit_tables > rng-32bit-tables.h ; \
