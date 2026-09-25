@@ -23,3 +23,25 @@ before 3.5.0039 used uninitialized memory as entropy, something which
 results in the entire entropy using code potentially being disabled.
 
 Until I find such a compiler, I will not make a security report.
+
+# Files here
+
+* README.md: This file
+* do.test.sh: The script which runs the tests at various optimization levels
+  with gcc, tcc, and clang
+* make.vectors.sh: This code was used to make the known secure vectors in
+  verify.awk
+* nanorg32.c: This is used with make.vectors.sh to make the vectors
+* outputs.txt: This test run on various systems and compilers
+* test.c: The code test which runs RadioGatún[32] against uninitialized
+  memory
+* verify.awk: An AWK script which makes sure the output of compiled test.c
+  ran the RadioGatún[32] code
+
+# Other notes
+
+The code test.c will output the first 64 bits in hex of the RadioGatún[32]
+sum of a one-character long stream.  That one character can have one of 
+32 values: @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_ (that \ is a literal backslash).
+
+
