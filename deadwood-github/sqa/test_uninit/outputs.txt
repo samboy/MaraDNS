@@ -1,0 +1,10 @@
+CYGWIN_NT-10.0-26200 Belleza 3.6.10-1.x86_64 2026-07-13 20:20 UTC x86_64 Cygwin gcc gcc (GCC) 17.0.0 20260802 (experimental) -g  - SECURE: We used D
+CYGWIN_NT-10.0-26200 Belleza 3.6.10-1.x86_64 2026-07-13 20:20 UTC x86_64 Cygwin gcc gcc (GCC) 17.0.0 20260802 (experimental) -O  - SECURE: We used D
+CYGWIN_NT-10.0-26200 Belleza 3.6.10-1.x86_64 2026-07-13 20:20 UTC x86_64 Cygwin gcc gcc (GCC) 17.0.0 20260802 (experimental) -O1  - SECURE: We used D
+CYGWIN_NT-10.0-26200 Belleza 3.6.10-1.x86_64 2026-07-13 20:20 UTC x86_64 Cygwin gcc gcc (GCC) 17.0.0 20260802 (experimental) -O2  - SECURE: We used D
+CYGWIN_NT-10.0-26200 Belleza 3.6.10-1.x86_64 2026-07-13 20:20 UTC x86_64 Cygwin gcc gcc (GCC) 17.0.0 20260802 (experimental) -O3  - SECURE: We used D
+CYGWIN_NT-10.0-26200 Belleza 3.6.10-1.x86_64 2026-07-13 20:20 UTC x86_64 Cygwin clang clang version 20.1.8 (https://cygwin.com/git/cygwin-packages/clang e8422310037f1f8bc3ec6144c1d5ef19eadb28fc) -g  - SECURE: We used D
+CYGWIN_NT-10.0-26200 Belleza 3.6.10-1.x86_64 2026-07-13 20:20 UTC x86_64 Cygwin clang clang version 20.1.8 (https://cygwin.com/git/cygwin-packages/clang e8422310037f1f8bc3ec6144c1d5ef19eadb28fc) -O  - SECURE: We used D
+CYGWIN_NT-10.0-26200 Belleza 3.6.10-1.x86_64 2026-07-13 20:20 UTC x86_64 Cygwin clang clang version 20.1.8 (https://cygwin.com/git/cygwin-packages/clang e8422310037f1f8bc3ec6144c1d5ef19eadb28fc) -O1  - SECURE: We used D
+CYGWIN_NT-10.0-26200 Belleza 3.6.10-1.x86_64 2026-07-13 20:20 UTC x86_64 Cygwin clang clang version 20.1.8 (https://cygwin.com/git/cygwin-packages/clang e8422310037f1f8bc3ec6144c1d5ef19eadb28fc) -O2  - SECURE: We used @
+CYGWIN_NT-10.0-26200 Belleza 3.6.10-1.x86_64 2026-07-13 20:20 UTC x86_64 Cygwin clang clang version 20.1.8 (https://cygwin.com/git/cygwin-packages/clang e8422310037f1f8bc3ec6144c1d5ef19eadb28fc) -O3  - SECURE: We used @
