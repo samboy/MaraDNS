@@ -26,35 +26,35 @@ version.h:
 	./make.version.h
 	
 DwStr.o:	DwStr.c DwStr.h
-	$(CC) $(FLAGS) -Wall -c -o DwStr.o DwStr.c
+	$(CC) -std=c99 $(FLAGS) -Wall -c -o DwStr.o DwStr.c
 
 DwMararc.o:	DwMararc.c DwMararc.h 
-	$(CC) $(FLAGS) -Wall -c -o DwMararc.o DwMararc.c
+	$(CC) -std=c99 $(FLAGS) -Wall -c -o DwMararc.o DwMararc.c
 
 DwRadioGatun.o:	DwRadioGatun.c DwRadioGatun.h DwStr.h
-	$(CC) $(FLAGS) -Wall -c -o DwRadioGatun.o DwRadioGatun.c
+	$(CC) -std=c99 $(FLAGS) -Wall -c -o DwRadioGatun.o DwRadioGatun.c
 
 DwTcpSocket.o:	DwTcpSocket.c DwStr.h DwSocket.h
-	$(CC) $(FLAGS) -Wall -c -o DwTcpSocket.o DwTcpSocket.c
+	$(CC) -std=c99 $(FLAGS) -Wall -c -o DwTcpSocket.o DwTcpSocket.c
 
 DwUdpSocket.o:	DwUdpSocket.c DwStr.h DwSocket.h
-	$(CC) $(FLAGS) -Wall -c -o DwUdpSocket.o DwUdpSocket.c
+	$(CC) -std=c99 $(FLAGS) -Wall -c -o DwUdpSocket.o DwUdpSocket.c
 
 DwSocket.o:	DwSocket.c DwStr.h DwSocket.h
-	$(CC) $(FLAGS) -Wall -c -o DwSocket.o DwSocket.c
+	$(CC) -std=c99 $(FLAGS) -Wall -c -o DwSocket.o DwSocket.c
 
 DwSys.o:	DwSys.c DwStr.h
-	$(CC) $(FLAGS) -Wall -c -o DwSys.o DwSys.c
+	$(CC) -std=c99 $(FLAGS) -Wall -c -o DwSys.o DwSys.c
 
 DwDict.o:	DwDict.c DwStr.h DwRandPrime.h DwDict.h
-	$(CC) $(FLAGS) -Wall -c -o DwDict.o DwDict.c
+	$(CC) -std=c99 $(FLAGS) -Wall -c -o DwDict.o DwDict.c
 
 Test:		Test.c DwStr.o DwStr.h DwStr_functions.h $(OBJS)
-	$(CC) $(FLAGS) -Wall -o Test Test.c $(OBJS)
+	$(CC) -std=c99 $(FLAGS) -Wall -o Test Test.c $(OBJS)
 
 DwMain:		DwMain.c $(OBJS) DwStr_functions.h version.h
-	$(CC) $(FLAGS) -Wall -o DwMain DwMain.c $(OBJS) 
+	$(CC) -std=c99 $(FLAGS) -Wall -o DwMain DwMain.c $(OBJS) 
 
 DwHash:		DwHash.c $(OBJS) 
-	$(CC) $(FLAGS) -Wall -DHSCK -DHAVE_MAIN -o DwHash DwHash.c $(OBJS)
+	$(CC) -std=c99 $(FLAGS) -Wall -DHSCK -DHAVE_MAIN -o DwHash DwHash.c $(OBJS)
 

@@ -40,54 +40,54 @@ version.h:
 	./make.version.h
 	
 DwHalfSipHash.o: DwHalfSipHash.c DwHalfSipHash.h
-	$(CC) $(FLAGS) $(CFLAGS) -Wall -c -o DwHalfSipHash.o DwHalfSipHash.c
+	$(CC) -std=c99 $(FLAGS) $(CFLAGS) -Wall -c -o DwHalfSipHash.o DwHalfSipHash.c
 
 DwBlockHash.o: DwBlockHash.c DwBlockHash.h DwHalfSipHash.o
-	$(CC) $(FLAGS) $(CFLAGS) -Wall -c -o DwBlockHash.o DwBlockHash.c
+	$(CC) -std=c99 $(FLAGS) $(CFLAGS) -Wall -c -o DwBlockHash.o DwBlockHash.c
 
 DwStr.o:	DwStr.c DwStr.h
-	$(CC) $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwStr.o DwStr.c
+	$(CC) -std=c99 $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwStr.o DwStr.c
 
 DwCompress.o:	DwCompress.c DwStr.h
-	$(CC) $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwCompress.o DwCompress.c
+	$(CC) -std=c99 $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwCompress.o DwCompress.c
 
 DwDnsStr.o:	DwDnsStr.c DwStr.h DwRecurse.h
-	$(CC) $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwDnsStr.o DwDnsStr.c
+	$(CC) -std=c99 $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwDnsStr.o DwDnsStr.c
 
 DwMararc.o:	DwMararc.c DwMararc.h 
-	$(CC) $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwMararc.o DwMararc.c
+	$(CC) -std=c99 $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwMararc.o DwMararc.c
 
 DwRadioGatun.o:	DwRadioGatun.c DwRadioGatun.h DwStr.h
-	$(CC) $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o \
+	$(CC) -std=c99 $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o \
     DwRadioGatun.o DwRadioGatun.c
 
 DwTcpSocket.o:	DwTcpSocket.c DwStr.h DwSocket.h
-	$(CC) $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o \
+	$(CC) -std=c99 $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o \
     DwTcpSocket.o DwTcpSocket.c
 
 DwUdpSocket.o:	DwUdpSocket.c DwStr.h DwSocket.h
-	$(CC) $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o \
+	$(CC) -std=c99 $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o \
     DwUdpSocket.o DwUdpSocket.c
 
 DwSocket.o:	DwSocket.c DwStr.h DwSocket.h
-	$(CC) $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwSocket.o DwSocket.c
+	$(CC) -std=c99 $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwSocket.o DwSocket.c
 
 DwSys.o:	DwSys.c DwStr.h version.h
-	$(CC) $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwSys.o DwSys.c
+	$(CC) -std=c99 $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwSys.o DwSys.c
 
 DwHash.o:	DwHash.c DwStr.h DwRandPrime.h DwHash.h
-	$(CC) $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwHash.o DwHash.c
+	$(CC) -std=c99 $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwHash.o DwHash.c
 
 DwRecurse.o:	DwRecurse.c DwRecurse.h
-	$(CC) $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwRecurse.o DwRecurse.c
+	$(CC) -std=c99 $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwRecurse.o DwRecurse.c
 
 DwDict.o:	DwDict.c DwStr.h DwRandPrime.h DwDict.h
-	$(CC) $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwDict.o DwDict.c
+	$(CC) -std=c99 $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -c -o DwDict.o DwDict.c
 
 Test:		Test.c DwStr.o DwStr.h DwStr_functions.h $(OBJS)
-	$(CC) $(FLAGS) $(CFLAGS) -Wall -o Test Test.c $(OBJS)
+	$(CC) -std=c99 $(FLAGS) $(CFLAGS) -Wall -o Test Test.c $(OBJS)
 
 Deadwood:	DwMain.c $(OBJS) DwStr_functions.h version.h
-	$(CC) $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -o \
+	$(CC) -std=c99 $(FLAGS) $(CFLAGS) -DNOIP6 -Wall -o \
     Deadwood DwMain.c $(OBJS) -lrt
 
