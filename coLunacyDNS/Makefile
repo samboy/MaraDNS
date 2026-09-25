@@ -1,5 +1,5 @@
 # To use other flags, invoke as "make CFLAGS=-g" or some such
-CFLAGS =-O3 -std=c99 
+CFLAGS =-O3 -DLUA_USE_LINUX
 
 all: coLunacyDNS HalfSipHash13 
 
@@ -9,11 +9,11 @@ clean:
     cd lunacy ; make clean
 
 liblua.a:
-	cd lunacy ; make CC="${CC}" CFLAGS="${CFLAGS}" ; \
+	cd lunacy ; make -f Makefile.leaner CC="${CC}" CFLAGS="-std=c99 ${CFLAGS}" ; \
     cp liblua.a .. ; cd ..
 
 coLunacyDNS.o: coLunacyDNS.c
-	${CC} ${CFLAGS} -c -Wall -o coLunacyDNS.o coLunacyDNS.c 	
+	${CC} -std=c99 ${CFLAGS} -c -Wall -o coLunacyDNS.o coLunacyDNS.c 	
 
 coLunacyDNS: coLunacyDNS.o liblua.a
 	rm -f lunacy/lua.o lunacy/luac.o ; \
@@ -21,9 +21,9 @@ coLunacyDNS: coLunacyDNS.o liblua.a
     lunacy/*.o -lm
 
 HalfSipHash13.o: HalfSipHash13.c 
-	${CC} ${CFLAGS} -c -Wall -o  HalfSipHash13.o HalfSipHash13.c
+	${CC} -std=c99 ${CFLAGS} -c -Wall -o  HalfSipHash13.o HalfSipHash13.c
 
 HalfSipHash13: HalfSipHash13.o liblua.a
-	${CC} ${CFLAGS} -Wall -o HalfSipHash1-3 HalfSipHash13.o \
+	${CC} -std=c99 ${CFLAGS} -Wall -o HalfSipHash1-3 HalfSipHash13.o \
     lunacy/liblua.a -lm ; \
-    ${CC} ${CFLAGS} -Wall -o HalfSipHash13 HalfSipHash13.o lunacy/liblua.a -lm
+    ${CC} -std=c99 ${CFLAGS} -Wall -o HalfSipHash13 HalfSipHash13.o lunacy/liblua.a -lm

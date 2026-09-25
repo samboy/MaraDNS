@@ -10,19 +10,19 @@ clean:
     cd lunacy ; make clean
 
 lunacy/liblua.a:
-	cd lunacy ; make CC="${CC}" CFLAGS="${CFLAGS}" ; \
+	cd lunacy ; make CC="${CC}" CFLAGS="-std=c99 ${CFLAGS}" ; \
     cd tools/coLunacyDNS
 
 coLunacyDNS.o: coLunacyDNS.c
-	${CC} ${CFLAGS} -DCYGWIN -c -Wall -o coLunacyDNS.o coLunacyDNS.c 	
+	${CC} -std=c99 ${CFLAGS} -DCYGWIN -c -Wall -o coLunacyDNS.o coLunacyDNS.c 	
 
 coLunacyDNS: coLunacyDNS.o lunacy/liblua.a
-	${CC} ${CFLAGS} -Wall -o coLunacyDNS coLunacyDNS.o \
+	${CC} -std=c99 ${CFLAGS} -Wall -o coLunacyDNS coLunacyDNS.o \
     lunacy/liblua.a -lm
 
 HalfSipHash13.o: HalfSipHash13.c 
-	${CC} ${CFLAGS} -c -Wall -o  HalfSipHash13.o HalfSipHash13.c
+	${CC} -std=c99 ${CFLAGS} -c -Wall -o  HalfSipHash13.o HalfSipHash13.c
 
 HalfSipHash13: HalfSipHash13.o lunacy/liblua.a
-	${CC} ${CFLAGS} -Wall -o HalfSipHash13 HalfSipHash13.o \
+	${CC} -std=c99 ${CFLAGS} -Wall -o HalfSipHash13 HalfSipHash13.o \
     lunacy/liblua.a -lm

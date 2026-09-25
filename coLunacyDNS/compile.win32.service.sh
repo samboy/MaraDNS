@@ -16,6 +16,6 @@ cd lunacy/
 export CC="gcc"
 make -f Makefile
 cd ..
-echo $CC -Wall -O3 -DMINGW -c -o coLunacyDNS.o coLunacyDNS.c
-$CC -Wall -O3 -DMINGW -c -o coLunacyDNS.o coLunacyDNS.c
-$CC -O3 -o coLunacyDNS.exe coLunacyDNS.o lunacy/liblua.a -lm -lwsock32
+echo $CC -std=c99 -Wall -O3 -DMINGW -c -o coLunacyDNS.o coLunacyDNS.c
+$CC -std=c99 -Wall -O3 -DMINGW -c -o coLunacyDNS.o coLunacyDNS.c
+$CC -std=c99 -O3 -o coLunacyDNS.exe coLunacyDNS.o lunacy/liblua.a -lm -lwsock32
