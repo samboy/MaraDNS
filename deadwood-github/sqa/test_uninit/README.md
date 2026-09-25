@@ -12,13 +12,14 @@ The claims are from social media, and, as such, are unverified.
 # What this test does
 
 This test makes sure that there does not exist in the real world a known
-compiler which will “optimize out” and not run code which relies on 
+compiler which will “optimize out” and not run code which relies on
 uninitialized memory.  Should such a compiler ever be found (in said
-social media posts, one claimed the as of September 2026 “latest version 
-of clang on godbolt” optimizes out the use of uninitialized memory, but
-I was unable to reprocude the issue with this test using a newer version
-of clang), I will add a security report that versions of MaraDNS before
-3.5.0039 used uninitialized memory as entropy, something which results
-in the entire entropy using code potentially being disabled.
+social media posts, one claimed the as of September 2026 “latest version
+of clang on godbolt” optimizes out the use of uninitialized memory,
+but I was unable to reproduce the issue with this test using a newer
+version of clang than the one on godbolt.org at the time this social media
+post was made), I will add a security report that versions of MaraDNS
+before 3.5.0039 used uninitialized memory as entropy, something which
+results in the entire entropy using code potentially being disabled.
 
 Until I find such a compiler, I will not make a security report.
