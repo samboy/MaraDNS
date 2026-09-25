@@ -42,6 +42,6 @@ Until I find such a compiler, I will not make a security report.
 
 The code test.c will output the first 64 bits in hex of the RadioGatún[32]
 sum of a one-character long stream.  That one character can have one of 
-32 values: @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_ (that \ is a literal backslash).
+32 values: @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_ (that \ is a literal backslash).
 
 
