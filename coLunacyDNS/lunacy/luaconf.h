@@ -61,7 +61,8 @@
 #define LUA_USE_MKSTEMP
 #define LUA_USE_ISATTY
 #define LUA_USE_POPEN
-#define LUA_USE_ULONGJMP
+// The following causes clang to puke
+//#define LUA_USE_ULONGJMP
 #endif
 
 
