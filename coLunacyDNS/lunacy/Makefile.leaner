@@ -1,7 +1,6 @@
 # makefile for building Lua
 # This Makefile makes a version 
-# 1) Uses editline from https://github.com/troglobit/editline/releases/
-# (Non-GPL readline like lib)
+# 1) No editline/readline (I make this easy to compile for running scripts)
 # 2) Does not have lfs
 # 3) Does not have spawner
 # see ../INSTALL for installation instructions
@@ -98,16 +97,16 @@ bsd:
 	$(MAKE) -f $(MAKEFILE) all MYCFLAGS="-DLUA_USE_POSIX -DLUA_USE_DLOPEN" MYLIBS="-Wl,-E"
 
 freebsd:
-	$(MAKE) -f $(MAKEFILE) all MYCFLAGS="-DLUA_USE_LINUX" MYLIBS="-Wl,-E -lreadline"
+	$(MAKE) -f $(MAKEFILE) all MYCFLAGS="-DLUA_USE_LINUX" MYLIBS="-Wl,-E "
 
 generic:
 	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=
 
 linux:
-	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_NONGPL MYLIBS="-Wl,-E -ldl -leditline -lncurses"
+	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_NONGPL MYLIBS="-Wl,-E -ldl"
 
 macosx:
-	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_LINUX MYLIBS="-lreadline"
+	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_LINUX 
 # use this on Mac OS X 10.3-
 #	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_MACOSX
 

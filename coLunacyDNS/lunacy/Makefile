@@ -94,7 +94,7 @@ bsd:
 	$(MAKE) -f $(MAKEFILE) all MYCFLAGS="-DLUA_USE_POSIX -DLUA_USE_DLOPEN" MYLIBS="-Wl,-E"
 
 freebsd:
-	$(MAKE) -f $(MAKEFILE) all MYCFLAGS="-DLUA_USE_LINUX" MYLIBS="-Wl,-E -lreadline"
+	$(MAKE) -f $(MAKEFILE) all MYCFLAGS="-DLUA_USE_NONGPL" MYLIBS="-Wl,-E -leditline"
 
 generic:
 	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=
@@ -103,7 +103,7 @@ linux:
 	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_NONGPL MYLIBS="-Wl,-E -ldl -leditline -lncurses"
 
 macosx:
-	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_LINUX MYLIBS="-lreadline"
+	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_NONGPL MYLIBS="-leditline"
 # use this on Mac OS X 10.3-
 #	$(MAKE) -f $(MAKEFILE) all MYCFLAGS=-DLUA_USE_MACOSX
 
