@@ -32,3 +32,11 @@ CYGWIN_NT-10.0-26200 Belleza 3.6.10-1.x86_64 2026-07-13 20:20 UTC x86_64 Cygwin 
 CYGWIN_NT-10.0-26200 Belleza 3.6.10-1.x86_64 2026-07-13 20:20 UTC x86_64 Cygwin gcc gcc (GCC) 17.0.0 20260802 (experimental) (No flags)  - SECURE: We used D
 CYGWIN_NT-10.0-26200 Belleza 3.6.10-1.x86_64 2026-07-13 20:20 UTC x86_64 Cygwin clang clang version 20.1.8 (https://cygwin.com/git/cygwin-packages/clang e8422310037f1f8bc3ec6144c1d5ef19eadb28fc) -Os  - SECURE: We used @
 CYGWIN_NT-10.0-26200 Belleza 3.6.10-1.x86_64 2026-07-13 20:20 UTC x86_64 Cygwin clang clang version 20.1.8 (https://cygwin.com/git/cygwin-packages/clang e8422310037f1f8bc3ec6144c1d5ef19eadb28fc) (No flags)  - SECURE: We used D
+Linux Ubuntu26 7.0.0-30-generic #30-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 18:22:54 UTC 2026 x86_64 GNU/Linux tcc tcc version 0.9.27 (x86_64 Linux) -Os  - SECURE: We used @
+Linux Ubuntu26 7.0.0-30-generic #30-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 18:22:54 UTC 2026 x86_64 GNU/Linux tcc tcc version 0.9.27 (x86_64 Linux) (No flags)  - SECURE: We used @
+Linux Ubuntu26 7.0.0-30-generic #30-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 18:22:54 UTC 2026 x86_64 GNU/Linux gcc gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0 -Os  - SECURE: We used @
+Linux Ubuntu26 7.0.0-30-generic #30-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 18:22:54 UTC 2026 x86_64 GNU/Linux gcc gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0 (No flags)  - SECURE: We used @
+Linux Ubuntu26 7.0.0-30-generic #30-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 18:22:54 UTC 2026 x86_64 GNU/Linux clang Ubuntu clang version 21.1.8 (6ubuntu1) -Os  - SECURE: We used @
+Linux Ubuntu26 7.0.0-30-generic #30-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 18:22:54 UTC 2026 x86_64 GNU/Linux clang Ubuntu clang version 21.1.8 (6ubuntu1) (No flags)  - SECURE: We used @
+Linux Ubuntu26 7.0.0-30-generic #30-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 18:22:54 UTC 2026 x86_64 GNU/Linux clang clang version 23.1.2 (https://github.com/llvm/llvm-project 85ac560262434c9ccfc0c183ec22d4138ed647fb) -Os  - SECURE: We used @
+Linux Ubuntu26 7.0.0-30-generic #30-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 18:22:54 UTC 2026 x86_64 GNU/Linux clang clang version 23.1.2 (https://github.com/llvm/llvm-project 85ac560262434c9ccfc0c183ec22d4138ed647fb) (No flags)  - SECURE: We used @
