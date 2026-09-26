@@ -13,7 +13,7 @@ MaraDNS changelog
        `askmara Lname.foo.` to ask for name.foo’s ipv6 address)
      * Improved formatting of HTML documentation: They now look nice on
        both modern desktop browsers and on mobile (i.e. phone) browsers
-     * Deadwood’s default compile no longer generates any Valgrind
+     * Deadwood’s default compile no longer generates any known Valgrind
        warnings.
      * Deadwood’s entropy pool now uses a combination of /dev/urandom,
        the timestamp when Deadwood was started, Deadwood’s PID, and 112 
