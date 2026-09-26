@@ -11,5 +11,5 @@ clean:
 	rm -f core $(EXECS) *.exe
 
 rg32hash: rg32hash.c
-	$(CC) $(FLAGS) -o rg32hash rg32hash.c
+	$(CC) -std=c99 $(FLAGS) -o rg32hash rg32hash.c
 
