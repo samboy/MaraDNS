@@ -18,7 +18,7 @@ HERE="$(/bin/pwd)"
 rm ../coLunacyDNS
 cd ..
 make clean
-cd lunacy ; make CFLAGS="-std=c99 -g -DLUA_ANSI -DNO_LFS -DNO_SPAWNER"
+cd lunacy ; make CFLAGS="-std=c99 -g -DNO_LFS -DNO_SPAWNER"
 cd ..
 make CFLAGS="-g -DTEST -DGCOV -fprofile-arcs -ftest-coverage"
 echo coLunacyDNS compiled in test mode
@@ -102,7 +102,7 @@ cd "$HERE"
 # Run some, but not all, tests in production mode
 cd ..
 make clean
-make CFLAGS="-O3"
+make CFLAGS="-O3 -std=c99 -DNO_LFS -DNO_SPAWNER"
 echo coLunacyDNS compiled in production mode
 cd "$HERE"
 TESTS="sqa_halfsip13"
