@@ -2,7 +2,7 @@
 ** LuaFileSystem
 ** Copyright Kepler Project 2003 - 2020
 ** (http://keplerproject.github.io/luafilesystem)
-** MIT license; see COPYING
+** MIT license; see COPYING.lfs
 ** Changes by Sam Trenholme for lunacy
 **
 ** File system manipulation library.

@@ -1,4 +1,4 @@
-/* Copyright Steve Donovan.  MIT license; see COPYING
+/* Copyright Steve Donovan.  MIT license; see COPYING.spawner
  * While this was originally released under a different open source 
  * license, Steve licensed it as MIT here:
  *      https://marc.info/?l=lua-l&m=164087898814318&w=2
