@@ -39,14 +39,18 @@ LUALIB_API int (luaopen_debug) (lua_State *L);
 #define LUA_LOADLIBNAME "package"
 LUALIB_API int (luaopen_package) (lua_State *L);
 
+#ifndef NO_LFS
 #define LUA_LFSLIBNAME "lfs"
 LUALIB_API int (luaopen_lfs) (lua_State * L);
+#endif /* NO_LFS */
 
 #define LUA_BITLIBNAME  "bit32"
 LUALIB_API int (luaopen_bit32) (lua_State *L);
 
+#ifndef NO_SPAWNER
 #define LUA_SPAWNERLIBNAME "spawner"
 LUALIB_API int (luaopen_spawner) (lua_State *L);
+#endif /* NO_SPAWNER */
 
 /* open all previous libraries */
 LUALIB_API void (luaL_openlibs) (lua_State *L);
