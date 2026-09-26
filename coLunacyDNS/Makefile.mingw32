@@ -1,7 +1,7 @@
 # To use another CC, invoke as "make CC=clang" or some such
 CC = gcc
 # To use other flags, invoke as "make CFLAGS=-g" or some such
-CFLAGS = -Os -DMINGW
+CFLAGS = -Os -DMINGW -DNO_SPAWNER -DNO_LFS
 
 all: 
 	sh ./compile.win32.service.sh
