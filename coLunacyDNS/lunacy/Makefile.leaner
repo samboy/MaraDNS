@@ -59,16 +59,16 @@ $(LUA_A): $(CORE_O) $(LIB_O)
 	$(RANLIB) $@
 
 $(LUA_T): $(LUA_O) $(LUA_A)
-	$(CC) -o $@ $(MYLDFLAGS) $(LUA_O) $(LUA_A) $(LIBS)
+	$(CC) -std=c99 -o $@ $(MYLDFLAGS) $(LUA_O) $(LUA_A) $(LIBS)
 
 $(LUAC_T): $(LUAC_O) $(LUA_A)
-	$(CC) -o $@ $(MYLDFLAGS) $(LUAC_O) $(LUA_A) $(LIBS)
+	$(CC) -std=c99 -o $@ $(MYLDFLAGS) $(LUAC_O) $(LUA_A) $(LIBS)
 
 clean:
 	$(RM) $(ALL_T) $(ALL_O)
 
 depend:
-	@$(CC) $(CFLAGS) -MM l*.c print.c
+	@$(CC) -std=c99 $(CFLAGS) -MM l*.c print.c
 
 echo:
 	@echo "PLAT = $(PLAT)"
