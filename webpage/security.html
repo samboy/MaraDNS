@@ -72,16 +72,11 @@ Please be aware that any abuse of this feature may result in being blocked.
 <hr>
 <p>
 Here are all of the supported versions of MaraDNS <b class=b>without</b> any 
-known security issues (except for two minor 
-<a href="#tcprecv">issues</a> found via AI audits).
+known security issues.
 
 <ul>
 
-<li><a href=download.html>MaraDNS and Deadwood 3.5.0038</a>
-<li>MaraDNS and Deadwood 3.5.0037
-<!--
-<li><a href=download.html>MaraDNS 3.4.10 and Deadwood 3.4.09</a>
--->
+<li><a href=download.html>MaraDNS and Deadwood 3.5.0039</a>
 
 </ul>
 
@@ -967,7 +962,8 @@ a value of <tt>1</tt> are affected.
 This version is fixed in <a href=
 "https://github.com/samboy/MaraDNS/commit/13c0af9d3c2b39241d052a438f91c2e4bb77e9c8"
 >commit 13c0af9d3c</a> on August 24, 2026, and a new Windows binary was
-made with the patch applied.
+made with the patch applied.  MaraDNS 3.5.0039, released on September 26,
+2026, incorporates this change.
 <p>
 A <a href=https://samboy.github.io/MaraDNS/patches/MaraDNS-recvtcp.patch.txt>patch</a> is also available.
 <p>Again, people should not be using DNS-over-TCP with Deadwood.
@@ -988,10 +984,12 @@ over the network 19 bytes of uninitialized memory.  This is a possible
 >patch</a> is available, and the Windows 32-bit binary was fixed in
 <a href=
 "https://github.com/samboy/MaraDNS/commit/0f46565c142377ab415d6c56a0e7ddd488ecc4f6"
->commit 0f46565c</a>.
+>commit 0f46565c</a>. 
 <p>
 An analysis of the packets for an unpatched Deadwood in Ubuntu 26.04 
-show no significant information is leaked in those 19 bytes.
+show no significant information is leaked in those 19 bytes. 
+MaraDNS 3.5.0039, released on September 26,
+2026, incorporates this change.
 <p>
 CVE number: None<br>
 Impact: 19 bytes of uninitialized memory were transmitted over the network.

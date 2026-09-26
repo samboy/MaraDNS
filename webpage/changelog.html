@@ -65,6 +65,30 @@ A&nbsp;small open-source DNS&nbsp;server
 
 <!-- --------------------------------------------- -->
 
+<p>maradns-3.5.0039:</p>
+   This is a stable release of MaraDNS:
+<blockquote><ul>
+  <li> Two AI-assisted minor security issues patched:<ol>
+     <li> It was possible to perform a denial of service to disable
+          Deadwood’s DNS-over-TCP feature. (DNS-over-UDP was not affected)
+     <li> RFC8482 replies made public 19 bytes of memory in the heap.  There
+          does not appear to be any vulnerable private data leaked.</ol>
+  <li> askmara now has a raw mode, showing the raw DNS packet received,
+       as well as support for AAAA queries. (one can now do
+       <tt>askmara Lname.foo.</tt> to ask for name.foo’s ipv6 address)
+  <li> Improved formatting of HTML documentation: They now look nice on
+       both modern desktop browsers and on mobile (i.e. phone) browsers.
+  <li> Deadwood’s default compile no longer generates any known Valgrind
+       warnings.
+  <li> Deadwood’s entropy pool now uses a combination of /dev/urandom,
+       the timestamp when Deadwood was started, Deadwood’s PID, and 112
+       calls to clock_gettime().
+  <li> lunacy (“maralunacy” if you will) updated to compile more cleanly
+       and have working optional lfs and spawner support.
+</ul>
+     (2026-09-26)
+</blockquote>
+
 <p>maradns-3.5.0038:</p>
    This is a stable release of MaraDNS:
 <blockquote><ul>

@@ -7,12 +7,12 @@ MaraDNS changelog
        1. It was possible to perform a denial of service to disable 
           Deadwood’s DNS-over-TCP feature. (DNS-over-UDP was not affected)
        2. RFC8482 replies made public 19 bytes of memory in the heap.  There 
-          does not appear to be any vulerable private data leaked.
+          does not appear to be any vulnerable private data leaked.
      * askmara now has a raw mode, showing the raw DNS packet received,
-       as well as support for AAAA queries (one can now do 
+       as well as support for AAAA queries. (one can now do 
        `askmara Lname.foo.` to ask for name.foo’s ipv6 address)
      * Improved formatting of HTML documentation: They now look nice on
-       both modern desktop browsers and on mobile (i.e. phone) browsers
+       both modern desktop browsers and on mobile (i.e. phone) browsers.
      * Deadwood’s default compile no longer generates any known Valgrind
        warnings.
      * Deadwood’s entropy pool now uses a combination of /dev/urandom,
@@ -21,7 +21,7 @@ MaraDNS changelog
      * lunacy (“maralunacy” if you will) updated to compile more cleanly
        and have working optional lfs and spawner support.
 
-     (202?-??-??)
+     (2026-09-26)
 
    maradns-3.5.0038:
    This is a stable release of MaraDNS:
