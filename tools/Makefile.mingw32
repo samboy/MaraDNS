@@ -18,20 +18,20 @@ clean:
 	rm -f core $(EXECS) askmara-tcp *.exe
 
 askmara: askmara.c askmara_labels_en.h $(OBJECTS) $(Q) $(OUTOBJ)
-	$(CC) $(FLAGS) -o askmara askmara.c $(OBJECTS) $(Q) $(OUTOBJ) -lwsock32
+	$(CC) -std=c99 $(FLAGS) -o askmara askmara.c $(OBJECTS) $(Q) $(OUTOBJ) -lwsock32
 
 askmaratcp: askmaratcp.c askmara_labels_en.h $(OBJECTS) $(ROBJECTS) $(POBJECTS)
-	$(CC) $(FLAGS) -o askmaratcp askmaratcp.c \
+	$(CC) -std=c99 $(FLAGS) -o askmaratcp askmaratcp.c \
     $(OBJECTS) $(ROBJECTS) $(POBJECTS) ; \
     $(CC) $(FLAGS) -o askmara-tcp askmaratcp.c \
     $(OBJECTS) $(ROBJECTS) $(POBJECTS)
 
 benchmark: benchmark.c askmara_labels_en.h $(OBJECTS) $(POBJECTS)
-	$(CC) $(FLAGS) -o benchmark benchmark.c $(OBJECTS) $(POBJECTS)
+	$(CC) -std=c99 $(FLAGS) -o benchmark benchmark.c $(OBJECTS) $(POBJECTS)
 
 duende: duende.c 
-	$(CC) $(FLAGS) -o duende duende.c
+	$(CC) -std=c99 $(FLAGS) -o duende duende.c
 
 strip.control: strip.control.c
-	$(CC) $(FLAGS) -o strip.control strip.control.c
+	$(CC) -std=c99 $(FLAGS) -o strip.control strip.control.c
 
