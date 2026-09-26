@@ -18,6 +18,8 @@ MaraDNS changelog
      * Deadwood’s entropy pool now uses a combination of /dev/urandom,
        the timestamp when Deadwood was started, Deadwood’s PID, and 112 
        calls to clock_gettime().
+     * lunacy (“maralunacy” if you will) updated to compile more cleanly
+       and have working optional lfs and spawner support.
 
      (202?-??-??)
 
