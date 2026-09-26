@@ -26,7 +26,10 @@ static const luaL_Reg lualibs[] = {
   {LUA_BITLIBNAME, luaopen_bit32},
 #ifndef NO_LFS
   {LUA_LFSLIBNAME, luaopen_lfs},
-#endif
+#endif /* NO_LFS */
+#ifndef NO_SPAWNER
+  {LUA_SPAWNERLIBNAME, luaopen_spawner},
+#endif /* NO_SPAWNER */
   {NULL, NULL}
 };
 
