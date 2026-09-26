@@ -6,8 +6,8 @@ has an overview and documentation for MaraDNS.
 # What is MaraDNS
 
 MaraDNS is a free open-source computer program written by Sam Trenholme.
-MaraDNS is mostly POSIX 2001 compliant, with a small number of exceptions
-(see POSIX below).
+MaraDNS is mostly POSIX 2001 and C99 compliant, with a small number of 
+exceptions (see POSIX below).
 
 MaraDNS implements the Domain Name System (DNS), an essential internet
 service. MaraDNS is open source software: This means that anyone is
@@ -78,6 +78,11 @@ To build MaraDNS, one needs a POSIX system with:
 * Other standard POSIX utilities (`awk`, etc.)
 * A current C compiler which can support, via `stdint`, 8-bit, 16-bit, 
   32-bit, and 64-bit sized integers.
+* Said C compiler *must* support the `-std=c99` flag, and when given
+  this flag, compile as per the 1999 C standard.  While the code was
+  cleaned up to compile with C23 compilers, the code was mainly written
+  when C99 was the current C standard, and hence uses that version of
+  the C standard.
 * A C library with both POSIX 2001 and Berkeley socket support.
 * A C library which supports the widely deployed but non-POSIX `chroot` 
   system call.
