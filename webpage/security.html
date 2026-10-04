@@ -993,6 +993,30 @@ MaraDNS 3.5.0039, released on September 26,
 <p>
 CVE number: None<br>
 Impact: 19 bytes of uninitialized memory were transmitted over the network.
+<li>
+Deadwood takes about a minute to release resources used if it gets a
+NXDOMAIN while trying to solve a glueless NS referral.
+<p>
+This is not an issue I will fix, since I would have to rewrite and test
+Deadwood’s recursive resolver, which is at this point deprecated (it still
+runs, and can still solve most domain names, but it’s IPv4-only, and there
+are a bunch of corner cases it can’t solve).
+<p>
+The denial of service only temporarily uses more resources and once the
+request for a server whose glueless nameservers doesn’t exist stops,
+Deadwood releases the resources and functions properly within a minute.
+This is just a flooding attack with extra steps.
+<p>
+In addition, only IPs authorized to perform recursive queries can perform
+the attack, and in today’s internet, I’ve seen people have their
+virtual servers put offline by their hosting providers for having an
+open DNS recurser on their network.
+<p>
+<p>
+CVE number: <a href="https://github.com/advisories/GHSA-8wr7-69hr-44pw"
+>CVE-2026-40719</a><br>
+Impact: It takes about a minute to release resources if Deadwood is asked to
+recursively resolve a name whose glueless NS servers point to a NXDOMAIN.
 </ul>
 <!-- begin footer -->
 </div></div>
