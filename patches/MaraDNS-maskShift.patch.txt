@@ -1,0 +1,35 @@
+commit 3b2623b6c00a91f83b51e6ef8ddf0398eb8cdf5c
+Author: Sam Trenholme <git@samiam.org>
+Date:   Mon Oct 5 10:47:39 2026 -0600
+
+    Sometimes, clang does the wrong thing when rotating by word size
+    
+    If you have a say 8-bit number, “foo”, and you rotate it eight bits
+    to the left (or right), GCC does the right thing: The number becomes 0.
+    clang, on the other hand, can and does sometimes make it a value
+    besides 0, and, yes, the C99 spec allows that, from page 84 the
+    the C99 spec:
+    
+    >If the value of the right operand is negative or is greater than or equal
+    >to the width of the promoted left operand, the behavior is undefined.
+    
+    (As I recall, C11 defines negative shifts)
+
+diff --git a/deadwood-github/src/DwSys.c b/deadwood-github/src/DwSys.c
+index 1ca3d7e..b6dc660 100644
+--- a/deadwood-github/src/DwSys.c
++++ b/deadwood-github/src/DwSys.c
+@@ -1043,7 +1043,12 @@ void make_netmask(int num, uint8_t *str, int len) {
+ 
+         /* The last byte in the string is determined by the modulo */
+         last = 0xff;
+-        last <<= (8 - rem);
++	/* clang crazyness workaround */
++        if(rem == 0) {
++                last = 0;
++        } else {
++                last <<= (8 - rem);
++        }
+ 
+         /* This kind of coding is dangerous.  I have triple-checked
+          * the following code and don't see any possible overflows */

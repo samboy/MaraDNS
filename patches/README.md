@@ -22,8 +22,10 @@ AI assistance:
 As of 2026-09-01 (commit 0f46565c142377ab415d6c56a0e7ddd488ecc4f6), all 
 known (3 of them) security bugs found by AI have been patched.
 
-While this patch doesn’t fix a known security bug, let’s clean up
-Deadwood so known Valgrind warnings no longer occur:
+While these patches do not fix a known security bugs, they are useful
 
-* [Valgrind patch](MaraDNS-valgrind.patch.txt)
+* [Valgrind patch](MaraDNS-valgrind.patch.txt) Let’s clean up
+  Deadwood so known Valgrind warnings no longer occur
 
+* [Patch to make sure shift used for netmask doesn’t trigger undefined 
+  behavior](MaraDNS-maskShift.patch.txt)
