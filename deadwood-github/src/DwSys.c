@@ -1043,7 +1043,12 @@ void make_netmask(int num, uint8_t *str, int len) {
 
         /* The last byte in the string is determined by the modulo */
         last = 0xff;
-        last <<= (8 - rem);
+	/* clang crazyness workaround */
+        if(rem == 0) {
+                last = 0;
+        } else {
+                last <<= (8 - rem);
+        }
 
         /* This kind of coding is dangerous.  I have triple-checked
          * the following code and don't see any possible overflows */
