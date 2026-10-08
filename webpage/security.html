@@ -1002,6 +1002,11 @@ Deadwood’s recursive resolver, which is at this point deprecated (it still
 runs, and can still solve most domain names, but it’s IPv4-only, and there
 are a bunch of corner cases it can’t solve).
 <p>
+That said, there is a <a href=
+"https://samboy.github.io/MaraDNS/patches/MaraDNS-CVE-2026-40719.patch.txt"
+>patch available</a> which simply disables full recursion.  Extensive
+discussion about the issue is in the text of that patch.
+<p>
 The denial of service only temporarily uses more resources and once the
 request for a server whose glueless nameservers doesn’t exist stops,
 Deadwood releases the resources and functions properly within a minute.
