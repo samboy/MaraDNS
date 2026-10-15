@@ -18,7 +18,7 @@ cat > /dev/null << EOF
 [remote "sourcehut"]
         url = git@git.sr.ht:~samiam/MaraDNS
 [remote "bitbucket"]
-        url = git@bitbucket.org:maradns/maradns.git
+        url = git@ssh.bitbucket.org:maradns/maradns.git
 [remote "codeberg"]
         url = git@codeberg.org:samboy/MaraDNS.git
 [remote "gitlab"]
