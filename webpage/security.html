@@ -123,18 +123,18 @@ exploit has <i>never</i> been found with MaraDNS or Deadwood).
 Thank you for your misplaced concern.
 <li>I assume people using <tt>coLunacyDNS</tt> will only run scripts they
 understand and trust.  I will keep this in mind if I get a report about
-an untrusted script.  Bugs showing one get out of the coLunacyDNS sandbox
+an untrusted script.  Bugs showing how to get out of the coLunacyDNS sandbox
 are OK, though.
 <li>Reports of the form “an IP with permission to perform recursive
 queries can overload Deadwood by sending hundreds of specially crafted
 packets every minute” will be ignored, unless it’s a “packet of death”
 which completely stops the Deadwood/MaraDNS process from resolving.  Deadwood 
 assumes users on a local LAN with recursive rights are not going to try 
-and shut down Deadwood with a continuous local DDOS attack.
+to shut down Deadwood with a continuous local DDOS attack.
 <li>Reports for any version of MaraDNS before 3.5.0039 will be cheerfully
 ignored.
 <li>That said, I will accept any report which reports a Valgrind warning
-(either a memory leak, or uninitialized/unallocated memory be accessed).
+(either a memory leak, or uninitialized/unallocated memory being accessed).
 Please provide a recipe for recreating the warning, and ideally provide 
 a patch to remove the warning.
 </ul>
