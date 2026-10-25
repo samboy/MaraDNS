@@ -108,6 +108,15 @@ of poorly made security reports.  That in mind,
 if sending a security bug report, some guidelines:
 
 <ul>
+<li><b>Please provide a patch</b>.  An example patch to fix the issue
+gives me a ballpark idea how much I need to change MaraDNS/Deadwood/whatever
+to fix the issue.
+<li>Issues with anything besides <tt>askmara</tt>, <tt>MaraDNS</tt>, 
+<tt>Deadwood</tt>, <tt>blockHashMake</tt>, <tt>blockHashRead</tt>,
+<tt>lunacy</tt>, or <tt>coLunacyDNS</tt> will be ignored.  
+Yes, I once had someone claim an almost impossible to exploit
+buffer overflow in a program which isn’t part of the main MaraDNS suite 
+and hasn’t even compiled since 2022.
 <li>If the attack requires sending 268,435,456 packets to spoof a reply,
 this is a known weakness with the DNS protocol.  These kinds of “attacks”
 are rejected.  Likewise, it’s not a valid security report if that
