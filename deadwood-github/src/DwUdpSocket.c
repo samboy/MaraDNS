@@ -1370,7 +1370,7 @@ void get_remote_udp_packet(int b, SOCKET sock) {
         int l = 0, kill = 1, core_ret = 0;
 
         count = recv(sock,a,514,0);
-        if(count < 12 || count > 512) {
+        if(count < 12) {
                 return;
         }
         if(count > 512) {
