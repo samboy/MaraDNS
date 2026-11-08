@@ -75,7 +75,8 @@ extern u_long global_source_ip4;
 extern u_long dont_block;
 #endif /*MINGW*/
 
-char *UDP_READS="UDPreads: 64  ";
+char *UDP_READS="UDPreads: 128 ";
+int packet_gets_total = -1;
 
 /* Initialize the inflight hash */
 void init_inflight_hash() {
@@ -1374,13 +1375,17 @@ void get_remote_udp_packet(int b, SOCKET sock) {
         }
         if(count > 512) {
                 int packet_gets = 0;
-                packet_gets = atoi(UDP_READS + 10);
+                if(packet_gets_total < 0) {
+                        packet_gets_total = atoi(UDP_READS + 10);
+                }
+                packet_gets = packet_gets_total;
                 for(; packet_gets > 0; packet_gets--) {
                         count = recv(sock,a,514,0);
                         if(count <= 512) {
                                 return;
                         }
                 }
+                return;
         }
                     
         a[2] |= 0x80; /* Flag this as an answer (just in case they didn't) */

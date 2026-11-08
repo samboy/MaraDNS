@@ -51,29 +51,34 @@ the bind() and connect(), that gives the queue for that big packet a
 different 4-tuple.
 
 --- deadwood-github/src/DwUdpSocket.c.orig	2026-11-08 05:24:51.422359700 -0600
-+++ deadwood-github/src/DwUdpSocket.c	2026-11-08 05:41:42.647964700 -0600
-@@ -75,6 +75,8 @@
++++ deadwood-github/src/DwUdpSocket.c	2026-11-08 06:41:26.752565200 -0600
+@@ -75,6 +75,9 @@
  extern u_long dont_block;
  #endif /*MINGW*/
  
-+char *UDP_READS="UDPreads: 64  ";
++char *UDP_READS="UDPreads: 128 ";
++int packet_gets_total = -1;
 +
  /* Initialize the inflight hash */
  void init_inflight_hash() {
          inflight = 0;
-@@ -1370,6 +1372,17 @@
+@@ -1370,6 +1373,21 @@
          if(count < 12 || count > 512) {
                  return;
          }
 +        if(count > 512) {
 +                int packet_gets = 0;
-+                packet_gets = atoi(UDP_READS + 10);
++                if(packet_gets_total < 0) {
++                        packet_gets_total = atoi(UDP_READS + 10);
++                }
++                packet_gets = packet_gets_total;
 +                for(; packet_gets > 0; packet_gets--) {
 +                        count = recv(sock,a,514,0);
 +                        if(count <= 512) {
 +                                return;
 +                        }
 +                }
++                return;
 +        }
 +                    
          a[2] |= 0x80; /* Flag this as an answer (just in case they didn't) */
