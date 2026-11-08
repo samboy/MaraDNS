@@ -1,0 +1,82 @@
+I have gotten a security report that, unless Deadwood reads an entire
+big UDP packet, there is a side channel attack that allows an attacker
+to determine which UDP port Deadwood is listening on.
+
+I don’t think this is a real attack, but since they provided a patch,
+I took their patch and have modified Deadwood’s code to read all of 
+a big UDP packet Deadwood gets.
+
+To explain why this isn’t a practical attack, let’s first look here: 
+
+https://blog.cloudflare.com/everything-you-ever-wanted-to-know-about-udp-sockets-but-were-afraid-to-ask-part-1/
+
+>UDP sockets can be "connected" (or "established") or "unconnected". 
+>Connected sockets have a full 4-tuple associated {source >ip, source 
+>port, destination ip, destination port}, unconnected sockets have 
+>2-tuple {bind ip, bind port}.
+
+Deadwood uses connected sockets when getting a query from a remote
+server. The code looks essentially like this:
+
+```
+foo = socket.socket(socket.AF_INET,socket.SOCK_DGRAM); // Random port, actually
+foo.connect('9.9.9.9',53);
+foo.send(b"A DNS packet asking for example.com's IPv4 address");
+```
+
+Here’s the actual code for a connection for a new query:
+
+```
+        if ((do_random_bind(s,addr.len) == -1) ||
+            (connect(s, (struct sockaddr *)&server, inet_len) == -1) ||
+            (send(s,packet,len,0) < 0)) {
+                closesocket(s);
+                return -1;
+        }
+```
+
+Point being this cute trick to send big huge UDP packets to determine
+which ports Deadwood has opened for remote connections only works when
+the remote server sending those huge packets has the same IP as the
+remote server Deadwood is trying to get a DNS reply from. So, yeah,
+if you’re in control of 9.9.9.9, and if 9.9.9.9 has permission to
+perform remote DNS queries with that Deadwood instance, and can use that
+IP to send big packets to Deadwood on random ports while Deadwood is
+querying 9.9.9.9 for a legitimate DNS answer, you can determine which
+port Deadwood is bound to for the query. But, if you control 9.9.9.9,
+you can more simply just send Deadwood bogus replies on port 53.
+
+If a rogue server with another IP sends a big packet to Deadwood between
+the bind() and connect(), that gives the queue for that big packet a
+different 4-tuple.
+
+--- deadwood-github/src/DwUdpSocket.c.orig	2026-11-08 05:24:51.422359700 -0600
++++ deadwood-github/src/DwUdpSocket.c	2026-11-08 05:41:42.647964700 -0600
+@@ -75,6 +75,8 @@
+ extern u_long dont_block;
+ #endif /*MINGW*/
+ 
++char *UDP_READS="UDPreads: 64  ";
++
+ /* Initialize the inflight hash */
+ void init_inflight_hash() {
+         inflight = 0;
+@@ -1370,6 +1372,18 @@
+         if(count < 12 || count > 512) {
+                 return;
+         }
++        if(count > 512) {
++                int packet_gets = 0;
++                packet_gets = atoi(UDP_READS + 10);
++                printf("Packet gets: %d\n",packet_gets); // DEBUG
++                for(; packet_gets > 0; packet_gets--) {
++                        count = recv(sock,a,514,0);
++                        if(count <= 512) {
++                                return;
++                        }
++                }
++        }
++                    
+         a[2] |= 0x80; /* Flag this as an answer (just in case they didn't) */
+ 
+ #ifdef SHOWPACKET
