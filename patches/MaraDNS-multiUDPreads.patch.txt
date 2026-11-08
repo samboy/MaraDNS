@@ -61,14 +61,13 @@ different 4-tuple.
  /* Initialize the inflight hash */
  void init_inflight_hash() {
          inflight = 0;
-@@ -1370,6 +1372,18 @@
+@@ -1370,6 +1372,17 @@
          if(count < 12 || count > 512) {
                  return;
          }
 +        if(count > 512) {
 +                int packet_gets = 0;
 +                packet_gets = atoi(UDP_READS + 10);
-+                printf("Packet gets: %d\n",packet_gets); // DEBUG
 +                for(; packet_gets > 0; packet_gets--) {
 +                        count = recv(sock,a,514,0);
 +                        if(count <= 512) {

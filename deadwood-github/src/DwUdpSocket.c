@@ -1375,7 +1375,6 @@ void get_remote_udp_packet(int b, SOCKET sock) {
         if(count > 512) {
                 int packet_gets = 0;
                 packet_gets = atoi(UDP_READS + 10);
-                printf("Packet gets: %d\n",packet_gets); // DEBUG
                 for(; packet_gets > 0; packet_gets--) {
                         count = recv(sock,a,514,0);
                         if(count <= 512) {
