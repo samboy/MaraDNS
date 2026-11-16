@@ -754,7 +754,9 @@ void init_rng() {
          * and cross platform (it wasn’t cross-platform in 2007: MacOS
          * didn’t support it back then), let’s be more strictly C99
          * compliant */
+#ifndef OLD_MINGW
         memset(noise,0,768);
+#endif // OLD_MINGW
 
         get_entropy_from_seedfile(noise,256);
 
@@ -775,7 +777,11 @@ void init_rng() {
 
         /* Get entropy from nanoseconds 
          * 275 + 112 * 4 = 723, under 768/760 */
+#ifndef OLD_MINGW
 	for(a = 0; a < 112; a++ ) {
+#else // OLD_MINGW
+	for(a = 0; a < 32; a++ ) {
+#endif // OLD_MINGW
 		dw_str *z = 0;
 		dwr_rg *x = 0;
 		int32_t microtime = 0;
