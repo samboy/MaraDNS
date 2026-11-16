@@ -13,7 +13,7 @@ for COMPILER in tcc gcc clang ; do
     # No flags
     $COMPILER -std=c99 -o test test.c
     echo -n $SYSTEM ${COMPILER##*/} $VERSION \(No flags\) ' - '
-    ./test | awk -f verify.awk
+    ./test | tr -d '\015' | awk -f verify.awk
     rm -f test test.exe
   fi
 done
