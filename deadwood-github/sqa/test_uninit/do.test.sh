@@ -7,7 +7,7 @@ for COMPILER in tcc gcc clang ; do
     for FLAGS in -g -O -Os -O1 -O2 -O3 ; do
       $COMPILER -std=c99 $FLAGS -o test test.c
       echo -n $SYSTEM ${COMPILER##*/} $VERSION ${FLAGS} ' - '
-      ./test | awk -f verify.awk
+      ./test | tr -d '\015' | awk -f verify.awk
       rm -f test test.exe
     done
     # No flags
