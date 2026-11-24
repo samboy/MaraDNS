@@ -3,6 +3,22 @@
 MaraDNS has a [webpage](https://samboy.github.io/MaraDNS/webpage) which
 has an overview and documentation for MaraDNS.
 
+# Release cadance
+
+Unless there is a very serious security bug found, MaraDNS is released
+twice a year, on March 12 and on September 12.  A very serious security
+bug is:
+
+* Remote code execution.  A bug like this has *never* been found with
+  MaraDNS.
+* Permanent remote denial of service.  This is a bug where someone can
+  knock MaraDNS offline with a remote “packet of death”.  Temporary 
+  putting MaraDNS offline with a flooding attack does not count.
+  Issues with Deadwood’s DNS-over-TCP do not count either.
+  A bug like this hasn’t been found in MaraDNS since 2023.
+
+Any other security bugs do not merit a new release of MaraDNS.
+
 # What is MaraDNS
 
 MaraDNS is a free open-source computer program written by Sam Trenholme.
