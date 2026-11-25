@@ -1,5 +1,5 @@
 # To use other flags, invoke as "make CFLAGS=-g" or some such
-CFLAGS =-O3 -DLUA_USE_LINUX -DNO_SPAWNER -DNO_LFS
+CFLAGS =-O3 -std=c99 -DNO_SPAWNER -DNO_LFS
 
 all: coLunacyDNS HalfSipHash13 
 
@@ -9,7 +9,7 @@ clean:
     cd lunacy ; make clean
 
 liblua.a:
-	cd lunacy ; make CC="${CC}" CFLAGS="${CFLAGS}" ; \
+	cd lunacy ; make CC="${CC}" CFLAGS="-std=c99 ${CFLAGS}" ; \
     cp liblua.a .. ; cd ..
 
 coLunacyDNS.o: coLunacyDNS.c
@@ -17,7 +17,7 @@ coLunacyDNS.o: coLunacyDNS.c
 
 coLunacyDNS: coLunacyDNS.o liblua.a
 	rm -f lunacy/lua.o lunacy/luac.o ; \
-    ${CC} ${CFLAGS} -Wall -o coLunacyDNS coLunacyDNS.o \
+    ${CC} -std=c99 ${CFLAGS} -Wall -o coLunacyDNS coLunacyDNS.o \
     lunacy/*.o -lm
 
 HalfSipHash13.o: HalfSipHash13.c 
