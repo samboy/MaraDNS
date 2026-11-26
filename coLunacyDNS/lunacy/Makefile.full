@@ -1,7 +1,7 @@
 # makefile for building Lua
-# This Makefile makes a version 
-# 1) Does not have lfs
-# 2) Does not have spawner
+# This makefile will include spawner and LFS
+# To make with editline support, install editline and ncurses, then type
+# in "make -f Makefile.full linux"
 
 # == CHANGE THE SETTINGS BELOW TO SUIT YOUR ENVIRONMENT =======================
 
